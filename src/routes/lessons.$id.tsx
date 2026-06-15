@@ -1,10 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Navigation, ChevronRight } from "lucide-react";
+import { ArrowLeft, Pencil, Navigation, ChevronRight, X } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
+
+const CANCEL_REASONS = [
+  "Pupil cancelled",
+  "Pupil no-show",
+  "Instructor cancelled",
+  "Weather",
+  "Vehicle issue",
+  "Other",
+] as const;
 
 export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
@@ -56,7 +66,8 @@ function LessonDetailPage() {
   const navigate = useNavigate();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [updating, setUpdating] = useState(false);
-  const [pendingAction, setPendingAction] = useState<"cancelled" | "completed" | null>(null);
+  const [pendingComplete, setPendingComplete] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   useEffect(() => {
     supabase
@@ -85,10 +96,9 @@ function LessonDetailPage() {
     setLesson({ ...lesson, status });
   }
 
-  const confirmStatus = async () => {
-    const status = pendingAction;
-    setPendingAction(null);
-    if (status) await updateStatus(status);
+  const confirmComplete = async () => {
+    setPendingComplete(false);
+    await updateStatus("completed");
   };
 
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
@@ -223,14 +233,14 @@ function LessonDetailPage() {
               <ActionRow
                 label="Mark complete"
                 disabled={updating || lesson.status === "completed"}
-                onClick={() => setPendingAction("completed")}
+                onClick={() => setPendingComplete(true)}
                 color="#16A34A"
                 isFirst
               />
               <ActionRow
                 label="Cancel lesson"
                 disabled={updating || lesson.status === "cancelled"}
-                onClick={() => setPendingAction("cancelled")}
+                onClick={() => setCancelOpen(true)}
                 color="#CC2229"
               />
               <ActionRow label="Reschedule" onClick={() => {}} color="#0F2044" />
@@ -240,12 +250,280 @@ function LessonDetailPage() {
       )}
 
       <ConfirmDialog
-        open={pendingAction !== null}
-        title={pendingAction === "completed" ? "Mark this lesson as complete?" : "Cancel this lesson?"}
+        open={pendingComplete}
+        title="Mark this lesson as complete?"
         confirmLabel="Confirm"
-        onConfirm={confirmStatus}
-        onCancel={() => setPendingAction(null)}
+        onConfirm={confirmComplete}
+        onCancel={() => setPendingComplete(false)}
       />
+
+      {lesson && dateObj && (
+        <CancelLessonSheet
+          open={cancelOpen}
+          onClose={() => setCancelOpen(false)}
+          pupilName={pupilName}
+          pupilId={lesson.pupil_id}
+          lessonId={lesson.id}
+          when={`${formatDateLong(dateObj)} · ${formatTime(lesson.lesson_time)}`}
+          onCancelled={() => {
+            toast.success("Lesson cancelled");
+            navigate({ to: "/schedule" });
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function CancelLessonSheet({
+  open,
+  onClose,
+  pupilName,
+  pupilId,
+  lessonId,
+  when,
+  onCancelled,
+}: {
+  open: boolean;
+  onClose: () => void;
+  pupilName: string;
+  pupilId: string;
+  lessonId: string;
+  when: string;
+  onCancelled: () => void;
+}) {
+  const [reason, setReason] = useState<string>("");
+  const [notes, setNotes] = useState("");
+  const [charge, setCharge] = useState(false);
+  const [fee, setFee] = useState("0.00");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setReason("");
+      setNotes("");
+      setCharge(false);
+      setFee("0.00");
+      setSubmitting(false);
+    }
+  }, [open]);
+
+  async function submit() {
+    if (!reason || submitting) return;
+    setSubmitting(true);
+    const { error } = await supabase
+      .from("lessons")
+      .update({
+        status: "cancelled",
+        cancellation_reason: reason,
+        cancellation_notes: notes || null,
+        cancelled_at: new Date().toISOString(),
+      })
+      .eq("id", lessonId);
+    if (error) {
+      console.error("[cancel] update lesson error", error);
+      toast.error("Couldn't cancel lesson");
+      setSubmitting(false);
+      return;
+    }
+
+    const feeNum = charge ? parseFloat(fee) || 0 : 0;
+    if (feeNum > 0) {
+      const { data: pupil, error: readErr } = await supabase
+        .from("pupils")
+        .select("balance_owed")
+        .eq("id", pupilId)
+        .maybeSingle();
+      if (readErr) console.error("[cancel] pupil read error", readErr);
+      const current = Number((pupil as { balance_owed: number } | null)?.balance_owed ?? 0);
+      const { error: updErr } = await supabase
+        .from("pupils")
+        .update({ balance_owed: current + feeNum })
+        .eq("id", pupilId);
+      if (updErr) console.error("[cancel] pupil balance update error", updErr);
+    }
+
+    setSubmitting(false);
+    onCancelled();
+  }
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
+      <div
+        className="absolute inset-0"
+        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        onClick={onClose}
+        aria-hidden
+      />
+      <div
+        className="relative w-full bg-white"
+        style={{
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          maxHeight: "92vh",
+          overflowY: "auto",
+          paddingBottom: 24,
+        }}
+      >
+        <div className="flex items-center justify-between px-4 pt-4">
+          <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
+            CANCEL LESSON
+          </span>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="flex items-center justify-center"
+            style={{ width: 32, height: 32 }}
+          >
+            <X size={18} color="#6B7280" />
+          </button>
+        </div>
+
+        <div className="px-4 mt-2">
+          <div
+            className="rounded-[12px] p-3"
+            style={{ backgroundColor: "#F3F4F6" }}
+          >
+            <div className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
+              {pupilName}
+            </div>
+            <div className="text-[12px]" style={{ color: "#6B7280" }}>{when}</div>
+          </div>
+        </div>
+
+        <div className="px-4 mt-4">
+          <label className="text-[12px] font-semibold" style={{ color: "#0F2044" }}>
+            Cancellation reason *
+          </label>
+          <select
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="w-full mt-1 px-3 bg-white"
+            style={{
+              height: 44,
+              borderRadius: 8,
+              border: "1px solid #E2E6ED",
+              color: "#0F2044",
+              fontSize: 14,
+              ...POPPINS,
+            }}
+          >
+            <option value="" disabled>Select a reason</option>
+            {CANCEL_REASONS.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="px-4 mt-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[14px] font-medium" style={{ color: "#0F2044" }}>
+              Charge cancellation fee?
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={charge}
+              onClick={() => setCharge((v) => !v)}
+              className="relative"
+              style={{
+                width: 44,
+                height: 26,
+                borderRadius: 999,
+                backgroundColor: charge ? "#16A34A" : "#E2E6ED",
+                transition: "background-color 0.15s",
+              }}
+            >
+              <span
+                className="absolute top-[3px] bg-white"
+                style={{
+                  left: charge ? 21 : 3,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  transition: "left 0.15s",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              />
+            </button>
+          </div>
+          {charge && (
+            <div className="mt-2">
+              <div className="flex items-center" style={{ borderRadius: 8, border: "1px solid #E2E6ED", height: 44, paddingLeft: 12 }}>
+                <span style={{ color: "#6B7280", fontSize: 14 }}>£</span>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  min="0"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                  className="flex-1 px-2 bg-transparent outline-none"
+                  style={{ color: "#0F2044", fontSize: 14, ...POPPINS, height: 42 }}
+                />
+              </div>
+              <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
+                This will be added to the pupil's outstanding balance
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="px-4 mt-4">
+          <label className="text-[12px] font-semibold" style={{ color: "#0F2044" }}>
+            Additional notes
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            className="w-full mt-1 px-3 py-2 bg-white"
+            style={{
+              borderRadius: 8,
+              border: "1px solid #E2E6ED",
+              color: "#0F2044",
+              fontSize: 14,
+              resize: "none",
+              ...POPPINS,
+            }}
+          />
+        </div>
+
+        <div className="px-4 mt-5 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex items-center justify-center text-[14px] font-medium"
+            style={{
+              height: 44,
+              borderRadius: 8,
+              backgroundColor: "transparent",
+              border: "1px solid #E2E6ED",
+              color: "#0F2044",
+              ...POPPINS,
+            }}
+          >
+            Keep lesson
+          </button>
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!reason || submitting}
+            className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
+            style={{
+              height: 44,
+              borderRadius: 8,
+              backgroundColor: "#CC2229",
+              ...POPPINS,
+            }}
+          >
+            {submitting ? "Cancelling…" : "Cancel lesson"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
