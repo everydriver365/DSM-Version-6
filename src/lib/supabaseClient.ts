@@ -16,4 +16,10 @@ console.log("[supabase] env check", {
   VITE_SUPABASE_ANON_KEY: anonKey,
 });
 
-export const supabase = createClient(url ?? "", anonKey ?? "");
+// Fall back to a syntactically valid placeholder so the module can initialise
+// even when env vars are missing. Any auth call will fail at request time
+// with a clear network error rather than crashing the whole app at import.
+export const supabase = createClient(
+  url || "https://placeholder.supabase.co",
+  anonKey || "placeholder-anon-key",
+);
