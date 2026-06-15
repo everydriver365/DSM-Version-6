@@ -600,6 +600,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/vehicle" })}
           />
           <AccessTile
+            icon={<TrendingUp size={16} color="#16A34A" />}
+            tint="#16A34A14"
+            label="Performance"
+            onClick={() => navigate({ to: "/performance" })}
+          />
+          <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
             tint="#6B728014"
             label="Settings"
