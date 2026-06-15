@@ -203,12 +203,8 @@ function SettingsPage() {
             icon={<Calendar size={18} color="#1A52A0" />}
             iconBg="#DBEAFE"
             label="Calendar sync"
-            onClick={() => setExpanded(expanded === "calendar_sync" ? null : "calendar_sync")}
-            expanded={expanded === "calendar_sync"}
+            onClick={() => navigate({ to: "/calendarsync" })}
           />
-          {expanded === "calendar_sync" && (
-            <PlaceholderBlock text="Google / Apple calendar sync coming soon." />
-          )}
         </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
