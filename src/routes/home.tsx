@@ -15,6 +15,7 @@ import {
   Settings as SettingsIcon,
   RefreshCw,
   Plus,
+  TrendingUp,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -519,6 +520,12 @@ function HomePage() {
             tint="#CC222914"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
+          />
+          <AccessTile
+            icon={<TrendingUp size={16} color="#F59E0B" />}
+            tint="#F59E0B14"
+            label="Earnings"
+            onClick={() => navigate({ to: "/earnings" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
