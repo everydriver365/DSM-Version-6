@@ -27,6 +27,7 @@ import {
   BookOpen,
   Gift,
   HelpCircle,
+  Calculator,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -631,6 +632,12 @@ function HomePage() {
             tint="#ECFDF5"
             label="Resources"
             onClick={() => navigate({ to: "/resources" })}
+          />
+          <AccessTile
+            icon={<Calculator size={16} color="#92400E" />}
+            tint="#FEF3C7"
+            label="Tax"
+            onClick={() => navigate({ to: "/tax" })}
           />
           <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}

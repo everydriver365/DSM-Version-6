@@ -13,6 +13,7 @@ import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
+import { Route as TaxRouteImport } from './routes/tax'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -62,6 +63,11 @@ const TodosRoute = TodosRouteImport.update({
 const TestsRoute = TestsRouteImport.update({
   id: '/tests',
   path: '/tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaxRoute = TaxRouteImport.update({
+  id: '/tax',
+  path: '/tax',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -238,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -272,6 +279,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/schedule'
     | '/settings'
+    | '/tax'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/schedule'
     | '/settings'
+    | '/tax'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -417,6 +428,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/schedule'
     | '/settings'
+    | '/tax'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -454,6 +466,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
+  TaxRoute: typeof TaxRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
   VehicleRoute: typeof VehicleRoute
@@ -490,6 +503,13 @@ declare module '@tanstack/react-router' {
       path: '/tests'
       fullPath: '/tests'
       preLoaderRoute: typeof TestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tax': {
+      id: '/tax'
+      path: '/tax'
+      fullPath: '/tax'
+      preLoaderRoute: typeof TaxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -767,6 +787,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
+  TaxRoute: TaxRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
   VehicleRoute: VehicleRoute,
