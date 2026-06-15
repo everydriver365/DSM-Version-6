@@ -29,6 +29,7 @@ import {
   HelpCircle,
   Calculator,
   ClipboardList,
+  ClipboardCheck,
   Fuel,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
@@ -658,6 +659,12 @@ function HomePage() {
             tint="#FEE2E2"
             label="Fuel"
             onClick={() => navigate({ to: "/fuel" })}
+          />
+          <AccessTile
+            icon={<ClipboardCheck size={16} color="#16A34A" />}
+            tint="#ECFDF5"
+            label="Standards"
+            onClick={() => navigate({ to: "/standards" })}
           />
           <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
