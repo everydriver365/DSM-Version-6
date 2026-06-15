@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Receipt,
   Clock,
+  BarChart2,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -540,6 +541,12 @@ function HomePage() {
             tint="#1A52A014"
             label="Availability"
             onClick={() => navigate({ to: "/availability" })}
+          />
+          <AccessTile
+            icon={<BarChart2 size={16} color="#16A34A" />}
+            tint="#16A34A14"
+            label="Reports"
+            onClick={() => navigate({ to: "/reports" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
