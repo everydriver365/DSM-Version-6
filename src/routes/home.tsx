@@ -23,6 +23,7 @@ import {
   FileText,
   GraduationCap,
   Star,
+  Inbox,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -585,6 +586,12 @@ function HomePage() {
             tint="#F59E0B14"
             label="Reviews"
             onClick={() => navigate({ to: "/reviews" })}
+          />
+          <AccessTile
+            icon={<Inbox size={16} color="#1A52A0" />}
+            tint="#1A52A014"
+            label="Enquiries"
+            onClick={() => navigate({ to: "/enquiries" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
