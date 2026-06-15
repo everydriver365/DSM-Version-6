@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Users, Calendar, Settings } from "lucide-react";
+import { Home, Users, Calendar, PoundSterling, Settings } from "lucide-react";
 
-export type NavKey = "home" | "pupils" | "schedule" | "settings";
+export type NavKey = "home" | "pupils" | "schedule" | "payments" | "settings";
 
 interface Props {
   active: NavKey;
@@ -11,6 +11,7 @@ const items: { key: NavKey; to: string; label: string; Icon: typeof Home }[] = [
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: Calendar },
+  { key: "payments", to: "/payments", label: "Payments", Icon: PoundSterling },
   { key: "settings", to: "/settings", label: "Settings", Icon: Settings },
 ];
 
