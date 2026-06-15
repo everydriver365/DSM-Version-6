@@ -5,17 +5,33 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
+type NewPupilSearch = { name?: string; phone?: string };
+
 export const Route = createFileRoute("/pupils/new")({
   head: () => ({
     meta: [{ title: "Add pupil — DSM by EveryDriver" }],
   }),
+  validateSearch: (search: Record<string, unknown>): NewPupilSearch => ({
+    name: typeof search.name === "string" ? search.name : undefined,
+    phone: typeof search.phone === "string" ? search.phone : undefined,
+  }),
   component: NewPupilPage,
 });
 
+function splitName(full: string): [string, string] {
+  const parts = full.trim().split(/\s+/);
+  if (parts.length === 0) return ["", ""];
+  if (parts.length === 1) return [parts[0], ""];
+  return [parts[0], parts.slice(1).join(" ")];
+}
+
 function NewPupilPage() {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const search = Route.useSearch();
+  const [preFirst, preLast] = splitName(search.name ?? "");
+  const [firstName, setFirstName] = useState(preFirst);
+  const [lastName, setLastName] = useState(preLast);
+  const [phone, setPhone] = useState(search.phone ?? "");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
@@ -43,13 +59,15 @@ function NewPupilPage() {
     }
     const first = firstName.trim();
     const last = lastName.trim();
-    const { error } = await supabase.from("pupils").insert({
+    const insert: Record<string, unknown> = {
       instructor_id: user.id,
       first_name: first,
       last_name: last,
       name: `${first} ${last}`,
       status: "active",
-    });
+    };
+    if (phone.trim()) insert.phone = phone.trim();
+    const { error } = await supabase.from("pupils").insert(insert);
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
@@ -114,6 +132,13 @@ function NewPupilPage() {
               </p>
             )}
           </div>
+          <Input
+            label="Phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            maxLength={30}
+          />
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}

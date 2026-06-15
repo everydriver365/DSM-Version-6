@@ -25,6 +25,7 @@ import {
   Star,
   Inbox,
   BookOpen,
+  Hourglass,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -611,6 +612,12 @@ function HomePage() {
             tint="#1A52A014"
             label="CPD"
             onClick={() => navigate({ to: "/cpd" })}
+          />
+          <AccessTile
+            icon={<Hourglass size={16} color="#F59E0B" />}
+            tint="#FEF3C7"
+            label="Waiting list"
+            onClick={() => navigate({ to: "/waitinglist" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
