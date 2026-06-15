@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, X } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
 
@@ -257,8 +256,6 @@ function PupilsIndexPage() {
       >
         <Plus size={24} color="#FFFFFF" />
       </Link>
-
-      <BottomNav active="pupils" />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { MessageSquare, SquarePen } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/messages")({
@@ -168,8 +167,6 @@ function MessagesPage() {
           </div>
         )}
       </div>
-
-      <BottomNav active="messages" />
     </div>
   );
 }
