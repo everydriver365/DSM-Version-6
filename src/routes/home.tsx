@@ -668,6 +668,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/standards" })}
           />
           <AccessTile
+            icon={<Heart size={16} color="#CC2229" />}
+            tint="#FEE2E2"
+            label="Health"
+            onClick={() => navigate({ to: "/health" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"
