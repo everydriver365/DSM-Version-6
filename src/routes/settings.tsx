@@ -46,7 +46,7 @@ const DEFAULT_HOURS: WorkingHours = {
   mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
 };
 
-type ExpandKey = "profile" | "working_hours" | "notifications" | "calendar_sync" | null;
+type ExpandKey = "profile" | "working_hours" | "notifications" | null;
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -203,12 +203,8 @@ function SettingsPage() {
             icon={<Calendar size={18} color="#1A52A0" />}
             iconBg="#DBEAFE"
             label="Calendar sync"
-            onClick={() => setExpanded(expanded === "calendar_sync" ? null : "calendar_sync")}
-            expanded={expanded === "calendar_sync"}
+            onClick={() => navigate({ to: "/calendarsync" })}
           />
-          {expanded === "calendar_sync" && (
-            <PlaceholderBlock text="Google / Apple calendar sync coming soon." />
-          )}
         </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
