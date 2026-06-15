@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Pencil, Navigation, ChevronRight } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/lessons/$id")({
@@ -55,6 +56,7 @@ function LessonDetailPage() {
   const navigate = useNavigate();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"cancelled" | "completed" | null>(null);
 
   useEffect(() => {
     supabase
@@ -63,6 +65,7 @@ function LessonDetailPage() {
         "id, lesson_date, lesson_time, duration_minutes, status, notes, pupil_id, pupils(id, name, phone)",
       )
       .eq("id", id)
+      .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[lesson] fetch error", error);
@@ -81,6 +84,12 @@ function LessonDetailPage() {
     }
     setLesson({ ...lesson, status });
   }
+
+  const confirmStatus = async () => {
+    const status = pendingAction;
+    setPendingAction(null);
+    if (status) await updateStatus(status);
+  };
 
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
   const badge = lesson ? statusColor(lesson.status) : "#6B7280";
@@ -214,14 +223,14 @@ function LessonDetailPage() {
               <ActionRow
                 label="Mark complete"
                 disabled={updating || lesson.status === "completed"}
-                onClick={() => updateStatus("completed")}
+                onClick={() => setPendingAction("completed")}
                 color="#16A34A"
                 isFirst
               />
               <ActionRow
                 label="Cancel lesson"
                 disabled={updating || lesson.status === "cancelled"}
-                onClick={() => updateStatus("cancelled")}
+                onClick={() => setPendingAction("cancelled")}
                 color="#CC2229"
               />
               <ActionRow label="Reschedule" onClick={() => {}} color="#0F2044" />
@@ -229,6 +238,14 @@ function LessonDetailPage() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={pendingAction !== null}
+        title={pendingAction === "completed" ? "Mark this lesson as complete?" : "Cancel this lesson?"}
+        confirmLabel="Confirm"
+        onConfirm={confirmStatus}
+        onCancel={() => setPendingAction(null)}
+      />
     </div>
   );
 }
