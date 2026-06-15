@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
@@ -71,6 +71,7 @@ function statusColor(status: string) {
 }
 
 function SchedulePage() {
+  const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)), [today]);
   const [selected, setSelected] = useState<Date>(today);
@@ -171,6 +172,7 @@ function SchedulePage() {
       <button
         type="button"
         aria-label="Add lesson"
+        onClick={() => navigate({ to: "/lessons/new" })}
         className="fixed z-50 flex items-center justify-center rounded-full"
         style={{
           width: 52,
