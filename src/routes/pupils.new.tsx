@@ -91,21 +91,6 @@ function NewPupilPage() {
               </p>
             )}
           </div>
-          <Input
-            label="Phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            maxLength={32}
-          />
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            maxLength={255}
-          />
-
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}
