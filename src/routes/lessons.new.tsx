@@ -14,8 +14,7 @@ export const Route = createFileRoute("/lessons/new")({
 
 interface Pupil {
   id: string;
-  first_name: string;
-  last_name: string;
+  name: string;
 }
 
 const DURATIONS = [30, 45, 60, 90, 120];
@@ -63,9 +62,9 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, first_name, last_name")
+        .select("id, name")
         .eq("instructor_id", user.id)
-        .order("first_name", { ascending: true });
+        .order("name", { ascending: true });
       setPupils((data as Pupil[]) ?? []);
     })();
   }, []);
@@ -89,11 +88,11 @@ function NewLessonPage() {
       setSaving(false);
       return;
     }
-    const scheduledAt = new Date(`${date}T${time}:00`).toISOString();
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
-      scheduled_at: scheduledAt,
+      lesson_date: date,
+      lesson_time: `${time}:00`,
       duration_minutes: duration,
       status: "confirmed",
       notes: notes.trim() || null,
@@ -145,7 +144,7 @@ function NewLessonPage() {
               <option value="">Select a pupil</option>
               {pupils.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.first_name} {p.last_name}
+                  {p.name}
                 </option>
               ))}
             </select>

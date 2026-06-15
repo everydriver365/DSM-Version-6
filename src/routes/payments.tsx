@@ -18,8 +18,7 @@ export const Route = createFileRoute("/payments")({
 
 interface OutstandingPupil {
   id: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   balance_owed: number;
 }
 
@@ -28,7 +27,7 @@ interface PaymentRow {
   pupil_id: string;
   amount: number;
   paid_at: string;
-  pupils: { first_name: string; last_name: string } | null;
+  pupils: { name: string } | null;
 }
 
 function formatGBP(amount: number) {
@@ -47,14 +46,14 @@ function PaymentsPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, first_name, last_name, balance_owed")
+      .select("id, name, balance_owed")
       .gt("balance_owed", 0)
-      .order("first_name", { ascending: true })
+      .order("name", { ascending: true })
       .then(({ data }) => setOutstanding((data as OutstandingPupil[]) ?? []));
 
     supabase
       .from("payments")
-      .select("id, pupil_id, amount, paid_at, pupils(first_name, last_name)")
+      .select("id, pupil_id, amount, paid_at, pupils(name)")
       .order("paid_at", { ascending: false })
       .then(({ data }) => setPayments((data as unknown as PaymentRow[]) ?? []));
   }, []);
@@ -88,7 +87,7 @@ function PaymentsPage() {
     if (inserted) {
       const newRow: PaymentRow = {
         ...inserted,
-        pupils: { first_name: pupil.first_name, last_name: pupil.last_name },
+        pupils: { name: pupil.name },
       };
       setPayments((prev) => [newRow, ...(prev ?? [])]);
     }
@@ -120,7 +119,7 @@ function PaymentsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-[14px] font-semibold text-[#0F2044] truncate">
-                      {p.first_name} {p.last_name}
+                      {p.name}
                     </div>
                     <div className="text-[14px] font-semibold" style={{ color: "#CC2229" }}>
                       {formatGBP(Number(p.balance_owed))}
@@ -148,9 +147,7 @@ function PaymentsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-[14px] font-semibold text-[#0F2044] truncate">
-                      {row.pupils
-                        ? `${row.pupils.first_name} ${row.pupils.last_name}`
-                        : "Unknown pupil"}
+                      {row.pupils?.name ?? "Unknown pupil"}
                     </div>
                     <div className="text-[13px] text-[#6B7280]">
                       {formatDate(row.paid_at)}

@@ -18,10 +18,11 @@ export const Route = createFileRoute("/schedule")({
 
 interface Lesson {
   id: string;
-  scheduled_at: string;
+  lesson_date: string;
+  lesson_time: string;
   duration_minutes: number | null;
   status: string;
-  pupil: { first_name: string; last_name: string } | null;
+  pupil: { name: string } | null;
 }
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -38,11 +39,12 @@ function addDays(d: Date, n: number) {
   return x;
 }
 
-function formatTime(iso: string) {
-  const d = new Date(iso);
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mm}`;
+function ymd(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function formatTime(t: string) {
+  return (t ?? "").slice(0, 5);
 }
 
 function formatDuration(mins: number | null) {
@@ -78,15 +80,12 @@ function SchedulePage() {
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
 
   useEffect(() => {
-    const start = startOfDay(selected);
-    const end = addDays(start, 1);
     setLessons(null);
     supabase
       .from("lessons")
-      .select("id, scheduled_at, duration_minutes, status, pupil:pupils(first_name, last_name)")
-      .gte("scheduled_at", start.toISOString())
-      .lt("scheduled_at", end.toISOString())
-      .order("scheduled_at", { ascending: true })
+      .select("id, lesson_date, lesson_time, duration_minutes, status, pupil:pupils(name)")
+      .eq("lesson_date", ymd(selected))
+      .order("lesson_time", { ascending: true })
       .then(({ data }) => setLessons((data as unknown as Lesson[]) ?? []));
   }, [selected]);
 
@@ -139,16 +138,14 @@ function SchedulePage() {
         ) : (
           <div className="flex flex-col gap-2">
             {lessons.map((l) => {
-              const name = l.pupil
-                ? `${l.pupil.first_name} ${l.pupil.last_name}`
-                : "Unknown pupil";
+              const name = l.pupil?.name ?? "Unknown pupil";
               const color = statusColor(l.status);
               return (
                 <Card key={l.id}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-[14px] font-semibold text-[#0F2044]">
-                        {formatTime(l.scheduled_at)}
+                        {formatTime(l.lesson_time)}
                       </div>
                       <div className="text-[14px] text-[#1A1A2E] truncate">{name}</div>
                       <div className="text-[13px] text-[#6B7280]">
