@@ -40,6 +40,7 @@ import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as CpdRouteImport } from './routes/cpd'
+import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
@@ -206,6 +207,11 @@ const CpdRoute = CpdRouteImport.update({
   path: '/cpd',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChecklistRoute = ChecklistRouteImport.update({
+  id: '/checklist',
+  path: '/checklist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilityRoute = AvailabilityRouteImport.update({
   id: '/availability',
   path: '/availability',
@@ -260,6 +266,7 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
@@ -345,6 +353,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
@@ -390,6 +399,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/availability'
+    | '/checklist'
     | '/cpd'
     | '/documents'
     | '/earnings'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/availability'
+    | '/checklist'
     | '/cpd'
     | '/documents'
     | '/earnings'
@@ -474,6 +485,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/availability'
+    | '/checklist'
     | '/cpd'
     | '/documents'
     | '/earnings'
@@ -518,6 +530,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AvailabilityRoute: typeof AvailabilityRoute
+  ChecklistRoute: typeof ChecklistRoute
   CpdRoute: typeof CpdRoute
   DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
@@ -772,6 +785,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CpdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checklist': {
+      id: '/checklist'
+      path: '/checklist'
+      fullPath: '/checklist'
+      preLoaderRoute: typeof ChecklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability': {
       id: '/availability'
       path: '/availability'
@@ -887,6 +907,7 @@ const PupilsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
+  ChecklistRoute: ChecklistRoute,
   CpdRoute: CpdRoute,
   DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,

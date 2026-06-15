@@ -681,6 +681,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/documents" })}
           />
           <AccessTile
+            icon={<CheckSquare size={16} color="#16A34A" />}
+            tint="#ECFDF5"
+            label="Checklist"
+            onClick={() => navigate({ to: "/checklist" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"
