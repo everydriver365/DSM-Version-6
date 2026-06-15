@@ -23,6 +23,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PupilsRouteImport } from './routes/pupils'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -120,6 +121,11 @@ const ReferralsRoute = ReferralsRouteImport.update({
 const PupilsRoute = PupilsRouteImport.update({
   id: '/pupils',
   path: '/pupils',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerformanceRoute = PerformanceRouteImport.update({
@@ -284,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/profile': typeof ProfileRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
@@ -327,6 +334,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
@@ -371,6 +379,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/profile': typeof ProfileRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
@@ -417,6 +426,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/profile'
     | '/pupils'
     | '/referrals'
     | '/reminder'
@@ -460,6 +470,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/profile'
     | '/referrals'
     | '/reminder'
     | '/reports'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/profile'
     | '/pupils'
     | '/referrals'
     | '/reminder'
@@ -548,6 +560,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
+  ProfileRoute: typeof ProfileRoute
   PupilsRoute: typeof PupilsRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
   ReminderRoute: typeof ReminderRoute
@@ -664,6 +677,13 @@ declare module '@tanstack/react-router' {
       path: '/pupils'
       fullPath: '/pupils'
       preLoaderRoute: typeof PupilsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/performance': {
@@ -925,6 +945,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
+  ProfileRoute: ProfileRoute,
   PupilsRoute: PupilsRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
   ReminderRoute: ReminderRoute,

@@ -13,7 +13,7 @@ import {
 import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
-import { Input } from "../components/dsm/Input";
+
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
@@ -62,8 +62,6 @@ function SettingsPage() {
   const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [draftName, setDraftName] = useState<string>("");
-  const [draftPhone, setDraftPhone] = useState<string>("");
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
@@ -93,8 +91,6 @@ function SettingsPage() {
       if (profile) {
         setDisplayName(profile.display_name ?? "");
         setPhone(profile.phone ?? "");
-        setDraftName(profile.display_name ?? "");
-        setDraftPhone(profile.phone ?? "");
       }
 
       const { data: hours } = await supabase
@@ -115,22 +111,6 @@ function SettingsPage() {
     })();
   }, []);
 
-  async function saveProfile() {
-    if (!userId) return;
-    const { error } = await supabase.from("profiles").upsert({
-      id: userId,
-      display_name: draftName,
-      phone: draftPhone,
-      updated_at: new Date().toISOString(),
-    });
-    if (error) {
-      console.error("[settings] save profile error", error);
-      return;
-    }
-    setDisplayName(draftName);
-    setPhone(draftPhone);
-    setExpanded(null);
-  }
 
   async function toggleDay(d: DayKey) {
     const next = { ...workingDays, [d]: !workingDays[d] };
@@ -182,7 +162,7 @@ function SettingsPage() {
                 {email || "—"}
               </div>
             </div>
-            <Button variant="ghost" inline onClick={() => setExpanded(expanded === "profile" ? null : "profile")}>
+            <Button variant="ghost" inline onClick={() => navigate({ to: "/profile" })}>
               Edit profile
             </Button>
           </div>
@@ -196,31 +176,10 @@ function SettingsPage() {
             icon={<User size={18} color="#1E40AF" />}
             iconBg="#DBEAFE"
             label="Profile"
-            expanded={expanded === "profile"}
-            onClick={() => setExpanded(expanded === "profile" ? null : "profile")}
+            onClick={() => navigate({ to: "/profile" })}
             isFirst
           />
-          {expanded === "profile" && (
-            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}>
-              <div className="pt-3">
-                <Input
-                  label="Display name"
-                  value={draftName}
-                  onChange={(e) => setDraftName(e.target.value)}
-                  placeholder="Your name"
-                />
-              </div>
-              <Input
-                label="Phone number"
-                value={draftPhone}
-                onChange={(e) => setDraftPhone(e.target.value)}
-                placeholder="07…"
-              />
-              <Button onClick={saveProfile} className="self-end" inline>
-                Save
-              </Button>
-            </div>
-          )}
+
 
           <MenuRow
             icon={<Clock size={18} color="#1A52A0" />}
