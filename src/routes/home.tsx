@@ -19,6 +19,7 @@ import {
   Receipt,
   Clock,
   BarChart2,
+  CheckSquare,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -553,6 +554,12 @@ function HomePage() {
             tint="#1A52A014"
             label="Mileage"
             onClick={() => navigate({ to: "/mileage" })}
+          />
+          <AccessTile
+            icon={<CheckSquare size={16} color="#F59E0B" />}
+            tint="#F59E0B14"
+            label="To-do"
+            onClick={() => navigate({ to: "/todos" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
