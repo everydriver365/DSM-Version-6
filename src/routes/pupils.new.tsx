@@ -14,13 +14,19 @@ export const Route = createFileRoute("/pupils/new")({
 
 function NewPupilPage() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; form?: string }>({});
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    form?: string;
+  }>({});
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
     const next: typeof errors = {};
-    if (!name.trim()) next.name = "Name is required";
+    if (!firstName.trim()) next.firstName = "First name is required";
+    if (!lastName.trim()) next.lastName = "Last name is required";
     if (Object.keys(next).length) {
       setErrors(next);
       return;
@@ -35,9 +41,13 @@ function NewPupilPage() {
       setSaving(false);
       return;
     }
+    const first = firstName.trim();
+    const last = lastName.trim();
     const { error } = await supabase.from("pupils").insert({
       instructor_id: user.id,
-      name: name.trim(),
+      first_name: first,
+      last_name: last,
+      name: `${first} ${last}`,
       status: "active",
     });
     if (error) {
@@ -80,14 +90,27 @@ function NewPupilPage() {
         >
           <div>
             <Input
-              label="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={200}
+              label="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              maxLength={100}
             />
-            {errors.name && (
+            {errors.firstName && (
               <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
-                {errors.name}
+                {errors.firstName}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              maxLength={100}
+            />
+            {errors.lastName && (
+              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+                {errors.lastName}
               </p>
             )}
           </div>
