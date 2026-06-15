@@ -28,6 +28,7 @@ import {
   Gift,
   HelpCircle,
   Calculator,
+  ClipboardList,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
