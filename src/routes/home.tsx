@@ -258,7 +258,13 @@ function HomePage() {
         <div className="flex items-center" style={{ gap: 16 }}>
           <Phone size={20} color="#ffffff" />
           <Car size={20} color="#ffffff" />
-          <div className="relative">
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" })}
+            className="relative flex items-center justify-center"
+            style={{ width: 28, height: 28 }}
+          >
             <Bell size={20} color="#ffffff" />
             {notifCount > 0 && (
               <span
@@ -268,7 +274,7 @@ function HomePage() {
                 {notifCount}
               </span>
             )}
-          </div>
+          </button>
           <Menu size={20} color="#ffffff" />
         </div>
       </div>
