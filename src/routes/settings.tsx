@@ -182,7 +182,7 @@ function SettingsPage() {
                 {email || "—"}
               </div>
             </div>
-            <Button variant="ghost" inline onClick={() => setExpanded(expanded === "profile" ? null : "profile")}>
+            <Button variant="ghost" inline onClick={() => navigate({ to: "/profile" })}>
               Edit profile
             </Button>
           </div>
@@ -196,31 +196,10 @@ function SettingsPage() {
             icon={<User size={18} color="#1E40AF" />}
             iconBg="#DBEAFE"
             label="Profile"
-            expanded={expanded === "profile"}
-            onClick={() => setExpanded(expanded === "profile" ? null : "profile")}
+            onClick={() => navigate({ to: "/profile" })}
             isFirst
           />
-          {expanded === "profile" && (
-            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}>
-              <div className="pt-3">
-                <Input
-                  label="Display name"
-                  value={draftName}
-                  onChange={(e) => setDraftName(e.target.value)}
-                  placeholder="Your name"
-                />
-              </div>
-              <Input
-                label="Phone number"
-                value={draftPhone}
-                onChange={(e) => setDraftPhone(e.target.value)}
-                placeholder="07…"
-              />
-              <Button onClick={saveProfile} className="self-end" inline>
-                Save
-              </Button>
-            </div>
-          )}
+
 
           <MenuRow
             icon={<Clock size={18} color="#1A52A0" />}
