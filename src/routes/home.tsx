@@ -99,6 +99,17 @@ function lessonDateTime(l: LessonRow) {
   return new Date(`${l.lesson_date}T${time}`);
 }
 
+/** Current time in Europe/London as "HH:MM:SS" for string comparison with lesson_time */
+function londonTimeString() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
 function formatTime(l: LessonRow) {
   const d = lessonDateTime(l);
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
