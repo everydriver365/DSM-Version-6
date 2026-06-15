@@ -28,6 +28,7 @@ import {
   Gift,
   HelpCircle,
   Calculator,
+  ClipboardList,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -644,6 +645,12 @@ function HomePage() {
             tint="#DBEAFE"
             label="Reminders"
             onClick={() => navigate({ to: "/reminder" })}
+          />
+          <AccessTile
+            icon={<ClipboardList size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Manifest"
+            onClick={() => navigate({ to: "/manifest" })}
           />
           <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
