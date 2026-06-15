@@ -15,8 +15,6 @@ export const Route = createFileRoute("/pupils/new")({
 function NewPupilPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ name?: string; form?: string }>({});
   const [saving, setSaving] = useState(false);
 
@@ -40,8 +38,7 @@ function NewPupilPage() {
     const { error } = await supabase.from("pupils").insert({
       instructor_id: user.id,
       name: name.trim(),
-      phone: phone.trim() || null,
-      email: email.trim() || null,
+      status: "active",
     });
     if (error) {
       setErrors({ form: error.message });
@@ -94,21 +91,6 @@ function NewPupilPage() {
               </p>
             )}
           </div>
-          <Input
-            label="Phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            maxLength={32}
-          />
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            maxLength={255}
-          />
-
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}
