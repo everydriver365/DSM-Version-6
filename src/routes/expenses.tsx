@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, Car, Shield, Wrench, Receipt, X } from "lucide-react";
+import { ChevronLeft, Plus, Car, Shield, Wrench, Receipt, X, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/expenses")({
@@ -61,6 +62,7 @@ function ExpensesPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [rows, setRows] = useState<ExpenseRow[] | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<ExpenseRow | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -74,9 +76,25 @@ function ExpensesPage() {
       .from("expenses")
       .select("id, category, description, amount, expense_date, created_at")
       .eq("instructor_id", uid)
+      .is("deleted_at", null)
       .order("expense_date", { ascending: false });
     if (error) console.error("[expenses] fetch error", error);
     setRows((data as unknown as ExpenseRow[]) ?? []);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    const id = pendingDelete.id;
+    setPendingDelete(null);
+    setRows((prev) => (prev ?? []).filter((r) => r.id !== id));
+    const { error } = await supabase
+      .from("expenses")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error("[expenses] delete error", error);
+      if (userId) void load(userId);
+    }
   };
 
   useEffect(() => {
@@ -189,6 +207,15 @@ function ExpensesPage() {
                         {formatDate(row.expense_date)}
                       </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDelete(row)}
+                      aria-label="Delete expense"
+                      className="flex items-center justify-center shrink-0"
+                      style={{ width: 28, height: 28 }}
+                    >
+                      <Trash2 size={16} color="#CC2229" />
+                    </button>
                   </div>
                 </Card>
               );
@@ -207,6 +234,14 @@ function ExpensesPage() {
           }}
         />
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this expense?"
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </div>
   );
 }

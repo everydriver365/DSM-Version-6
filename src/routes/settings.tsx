@@ -15,6 +15,7 @@ import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/settings")({
@@ -65,6 +66,7 @@ function SettingsPage() {
   const [draftPhone, setDraftPhone] = useState<string>("");
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
   const [expanded, setExpanded] = useState<ExpandKey>(null);
+  const [signOutOpen, setSignOutOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -142,6 +144,7 @@ function SettingsPage() {
   }
 
   async function signOut() {
+    setSignOutOpen(false);
     await supabase.auth.signOut();
     navigate({ to: "/login", replace: true });
   }
@@ -267,12 +270,20 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>DANGER ZONE</SectionHeader>
-        <Button variant="destructive" onClick={signOut}>
+        <Button variant="destructive" onClick={() => setSignOutOpen(true)}>
           Sign out
         </Button>
       </div>
 
       <BottomNav active="settings" />
+
+      <ConfirmDialog
+        open={signOutOpen}
+        title="Sign out?"
+        confirmLabel="Sign out"
+        onConfirm={signOut}
+        onCancel={() => setSignOutOpen(false)}
+      />
     </div>
   );
 }

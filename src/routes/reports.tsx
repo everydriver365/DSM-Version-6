@@ -84,9 +84,10 @@ function ReportsPage() {
         supabase
           .from("lessons")
           .select("id, status, lesson_date, pupil_id, pupils(name)")
-          .eq("instructor_id", userId),
-        supabase.from("payments").select("amount, paid_at").eq("instructor_id", userId),
-        supabase.from("expenses").select("amount, expense_date").eq("instructor_id", userId),
+          .eq("instructor_id", userId)
+          .is("deleted_at", null),
+        supabase.from("payments").select("amount, paid_at").eq("instructor_id", userId).is("deleted_at", null),
+        supabase.from("expenses").select("amount, expense_date").eq("instructor_id", userId).is("deleted_at", null),
       ]);
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
       setPayments(

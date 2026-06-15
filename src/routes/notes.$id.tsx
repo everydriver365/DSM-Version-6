@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 
 export const Route = createFileRoute("/notes/$id")({
   head: () => ({
@@ -19,6 +20,7 @@ function NoteEditPage() {
   const [body, setBody] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [savedFlag, setSavedFlag] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const flagTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -28,6 +30,7 @@ function NoteEditPage() {
         .from("notes")
         .select("title, body")
         .eq("id", id)
+        .is("deleted_at", null)
         .maybeSingle();
       if (error) console.error("[note] fetch error", error);
       setTitle((data?.title as string) ?? "");
@@ -58,7 +61,11 @@ function NoteEditPage() {
   }, [title, body, loaded, id]);
 
   const deleteNote = async () => {
-    const { error } = await supabase.from("notes").delete().eq("id", id);
+    setConfirmOpen(false);
+    const { error } = await supabase
+      .from("notes")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
     if (error) {
       console.error("[note] delete error", error);
       return;
@@ -93,7 +100,7 @@ function NoteEditPage() {
         <button
           type="button"
           aria-label="Delete note"
-          onClick={deleteNote}
+          onClick={() => setConfirmOpen(true)}
           className="flex items-center justify-center"
           style={{ width: 28, height: 28 }}
         >
@@ -117,6 +124,15 @@ function NoteEditPage() {
           style={{ fontFamily: "Poppins, sans-serif", minHeight: "60vh" }}
         />
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete this note?"
+        message="This cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={deleteNote}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

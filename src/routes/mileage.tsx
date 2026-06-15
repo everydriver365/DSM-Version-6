@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, Car } from "lucide-react";
+import { ChevronLeft, Plus, Car, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/mileage")({
@@ -42,6 +43,7 @@ function MileagePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [logs, setLogs] = useState<MileageRow[]>([]);
   const [showSheet, setShowSheet] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<MileageRow | null>(null);
 
   const [tripDate, setTripDate] = useState(ymd(new Date()));
   const [description, setDescription] = useState("");
@@ -62,9 +64,25 @@ function MileagePage() {
       .from("mileage_logs")
       .select("id, trip_date, description, miles, purpose")
       .eq("instructor_id", uid)
+      .is("deleted_at", null)
       .order("trip_date", { ascending: false });
     if (error) console.error("[mileage] fetch error", error);
     setLogs((data ?? []) as unknown as MileageRow[]);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    const id = pendingDelete.id;
+    setPendingDelete(null);
+    setLogs((prev) => prev.filter((r) => r.id !== id));
+    const { error } = await supabase
+      .from("mileage_logs")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error("[mileage] delete error", error);
+      if (userId) await fetchLogs(userId);
+    }
   };
 
   useEffect(() => {
@@ -223,9 +241,20 @@ function MileagePage() {
                     <span className="text-[13px] text-[#6B7280]">
                       {formatDateLabel(log.trip_date)}
                     </span>
-                    <span className="text-[14px] font-bold text-[#0F2044]">
-                      {Number(log.miles).toFixed(1)} mi
-                    </span>
+                    <div className="flex items-center" style={{ gap: 8 }}>
+                      <span className="text-[14px] font-bold text-[#0F2044]">
+                        {Number(log.miles).toFixed(1)} mi
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setPendingDelete(log)}
+                        aria-label="Delete entry"
+                        className="flex items-center justify-center"
+                        style={{ width: 24, height: 24 }}
+                      >
+                        <Trash2 size={14} color="#CC2229" />
+                      </button>
+                    </div>
                   </div>
                   <div className="mt-1 flex items-center justify-between">
                     <span className="text-[14px] font-semibold text-[#0F2044]">
@@ -372,6 +401,14 @@ function MileagePage() {
           to { transform: translateY(0); }
         }
       `}</style>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this entry?"
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </div>
   );
 }

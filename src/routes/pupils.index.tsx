@@ -52,6 +52,7 @@ function PupilsIndexPage() {
     supabase
       .from("pupils")
       .select("id, name, phone, email, lesson_count, balance_owed, status")
+      .is("deleted_at", null)
       .order("name", { ascending: true })
       .then(({ data, error }) => {
         if (error) console.error("[pupils] fetch error", error);

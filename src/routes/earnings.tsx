@@ -68,6 +68,7 @@ function EarningsPage() {
       .from("payments")
       .select("id, amount, paid_at, created_at, note, pupils(name)")
       .eq("instructor_id", userId)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) console.error("[earnings] fetch error", error);

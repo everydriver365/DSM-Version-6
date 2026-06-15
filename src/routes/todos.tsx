@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, CheckSquare } from "lucide-react";
+import { ChevronLeft, Plus, CheckSquare, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/todos")({
@@ -50,6 +51,8 @@ function TodosPage() {
   const [todos, setTodos] = useState<TodoRow[]>([]);
   const [showSheet, setShowSheet] = useState(false);
 
+  const [pendingDelete, setPendingDelete] = useState<TodoRow | null>(null);
+
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
@@ -68,6 +71,7 @@ function TodosPage() {
       .from("todos")
       .select("id, title, due_date, priority, completed")
       .eq("instructor_id", uid)
+      .is("deleted_at", null)
       .order("due_date", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: false });
     if (error) console.error("[todos] fetch error", error);
@@ -133,6 +137,21 @@ function TodosPage() {
     }
   };
 
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    const id = pendingDelete.id;
+    setPendingDelete(null);
+    setTodos((prev) => prev.filter((x) => x.id !== id));
+    const { error } = await supabase
+      .from("todos")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error("[todos] delete error", error);
+      if (userId) await fetchTodos(userId);
+    }
+  };
+
   const renderRow = (t: TodoRow) => (
     <Card
       key={t.id}
@@ -184,6 +203,15 @@ function TodosPage() {
         >
           {t.priority}
         </span>
+        <button
+          type="button"
+          onClick={() => setPendingDelete(t)}
+          aria-label="Delete task"
+          className="flex items-center justify-center"
+          style={{ width: 28, height: 28, flexShrink: 0 }}
+        >
+          <Trash2 size={16} color="#CC2229" />
+        </button>
       </div>
     </Card>
   );
@@ -359,6 +387,14 @@ function TodosPage() {
           to { transform: translateY(0); }
         }
       `}</style>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this task?"
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </div>
   );
 }
