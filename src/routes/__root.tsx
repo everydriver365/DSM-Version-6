@@ -11,6 +11,16 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
+
+function getActiveNav(pathname: string): NavKey | undefined {
+  if (pathname === "/" || pathname === "/home") return "home";
+  if (pathname.startsWith("/pupils")) return "pupils";
+  if (pathname.startsWith("/schedule")) return "schedule";
+  if (pathname.startsWith("/messages")) return "messages";
+  if (pathname.startsWith("/settings") || pathname === "/profile" || pathname === "/calendarsync") return "settings";
+  return undefined;
+}
 
 function NotFoundComponent() {
   return (
@@ -118,11 +128,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const active = getActiveNav(router.state.location.pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <BottomNav active={active} />
     </QueryClientProvider>
   );
 }

@@ -35,7 +35,6 @@ import {
   FolderOpen,
   LayoutGrid,
 } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
@@ -634,7 +633,6 @@ function HomePage() {
         }
       `}</style>
 
-      <BottomNav active="home" />
     </div>
   );
 }

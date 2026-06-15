@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Calendar as CalendarIcon, CalendarOff, RefreshCw } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -292,8 +291,6 @@ function SchedulePage() {
           </button>
         </div>
       </div>
-
-      <BottomNav active="schedule" />
     </div>
   );
 }

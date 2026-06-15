@@ -10,7 +10,6 @@ import {
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 
@@ -229,8 +228,6 @@ function SettingsPage() {
           Sign out
         </Button>
       </div>
-
-      <BottomNav active="settings" />
 
       <ConfirmDialog
         open={signOutOpen}

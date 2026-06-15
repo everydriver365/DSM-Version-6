@@ -4,7 +4,7 @@ import { Home, Users, Calendar, MessageSquare, Settings } from "lucide-react";
 export type NavKey = "home" | "pupils" | "schedule" | "messages" | "settings";
 
 interface Props {
-  active: NavKey;
+  active?: NavKey;
 }
 
 const items: { key: NavKey; to: string; label: string; Icon: typeof Home }[] = [
