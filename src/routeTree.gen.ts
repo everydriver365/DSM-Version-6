@@ -32,6 +32,7 @@ import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as FuelRouteImport } from './routes/fuel'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
@@ -162,6 +163,11 @@ const HelpRoute = HelpRouteImport.update({
   path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FuelRoute = FuelRouteImport.update({
+  id: '/fuel',
+  path: '/fuel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpensesRoute = ExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/fuel': typeof FuelRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/fuel': typeof FuelRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/fuel': typeof FuelRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/fuel'
     | '/help'
     | '/home'
     | '/login'
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/fuel'
     | '/help'
     | '/home'
     | '/login'
@@ -434,6 +445,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/fuel'
     | '/help'
     | '/home'
     | '/login'
@@ -474,6 +486,7 @@ export interface RootRouteChildren {
   EarningsRoute: typeof EarningsRoute
   EnquiriesRoute: typeof EnquiriesRoute
   ExpensesRoute: typeof ExpensesRoute
+  FuelRoute: typeof FuelRoute
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
@@ -664,6 +677,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fuel': {
+      id: '/fuel'
+      path: '/fuel'
+      fullPath: '/fuel'
+      preLoaderRoute: typeof FuelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/expenses': {
       id: '/expenses'
       path: '/expenses'
@@ -811,6 +831,7 @@ const rootRouteChildren: RootRouteChildren = {
   EarningsRoute: EarningsRoute,
   EnquiriesRoute: EnquiriesRoute,
   ExpensesRoute: ExpensesRoute,
+  FuelRoute: FuelRoute,
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,

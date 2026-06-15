@@ -654,6 +654,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/manifest" })}
           />
           <AccessTile
+            icon={<Fuel size={16} color="#CC2229" />}
+            tint="#FEE2E2"
+            label="Fuel"
+            onClick={() => navigate({ to: "/fuel" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"
