@@ -17,7 +17,7 @@ const items: { key: NavKey; to: string; label: string; Icon: typeof Home }[] = [
 export function BottomNav({ active }: Props) {
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch z-50"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch z-50 pb-safe"
       style={{
         borderTopWidth: "0.5px",
         borderTopStyle: "solid",
