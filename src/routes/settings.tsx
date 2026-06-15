@@ -200,20 +200,20 @@ function SettingsPage() {
         <Card className="!p-0">
           <div className="px-4">
             {DAYS.map((d, i) => {
-              const on = workingDays[d];
+              const on = workingDays[d.key];
               return (
                 <div
-                  key={d}
+                  key={d.key}
                   className="flex items-center justify-between py-3"
                   style={i === 0 ? undefined : rowDivider}
                 >
-                  <span className="text-[14px] text-[#0F2044]">{d}</span>
+                  <span className="text-[14px] text-[#0F2044]">{d.label}</span>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={on}
-                    aria-label={`${d} working hours`}
-                    onClick={() => toggleDay(d)}
+                    aria-label={`${d.label} working hours`}
+                    onClick={() => toggleDay(d.key)}
                     className="relative inline-flex items-center rounded-full transition-colors"
                     style={{
                       width: 40,
