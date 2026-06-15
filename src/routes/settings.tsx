@@ -91,8 +91,6 @@ function SettingsPage() {
       if (profile) {
         setDisplayName(profile.display_name ?? "");
         setPhone(profile.phone ?? "");
-        setDraftName(profile.display_name ?? "");
-        setDraftPhone(profile.phone ?? "");
       }
 
       const { data: hours } = await supabase
