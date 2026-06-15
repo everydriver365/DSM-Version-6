@@ -38,8 +38,7 @@ function NewPupilPage() {
     const { error } = await supabase.from("pupils").insert({
       instructor_id: user.id,
       name: name.trim(),
-      phone: phone.trim() || null,
-      email: email.trim() || null,
+      status: "active",
     });
     if (error) {
       setErrors({ form: error.message });
