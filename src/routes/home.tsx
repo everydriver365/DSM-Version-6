@@ -640,6 +640,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/tax" })}
           />
           <AccessTile
+            icon={<Bell size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Reminders"
+            onClick={() => navigate({ to: "/reminder" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"

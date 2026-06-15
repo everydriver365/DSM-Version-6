@@ -19,6 +19,7 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -93,6 +94,11 @@ const ResourcesRoute = ResourcesRouteImport.update({
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReminderRoute = ReminderRouteImport.update({
+  id: '/reminder',
+  path: '/reminder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReferralsRoute = ReferralsRouteImport.update({
@@ -239,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
+  '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
@@ -274,6 +281,7 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/referrals': typeof ReferralsRoute
+  '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
@@ -312,6 +320,7 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
+  '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pupils'
     | '/referrals'
+    | '/reminder'
     | '/reports'
     | '/resources'
     | '/reviews'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/performance'
     | '/referrals'
+    | '/reminder'
     | '/reports'
     | '/resources'
     | '/reviews'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pupils'
     | '/referrals'
+    | '/reminder'
     | '/reports'
     | '/resources'
     | '/reviews'
@@ -461,6 +473,7 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PupilsRoute: typeof PupilsRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
+  ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
   ResourcesRoute: typeof ResourcesRoute
   ReviewsRoute: typeof ReviewsRoute
@@ -545,6 +558,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reminder': {
+      id: '/reminder'
+      path: '/reminder'
+      fullPath: '/reminder'
+      preLoaderRoute: typeof ReminderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/referrals': {
@@ -782,6 +802,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PupilsRoute: PupilsRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
+  ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
   ResourcesRoute: ResourcesRoute,
   ReviewsRoute: ReviewsRoute,
