@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -36,6 +37,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ScheduleRoute = ScheduleRouteImport.update({
   id: '/schedule',
   path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsRoute = PupilsRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
+  '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
+  '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
+  '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/pupils'
+    | '/reports'
     | '/schedule'
     | '/settings'
     | '/lessons/$id'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/notifications'
     | '/payments'
+    | '/reports'
     | '/schedule'
     | '/settings'
     | '/lessons/$id'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/pupils'
+    | '/reports'
     | '/schedule'
     | '/settings'
     | '/lessons/$id'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PupilsRoute: typeof PupilsRouteWithChildren
+  ReportsRoute: typeof ReportsRoute
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
   LessonsIdRoute: typeof LessonsIdRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/schedule'
       fullPath: '/schedule'
       preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pupils': {
@@ -427,6 +447,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PupilsRoute: PupilsRouteWithChildren,
+  ReportsRoute: ReportsRoute,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
   LessonsIdRoute: LessonsIdRoute,
