@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { PoundSterling, X } from "lucide-react";
-import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -362,8 +361,6 @@ function PaymentsPage() {
           userId={userId}
         />
       )}
-
-      <BottomNav active="payments" />
     </div>
   );
 }
