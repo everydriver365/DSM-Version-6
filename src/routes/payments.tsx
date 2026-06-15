@@ -361,8 +361,6 @@ function PaymentsPage() {
           userId={userId}
         />
       )}
-
-      <BottomNav active="payments" />
     </div>
   );
 }
