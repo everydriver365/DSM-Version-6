@@ -130,16 +130,22 @@ function HomePage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data, error: authError } = await supabase.auth.getUser();
+      if (authError) console.error("[home] auth.getUser error", authError);
       const u = data.user;
-      if (!u) return;
+      if (!u) {
+        console.warn("[home] no authenticated user");
+        return;
+      }
       setUserId(u.id);
 
-      const { data: instructor } = await supabase
+      const { data: instructor, error: instErr } = await supabase
         .from("instructors")
         .select("name")
         .eq("id", u.id)
         .maybeSingle();
+      if (instErr) console.error("[home] instructors fetch error", instErr);
+      if (!instructor) console.warn("[home] no instructor row for user", u.id);
       const fullName =
         (instructor?.name as string | undefined) ??
         u.email?.split("@")[0] ??
@@ -152,15 +158,29 @@ function HomePage() {
   useEffect(() => {
     if (!userId) return;
     (async () => {
-      const { data: lessonRows } = await supabase
+      const todayYmd = ymd(todayStart);
+      const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
         .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
-        .gte("lesson_date", ymd(todayStart))
+        .gte("lesson_date", todayYmd)
         .lte("lesson_date", ymd(addDays(todayStart, 14)))
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
+      if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
+
+      const { data: nextRows, error: nextErr } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
+        .eq("instructor_id", userId)
+        .gte("lesson_date", todayYmd)
+        .order("lesson_date", { ascending: true })
+        .order("lesson_time", { ascending: true })
+        .limit(1);
+      if (nextErr) console.error("[home] next lesson fetch error", nextErr);
+      setNextLesson(((nextRows ?? [])[0] ?? null) as unknown as LessonRow | null);
+
 
       const { data: pupilRows } = await supabase
         .from("pupils")
