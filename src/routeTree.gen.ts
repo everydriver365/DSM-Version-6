@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
@@ -40,6 +41,11 @@ import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 
+const WaitinglistRoute = WaitinglistRouteImport.update({
+  id: '/waitinglist',
+  path: '/waitinglist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VehicleRoute = VehicleRouteImport.update({
   id: '/vehicle',
   path: '/vehicle',
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
+  '/waitinglist': typeof WaitinglistRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
+  '/waitinglist': typeof WaitinglistRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
+  '/waitinglist': typeof WaitinglistRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/todos'
     | '/vehicle'
+    | '/waitinglist'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/todos'
     | '/vehicle'
+    | '/waitinglist'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/todos'
     | '/vehicle'
+    | '/waitinglist'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -406,12 +418,20 @@ export interface RootRouteChildren {
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
   VehicleRoute: typeof VehicleRoute
+  WaitinglistRoute: typeof WaitinglistRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waitinglist': {
+      id: '/waitinglist'
+      path: '/waitinglist'
+      fullPath: '/waitinglist'
+      preLoaderRoute: typeof WaitinglistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vehicle': {
       id: '/vehicle'
       path: '/vehicle'
@@ -687,6 +707,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
   VehicleRoute: VehicleRoute,
+  WaitinglistRoute: WaitinglistRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
 }
