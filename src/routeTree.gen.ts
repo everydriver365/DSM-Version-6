@@ -24,6 +24,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as IndexRouteImport } from './routes/index'
@@ -111,6 +112,11 @@ const ExpensesRoute = ExpensesRouteImport.update({
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnquiriesRoute = EnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EarningsRoute = EarningsRouteImport.update({
   id: '/earnings',
   path: '/earnings',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/earnings': typeof EarningsRoute
+  '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/earnings': typeof EarningsRoute
+  '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/earnings': typeof EarningsRoute
+  '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/earnings'
+    | '/enquiries'
     | '/expenses'
     | '/home'
     | '/login'
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/earnings'
+    | '/enquiries'
     | '/expenses'
     | '/home'
     | '/login'
@@ -310,6 +321,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/earnings'
+    | '/enquiries'
     | '/expenses'
     | '/home'
     | '/login'
@@ -339,6 +351,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AvailabilityRoute: typeof AvailabilityRoute
   EarningsRoute: typeof EarningsRoute
+  EnquiriesRoute: typeof EnquiriesRoute
   ExpensesRoute: typeof ExpensesRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enquiries': {
+      id: '/enquiries'
+      path: '/enquiries'
+      fullPath: '/enquiries'
+      preLoaderRoute: typeof EnquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/earnings': {
       id: '/earnings'
       path: '/earnings'
@@ -588,6 +608,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
   EarningsRoute: EarningsRoute,
+  EnquiriesRoute: EnquiriesRoute,
   ExpensesRoute: ExpensesRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
