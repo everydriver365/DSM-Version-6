@@ -26,6 +26,7 @@ import {
   Inbox,
   BookOpen,
   Hourglass,
+  Gift,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -618,6 +619,12 @@ function HomePage() {
             tint="#FEF3C7"
             label="Waiting list"
             onClick={() => navigate({ to: "/waitinglist" })}
+          />
+          <AccessTile
+            icon={<Gift size={16} color="#16A34A" />}
+            tint="#16A34A14"
+            label="Referrals"
+            onClick={() => navigate({ to: "/referrals" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
