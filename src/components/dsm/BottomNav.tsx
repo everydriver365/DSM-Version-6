@@ -33,11 +33,11 @@ export function BottomNav({ active }: Props) {
           <Link
             key={key}
             to={to}
-            className="flex-1 flex flex-col items-center justify-center gap-1"
+            className="flex-1 flex flex-col items-center justify-center gap-1 select-none"
             style={{ color }}
           >
             <Icon size={22} color={color} />
-            <span className="text-[10px]" style={{ color }}>
+            <span className="text-[10px] whitespace-nowrap" style={{ color }}>
               {label}
             </span>
           </Link>
