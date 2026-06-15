@@ -229,8 +229,6 @@ function SettingsPage() {
         </Button>
       </div>
 
-      <BottomNav active="settings" />
-
       <ConfirmDialog
         open={signOutOpen}
         title="Sign out?"

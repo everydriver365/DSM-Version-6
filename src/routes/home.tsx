@@ -633,10 +633,11 @@ function HomePage() {
         }
       `}</style>
 
-      <BottomNav active="home" />
     </div>
   );
 }
+
+function QuickTile({
   value,
   label,
   valueColor,
