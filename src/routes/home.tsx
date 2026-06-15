@@ -25,8 +25,8 @@ import {
   Star,
   Inbox,
   BookOpen,
-  Hourglass,
   Gift,
+  HelpCircle,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -519,124 +519,124 @@ function HomePage() {
         </div>
         <div className="grid grid-cols-2" style={{ gap: 8 }}>
           <AccessTile
-            icon={<CalendarIcon size={16} color="#1A52A0" />}
-            tint="#1A52A014"
+            icon={<CalendarIcon size={16} color="#1E40AF" />}
+            tint="#DBEAFE"
             label="Schedule"
             onClick={() => navigate({ to: "/schedule" })}
           />
           <AccessTile
-            icon={<Users size={16} color="#16A34A" />}
-            tint="#16A34A14"
+            icon={<Users size={16} color="#059669" />}
+            tint="#ECFDF5"
             label="Pupils"
             onClick={() => navigate({ to: "/pupils" })}
           />
           <AccessTile
-            icon={<PoundSterling size={16} color="#CC2229" />}
-            tint="#CC222914"
+            icon={<PoundSterling size={16} color="#5B21B6" />}
+            tint="#EDE9FE"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
           />
           <AccessTile
-            icon={<TrendingUp size={16} color="#F59E0B" />}
-            tint="#F59E0B14"
+            icon={<MessageSquare size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Messages"
+            onClick={() => navigate({ to: "/messages" })}
+          />
+          <AccessTile
+            icon={<TrendingUp size={16} color="#059669" />}
+            tint="#ECFDF5"
             label="Earnings"
             onClick={() => navigate({ to: "/earnings" })}
           />
           <AccessTile
-            icon={<Receipt size={16} color="#6B7280" />}
-            tint="#6B728014"
+            icon={<Receipt size={16} color="#92400E" />}
+            tint="#FEF3C7"
             label="Expenses"
             onClick={() => navigate({ to: "/expenses" })}
           />
           <AccessTile
-            icon={<Clock size={16} color="#1A52A0" />}
-            tint="#1A52A014"
-            label="Availability"
-            onClick={() => navigate({ to: "/availability" })}
-          />
-          <AccessTile
-            icon={<BarChart2 size={16} color="#16A34A" />}
-            tint="#16A34A14"
-            label="Reports"
-            onClick={() => navigate({ to: "/reports" })}
-          />
-          <AccessTile
-            icon={<Car size={16} color="#1A52A0" />}
-            tint="#1A52A014"
+            icon={<Car size={16} color="#DC2626" />}
+            tint="#FEF2F2"
             label="Mileage"
             onClick={() => navigate({ to: "/mileage" })}
           />
           <AccessTile
-            icon={<CheckSquare size={16} color="#F59E0B" />}
-            tint="#F59E0B14"
-            label="To-do"
-            onClick={() => navigate({ to: "/todos" })}
+            icon={<BarChart2 size={16} color="#1E40AF" />}
+            tint="#DBEAFE"
+            label="Reports"
+            onClick={() => navigate({ to: "/reports" })}
           />
           <AccessTile
-            icon={<FileText size={16} color="#1A52A0" />}
-            tint="#1A52A014"
-            label="Notes"
-            onClick={() => navigate({ to: "/notes" })}
+            icon={<TrendingUp size={16} color="#5B21B6" />}
+            tint="#EDE9FE"
+            label="Performance"
+            onClick={() => navigate({ to: "/performance" })}
           />
           <AccessTile
-            icon={<GraduationCap size={16} color="#16A34A" />}
-            tint="#16A34A14"
-            label="Tests"
+            icon={<GraduationCap size={16} color="#059669" />}
+            tint="#ECFDF5"
+            label="Driving tests"
             onClick={() => navigate({ to: "/tests" })}
           />
           <AccessTile
-            icon={<Star size={16} color="#F59E0B" />}
-            tint="#F59E0B14"
+            icon={<Star size={16} color="#92400E" />}
+            tint="#FEF3C7"
             label="Reviews"
             onClick={() => navigate({ to: "/reviews" })}
           />
           <AccessTile
             icon={<Inbox size={16} color="#1A52A0" />}
-            tint="#1A52A014"
+            tint="#DBEAFE"
             label="Enquiries"
             onClick={() => navigate({ to: "/enquiries" })}
           />
           <AccessTile
-            icon={<Car size={16} color="#CC2229" />}
-            tint="#CC222914"
-            label="Vehicle"
-            onClick={() => navigate({ to: "/vehicle" })}
-          />
-          <AccessTile
-            icon={<TrendingUp size={16} color="#16A34A" />}
-            tint="#16A34A14"
-            label="Performance"
-            onClick={() => navigate({ to: "/performance" })}
-          />
-          <AccessTile
-            icon={<BookOpen size={16} color="#1A52A0" />}
-            tint="#1A52A014"
-            label="CPD"
-            onClick={() => navigate({ to: "/cpd" })}
-          />
-          <AccessTile
-            icon={<Hourglass size={16} color="#F59E0B" />}
-            tint="#FEF3C7"
+            icon={<Clock size={16} color="#DC2626" />}
+            tint="#FEF2F2"
             label="Waiting list"
             onClick={() => navigate({ to: "/waitinglist" })}
           />
           <AccessTile
-            icon={<Gift size={16} color="#16A34A" />}
-            tint="#16A34A14"
+            icon={<Gift size={16} color="#059669" />}
+            tint="#ECFDF5"
             label="Referrals"
             onClick={() => navigate({ to: "/referrals" })}
           />
           <AccessTile
-            icon={<BookOpen size={16} color="#1A52A0" />}
-            tint="#1A52A014"
+            icon={<Car size={16} color="#52525B" />}
+            tint="#F4F4F5"
+            label="Vehicle"
+            onClick={() => navigate({ to: "/vehicle" })}
+          />
+          <AccessTile
+            icon={<BookOpen size={16} color="#1E40AF" />}
+            tint="#DBEAFE"
+            label="CPD"
+            onClick={() => navigate({ to: "/cpd" })}
+          />
+          <AccessTile
+            icon={<CheckSquare size={16} color="#5B21B6" />}
+            tint="#EDE9FE"
+            label="Todos"
+            onClick={() => navigate({ to: "/todos" })}
+          />
+          <AccessTile
+            icon={<FileText size={16} color="#92400E" />}
+            tint="#FEF3C7"
+            label="Notes"
+            onClick={() => navigate({ to: "/notes" })}
+          />
+          <AccessTile
+            icon={<BookOpen size={16} color="#059669" />}
+            tint="#ECFDF5"
             label="Resources"
             onClick={() => navigate({ to: "/resources" })}
           />
           <AccessTile
-            icon={<SettingsIcon size={16} color="#6B7280" />}
-            tint="#6B728014"
-            label="Settings"
-            onClick={() => navigate({ to: "/settings" })}
+            icon={<HelpCircle size={16} color="#52525B" />}
+            tint="#F4F4F5"
+            label="Help"
+            onClick={() => navigate({ to: "/help" })}
           />
         </div>
       </div>
