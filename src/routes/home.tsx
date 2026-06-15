@@ -33,6 +33,7 @@ import {
   Fuel,
   Heart,
   FolderOpen,
+  LayoutGrid,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -719,6 +720,13 @@ function HomePage() {
             tint="#F4F4F5"
             label="Help"
             onClick={() => navigate({ to: "/help" })}
+          />
+          {/* Col 15 */}
+          <AccessTile
+            icon={<LayoutGrid size={16} color="#1A52A0" />}
+            tint="#EEF4FB"
+            label="Pipeline"
+            onClick={() => navigate({ to: "/pipeline" })}
           />
         </div>
       </div>

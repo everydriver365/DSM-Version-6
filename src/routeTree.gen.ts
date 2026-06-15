@@ -24,8 +24,10 @@ import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MileageRouteImport } from './routes/mileage'
@@ -129,6 +131,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PipelineRoute = PipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerformanceRoute = PerformanceRouteImport.update({
   id: '/performance',
   path: '/performance',
@@ -137,6 +144,11 @@ const PerformanceRoute = PerformanceRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PipelineRoute = PipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -297,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
@@ -342,6 +355,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
@@ -388,6 +402,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
@@ -436,6 +451,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/pipeline'
     | '/profile'
     | '/pupils'
     | '/referrals'
@@ -481,6 +497,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/pipeline'
     | '/profile'
     | '/referrals'
     | '/reminder'
@@ -526,6 +543,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/performance'
+    | '/pipeline'
     | '/profile'
     | '/pupils'
     | '/referrals'
@@ -573,6 +591,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
+  PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
   PupilsRoute: typeof PupilsRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
@@ -699,6 +718,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pipeline': {
+      id: '/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/performance': {
       id: '/performance'
       path: '/performance'
@@ -711,6 +737,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pipeline': {
+      id: '/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof PipelineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -966,6 +999,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
+  PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
   PupilsRoute: PupilsRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
