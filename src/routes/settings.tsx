@@ -258,7 +258,7 @@ function SettingsPage() {
             icon={<HelpCircle size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Help"
-            onClick={() => {}}
+            onClick={() => navigate({ to: "/help" })}
             isFirst
           />
           <MenuRow
