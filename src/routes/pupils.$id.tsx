@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Phone } from "lucide-react";
+import { ArrowLeft, Pencil, Phone, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/$id")({
@@ -85,12 +86,14 @@ function PupilDetailPage() {
   const [notesDraft, setNotesDraft] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
+  const [removeOpen, setRemoveOpen] = useState(false);
 
   useEffect(() => {
     supabase
       .from("pupils")
       .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes")
       .eq("id", id)
+      .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil] fetch error", error);
@@ -103,6 +106,7 @@ function PupilDetailPage() {
       .from("lessons")
       .select("id, lesson_date, lesson_time, duration_minutes, status")
       .eq("pupil_id", id)
+      .is("deleted_at", null)
       .gte("lesson_date", ymd(new Date()))
       .order("lesson_date", { ascending: true })
       .order("lesson_time", { ascending: true })
@@ -111,6 +115,19 @@ function PupilDetailPage() {
         setLessons((data as Lesson[]) ?? []);
       });
   }, [id]);
+
+  async function removePupil() {
+    setRemoveOpen(false);
+    const { error } = await supabase
+      .from("pupils")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error("[pupil] remove error", error);
+      return;
+    }
+    navigate({ to: "/pupils" });
+  }
 
   async function saveNotes() {
     setSavingNotes(true);
@@ -171,6 +188,15 @@ function PupilDetailPage() {
           >
             <Phone size={18} color="#FFFFFF" />
           </a>
+          <button
+            type="button"
+            aria-label="Remove pupil"
+            onClick={() => setRemoveOpen(true)}
+            className="flex items-center justify-center"
+            style={{ width: 40, height: 40 }}
+          >
+            <Trash2 size={18} color="#FFFFFF" />
+          </button>
         </div>
       </div>
 
@@ -325,6 +351,15 @@ function PupilDetailPage() {
           </Button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={removeOpen}
+        title="Remove this pupil?"
+        message="This cannot be undone."
+        confirmLabel="Remove"
+        onConfirm={removePupil}
+        onCancel={() => setRemoveOpen(false)}
+      />
     </div>
   );
 }
