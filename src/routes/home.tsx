@@ -170,6 +170,7 @@ function HomePage() {
         .from("lessons")
         .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
+        .is("deleted_at", null)
         .gte("lesson_date", todayYmd)
         .lte("lesson_date", ymd(addDays(todayStart, 14)))
         .order("lesson_date", { ascending: true })
@@ -181,6 +182,7 @@ function HomePage() {
         .from("lessons")
         .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
+        .is("deleted_at", null)
         .gte("lesson_date", todayYmd)
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true })
@@ -193,6 +195,7 @@ function HomePage() {
         .from("pupils")
         .select("balance_owed")
         .eq("instructor_id", userId)
+        .is("deleted_at", null)
         .gt("balance_owed", 0);
       setOutstanding((pupilRows ?? []).reduce((s, p) => s + Number(p.balance_owed ?? 0), 0));
 
@@ -200,6 +203,7 @@ function HomePage() {
         .from("payments")
         .select("amount, paid_at")
         .eq("instructor_id", userId)
+        .is("deleted_at", null)
         .gte("paid_at", weekStart.toISOString())
         .lt("paid_at", weekEnd.toISOString());
       let wk = 0;

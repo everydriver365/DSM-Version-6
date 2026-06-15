@@ -99,6 +99,7 @@ function SchedulePage() {
     let q = supabase
       .from("lessons")
       .select("id, lesson_date, lesson_time, duration_minutes, status, pupil:pupils(name)")
+      .is("deleted_at", null)
       .order("lesson_date", { ascending: true })
       .order("lesson_time", { ascending: true });
 

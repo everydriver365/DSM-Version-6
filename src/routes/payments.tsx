@@ -85,6 +85,7 @@ function PaymentsPage() {
       .from("pupils")
       .select("id, name, balance_owed")
       .eq("instructor_id", userId)
+      .is("deleted_at", null)
       .order("name", { ascending: true })
       .then(({ data, error }) => {
         if (error) console.error("[payments] pupils error", error);
@@ -101,6 +102,7 @@ function PaymentsPage() {
       .from("payments")
       .select("id, pupil_id, amount, paid_at, pupils(name)")
       .eq("instructor_id", userId)
+      .is("deleted_at", null)
       .order("paid_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) console.error("[payments] payments error", error);
