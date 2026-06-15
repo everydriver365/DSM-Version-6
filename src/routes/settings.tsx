@@ -19,8 +19,21 @@ export const Route = createFileRoute("/settings")({
 
 type EditField = "display_name" | "phone" | null;
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
-type Day = (typeof DAYS)[number];
+const DAYS = [
+  { key: "mon", label: "Mon" },
+  { key: "tue", label: "Tue" },
+  { key: "wed", label: "Wed" },
+  { key: "thu", label: "Thu" },
+  { key: "fri", label: "Fri" },
+  { key: "sat", label: "Sat" },
+  { key: "sun", label: "Sun" },
+] as const;
+type DayKey = (typeof DAYS)[number]["key"];
+type WorkingHours = Record<DayKey, boolean>;
+
+const DEFAULT_HOURS: WorkingHours = {
+  mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
+};
 
 function SettingsPage() {
   const navigate = useNavigate();
@@ -30,9 +43,7 @@ function SettingsPage() {
   const [phone, setPhone] = useState<string>("");
   const [editing, setEditing] = useState<EditField>(null);
   const [draft, setDraft] = useState<string>("");
-  const [workingDays, setWorkingDays] = useState<Record<Day, boolean>>(() =>
-    DAYS.reduce((acc, d) => ({ ...acc, [d]: true }), {} as Record<Day, boolean>),
-  );
+  const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
 
   useEffect(() => {
     (async () => {
@@ -41,6 +52,7 @@ function SettingsPage() {
       if (!user) return;
       setUserId(user.id);
       setEmail(user.email ?? "");
+
       const { data: profile } = await supabase
         .from("profiles")
         .select("display_name, phone")
@@ -50,8 +62,26 @@ function SettingsPage() {
         setDisplayName(profile.display_name ?? "");
         setPhone(profile.phone ?? "");
       }
+
+      const { data: hours } = await supabase
+        .from("working_hours")
+        .select("mon, tue, wed, thu, fri, sat, sun")
+        .eq("instructor_id", user.id)
+        .maybeSingle();
+      if (hours) {
+        setWorkingDays({
+          mon: hours.mon, tue: hours.tue, wed: hours.wed, thu: hours.thu,
+          fri: hours.fri, sat: hours.sat, sun: hours.sun,
+        });
+      } else {
+        await supabase
+          .from("working_hours")
+          .insert({ instructor_id: user.id, ...DEFAULT_HOURS });
+      }
     })();
   }, []);
+
+
 
   function openEdit(field: Exclude<EditField, null>) {
     setEditing(field);
@@ -71,8 +101,16 @@ function SettingsPage() {
     setEditing(null);
   }
 
-  function toggleDay(d: Day) {
-    setWorkingDays((prev) => ({ ...prev, [d]: !prev[d] }));
+  async function toggleDay(d: DayKey) {
+    const next = { ...workingDays, [d]: !workingDays[d] };
+    setWorkingDays(next);
+    if (!userId) return;
+    await supabase
+      .from("working_hours")
+      .upsert(
+        { instructor_id: userId, ...next, updated_at: new Date().toISOString() },
+        { onConflict: "instructor_id" },
+      );
   }
 
   async function signOut() {
@@ -162,20 +200,20 @@ function SettingsPage() {
         <Card className="!p-0">
           <div className="px-4">
             {DAYS.map((d, i) => {
-              const on = workingDays[d];
+              const on = workingDays[d.key];
               return (
                 <div
-                  key={d}
+                  key={d.key}
                   className="flex items-center justify-between py-3"
                   style={i === 0 ? undefined : rowDivider}
                 >
-                  <span className="text-[14px] text-[#0F2044]">{d}</span>
+                  <span className="text-[14px] text-[#0F2044]">{d.label}</span>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={on}
-                    aria-label={`${d} working hours`}
-                    onClick={() => toggleDay(d)}
+                    aria-label={`${d.label} working hours`}
+                    onClick={() => toggleDay(d.key)}
                     className="relative inline-flex items-center rounded-full transition-colors"
                     style={{
                       width: 40,
