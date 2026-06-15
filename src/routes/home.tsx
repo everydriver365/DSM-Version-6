@@ -523,8 +523,22 @@ function HomePage() {
           <SectionHeader>QUICK ACCESS</SectionHeader>
           <Search size={16} color="#6B7280" />
         </div>
-        <div className="grid grid-cols-2 overflow-y-auto" style={{ gap: 8, maxHeight: 420 }}>
-          {/* Row 1 */}
+        <div
+          className="quick-access-scroll flex"
+          style={{
+            flexDirection: "column",
+            flexWrap: "wrap",
+            height: 168,
+            gap: 8,
+            overflowX: "auto",
+            overflowY: "hidden",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
+          {/* Col 1 */}
           <AccessTile
             icon={<CalendarIcon size={16} color="#1E40AF" />}
             tint="#DBEAFE"
@@ -537,7 +551,7 @@ function HomePage() {
             label="Pupils"
             onClick={() => navigate({ to: "/pupils" })}
           />
-          {/* Row 2 */}
+          {/* Col 2 */}
           <AccessTile
             icon={<PoundSterling size={16} color="#5B21B6" />}
             tint="#EDE9FE"
@@ -550,7 +564,7 @@ function HomePage() {
             label="Messages"
             onClick={() => navigate({ to: "/messages" })}
           />
-          {/* Row 3 */}
+          {/* Col 3 */}
           <AccessTile
             icon={<TrendingUp size={16} color="#059669" />}
             tint="#ECFDF5"
@@ -563,7 +577,7 @@ function HomePage() {
             label="Expenses"
             onClick={() => navigate({ to: "/expenses" })}
           />
-          {/* Row 4 */}
+          {/* Col 4 */}
           <AccessTile
             icon={<Car size={16} color="#DC2626" />}
             tint="#FEF2F2"
@@ -576,7 +590,7 @@ function HomePage() {
             label="Fuel"
             onClick={() => navigate({ to: "/fuel" })}
           />
-          {/* Row 5 */}
+          {/* Col 5 */}
           <AccessTile
             icon={<BarChart2 size={16} color="#1E40AF" />}
             tint="#DBEAFE"
@@ -589,11 +603,11 @@ function HomePage() {
             label="Performance"
             onClick={() => navigate({ to: "/performance" })}
           />
-          {/* Row 6 */}
+          {/* Col 6 */}
           <AccessTile
             icon={<GraduationCap size={16} color="#059669" />}
             tint="#ECFDF5"
-            label="Driving tests"
+            label="Tests"
             onClick={() => navigate({ to: "/tests" })}
           />
           <AccessTile
@@ -602,7 +616,7 @@ function HomePage() {
             label="Reviews"
             onClick={() => navigate({ to: "/reviews" })}
           />
-          {/* Row 7 */}
+          {/* Col 7 */}
           <AccessTile
             icon={<Inbox size={16} color="#1A52A0" />}
             tint="#DBEAFE"
@@ -615,7 +629,7 @@ function HomePage() {
             label="Waiting list"
             onClick={() => navigate({ to: "/waitinglist" })}
           />
-          {/* Row 8 */}
+          {/* Col 8 */}
           <AccessTile
             icon={<Gift size={16} color="#059669" />}
             tint="#ECFDF5"
@@ -628,7 +642,7 @@ function HomePage() {
             label="Vehicle"
             onClick={() => navigate({ to: "/vehicle" })}
           />
-          {/* Row 9 */}
+          {/* Col 9 */}
           <AccessTile
             icon={<BookOpen size={16} color="#1E40AF" />}
             tint="#DBEAFE"
@@ -641,7 +655,7 @@ function HomePage() {
             label="Standards"
             onClick={() => navigate({ to: "/standards" })}
           />
-          {/* Row 10 */}
+          {/* Col 10 */}
           <AccessTile
             icon={<Calculator size={16} color="#92400E" />}
             tint="#FEF3C7"
@@ -654,7 +668,7 @@ function HomePage() {
             label="Todos"
             onClick={() => navigate({ to: "/todos" })}
           />
-          {/* Row 11 */}
+          {/* Col 11 */}
           <AccessTile
             icon={<FileText size={16} color="#92400E" />}
             tint="#FEF3C7"
@@ -667,7 +681,7 @@ function HomePage() {
             label="Documents"
             onClick={() => navigate({ to: "/documents" })}
           />
-          {/* Row 12 */}
+          {/* Col 12 */}
           <AccessTile
             icon={<ClipboardList size={16} color="#5B21B6" />}
             tint="#EDE9FE"
@@ -680,7 +694,7 @@ function HomePage() {
             label="Checklist"
             onClick={() => navigate({ to: "/checklist" })}
           />
-          {/* Row 13 */}
+          {/* Col 13 */}
           <AccessTile
             icon={<Bell size={16} color="#DC2626" />}
             tint="#FEF2F2"
@@ -693,7 +707,7 @@ function HomePage() {
             label="Health"
             onClick={() => navigate({ to: "/health" })}
           />
-          {/* Row 14 */}
+          {/* Col 14 */}
           <AccessTile
             icon={<BookOpen size={16} color="#059669" />}
             tint="#ECFDF5"
@@ -708,6 +722,11 @@ function HomePage() {
           />
         </div>
       </div>
+      <style>{`
+        .quick-access-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
 
       <BottomNav active="home" />
     </div>
@@ -792,14 +811,18 @@ function AccessTile({
   return (
     <button
       onClick={onClick}
-      className="bg-white flex items-center text-left"
+      className="bg-white flex flex-col items-center justify-center"
       style={{
+        width: 80,
+        height: 80,
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#E2E6ED",
         borderRadius: 10,
-        padding: 12,
-        gap: 10,
+        gap: 4,
+        padding: "4px 2px",
+        scrollSnapAlign: "start",
+        flexShrink: 0,
       }}
     >
       <span
@@ -808,7 +831,7 @@ function AccessTile({
       >
         {icon}
       </span>
-      <span className="text-[13px] text-[#0F2044]">{label}</span>
+      <span className="text-[10px] text-[#0F2044] text-center leading-tight">{label}</span>
     </button>
   );
 }
