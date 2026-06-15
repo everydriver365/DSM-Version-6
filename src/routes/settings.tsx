@@ -13,7 +13,7 @@ import {
 import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
-import { Input } from "../components/dsm/Input";
+
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
@@ -62,8 +62,6 @@ function SettingsPage() {
   const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [draftName, setDraftName] = useState<string>("");
-  const [draftPhone, setDraftPhone] = useState<string>("");
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
@@ -115,22 +113,6 @@ function SettingsPage() {
     })();
   }, []);
 
-  async function saveProfile() {
-    if (!userId) return;
-    const { error } = await supabase.from("profiles").upsert({
-      id: userId,
-      display_name: draftName,
-      phone: draftPhone,
-      updated_at: new Date().toISOString(),
-    });
-    if (error) {
-      console.error("[settings] save profile error", error);
-      return;
-    }
-    setDisplayName(draftName);
-    setPhone(draftPhone);
-    setExpanded(null);
-  }
 
   async function toggleDay(d: DayKey) {
     const next = { ...workingDays, [d]: !workingDays[d] };
