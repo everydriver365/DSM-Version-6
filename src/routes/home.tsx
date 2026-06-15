@@ -140,6 +140,8 @@ function HomePage() {
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
   const [notifCount] = useState(3);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const now = useMemo(() => new Date(), []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
