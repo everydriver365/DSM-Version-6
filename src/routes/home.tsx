@@ -627,6 +627,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/referrals" })}
           />
           <AccessTile
+            icon={<BookOpen size={16} color="#1A52A0" />}
+            tint="#1A52A014"
+            label="Resources"
+            onClick={() => navigate({ to: "/resources" })}
+          />
+          <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
             tint="#6B728014"
             label="Settings"
