@@ -99,6 +99,17 @@ function lessonDateTime(l: LessonRow) {
   return new Date(`${l.lesson_date}T${time}`);
 }
 
+/** Current time in Europe/London as "HH:MM:SS" for string comparison with lesson_time */
+function londonTimeString() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
 function formatTime(l: LessonRow) {
   const d = lessonDateTime(l);
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
@@ -197,12 +208,21 @@ function HomePage() {
         .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
+        .neq("status", "cancelled")
+        .neq("status", "completed")
         .gte("lesson_date", todayYmd)
         .order("lesson_date", { ascending: true })
-        .order("lesson_time", { ascending: true })
-        .limit(1);
+        .order("lesson_time", { ascending: true });
       if (nextErr) console.error("[home] next lesson fetch error", nextErr);
-      setNextLesson(((nextRows ?? [])[0] ?? null) as unknown as LessonRow | null);
+      // If lesson is today, ensure its time is still in the future (London)
+      const nowTime = londonTimeString();
+      const validNext = (nextRows ?? []).find((l) => {
+        if (l.lesson_date > todayYmd) return true;
+        const lt = (l.lesson_time ?? "00:00:00").slice(0, 8);
+        const lessonTime = lt.length === 5 ? `${lt}:00` : lt;
+        return lessonTime > nowTime;
+      });
+      setNextLesson((validNext ?? null) as unknown as LessonRow | null);
 
 
       const { data: pupilRows } = await supabase
