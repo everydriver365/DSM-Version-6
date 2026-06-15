@@ -594,6 +594,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/enquiries" })}
           />
           <AccessTile
+            icon={<Car size={16} color="#CC2229" />}
+            tint="#CC222914"
+            label="Vehicle"
+            onClick={() => navigate({ to: "/vehicle" })}
+          />
+          <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
             tint="#6B728014"
             label="Settings"
