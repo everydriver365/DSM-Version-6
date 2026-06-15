@@ -140,6 +140,8 @@ function HomePage() {
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
   const [notifCount] = useState(3);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const now = useMemo(() => new Date(), []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
@@ -262,6 +264,38 @@ function HomePage() {
   const lessonsPct = Math.min(100, (weekLessons.length / WEEKLY_LESSON_GOAL) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
+
+  const quickAccessTiles = [
+    { icon: <CalendarIcon size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Schedule", route: "/schedule" },
+    { icon: <Users size={16} color="#059669" />, tint: "#ECFDF5", label: "Pupils", route: "/pupils" },
+    { icon: <PoundSterling size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Payments", route: "/payments" },
+    { icon: <MessageSquare size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Messages", route: "/messages" },
+    { icon: <TrendingUp size={16} color="#059669" />, tint: "#ECFDF5", label: "Earnings", route: "/earnings" },
+    { icon: <Receipt size={16} color="#92400E" />, tint: "#FEF3C7", label: "Expenses", route: "/expenses" },
+    { icon: <Car size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Mileage", route: "/mileage" },
+    { icon: <Fuel size={16} color="#92400E" />, tint: "#FEF3C7", label: "Fuel", route: "/fuel" },
+    { icon: <BarChart2 size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Reports", route: "/reports" },
+    { icon: <TrendingUp size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Performance", route: "/performance" },
+    { icon: <GraduationCap size={16} color="#059669" />, tint: "#ECFDF5", label: "Tests", route: "/tests" },
+    { icon: <Star size={16} color="#92400E" />, tint: "#FEF3C7", label: "Reviews", route: "/reviews" },
+    { icon: <Inbox size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Enquiries", route: "/enquiries" },
+    { icon: <Clock size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Waiting list", route: "/waitinglist" },
+    { icon: <Gift size={16} color="#059669" />, tint: "#ECFDF5", label: "Referrals", route: "/referrals" },
+    { icon: <Car size={16} color="#52525B" />, tint: "#F4F4F5", label: "Vehicle", route: "/vehicle" },
+    { icon: <BookOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "CPD", route: "/cpd" },
+    { icon: <ClipboardCheck size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Standards", route: "/standards" },
+    { icon: <Calculator size={16} color="#92400E" />, tint: "#FEF3C7", label: "Tax", route: "/tax" },
+    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Todos", route: "/todos" },
+    { icon: <FileText size={16} color="#92400E" />, tint: "#FEF3C7", label: "Notes", route: "/notes" },
+    { icon: <FolderOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Documents", route: "/documents" },
+    { icon: <ClipboardList size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Manifest", route: "/manifest" },
+    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Checklist", route: "/checklist" },
+    { icon: <Bell size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Reminders", route: "/reminder" },
+    { icon: <Heart size={16} color="#92400E" />, tint: "#FEF3C7", label: "Health", route: "/health" },
+    { icon: <BookOpen size={16} color="#059669" />, tint: "#ECFDF5", label: "Resources", route: "/resources" },
+    { icon: <HelpCircle size={16} color="#52525B" />, tint: "#F4F4F5", label: "Help", route: "/help" },
+    { icon: <LayoutGrid size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Pipeline", route: "/pipeline" },
+  ] as const;
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe" style={POPPINS}>
@@ -521,8 +555,40 @@ function HomePage() {
       {/* QUICK ACCESS */}
       <div className="mx-4 mt-4">
         <div className="flex items-center justify-between">
-          <SectionHeader>QUICK ACCESS</SectionHeader>
-          <Search size={16} color="#6B7280" />
+          {searchOpen ? (
+            <div className="flex items-center flex-1 gap-2" style={{ height: 32 }}>
+              <Search size={16} color="#6B7280" />
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 text-[13px] text-[#0F2044] outline-none bg-transparent"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              />
+              <button
+                type="button"
+                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+                className="text-[12px] text-[#6B7280]"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <>
+              <SectionHeader>QUICK ACCESS</SectionHeader>
+              <button
+                type="button"
+                aria-label="Search quick access"
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center justify-center"
+                style={{ width: 28, height: 28 }}
+              >
+                <Search size={16} color="#6B7280" />
+              </button>
+            </>
+          )}
         </div>
         <div
           className="quick-access-scroll flex"
@@ -539,195 +605,27 @@ function HomePage() {
             msOverflowStyle: "none",
           }}
         >
-          {/* Col 1 */}
-          <AccessTile
-            icon={<CalendarIcon size={16} color="#1E40AF" />}
-            tint="#DBEAFE"
-            label="Schedule"
-            onClick={() => navigate({ to: "/schedule" })}
-          />
-          <AccessTile
-            icon={<Users size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Pupils"
-            onClick={() => navigate({ to: "/pupils" })}
-          />
-          {/* Col 2 */}
-          <AccessTile
-            icon={<PoundSterling size={16} color="#5B21B6" />}
-            tint="#EDE9FE"
-            label="Payments"
-            onClick={() => navigate({ to: "/payments" })}
-          />
-          <AccessTile
-            icon={<MessageSquare size={16} color="#1A52A0" />}
-            tint="#DBEAFE"
-            label="Messages"
-            onClick={() => navigate({ to: "/messages" })}
-          />
-          {/* Col 3 */}
-          <AccessTile
-            icon={<TrendingUp size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Earnings"
-            onClick={() => navigate({ to: "/earnings" })}
-          />
-          <AccessTile
-            icon={<Receipt size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Expenses"
-            onClick={() => navigate({ to: "/expenses" })}
-          />
-          {/* Col 4 */}
-          <AccessTile
-            icon={<Car size={16} color="#DC2626" />}
-            tint="#FEF2F2"
-            label="Mileage"
-            onClick={() => navigate({ to: "/mileage" })}
-          />
-          <AccessTile
-            icon={<Fuel size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Fuel"
-            onClick={() => navigate({ to: "/fuel" })}
-          />
-          {/* Col 5 */}
-          <AccessTile
-            icon={<BarChart2 size={16} color="#1E40AF" />}
-            tint="#DBEAFE"
-            label="Reports"
-            onClick={() => navigate({ to: "/reports" })}
-          />
-          <AccessTile
-            icon={<TrendingUp size={16} color="#5B21B6" />}
-            tint="#EDE9FE"
-            label="Performance"
-            onClick={() => navigate({ to: "/performance" })}
-          />
-          {/* Col 6 */}
-          <AccessTile
-            icon={<GraduationCap size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Tests"
-            onClick={() => navigate({ to: "/tests" })}
-          />
-          <AccessTile
-            icon={<Star size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Reviews"
-            onClick={() => navigate({ to: "/reviews" })}
-          />
-          {/* Col 7 */}
-          <AccessTile
-            icon={<Inbox size={16} color="#1A52A0" />}
-            tint="#DBEAFE"
-            label="Enquiries"
-            onClick={() => navigate({ to: "/enquiries" })}
-          />
-          <AccessTile
-            icon={<Clock size={16} color="#DC2626" />}
-            tint="#FEF2F2"
-            label="Waiting list"
-            onClick={() => navigate({ to: "/waitinglist" })}
-          />
-          {/* Col 8 */}
-          <AccessTile
-            icon={<Gift size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Referrals"
-            onClick={() => navigate({ to: "/referrals" })}
-          />
-          <AccessTile
-            icon={<Car size={16} color="#52525B" />}
-            tint="#F4F4F5"
-            label="Vehicle"
-            onClick={() => navigate({ to: "/vehicle" })}
-          />
-          {/* Col 9 */}
-          <AccessTile
-            icon={<BookOpen size={16} color="#1E40AF" />}
-            tint="#DBEAFE"
-            label="CPD"
-            onClick={() => navigate({ to: "/cpd" })}
-          />
-          <AccessTile
-            icon={<ClipboardCheck size={16} color="#5B21B6" />}
-            tint="#EDE9FE"
-            label="Standards"
-            onClick={() => navigate({ to: "/standards" })}
-          />
-          {/* Col 10 */}
-          <AccessTile
-            icon={<Calculator size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Tax"
-            onClick={() => navigate({ to: "/tax" })}
-          />
-          <AccessTile
-            icon={<CheckSquare size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Todos"
-            onClick={() => navigate({ to: "/todos" })}
-          />
-          {/* Col 11 */}
-          <AccessTile
-            icon={<FileText size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Notes"
-            onClick={() => navigate({ to: "/notes" })}
-          />
-          <AccessTile
-            icon={<FolderOpen size={16} color="#1E40AF" />}
-            tint="#DBEAFE"
-            label="Documents"
-            onClick={() => navigate({ to: "/documents" })}
-          />
-          {/* Col 12 */}
-          <AccessTile
-            icon={<ClipboardList size={16} color="#5B21B6" />}
-            tint="#EDE9FE"
-            label="Manifest"
-            onClick={() => navigate({ to: "/manifest" })}
-          />
-          <AccessTile
-            icon={<CheckSquare size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Checklist"
-            onClick={() => navigate({ to: "/checklist" })}
-          />
-          {/* Col 13 */}
-          <AccessTile
-            icon={<Bell size={16} color="#DC2626" />}
-            tint="#FEF2F2"
-            label="Reminders"
-            onClick={() => navigate({ to: "/reminder" })}
-          />
-          <AccessTile
-            icon={<Heart size={16} color="#92400E" />}
-            tint="#FEF3C7"
-            label="Health"
-            onClick={() => navigate({ to: "/health" })}
-          />
-          {/* Col 14 */}
-          <AccessTile
-            icon={<BookOpen size={16} color="#059669" />}
-            tint="#ECFDF5"
-            label="Resources"
-            onClick={() => navigate({ to: "/resources" })}
-          />
-          <AccessTile
-            icon={<HelpCircle size={16} color="#52525B" />}
-            tint="#F4F4F5"
-            label="Help"
-            onClick={() => navigate({ to: "/help" })}
-          />
-          {/* Col 15 */}
-          <AccessTile
-            icon={<LayoutGrid size={16} color="#1A52A0" />}
-            tint="#EEF4FB"
-            label="Pipeline"
-            onClick={() => navigate({ to: "/pipeline" })}
-          />
+          {quickAccessTiles
+            .filter((t) => t.label.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map((t) => (
+              <AccessTile
+                key={t.label}
+                icon={t.icon}
+                tint={t.tint}
+                label={t.label}
+                onClick={() => navigate({ to: t.route })}
+              />
+            ))}
+          {quickAccessTiles.filter((t) =>
+            t.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 && (
+            <div
+              className="flex items-center justify-center text-[12px] text-[#6B7280]"
+              style={{ width: "100%", height: 168 }}
+            >
+              No results for “{searchQuery}”
+            </div>
+          )}
         </div>
       </div>
       <style>{`
