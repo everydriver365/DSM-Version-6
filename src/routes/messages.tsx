@@ -1,0 +1,175 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { MessageSquare, SquarePen } from "lucide-react";
+import { BottomNav } from "../components/dsm/BottomNav";
+import { supabase } from "../lib/supabaseClient";
+
+export const Route = createFileRoute("/messages")({
+  head: () => ({
+    meta: [{ title: "Messages — DSM by EveryDriver" }],
+  }),
+  component: MessagesPage,
+});
+
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+interface Conversation {
+  id: string;
+  instructor_id: string;
+  pupil_id: string;
+  last_message: string | null;
+  last_message_at: string | null;
+  unread_count: number | null;
+  pupils: { id: string; name: string } | null;
+}
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  const a = parts[0]?.[0] ?? "";
+  const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (a + b).toUpperCase() || "?";
+}
+
+function startOfDay(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+
+function formatWhen(iso: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const now = new Date();
+  if (startOfDay(d).getTime() === startOfDay(now).getTime()) {
+    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  }
+  const y = new Date(now);
+  y.setDate(now.getDate() - 1);
+  if (startOfDay(d).getTime() === startOfDay(y).getTime()) return "Yesterday";
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function MessagesPage() {
+  const navigate = useNavigate();
+  const [items, setItems] = useState<Conversation[] | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data: user } = await supabase.auth.getUser();
+      const uid = user.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("conversations")
+        .select(
+          "id, instructor_id, pupil_id, last_message, last_message_at, unread_count, pupils(id, name)",
+        )
+        .eq("instructor_id", uid)
+        .order("last_message_at", { ascending: false, nullsFirst: false });
+      if (error) console.error("[messages] fetch error", error);
+      setItems((data ?? []) as unknown as Conversation[]);
+    })();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white pb-24 pb-safe" style={POPPINS}>
+      {/* Top bar */}
+      <div
+        className="sticky top-0 z-40 flex items-center justify-between px-4"
+        style={{ height: 52, backgroundColor: "#0F2044" }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] font-bold text-white" style={POPPINS}>DSM</span>
+          <span className="text-[15px] text-white" style={POPPINS}>Messages</span>
+        </div>
+        <button
+          type="button"
+          aria-label="Compose message"
+          className="flex items-center justify-center"
+          style={{ width: 32, height: 32 }}
+        >
+          <SquarePen size={20} color="#FFFFFF" />
+        </button>
+      </div>
+
+      <div className="px-4 pt-3">
+        {items === null ? null : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-2">
+            <MessageSquare size={32} color="#6B7280" />
+            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>No messages yet</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {items.map((c) => {
+              const name = c.pupils?.name ?? "Unknown pupil";
+              const unread = Number(c.unread_count ?? 0);
+              return (
+                <Link
+                  key={c.id}
+                  to="/messages/$id"
+                  params={{ id: c.id }}
+                  className="block rounded-xl"
+                  style={{
+                    backgroundColor: "#F8F9FB",
+                    borderWidth: "0.5px",
+                    borderStyle: "solid",
+                    borderColor: "#E2E6ED",
+                  }}
+                >
+                  <div className="flex items-center gap-3 p-3">
+                    <div
+                      className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: "#1A52A0",
+                        color: "#FFFFFF",
+                        ...POPPINS,
+                      }}
+                    >
+                      {initials(name)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div
+                        className="text-[14px] font-semibold text-[#0F2044] truncate"
+                        style={POPPINS}
+                      >
+                        {name}
+                      </div>
+                      <div
+                        className="text-[13px] text-[#6B7280] truncate"
+                        style={POPPINS}
+                      >
+                        {c.last_message ?? ""}
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <span className="text-[11px] text-[#6B7280]" style={POPPINS}>
+                        {formatWhen(c.last_message_at)}
+                      </span>
+                      {unread > 0 && (
+                        <span
+                          className="text-[10px] font-bold text-white rounded-full flex items-center justify-center"
+                          style={{
+                            minWidth: 18,
+                            height: 18,
+                            padding: "0 5px",
+                            backgroundColor: "#CC2229",
+                            ...POPPINS,
+                          }}
+                        >
+                          {unread}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <BottomNav active="messages" />
+    </div>
+  );
+}

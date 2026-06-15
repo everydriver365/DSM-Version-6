@@ -14,12 +14,14 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
+import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 
@@ -46,6 +48,11 @@ const PaymentsRoute = PaymentsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -78,6 +85,11 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PupilsRoute,
 } as any)
+const MessagesIdRoute = MessagesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MessagesRoute,
+} as any)
 const LessonsNewRoute = LessonsNewRouteImport.update({
   id: '/lessons/new',
   path: '/lessons/new',
@@ -93,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -100,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/messages/$id': typeof MessagesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -108,12 +122,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/messages/$id': typeof MessagesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils': typeof PupilsIndexRoute
@@ -123,6 +139,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -130,6 +147,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/messages/$id': typeof MessagesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -140,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -147,6 +166,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/messages/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils/'
@@ -155,12 +175,14 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/schedule'
     | '/settings'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/messages/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils'
@@ -169,6 +191,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -176,6 +199,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/messages/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils/'
@@ -185,6 +209,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PupilsRoute: typeof PupilsRouteWithChildren
@@ -231,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -273,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsIdRouteImport
       parentRoute: typeof PupilsRoute
     }
+    '/messages/$id': {
+      id: '/messages/$id'
+      path: '/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof MessagesIdRouteImport
+      parentRoute: typeof MessagesRoute
+    }
     '/lessons/new': {
       id: '/lessons/new'
       path: '/lessons/new'
@@ -289,6 +328,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface MessagesRouteChildren {
+  MessagesIdRoute: typeof MessagesIdRoute
+}
+
+const MessagesRouteChildren: MessagesRouteChildren = {
+  MessagesIdRoute: MessagesIdRoute,
+}
+
+const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
+  MessagesRouteChildren,
+)
 
 interface PupilsRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
@@ -309,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PupilsRoute: PupilsRouteWithChildren,
