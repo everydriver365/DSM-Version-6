@@ -29,7 +29,7 @@ const DAYS = [
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
 
-const DURATIONS = [30, 45, 60, 90, 120] as const;
+const DURATIONS = [30, 45, 60, 90, 120, 180, 240, 320] as const;
 const BREAKS = [0, 15, 30, 45, 60] as const;
 
 type Days = Record<DayKey, boolean>;
@@ -187,7 +187,14 @@ function AvailabilityPage() {
         <SectionHeader>LESSON DURATION</SectionHeader>
         <Card className="!p-2">
           <Segmented
-            options={DURATIONS.map((d) => ({ value: d, label: `${d} min` }))}
+            options={DURATIONS.map((d) => {
+              const label = d >= 60 && d % 60 === 0
+                ? `${d / 60}h`
+                : d >= 60
+                  ? `${Math.floor(d / 60)}h${d % 60}`
+                  : `${d} min`;
+              return { value: d, label };
+            })}
             value={duration}
             onChange={setDuration}
           />
