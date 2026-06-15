@@ -11,8 +11,7 @@ export const Route = createFileRoute("/pupils/$id")({
 
 interface Pupil {
   id: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   phone: string | null;
   email: string | null;
   lesson_count: number;
@@ -22,17 +21,22 @@ interface Pupil {
 
 interface Lesson {
   id: string;
-  scheduled_at: string;
+  lesson_date: string;
+  lesson_time: string;
   duration_minutes: number;
   status: string;
 }
 
-function formatTime(d: Date) {
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+function formatTime(t: string) {
+  return (t ?? "").slice(0, 5);
 }
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+}
+
+function ymd(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function PupilDetailPage() {
@@ -44,17 +48,18 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, first_name, last_name, phone, email, lesson_count, balance_owed, status")
+      .select("id, name, phone, email, lesson_count, balance_owed, status")
       .eq("id", id)
       .maybeSingle()
       .then(({ data }) => setPupil((data as Pupil) ?? null));
 
     supabase
       .from("lessons")
-      .select("id, scheduled_at, duration_minutes, status")
+      .select("id, lesson_date, lesson_time, duration_minutes, status")
       .eq("pupil_id", id)
-      .gt("scheduled_at", new Date().toISOString())
-      .order("scheduled_at", { ascending: true })
+      .gte("lesson_date", ymd(new Date()))
+      .order("lesson_date", { ascending: true })
+      .order("lesson_time", { ascending: true })
       .then(({ data }) => setLessons((data as Lesson[]) ?? []));
   }, [id]);
 
@@ -79,7 +84,7 @@ function PupilDetailPage() {
             className="truncate"
             style={{ fontSize: 20, fontWeight: 600, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
           >
-            {pupil ? `${pupil.first_name} ${pupil.last_name}` : ""}
+            {pupil?.name ?? ""}
           </p>
         </div>
 
@@ -117,13 +122,13 @@ function PupilDetailPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {lessons.map((l) => {
-              const d = new Date(l.scheduled_at);
+              const d = new Date(`${l.lesson_date}T00:00:00`);
               return (
                 <Card key={l.id}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-[14px] font-semibold text-[#0F2044]">
-                        {formatTime(d)}
+                        {formatTime(l.lesson_time)}
                       </div>
                       <div className="text-[13px] text-[#6B7280] truncate">
                         {formatDate(d)} · {l.duration_minutes} min

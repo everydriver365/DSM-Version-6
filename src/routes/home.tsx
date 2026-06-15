@@ -32,11 +32,12 @@ export const Route = createFileRoute("/home")({
 
 interface LessonRow {
   id: string;
-  scheduled_at: string;
+  lesson_date: string;
+  lesson_time: string;
   duration_minutes: number | null;
   status: string;
   pupil_id: string;
-  pupils?: { first_name: string; last_name: string } | null;
+  pupils?: { name: string } | null;
 }
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -63,9 +64,17 @@ function startOfWeek(d: Date) {
   x.setDate(x.getDate() - day);
   return x;
 }
+function ymd(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function lessonDateTime(l: LessonRow) {
+  const t = (l.lesson_time ?? "00:00:00").slice(0, 8);
+  const time = t.length === 5 ? `${t}:00` : t;
+  return new Date(`${l.lesson_date}T${time}`);
+}
 
-function formatTime(iso: string) {
-  const d = new Date(iso);
+function formatTime(l: LessonRow) {
+  const d = lessonDateTime(l);
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 function formatDayLabel(d: Date) {
@@ -112,18 +121,24 @@ function HomePage() {
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
       const u = data.user;
       if (!u) return;
       setUserId(u.id);
-      const meta = u.user_metadata as { first_name?: string; full_name?: string } | undefined;
-      const name =
-        meta?.first_name ??
-        meta?.full_name?.split(" ")[0] ??
+
+      const { data: instructor } = await supabase
+        .from("instructors")
+        .select("name")
+        .eq("id", u.id)
+        .maybeSingle();
+      const fullName =
+        (instructor?.name as string | undefined) ??
         u.email?.split("@")[0] ??
         "there";
-      setFirstName(capitalize(name));
-    });
+      const first = fullName.trim().split(/\s+/)[0] || "there";
+      setFirstName(capitalize(first));
+    })();
   }, []);
 
   useEffect(() => {
@@ -131,11 +146,12 @@ function HomePage() {
     (async () => {
       const { data: lessonRows } = await supabase
         .from("lessons")
-        .select("id, scheduled_at, duration_minutes, status, pupil_id, pupils(first_name, last_name)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
-        .gte("scheduled_at", todayStart.toISOString())
-        .lte("scheduled_at", addDays(todayStart, 14).toISOString())
-        .order("scheduled_at", { ascending: true });
+        .gte("lesson_date", ymd(todayStart))
+        .lte("lesson_date", ymd(addDays(todayStart, 14)))
+        .order("lesson_date", { ascending: true })
+        .order("lesson_time", { ascending: true });
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
       const { data: pupilRows } = await supabase
@@ -163,19 +179,19 @@ function HomePage() {
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
 
-  const upcoming = lessons.find((l) => new Date(l.scheduled_at) >= now) ?? lessons[0];
+  const upcoming = lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
   const todayLessons = lessons.filter((l) => {
-    const d = new Date(l.scheduled_at);
+    const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
   });
   const tomorrowLessons = lessons.filter((l) => {
-    const d = new Date(l.scheduled_at);
+    const d = lessonDateTime(l);
     return d >= tomorrowStart && d < dayAfter;
   });
-  const nextLessons = lessons.filter((l) => new Date(l.scheduled_at) >= dayAfter);
+  const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
 
   const weekLessons = lessons.filter((l) => {
-    const d = new Date(l.scheduled_at);
+    const d = lessonDateTime(l);
     return d >= weekStart && d < weekEnd;
   });
 
@@ -185,7 +201,7 @@ function HomePage() {
   const nextFreeSlot = (() => {
     if (todayLessons.length === 0) return null;
     const last = todayLessons[todayLessons.length - 1];
-    const end = new Date(new Date(last.scheduled_at).getTime() + (last.duration_minutes ?? 60) * 60000);
+    const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
     if (end >= tomorrowStart) return null;
     return `${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}`;
   })();
@@ -193,8 +209,7 @@ function HomePage() {
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
   const lessonsPct = Math.min(100, (weekLessons.length / WEEKLY_LESSON_GOAL) * 100);
 
-  const pupilName = (l?: LessonRow) =>
-    l?.pupils ? `${l.pupils.first_name} ${l.pupils.last_name}` : "Pupil";
+  const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe" style={POPPINS}>
@@ -247,12 +262,12 @@ function HomePage() {
               className="text-[10px] uppercase text-[#6B7280]"
               style={{ letterSpacing: "0.08em" }}
             >
-              NEXT LESSON · {formatDayLabel(new Date(upcoming.scheduled_at))}
+              NEXT LESSON · {formatDayLabel(lessonDateTime(upcoming))}
             </div>
             <div className="flex items-start justify-between mt-1">
               <div>
                 <div className="text-[48px] font-bold leading-none text-[#0F2044]">
-                  {formatTime(upcoming.scheduled_at)}
+                  {formatTime(upcoming)}
                 </div>
                 <div className="mt-2 text-[18px] font-semibold text-[#0F2044]">
                   {pupilName(upcoming)}
@@ -402,7 +417,7 @@ function HomePage() {
               >
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <span className="text-[14px] font-bold text-[#0F2044]">
-                    {formatTime(l.scheduled_at)}
+                    {formatTime(l)}
                   </span>
                   <div>
                     <div className="text-[14px] text-[#0F2044]">{pupilName(l)}</div>
