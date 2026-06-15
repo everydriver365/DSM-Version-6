@@ -675,6 +675,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/health" })}
           />
           <AccessTile
+            icon={<FolderOpen size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Documents"
+            onClick={() => navigate({ to: "/documents" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"
