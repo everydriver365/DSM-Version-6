@@ -1,5 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import {
+  User,
+  Clock,
+  Bell,
+  Calendar,
+  HelpCircle,
+  Shield,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
@@ -17,16 +27,16 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-type EditField = "display_name" | "phone" | null;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DAYS = [
-  { key: "mon", label: "Mon" },
-  { key: "tue", label: "Tue" },
-  { key: "wed", label: "Wed" },
-  { key: "thu", label: "Thu" },
-  { key: "fri", label: "Fri" },
-  { key: "sat", label: "Sat" },
-  { key: "sun", label: "Sun" },
+  { key: "mon", label: "Monday" },
+  { key: "tue", label: "Tuesday" },
+  { key: "wed", label: "Wednesday" },
+  { key: "thu", label: "Thursday" },
+  { key: "fri", label: "Friday" },
+  { key: "sat", label: "Saturday" },
+  { key: "sun", label: "Sunday" },
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
 type WorkingHours = Record<DayKey, boolean>;
@@ -35,23 +45,43 @@ const DEFAULT_HOURS: WorkingHours = {
   mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
 };
 
+type ExpandKey = "profile" | "working_hours" | "notifications" | "calendar_sync" | null;
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  const a = parts[0]?.[0] ?? "";
+  const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (a + b).toUpperCase() || "?";
+}
+
 function SettingsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [editing, setEditing] = useState<EditField>(null);
-  const [draft, setDraft] = useState<string>("");
+  const [draftName, setDraftName] = useState<string>("");
+  const [draftPhone, setDraftPhone] = useState<string>("");
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
+  const [expanded, setExpanded] = useState<ExpandKey>(null);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data, error: authErr } = await supabase.auth.getUser();
+      if (authErr) console.error("[settings] auth error", authErr);
       const user = data.user;
       if (!user) return;
       setUserId(user.id);
       setEmail(user.email ?? "");
+
+      const { data: instructor, error: instErr } = await supabase
+        .from("instructors")
+        .select("name")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (instErr) console.error("[settings] instructor fetch error", instErr);
+      if (instructor?.name) setInstructorName(instructor.name);
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -61,6 +91,8 @@ function SettingsPage() {
       if (profile) {
         setDisplayName(profile.display_name ?? "");
         setPhone(profile.phone ?? "");
+        setDraftName(profile.display_name ?? "");
+        setDraftPhone(profile.phone ?? "");
       }
 
       const { data: hours } = await supabase
@@ -81,36 +113,32 @@ function SettingsPage() {
     })();
   }, []);
 
-
-
-  function openEdit(field: Exclude<EditField, null>) {
-    setEditing(field);
-    setDraft(field === "display_name" ? displayName : phone);
-  }
-
-  async function saveEdit() {
-    if (!userId || !editing) return;
-    const patch =
-      editing === "display_name" ? { display_name: draft } : { phone: draft };
-    const { error } = await supabase
-      .from("profiles")
-      .upsert({ id: userId, ...patch, updated_at: new Date().toISOString() });
-    if (error) return;
-    if (editing === "display_name") setDisplayName(draft);
-    else setPhone(draft);
-    setEditing(null);
+  async function saveProfile() {
+    if (!userId) return;
+    const { error } = await supabase.from("profiles").upsert({
+      id: userId,
+      display_name: draftName,
+      phone: draftPhone,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) {
+      console.error("[settings] save profile error", error);
+      return;
+    }
+    setDisplayName(draftName);
+    setPhone(draftPhone);
+    setExpanded(null);
   }
 
   async function toggleDay(d: DayKey) {
     const next = { ...workingDays, [d]: !workingDays[d] };
     setWorkingDays(next);
     if (!userId) return;
-    await supabase
-      .from("working_hours")
-      .upsert(
-        { instructor_id: userId, ...next, updated_at: new Date().toISOString() },
-        { onConflict: "instructor_id" },
-      );
+    const { error } = await supabase.from("working_hours").upsert(
+      { instructor_id: userId, ...next, updated_at: new Date().toISOString() },
+      { onConflict: "instructor_id" },
+    );
+    if (error) console.error("[settings] toggle day error", error);
   }
 
   async function signOut() {
@@ -118,131 +146,213 @@ function SettingsPage() {
     navigate({ to: "/login", replace: true });
   }
 
-  const rowDivider = {
-    borderTopWidth: "0.5px",
-    borderTopStyle: "solid" as const,
-    borderTopColor: "#E2E6ED",
-  };
-
-  function renderEditableRow(
-    field: Exclude<EditField, null>,
-    label: string,
-    value: string,
-    placeholder: string,
-    isFirst: boolean,
-  ) {
-    const open = editing === field;
-    return (
-      <div style={isFirst ? undefined : rowDivider}>
-        <button
-          type="button"
-          onClick={() => (open ? setEditing(null) : openEdit(field))}
-          className="w-full flex items-center justify-between py-3 text-left"
-        >
-          <span className="text-[14px] text-[#0F2044]">{label}</span>
-          <span className="text-[14px] text-[#6B7280] truncate ml-3">
-            {value || "—"}
-          </span>
-        </button>
-        {open && (
-          <div className="pb-3 flex flex-col gap-2">
-            <Input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder={placeholder}
-              autoFocus
-            />
-            <Button inline onClick={saveEdit} className="self-end">
-              Save
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
+  const displayedName = displayName || instructorName || email.split("@")[0] || "Instructor";
 
   return (
-    <div
-      className="min-h-screen bg-white pb-24 pb-safe"
-      style={{ fontFamily: "Poppins, sans-serif" }}
-    >
-      <div className="px-4 pt-6">
-        <p
-          className="text-[20px] font-semibold"
-          style={{ color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
-        >
-          Settings
-        </p>
+    <div className="min-h-screen bg-white pb-24 pb-safe" style={POPPINS}>
+      {/* Top bar */}
+      <div
+        className="sticky top-0 z-40 flex items-center justify-between px-4"
+        style={{ height: 52, backgroundColor: "#0F2044" }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] font-bold text-white" style={POPPINS}>DSM</span>
+          <span className="text-[15px] text-white" style={POPPINS}>Settings</span>
+        </div>
+      </div>
 
-        <SectionHeader>Profile</SectionHeader>
-        <Card className="!p-0">
-          <div className="px-4">
-            {renderEditableRow(
-              "display_name",
-              "Display name",
-              displayName,
-              "Your name",
-              true,
-            )}
-            <div style={rowDivider}>
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[14px] text-[#0F2044]">Email</span>
-                <span className="text-[14px] text-[#6B7280] truncate ml-3">
-                  {email || "—"}
-                </span>
+      {/* Profile header */}
+      <div className="mx-4 mt-3">
+        <Card>
+          <div className="flex items-center gap-3">
+            <div
+              className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
+              style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
+            >
+              {initials(displayedName)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[18px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+                {displayedName}
+              </div>
+              <div className="text-[13px] text-[#6B7280] truncate" style={POPPINS}>
+                {email || "—"}
               </div>
             </div>
-            {renderEditableRow("phone", "Phone number", phone, "07…", false)}
+            <Button variant="ghost" inline onClick={() => setExpanded(expanded === "profile" ? null : "profile")}>
+              Edit profile
+            </Button>
           </div>
         </Card>
+      </div>
 
-        <SectionHeader>Working hours</SectionHeader>
+      <div className="px-4">
+        <SectionHeader>ACCOUNT</SectionHeader>
         <Card className="!p-0">
-          <div className="px-4">
-            {DAYS.map((d, i) => {
-              const on = workingDays[d.key];
-              return (
-                <div
-                  key={d.key}
-                  className="flex items-center justify-between py-3"
-                  style={i === 0 ? undefined : rowDivider}
-                >
-                  <span className="text-[14px] text-[#0F2044]">{d.label}</span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={on}
-                    aria-label={`${d.label} working hours`}
-                    onClick={() => toggleDay(d.key)}
-                    className="relative inline-flex items-center rounded-full transition-colors"
-                    style={{
-                      width: 40,
-                      height: 22,
-                      backgroundColor: on ? "#1A52A0" : "#E2E6ED",
-                    }}
+          <MenuRow
+            icon={<User size={18} color="#1E40AF" />}
+            iconBg="#DBEAFE"
+            label="Profile"
+            expanded={expanded === "profile"}
+            onClick={() => setExpanded(expanded === "profile" ? null : "profile")}
+            isFirst
+          />
+          {expanded === "profile" && (
+            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}>
+              <div className="pt-3">
+                <Input
+                  label="Display name"
+                  value={draftName}
+                  onChange={(e) => setDraftName(e.target.value)}
+                  placeholder="Your name"
+                />
+              </div>
+              <Input
+                label="Phone number"
+                value={draftPhone}
+                onChange={(e) => setDraftPhone(e.target.value)}
+                placeholder="07…"
+              />
+              <Button onClick={saveProfile} className="self-end" inline>
+                Save
+              </Button>
+            </div>
+          )}
+
+          <MenuRow
+            icon={<Clock size={18} color="#1A52A0" />}
+            iconBg="#DBEAFE"
+            label="Working hours"
+            expanded={expanded === "working_hours"}
+            onClick={() => setExpanded(expanded === "working_hours" ? null : "working_hours")}
+          />
+          {expanded === "working_hours" && (
+            <div className="px-4 pb-2" style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}>
+              {DAYS.map((d, i) => {
+                const on = workingDays[d.key];
+                return (
+                  <div
+                    key={d.key}
+                    className="flex items-center justify-between py-3"
+                    style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
                   >
-                    <span
-                      className="inline-block rounded-full bg-white transition-transform"
-                      style={{
-                        width: 18,
-                        height: 18,
-                        transform: `translateX(${on ? 20 : 2}px)`,
-                      }}
-                    />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                    <span className="text-[14px] text-[#0F2044]" style={POPPINS}>{d.label}</span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={on}
+                      aria-label={`${d.label} working hours`}
+                      onClick={() => toggleDay(d.key)}
+                      className="relative inline-flex items-center rounded-full transition-colors"
+                      style={{ width: 40, height: 22, backgroundColor: on ? "#1A52A0" : "#E2E6ED" }}
+                    >
+                      <span
+                        className="inline-block rounded-full bg-white transition-transform"
+                        style={{ width: 18, height: 18, transform: `translateX(${on ? 20 : 2}px)` }}
+                      />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <MenuRow
+            icon={<Bell size={18} color="#92400E" />}
+            iconBg="#FEF3C7"
+            label="Notifications"
+            onClick={() => setExpanded(expanded === "notifications" ? null : "notifications")}
+            expanded={expanded === "notifications"}
+          />
+          {expanded === "notifications" && (
+            <PlaceholderBlock text="Notification preferences coming soon." />
+          )}
+
+          <MenuRow
+            icon={<Calendar size={18} color="#1A52A0" />}
+            iconBg="#DBEAFE"
+            label="Calendar sync"
+            onClick={() => setExpanded(expanded === "calendar_sync" ? null : "calendar_sync")}
+            expanded={expanded === "calendar_sync"}
+          />
+          {expanded === "calendar_sync" && (
+            <PlaceholderBlock text="Google / Apple calendar sync coming soon." />
+          )}
         </Card>
 
-        <SectionHeader>Account</SectionHeader>
+        <SectionHeader>SUPPORT</SectionHeader>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<HelpCircle size={18} color="#52525B" />}
+            iconBg="#F4F4F5"
+            label="Help"
+            onClick={() => {}}
+            isFirst
+          />
+          <MenuRow
+            icon={<Shield size={18} color="#52525B" />}
+            iconBg="#F4F4F5"
+            label="Privacy policy"
+            onClick={() => {}}
+          />
+        </Card>
+
+        <SectionHeader>DANGER ZONE</SectionHeader>
         <Button variant="destructive" onClick={signOut}>
           Sign out
         </Button>
       </div>
 
       <BottomNav active="settings" />
+    </div>
+  );
+}
+
+function MenuRow({
+  icon,
+  iconBg,
+  label,
+  onClick,
+  expanded,
+  isFirst,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  onClick: () => void;
+  expanded?: boolean;
+  isFirst?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3 text-left"
+      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+    >
+      <div
+        className="flex items-center justify-center rounded-full shrink-0"
+        style={{ width: 36, height: 36, backgroundColor: iconBg }}
+      >
+        {icon}
+      </div>
+      <span className="flex-1 text-[14px] text-[#0F2044]" style={POPPINS}>{label}</span>
+      {expanded ? (
+        <ChevronDown size={18} color="#6B7280" />
+      ) : (
+        <ChevronRight size={18} color="#6B7280" />
+      )}
+    </button>
+  );
+}
+
+function PlaceholderBlock({ text }: { text: string }) {
+  return (
+    <div
+      className="px-4 py-4 text-[13px] text-[#6B7280]"
+      style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED", ...POPPINS }}
+    >
+      {text}
     </div>
   );
 }
