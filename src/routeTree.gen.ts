@@ -13,6 +13,7 @@ import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PaymentsRouteImport } from './routes/payments'
@@ -53,6 +54,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ScheduleRoute = ScheduleRouteImport.update({
   id: '/schedule',
   path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/reports': typeof ReportsRoute
+  '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/reports': typeof ReportsRoute
+  '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/reports': typeof ReportsRoute
+  '/reviews': typeof ReviewsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/pupils'
     | '/reports'
+    | '/reviews'
     | '/schedule'
     | '/settings'
     | '/tests'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payments'
     | '/reports'
+    | '/reviews'
     | '/schedule'
     | '/settings'
     | '/tests'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/pupils'
     | '/reports'
+    | '/reviews'
     | '/schedule'
     | '/settings'
     | '/tests'
@@ -337,6 +349,7 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   PupilsRoute: typeof PupilsRouteWithChildren
   ReportsRoute: typeof ReportsRoute
+  ReviewsRoute: typeof ReviewsRoute
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
   TestsRoute: typeof TestsRoute
@@ -373,6 +386,13 @@ declare module '@tanstack/react-router' {
       path: '/schedule'
       fullPath: '/schedule'
       preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -578,6 +598,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   PupilsRoute: PupilsRouteWithChildren,
   ReportsRoute: ReportsRoute,
+  ReviewsRoute: ReviewsRoute,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
   TestsRoute: TestsRoute,
