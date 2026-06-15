@@ -270,6 +270,25 @@ function DocumentsPage() {
                       </div>
                     </div>
                   </button>
+                  {d.file_url && (
+                    <a
+                      href={d.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center justify-center text-[12px] font-semibold"
+                      style={{
+                        gap: 6,
+                        height: 32,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        backgroundColor: "#F1F5F9",
+                        color: "#1A52A0",
+                        border: "0.5px solid #CBD5E1",
+                      }}
+                    >
+                      <ExternalLink size={13} color="#1A52A0" /> View file
+                    </a>
+                  )}
                 </Card>
               );
             })}
@@ -377,6 +396,31 @@ function DocSheet({
   const [expiry, setExpiry] = useState(doc?.expiry_date ?? "");
   const [notes, setNotes] = useState(doc?.notes ?? "");
   const [saving, setSaving] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [existingUrl] = useState<string | null>(doc?.file_url ?? null);
+
+  const ACCEPT = "application/pdf,image/jpeg,image/png";
+  const MAX_BYTES = 10 * 1024 * 1024;
+
+  function onPickFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0] ?? null;
+    if (!f) {
+      setFile(null);
+      return;
+    }
+    const okType = ["application/pdf", "image/jpeg", "image/png"].includes(f.type);
+    if (!okType) {
+      toast.error("Only PDF, JPG or PNG files allowed");
+      e.target.value = "";
+      return;
+    }
+    if (f.size > MAX_BYTES) {
+      toast.error("File too large (max 10MB)");
+      e.target.value = "";
+      return;
+    }
+    setFile(f);
+  }
 
   async function save() {
     if (saving) return;
@@ -391,12 +435,32 @@ function DocSheet({
       return;
     }
     setSaving(true);
-    const payload = {
+
+    let fileUrl: string | null | undefined = undefined;
+    if (file) {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const path = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("documents")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) {
+        console.error("[documents] upload error", upErr);
+        toast.error("Couldn't upload file");
+        setSaving(false);
+        return;
+      }
+      const { data: pub } = supabase.storage.from("documents").getPublicUrl(path);
+      fileUrl = pub.publicUrl;
+    }
+
+    const payload: Record<string, unknown> = {
       name: parsed.data.name,
       doc_type: parsed.data.doc_type,
       expiry_date: parsed.data.expiry_date ?? null,
       notes: parsed.data.notes ?? null,
     };
+    if (fileUrl !== undefined) payload.file_url = fileUrl;
+
     const { error } = doc
       ? await supabase.from("documents").update(payload).eq("id", doc.id)
       : await supabase
