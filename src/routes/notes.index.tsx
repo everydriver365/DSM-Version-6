@@ -49,6 +49,7 @@ function NotesListPage() {
         .from("notes")
         .select("id, title, body, updated_at")
         .eq("instructor_id", userId)
+        .is("deleted_at", null)
         .order("updated_at", { ascending: false });
       if (error) console.error("[notes] fetch error", error);
       setNotes((data ?? []) as NoteRow[]);
