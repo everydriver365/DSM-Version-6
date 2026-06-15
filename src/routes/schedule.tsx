@@ -95,7 +95,7 @@ function SchedulePage() {
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="px-4 pt-6">
-        <p className="text-[20px] font-semibold text-[#0F2044]">Schedule</p>
+        <p style={{ fontSize: 20, fontWeight: 600, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}>Schedule</p>
 
         <div className="mt-4 -mx-4 px-4 overflow-x-auto">
           <div className="flex gap-2">
