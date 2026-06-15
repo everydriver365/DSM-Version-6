@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Plus,
   TrendingUp,
+  Receipt,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -526,6 +527,12 @@ function HomePage() {
             tint="#F59E0B14"
             label="Earnings"
             onClick={() => navigate({ to: "/earnings" })}
+          />
+          <AccessTile
+            icon={<Receipt size={16} color="#6B7280" />}
+            tint="#6B728014"
+            label="Expenses"
+            onClick={() => navigate({ to: "/expenses" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
