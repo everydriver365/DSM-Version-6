@@ -32,6 +32,7 @@ import {
   ClipboardCheck,
   Fuel,
   Heart,
+  FolderOpen,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -672,6 +673,12 @@ function HomePage() {
             tint="#FEE2E2"
             label="Health"
             onClick={() => navigate({ to: "/health" })}
+          />
+          <AccessTile
+            icon={<FolderOpen size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Documents"
+            onClick={() => navigate({ to: "/documents" })}
           />
           <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}

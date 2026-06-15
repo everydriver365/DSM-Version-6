@@ -38,6 +38,7 @@ import { Route as FuelRouteImport } from './routes/fuel'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
+import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as CpdRouteImport } from './routes/cpd'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as IndexRouteImport } from './routes/index'
@@ -195,6 +196,11 @@ const EarningsRoute = EarningsRouteImport.update({
   path: '/earnings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CpdRoute = CpdRouteImport.update({
   id: '/cpd',
   path: '/cpd',
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/cpd': typeof CpdRoute
+  '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
@@ -297,6 +304,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/cpd': typeof CpdRoute
+  '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
   '/cpd': typeof CpdRoute
+  '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
@@ -382,6 +391,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/cpd'
+    | '/documents'
     | '/earnings'
     | '/enquiries'
     | '/expenses'
@@ -424,6 +434,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/cpd'
+    | '/documents'
     | '/earnings'
     | '/enquiries'
     | '/expenses'
@@ -464,6 +475,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/cpd'
+    | '/documents'
     | '/earnings'
     | '/enquiries'
     | '/expenses'
@@ -507,6 +519,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AvailabilityRoute: typeof AvailabilityRoute
   CpdRoute: typeof CpdRoute
+  DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
   EnquiriesRoute: typeof EnquiriesRoute
   ExpensesRoute: typeof ExpensesRoute
@@ -745,6 +758,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EarningsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cpd': {
       id: '/cpd'
       path: '/cpd'
@@ -868,6 +888,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
   CpdRoute: CpdRoute,
+  DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,
   EnquiriesRoute: EnquiriesRoute,
   ExpensesRoute: ExpensesRoute,
