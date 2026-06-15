@@ -22,6 +22,7 @@ import {
   CheckSquare,
   FileText,
   GraduationCap,
+  Star,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -578,6 +579,12 @@ function HomePage() {
             tint="#16A34A14"
             label="Tests"
             onClick={() => navigate({ to: "/tests" })}
+          />
+          <AccessTile
+            icon={<Star size={16} color="#F59E0B" />}
+            tint="#F59E0B14"
+            label="Reviews"
+            onClick={() => navigate({ to: "/reviews" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
