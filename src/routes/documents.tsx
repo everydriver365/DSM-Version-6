@@ -559,6 +559,47 @@ function DocSheet({
             placeholder="Optional notes…"
           />
         </div>
+        <div>
+          <label
+            className="block text-[11px] font-semibold tracking-wider mb-1"
+            style={{ color: "#6B7280" }}
+          >
+            FILE
+          </label>
+          <label
+            className="flex items-center justify-center text-[13px] font-semibold cursor-pointer"
+            style={{
+              gap: 8,
+              height: 44,
+              borderRadius: 8,
+              backgroundColor: "#F8F9FB",
+              color: "#1A52A0",
+              border: "1px dashed #1A52A0",
+            }}
+          >
+            <Upload size={16} color="#1A52A0" />
+            Upload file
+            <input
+              type="file"
+              accept={ACCEPT}
+              onChange={onPickFile}
+              className="hidden"
+            />
+          </label>
+          {file ? (
+            <div className="mt-1 text-[12px]" style={{ color: "#0F2044" }}>
+              {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+            </div>
+          ) : existingUrl ? (
+            <div className="mt-1 text-[12px]" style={{ color: "#6B7280" }}>
+              File already attached — choose a new file to replace it.
+            </div>
+          ) : (
+            <div className="mt-1 text-[11px]" style={{ color: "#6B7280" }}>
+              PDF, JPG or PNG — max 10MB
+            </div>
+          )}
+        </div>
         <div className="mt-2 grid grid-cols-2" style={{ gap: 8 }}>
           <Button variant="ghost" onClick={onClose} type="button">
             Cancel
