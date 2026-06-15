@@ -16,6 +16,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
@@ -27,6 +28,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
+import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
@@ -64,6 +66,11 @@ const PaymentsRoute = PaymentsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MileageRoute = MileageRouteImport.update({
@@ -121,6 +128,11 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PupilsRoute,
 } as any)
+const NotesIdRoute = NotesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => NotesRoute,
+} as any)
 const MessagesIdRoute = MessagesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -146,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -156,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -169,6 +183,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/reports': typeof ReportsRoute
@@ -178,6 +193,7 @@ export interface FileRoutesByTo {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils': typeof PupilsIndexRoute
@@ -192,6 +208,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -202,6 +219,7 @@ export interface FileRoutesById {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -217,6 +235,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/mileage'
+    | '/notes'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -227,6 +246,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
+    | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils/'
@@ -240,6 +260,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/mileage'
+    | '/notes'
     | '/notifications'
     | '/payments'
     | '/reports'
@@ -249,6 +270,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
+    | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils'
@@ -262,6 +284,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/mileage'
+    | '/notes'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -272,6 +295,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
+    | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
     | '/pupils/'
@@ -286,6 +310,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
+  NotesRoute: typeof NotesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PupilsRoute: typeof PupilsRouteWithChildren
@@ -346,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mileage': {
@@ -425,6 +457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsIdRouteImport
       parentRoute: typeof PupilsRoute
     }
+    '/notes/$id': {
+      id: '/notes/$id'
+      path: '/$id'
+      fullPath: '/notes/$id'
+      preLoaderRoute: typeof NotesIdRouteImport
+      parentRoute: typeof NotesRoute
+    }
     '/messages/$id': {
       id: '/messages/$id'
       path: '/$id'
@@ -461,6 +500,16 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
+interface NotesRouteChildren {
+  NotesIdRoute: typeof NotesIdRoute
+}
+
+const NotesRouteChildren: NotesRouteChildren = {
+  NotesIdRoute: NotesIdRoute,
+}
+
+const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
+
 interface PupilsRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
@@ -485,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
+  NotesRoute: NotesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PupilsRoute: PupilsRouteWithChildren,
