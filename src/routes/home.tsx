@@ -24,6 +24,8 @@ const upcoming = [
 function HomePage() {
   const [firstName, setFirstName] = useState("there");
 
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       const meta = data.user?.user_metadata as { first_name?: string; full_name?: string } | undefined;
@@ -32,13 +34,13 @@ function HomePage() {
         meta?.full_name?.split(" ")[0] ??
         data.user?.email?.split("@")[0] ??
         "there";
-      setFirstName(name);
+      setFirstName(capitalize(name));
     });
   }, []);
 
   return (
     <div
-      className="min-h-screen bg-white pb-20"
+      className="min-h-screen bg-white pb-24 pb-safe"
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="px-4 pt-6">
