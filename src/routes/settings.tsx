@@ -46,7 +46,7 @@ const DEFAULT_HOURS: WorkingHours = {
   mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
 };
 
-type ExpandKey = "profile" | "working_hours" | "notifications" | "calendar_sync" | null;
+type ExpandKey = "profile" | "working_hours" | "notifications" | null;
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
