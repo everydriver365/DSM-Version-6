@@ -14,6 +14,7 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
@@ -46,6 +47,11 @@ const PaymentsRoute = PaymentsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/schedule': typeof ScheduleRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/pupils': typeof PupilsRouteWithChildren
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/schedule'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/messages'
     | '/notifications'
     | '/payments'
     | '/pupils'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRoute
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   PupilsRoute: typeof PupilsRouteWithChildren
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRoute,
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   PupilsRoute: PupilsRouteWithChildren,
