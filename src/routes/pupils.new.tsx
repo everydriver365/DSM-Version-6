@@ -90,14 +90,27 @@ function NewPupilPage() {
         >
           <div>
             <Input
-              label="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={200}
+              label="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              maxLength={100}
             />
-            {errors.name && (
+            {errors.firstName && (
               <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
-                {errors.name}
+                {errors.firstName}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              maxLength={100}
+            />
+            {errors.lastName && (
+              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+                {errors.lastName}
               </p>
             )}
           </div>
