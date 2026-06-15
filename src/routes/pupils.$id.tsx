@@ -1,42 +1,80 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil, Phone } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/$id")({
+  head: () => ({
+    meta: [{ title: "Pupil — DSM by EveryDriver" }],
+  }),
   component: PupilDetailPage,
 });
+
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Pupil {
   id: string;
   name: string;
   phone: string | null;
   email: string | null;
-  lesson_count: number;
-  balance_owed: number;
-  status: string;
+  lesson_count: number | null;
+  balance_owed: number | null;
+  status: string | null;
+  test_date: string | null;
+  notes: string | null;
 }
 
 interface Lesson {
   id: string;
   lesson_date: string;
   lesson_time: string;
-  duration_minutes: number;
+  duration_minutes: number | null;
   status: string;
 }
 
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  const a = parts[0]?.[0] ?? "";
+  const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (a + b).toUpperCase() || "?";
+}
 function formatTime(t: string) {
   return (t ?? "").slice(0, 5);
 }
-
-function formatDate(d: Date) {
+function formatDateShort(d: Date) {
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 }
-
+function formatTestDate(iso: string | null) {
+  if (!iso) return "No test";
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+}
 function ymd(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+function statusBadge(status: string | null) {
+  const s = (status ?? "active").toLowerCase();
+  if (s === "active") return { bg: "#16A34A", label: "Active" };
+  if (s === "passed") return { bg: "#1A52A0", label: "Passed" };
+  return { bg: "#6B7280", label: s.charAt(0).toUpperCase() + s.slice(1) };
+}
+function lessonStatusColor(s: string) {
+  if (s === "confirmed") return "#16A34A";
+  if (s === "pending") return "#F59E0B";
+  if (s === "cancelled") return "#CC2229";
+  return "#6B7280";
 }
 
 function PupilDetailPage() {
@@ -44,14 +82,22 @@ function PupilDetailPage() {
   const navigate = useNavigate();
   const [pupil, setPupil] = useState<Pupil | null>(null);
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [notesDraft, setNotesDraft] = useState("");
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes")
       .eq("id", id)
       .maybeSingle()
-      .then(({ data }) => setPupil((data as Pupil) ?? null));
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] fetch error", error);
+        const p = (data as Pupil) ?? null;
+        setPupil(p);
+        setNotesDraft(p?.notes ?? "");
+      });
 
     supabase
       .from("lessons")
@@ -60,64 +106,167 @@ function PupilDetailPage() {
       .gte("lesson_date", ymd(new Date()))
       .order("lesson_date", { ascending: true })
       .order("lesson_time", { ascending: true })
-      .then(({ data }) => setLessons((data as Lesson[]) ?? []));
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] lessons error", error);
+        setLessons((data as Lesson[]) ?? []);
+      });
   }, [id]);
 
-  const isActive = pupil?.status === "active";
+  async function saveNotes() {
+    setSavingNotes(true);
+    setNoteSaved(false);
+    const { error } = await supabase
+      .from("pupils")
+      .update({ notes: notesDraft })
+      .eq("id", id);
+    setSavingNotes(false);
+    if (error) {
+      console.error("[pupil] save notes error", error);
+      return;
+    }
+    setNoteSaved(true);
+    setTimeout(() => setNoteSaved(false), 2000);
+  }
+
+  const badge = statusBadge(pupil?.status ?? null);
+  const balance = Number(pupil?.balance_owed ?? 0);
+  const lessonCount = Number(pupil?.lesson_count ?? 0);
 
   return (
-    <div
-      className="min-h-screen bg-white pb-8"
-      style={{ fontFamily: "Poppins, sans-serif" }}
-    >
-      <div className="px-4 pt-6">
-        <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+      {/* Top bar */}
+      <div
+        className="sticky top-0 z-40 flex items-center justify-between px-2"
+        style={{ height: 52, backgroundColor: "#0F2044" }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/pupils" })}
+          className="flex items-center justify-center"
+          style={{ width: 40, height: 40 }}
+        >
+          <ArrowLeft size={22} color="#FFFFFF" />
+        </button>
+        <div
+          className="flex-1 text-center text-[15px] font-semibold text-white truncate px-2"
+          style={POPPINS}
+        >
+          {pupil?.name ?? ""}
+        </div>
+        <div className="flex items-center">
           <button
             type="button"
-            aria-label="Back to pupils"
-            onClick={() => navigate({ to: "/pupils" })}
-            className="-ml-1 p-1 text-[#0F2044]"
+            aria-label="Edit pupil"
+            className="flex items-center justify-center"
+            style={{ width: 40, height: 40 }}
           >
-            <ArrowLeft size={22} />
+            <Pencil size={18} color="#FFFFFF" />
           </button>
-          <p
-            className="truncate"
-            style={{ fontSize: 20, fontWeight: 600, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
+          <a
+            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
+            aria-label="Call pupil"
+            className="flex items-center justify-center"
+            style={{ width: 40, height: 40 }}
           >
-            {pupil?.name ?? ""}
-          </p>
+            <Phone size={18} color="#FFFFFF" />
+          </a>
+        </div>
+      </div>
+
+      {/* Profile header card */}
+      {pupil && (
+        <div className="mx-4 mt-3">
+          <Card>
+            <div className="flex items-center gap-3">
+              <div
+                className="flex items-center justify-center rounded-full shrink-0 text-[18px] font-semibold"
+                style={{
+                  width: 56,
+                  height: 56,
+                  backgroundColor: "#1A52A0",
+                  color: "#FFFFFF",
+                  ...POPPINS,
+                }}
+              >
+                {initials(pupil.name)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div
+                  className="text-[18px] font-semibold text-[#0F2044] truncate"
+                  style={POPPINS}
+                >
+                  {pupil.name}
+                </div>
+                <span
+                  className="inline-block mt-1 text-[11px] text-white px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: badge.bg, ...POPPINS }}
+                >
+                  {badge.label}
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              <StatChip label="Lessons" value={String(lessonCount)} />
+              <StatChip
+                label="Balance"
+                value={`£${balance.toFixed(2)}`}
+                valueColor={balance > 0 ? "#CC2229" : "#0F2044"}
+              />
+              <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
+            </div>
+          </Card>
+        </div>
+      )}
+
+      <div className="px-4">
+        <SectionHeader>QUICK ACTIONS</SectionHeader>
+        <div className="grid grid-cols-3 gap-2">
+          <a
+            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
+            aria-label="Call"
+            className="inline-flex items-center justify-center text-[13px] font-medium text-white"
+            style={{ height: 40, borderRadius: 8, backgroundColor: "#CC2229", ...POPPINS }}
+          >
+            Call
+          </a>
+          <a
+            href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
+            aria-label="Text"
+            className="inline-flex items-center justify-center text-[13px] font-medium"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#F3F4F6",
+              color: "#0F2044",
+              ...POPPINS,
+            }}
+          >
+            Text
+          </a>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/lessons/new" })}
+            className="inline-flex items-center justify-center text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#1A52A0",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            Add lesson
+          </button>
         </div>
 
-        {pupil && (
-          <div className="mt-4">
-            <Card>
-              <div className="flex flex-col gap-2">
-                <Row label="Phone" value={pupil.phone ?? "—"} />
-                <Row label="Email" value={pupil.email ?? "—"} />
-                <div className="flex items-center justify-between">
-                  <span className="text-[13px] text-[#6B7280]">Status</span>
-                  <span
-                    className="text-[11px] text-white px-2 py-1 rounded-full"
-                    style={{ backgroundColor: isActive ? "#16A34A" : "#6B7280" }}
-                  >
-                    {isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-                <Row label="Lesson count" value={String(pupil.lesson_count ?? 0)} />
-                <Row
-                  label="Balance owed"
-                  value={`£${Number(pupil.balance_owed ?? 0).toFixed(2)}`}
-                />
-              </div>
-            </Card>
-          </div>
-        )}
-
-        <SectionHeader>Upcoming lessons</SectionHeader>
-
+        <SectionHeader>UPCOMING LESSONS</SectionHeader>
         {lessons === null ? null : lessons.length === 0 ? (
-          <div className="flex items-center justify-center py-16">
-            <p className="text-[14px] text-[#6B7280]">No upcoming lessons</p>
+          <div className="flex items-center justify-center py-12">
+            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
+              No upcoming lessons
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -127,25 +276,21 @@ function PupilDetailPage() {
                 <Card key={l.id}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-[14px] font-semibold text-[#0F2044]">
+                      <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                        {formatDateShort(d)}
+                      </div>
+                      <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
                         {formatTime(l.lesson_time)}
                       </div>
-                      <div className="text-[13px] text-[#6B7280] truncate">
-                        {formatDate(d)} · {l.duration_minutes} min
+                      <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                        {l.duration_minutes ?? 60} min
                       </div>
                     </div>
                     <span
-                      className="text-[11px] text-white px-2 py-1 rounded-full shrink-0"
-                      style={{
-                        backgroundColor:
-                          l.status === "confirmed"
-                            ? "#16A34A"
-                            : l.status === "cancelled"
-                              ? "#CC2229"
-                              : "#6B7280",
-                      }}
+                      className="text-[11px] text-white px-2 py-1 rounded-full shrink-0 capitalize"
+                      style={{ backgroundColor: lessonStatusColor(l.status), ...POPPINS }}
                     >
-                      {l.status.charAt(0).toUpperCase() + l.status.slice(1)}
+                      {l.status}
                     </span>
                   </div>
                 </Card>
@@ -153,16 +298,68 @@ function PupilDetailPage() {
             })}
           </div>
         )}
+
+        <SectionHeader>NOTES</SectionHeader>
+        <textarea
+          rows={3}
+          value={notesDraft}
+          onChange={(e) => setNotesDraft(e.target.value)}
+          placeholder="Add a note about this pupil…"
+          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+          style={{
+            ...POPPINS,
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: "#E2E6ED",
+            resize: "vertical",
+          }}
+        />
+        <div className="mt-2 flex items-center justify-end gap-3">
+          {noteSaved && (
+            <span className="text-[12px]" style={{ color: "#16A34A", ...POPPINS }}>
+              Saved
+            </span>
+          )}
+          <Button onClick={saveNotes} disabled={savingNotes} inline>
+            {savingNotes ? "Saving…" : "Save note"}
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function StatChip({
+  label,
+  value,
+  valueColor = "#0F2044",
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
   return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-[13px] text-[#6B7280]">{label}</span>
-      <span className="text-[13px] text-[#0F2044] truncate text-right">{value}</span>
+    <div
+      className="rounded-lg px-2 py-2 text-center"
+      style={{
+        backgroundColor: "#F8F9FB",
+        borderWidth: "0.5px",
+        borderStyle: "solid",
+        borderColor: "#E2E6ED",
+      }}
+    >
+      <div
+        className="text-[14px] font-semibold truncate"
+        style={{ color: valueColor, ...POPPINS }}
+      >
+        {value}
+      </div>
+      <div
+        className="text-[10px] font-medium uppercase mt-0.5"
+        style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+      >
+        {label}
+      </div>
     </div>
   );
 }
