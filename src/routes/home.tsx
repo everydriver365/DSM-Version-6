@@ -24,6 +24,7 @@ import {
   GraduationCap,
   Star,
   Inbox,
+  BookOpen,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -604,6 +605,12 @@ function HomePage() {
             tint="#16A34A14"
             label="Performance"
             onClick={() => navigate({ to: "/performance" })}
+          />
+          <AccessTile
+            icon={<BookOpen size={16} color="#1A52A0" />}
+            tint="#1A52A014"
+            label="CPD"
+            onClick={() => navigate({ to: "/cpd" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
