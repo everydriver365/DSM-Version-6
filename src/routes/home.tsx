@@ -647,6 +647,12 @@ function HomePage() {
             onClick={() => navigate({ to: "/reminder" })}
           />
           <AccessTile
+            icon={<ClipboardList size={16} color="#1A52A0" />}
+            tint="#DBEAFE"
+            label="Manifest"
+            onClick={() => navigate({ to: "/manifest" })}
+          />
+          <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
             tint="#F4F4F5"
             label="Help"

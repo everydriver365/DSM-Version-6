@@ -28,6 +28,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
@@ -141,6 +142,11 @@ const MessagesRoute = MessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManifestRoute = ManifestRouteImport.update({
+  id: '/manifest',
+  path: '/manifest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/notes': typeof NotesRouteWithChildren
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/notifications': typeof NotificationsRoute
@@ -312,6 +320,7 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/notes': typeof NotesRouteWithChildren
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manifest'
     | '/messages'
     | '/mileage'
     | '/notes'
@@ -390,6 +400,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manifest'
     | '/messages'
     | '/mileage'
     | '/notifications'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manifest'
     | '/messages'
     | '/mileage'
     | '/notes'
@@ -465,6 +477,7 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  ManifestRoute: typeof ManifestRoute
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   NotesRoute: typeof NotesRouteWithChildren
@@ -621,6 +634,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manifest': {
+      id: '/manifest'
+      path: '/manifest'
+      fullPath: '/manifest'
+      preLoaderRoute: typeof ManifestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -794,6 +814,7 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  ManifestRoute: ManifestRoute,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   NotesRoute: NotesRouteWithChildren,
