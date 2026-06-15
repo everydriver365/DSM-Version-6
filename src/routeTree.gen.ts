@@ -22,7 +22,6 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -204,11 +203,6 @@ const EarningsRoute = EarningsRouteImport.update({
   path: '/earnings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DocumentsRoute = DocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -297,7 +291,6 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/profile': typeof ProfileRoute
-  '/profile': typeof ProfileRoute
   '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
@@ -341,7 +334,6 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
-  '/profile': typeof ProfileRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
@@ -699,13 +691,6 @@ declare module '@tanstack/react-router' {
       path: '/performance'
       fullPath: '/performance'
       preLoaderRoute: typeof PerformanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/payments': {
