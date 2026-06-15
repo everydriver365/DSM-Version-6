@@ -13,6 +13,8 @@ import {
   Receipt,
   FileText,
   Trash2,
+  Upload,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -39,6 +41,7 @@ interface Doc {
   doc_type: string;
   expiry_date: string | null;
   notes: string | null;
+  file_url: string | null;
   created_at: string;
 }
 
@@ -119,7 +122,7 @@ function DocumentsPage() {
   async function load(uid: string) {
     const { data, error } = await supabase
       .from("documents")
-      .select("id, name, doc_type, expiry_date, notes, created_at")
+      .select("id, name, doc_type, expiry_date, notes, file_url, created_at")
       .eq("instructor_id", uid)
       .order("created_at", { ascending: false });
     if (error) console.error("[documents] fetch error", error);
