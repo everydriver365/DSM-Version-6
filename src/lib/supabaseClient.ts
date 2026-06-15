@@ -10,4 +10,10 @@ if (!url || !anonKey) {
   );
 }
 
+// eslint-disable-next-line no-console
+console.log("[supabase] env check", {
+  VITE_SUPABASE_URL: url,
+  VITE_SUPABASE_ANON_KEY: anonKey,
+});
+
 export const supabase = createClient(url ?? "", anonKey ?? "");
