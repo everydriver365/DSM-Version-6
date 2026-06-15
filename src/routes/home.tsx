@@ -65,7 +65,15 @@ function startOfWeek(d: Date) {
   return x;
 }
 function ymd(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  // YYYY-MM-DD in Europe/London regardless of host timezone
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 function lessonDateTime(l: LessonRow) {
   const t = (l.lesson_time ?? "00:00:00").slice(0, 8);
