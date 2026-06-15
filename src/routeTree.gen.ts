@@ -15,6 +15,7 @@ import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -47,6 +48,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PupilsIndexRoute = PupilsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PupilsRoute,
+} as any)
 const PupilsIdRoute = PupilsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -61,15 +67,16 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/pupils/$id': typeof PupilsIdRoute
+  '/pupils/': typeof PupilsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/pupils': typeof PupilsRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/pupils/$id': typeof PupilsIdRoute
+  '/pupils': typeof PupilsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +87,7 @@ export interface FileRoutesById {
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/pupils/$id': typeof PupilsIdRoute
+  '/pupils/': typeof PupilsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,15 +99,16 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/settings'
     | '/pupils/$id'
+    | '/pupils/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/home'
     | '/login'
-    | '/pupils'
     | '/schedule'
     | '/settings'
     | '/pupils/$id'
+    | '/pupils'
   id:
     | '__root__'
     | '/'
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/settings'
     | '/pupils/$id'
+    | '/pupils/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,6 +174,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pupils/': {
+      id: '/pupils/'
+      path: '/'
+      fullPath: '/pupils/'
+      preLoaderRoute: typeof PupilsIndexRouteImport
+      parentRoute: typeof PupilsRoute
+    }
     '/pupils/$id': {
       id: '/pupils/$id'
       path: '/$id'
@@ -176,10 +193,12 @@ declare module '@tanstack/react-router' {
 
 interface PupilsRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
+  PupilsIndexRoute: typeof PupilsIndexRoute
 }
 
 const PupilsRouteChildren: PupilsRouteChildren = {
   PupilsIdRoute: PupilsIdRoute,
+  PupilsIndexRoute: PupilsIndexRoute,
 }
 
 const PupilsRouteWithChildren =
