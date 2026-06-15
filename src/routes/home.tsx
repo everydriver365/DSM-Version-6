@@ -17,6 +17,7 @@ import {
   Plus,
   TrendingUp,
   Receipt,
+  Clock,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -533,6 +534,12 @@ function HomePage() {
             tint="#6B728014"
             label="Expenses"
             onClick={() => navigate({ to: "/expenses" })}
+          />
+          <AccessTile
+            icon={<Clock size={16} color="#1A52A0" />}
+            tint="#1A52A014"
+            label="Availability"
+            onClick={() => navigate({ to: "/availability" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}

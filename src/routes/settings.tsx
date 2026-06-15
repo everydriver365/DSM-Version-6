@@ -223,39 +223,8 @@ function SettingsPage() {
             icon={<Clock size={18} color="#1A52A0" />}
             iconBg="#DBEAFE"
             label="Working hours"
-            expanded={expanded === "working_hours"}
-            onClick={() => setExpanded(expanded === "working_hours" ? null : "working_hours")}
+            onClick={() => navigate({ to: "/availability" })}
           />
-          {expanded === "working_hours" && (
-            <div className="px-4 pb-2" style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}>
-              {DAYS.map((d, i) => {
-                const on = workingDays[d.key];
-                return (
-                  <div
-                    key={d.key}
-                    className="flex items-center justify-between py-3"
-                    style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
-                  >
-                    <span className="text-[14px] text-[#0F2044]" style={POPPINS}>{d.label}</span>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={on}
-                      aria-label={`${d.label} working hours`}
-                      onClick={() => toggleDay(d.key)}
-                      className="relative inline-flex items-center rounded-full transition-colors"
-                      style={{ width: 40, height: 22, backgroundColor: on ? "#1A52A0" : "#E2E6ED" }}
-                    >
-                      <span
-                        className="inline-block rounded-full bg-white transition-transform"
-                        style={{ width: 18, height: 18, transform: `translateX(${on ? 20 : 2}px)` }}
-                      />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
           <MenuRow
             icon={<Bell size={18} color="#92400E" />}
