@@ -208,7 +208,7 @@ function HomePage() {
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
 
-  const upcoming = lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
+  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
   const todayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
