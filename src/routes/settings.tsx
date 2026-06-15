@@ -101,8 +101,16 @@ function SettingsPage() {
     setEditing(null);
   }
 
-  function toggleDay(d: Day) {
-    setWorkingDays((prev) => ({ ...prev, [d]: !prev[d] }));
+  async function toggleDay(d: DayKey) {
+    const next = { ...workingDays, [d]: !workingDays[d] };
+    setWorkingDays(next);
+    if (!userId) return;
+    await supabase
+      .from("working_hours")
+      .upsert(
+        { instructor_id: userId, ...next, updated_at: new Date().toISOString() },
+        { onConflict: "instructor_id" },
+      );
   }
 
   async function signOut() {
