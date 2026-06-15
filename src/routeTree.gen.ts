@@ -15,6 +15,7 @@ import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -46,37 +47,59 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PupilsIdRoute = PupilsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PupilsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/pupils': typeof PupilsRoute
+  '/pupils': typeof PupilsRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/pupils/$id': typeof PupilsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/pupils': typeof PupilsRoute
+  '/pupils': typeof PupilsRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/pupils/$id': typeof PupilsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/pupils': typeof PupilsRoute
+  '/pupils': typeof PupilsRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/pupils/$id': typeof PupilsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/login' | '/pupils' | '/schedule' | '/settings'
+  fullPaths:
+    | '/'
+    | '/home'
+    | '/login'
+    | '/pupils'
+    | '/schedule'
+    | '/settings'
+    | '/pupils/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/login' | '/pupils' | '/schedule' | '/settings'
+  to:
+    | '/'
+    | '/home'
+    | '/login'
+    | '/pupils'
+    | '/schedule'
+    | '/settings'
+    | '/pupils/$id'
   id:
     | '__root__'
     | '/'
@@ -85,13 +108,14 @@ export interface FileRouteTypes {
     | '/pupils'
     | '/schedule'
     | '/settings'
+    | '/pupils/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
-  PupilsRoute: typeof PupilsRoute
+  PupilsRoute: typeof PupilsRouteWithChildren
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
 }
@@ -140,14 +164,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pupils/$id': {
+      id: '/pupils/$id'
+      path: '/$id'
+      fullPath: '/pupils/$id'
+      preLoaderRoute: typeof PupilsIdRouteImport
+      parentRoute: typeof PupilsRoute
+    }
   }
 }
+
+interface PupilsRouteChildren {
+  PupilsIdRoute: typeof PupilsIdRoute
+}
+
+const PupilsRouteChildren: PupilsRouteChildren = {
+  PupilsIdRoute: PupilsIdRoute,
+}
+
+const PupilsRouteWithChildren =
+  PupilsRoute._addFileChildren(PupilsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
-  PupilsRoute: PupilsRoute,
+  PupilsRoute: PupilsRouteWithChildren,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
 }
