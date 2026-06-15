@@ -17,6 +17,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
@@ -65,6 +66,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EarningsRoute = EarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -103,6 +109,7 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -137,6 +145,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/earnings'
     | '/home'
     | '/login'
     | '/messages'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/earnings'
     | '/home'
     | '/login'
     | '/messages'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/earnings'
     | '/home'
     | '/login'
     | '/messages'
@@ -207,6 +219,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EarningsRoute: typeof EarningsRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRouteWithChildren
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/earnings': {
+      id: '/earnings'
+      path: '/earnings'
+      fullPath: '/earnings'
+      preLoaderRoute: typeof EarningsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -358,6 +378,7 @@ const PupilsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EarningsRoute: EarningsRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRouteWithChildren,
