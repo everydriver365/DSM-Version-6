@@ -20,6 +20,7 @@ import {
   Clock,
   BarChart2,
   CheckSquare,
+  FileText,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -560,6 +561,12 @@ function HomePage() {
             tint="#F59E0B14"
             label="To-do"
             onClick={() => navigate({ to: "/todos" })}
+          />
+          <AccessTile
+            icon={<FileText size={16} color="#1A52A0" />}
+            tint="#1A52A014"
+            label="Notes"
+            onClick={() => navigate({ to: "/notes" })}
           />
           <AccessTile
             icon={<SettingsIcon size={16} color="#6B7280" />}
