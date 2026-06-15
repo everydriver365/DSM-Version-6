@@ -265,6 +265,38 @@ function HomePage() {
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
+  const quickAccessTiles = [
+    { icon: <CalendarIcon size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Schedule", route: "/schedule" },
+    { icon: <Users size={16} color="#059669" />, tint: "#ECFDF5", label: "Pupils", route: "/pupils" },
+    { icon: <PoundSterling size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Payments", route: "/payments" },
+    { icon: <MessageSquare size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Messages", route: "/messages" },
+    { icon: <TrendingUp size={16} color="#059669" />, tint: "#ECFDF5", label: "Earnings", route: "/earnings" },
+    { icon: <Receipt size={16} color="#92400E" />, tint: "#FEF3C7", label: "Expenses", route: "/expenses" },
+    { icon: <Car size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Mileage", route: "/mileage" },
+    { icon: <Fuel size={16} color="#92400E" />, tint: "#FEF3C7", label: "Fuel", route: "/fuel" },
+    { icon: <BarChart2 size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Reports", route: "/reports" },
+    { icon: <TrendingUp size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Performance", route: "/performance" },
+    { icon: <GraduationCap size={16} color="#059669" />, tint: "#ECFDF5", label: "Tests", route: "/tests" },
+    { icon: <Star size={16} color="#92400E" />, tint: "#FEF3C7", label: "Reviews", route: "/reviews" },
+    { icon: <Inbox size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Enquiries", route: "/enquiries" },
+    { icon: <Clock size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Waiting list", route: "/waitinglist" },
+    { icon: <Gift size={16} color="#059669" />, tint: "#ECFDF5", label: "Referrals", route: "/referrals" },
+    { icon: <Car size={16} color="#52525B" />, tint: "#F4F4F5", label: "Vehicle", route: "/vehicle" },
+    { icon: <BookOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "CPD", route: "/cpd" },
+    { icon: <ClipboardCheck size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Standards", route: "/standards" },
+    { icon: <Calculator size={16} color="#92400E" />, tint: "#FEF3C7", label: "Tax", route: "/tax" },
+    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Todos", route: "/todos" },
+    { icon: <FileText size={16} color="#92400E" />, tint: "#FEF3C7", label: "Notes", route: "/notes" },
+    { icon: <FolderOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Documents", route: "/documents" },
+    { icon: <ClipboardList size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Manifest", route: "/manifest" },
+    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Checklist", route: "/checklist" },
+    { icon: <Bell size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Reminders", route: "/reminder" },
+    { icon: <Heart size={16} color="#92400E" />, tint: "#FEF3C7", label: "Health", route: "/health" },
+    { icon: <BookOpen size={16} color="#059669" />, tint: "#ECFDF5", label: "Resources", route: "/resources" },
+    { icon: <HelpCircle size={16} color="#52525B" />, tint: "#F4F4F5", label: "Help", route: "/help" },
+    { icon: <LayoutGrid size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Pipeline", route: "/pipeline" },
+  ] as const;
+
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe" style={POPPINS}>
       {/* TOP BAR */}
