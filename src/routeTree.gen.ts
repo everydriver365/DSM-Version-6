@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodosRouteImport } from './routes/todos'
+import { Route as TestsRouteImport } from './routes/tests'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -37,6 +38,11 @@ import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
   path: '/todos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestsRoute = TestsRouteImport.update({
+  id: '/tests',
+  path: '/tests',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
+  '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/schedule'
     | '/settings'
+    | '/tests'
     | '/todos'
     | '/lessons/$id'
     | '/lessons/new'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/schedule'
     | '/settings'
+    | '/tests'
     | '/todos'
     | '/lessons/$id'
     | '/lessons/new'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/schedule'
     | '/settings'
+    | '/tests'
     | '/todos'
     | '/lessons/$id'
     | '/lessons/new'
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
+  TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
@@ -339,6 +352,13 @@ declare module '@tanstack/react-router' {
       path: '/todos'
       fullPath: '/todos'
       preLoaderRoute: typeof TodosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tests': {
+      id: '/tests'
+      path: '/tests'
+      fullPath: '/tests'
+      preLoaderRoute: typeof TestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
+  TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
