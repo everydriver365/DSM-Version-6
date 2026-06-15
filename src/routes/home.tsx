@@ -115,6 +115,7 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [userId, setUserId] = useState<string | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
