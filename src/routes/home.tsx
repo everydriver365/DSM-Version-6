@@ -31,6 +31,7 @@ import {
   ClipboardList,
   ClipboardCheck,
   Fuel,
+  Heart,
 } from "lucide-react";
 import { BottomNav } from "../components/dsm/BottomNav";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -665,6 +666,12 @@ function HomePage() {
             tint="#ECFDF5"
             label="Standards"
             onClick={() => navigate({ to: "/standards" })}
+          />
+          <AccessTile
+            icon={<Heart size={16} color="#CC2229" />}
+            tint="#FEE2E2"
+            label="Health"
+            onClick={() => navigate({ to: "/health" })}
           />
           <AccessTile
             icon={<HelpCircle size={16} color="#52525B" />}
