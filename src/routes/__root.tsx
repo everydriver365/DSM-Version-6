@@ -135,6 +135,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <div data-testid="root-footer">ROOT FOOTER TEST</div>
       <BottomNav active={active} />
     </QueryClientProvider>
   );
