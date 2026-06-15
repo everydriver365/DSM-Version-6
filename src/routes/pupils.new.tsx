@@ -15,8 +15,6 @@ export const Route = createFileRoute("/pupils/new")({
 function NewPupilPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ name?: string; form?: string }>({});
   const [saving, setSaving] = useState(false);
 
