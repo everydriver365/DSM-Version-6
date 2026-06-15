@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -37,6 +38,11 @@ import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 
+const VehicleRoute = VehicleRouteImport.update({
+  id: '/vehicle',
+  path: '/vehicle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
   path: '/todos',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/vehicle': typeof VehicleRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/vehicle': typeof VehicleRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/vehicle': typeof VehicleRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tests'
     | '/todos'
+    | '/vehicle'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tests'
     | '/todos'
+    | '/vehicle'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tests'
     | '/todos'
+    | '/vehicle'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -367,12 +379,20 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
+  VehicleRoute: typeof VehicleRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vehicle': {
+      id: '/vehicle'
+      path: '/vehicle'
+      fullPath: '/vehicle'
+      preLoaderRoute: typeof VehicleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/todos': {
       id: '/todos'
       path: '/todos'
@@ -624,6 +644,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
+  VehicleRoute: VehicleRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
 }
