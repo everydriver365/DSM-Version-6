@@ -292,11 +292,6 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
   path: '/lessons/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
-  id: '/lessons/edit/$id',
-  path: '/lessons/edit/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -339,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/waivers': typeof WaiversRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/messages/$id': typeof MessagesIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
