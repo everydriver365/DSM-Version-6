@@ -23,7 +23,6 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
-import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -55,6 +54,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
+import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 
 const WaiversRoute = WaiversRouteImport.update({
@@ -125,11 +125,6 @@ const ReminderRoute = ReminderRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PupilsRoute = PupilsRouteImport.update({
-  id: '/pupils',
-  path: '/pupils',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -248,9 +243,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsIndexRoute = PupilsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PupilsRoute,
+  id: '/pupils/',
+  path: '/pupils/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIndexRoute = NotesIndexRouteImport.update({
   id: '/',
@@ -258,14 +253,14 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   getParentRoute: () => NotesRoute,
 } as any)
 const PupilsNewRoute = PupilsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => PupilsRoute,
+  id: '/pupils/new',
+  path: '/pupils/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsIdRoute = PupilsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => PupilsRoute,
+  id: '/pupils/$id',
+  path: '/pupils/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIdRoute = NotesIdRouteImport.update({
   id: '/$id',
@@ -285,6 +280,11 @@ const LessonsNewRoute = LessonsNewRouteImport.update({
 const LessonsIdRoute = LessonsIdRouteImport.update({
   id: '/lessons/$id',
   path: '/lessons/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PupilsEditIdRoute = PupilsEditIdRouteImport.update({
+  id: '/pupils/edit/$id',
+  path: '/pupils/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
@@ -317,7 +317,6 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
-  '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
@@ -341,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
+  '/pupils/edit/$id': typeof PupilsEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -388,6 +388,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
+  '/pupils/edit/$id': typeof PupilsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -414,7 +415,6 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
-  '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
@@ -438,6 +438,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
+  '/pupils/edit/$id': typeof PupilsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -465,7 +466,6 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
-    | '/pupils'
     | '/referrals'
     | '/reminder'
     | '/reports'
@@ -489,6 +489,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/lessons/edit/$id'
+    | '/pupils/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -536,6 +537,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/lessons/edit/$id'
+    | '/pupils/edit/$id'
   id:
     | '__root__'
     | '/'
@@ -561,7 +563,6 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
-    | '/pupils'
     | '/referrals'
     | '/reminder'
     | '/reports'
@@ -585,6 +586,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/lessons/edit/$id'
+    | '/pupils/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -611,7 +613,6 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
-  PupilsRoute: typeof PupilsRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
   ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
@@ -628,7 +629,11 @@ export interface RootRouteChildren {
   WaiversRoute: typeof WaiversRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
+  PupilsIdRoute: typeof PupilsIdRoute
+  PupilsNewRoute: typeof PupilsNewRoute
+  PupilsIndexRoute: typeof PupilsIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
+  PupilsEditIdRoute: typeof PupilsEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -729,13 +734,6 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pupils': {
-      id: '/pupils'
-      path: '/pupils'
-      fullPath: '/pupils'
-      preLoaderRoute: typeof PupilsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -901,10 +899,10 @@ declare module '@tanstack/react-router' {
     }
     '/pupils/': {
       id: '/pupils/'
-      path: '/'
+      path: '/pupils'
       fullPath: '/pupils/'
       preLoaderRoute: typeof PupilsIndexRouteImport
-      parentRoute: typeof PupilsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/notes/': {
       id: '/notes/'
@@ -915,17 +913,17 @@ declare module '@tanstack/react-router' {
     }
     '/pupils/new': {
       id: '/pupils/new'
-      path: '/new'
+      path: '/pupils/new'
       fullPath: '/pupils/new'
       preLoaderRoute: typeof PupilsNewRouteImport
-      parentRoute: typeof PupilsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/pupils/$id': {
       id: '/pupils/$id'
-      path: '/$id'
+      path: '/pupils/$id'
       fullPath: '/pupils/$id'
       preLoaderRoute: typeof PupilsIdRouteImport
-      parentRoute: typeof PupilsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/notes/$id': {
       id: '/notes/$id'
@@ -953,6 +951,13 @@ declare module '@tanstack/react-router' {
       path: '/lessons/$id'
       fullPath: '/lessons/$id'
       preLoaderRoute: typeof LessonsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pupils/edit/$id': {
+      id: '/pupils/edit/$id'
+      path: '/pupils/edit/$id'
+      fullPath: '/pupils/edit/$id'
+      preLoaderRoute: typeof PupilsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lessons/edit/$id': {
@@ -989,21 +994,6 @@ const NotesRouteChildren: NotesRouteChildren = {
 
 const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
 
-interface PupilsRouteChildren {
-  PupilsIdRoute: typeof PupilsIdRoute
-  PupilsNewRoute: typeof PupilsNewRoute
-  PupilsIndexRoute: typeof PupilsIndexRoute
-}
-
-const PupilsRouteChildren: PupilsRouteChildren = {
-  PupilsIdRoute: PupilsIdRoute,
-  PupilsNewRoute: PupilsNewRoute,
-  PupilsIndexRoute: PupilsIndexRoute,
-}
-
-const PupilsRouteWithChildren =
-  PupilsRoute._addFileChildren(PupilsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
@@ -1028,7 +1018,6 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
-  PupilsRoute: PupilsRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
   ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
@@ -1045,7 +1034,11 @@ const rootRouteChildren: RootRouteChildren = {
   WaiversRoute: WaiversRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
+  PupilsIdRoute: PupilsIdRoute,
+  PupilsNewRoute: PupilsNewRoute,
+  PupilsIndexRoute: PupilsIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
+  PupilsEditIdRoute: PupilsEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
