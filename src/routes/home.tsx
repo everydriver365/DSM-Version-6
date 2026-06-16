@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   Phone,
   Car,
@@ -65,7 +66,7 @@ interface LessonRow {
   duration_minutes: number | null;
   status: string;
   pupil_id: string;
-  pupils?: { name: string } | null;
+  pupils?: { name: string; phone: string | null } | null;
 }
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -208,7 +209,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -223,7 +224,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
