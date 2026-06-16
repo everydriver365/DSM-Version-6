@@ -77,29 +77,56 @@ function LoginPage() {
         </p>
 
         <div className="flex flex-col gap-4">
-          <Input
-            label="Email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="w-full">
+            <label
+              htmlFor="login-email"
+              className="block mb-1 text-[12px] font-medium text-[#6B7280]"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              Email
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              required
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                border: "1.5px solid #CBD5E1",
+              }}
+            />
+          </div>
 
           <div className="w-full relative">
-            <Input
-              label="Password"
+            <label
+              htmlFor="login-password"
+              className="block mb-1 text-[12px] font-medium text-[#6B7280]"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              Password
+            </label>
+            <input
+              id="login-password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
+              placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
-              className="pr-10"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                border: "1.5px solid #CBD5E1",
+              }}
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-[31px] text-[#6B7280] hover:text-[#1A1A2E]"
+              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#1A1A2E]"
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
