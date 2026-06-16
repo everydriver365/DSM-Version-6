@@ -154,8 +154,17 @@ function RootComponent() {
     "/onboarding",
     "/forgotpassword",
     "/resetpassword",
+    "/search",
   ]);
   const hideNav = hideNavPaths.has(pathname);
+
+  // Track recent screens for the search screen's "Recent" list.
+  useEffect(() => {
+    if (pathname === "/search") return;
+    import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
+  }, [pathname]);
+
+
 
   return (
     <QueryClientProvider client={queryClient}>
