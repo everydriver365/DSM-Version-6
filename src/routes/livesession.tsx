@@ -94,9 +94,9 @@ function LiveSessionPage() {
     })();
   }, []);
 
-  // Timer tick
+  // Session timer — counts up from 0 every second
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const id = setInterval(() => setSessionElapsed((s) => s + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
