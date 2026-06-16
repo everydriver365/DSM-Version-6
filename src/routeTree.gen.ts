@@ -289,9 +289,9 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsEditIdRoute = PupilsEditIdRouteImport.update({
-  id: '/edit/$id',
-  path: '/edit/$id',
-  getParentRoute: () => PupilsRoute,
+  id: '/pupils/edit/$id',
+  path: '/pupils/edit/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
   id: '/lessons/edit/$id',
