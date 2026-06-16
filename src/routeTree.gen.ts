@@ -39,6 +39,7 @@ import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HealthRouteImport } from './routes/health'
@@ -219,6 +220,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocationsRoute = LocationsRouteImport.update({
+  id: '/locations',
+  path: '/locations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -443,6 +450,7 @@ export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -504,6 +512,7 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
@@ -567,6 +576,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/locations'
     | '/login'
     | '/manifest'
     | '/messages'
@@ -628,6 +638,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/locations'
     | '/login'
     | '/manifest'
     | '/messages'
@@ -688,6 +699,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/locations'
     | '/login'
     | '/manifest'
     | '/messages'
@@ -750,6 +762,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
+  LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
   ManifestRoute: typeof ManifestRoute
   MessagesRoute: typeof MessagesRouteWithChildren
@@ -1004,6 +1017,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/locations': {
+      id: '/locations'
+      path: '/locations'
+      fullPath: '/locations'
+      preLoaderRoute: typeof LocationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/home': {
       id: '/home'
       path: '/home'
@@ -1251,6 +1271,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
+  LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
   ManifestRoute: ManifestRoute,
   MessagesRoute: MessagesRouteWithChildren,
