@@ -119,7 +119,7 @@ function LoginPage() {
           Welcome back
         </h2>
         <p
-          className="text-[13px] text-[#6B7280] text-center mb-4"
+          className="text-[13px] text-[#6B7280] text-center"
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Sign in to your account
