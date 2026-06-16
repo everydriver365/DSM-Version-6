@@ -319,6 +319,7 @@ function HomePage() {
     { icon: <HelpCircle size={16} color="#52525B" />, tint: "#F4F4F5", label: "Help", route: "/help" },
     { icon: <LayoutGrid size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Pipeline", route: "/pipeline" },
     { icon: <FileSignature size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Waivers", route: "/waivers" },
+    { icon: <Search size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Find gaps", route: "/gaps" },
   ] as const;
 
   return (
