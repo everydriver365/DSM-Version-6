@@ -406,6 +406,16 @@ function HomePage() {
           <Car size={20} color="#ffffff" />
           <button
             type="button"
+            aria-label="Search"
+            onClick={() => navigate({ to: "/search" })}
+            className="flex items-center justify-center"
+            style={{ width: 28, height: 28 }}
+          >
+            <Search size={20} color="#ffffff" />
+          </button>
+
+          <button
+            type="button"
             aria-label="Notifications"
             onClick={() => navigate({ to: "/notifications" })}
             className="relative flex items-center justify-center"
