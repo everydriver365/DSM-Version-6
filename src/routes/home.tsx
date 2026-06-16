@@ -34,6 +34,7 @@ import {
   Heart,
   FolderOpen,
   LayoutGrid,
+  FileSignature,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -314,6 +315,7 @@ function HomePage() {
     { icon: <BookOpen size={16} color="#059669" />, tint: "#ECFDF5", label: "Resources", route: "/resources" },
     { icon: <HelpCircle size={16} color="#52525B" />, tint: "#F4F4F5", label: "Help", route: "/help" },
     { icon: <LayoutGrid size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Pipeline", route: "/pipeline" },
+    { icon: <FileSignature size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Waivers", route: "/waivers" },
   ] as const;
 
   return (
