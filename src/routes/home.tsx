@@ -373,7 +373,7 @@ function HomePage() {
 
       {/* NEXT LESSON HERO */}
       <div
-        className="mx-4 mt-3 bg-white relative overflow-hidden"
+        className="mx-4 mt-3 bg-white relative"
         style={{
           borderRadius: 16,
           padding: 16,
@@ -381,6 +381,8 @@ function HomePage() {
           borderStyle: "solid",
           borderColor: "#E2E6ED",
           boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+          overflow: "visible",
+          minHeight: 160,
         }}
       >
         {loading ? (
