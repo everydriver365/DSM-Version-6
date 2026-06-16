@@ -290,6 +290,15 @@ function PupilDetailPage() {
             Add lesson
           </button>
         </div>
+        <div className="mt-2">
+          <Button
+            variant="ghost"
+            onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+          >
+            History
+          </Button>
+        </div>
+
 
         <SectionHeader>UPCOMING LESSONS</SectionHeader>
         {lessons === null ? null : lessons.length === 0 ? (
