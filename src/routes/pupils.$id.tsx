@@ -87,6 +87,7 @@ function PupilDetailPage() {
   const [savingNotes, setSavingNotes] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
+  const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
 
   useEffect(() => {
     supabase
