@@ -48,6 +48,7 @@ import { Route as GapsRouteImport } from './routes/gaps'
 import { Route as FuelRouteImport } from './routes/fuel'
 import { Route as ForgotpasswordRouteImport } from './routes/forgotpassword'
 import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DocumentsRouteImport } from './routes/documents'
@@ -268,6 +269,11 @@ const ExpensesRoute = ExpensesRouteImport.update({
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EodRoute = EodRouteImport.update({
+  id: '/eod',
+  path: '/eod',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnquiriesRoute = EnquiriesRouteImport.update({
   id: '/enquiries',
   path: '/enquiries',
@@ -401,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
+  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -466,6 +473,7 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
+  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -531,6 +539,7 @@ export interface FileRoutesById {
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
+  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -598,6 +607,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/earnings'
     | '/enquiries'
+    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -663,6 +673,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/earnings'
     | '/enquiries'
+    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -727,6 +738,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/earnings'
     | '/enquiries'
+    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -793,6 +805,7 @@ export interface RootRouteChildren {
   DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
   EnquiriesRoute: typeof EnquiriesRoute
+  EodRoute: typeof EodRoute
   ExpensesRoute: typeof ExpensesRoute
   ForgotpasswordRoute: typeof ForgotpasswordRoute
   FuelRoute: typeof FuelRoute
@@ -1119,6 +1132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/eod': {
+      id: '/eod'
+      path: '/eod'
+      fullPath: '/eod'
+      preLoaderRoute: typeof EodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/enquiries': {
       id: '/enquiries'
       path: '/enquiries'
@@ -1326,6 +1346,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,
   EnquiriesRoute: EnquiriesRoute,
+  EodRoute: EodRoute,
   ExpensesRoute: ExpensesRoute,
   ForgotpasswordRoute: ForgotpasswordRoute,
   FuelRoute: FuelRoute,
