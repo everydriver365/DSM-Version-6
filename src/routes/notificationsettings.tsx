@@ -1,10 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bell } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import {
+  getPermission,
+  requestPermission,
+  isSupported as notificationsSupported,
+} from "../lib/pushNotifications";
+
 
 export const Route = createFileRoute("/notificationsettings")({
   head: () => ({
