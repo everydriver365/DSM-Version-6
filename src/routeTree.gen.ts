@@ -52,6 +52,7 @@ import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as DiaryRouteImport } from './routes/diary'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
 import { Route as ChecklistRouteImport } from './routes/checklist'
@@ -290,6 +291,11 @@ const DocumentsRoute = DocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiaryRoute = DiaryRouteImport.update({
+  id: '/diary',
+  path: '/diary',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DataimportRoute = DataimportRouteImport.update({
   id: '/dataimport',
   path: '/dataimport',
@@ -411,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
+  '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
@@ -478,6 +485,7 @@ export interface FileRoutesByTo {
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
+  '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
@@ -545,6 +553,7 @@ export interface FileRoutesById {
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
+  '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
@@ -614,6 +623,7 @@ export interface FileRouteTypes {
     | '/checklist'
     | '/cpd'
     | '/dataimport'
+    | '/diary'
     | '/documents'
     | '/earnings'
     | '/enquiries'
@@ -681,6 +691,7 @@ export interface FileRouteTypes {
     | '/checklist'
     | '/cpd'
     | '/dataimport'
+    | '/diary'
     | '/documents'
     | '/earnings'
     | '/enquiries'
@@ -747,6 +758,7 @@ export interface FileRouteTypes {
     | '/checklist'
     | '/cpd'
     | '/dataimport'
+    | '/diary'
     | '/documents'
     | '/earnings'
     | '/enquiries'
@@ -815,6 +827,7 @@ export interface RootRouteChildren {
   ChecklistRoute: typeof ChecklistRoute
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
+  DiaryRoute: typeof DiaryRoute
   DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
   EnquiriesRoute: typeof EnquiriesRoute
@@ -1173,6 +1186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diary': {
+      id: '/diary'
+      path: '/diary'
+      fullPath: '/diary'
+      preLoaderRoute: typeof DiaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dataimport': {
       id: '/dataimport'
       path: '/dataimport'
@@ -1364,6 +1384,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChecklistRoute: ChecklistRoute,
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
+  DiaryRoute: DiaryRoute,
   DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,
   EnquiriesRoute: EnquiriesRoute,
