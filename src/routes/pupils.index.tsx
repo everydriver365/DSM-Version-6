@@ -48,16 +48,35 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    supabase
-      .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status")
-      .is("deleted_at", null)
-      .order("name", { ascending: true })
-      .then(({ data, error }) => {
-        if (error) console.error("[pupils] fetch error", error);
-        setPupils((data ?? []) as Pupil[]);
-      });
+    (async () => {
+      const { data: auth, error: authErr } = await supabase.auth.getUser();
+      if (authErr) console.error("[pupils] auth error", authErr);
+      const uid = auth?.user?.id;
+      if (!uid) {
+        console.warn("[pupils] no authenticated user");
+        setPupils([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("pupils")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, status")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .order("name", { ascending: true, nullsFirst: false });
+      if (error) console.error("[pupils] fetch error", error);
+      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null }>;
+      // Fallback to first_name + last_name when name is null
+      const normalized: Pupil[] = rows.map((p) => ({
+        ...p,
+        name:
+          p.name && p.name.trim()
+            ? p.name
+            : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
+      }));
+      setPupils(normalized);
+    })();
   }, []);
+
 
   const filtered = useMemo(() => {
     if (!pupils) return null;

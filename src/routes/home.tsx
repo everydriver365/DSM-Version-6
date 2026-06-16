@@ -197,12 +197,15 @@ function HomePage() {
         .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
+        .neq("status", "cancelled")
+        .neq("status", "completed")
         .gte("lesson_date", todayYmd)
         .lte("lesson_date", ymd(addDays(todayStart, 14)))
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
+
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
