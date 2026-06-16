@@ -116,10 +116,6 @@ function LiveSessionPage() {
     return () => clearInterval(id);
   }, [lesson, notes]);
 
-  const startMs = lesson
-    ? new Date(`${lesson.lesson_date}T${(lesson.lesson_time ?? "00:00:00").slice(0, 8).padEnd(8, ":00")}`).getTime()
-    : null;
-  const elapsedSec = startMs ? Math.floor((now - startMs) / 1000) : 0;
 
   async function endSession() {
     if (!lesson) {
