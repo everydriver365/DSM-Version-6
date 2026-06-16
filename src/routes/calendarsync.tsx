@@ -45,8 +45,8 @@ function CalendarSyncPage() {
   }, [navigate]);
 
   const icsUrl = userId
-    ? `https://everydriver.co.uk/api/ics/${userId}`
-    : "https://everydriver.co.uk/api/ics/…";
+    ? `https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/ics-feed?instructor_id=${userId}`
+    : "https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/ics-feed?instructor_id=…";
 
   async function copyLink() {
     try {
