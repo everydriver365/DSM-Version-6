@@ -67,50 +67,65 @@ function WaiversPage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) setUserId(data.user.id);
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("[waivers] auth.getUser error", error);
+        setLoading(false);
+        return;
+      }
+      if (data.user) {
+        setUserId(data.user.id);
+      } else {
+        console.warn("[waivers] no authenticated user");
+        setLoading(false);
+      }
     })();
   }, []);
 
   async function load(uid: string) {
     setLoading(true);
-    const [{ data: tpl, error: tErr }, { data: sig, error: sErr }] = await Promise.all([
-      supabase
-        .from("waiver_templates")
-        .select("*")
-        .eq("instructor_id", uid)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("waiver_signatures")
-        .select(
-          "id, template_id, pupil_id, pupil_name, status, signed_at, created_at, waiver_templates(name), pupils(first_name, last_name)",
-        )
-        .eq("instructor_id", uid)
-        .order("created_at", { ascending: false })
-        .limit(20),
-    ]);
-    setLoading(false);
-    if (tErr) console.error("[waivers] templates", tErr);
-    if (sErr) console.error("[waivers] signatures", sErr);
-    setTemplates((tpl ?? []) as Template[]);
-    const sigs = (sig ?? []) as unknown as Signature[];
-    setSignatures(sigs);
+    const { data: tpl, error: tErr } = await supabase
+      .from("waiver_templates")
+      .select("*, waiver_signatures(count)")
+      .eq("instructor_id", uid)
+      .order("created_at", { ascending: false });
 
-    // counts per template
-    const { data: countRows } = await supabase
+    if (tErr) {
+      console.error("[waivers] templates fetch error", tErr);
+      setTemplates([]);
+    } else {
+      const rows = (tpl ?? []) as Array<Template & { waiver_signatures?: { count: number }[] }>;
+      setTemplates(rows);
+      const c: Record<string, number> = {};
+      rows.forEach((r) => {
+        c[r.id] = r.waiver_signatures?.[0]?.count ?? 0;
+      });
+      setCounts(c);
+    }
+
+    const { data: sig, error: sErr } = await supabase
       .from("waiver_signatures")
-      .select("template_id")
-      .eq("instructor_id", uid);
-    const c: Record<string, number> = {};
-    (countRows ?? []).forEach((r: { template_id: string | null }) => {
-      if (r.template_id) c[r.template_id] = (c[r.template_id] ?? 0) + 1;
-    });
-    setCounts(c);
+      .select(
+        "id, template_id, pupil_id, pupil_name, status, signed_at, created_at, waiver_templates(name), pupils(first_name, last_name)",
+      )
+      .eq("instructor_id", uid)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (sErr) {
+      console.error("[waivers] signatures fetch error", sErr);
+      setSignatures([]);
+    } else {
+      setSignatures((sig ?? []) as unknown as Signature[]);
+    }
+
+    setLoading(false);
   }
 
   useEffect(() => {
     if (userId) load(userId);
   }, [userId]);
+
 
   return (
     <div className="min-h-screen bg-white" style={POPPINS}>
