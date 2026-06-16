@@ -232,7 +232,7 @@ function LiveSessionPage() {
             onClick={endSession}
             style={actionBtn("#CC2229")}
           >
-            <X size={20} color="#fff" />
+            <CheckSquare size={20} color="#fff" />
             <span>End lesson</span>
           </button>
           <button
