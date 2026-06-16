@@ -289,9 +289,9 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsEditIdRoute = PupilsEditIdRouteImport.update({
-  id: '/pupils/edit/$id',
-  path: '/pupils/edit/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => PupilsRoute,
 } as any)
 const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
   id: '/lessons/edit/$id',
@@ -641,6 +641,7 @@ export interface RootRouteChildren {
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
+  PupilsEditIdRoute: typeof PupilsEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
