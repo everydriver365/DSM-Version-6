@@ -44,9 +44,11 @@ function LoginPage() {
     >
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
-        <span className="text-white text-[32px] font-bold" style={{ fontFamily: "Poppins, sans-serif" }}>
-          DSM
-        </span>
+        <img
+          src={dsmLogoAsset.url}
+          alt="DSM logo"
+          className="h-[60px] w-auto mb-2"
+        />
         <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
           by EveryDriver
         </span>
