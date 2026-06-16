@@ -1012,12 +1012,14 @@ interface PupilsRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  PupilsEditIdRoute: typeof PupilsEditIdRoute
 }
 
 const PupilsRouteChildren: PupilsRouteChildren = {
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  PupilsEditIdRoute: PupilsEditIdRoute,
 }
 
 const PupilsRouteWithChildren =
