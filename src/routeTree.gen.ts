@@ -61,11 +61,6 @@ const WaiversRoute = WaiversRouteImport.update({
   path: '/waivers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WaiversRoute = WaiversRouteImport.update({
-  id: '/waivers',
-  path: '/waivers',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const WaitinglistRoute = WaitinglistRouteImport.update({
   id: '/waitinglist',
   path: '/waitinglist',
