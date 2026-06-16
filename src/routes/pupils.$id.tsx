@@ -178,6 +178,7 @@ function PupilDetailPage() {
           <button
             type="button"
             aria-label="Edit pupil"
+            onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
             className="flex items-center justify-center"
             style={{ width: 40, height: 40 }}
           >
