@@ -35,6 +35,7 @@ import {
   FolderOpen,
   LayoutGrid,
   FileSignature,
+  MapPin,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
