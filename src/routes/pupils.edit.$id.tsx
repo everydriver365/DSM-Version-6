@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
-export const Route = createFileRoute("/pupils_/edit/$id")({
+export const Route = createFileRoute("/pupils/edit/$id")({
   head: () => ({
     meta: [{ title: "Edit pupil — DSM by EveryDriver" }],
   }),

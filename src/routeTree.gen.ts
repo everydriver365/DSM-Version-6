@@ -23,7 +23,6 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
-import { Route as PupilsRouteImport } from './routes/pupils'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -55,7 +54,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
-import { Route as PupilsEditIdRouteImport } from './routes/pupils_.edit.$id'
+import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 
 const WaiversRoute = WaiversRouteImport.update({
@@ -126,11 +125,6 @@ const ReminderRoute = ReminderRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PupilsRoute = PupilsRouteImport.update({
-  id: '/pupils',
-  path: '/pupils',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -289,7 +283,7 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsEditIdRoute = PupilsEditIdRouteImport.update({
-  id: '/pupils_/edit/$id',
+  id: '/pupils/edit/$id',
   path: '/pupils/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -323,7 +317,6 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
-  '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
@@ -422,7 +415,6 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
-  '/pupils': typeof PupilsRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
@@ -446,7 +438,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
-  '/pupils_/edit/$id': typeof PupilsEditIdRoute
+  '/pupils/edit/$id': typeof PupilsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -474,7 +466,6 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
-    | '/pupils'
     | '/referrals'
     | '/reminder'
     | '/reports'
@@ -572,7 +563,6 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
-    | '/pupils'
     | '/referrals'
     | '/reminder'
     | '/reports'
@@ -596,7 +586,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/lessons/edit/$id'
-    | '/pupils_/edit/$id'
+    | '/pupils/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -623,7 +613,6 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
-  PupilsRoute: typeof PupilsRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
   ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
@@ -742,13 +731,6 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pupils': {
-      id: '/pupils'
-      path: '/pupils'
-      fullPath: '/pupils'
-      preLoaderRoute: typeof PupilsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -968,8 +950,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pupils_/edit/$id': {
-      id: '/pupils_/edit/$id'
+    '/pupils/edit/$id': {
+      id: '/pupils/edit/$id'
       path: '/pupils/edit/$id'
       fullPath: '/pupils/edit/$id'
       preLoaderRoute: typeof PupilsEditIdRouteImport
@@ -1009,21 +991,6 @@ const NotesRouteChildren: NotesRouteChildren = {
 
 const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
 
-interface PupilsRouteChildren {
-  PupilsIdRoute: typeof PupilsIdRoute
-  PupilsNewRoute: typeof PupilsNewRoute
-  PupilsIndexRoute: typeof PupilsIndexRoute
-}
-
-const PupilsRouteChildren: PupilsRouteChildren = {
-  PupilsIdRoute: PupilsIdRoute,
-  PupilsNewRoute: PupilsNewRoute,
-  PupilsIndexRoute: PupilsIndexRoute,
-}
-
-const PupilsRouteWithChildren =
-  PupilsRoute._addFileChildren(PupilsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
@@ -1048,7 +1015,6 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
-  PupilsRoute: PupilsRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
   ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
@@ -1071,3 +1037,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
