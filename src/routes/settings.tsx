@@ -183,11 +183,20 @@ function SettingsPage() {
 
 
           <MenuRow
+            icon={<PoundSterling size={18} color="#5B21B6" />}
+            iconBg="#EDE9FE"
+            label="Payments"
+            onClick={() => navigate({ to: "/payments" })}
+          />
+
+          <MenuRow
             icon={<Clock size={18} color="#1A52A0" />}
             iconBg="#DBEAFE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
           />
+
+
 
           <MenuRow
             icon={<Bell size={18} color="#92400E" />}
