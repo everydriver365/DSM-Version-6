@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
+import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
