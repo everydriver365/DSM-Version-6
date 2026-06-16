@@ -105,10 +105,10 @@ function LoginPage() {
       {/* Card */}
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-[360px] bg-white flex flex-col"
+        className="w-full max-w-[360px] bg-white flex flex-col mt-12"
         style={{
           borderRadius: "20px",
-          padding: "28px",
+          padding: "32px",
           boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
         }}
       >
@@ -119,7 +119,7 @@ function LoginPage() {
           Welcome back
         </h2>
         <p
-          className="text-[13px] text-[#6B7280] text-center mb-6"
+          className="text-[13px] text-[#6B7280] text-center mb-4"
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Sign in to your account
@@ -182,70 +182,71 @@ function LoginPage() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-        </div>
 
-        {/* Remember me + Forgot */}
-        <div className="flex items-center justify-between mt-4">
-          <label className="flex items-center gap-2 text-[13px] text-[#6B7280] cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(e) => {
-                const on = e.target.checked;
-                setRemember(on);
-                persistRemember(email, on);
-              }}
-              className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A52A0]"
-            />
-            Remember me
-          </label>
-          <Link
-            to="/forgotpassword"
-            className="text-[13px] text-[#1A52A0] hover:underline"
-          >
-            Forgot password?
-          </Link>
-        </div>
+          {/* Remember me + Forgot */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-[13px] text-[#6B7280] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => {
+                  const on = e.target.checked;
+                  setRemember(on);
+                  persistRemember(email, on);
+                }}
+                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A52A0]"
+              />
+              Remember me
+            </label>
+            <Link
+              to="/forgotpassword"
+              className="text-[13px] text-[#1A52A0] hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
-        <div className="mt-6">
-          <Button
-            type="submit"
-            disabled={loading}
-            className="h-12 text-[14px]"
-          >
-            {loading ? "Signing in…" : "Sign in"}
-          </Button>
-        </div>
+          <div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="h-12 text-[14px]"
+            >
+              {loading ? "Signing in…" : "Sign in"}
+            </Button>
+          </div>
 
-        {webauthnSupported && (
-          <>
+          {webauthnSupported && (
             <button
               type="button"
               onClick={onBiometric}
-              className="mt-3 h-12 w-full rounded-lg bg-white text-[#0F2044] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
+              className="h-12 w-full rounded-lg bg-white text-[#0F2044] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
               style={{ border: "1.5px solid #E2E6ED", fontFamily: "Poppins, sans-serif" }}
             >
               <ScanFace size={20} />
               Sign in with Face ID / Touch ID
             </button>
+          )}
+
+          {webauthnSupported && (
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#1A52A0] hover:underline text-center mt-3"
+              className="text-[13px] text-[#1A52A0] hover:underline text-center"
             >
               Forgot password?
             </Link>
-          </>
-        )}
+          )}
 
-        {error && (
-          <p
-            className="text-[13px] text-[#CC2229] text-center mt-3"
-            role="alert"
-            style={{ fontFamily: "Poppins, sans-serif" }}
-          >
-            {error}
-          </p>
-        )}
+          {error && (
+            <p
+              className="text-[13px] text-[#CC2229] text-center"
+              role="alert"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              {error}
+            </p>
+          )}
+        </div>
       </form>
 
       {/* Footer */}
