@@ -53,6 +53,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
 import { Route as ChecklistRouteImport } from './routes/checklist'
+import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
 import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as AvailabilityRouteImport } from './routes/availability'
@@ -291,6 +292,11 @@ const ChecklistRoute = ChecklistRouteImport.update({
   path: '/checklist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificationsRoute = CertificationsRouteImport.update({
+  id: '/certifications',
+  path: '/certifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalendarsyncRoute = CalendarsyncRouteImport.update({
   id: '/calendarsync',
   path: '/calendarsync',
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/availability': typeof AvailabilityRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
+  '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
@@ -445,6 +452,7 @@ export interface FileRoutesByTo {
   '/availability': typeof AvailabilityRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
+  '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
@@ -508,6 +516,7 @@ export interface FileRoutesById {
   '/availability': typeof AvailabilityRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
+  '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
@@ -573,6 +582,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/bulkmessage'
     | '/calendarsync'
+    | '/certifications'
     | '/checklist'
     | '/cpd'
     | '/dataimport'
@@ -636,6 +646,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/bulkmessage'
     | '/calendarsync'
+    | '/certifications'
     | '/checklist'
     | '/cpd'
     | '/dataimport'
@@ -698,6 +709,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/bulkmessage'
     | '/calendarsync'
+    | '/certifications'
     | '/checklist'
     | '/cpd'
     | '/dataimport'
@@ -762,6 +774,7 @@ export interface RootRouteChildren {
   AvailabilityRoute: typeof AvailabilityRoute
   BulkmessageRoute: typeof BulkmessageRoute
   CalendarsyncRoute: typeof CalendarsyncRoute
+  CertificationsRoute: typeof CertificationsRoute
   ChecklistRoute: typeof ChecklistRoute
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
@@ -1128,6 +1141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChecklistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certifications': {
+      id: '/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof CertificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calendarsync': {
       id: '/calendarsync'
       path: '/calendarsync'
@@ -1279,6 +1299,7 @@ const rootRouteChildren: RootRouteChildren = {
   AvailabilityRoute: AvailabilityRoute,
   BulkmessageRoute: BulkmessageRoute,
   CalendarsyncRoute: CalendarsyncRoute,
+  CertificationsRoute: CertificationsRoute,
   ChecklistRoute: ChecklistRoute,
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
