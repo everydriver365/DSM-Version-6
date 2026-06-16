@@ -44,11 +44,19 @@ import {
   Zap,
   CalendarDays,
   Crown,
+  X,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import {
+  getPermission,
+  requestPermission,
+  scheduleLessonReminder,
+  isSupported as notificationsSupported,
+} from "../lib/pushNotifications";
 import carAsset from "../assets/next-lesson-car.png.asset.json";
 import dsmLogo from "../assets/dsm-logo.png.asset.json";
+
 
 export const Route = createFileRoute("/home")({
   head: () => ({
