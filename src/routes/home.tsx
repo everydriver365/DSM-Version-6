@@ -372,73 +372,57 @@ function HomePage() {
       </div>
 
       {/* NEXT LESSON HERO */}
-      <div
-        style={{
-          position: 'relative',
-          background: '#FFFFFF',
-          borderRadius: 16,
-          margin: '12px 16px',
-          padding: 16,
-          minHeight: 160,
-          overflow: 'hidden',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-        }}
-      >
-        {loading ? (
-          <div
-            className="skeleton-pulse"
-            style={{ height: 120, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+      <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '12px 16px' }}>
+        <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+          {/* Car image with mask */}
+          <img
+            src={carAsset.url}
+            alt=""
+            aria-hidden
+            style={{
+              position: 'absolute',
+              zIndex: 0,
+              right: -30,
+              top: -45,
+              height: '100%',
+              width: '65%',
+              objectFit: 'cover',
+              objectPosition: 'center 25%',
+              opacity: 1,
+              pointerEvents: 'none',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
+              WebkitMaskComposite: 'source-in',
+              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
+              maskComposite: 'intersect',
+            }}
           />
-        ) : upcoming ? (
-          <>
-            {/* Car image - top right, behind content */}
-            <img
-              src={carAsset.url}
-              alt="Driving school car"
-              style={{
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                height: '100%',
-                width: 140,
-                objectFit: 'cover',
-                objectPosition: 'left center',
-                opacity: 0.9,
-              }}
-            />
-
-            {/* Text content - left side, max 60% width */}
-            <div style={{ position: 'relative', zIndex: 1, maxWidth: '58%' }}>
-              <p style={{ fontSize: 10, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
-                NEXT LESSON · {formatDayLabel(lessonDateTime(upcoming))}
-              </p>
-              <p style={{ fontSize: 48, fontWeight: 700, color: '#0F2044', lineHeight: 1, marginBottom: 4 }}>
-                {formatTime(upcoming)}
-              </p>
-              <p style={{ fontSize: 18, fontWeight: 600, color: '#0F2044', marginBottom: 2 }}>
-                {pupilName(upcoming)}
-              </p>
-              <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 12 }}>
-                {formatDuration(upcoming.duration_minutes)}
-              </p>
-
-              {/* Three buttons */}
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-                  📞 Call
-                </button>
-                <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-                  💬 Text
-                </button>
-                <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-                  ➤ Go
-                </button>
+          {/* Label */}
+          <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif' }}>
+            Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
+          </div>
+          {/* Content */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                {upcoming ? formatTime(upcoming) : '—'}
+              </div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
               </div>
             </div>
-          </>
-        ) : (
-          <div className="text-center py-10 text-[14px] text-[#6B7280]">No upcoming lessons</div>
-        )}
+          </div>
+          {/* Action buttons */}
+          {upcoming && (
+            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>📞 Call</button>
+              <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>💬 Text</button>
+              <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* STATS ROW */}
