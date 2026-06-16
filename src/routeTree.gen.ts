@@ -19,6 +19,7 @@ import { Route as TaxRouteImport } from './routes/tax'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as SatnavRouteImport } from './routes/satnav'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -126,6 +127,11 @@ const StandardsRoute = StandardsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScheduleRoute = ScheduleRouteImport.update({
@@ -465,6 +471,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
@@ -534,6 +541,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
@@ -605,6 +613,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
@@ -677,6 +686,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/satnav'
     | '/schedule'
+    | '/search'
     | '/settings'
     | '/standards'
     | '/subscription'
@@ -746,6 +756,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/satnav'
     | '/schedule'
+    | '/search'
     | '/settings'
     | '/standards'
     | '/subscription'
@@ -816,6 +827,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/satnav'
     | '/schedule'
+    | '/search'
     | '/settings'
     | '/standards'
     | '/subscription'
@@ -887,6 +899,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   SatnavRoute: typeof SatnavRoute
   ScheduleRoute: typeof ScheduleRoute
+  SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   StandardsRoute: typeof StandardsRoute
   SubscriptionRoute: typeof SubscriptionRoute
@@ -979,6 +992,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/schedule': {
@@ -1460,6 +1480,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   SatnavRoute: SatnavRoute,
   ScheduleRoute: ScheduleRoute,
+  SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   StandardsRoute: StandardsRoute,
   SubscriptionRoute: SubscriptionRoute,
