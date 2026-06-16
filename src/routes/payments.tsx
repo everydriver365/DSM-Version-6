@@ -187,55 +187,115 @@ function PaymentsPage() {
       </div>
 
       {/* Earnings stats card */}
-      <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0F2044", borderRadius: 12 }}>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
+      {loading ? (
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0F2044", borderRadius: 12 }}>
+          <div className="grid grid-cols-2 gap-4">
             <div
-              className="text-[11px] font-medium uppercase"
-              style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}
-            >
-              This week
+              className="skeleton-pulse"
+              style={{ height: 50, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+            />
+            <div
+              className="skeleton-pulse"
+              style={{ height: 50, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+            />
+          </div>
+          <div
+            className="skeleton-pulse mt-3"
+            style={{ height: 20, backgroundColor: "#E2E6ED", borderRadius: 4 }}
+          />
+        </div>
+      ) : (
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0F2044", borderRadius: 12 }}>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div
+                className="text-[11px] font-medium uppercase"
+                style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}
+              >
+                This week
+              </div>
+              <div
+                className="text-[24px] font-bold mt-1"
+                style={{ color: "#F59E0B", ...POPPINS }}
+              >
+                {formatGBP(weekTotal)}
+              </div>
             </div>
-            <div
-              className="text-[24px] font-bold mt-1"
-              style={{ color: "#F59E0B", ...POPPINS }}
-            >
-              {formatGBP(weekTotal)}
+            <div>
+              <div
+                className="text-[11px] font-medium uppercase"
+                style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}
+              >
+                This month
+              </div>
+              <div
+                className="text-[24px] font-bold mt-1"
+                style={{ color: "#F59E0B", ...POPPINS }}
+              >
+                {formatGBP(monthTotal)}
+              </div>
             </div>
           </div>
-          <div>
-            <div
-              className="text-[11px] font-medium uppercase"
-              style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}
-            >
-              This month
-            </div>
-            <div
-              className="text-[24px] font-bold mt-1"
-              style={{ color: "#F59E0B", ...POPPINS }}
-            >
-              {formatGBP(monthTotal)}
-            </div>
+          <div
+            className="mt-3 pt-3 text-[13px] text-white flex items-center justify-between"
+            style={{
+              borderTopWidth: "0.5px",
+              borderTopStyle: "solid",
+              borderTopColor: "#1F2F55",
+              ...POPPINS,
+            }}
+          >
+            <span style={{ color: "#9CA3AF" }}>TOTAL COLLECTED</span>
+            <span className="font-semibold">{formatGBP(allTotal)}</span>
           </div>
         </div>
-        <div
-          className="mt-3 pt-3 text-[13px] text-white flex items-center justify-between"
-          style={{
-            borderTopWidth: "0.5px",
-            borderTopStyle: "solid",
-            borderTopColor: "#1F2F55",
-            ...POPPINS,
-          }}
-        >
-          <span style={{ color: "#9CA3AF" }}>TOTAL COLLECTED</span>
-          <span className="font-semibold">{formatGBP(allTotal)}</span>
-        </div>
-      </div>
+      )}
 
       <div className="px-4">
         <SectionHeader>OUTSTANDING</SectionHeader>
 
-        {outstanding === null ? null : outstanding.length === 0 ? (
+        {outstanding === null && loading ? (
+          <div className="flex flex-col gap-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="bg-white flex items-center gap-3"
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#E2E6ED",
+                }}
+              >
+                <div
+                  className="skeleton-pulse rounded-full shrink-0"
+                  style={{ width: 40, height: 40, backgroundColor: "#E2E6ED" }}
+                />
+                <div className="min-w-0 flex-1 flex flex-col gap-2">
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 14,
+                      width: "60%",
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                </div>
+                <div
+                  className="skeleton-pulse shrink-0"
+                  style={{
+                    height: 14,
+                    width: 50,
+                    backgroundColor: "#E2E6ED",
+                    borderRadius: 4,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : outstanding === null ? null : outstanding.length === 0 ? (
           <div className="flex items-center justify-center py-8">
             <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
               No outstanding balances
@@ -290,7 +350,53 @@ function PaymentsPage() {
 
         <SectionHeader>RECENT PAYMENTS</SectionHeader>
 
-        {payments === null ? null : payments.length === 0 ? (
+        {payments === null && loading ? (
+          <div className="flex flex-col gap-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="bg-white flex items-center justify-between gap-3"
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#E2E6ED",
+                }}
+              >
+                <div className="min-w-0 flex flex-col gap-2 flex-1">
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 14,
+                      width: "70%",
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 12,
+                      width: 50,
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                </div>
+                <div
+                  className="skeleton-pulse shrink-0"
+                  style={{
+                    height: 14,
+                    width: 50,
+                    backgroundColor: "#E2E6ED",
+                    borderRadius: 4,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : payments === null ? null : payments.length === 0 ? (
           <div className="flex items-center justify-center py-8">
             <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
               No payments recorded
@@ -518,6 +624,16 @@ function RecordSheet({
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: skeleton-pulse 1.5s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
