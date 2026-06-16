@@ -38,6 +38,7 @@ import {
   MapPin,
   Upload,
   Award,
+  ToggleLeft,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -336,6 +337,7 @@ function HomePage() {
     { icon: <MapPin size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Locations", route: "/locations" },
     { icon: <Upload size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Import", route: "/dataimport" },
     { icon: <Award size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Certifications", route: "/certifications" },
+    { icon: <ToggleLeft size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Availability", route: "/quickavailability" },
   ] as const;
 
   return (
