@@ -326,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
+  '/waivers': typeof WaiversRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -371,6 +372,7 @@ export interface FileRoutesByTo {
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
+  '/waivers': typeof WaiversRoute
   '/waivers': typeof WaiversRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -420,6 +422,7 @@ export interface FileRoutesById {
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
+  '/waivers': typeof WaiversRoute
   '/waivers': typeof WaiversRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -471,6 +474,7 @@ export interface FileRouteTypes {
     | '/vehicle'
     | '/waitinglist'
     | '/waivers'
+    | '/waivers'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -516,6 +520,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/vehicle'
     | '/waitinglist'
+    | '/waivers'
     | '/waivers'
     | '/lessons/$id'
     | '/lessons/new'
@@ -564,6 +569,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/vehicle'
     | '/waitinglist'
+    | '/waivers'
     | '/waivers'
     | '/lessons/$id'
     | '/lessons/new'
@@ -614,12 +620,20 @@ export interface RootRouteChildren {
   VehicleRoute: typeof VehicleRoute
   WaitinglistRoute: typeof WaitinglistRoute
   WaiversRoute: typeof WaiversRoute
+  WaiversRoute: typeof WaiversRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waivers': {
+      id: '/waivers'
+      path: '/waivers'
+      fullPath: '/waivers'
+      preLoaderRoute: typeof WaiversRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/waivers': {
       id: '/waivers'
       path: '/waivers'
@@ -1022,6 +1036,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodosRoute: TodosRoute,
   VehicleRoute: VehicleRoute,
   WaitinglistRoute: WaitinglistRoute,
+  WaiversRoute: WaiversRoute,
   WaiversRoute: WaiversRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
