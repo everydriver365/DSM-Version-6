@@ -967,18 +967,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pupils/edit/$id': {
+      id: '/pupils/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/pupils/edit/$id'
+      preLoaderRoute: typeof PupilsEditIdRouteImport
+      parentRoute: typeof PupilsRoute
+    }
     '/lessons/edit/$id': {
       id: '/lessons/edit/$id'
       path: '/lessons/edit/$id'
       fullPath: '/lessons/edit/$id'
       preLoaderRoute: typeof LessonsEditIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pupils/edit/$id': {
-      id: '/pupils/edit/$id'
-      path: '/pupils/edit/$id'
-      fullPath: '/pupils/edit/$id'
-      preLoaderRoute: typeof PupilsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
