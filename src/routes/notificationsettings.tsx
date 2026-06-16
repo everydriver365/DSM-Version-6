@@ -57,6 +57,10 @@ function NotificationSettingsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [state, setState] = useState<SettingsState>(DEFAULTS);
   const [saving, setSaving] = useState(false);
+  const [browserPerm, setBrowserPerm] = useState<"granted" | "denied" | "default">(
+    () => (notificationsSupported() ? getPermission() : "denied"),
+  );
+
 
   useEffect(() => {
     (async () => {
