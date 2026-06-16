@@ -22,6 +22,7 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as SatnavRouteImport } from './routes/satnav'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ResetpasswordRouteImport } from './routes/resetpassword'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
@@ -127,6 +128,11 @@ const ReviewsRoute = ReviewsRouteImport.update({
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetpasswordRoute = ResetpasswordRouteImport.update({
+  id: '/resetpassword',
+  path: '/resetpassword',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -366,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -478,6 +486,7 @@ export interface FileRoutesById {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -536,6 +545,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -591,6 +601,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -647,6 +658,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -704,6 +716,7 @@ export interface RootRouteChildren {
   ReferralsRoute: typeof ReferralsRoute
   ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
+  ResetpasswordRoute: typeof ResetpasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   ReviewsRoute: typeof ReviewsRoute
   SatnavRoute: typeof SatnavRoute
@@ -818,6 +831,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resetpassword': {
+      id: '/resetpassword'
+      path: '/resetpassword'
+      fullPath: '/resetpassword'
+      preLoaderRoute: typeof ResetpasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -1165,6 +1185,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReferralsRoute: ReferralsRoute,
   ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
+  ResetpasswordRoute: ResetpasswordRoute,
   ResourcesRoute: ResourcesRoute,
   ReviewsRoute: ReviewsRoute,
   SatnavRoute: SatnavRoute,
