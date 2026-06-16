@@ -355,7 +355,11 @@ function HomePage() {
         style={{ backgroundColor: "#0F2044" }}
       >
         <div className="flex items-center gap-2">
-          <span className="text-white text-[15px] font-bold">DSM</span>
+          <img
+            src={dsmLogo.url}
+            alt="DSM"
+            style={{ height: 28, width: 'auto', objectFit: 'contain' }}
+          />
           <span className="text-white text-[15px]">{firstName}</span>
           <span
             className="rounded-full"
