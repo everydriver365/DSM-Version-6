@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   Phone,
   Car,
@@ -65,7 +66,7 @@ interface LessonRow {
   duration_minutes: number | null;
   status: string;
   pupil_id: string;
-  pupils?: { name: string } | null;
+  pupils?: { name: string; phone: string | null } | null;
 }
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -208,7 +209,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -223,7 +224,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -438,8 +439,22 @@ function HomePage() {
             {/* Action buttons */}
             {upcoming && (
               <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
-                <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>📞 Call</button>
-                <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>💬 Text</button>
+                <button
+                  onClick={() => {
+                    const phone = upcoming?.pupils?.phone;
+                    if (phone) window.location.href = `tel:${phone}`;
+                    else toast("No phone number for this pupil");
+                  }}
+                  style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                >📞 Call</button>
+                <button
+                  onClick={() => {
+                    const phone = upcoming?.pupils?.phone;
+                    if (phone) window.location.href = `sms:${phone}`;
+                    else toast("No phone number");
+                  }}
+                  style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                >💬 Text</button>
                 <button onClick={() => navigate({ to: "/livesession" })} style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
               </div>
             )}
