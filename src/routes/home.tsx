@@ -289,6 +289,22 @@ function HomePage() {
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
 
+  // Schedule a local reminder 1h before the next lesson if it's today & >1h away.
+  useEffect(() => {
+    if (!nextLesson) return;
+    if (notifPermission !== "granted") return;
+    const t = (nextLesson.lesson_time ?? "00:00:00").slice(0, 8);
+    const time = t.length === 5 ? `${t}:00` : t;
+    const lessonAt = new Date(`${nextLesson.lesson_date}T${time}`);
+    const msAway = lessonAt.getTime() - Date.now();
+    const isToday = ymd(lessonAt) === ymd(new Date());
+    if (!isToday) return;
+    if (msAway <= 60 * 60 * 1000) return;
+    const cleanup = scheduleLessonReminder(nextLesson);
+    return cleanup;
+  }, [nextLesson, notifPermission]);
+
+
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
   const todayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
