@@ -134,7 +134,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const active = getActiveNav(router.state.location.pathname);
-  const hideNav = router.state.location.pathname === "/satnav";
+  const hideNav =
+    router.state.location.pathname === "/satnav" ||
+    router.state.location.pathname === "/weeklyreport";
 
   return (
     <QueryClientProvider client={queryClient}>
