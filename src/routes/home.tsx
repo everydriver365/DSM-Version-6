@@ -371,151 +371,128 @@ function HomePage() {
         </div>
       </div>
 
-      {/* NEXT LESSON HERO */}
-      <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '12px 16px' }}>
-        <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
-          {/* Car image with mask */}
-          <img
-            src={carAsset.url}
-            alt=""
-            aria-hidden
-            style={{
-              position: 'absolute',
-              zIndex: 0,
-              right: -30,
-              top: -45,
-              height: '100%',
-              width: '65%',
-              objectFit: 'cover',
-              objectPosition: 'center 25%',
-              opacity: 1,
-              pointerEvents: 'none',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
-              WebkitMaskComposite: 'source-in',
-              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
-              maskComposite: 'intersect',
-            }}
-          />
-          {/* Label */}
-          <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif' }}>
-            Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
-          </div>
-          {/* Content */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                {upcoming ? formatTime(upcoming) : '—'}
-              </div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
+      {/* NAVY HEADER SECTION (hero + stats strip) */}
+      <div style={{ backgroundColor: '#0F2044', paddingBottom: 14 }}>
+        {/* NEXT LESSON HERO */}
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '12px 16px 0' }}>
+          <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+            {/* Car image with mask */}
+            <img
+              src={carAsset.url}
+              alt=""
+              aria-hidden
+              style={{
+                position: 'absolute',
+                zIndex: 0,
+                right: -30,
+                top: -45,
+                height: '100%',
+                width: '65%',
+                objectFit: 'cover',
+                objectPosition: 'center 25%',
+                opacity: 1,
+                pointerEvents: 'none',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
+                WebkitMaskComposite: 'source-in',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 65%, rgba(0,0,0,0.5) 88%, transparent 100%)',
+                maskComposite: 'intersect',
+              }}
+            />
+            {/* Label */}
+            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative' }}>
+              Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
+            </div>
+            {/* Content */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? formatTime(upcoming) : '—'}
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
+                </div>
               </div>
             </div>
+            {/* Action buttons */}
+            {upcoming && (
+              <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
+                <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>📞 Call</button>
+                <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>💬 Text</button>
+                <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
+              </div>
+            )}
           </div>
-          {/* Action buttons */}
-          {upcoming && (
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-              <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>📞 Call</button>
-              <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>💬 Text</button>
-              <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
-            </div>
-          )}
         </div>
+
+        {/* STATS STRIP on navy */}
+        {loading ? (
+          <div
+            className="skeleton-pulse"
+            style={{ margin: '10px 16px 0', height: 78, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.16)' }}
+          />
+        ) : (
+          <div
+            style={{
+              margin: '10px 16px 0',
+              backgroundColor: 'rgba(255,255,255,0.16)',
+              border: '1px solid rgba(255,255,255,0.22)',
+              borderRadius: 12,
+              overflow: 'hidden',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+              display: 'flex',
+            }}
+          >
+            <div style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+                EARNINGS · WEEK
+              </div>
+              <div style={{ fontSize: 19, fontWeight: 800, color: '#FFD27A', marginTop: 2, lineHeight: 1.1 }}>
+                £{weekEarnings.toFixed(0)}
+              </div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+                £{todayEarnings.toFixed(0)} today
+              </div>
+              <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
+              </div>
+            </div>
+            <div style={{ flex: 1, padding: '10px 12px' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+                LESSONS · WEEK
+              </div>
+              <div style={{ fontSize: 19, fontWeight: 800, color: '#8FF0C2', marginTop: 2, lineHeight: 1.1 }}>
+                {weekLessons.length}/{WEEKLY_LESSON_GOAL}
+              </div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+                {todayLessons.length} today
+              </div>
+              <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#1A52A0' }} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* STATS ROW */}
-      {loading ? (
-        <div
-          className="mx-4 mt-3 flex gap-3"
-          style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: "12px 16px" }}
-        >
-          <div
-            className="flex-1 skeleton-pulse"
-            style={{ height: 60, backgroundColor: "#E2E6ED", borderRadius: 8 }}
-          />
-          <div
-            className="flex-1 skeleton-pulse"
-            style={{ height: 60, backgroundColor: "#E2E6ED", borderRadius: 8 }}
-          />
-        </div>
-      ) : (
-        <div
-          className="mx-4 mt-3 flex"
-          style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: "12px 16px" }}
-        >
-          <div className="flex-1 pr-3">
-            <div
-              className="text-[10px] uppercase"
-              style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
-            >
-              EARNINGS · WEEK
-            </div>
-            <div className="text-[26px] font-bold" style={{ color: "#F59E0B" }}>
-              £{weekEarnings.toFixed(0)}
-            </div>
-            <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
-              £{todayEarnings.toFixed(0)} today
-            </div>
-            <div
-              className="mt-2 overflow-hidden"
-              style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
-            >
-              <div
-                style={{ height: "100%", width: `${earningsPct}%`, backgroundColor: "#CC2229" }}
-              />
-            </div>
-          </div>
-          <div style={{ width: "0.5px", backgroundColor: "rgba(255,255,255,0.2)" }} />
-          <div className="flex-1 pl-3">
-            <div
-              className="text-[10px] uppercase"
-              style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
-            >
-              LESSONS · WEEK
-            </div>
-            <div className="text-[26px] font-bold" style={{ color: "#16A34A" }}>
-              {weekLessons.length}/{WEEKLY_LESSON_GOAL}
-            </div>
-            <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
-              {todayLessons.length} today
-            </div>
-            <div
-              className="mt-2 overflow-hidden"
-              style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
-            >
-              <div
-                style={{ height: "100%", width: `${lessonsPct}%`, backgroundColor: "#1A52A0" }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* TODAY STRIP — 3 white tiles */}
+      <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
+        <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
+        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+        <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
+      </div>
 
-      {/* QUICK STATS */}
-      {loading ? (
-        <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
-          <div
-            className="flex-1 skeleton-pulse"
-            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
-          />
-          <div
-            className="flex-1 skeleton-pulse"
-            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
-          />
-          <div
-            className="flex-1 skeleton-pulse"
-            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
-          />
-        </div>
-      ) : (
-        <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
-          <QuickTile valueColor="#0F2044" valueSize={20} value={String(todayLessons.length)} label="LESSONS TODAY" />
-          <QuickTile valueColor="#1A52A0" valueSize={14} value={nextFreeSlot ?? "—"} label="NEXT FREE SLOT" />
-          <QuickTile valueColor="#CC2229" valueSize={14} value={`£${outstanding.toFixed(0)}`} label="OUTSTANDING" />
-        </div>
-      )}
+      {/* NEEDS ATTENTION */}
+      <NeedsAttention
+        jobs={0}
+        tests={0}
+        calls={0}
+        enqs={0}
+        onNavigate={(to) => navigate({ to })}
+      />
+
 
       {/* SCHEDULE */}
       <div className="mx-4 mt-4">
