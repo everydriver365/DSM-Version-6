@@ -137,7 +137,8 @@ function RootComponent() {
   const hideNav =
     router.state.location.pathname === "/satnav" ||
     router.state.location.pathname === "/weeklyreport" ||
-    router.state.location.pathname === "/login";
+    router.state.location.pathname === "/login" ||
+    router.state.location.pathname === "/register";
 
   return (
     <QueryClientProvider client={queryClient}>
