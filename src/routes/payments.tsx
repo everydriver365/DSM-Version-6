@@ -70,6 +70,7 @@ function PaymentsPage() {
   const [payments, setPayments] = useState<PaymentRow[] | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -107,6 +108,7 @@ function PaymentsPage() {
       .then(({ data, error }) => {
         if (error) console.error("[payments] payments error", error);
         setPayments((data as unknown as PaymentRow[]) ?? []);
+        setLoading(false);
       });
   }, [userId]);
 
