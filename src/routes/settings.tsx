@@ -9,7 +9,9 @@ import {
   Shield,
   ChevronRight,
   ChevronDown,
+  PoundSterling,
 } from "lucide-react";
+
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 
