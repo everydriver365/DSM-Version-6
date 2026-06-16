@@ -25,6 +25,7 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ResetpasswordRouteImport } from './routes/resetpassword'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
@@ -144,6 +145,11 @@ const ReportsRoute = ReportsRouteImport.update({
 const ReminderRoute = ReminderRouteImport.update({
   id: '/reminder',
   path: '/reminder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReferralsRoute = ReferralsRouteImport.update({
@@ -377,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
+  '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -434,6 +441,7 @@ export interface FileRoutesByTo {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
+  '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -493,6 +501,7 @@ export interface FileRoutesById {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
+  '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
   '/resetpassword': typeof ResetpasswordRoute
@@ -553,6 +562,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/referrals'
+    | '/register'
     | '/reminder'
     | '/reports'
     | '/resetpassword'
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/referrals'
+    | '/register'
     | '/reminder'
     | '/reports'
     | '/resetpassword'
@@ -668,6 +679,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/referrals'
+    | '/register'
     | '/reminder'
     | '/reports'
     | '/resetpassword'
@@ -727,6 +739,7 @@ export interface RootRouteChildren {
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
   ReferralsRoute: typeof ReferralsRoute
+  RegisterRoute: typeof RegisterRoute
   ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
   ResetpasswordRoute: typeof ResetpasswordRoute
@@ -865,6 +878,13 @@ declare module '@tanstack/react-router' {
       path: '/reminder'
       fullPath: '/reminder'
       preLoaderRoute: typeof ReminderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/referrals': {
@@ -1204,6 +1224,7 @@ const rootRouteChildren: RootRouteChildren = {
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
   ReferralsRoute: ReferralsRoute,
+  RegisterRoute: RegisterRoute,
   ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
   ResetpasswordRoute: ResetpasswordRoute,
