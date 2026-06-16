@@ -41,6 +41,7 @@ import {
   ToggleLeft,
   Sun,
   Zap,
+  CalendarDays,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -342,6 +343,7 @@ function HomePage() {
     { icon: <ToggleLeft size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Availability", route: "/quickavailability" },
     { icon: <Sun size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "End of day", route: "/eod" },
     { icon: <Zap size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Automations", route: "/automations" },
+    { icon: <CalendarDays size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Diary", route: "/diary" },
   ] as const;
 
   return (
