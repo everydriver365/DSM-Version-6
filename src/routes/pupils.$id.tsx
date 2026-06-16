@@ -107,6 +107,8 @@ function PupilDetailPage() {
       .select("id, lesson_date, lesson_time, duration_minutes, status")
       .eq("pupil_id", id)
       .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .neq("status", "completed")
       .gte("lesson_date", ymd(new Date()))
       .order("lesson_date", { ascending: true })
       .order("lesson_time", { ascending: true })
@@ -114,6 +116,7 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] lessons error", error);
         setLessons((data as Lesson[]) ?? []);
       });
+
   }, [id]);
 
   async function removePupil() {
