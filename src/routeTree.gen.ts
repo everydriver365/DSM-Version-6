@@ -22,6 +22,7 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as SatnavRouteImport } from './routes/satnav'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ResetpasswordRouteImport } from './routes/resetpassword'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as ReferralsRouteImport } from './routes/referrals'
@@ -41,6 +42,7 @@ import { Route as HelpRouteImport } from './routes/help'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as GapsRouteImport } from './routes/gaps'
 import { Route as FuelRouteImport } from './routes/fuel'
+import { Route as ForgotpasswordRouteImport } from './routes/forgotpassword'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EarningsRouteImport } from './routes/earnings'
@@ -126,6 +128,11 @@ const ReviewsRoute = ReviewsRouteImport.update({
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetpasswordRoute = ResetpasswordRouteImport.update({
+  id: '/resetpassword',
+  path: '/resetpassword',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -221,6 +228,11 @@ const GapsRoute = GapsRouteImport.update({
 const FuelRoute = FuelRouteImport.update({
   id: '/fuel',
   path: '/fuel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotpasswordRoute = ForgotpasswordRouteImport.update({
+  id: '/forgotpassword',
+  path: '/forgotpassword',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpensesRoute = ExpensesRouteImport.update({
@@ -340,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
   '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
@@ -359,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -395,6 +409,7 @@ export interface FileRoutesByTo {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
   '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
@@ -413,6 +428,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -450,6 +466,7 @@ export interface FileRoutesById {
   '/earnings': typeof EarningsRoute
   '/enquiries': typeof EnquiriesRoute
   '/expenses': typeof ExpensesRoute
+  '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
   '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
@@ -469,6 +486,7 @@ export interface FileRoutesById {
   '/referrals': typeof ReferralsRoute
   '/reminder': typeof ReminderRoute
   '/reports': typeof ReportsRoute
+  '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
   '/satnav': typeof SatnavRoute
@@ -507,6 +525,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/forgotpassword'
     | '/fuel'
     | '/gaps'
     | '/health'
@@ -526,6 +545,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -562,6 +582,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/forgotpassword'
     | '/fuel'
     | '/gaps'
     | '/health'
@@ -580,6 +601,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -616,6 +638,7 @@ export interface FileRouteTypes {
     | '/earnings'
     | '/enquiries'
     | '/expenses'
+    | '/forgotpassword'
     | '/fuel'
     | '/gaps'
     | '/health'
@@ -635,6 +658,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/reminder'
     | '/reports'
+    | '/resetpassword'
     | '/resources'
     | '/reviews'
     | '/satnav'
@@ -672,6 +696,7 @@ export interface RootRouteChildren {
   EarningsRoute: typeof EarningsRoute
   EnquiriesRoute: typeof EnquiriesRoute
   ExpensesRoute: typeof ExpensesRoute
+  ForgotpasswordRoute: typeof ForgotpasswordRoute
   FuelRoute: typeof FuelRoute
   GapsRoute: typeof GapsRoute
   HealthRoute: typeof HealthRoute
@@ -691,6 +716,7 @@ export interface RootRouteChildren {
   ReferralsRoute: typeof ReferralsRoute
   ReminderRoute: typeof ReminderRoute
   ReportsRoute: typeof ReportsRoute
+  ResetpasswordRoute: typeof ResetpasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   ReviewsRoute: typeof ReviewsRoute
   SatnavRoute: typeof SatnavRoute
@@ -805,6 +831,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resetpassword': {
+      id: '/resetpassword'
+      path: '/resetpassword'
+      fullPath: '/resetpassword'
+      preLoaderRoute: typeof ResetpasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -938,6 +971,13 @@ declare module '@tanstack/react-router' {
       path: '/fuel'
       fullPath: '/fuel'
       preLoaderRoute: typeof FuelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgotpassword': {
+      id: '/forgotpassword'
+      path: '/forgotpassword'
+      fullPath: '/forgotpassword'
+      preLoaderRoute: typeof ForgotpasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expenses': {
@@ -1125,6 +1165,7 @@ const rootRouteChildren: RootRouteChildren = {
   EarningsRoute: EarningsRoute,
   EnquiriesRoute: EnquiriesRoute,
   ExpensesRoute: ExpensesRoute,
+  ForgotpasswordRoute: ForgotpasswordRoute,
   FuelRoute: FuelRoute,
   GapsRoute: GapsRoute,
   HealthRoute: HealthRoute,
@@ -1144,6 +1185,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReferralsRoute: ReferralsRoute,
   ReminderRoute: ReminderRoute,
   ReportsRoute: ReportsRoute,
+  ResetpasswordRoute: ResetpasswordRoute,
   ResourcesRoute: ResourcesRoute,
   ReviewsRoute: ReviewsRoute,
   SatnavRoute: SatnavRoute,
