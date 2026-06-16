@@ -35,6 +35,7 @@ import {
   FolderOpen,
   LayoutGrid,
   FileSignature,
+  MapPin,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -330,6 +331,7 @@ function HomePage() {
     { icon: <Users size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Bulk message", route: "/bulkmessage" },
     { icon: <Navigation size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Sat Nav", route: "/satnav" },
     { icon: <BarChart2 size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Weekly report", route: "/weeklyreport" },
+    { icon: <MapPin size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Locations", route: "/locations" },
   ] as const;
 
   return (
