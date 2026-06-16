@@ -333,7 +333,7 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', marginTop: -8 }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
