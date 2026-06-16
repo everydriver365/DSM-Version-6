@@ -153,6 +153,7 @@ function HomePage() {
   const [notifCount] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const now = useMemo(() => new Date(), []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
@@ -257,6 +258,7 @@ function HomePage() {
       });
       setWeekEarnings(wk);
       setTodayEarnings(td);
+      setLoading(false);
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
 
@@ -380,7 +382,12 @@ function HomePage() {
           boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
         }}
       >
-        {upcoming ? (
+        {loading ? (
+          <div
+            className="skeleton-pulse"
+            style={{ height: 120, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+          />
+        ) : upcoming ? (
           <>
             <div
               className="text-[10px] uppercase text-[#6B7280]"
@@ -444,63 +451,96 @@ function HomePage() {
       </div>
 
       {/* STATS ROW */}
-      <div
-        className="mx-4 mt-3 flex"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: "12px 16px" }}
-      >
-        <div className="flex-1 pr-3">
+      {loading ? (
+        <div
+          className="mx-4 mt-3 flex gap-3"
+          style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: "12px 16px" }}
+        >
           <div
-            className="text-[10px] uppercase"
-            style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
-          >
-            EARNINGS · WEEK
-          </div>
-          <div className="text-[26px] font-bold" style={{ color: "#F59E0B" }}>
-            £{weekEarnings.toFixed(0)}
-          </div>
-          <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
-            £{todayEarnings.toFixed(0)} today
-          </div>
+            className="flex-1 skeleton-pulse"
+            style={{ height: 60, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+          />
           <div
-            className="mt-2 overflow-hidden"
-            style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
-          >
+            className="flex-1 skeleton-pulse"
+            style={{ height: 60, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+          />
+        </div>
+      ) : (
+        <div
+          className="mx-4 mt-3 flex"
+          style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: "12px 16px" }}
+        >
+          <div className="flex-1 pr-3">
             <div
-              style={{ height: "100%", width: `${earningsPct}%`, backgroundColor: "#CC2229" }}
-            />
+              className="text-[10px] uppercase"
+              style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+            >
+              EARNINGS · WEEK
+            </div>
+            <div className="text-[26px] font-bold" style={{ color: "#F59E0B" }}>
+              £{weekEarnings.toFixed(0)}
+            </div>
+            <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
+              £{todayEarnings.toFixed(0)} today
+            </div>
+            <div
+              className="mt-2 overflow-hidden"
+              style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
+            >
+              <div
+                style={{ height: "100%", width: `${earningsPct}%`, backgroundColor: "#CC2229" }}
+              />
+            </div>
+          </div>
+          <div style={{ width: "0.5px", backgroundColor: "rgba(255,255,255,0.2)" }} />
+          <div className="flex-1 pl-3">
+            <div
+              className="text-[10px] uppercase"
+              style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+            >
+              LESSONS · WEEK
+            </div>
+            <div className="text-[26px] font-bold" style={{ color: "#16A34A" }}>
+              {weekLessons.length}/{WEEKLY_LESSON_GOAL}
+            </div>
+            <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
+              {todayLessons.length} today
+            </div>
+            <div
+              className="mt-2 overflow-hidden"
+              style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
+            >
+              <div
+                style={{ height: "100%", width: `${lessonsPct}%`, backgroundColor: "#1A52A0" }}
+              />
+            </div>
           </div>
         </div>
-        <div style={{ width: "0.5px", backgroundColor: "rgba(255,255,255,0.2)" }} />
-        <div className="flex-1 pl-3">
-          <div
-            className="text-[10px] uppercase"
-            style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
-          >
-            LESSONS · WEEK
-          </div>
-          <div className="text-[26px] font-bold" style={{ color: "#16A34A" }}>
-            {weekLessons.length}/{WEEKLY_LESSON_GOAL}
-          </div>
-          <div className="text-[12px]" style={{ color: "#9CA3AF" }}>
-            {todayLessons.length} today
-          </div>
-          <div
-            className="mt-2 overflow-hidden"
-            style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.12)" }}
-          >
-            <div
-              style={{ height: "100%", width: `${lessonsPct}%`, backgroundColor: "#1A52A0" }}
-            />
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* QUICK STATS */}
-      <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
-        <QuickTile valueColor="#0F2044" valueSize={20} value={String(todayLessons.length)} label="LESSONS TODAY" />
-        <QuickTile valueColor="#1A52A0" valueSize={14} value={nextFreeSlot ?? "—"} label="NEXT FREE SLOT" />
-        <QuickTile valueColor="#CC2229" valueSize={14} value={`£${outstanding.toFixed(0)}`} label="OUTSTANDING" />
-      </div>
+      {loading ? (
+        <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
+          <div
+            className="flex-1 skeleton-pulse"
+            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
+          />
+          <div
+            className="flex-1 skeleton-pulse"
+            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
+          />
+          <div
+            className="flex-1 skeleton-pulse"
+            style={{ height: 56, backgroundColor: "#E2E6ED", borderRadius: 10 }}
+          />
+        </div>
+      ) : (
+        <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
+          <QuickTile valueColor="#0F2044" valueSize={20} value={String(todayLessons.length)} label="LESSONS TODAY" />
+          <QuickTile valueColor="#1A52A0" valueSize={14} value={nextFreeSlot ?? "—"} label="NEXT FREE SLOT" />
+          <QuickTile valueColor="#CC2229" valueSize={14} value={`£${outstanding.toFixed(0)}`} label="OUTSTANDING" />
+        </div>
+      )}
 
       {/* SCHEDULE */}
       <div className="mx-4 mt-4">
@@ -663,6 +703,13 @@ function HomePage() {
       <style>{`
         .quick-access-scroll::-webkit-scrollbar {
           display: none;
+        }
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: skeleton-pulse 1.5s ease-in-out infinite;
         }
       `}</style>
 

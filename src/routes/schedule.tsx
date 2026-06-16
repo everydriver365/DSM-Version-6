@@ -243,7 +243,62 @@ function SchedulePage() {
       <div className="px-4">
         <SectionHeader>SCHEDULE · {longDayHeader(today)}</SectionHeader>
 
-        {lessons === null ? null : lessons.length === 0 ? (
+        {lessons === null ? (
+          <div className="flex flex-col gap-2">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white flex items-center justify-between gap-3"
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#E2E6ED",
+                }}
+              >
+                <div className="min-w-0 flex flex-col gap-2 flex-1">
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 14,
+                      width: 40,
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 14,
+                      width: "70%",
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 12,
+                      width: 50,
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                </div>
+                <div
+                  className="skeleton-pulse shrink-0"
+                  style={{
+                    height: 24,
+                    width: 60,
+                    backgroundColor: "#E2E6ED",
+                    borderRadius: 999,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : lessons.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 gap-2">
             <CalendarOff size={32} color="#6B7280" />
             <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
@@ -291,6 +346,16 @@ function SchedulePage() {
           </button>
         </div>
       </div>
+
+      <style>{`
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: skeleton-pulse 1.5s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

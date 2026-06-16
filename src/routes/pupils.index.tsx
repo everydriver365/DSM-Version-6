@@ -187,7 +187,48 @@ function PupilsIndexPage() {
 
       {/* List */}
       <div className="px-4 pt-4">
-        {filtered === null ? null : filtered.length === 0 ? (
+        {filtered === null ? (
+          <div className="flex flex-col gap-2">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="bg-white flex items-center gap-3"
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#E2E6ED",
+                }}
+              >
+                <div
+                  className="skeleton-pulse rounded-full shrink-0"
+                  style={{ width: 40, height: 40, backgroundColor: "#E2E6ED" }}
+                />
+                <div className="min-w-0 flex-1 flex flex-col gap-2">
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 14,
+                      width: "60%",
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <div
+                    className="skeleton-pulse"
+                    style={{
+                      height: 12,
+                      width: "40%",
+                      backgroundColor: "#E2E6ED",
+                      borderRadius: 4,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="flex items-center justify-center py-20">
             <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
               No pupils
@@ -258,6 +299,16 @@ function PupilsIndexPage() {
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: skeleton-pulse 1.5s ease-in-out infinite;
+        }
+      `}</style>
 
       {/* FAB */}
       <Link
