@@ -41,6 +41,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LocationsRouteImport } from './routes/locations'
+import { Route as LivesessionRouteImport } from './routes/livesession'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HealthRouteImport } from './routes/health'
@@ -236,6 +237,11 @@ const LocationsRoute = LocationsRouteImport.update({
   path: '/locations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LivesessionRoute = LivesessionRouteImport.update({
+  id: '/livesession',
+  path: '/livesession',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -429,6 +435,7 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
@@ -497,6 +504,7 @@ export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
@@ -565,6 +573,7 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
@@ -635,6 +644,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/livesession'
     | '/locations'
     | '/login'
     | '/manifest'
@@ -703,6 +713,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/livesession'
     | '/locations'
     | '/login'
     | '/manifest'
@@ -770,6 +781,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/livesession'
     | '/locations'
     | '/login'
     | '/manifest'
@@ -839,6 +851,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
+  LivesessionRoute: typeof LivesessionRoute
   LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
   ManifestRoute: typeof ManifestRoute
@@ -1107,6 +1120,13 @@ declare module '@tanstack/react-router' {
       path: '/locations'
       fullPath: '/locations'
       preLoaderRoute: typeof LocationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livesession': {
+      id: '/livesession'
+      path: '/livesession'
+      fullPath: '/livesession'
+      preLoaderRoute: typeof LivesessionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -1396,6 +1416,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
+  LivesessionRoute: LivesessionRoute,
   LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
   ManifestRoute: ManifestRoute,
