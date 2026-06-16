@@ -321,6 +321,7 @@ function HomePage() {
     { icon: <FileSignature size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Waivers", route: "/waivers" },
     { icon: <Search size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Find gaps", route: "/gaps" },
     { icon: <Users size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Bulk message", route: "/bulkmessage" },
+    { icon: <Navigation size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Sat Nav", route: "/satnav" },
   ] as const;
 
   return (

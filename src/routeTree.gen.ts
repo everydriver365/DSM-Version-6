@@ -18,6 +18,7 @@ import { Route as TaxRouteImport } from './routes/tax'
 import { Route as StandardsRouteImport } from './routes/standards'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as SatnavRouteImport } from './routes/satnav'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -104,6 +105,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ScheduleRoute = ScheduleRouteImport.update({
   id: '/schedule',
   path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SatnavRoute = SatnavRouteImport.update({
+  id: '/satnav',
+  path: '/satnav',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewsRoute = ReviewsRouteImport.update({
@@ -349,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
@@ -455,6 +463,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
@@ -510,6 +519,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/resources'
     | '/reviews'
+    | '/satnav'
     | '/schedule'
     | '/settings'
     | '/standards'
@@ -562,6 +572,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/resources'
     | '/reviews'
+    | '/satnav'
     | '/schedule'
     | '/settings'
     | '/standards'
@@ -615,6 +626,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/resources'
     | '/reviews'
+    | '/satnav'
     | '/schedule'
     | '/settings'
     | '/standards'
@@ -669,6 +681,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   ResourcesRoute: typeof ResourcesRoute
   ReviewsRoute: typeof ReviewsRoute
+  SatnavRoute: typeof SatnavRoute
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
   StandardsRoute: typeof StandardsRoute
@@ -751,6 +764,13 @@ declare module '@tanstack/react-router' {
       path: '/schedule'
       fullPath: '/schedule'
       preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/satnav': {
+      id: '/satnav'
+      path: '/satnav'
+      fullPath: '/satnav'
+      preLoaderRoute: typeof SatnavRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reviews': {
@@ -1106,6 +1126,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   ResourcesRoute: ResourcesRoute,
   ReviewsRoute: ReviewsRoute,
+  SatnavRoute: SatnavRoute,
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
   StandardsRoute: StandardsRoute,
