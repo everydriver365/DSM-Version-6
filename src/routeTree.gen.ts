@@ -334,7 +334,6 @@ export interface FileRoutesByFullPath {
   '/waivers': typeof WaiversRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
-  '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/messages/$id': typeof MessagesIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
