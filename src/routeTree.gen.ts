@@ -46,6 +46,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as CpdRouteImport } from './routes/cpd'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
+import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
@@ -245,6 +246,11 @@ const CalendarsyncRoute = CalendarsyncRouteImport.update({
   path: '/calendarsync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BulkmessageRoute = BulkmessageRouteImport.update({
+  id: '/bulkmessage',
+  path: '/bulkmessage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilityRoute = AvailabilityRouteImport.update({
   id: '/availability',
   path: '/availability',
@@ -314,6 +320,7 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
@@ -366,6 +373,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
@@ -418,6 +426,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/availability': typeof AvailabilityRoute
+  '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/checklist': typeof ChecklistRoute
   '/cpd': typeof CpdRoute
@@ -472,6 +481,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/availability'
+    | '/bulkmessage'
     | '/calendarsync'
     | '/checklist'
     | '/cpd'
@@ -524,6 +534,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/availability'
+    | '/bulkmessage'
     | '/calendarsync'
     | '/checklist'
     | '/cpd'
@@ -575,6 +586,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/availability'
+    | '/bulkmessage'
     | '/calendarsync'
     | '/checklist'
     | '/cpd'
@@ -628,6 +640,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AvailabilityRoute: typeof AvailabilityRoute
+  BulkmessageRoute: typeof BulkmessageRoute
   CalendarsyncRoute: typeof CalendarsyncRoute
   ChecklistRoute: typeof ChecklistRoute
   CpdRoute: typeof CpdRoute
@@ -936,6 +949,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalendarsyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bulkmessage': {
+      id: '/bulkmessage'
+      path: '/bulkmessage'
+      fullPath: '/bulkmessage'
+      preLoaderRoute: typeof BulkmessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability': {
       id: '/availability'
       path: '/availability'
@@ -1057,6 +1077,7 @@ const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AvailabilityRoute: AvailabilityRoute,
+  BulkmessageRoute: BulkmessageRoute,
   CalendarsyncRoute: CalendarsyncRoute,
   ChecklistRoute: ChecklistRoute,
   CpdRoute: CpdRoute,
