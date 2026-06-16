@@ -373,7 +373,7 @@ function HomePage() {
 
       {/* NEXT LESSON HERO */}
       <div
-        className="mx-4 mt-3 bg-white relative"
+        className="mx-4 mt-3 bg-white relative overflow-hidden"
         style={{
           borderRadius: 16,
           padding: 16,
@@ -397,7 +397,7 @@ function HomePage() {
               NEXT LESSON · {formatDayLabel(lessonDateTime(upcoming))}
             </div>
             <div className="flex items-start justify-between mt-1">
-              <div>
+              <div style={{ maxWidth: "60%" }}>
                 <div className="text-[48px] font-bold leading-none text-[#0F2044]">
                   {formatTime(upcoming)}
                 </div>
@@ -408,17 +408,18 @@ function HomePage() {
                   {formatDuration(upcoming.duration_minutes)}
                 </div>
               </div>
-              <div
-                className="flex items-center justify-center"
+              <img
+                src={carAsset.url}
+                alt="Driving school car"
                 style={{
-                  width: 120,
-                  height: 80,
-                  backgroundColor: "#F3F4F6",
-                  borderRadius: 8,
+                  position: "absolute",
+                  right: -10,
+                  bottom: 0,
+                  height: 100,
+                  objectFit: "contain",
+                  pointerEvents: "none",
                 }}
-              >
-                <Car size={48} color="#9CA3AF" />
-              </div>
+              />
             </div>
             <div className="flex" style={{ gap: 8, marginTop: 12 }}>
               <button
