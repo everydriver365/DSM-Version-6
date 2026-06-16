@@ -298,6 +298,15 @@ function PupilDetailPage() {
             History
           </Button>
         </div>
+        <div className="mt-2">
+          <Button
+            variant="ghost"
+            onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
+          >
+            Progress
+          </Button>
+        </div>
+
 
 
         <SectionHeader>UPCOMING LESSONS</SectionHeader>
