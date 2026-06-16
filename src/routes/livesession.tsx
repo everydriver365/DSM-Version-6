@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { X, StickyNote, Navigation as NavIcon, Phone } from "lucide-react";
+import { X, StickyNote, Navigation as NavIcon, Phone, CheckSquare } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -58,7 +58,7 @@ function LiveSessionPage() {
   const navigate = useNavigate();
   const [lesson, setLesson] = useState<LessonRow | null>(null);
   const [loading, setLoading] = useState(true);
-  const [now, setNow] = useState(() => Date.now());
+  const [sessionElapsed, setSessionElapsed] = useState(0);
   const [notes, setNotes] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [noteSheetOpen, setNoteSheetOpen] = useState(false);
@@ -94,9 +94,9 @@ function LiveSessionPage() {
     })();
   }, []);
 
-  // Timer tick
+  // Session timer — counts up from 0 every second
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const id = setInterval(() => setSessionElapsed((s) => s + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -116,10 +116,6 @@ function LiveSessionPage() {
     return () => clearInterval(id);
   }, [lesson, notes]);
 
-  const startMs = lesson
-    ? new Date(`${lesson.lesson_date}T${(lesson.lesson_time ?? "00:00:00").slice(0, 8).padEnd(8, ":00")}`).getTime()
-    : null;
-  const elapsedSec = startMs ? Math.floor((now - startMs) / 1000) : 0;
 
   async function endSession() {
     if (!lesson) {
@@ -183,10 +179,10 @@ function LiveSessionPage() {
             fontVariantNumeric: "tabular-nums",
           }}
         >
-          {loading ? "00:00:00" : fmtTimer(elapsedSec)}
+          {loading ? "00:00:00" : fmtTimer(sessionElapsed)}
         </div>
         <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, marginTop: 6 }}>
-          {lesson ? (elapsedSec >= 0 ? "Session in progress" : "Starts soon") : "No active lesson"}
+          {lesson ? "Session in progress" : "No active lesson"}
         </div>
       </div>
 
@@ -236,7 +232,7 @@ function LiveSessionPage() {
             onClick={endSession}
             style={actionBtn("#CC2229")}
           >
-            <X size={20} color="#fff" />
+            <CheckSquare size={20} color="#fff" />
             <span>End lesson</span>
           </button>
           <button

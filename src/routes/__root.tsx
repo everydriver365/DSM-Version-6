@@ -138,7 +138,8 @@ function RootComponent() {
     router.state.location.pathname === "/satnav" ||
     router.state.location.pathname === "/weeklyreport" ||
     router.state.location.pathname === "/login" ||
-    router.state.location.pathname === "/register";
+    router.state.location.pathname === "/register" ||
+    router.state.location.pathname === "/livesession";
 
   return (
     <QueryClientProvider client={queryClient}>
