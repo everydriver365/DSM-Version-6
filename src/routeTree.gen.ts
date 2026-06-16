@@ -16,6 +16,7 @@ import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TaxRouteImport } from './routes/tax'
+import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScheduleRouteImport } from './routes/schedule'
@@ -110,6 +111,11 @@ const TestsRoute = TestsRouteImport.update({
 const TaxRoute = TaxRouteImport.update({
   id: '/tax',
   path: '/tax',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionRoute = SubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StandardsRoute = StandardsRouteImport.update({
@@ -461,6 +467,7 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
+  '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -529,6 +536,7 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
+  '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -599,6 +607,7 @@ export interface FileRoutesById {
   '/schedule': typeof ScheduleRoute
   '/settings': typeof SettingsRoute
   '/standards': typeof StandardsRoute
+  '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -670,6 +679,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/settings'
     | '/standards'
+    | '/subscription'
     | '/tax'
     | '/tests'
     | '/todos'
@@ -738,6 +748,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/settings'
     | '/standards'
+    | '/subscription'
     | '/tax'
     | '/tests'
     | '/todos'
@@ -807,6 +818,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/settings'
     | '/standards'
+    | '/subscription'
     | '/tax'
     | '/tests'
     | '/todos'
@@ -877,6 +889,7 @@ export interface RootRouteChildren {
   ScheduleRoute: typeof ScheduleRoute
   SettingsRoute: typeof SettingsRoute
   StandardsRoute: typeof StandardsRoute
+  SubscriptionRoute: typeof SubscriptionRoute
   TaxRoute: typeof TaxRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
@@ -945,6 +958,13 @@ declare module '@tanstack/react-router' {
       path: '/tax'
       fullPath: '/tax'
       preLoaderRoute: typeof TaxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription': {
+      id: '/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof SubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/standards': {
@@ -1442,6 +1462,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduleRoute: ScheduleRoute,
   SettingsRoute: SettingsRoute,
   StandardsRoute: StandardsRoute,
+  SubscriptionRoute: SubscriptionRoute,
   TaxRoute: TaxRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
@@ -1463,3 +1484,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
