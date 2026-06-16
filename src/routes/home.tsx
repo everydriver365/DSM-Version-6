@@ -178,7 +178,11 @@ function HomePage() {
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
-      if (!instructor) console.warn("[home] no instructor row for user", u.id);
+      if (!instructor) {
+        console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
+        navigate({ to: "/onboarding", replace: true });
+        return;
+      }
       const fullName =
         (instructor?.name as string | undefined) ??
         u.email?.split("@")[0] ??
