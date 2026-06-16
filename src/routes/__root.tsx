@@ -143,19 +143,28 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const active = getActiveNav(router.state.location.pathname);
-  const hideNav =
-    router.state.location.pathname === "/satnav" ||
-    router.state.location.pathname === "/weeklyreport" ||
-    router.state.location.pathname === "/login" ||
-    router.state.location.pathname === "/register" ||
-    router.state.location.pathname === "/livesession" ||
-    router.state.location.pathname === "/subscription";
+  const pathname = router.state.location.pathname;
+  const hideNavPaths = new Set([
+    "/satnav",
+    "/weeklyreport",
+    "/login",
+    "/register",
+    "/livesession",
+    "/subscription",
+    "/onboarding",
+    "/forgotpassword",
+    "/resetpassword",
+  ]);
+  const hideNav = hideNavPaths.has(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div style={hideNav ? undefined : { paddingBottom: 80 }}>
+        <Outlet />
+      </div>
       {!hideNav && <BottomNav active={active} />}
     </QueryClientProvider>
   );
 }
+
