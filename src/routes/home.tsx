@@ -383,6 +383,13 @@ function HomePage() {
     { icon: <Zap size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Automations", route: "/automations" },
     { icon: <CalendarDays size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Diary", route: "/diary" },
     { icon: <Crown size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "My plan", route: "/subscription" },
+    { icon: <PlayCircle size={16} color="#16A34A" />, tint: "#ECFDF5", label: "Live session", route: "/livesession" },
+    { icon: <Search size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Search", route: "/search" },
+    { icon: <Bell size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Notifications", route: "/notifications" },
+    { icon: <CalendarDays size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Availability", route: "/availability" },
+    { icon: <RefreshCw size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Calendar sync", route: "/calendarsync" },
+    { icon: <UserCircle size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Profile", route: "/profile" },
+
   ] as const;
 
   return (
