@@ -1067,6 +1067,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
+  PupilsEditIdRoute: PupilsEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
