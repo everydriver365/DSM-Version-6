@@ -216,6 +216,13 @@ function LoginPage() {
             </Button>
           </div>
 
+          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Poppins, sans-serif" }}>
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="text-[#1A52A0] hover:underline font-medium">
+              Create account
+            </Link>
+          </p>
+
           {webauthnSupported && (
             <button
               type="button"
