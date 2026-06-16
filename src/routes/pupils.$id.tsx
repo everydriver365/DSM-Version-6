@@ -118,6 +118,18 @@ function PupilDetailPage() {
         setLessons((data as Lesson[]) ?? []);
       });
 
+    supabase
+      .from("pupil_progress")
+      .select("status")
+      .eq("pupil_id", id)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] progress error", error);
+        const rows = (data as { status: string }[]) ?? [];
+        const total = rows.length;
+        const competent = rows.filter((r) => r.status === "competent").length;
+        setProgressData({ total, competent });
+      });
+
   }, [id]);
 
   async function removePupil() {
