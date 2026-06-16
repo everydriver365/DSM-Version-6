@@ -56,6 +56,7 @@ import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
+import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 
 const WaiversRoute = WaiversRouteImport.update({
   id: '/waivers',
