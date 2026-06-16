@@ -44,11 +44,19 @@ import {
   Zap,
   CalendarDays,
   Crown,
+  X,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import {
+  getPermission,
+  requestPermission,
+  scheduleLessonReminder,
+  isSupported as notificationsSupported,
+} from "../lib/pushNotifications";
 import carAsset from "../assets/next-lesson-car.png.asset.json";
 import dsmLogo from "../assets/dsm-logo.png.asset.json";
+
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -165,6 +173,14 @@ function HomePage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [notifPermission, setNotifPermission] = useState<"granted" | "denied" | "default">(
+    () => (notificationsSupported() ? getPermission() : "denied"),
+  );
+  const [notifPromptDismissed, setNotifPromptDismissed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
+  });
+
 
   const now = useMemo(() => new Date(), []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
@@ -272,6 +288,22 @@ function HomePage() {
       setLoading(false);
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
+
+  // Schedule a local reminder 1h before the next lesson if it's today & >1h away.
+  useEffect(() => {
+    if (!nextLesson) return;
+    if (notifPermission !== "granted") return;
+    const t = (nextLesson.lesson_time ?? "00:00:00").slice(0, 8);
+    const time = t.length === 5 ? `${t}:00` : t;
+    const lessonAt = new Date(`${nextLesson.lesson_date}T${time}`);
+    const msAway = lessonAt.getTime() - Date.now();
+    const isToday = ymd(lessonAt) === ymd(new Date());
+    if (!isToday) return;
+    if (msAway <= 60 * 60 * 1000) return;
+    const cleanup = scheduleLessonReminder(nextLesson);
+    return cleanup;
+  }, [nextLesson, notifPermission]);
+
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
   const todayLessons = lessons.filter((l) => {
@@ -519,6 +551,93 @@ function HomePage() {
         <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
         <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
       </div>
+
+      {/* ENABLE NOTIFICATIONS PROMPT */}
+      {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
+        <div
+          style={{
+            margin: "12px 16px 0",
+            backgroundColor: "#FFFBEB",
+            border: "1px solid #FCD34D",
+            borderRadius: 12,
+            padding: 12,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <span
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 999,
+              backgroundColor: "#FEF3C7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Bell size={16} color="#92400E" />
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#92400E" }}>
+              Enable lesson reminders?
+            </div>
+            <div style={{ fontSize: 11, color: "#78350F", marginTop: 2 }}>
+              Get a notification 1 hour before each lesson.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              const result = await requestPermission();
+              setNotifPermission(result);
+              if (result !== "default") {
+                window.sessionStorage.setItem("dsm:notifPromptDismissed", "1");
+                setNotifPromptDismissed(true);
+              }
+            }}
+            style={{
+              background: "#1A52A0",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              padding: "8px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+            }}
+          >
+            Enable
+          </button>
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={() => {
+              window.sessionStorage.setItem("dsm:notifPromptDismissed", "1");
+              setNotifPromptDismissed(true);
+            }}
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 4,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <X size={16} color="#92400E" />
+          </button>
+        </div>
+      )}
+
+
 
       {/* NEEDS ATTENTION */}
       <NeedsAttention

@@ -1,10 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bell } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import {
+  getPermission,
+  requestPermission,
+  isSupported as notificationsSupported,
+} from "../lib/pushNotifications";
+
 
 export const Route = createFileRoute("/notificationsettings")({
   head: () => ({
@@ -51,6 +57,10 @@ function NotificationSettingsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [state, setState] = useState<SettingsState>(DEFAULTS);
   const [saving, setSaving] = useState(false);
+  const [browserPerm, setBrowserPerm] = useState<"granted" | "denied" | "default">(
+    () => (notificationsSupported() ? getPermission() : "denied"),
+  );
+
 
   useEffect(() => {
     (async () => {
@@ -119,6 +129,59 @@ function NotificationSettingsPage() {
       </div>
 
       <div className="px-4">
+        <SectionHeader>BROWSER PERMISSION</SectionHeader>
+        <Card>
+          {(() => {
+            const supported = notificationsSupported();
+            const status = !supported
+              ? { label: "Notifications: Not supported", color: "#6B7280", bg: "#F3F4F6" }
+              : browserPerm === "granted"
+                ? { label: "Notifications: Enabled ✓", color: "#15803D", bg: "#DCFCE7" }
+                : browserPerm === "denied"
+                  ? { label: "Notifications: Blocked ✗", color: "#B91C1C", bg: "#FEE2E2" }
+                  : { label: "Notifications: Not set up", color: "#92400E", bg: "#FEF3C7" };
+            return (
+              <div className="flex items-center gap-3">
+                <span
+                  className="flex items-center justify-center rounded-full"
+                  style={{ width: 32, height: 32, backgroundColor: status.bg, flexShrink: 0 }}
+                >
+                  <Bell size={16} color={status.color} />
+                </span>
+                <div
+                  className="flex-1 text-[13px] font-semibold"
+                  style={{ color: status.color, ...POPPINS }}
+                >
+                  {status.label}
+                </div>
+                {supported && browserPerm !== "granted" && browserPerm !== "denied" && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const r = await requestPermission();
+                      setBrowserPerm(r);
+                    }}
+                    className="text-white text-[12px] font-semibold rounded-lg"
+                    style={{
+                      backgroundColor: "#1A52A0",
+                      padding: "8px 12px",
+                      ...POPPINS,
+                    }}
+                  >
+                    Request permission
+                  </button>
+                )}
+              </div>
+            );
+          })()}
+          {browserPerm === "denied" && (
+            <div className="text-[11px] text-[#6B7280] mt-2" style={POPPINS}>
+              Notifications are blocked. Enable them in your browser settings to receive reminders.
+            </div>
+          )}
+        </Card>
+
+
         <SectionHeader>LESSON NOTIFICATIONS</SectionHeader>
         <Card className="!p-0">
           <ToggleRow label="New lesson booked" value={state.lesson_booked} onChange={(v) => setKey("lesson_booked", v)} isFirst />
