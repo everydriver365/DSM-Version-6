@@ -9,7 +9,9 @@ import {
   Shield,
   ChevronRight,
   ChevronDown,
+  PoundSterling,
 } from "lucide-react";
+
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 
@@ -181,11 +183,20 @@ function SettingsPage() {
 
 
           <MenuRow
+            icon={<PoundSterling size={18} color="#5B21B6" />}
+            iconBg="#EDE9FE"
+            label="Payments"
+            onClick={() => navigate({ to: "/payments" })}
+          />
+
+          <MenuRow
             icon={<Clock size={18} color="#1A52A0" />}
             iconBg="#DBEAFE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
           />
+
+
 
           <MenuRow
             icon={<Bell size={18} color="#92400E" />}
@@ -215,8 +226,11 @@ function SettingsPage() {
             icon={<Shield size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Privacy policy"
-            onClick={() => {}}
+            onClick={() =>
+              window.open("https://everydriver.co.uk/privacy-policy", "_blank", "noopener,noreferrer")
+            }
           />
+
         </Card>
 
         <SectionHeader>DANGER ZONE</SectionHeader>

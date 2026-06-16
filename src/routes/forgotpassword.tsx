@@ -57,6 +57,10 @@ function ForgotPasswordPage() {
             <p className="text-[13px] text-[#6B7280] mt-2">
               We've sent a password reset link to <span className="text-[#0F2044]">{email}</span>.
             </p>
+            <p className="text-[12px] text-[#6B7280] mt-3">
+              Check your spam folder too. The link will take you to the reset password page.
+            </p>
+
             <Link to="/login" className="text-[13px] text-[#1A52A0] hover:underline mt-6">
               Back to sign in
             </Link>
