@@ -55,6 +55,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
+import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 
 const WaiversRoute = WaiversRouteImport.update({
   id: '/waivers',
@@ -286,6 +287,11 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   path: '/lessons/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
+  id: '/lessons/edit/$id',
+  path: '/lessons/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/pupils/new': typeof PupilsNewRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
+  '/lessons/edit/$id': typeof LessonsEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -380,6 +387,7 @@ export interface FileRoutesByTo {
   '/pupils/new': typeof PupilsNewRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
+  '/lessons/edit/$id': typeof LessonsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -429,6 +437,7 @@ export interface FileRoutesById {
   '/pupils/new': typeof PupilsNewRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
+  '/lessons/edit/$id': typeof LessonsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -479,6 +488,7 @@ export interface FileRouteTypes {
     | '/pupils/new'
     | '/notes/'
     | '/pupils/'
+    | '/lessons/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
     | '/pupils/new'
     | '/notes'
     | '/pupils'
+    | '/lessons/edit/$id'
   id:
     | '__root__'
     | '/'
@@ -573,6 +584,7 @@ export interface FileRouteTypes {
     | '/pupils/new'
     | '/notes/'
     | '/pupils/'
+    | '/lessons/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -616,6 +628,7 @@ export interface RootRouteChildren {
   WaiversRoute: typeof WaiversRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
+  LessonsEditIdRoute: typeof LessonsEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -942,6 +955,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lessons/edit/$id': {
+      id: '/lessons/edit/$id'
+      path: '/lessons/edit/$id'
+      fullPath: '/lessons/edit/$id'
+      preLoaderRoute: typeof LessonsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1025,6 +1045,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaiversRoute: WaiversRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
+  LessonsEditIdRoute: LessonsEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

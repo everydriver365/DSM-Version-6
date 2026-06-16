@@ -131,6 +131,7 @@ function LessonDetailPage() {
         <button
           type="button"
           aria-label="Edit lesson"
+          onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
           className="flex items-center justify-center"
           style={{ width: 40, height: 40 }}
         >
