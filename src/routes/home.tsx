@@ -173,6 +173,14 @@ function HomePage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [notifPermission, setNotifPermission] = useState<"granted" | "denied" | "default">(
+    () => (notificationsSupported() ? getPermission() : "denied"),
+  );
+  const [notifPromptDismissed, setNotifPromptDismissed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
+  });
+
 
   const now = useMemo(() => new Date(), []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
