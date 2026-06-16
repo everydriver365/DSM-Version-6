@@ -27,6 +27,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -160,6 +161,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuickavailabilityRoute = QuickavailabilityRouteImport.update({
+  id: '/quickavailability',
+  path: '/quickavailability',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -415,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -478,6 +485,7 @@ export interface FileRoutesByTo {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -543,6 +551,7 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -609,6 +618,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickavailability'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -672,6 +682,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickavailability'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -736,6 +747,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickavailability'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -801,6 +813,7 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
+  QuickavailabilityRoute: typeof QuickavailabilityRoute
   ReferralsRoute: typeof ReferralsRoute
   RegisterRoute: typeof RegisterRoute
   ReminderRoute: typeof ReminderRoute
@@ -957,6 +970,13 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quickavailability': {
+      id: '/quickavailability'
+      path: '/quickavailability'
+      fullPath: '/quickavailability'
+      preLoaderRoute: typeof QuickavailabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -1326,6 +1346,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
+  QuickavailabilityRoute: QuickavailabilityRoute,
   ReferralsRoute: ReferralsRoute,
   RegisterRoute: RegisterRoute,
   ReminderRoute: ReminderRoute,
