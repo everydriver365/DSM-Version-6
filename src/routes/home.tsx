@@ -373,16 +373,15 @@ function HomePage() {
 
       {/* NEXT LESSON HERO */}
       <div
-        className="mx-4 mt-3 bg-white relative"
         style={{
+          position: 'relative',
+          background: '#FFFFFF',
           borderRadius: 16,
+          margin: '12px 16px',
           padding: 16,
-          borderWidth: "0.5px",
-          borderStyle: "solid",
-          borderColor: "#E2E6ED",
-          boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-          overflow: "visible",
           minHeight: 160,
+          overflow: 'hidden',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
         }}
       >
         {loading ? (
@@ -391,66 +390,52 @@ function HomePage() {
             style={{ height: 120, backgroundColor: "#E2E6ED", borderRadius: 8 }}
           />
         ) : upcoming ? (
-          <div className="flex items-start" style={{ gap: 12 }}>
-            {/* LEFT COLUMN — text + buttons */}
-            <div className="flex-1 min-w-0">
-              <div
-                className="text-[10px] uppercase text-[#6B7280]"
-                style={{ letterSpacing: "0.08em" }}
-              >
+          <>
+            {/* Car image - top right, behind content */}
+            <img
+              src={carAsset.url}
+              alt="Driving school car"
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                height: '100%',
+                width: 140,
+                objectFit: 'cover',
+                objectPosition: 'left center',
+                opacity: 0.9,
+              }}
+            />
+
+            {/* Text content - left side, max 60% width */}
+            <div style={{ position: 'relative', zIndex: 1, maxWidth: '58%' }}>
+              <p style={{ fontSize: 10, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
                 NEXT LESSON · {formatDayLabel(lessonDateTime(upcoming))}
-              </div>
-              <div className="text-[48px] font-bold leading-none text-[#0F2044] mt-1">
+              </p>
+              <p style={{ fontSize: 48, fontWeight: 700, color: '#0F2044', lineHeight: 1, marginBottom: 4 }}>
                 {formatTime(upcoming)}
-              </div>
-              <div className="mt-2 text-[18px] font-semibold text-[#0F2044]">
+              </p>
+              <p style={{ fontSize: 18, fontWeight: 600, color: '#0F2044', marginBottom: 2 }}>
                 {pupilName(upcoming)}
-              </div>
-              <div className="text-[13px] text-[#6B7280]">
+              </p>
+              <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 12 }}>
                 {formatDuration(upcoming.duration_minutes)}
-              </div>
-              <div className="flex" style={{ gap: 8, marginTop: 12 }}>
-                <button
-                  className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                  style={{ height: 40, borderRadius: 8, backgroundColor: "#CC2229" }}
-                >
-                  <Phone size={16} /> Call
+              </p>
+
+              {/* Three buttons */}
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                  📞 Call
                 </button>
-                <button
-                  className="flex-1 flex items-center justify-center gap-1 text-[13px] font-medium"
-                  style={{
-                    height: 40,
-                    borderRadius: 8,
-                    backgroundColor: "#F3F4F6",
-                    color: "#1A1A2E",
-                  }}
-                >
-                  <MessageSquare size={16} /> Text
+                <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                  💬 Text
                 </button>
-                <button
-                  className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                  style={{ height: 40, borderRadius: 8, backgroundColor: "#16A34A" }}
-                >
-                  <Navigation size={16} /> Go
+                <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                  ➤ Go
                 </button>
               </div>
             </div>
-            {/* RIGHT COLUMN — car image */}
-            <div
-              className="flex items-end justify-end"
-              style={{ width: 130, flexShrink: 0, alignSelf: "stretch" }}
-            >
-              <img
-                src={carAsset.url}
-                alt="Driving school car"
-                style={{
-                  height: 120,
-                  objectFit: "contain",
-                  pointerEvents: "none",
-                }}
-              />
-            </div>
-          </div>
+          </>
         ) : (
           <div className="text-center py-10 text-[14px] text-[#6B7280]">No upcoming lessons</div>
         )}
