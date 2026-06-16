@@ -58,7 +58,7 @@ function LiveSessionPage() {
   const navigate = useNavigate();
   const [lesson, setLesson] = useState<LessonRow | null>(null);
   const [loading, setLoading] = useState(true);
-  const [now, setNow] = useState(() => Date.now());
+  const [sessionElapsed, setSessionElapsed] = useState(0);
   const [notes, setNotes] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [noteSheetOpen, setNoteSheetOpen] = useState(false);
