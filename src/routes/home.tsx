@@ -715,8 +715,9 @@ function TabBtn({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="flex-1 text-[12px]"
+      className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
         color: active ? "#0F2044" : "#6B7280",
@@ -726,10 +727,14 @@ function TabBtn({
         borderRadius: 8,
         padding: "8px 6px",
         fontWeight: active ? 600 : 400,
+        fontSize: 12,
+        fontFamily: "Poppins, sans-serif",
+        lineHeight: 1.2,
       }}
     >
       {children}
     </button>
+
   );
 }
 
