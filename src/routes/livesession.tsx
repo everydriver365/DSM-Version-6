@@ -179,10 +179,10 @@ function LiveSessionPage() {
             fontVariantNumeric: "tabular-nums",
           }}
         >
-          {loading ? "00:00:00" : fmtTimer(elapsedSec)}
+          {loading ? "00:00:00" : fmtTimer(sessionElapsed)}
         </div>
         <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, marginTop: 6 }}>
-          {lesson ? (elapsedSec >= 0 ? "Session in progress" : "Starts soon") : "No active lesson"}
+          {lesson ? "Session in progress" : "No active lesson"}
         </div>
       </div>
 
