@@ -259,6 +259,55 @@ function PupilDetailPage() {
               />
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
+
+            {/* Test Readiness */}
+            {(() => {
+              const total = progressData?.total ?? 0;
+              const competent = progressData?.competent ?? 0;
+              const pct = total > 0 ? Math.round((competent / total) * 100) : 0;
+              let barColor = "#CC2229";
+              if (pct >= 100) barColor = "#16A34A";
+              else if (pct >= 71) barColor = "#1A52A0";
+              else if (pct >= 41) barColor = "#F59E0B";
+              return (
+                <div className="mt-4">
+                  <div
+                    className="text-[11px] font-medium uppercase"
+                    style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+                  >
+                    TEST READINESS
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <div
+                      className="flex-1 h-2 rounded-full overflow-hidden"
+                      style={{ backgroundColor: "#E2E6ED" }}
+                    >
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${pct}%`, backgroundColor: barColor }}
+                      />
+                    </div>
+                    <div
+                      className="text-[14px] font-bold"
+                      style={{ color: "#0F2044", ...POPPINS }}
+                    >
+                      {pct}%
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                      {competent} of {total} syllabus items competent
+                    </div>
+                    <Button
+                      variant="ghost"
+                      onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
+                    >
+                      View progress
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
           </Card>
         </div>
       )}
