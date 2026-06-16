@@ -134,12 +134,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const active = getActiveNav(router.state.location.pathname);
+  const hideNav = router.state.location.pathname === "/satnav";
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <BottomNav active={active} />
+      {!hideNav && <BottomNav active={active} />}
     </QueryClientProvider>
   );
 }

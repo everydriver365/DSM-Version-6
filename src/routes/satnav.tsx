@@ -161,6 +161,7 @@ function SatNavPage() {
         style={{
           borderRadius: "16px 16px 0 0",
           padding: 16,
+          paddingBottom: 28,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
         }}
       >
