@@ -771,3 +771,135 @@ function AccessTile({
     </button>
   );
 }
+
+function TodayTile({
+  value,
+  label,
+  valueColor,
+  valueSize,
+}: {
+  value: string;
+  label: string;
+  valueColor: string;
+  valueSize: number;
+}) {
+  return (
+    <div
+      style={{
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #e0e3ea',
+        borderRadius: 14,
+        padding: '12px 8px',
+        minHeight: 70,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Poppins, sans-serif',
+      }}
+    >
+      <div style={{ fontSize: valueSize, fontWeight: 700, color: valueColor, lineHeight: 1.1 }}>
+        {value}
+      </div>
+      <div style={{ fontSize: 10, color: '#999', marginTop: 4, textAlign: 'center' }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function NeedsAttention({
+  jobs,
+  tests,
+  calls,
+  enqs,
+  onNavigate,
+}: {
+  jobs: number;
+  tests: number;
+  calls: number;
+  enqs: number;
+  onNavigate: (to: string) => void;
+}) {
+  const urgentCount = jobs;
+  const cells: Array<{
+    key: string;
+    label: string;
+    count: number;
+    bg: string;
+    countColor: string;
+    route: string;
+    detail: string;
+  }> = [
+    { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
+    { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
+    { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
+    { key: 'enqs', label: "Enq's", count: enqs, bg: 'transparent', countColor: '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
+  ];
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  return (
+    <div
+      style={{
+        margin: '12px 16px 0',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #e0e3ea',
+        borderRadius: 14,
+        padding: 12,
+        fontFamily: 'Poppins, sans-serif',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: '#999', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+          NEEDS ATTENTION
+        </div>
+        {urgentCount > 0 && (
+          <span style={{ backgroundColor: '#c9302c', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 999 }}>
+            {urgentCount} urgent
+          </span>
+        )}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
+        {cells.map((c) => {
+          const isOpen = expanded === c.key;
+          return (
+            <button
+              key={c.key}
+              onClick={() => {
+                setExpanded(isOpen ? null : c.key);
+                onNavigate(c.route);
+              }}
+              style={{
+                backgroundColor: c.bg,
+                border: 'none',
+                borderRadius: 10,
+                padding: '8px 4px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                fontFamily: 'Poppins, sans-serif',
+                position: 'relative',
+              }}
+            >
+              <div style={{ fontSize: 20, fontWeight: 700, color: c.countColor, lineHeight: 1.1 }}>
+                {c.count}
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', marginTop: 2, letterSpacing: 0.4 }}>
+                {c.label}
+              </div>
+              <span style={{ position: 'absolute', right: 4, top: 4, fontSize: 9, color: '#9CA3AF' }}>›</span>
+            </button>
+          );
+        })}
+      </div>
+      {expanded && (
+        <div style={{ marginTop: 10, padding: '8px 10px', backgroundColor: '#F8F9FB', borderRadius: 8, fontSize: 12, color: '#374151' }}>
+          {cells.find((c) => c.key === expanded)?.detail}
+        </div>
+      )}
+    </div>
+  );
+}
