@@ -125,7 +125,7 @@ function LoginPage() {
           Sign in to your account
         </p>
 
-        <div className="flex flex-col gap-[15px]">
+        <div className="flex flex-col gap-4">
           <div className="w-full">
             <label
               htmlFor="login-email"
