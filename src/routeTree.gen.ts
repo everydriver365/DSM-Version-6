@@ -641,7 +641,6 @@ export interface RootRouteChildren {
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
-  PupilsEditIdRoute: typeof PupilsEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1013,14 +1012,12 @@ interface PupilsRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
-  PupilsEditIdRoute: typeof PupilsEditIdRoute
 }
 
 const PupilsRouteChildren: PupilsRouteChildren = {
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   PupilsIndexRoute: PupilsIndexRoute,
-  PupilsEditIdRoute: PupilsEditIdRoute,
 }
 
 const PupilsRouteWithChildren =
