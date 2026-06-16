@@ -226,8 +226,11 @@ function SettingsPage() {
             icon={<Shield size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Privacy policy"
-            onClick={() => {}}
+            onClick={() =>
+              window.open("https://everydriver.co.uk/privacy-policy", "_blank", "noopener,noreferrer")
+            }
           />
+
         </Card>
 
         <SectionHeader>DANGER ZONE</SectionHeader>
