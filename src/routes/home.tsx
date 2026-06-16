@@ -435,7 +435,7 @@ function HomePage() {
               <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
                 <button style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>📞 Call</button>
                 <button style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>💬 Text</button>
-                <button style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
+                <button onClick={() => navigate({ to: "/livesession" })} style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
               </div>
             )}
           </div>
