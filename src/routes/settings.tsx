@@ -191,12 +191,8 @@ function SettingsPage() {
             icon={<Bell size={18} color="#92400E" />}
             iconBg="#FEF3C7"
             label="Notifications"
-            onClick={() => setExpanded(expanded === "notifications" ? null : "notifications")}
-            expanded={expanded === "notifications"}
+            onClick={() => navigate({ to: "/notificationsettings" })}
           />
-          {expanded === "notifications" && (
-            <PlaceholderBlock text="Notification preferences coming soon." />
-          )}
 
           <MenuRow
             icon={<Calendar size={18} color="#1A52A0" />}
