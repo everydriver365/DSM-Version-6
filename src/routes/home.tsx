@@ -372,7 +372,7 @@ function HomePage() {
       </div>
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingBottom: 14 }}>
+      <div style={{ backgroundColor: '#0F2044', paddingBottom: 20 }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '12px 16px 0' }}>
           <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
@@ -715,8 +715,9 @@ function TabBtn({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="flex-1 text-[12px]"
+      className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
         color: active ? "#0F2044" : "#6B7280",
@@ -726,10 +727,14 @@ function TabBtn({
         borderRadius: 8,
         padding: "8px 6px",
         fontWeight: active ? 600 : 400,
+        fontSize: 12,
+        fontFamily: "Poppins, sans-serif",
+        lineHeight: 1.2,
       }}
     >
       {children}
     </button>
+
   );
 }
 
