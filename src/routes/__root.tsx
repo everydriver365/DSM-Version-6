@@ -139,7 +139,8 @@ function RootComponent() {
     router.state.location.pathname === "/weeklyreport" ||
     router.state.location.pathname === "/login" ||
     router.state.location.pathname === "/register" ||
-    router.state.location.pathname === "/livesession";
+    router.state.location.pathname === "/livesession" ||
+    router.state.location.pathname === "/subscription";
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -43,6 +43,7 @@ import {
   Sun,
   Zap,
   CalendarDays,
+  Crown,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -346,6 +347,7 @@ function HomePage() {
     { icon: <Sun size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "End of day", route: "/eod" },
     { icon: <Zap size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Automations", route: "/automations" },
     { icon: <CalendarDays size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Diary", route: "/diary" },
+    { icon: <Crown size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "My plan", route: "/subscription" },
   ] as const;
 
   return (
