@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useState, useEffect, type FormEvent } from "react";
+import { Eye, EyeOff, ScanFace } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+const REMEMBER_KEY = "dsm:rememberedEmail";
+
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -22,6 +24,32 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
+  const [webauthnSupported, setWebauthnSupported] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(REMEMBER_KEY);
+      if (saved) {
+        setEmail(saved);
+        setRemember(true);
+      }
+    } catch {
+      /* ignore */
+    }
+    if (typeof window !== "undefined" && window.PublicKeyCredential && navigator.credentials) {
+      setWebauthnSupported(true);
+    }
+  }, []);
+
+  function persistRemember(value: string, on: boolean) {
+    try {
+      if (on && value) localStorage.setItem(REMEMBER_KEY, value);
+      else localStorage.removeItem(REMEMBER_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -33,7 +61,28 @@ function LoginPage() {
       setError(err.message);
       return;
     }
+    persistRemember(email, remember);
     navigate({ to: "/home", replace: true });
+  }
+
+  async function onBiometric() {
+    setError(null);
+    try {
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      await navigator.credentials.get({
+        publicKey: {
+          challenge,
+          timeout: 60000,
+          userVerification: "required",
+        },
+      });
+      // Biometric is gesture-only here; surface a hint until a credential is enrolled.
+      setError("No biometric credential enrolled yet. Sign in with your password first.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Biometric sign-in failed";
+      setError(msg);
+    }
   }
 
   return (
@@ -135,6 +184,29 @@ function LoginPage() {
           </div>
         </div>
 
+        {/* Remember me + Forgot */}
+        <div className="flex items-center justify-between mt-4">
+          <label className="flex items-center gap-2 text-[13px] text-[#6B7280] cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => {
+                const on = e.target.checked;
+                setRemember(on);
+                persistRemember(email, on);
+              }}
+              className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A52A0]"
+            />
+            Remember me
+          </label>
+          <Link
+            to="/forgotpassword"
+            className="text-[13px] text-[#1A52A0] hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         <div className="mt-6">
           <Button
             type="submit"
@@ -144,6 +216,26 @@ function LoginPage() {
             {loading ? "Signing in…" : "Sign in"}
           </Button>
         </div>
+
+        {webauthnSupported && (
+          <>
+            <button
+              type="button"
+              onClick={onBiometric}
+              className="mt-3 h-12 w-full rounded-lg bg-white text-[#0F2044] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
+              style={{ border: "1.5px solid #E2E6ED", fontFamily: "Poppins, sans-serif" }}
+            >
+              <ScanFace size={20} />
+              Sign in with Face ID / Touch ID
+            </button>
+            <Link
+              to="/forgotpassword"
+              className="text-[13px] text-[#1A52A0] hover:underline text-center mt-3"
+            >
+              Forgot password?
+            </Link>
+          </>
+        )}
 
         {error && (
           <p
