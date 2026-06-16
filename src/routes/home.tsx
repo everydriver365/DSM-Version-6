@@ -552,6 +552,93 @@ function HomePage() {
         <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
       </div>
 
+      {/* ENABLE NOTIFICATIONS PROMPT */}
+      {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
+        <div
+          style={{
+            margin: "12px 16px 0",
+            backgroundColor: "#FFFBEB",
+            border: "1px solid #FCD34D",
+            borderRadius: 12,
+            padding: 12,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <span
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 999,
+              backgroundColor: "#FEF3C7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Bell size={16} color="#92400E" />
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#92400E" }}>
+              Enable lesson reminders?
+            </div>
+            <div style={{ fontSize: 11, color: "#78350F", marginTop: 2 }}>
+              Get a notification 1 hour before each lesson.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              const result = await requestPermission();
+              setNotifPermission(result);
+              if (result !== "default") {
+                window.sessionStorage.setItem("dsm:notifPromptDismissed", "1");
+                setNotifPromptDismissed(true);
+              }
+            }}
+            style={{
+              background: "#1A52A0",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              padding: "8px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+            }}
+          >
+            Enable
+          </button>
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={() => {
+              window.sessionStorage.setItem("dsm:notifPromptDismissed", "1");
+              setNotifPromptDismissed(true);
+            }}
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 4,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <X size={16} color="#92400E" />
+          </button>
+        </div>
+      )}
+
+
+
       {/* NEEDS ATTENTION */}
       <NeedsAttention
         jobs={0}
