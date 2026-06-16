@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Info, Copy, Check } from "lucide-react";
+import { ArrowLeft, Info, Copy, Check, Calendar, AlertTriangle } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
@@ -18,14 +19,6 @@ export const Route = createFileRoute("/calendarsync")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
-const STEPS = [
-  "Copy the ICS feed URL above",
-  "Open Google Calendar → Other calendars → From URL",
-  "Paste the URL and click Add calendar",
-  "Your lessons will sync automatically every few hours",
-] as const;
-
-const APPS = ["Google Calendar", "Apple Calendar", "Outlook", "Fantastical"] as const;
 
 function CalendarSyncPage() {
   const navigate = useNavigate();
@@ -154,55 +147,250 @@ function CalendarSyncPage() {
           </Button>
         </Card>
 
-        {/* How to add */}
-        <SectionHeader>HOW TO ADD TO YOUR CALENDAR</SectionHeader>
-        <div className="flex flex-col gap-3">
-          {STEPS.map((text, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3"
-              style={{
-                backgroundColor: "#F8F9FB",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#E2E6ED",
-                borderRadius: 12,
-                padding: 14,
-              }}
-            >
-              <div
-                className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
-              >
-                {i + 1}
-              </div>
-              <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
-                {text}
-              </p>
-            </div>
-          ))}
+        {/* Info banner */}
+        <div
+          className="mt-3 flex items-start gap-3"
+          style={{
+            backgroundColor: "#FEF3C7",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderColor: "#F59E0B",
+            borderRadius: 8,
+            padding: 12,
+          }}
+        >
+          <AlertTriangle size={20} color="#F59E0B" className="shrink-0 mt-0.5" />
+          <p className="text-[13px] text-[#0F2044] leading-[1.5]" style={POPPINS}>
+            This is a one-way read feed. Your DSM lessons appear in your calendar app, but changes made in your calendar app will not sync back to DSM. Always manage your lessons in DSM.
+          </p>
         </div>
 
-        {/* Supported apps */}
-        <SectionHeader>SUPPORTED APPS</SectionHeader>
-        <div className="flex flex-wrap gap-2">
-          {APPS.map((app) => (
-            <span
-              key={app}
-              className="inline-block px-3 py-1.5 text-[12px] font-medium text-[#1A52A0]"
-              style={{
-                backgroundColor: "#EEF4FB",
-                borderRadius: 9999,
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#1A52A0",
-                ...POPPINS,
-              }}
-            >
-              {app}
-            </span>
-          ))}
-        </div>
+        <SectionHeader>HOW TO ADD TO YOUR CALENDAR</SectionHeader>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem
+            value="google"
+            className="border-0"
+            style={{
+              backgroundColor: "#F8F9FB",
+              borderRadius: 12,
+              marginBottom: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+            }}
+          >
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+              <span className="flex items-center gap-3">
+                <Calendar size={20} color="#1A52A0" />
+                Google Calendar
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <ol className="flex flex-col gap-3 list-none">
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    1
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Open Google Calendar on a computer (not phone)
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    2
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click + next to "Other calendars" on the left sidebar
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    3
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click "From URL"
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    4
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Paste your ICS feed URL above
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    5
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click "Add calendar"
+                  </p>
+                </li>
+              </ol>
+              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
+                Note: Updates every few hours automatically
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem
+            value="apple"
+            className="border-0"
+            style={{
+              backgroundColor: "#F8F9FB",
+              borderRadius: 12,
+              marginBottom: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+            }}
+          >
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+              <span className="flex items-center gap-3">
+                <Calendar size={20} color="#CC2229" />
+                Apple Calendar
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <ol className="flex flex-col gap-3 list-none">
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                  >
+                    1
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Open the Calendar app on Mac or iPhone
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                  >
+                    2
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click File → New Calendar Subscription (Mac) or tap Calendars → Add Calendar → Add Subscription Calendar (iPhone)
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                  >
+                    3
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Paste your ICS feed URL
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                  >
+                    4
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click Subscribe
+                  </p>
+                </li>
+              </ol>
+              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
+                Note: Updates every few hours automatically
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem
+            value="outlook"
+            className="border-0"
+            style={{
+              backgroundColor: "#F8F9FB",
+              borderRadius: 12,
+              marginBottom: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+            }}
+          >
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+              <span className="flex items-center gap-3">
+                <Calendar size={20} color="#1A52A0" />
+                Outlook
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <ol className="flex flex-col gap-3 list-none">
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    1
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Go to outlook.com and open Calendar
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    2
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click Add calendar → Subscribe from web
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    3
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Paste your ICS feed URL
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
+                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                  >
+                    4
+                  </div>
+                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                    Click Import
+                  </p>
+                </li>
+              </ol>
+              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
+                Note: Updates every few hours automatically
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   );
