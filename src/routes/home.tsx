@@ -1139,43 +1139,7 @@ function HomePage() {
               ));
             })()
           ) : (
-            tabLessons.map((l) => (
-              <div
-                key={l.id}
-                className="bg-white flex items-center justify-between"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                }}
-              >
-                <div className="flex items-center" style={{ gap: 12 }}>
-                  <span className="text-[14px] font-bold text-[#0F2044]">
-                    {formatTime(l)}
-                  </span>
-                  <div>
-                    <div className="text-[14px] text-[#0F2044]">{pupilName(l)}</div>
-                    <div className="text-[12px] text-[#6B7280]">
-                      {formatDuration(l.duration_minutes)}
-                    </div>
-                  </div>
-                </div>
-                <span
-                  className="text-[10px] uppercase font-medium"
-                  style={{
-                    color: statusColor(l.status),
-                    letterSpacing: "0.05em",
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                    backgroundColor: `${statusColor(l.status)}14`,
-                  }}
-                >
-                  {l.status}
-                </span>
-              </div>
-            ))
+            tabLessons.map((l) => renderLessonCard(l))
           )}
         </div>
 
