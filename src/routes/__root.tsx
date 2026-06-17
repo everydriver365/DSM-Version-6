@@ -170,18 +170,31 @@ function RootComponent() {
     pathname === "/courses" ||
     pathname.startsWith("/courses/");
 
+  const whiteBgPaths = new Set([
+    "/login",
+    "/register",
+    "/onboarding",
+    "/forgotpassword",
+    "/resetpassword",
+    "/satnav",
+    "/livesession",
+  ]);
+  const useWhiteBg = whiteBgPaths.has(pathname);
+
+  const wrapperStyle: Record<string, string | number> = {};
+  if (!hideNav) wrapperStyle.paddingBottom = 80;
+  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F2F4F8";
+
   // Track recent screens for the search screen's "Recent" list.
   useEffect(() => {
     if (pathname === "/search") return;
     import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
   }, [pathname]);
 
-
-
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <div style={hideNav ? undefined : { paddingBottom: 80 }}>
+      <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />
       </div>
       {!hideNav && <BottomNav active={active} />}

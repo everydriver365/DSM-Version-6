@@ -764,11 +764,11 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8 }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8, paddingTop: 52 }}>
       {/* TOP BAR */}
       <div
-        className="sticky top-0 z-40 h-[56px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044" }}
+        className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
+        style={{ backgroundColor: "#0F2044", height: 52 }}
       >
         <div className="flex items-center gap-2">
           <img
@@ -896,7 +896,7 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#0F2044', paddingTop: 0, paddingBottom: 20, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
           <div
