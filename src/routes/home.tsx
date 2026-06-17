@@ -1504,7 +1504,150 @@ function HomePage() {
         }
       `}</style>
 
+      {/* AT A GLANCE */}
+      <div className="mx-4 mt-4">
+        <SectionHeader>AT A GLANCE</SectionHeader>
+        <div className="flex flex-col gap-2 mt-2">
+          {/* Rewards card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/rewards" })}
+            className="flex items-center text-left"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              gap: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#FEF3C7" }}
+            >
+              <Trophy size={18} color="#D97706" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+                DSM Rewards
+              </div>
+              <div className="text-[13px]" style={{ color: "#6B7280" }}>
+                {glancePoints} pts
+              </div>
+            </div>
+            <span
+              className="text-[11px] font-semibold px-2 py-1 rounded-full"
+              style={{ backgroundColor: glanceTierColor, color: "#FFFFFF" }}
+            >
+              {glanceTier}
+            </span>
+            <ChevronRight size={18} color="#9CA3AF" />
+          </button>
+
+          {/* Tax estimate card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/tax" })}
+            className="text-left w-full"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex items-center justify-center shrink-0"
+                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#DBEAFE" }}
+              >
+                <Calculator size={18} color="#1A52A0" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[10px] uppercase font-semibold"
+                    style={{ color: "#9CA3AF", letterSpacing: 0.6 }}
+                  >
+                    TAX ESTIMATE
+                  </span>
+                  <span className="text-[10px]" style={{ color: "#9CA3AF" }}>
+                    {taxYearLabel}
+                  </span>
+                </div>
+                <div className="text-[20px] font-bold mt-0.5" style={{ color: "#0F2044" }}>
+                  £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
+                </div>
+              </div>
+              <ChevronRight size={18} color="#9CA3AF" />
+            </div>
+            <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
+              Projected full-year estimate
+            </div>
+            <div
+              className="mt-2 w-full"
+              style={{ height: 4, borderRadius: 2, backgroundColor: "#E2E6ED", overflow: "hidden" }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${(monthsElapsed / 12) * 100}%`,
+                  backgroundColor: "#1A52A0",
+                  borderRadius: 2,
+                }}
+              />
+            </div>
+          </button>
+
+          {/* MTD card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/mtd" })}
+            className="flex items-center text-left"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              gap: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#ECFDF5" }}
+            >
+              <FileSpreadsheet size={18} color="#16A34A" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+                Making Tax Digital
+              </div>
+            </div>
+            <span
+              className="text-[11px] font-semibold px-2 py-1 rounded-full"
+              style={{
+                backgroundColor: glanceMtdEnrolled ? "#ECFDF5" : "#FEF3C7",
+                color: glanceMtdEnrolled ? "#16A34A" : "#B45309",
+              }}
+            >
+              {glanceMtdEnrolled ? "Enrolled" : "Not enrolled"}
+            </span>
+            <ChevronRight size={18} color="#9CA3AF" />
+          </button>
+        </div>
+      </div>
+
     </div>
+
   );
 }
 
