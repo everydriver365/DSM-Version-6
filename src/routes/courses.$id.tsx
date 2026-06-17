@@ -432,6 +432,16 @@ function CourseDetailPage() {
                       }}
                     />
                   </div>
+                  <ToggleRow
+                    label="Publish to marketplace"
+                    value={form.publish_marketplace}
+                    onChange={(v) => setForm({ ...form, publish_marketplace: v })}
+                  />
+                  <ToggleRow
+                    label="Publish to mini-website"
+                    value={form.publish_mini_website}
+                    onChange={(v) => setForm({ ...form, publish_mini_website: v })}
+                  />
                 </div>
               ) : (
                 <>
