@@ -22,6 +22,19 @@ type RepeatType = "one-off" | "weekly" | "monthly";
 type TimePref = "morning" | "afternoon" | "evening" | "flexible";
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
+const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
+
+// SQL to run manually:
+// alter table instructor_courses add column if not exists radius_miles integer default 10;
+
+const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
+function isValidPickupArea(value: string): boolean {
+  const v = value.trim();
+  return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
+}
+const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO23 or SO23 9AA)";
+
 
 const TYPE_META: Record<
   CourseType,
@@ -64,6 +77,8 @@ function NewCoursePage() {
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
   const [pickupArea, setPickupArea] = useState("");
+  const [pickupError, setPickupError] = useState<string | null>(null);
+  const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
 
   // Step 3
@@ -135,6 +150,15 @@ function NewCoursePage() {
       if (!price || parseFloat(price) <= 0) missing.push("price");
       if (!startDate) missing.push("start_date");
     }
+    // Pickup area required & must be a valid UK postcode/outcode (active publish only)
+    if (status === "active" && !isValidPickupArea(pickupArea)) {
+      setSaving(false);
+      setPickupError(PICKUP_ERROR_MSG);
+      setError(PICKUP_ERROR_MSG);
+      toast.error(PICKUP_ERROR_MSG);
+      setStep(2);
+      return;
+    }
     if (missing.length > 0) {
       setSaving(false);
       const msg = `Missing required fields: ${missing.join(", ")}`;
@@ -145,6 +169,7 @@ function NewCoursePage() {
       else if (missing.includes("price")) setStep(3);
       return;
     }
+
 
     const payload = {
       instructor_id: uid,
@@ -159,6 +184,7 @@ function NewCoursePage() {
       daily_hours: dailyHours || null,
       repeat_type: repeatAllowed ? repeatType : "one-off",
       pickup_area: pickupArea.trim() || null,
+      radius_miles: Number(radiusMiles) || 10,
       lesson_time_preference: timePref,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
@@ -188,6 +214,17 @@ function NewCoursePage() {
     navigate({ to: "/courses" });
   }
 
+  function goNext() {
+    if (step === 2 && !isValidPickupArea(pickupArea)) {
+      setPickupError(PICKUP_ERROR_MSG);
+      toast.error(PICKUP_ERROR_MSG);
+      return;
+    }
+    if (step < 3) setStep((step + 1) as 1 | 2 | 3);
+  }
+
+
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 24 }}>
@@ -215,8 +252,7 @@ function NewCoursePage() {
         <button
           onClick={() => {
             if (step < 3) {
-              console.log("[courses.new] top-bar Publish tapped before step 3 — advancing", { step });
-              setStep((step + 1) as 1 | 2 | 3);
+              goNext();
               return;
             }
             submit("active");
@@ -297,7 +333,10 @@ function NewCoursePage() {
             repeatType={repeatType}
             setRepeatType={setRepeatType}
             pickupArea={pickupArea}
-            setPickupArea={setPickupArea}
+            setPickupArea={(v) => { setPickupArea(v); if (pickupError) setPickupError(null); }}
+            pickupError={pickupError}
+            radiusMiles={radiusMiles}
+            setRadiusMiles={setRadiusMiles}
             timePref={timePref}
             setTimePref={setTimePref}
           />
@@ -347,7 +386,7 @@ function NewCoursePage() {
           )}
           {step < 3 ? (
             <button
-              onClick={() => setStep((step + 1) as 1 | 2 | 3)}
+              onClick={goNext}
               style={{
                 flex: 1,
                 height: 44,
@@ -551,12 +590,16 @@ function Step2(props: {
   setRepeatType: (v: RepeatType) => void;
   pickupArea: string;
   setPickupArea: (v: string) => void;
+  pickupError: string | null;
+  radiusMiles: number;
+  setRadiusMiles: (n: number) => void;
   timePref: TimePref;
   setTimePref: (v: TimePref) => void;
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
     repeatAllowed, repeatType, setRepeatType, pickupArea, setPickupArea,
+    pickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
   } = props;
   return (
@@ -633,12 +676,46 @@ function Step2(props: {
         </div>
       )}
 
-      <Input
-        label="Pickup area"
-        value={pickupArea}
-        onChange={(e) => setPickupArea(e.target.value)}
-        placeholder="e.g. Winchester, SO23"
-      />
+      <div>
+        <FieldLabel>
+          Pickup area <span style={{ color: "#CC2229" }}>*</span>
+        </FieldLabel>
+        <Input
+          value={pickupArea}
+          onChange={(e) => setPickupArea(e.target.value)}
+          placeholder="e.g. SO23 or SO23 9AA"
+        />
+        {pickupError && (
+          <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+            {pickupError}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <FieldLabel>Coverage radius</FieldLabel>
+        <select
+          value={radiusMiles}
+          onChange={(e) => setRadiusMiles(Number(e.target.value))}
+          style={{
+            width: "100%",
+            height: 44,
+            borderRadius: 10,
+            border: "0.5px solid #E2E6ED",
+            padding: "0 10px",
+            fontSize: 14,
+            fontFamily: "Poppins, sans-serif",
+            background: "#fff",
+            color: "#1A1A2E",
+          }}
+        >
+          {RADIUS_OPTIONS.map((m) => (
+            <option key={m} value={m}>{m} mile{m === 1 ? "" : "s"}</option>
+          ))}
+        </select>
+      </div>
+
+
 
       <div>
         <FieldLabel>Lesson times</FieldLabel>

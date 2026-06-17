@@ -20,6 +20,19 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const LABEL = "#6B7280";
 const VALUE = "#0F2044";
 
+const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
+
+// SQL to run manually:
+// alter table instructor_courses add column if not exists radius_miles integer default 10;
+
+const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
+function isValidPickupArea(value: string): boolean {
+  const v = value.trim();
+  return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
+}
+const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO23 or SO23 9AA)";
+
 interface Course {
   id: string;
   instructor_id: string;
@@ -35,6 +48,7 @@ interface Course {
   daily_hours: number | null;
   repeat_type: string;
   pickup_area: string | null;
+  radius_miles: number | null;
   lesson_time_preference: string;
   price: number;
   deposit_amount: number;
@@ -99,6 +113,7 @@ function CourseDetailPage() {
 
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
+  const [pickupError, setPickupError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -132,6 +147,12 @@ function CourseDetailPage() {
 
   async function saveChanges() {
     if (!form) return;
+    if (!isValidPickupArea(form.pickup_area ?? "")) {
+      setPickupError(PICKUP_ERROR_MSG);
+      setError(PICKUP_ERROR_MSG);
+      toast.error(PICKUP_ERROR_MSG);
+      return;
+    }
     setSaving(true);
     setError(null);
     const { id: _id, instructor_id: _ii, ...patch } = form;
@@ -145,6 +166,7 @@ function CourseDetailPage() {
         early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
         max_spaces: Number(patch.max_spaces) || 1,
         daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
+        radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
       })
       .eq("id", id);
     setSaving(false);
@@ -375,11 +397,48 @@ function CourseDetailPage() {
                     value={form.end_date ?? ""}
                     onChange={(e) => setForm({ ...form, end_date: e.target.value || null })}
                   />
-                  <Input
-                    label="Pickup area"
-                    value={form.pickup_area ?? ""}
-                    onChange={(e) => setForm({ ...form, pickup_area: e.target.value || null })}
-                  />
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                      Pickup area <span style={{ color: "#CC2229" }}>*</span>
+                    </div>
+                    <Input
+                      value={form.pickup_area ?? ""}
+                      onChange={(e) => {
+                        setForm({ ...form, pickup_area: e.target.value || null });
+                        if (pickupError) setPickupError(null);
+                      }}
+                      placeholder="e.g. SO23 or SO23 9AA"
+                    />
+                    {pickupError && (
+                      <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4 }}>
+                        {pickupError}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                      Coverage radius
+                    </div>
+                    <select
+                      value={form.radius_miles ?? 10}
+                      onChange={(e) => setForm({ ...form, radius_miles: Number(e.target.value) })}
+                      style={{
+                        width: "100%",
+                        height: 44,
+                        borderRadius: 8,
+                        border: "0.5px solid #E2E6ED",
+                        padding: "0 10px",
+                        background: "#fff",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 14,
+                        color: "#1A1A2E",
+                      }}
+                    >
+                      {RADIUS_OPTIONS.map((m) => (
+                        <option key={m} value={m}>{m} mile{m === 1 ? "" : "s"}</option>
+                      ))}
+                    </select>
+                  </div>
                   <SelectRow
                     label="Lesson time"
                     value={form.lesson_time_preference}
