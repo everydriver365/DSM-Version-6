@@ -632,6 +632,7 @@ function HomePage() {
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Test day", route: "/testday" },
+    { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Rewards", route: "/rewards" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
     { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Enquiries", route: "/enquiries" },
