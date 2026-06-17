@@ -1428,21 +1428,21 @@ function TabBtn({
       className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
-        color: active ? "#0F2044" : "#6B7280",
-        borderWidth: "0.5px",
-        borderStyle: "solid",
-        borderColor: active ? "#E2E6ED" : "transparent",
+        color: active ? "#0F2044" : "#9CA3AF",
         borderRadius: 8,
         padding: "8px 6px",
         fontWeight: active ? 600 : 400,
-        fontSize: 12,
+        fontSize: 13,
         fontFamily: "Poppins, sans-serif",
         lineHeight: 1.2,
+        border: "none",
+        cursor: "pointer",
+        boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+        transition: "all 150ms ease",
       }}
     >
       {children}
     </button>
-
   );
 }
 
