@@ -91,7 +91,8 @@ interface LessonRow {
   status: string;
   pupil_id: string;
   notes?: string | null;
-  pupils?: { name: string; phone: string | null; balance_owed?: number | null } | null;
+  lesson_type?: string | null;
+  pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
 interface PrevLessonRow {
@@ -277,7 +278,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils(name,phone,balance_owed)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, lesson_type, pupils(name,phone,balance_owed,postcode)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -292,7 +293,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils(name,phone,balance_owed)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, lesson_type, pupils(name,phone,balance_owed,postcode)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -423,10 +424,28 @@ function HomePage() {
       : "#1A52A0";
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
+    const postcode = l.pupils?.postcode ?? null;
+    const notes = (l.notes ?? "").toLowerCase();
+    const lessonType = (l.lesson_type ?? "").toLowerCase();
+    let typeBadge: { label: string; bg: string; color: string } | null = null;
+    if (notes.includes("mock")) typeBadge = { label: "Mock test", bg: "#FEF3C7", color: "#92400E" };
+    else if (notes.includes("test") || lessonType.includes("test")) typeBadge = { label: "Test", bg: "#FEF3C7", color: "#92400E" };
+    else if ((l.notes ?? "").includes("Course")) typeBadge = { label: "Course", bg: "#DBEAFE", color: "#1E40AF" };
+    const todayYmdStr = ymd(todayStart);
+    const showEol = l.lesson_date < todayYmdStr || status === "completed";
     return (
       <div
         key={l.id}
-        className="bg-white flex items-center justify-between"
+        role="button"
+        tabIndex={0}
+        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            navigate({ to: "/lessons/$id", params: { id: l.id } });
+          }
+        }}
+        className="bg-white flex items-center justify-between hover:bg-[#F8F9FB]"
         style={{
           position: "relative",
           overflow: "hidden",
@@ -438,6 +457,7 @@ function HomePage() {
           borderColor: "#E2E6ED",
           marginBottom: 6,
           backgroundColor: isLive ? "#FFF5F5" : "#FFFFFF",
+          cursor: "pointer",
         }}
       >
         <span
@@ -452,53 +472,96 @@ function HomePage() {
             backgroundColor: accent,
           }}
         />
-        <div className="flex items-center" style={{ gap: 12 }}>
+        <div className="flex items-center" style={{ gap: 12, minWidth: 0 }}>
           <span className="text-[14px] font-bold" style={{ color: accent }}>
             {formatTime(l)}
           </span>
-          <div>
-            <div className="text-[14px] font-semibold text-[#0F2044]">{pupilName(l)}</div>
+          <div style={{ minWidth: 0 }}>
+            <div className="flex items-center" style={{ gap: 6, flexWrap: "wrap" }}>
+              <span className="text-[14px] font-semibold text-[#0F2044]">{pupilName(l)}</span>
+              {typeBadge && (
+                <span
+                  className="text-[10px] font-semibold uppercase"
+                  style={{
+                    padding: "2px 6px",
+                    borderRadius: 999,
+                    backgroundColor: typeBadge.bg,
+                    color: typeBadge.color,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {typeBadge.label}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
+              <MapPin size={10} />
+              <span>{postcode ?? "No pickup set"}</span>
+            </div>
             <div style={{ fontSize: 13, color: "#6B7280" }}>
               {formatDuration(l.duration_minutes)}
             </div>
           </div>
         </div>
-        {isLive ? (
-          <span
-            className="text-[12px] font-medium inline-flex items-center"
-            style={{
-              gap: 6,
-              color: "#CC2229",
-              padding: "3px 8px",
-              borderRadius: 999,
-              backgroundColor: "#FFECEC",
-            }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#CC2229" }} />
-            In progress
-          </span>
-        ) : (
-          <span
-            className="text-[12px] inline-flex items-center"
-            style={{
-              gap: 6,
-              color: paid ? "#1A7A3C" : "#D33B3B",
-              padding: "3px 8px",
-              borderRadius: 999,
-              backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 999,
-                backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
+        <div className="flex items-center" style={{ gap: 6 }}>
+          {showEol && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate({ to: "/lessons/feedback/$id", params: { id: l.id } });
               }}
-            />
-            {paid ? "Paid" : "Not paid"}
-          </span>
-        )}
+              style={{
+                backgroundColor: "#EEF4FB",
+                color: "#1A52A0",
+                fontSize: 12,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                borderRadius: 6,
+                padding: "2px 8px",
+                cursor: "pointer",
+              }}
+            >
+              EOL
+            </button>
+          )}
+          {isLive ? (
+            <span
+              className="text-[12px] font-medium inline-flex items-center"
+              style={{
+                gap: 6,
+                color: "#CC2229",
+                padding: "3px 8px",
+                borderRadius: 999,
+                backgroundColor: "#FFECEC",
+              }}
+            >
+              <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#CC2229" }} />
+              In progress
+            </span>
+          ) : (
+            <span
+              className="text-[12px] inline-flex items-center"
+              style={{
+                gap: 6,
+                color: paid ? "#1A7A3C" : "#D33B3B",
+                padding: "3px 8px",
+                borderRadius: 999,
+                backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 999,
+                  backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
+                }}
+              />
+              {paid ? "Paid" : "Not paid"}
+            </span>
+          )}
+        </div>
       </div>
     );
   };
