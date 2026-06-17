@@ -86,7 +86,15 @@ interface LessonRow {
   duration_minutes: number | null;
   status: string;
   pupil_id: string;
-  pupils?: { name: string; phone: string | null } | null;
+  notes?: string | null;
+  pupils?: { name: string; phone: string | null; balance_owed?: number | null } | null;
+}
+
+interface PrevLessonRow {
+  id: string;
+  lesson_date: string;
+  status: string;
+  notes: string | null;
 }
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
