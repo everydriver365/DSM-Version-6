@@ -214,7 +214,14 @@ function NewCoursePage() {
         </button>
         <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>New course</h1>
         <button
-          onClick={() => submit("active")}
+          onClick={() => {
+            if (step < 3) {
+              console.log("[courses.new] top-bar Publish tapped before step 3 — advancing", { step });
+              setStep((step + 1) as 1 | 2 | 3);
+              return;
+            }
+            submit("active");
+          }}
           disabled={saving}
           style={{
             background: "none",
@@ -223,11 +230,12 @@ function NewCoursePage() {
             color: "#fff",
             fontWeight: 700,
             fontSize: 14,
-            opacity: saving ? 0.5 : 1,
+            opacity: saving ? 0.5 : step < 3 ? 0.7 : 1,
           }}
         >
-          Publish
+          {step < 3 ? "Next" : "Publish"}
         </button>
+
       </div>
 
       {/* Step indicator */}
