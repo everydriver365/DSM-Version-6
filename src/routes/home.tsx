@@ -602,7 +602,7 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20 }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '0 16px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
           <div
             onClick={() => upcoming && setHeroExpanded((v) => !v)}
             style={{ textAlign: 'left', padding: 13, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
@@ -1248,7 +1248,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#F2F4F8', borderRadius: '0 0 14px 14px', padding: 12 }}>
+    <div style={{ background: '#F2F4F8', borderRadius: '0 0 16px 16px', padding: 12 }}>
       {/* Row 1 — status */}
       <div style={{ display: 'flex', gap: 6 }}>
         <button
