@@ -211,6 +211,7 @@ function HomePage() {
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
+  const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -337,6 +338,20 @@ function HomePage() {
       });
       setWeekEarnings(wk);
       setTodayEarnings(td);
+
+      const { data: wh } = await supabase
+        .from("working_hours")
+        .select("mon, tue, wed, thu, fri, sat, sun, end_time")
+        .eq("instructor_id", userId)
+        .maybeSingle();
+      if (wh) {
+        const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+        const key = dayKeys[todayStart.getDay()];
+        const works = (wh as Record<string, unknown>)[key];
+        setTodayEndTime(works && wh.end_time ? String(wh.end_time).slice(0, 5) : null);
+      } else {
+        setTodayEndTime(null);
+      }
       setLoading(false);
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
@@ -404,7 +419,13 @@ function HomePage() {
     const last = todayLessons[todayLessons.length - 1];
     const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
     if (end >= tomorrowStart) return null;
-    return `${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}`;
+    const hh = end.getHours();
+    const mm = end.getMinutes();
+    if (todayEndTime) {
+      const [eh, em] = todayEndTime.split(":").map(Number);
+      if (hh * 60 + mm >= eh * 60 + em) return null;
+    }
+    return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
   })();
 
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
