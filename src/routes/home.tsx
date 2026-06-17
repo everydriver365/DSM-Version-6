@@ -231,6 +231,91 @@ function HomePage() {
   const [lateOpen, setLateOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // AT A GLANCE state
+  const [glancePupilCount, setGlancePupilCount] = useState(0);
+  const [glanceCompletedLessons, setGlanceCompletedLessons] = useState(0);
+  const [glancePaymentsCount, setGlancePaymentsCount] = useState(0);
+  const [glancePaymentsTotal, setGlancePaymentsTotal] = useState(0);
+  const [glanceExpensesTotal, setGlanceExpensesTotal] = useState(0);
+  const [glanceMtdEnrolled, setGlanceMtdEnrolled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const taxYearStart = new Date(
+        new Date().getMonth() >= 3 ? new Date().getFullYear() : new Date().getFullYear() - 1,
+        3,
+        6,
+      );
+      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id", { count: "exact", head: true })
+          .eq("instructor_id", userId)
+          .is("deleted_at", null),
+        supabase
+          .from("lessons")
+          .select("id", { count: "exact", head: true })
+          .eq("instructor_id", userId)
+          .eq("status", "completed")
+          .is("deleted_at", null),
+        supabase
+          .from("payments")
+          .select("amount, paid_at")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .gte("paid_at", taxYearStart.toISOString()),
+        supabase
+          .from("expenses")
+          .select("amount, expense_date")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .gte("expense_date", taxYearStart.toISOString().slice(0, 10)),
+        supabase
+          .from("instructor_mtd")
+          .select("enrolled")
+          .eq("instructor_id", userId)
+          .maybeSingle(),
+      ]);
+      setGlancePupilCount(pupilsRes.count ?? 0);
+      setGlanceCompletedLessons(lessonsRes.count ?? 0);
+      const pays = paymentsRes.data ?? [];
+      setGlancePaymentsCount(pays.length);
+      setGlancePaymentsTotal(pays.reduce((s, p: any) => s + Number(p.amount ?? 0), 0));
+      setGlanceExpensesTotal(
+        (expensesRes.data ?? []).reduce((s, e: any) => s + Number(e.amount ?? 0), 0),
+      );
+      setGlanceMtdEnrolled(mtdRes.data ? Boolean((mtdRes.data as any).enrolled) : false);
+    })();
+  }, [userId]);
+
+  const glancePoints = glancePupilCount * 10 + glanceCompletedLessons * 5 + glancePaymentsCount * 2;
+  const glanceTier =
+    glancePoints >= 1000 ? "Platinum" : glancePoints >= 500 ? "Gold" : glancePoints >= 200 ? "Silver" : "Bronze";
+  const glanceTierColor =
+    glanceTier === "Platinum"
+      ? "#0EA5E9"
+      : glanceTier === "Gold"
+      ? "#D97706"
+      : glanceTier === "Silver"
+      ? "#6B7280"
+      : "#B45309";
+  const glanceNetProfit = Math.max(0, glancePaymentsTotal - glanceExpensesTotal);
+  const glanceTaxBill = Math.max(0, (glanceNetProfit - 12570) * 0.2);
+  const monthsElapsed = (() => {
+    const now = new Date();
+    const startMonth = now.getMonth() >= 3 ? 3 : -9; // April = 3
+    const monthsSinceApril = (now.getFullYear() - (now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1)) * 12 + (now.getMonth() - 3) + (now.getMonth() < 3 ? 12 : 0);
+    void startMonth;
+    return Math.min(12, Math.max(0, monthsSinceApril + (now.getDate() / 30)));
+  })();
+  const taxYearLabel = (() => {
+    const now = new Date();
+    const startYear = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+    return `${String(startYear).slice(2)}/${String(startYear + 1).slice(2)}`;
+  })();
+
+
 
 
 
@@ -1329,17 +1414,43 @@ function HomePage() {
             </div>
           ) : (
             <>
-              <SectionHeader>QUICK ACCESS</SectionHeader>
-              <button
-                type="button"
-                aria-label="Search quick access"
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center justify-center"
-                style={{ width: 28, height: 28 }}
-              >
-                <Search size={16} color="#6B7280" />
-              </button>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[11px] uppercase"
+                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
+                >
+                  QUICK ACCESS
+                </span>
+                <button
+                  type="button"
+                  aria-label="Search quick access"
+                  onClick={() => setSearchOpen(true)}
+                  className="flex items-center justify-center"
+                  style={{ width: 24, height: 24 }}
+                >
+                  <Search size={14} color="#6B7280" />
+                </button>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/quickaccess" as never })}
+                  className="text-[13px]"
+                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                >
+                  See all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert("Coming soon")}
+                  className="text-[13px]"
+                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                >
+                  Edit pins
+                </button>
+              </div>
             </>
+
           )}
         </div>
         <div
@@ -1393,7 +1504,150 @@ function HomePage() {
         }
       `}</style>
 
+      {/* AT A GLANCE */}
+      <div className="mx-4 mt-4">
+        <SectionHeader>AT A GLANCE</SectionHeader>
+        <div className="flex flex-col gap-2 mt-2">
+          {/* Rewards card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/rewards" })}
+            className="flex items-center text-left"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              gap: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#FEF3C7" }}
+            >
+              <Trophy size={18} color="#D97706" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+                DSM Rewards
+              </div>
+              <div className="text-[13px]" style={{ color: "#6B7280" }}>
+                {glancePoints} pts
+              </div>
+            </div>
+            <span
+              className="text-[11px] font-semibold px-2 py-1 rounded-full"
+              style={{ backgroundColor: glanceTierColor, color: "#FFFFFF" }}
+            >
+              {glanceTier}
+            </span>
+            <ChevronRight size={18} color="#9CA3AF" />
+          </button>
+
+          {/* Tax estimate card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/tax" })}
+            className="text-left w-full"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex items-center justify-center shrink-0"
+                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#DBEAFE" }}
+              >
+                <Calculator size={18} color="#1A52A0" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[10px] uppercase font-semibold"
+                    style={{ color: "#9CA3AF", letterSpacing: 0.6 }}
+                  >
+                    TAX ESTIMATE
+                  </span>
+                  <span className="text-[10px]" style={{ color: "#9CA3AF" }}>
+                    {taxYearLabel}
+                  </span>
+                </div>
+                <div className="text-[20px] font-bold mt-0.5" style={{ color: "#0F2044" }}>
+                  £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
+                </div>
+              </div>
+              <ChevronRight size={18} color="#9CA3AF" />
+            </div>
+            <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
+              Projected full-year estimate
+            </div>
+            <div
+              className="mt-2 w-full"
+              style={{ height: 4, borderRadius: 2, backgroundColor: "#E2E6ED", overflow: "hidden" }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${(monthsElapsed / 12) * 100}%`,
+                  backgroundColor: "#1A52A0",
+                  borderRadius: 2,
+                }}
+              />
+            </div>
+          </button>
+
+          {/* MTD card */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/mtd" })}
+            className="flex items-center text-left"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              borderRadius: 12,
+              padding: 12,
+              gap: 12,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#ECFDF5" }}
+            >
+              <FileSpreadsheet size={18} color="#16A34A" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+                Making Tax Digital
+              </div>
+            </div>
+            <span
+              className="text-[11px] font-semibold px-2 py-1 rounded-full"
+              style={{
+                backgroundColor: glanceMtdEnrolled ? "#ECFDF5" : "#FEF3C7",
+                color: glanceMtdEnrolled ? "#16A34A" : "#B45309",
+              }}
+            >
+              {glanceMtdEnrolled ? "Enrolled" : "Not enrolled"}
+            </span>
+            <ChevronRight size={18} color="#9CA3AF" />
+          </button>
+        </div>
+      </div>
+
     </div>
+
   );
 }
 
