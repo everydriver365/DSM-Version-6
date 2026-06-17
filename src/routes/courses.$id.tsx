@@ -48,6 +48,7 @@ interface Course {
   daily_hours: number | null;
   repeat_type: string;
   pickup_area: string | null;
+  radius_miles: number | null;
   lesson_time_preference: string;
   price: number;
   deposit_amount: number;
