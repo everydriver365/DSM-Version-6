@@ -211,6 +211,7 @@ function HomePage() {
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
+  const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
