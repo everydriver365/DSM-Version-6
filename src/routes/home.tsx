@@ -942,6 +942,187 @@ function HomePage() {
   );
 }
 
+function HeroExpandedPanel({
+  lesson,
+  prev,
+  goingActive,
+  setGoingActive,
+  onOpenLate,
+  navigateTo,
+}: {
+  lesson: LessonRow;
+  prev: PrevLessonRow | null;
+  goingActive: boolean;
+  setGoingActive: (v: boolean) => void;
+  onOpenLate: () => void;
+  navigateTo: (to: string) => void;
+}) {
+  const phone = lesson.pupils?.phone ?? null;
+  const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
+  const balance = Number(lesson.pupils?.balance_owed ?? 0);
+  const pickupPostcode = ""; // no pickup field on schema
+
+  const sendSms = (body: string) => {
+    if (!phone) { toast("No phone number"); return; }
+    window.location.href = `sms:${phone}?&body=${encodeURIComponent(body)}`;
+  };
+
+  const statusBtn: React.CSSProperties = {
+    flex: 1,
+    height: 36,
+    borderRadius: 10,
+    border: '1px solid #e3e6ec',
+    background: '#fff',
+    fontFamily: 'Poppins, sans-serif',
+    fontWeight: 600,
+    fontSize: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    cursor: 'pointer',
+    color: '#1A1A2E',
+  };
+  const sectionLabel: React.CSSProperties = {
+    fontSize: 10,
+    textTransform: 'uppercase',
+    color: '#999',
+    letterSpacing: 0.6,
+    fontWeight: 700,
+    fontFamily: 'Poppins, sans-serif',
+    marginBottom: 6,
+  };
+
+  return (
+    <div style={{ background: '#F2F4F8', borderRadius: '0 0 14px 14px', padding: 12 }}>
+      {/* Row 1 — status */}
+      <div style={{ display: 'flex', gap: 6 }}>
+        <button
+          style={statusBtn}
+          onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+        >
+          <MapPin size={14} /> Here
+        </button>
+        <button
+          style={{
+            ...statusBtn,
+            background: goingActive ? '#fff8e8' : '#fff',
+            borderColor: goingActive ? '#f59e0b' : '#e3e6ec',
+          }}
+          onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
+        >
+          <Send size={14} /> Going
+        </button>
+        <button style={statusBtn} onClick={onOpenLate}>
+          <Clock size={14} /> Late
+        </button>
+      </div>
+
+      {/* Row 2 — primary CTA */}
+      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+        <button
+          style={{ ...statusBtn, flex: 1 }}
+          onClick={() => navigateTo(`/pupils/${lesson.pupil_id}`)}
+        >
+          <ClipboardList size={14} /> Prep
+        </button>
+        <button
+          style={{
+            flex: 1.6,
+            height: 36,
+            borderRadius: 10,
+            border: 'none',
+            background: '#1A52A0',
+            color: '#fff',
+            fontFamily: 'Poppins, sans-serif',
+            fontWeight: 600,
+            fontSize: 12,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(26,82,160,0.35)',
+          }}
+          onClick={() => {
+            sendSms(`Hi ${firstName}, I'm outside and ready when you are! 🚗`);
+            toast("Marked as arrived");
+          }}
+        >
+          <CheckCheck size={14} /> Arrived
+        </button>
+      </div>
+
+      {/* Pickup */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>PICKUP</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>
+          <MapPin size={14} color="#6B7280" />
+          {pickupPostcode ? (
+            <>
+              <span style={{ color: '#1A1A2E', fontWeight: 600 }}>{pickupPostcode}</span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#1A52A0', fontWeight: 600, marginLeft: 'auto' }}
+              >Navigate</a>
+              <button
+                onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
+                style={{ background: 'none', border: 'none', color: '#1A52A0', fontWeight: 600, fontFamily: 'Poppins, sans-serif', fontSize: 13, cursor: 'pointer' }}
+              >Copy</button>
+            </>
+          ) : (
+            <span style={{ color: '#6B7280' }}>No pickup set</span>
+          )}
+        </div>
+      </div>
+
+      {/* Account */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>ACCOUNT</div>
+        {balance > 0 ? (
+          <div style={{ background: '#fbe8e8', border: '1px solid #f5c5c5', borderRadius: 10, padding: 10, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+            <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: '#991B1B' }}>£{balance.toFixed(2)} outstanding</span>
+            <button
+              onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${balance.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: '1px solid #f5c5c5', background: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+            >Chase</button>
+            <button
+              onClick={() => navigateTo('/payments')}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: 'none', background: '#991B1B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+            >Mark paid</button>
+          </div>
+        ) : (
+          <div style={{ color: '#16A34A', fontWeight: 700, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>Paid up ✓</div>
+        )}
+      </div>
+
+      {/* Last lesson */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>LAST LESSON</div>
+        {prev ? (
+          <div style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#1A1A2E' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontWeight: 600 }}>{new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, color: '#fff', background: statusColor(prev.status) }}>{prev.status}</span>
+            </div>
+            {prev.notes && (
+              <div style={{ marginTop: 4, color: '#6B7280', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                {prev.notes}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ color: '#6B7280', fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>No previous lesson</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+
 function QuickTile({
   value,
   label,
