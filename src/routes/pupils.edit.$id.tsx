@@ -110,6 +110,15 @@ function EditPupilPage() {
 
   async function handleSave() {
     if (saving) return;
+    if (status === "inactive" && originalStatus.current !== "inactive") {
+      setInactiveConfirmOpen(true);
+      return;
+    }
+    await performSave();
+  }
+
+  async function performSave() {
+    setInactiveConfirmOpen(false);
     setSaving(true);
     setError(null);
 
