@@ -47,6 +47,7 @@ function NewCoursePage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Step 1
   const [courseType, setCourseType] = useState<CourseType>("intensive");
