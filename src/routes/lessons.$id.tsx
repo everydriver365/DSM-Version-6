@@ -116,7 +116,7 @@ function LessonDetailPage() {
         <button
           type="button"
           aria-label="Back"
-          onClick={() => navigate({ to: "/schedule" })}
+          onClick={() => router.history.back()}
           className="flex items-center justify-center"
           style={{ width: 40, height: 40 }}
         >
