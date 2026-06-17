@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -47,6 +47,7 @@ function NewCoursePage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Step 1
   const [courseType, setCourseType] = useState<CourseType>("intensive");
@@ -107,7 +108,8 @@ function NewCoursePage() {
   const repeatAllowed = courseType === "weekly" || courseType === "semi-intensive";
 
   async function submit(status: "active" | "draft") {
-    console.log("[courses.new] submit invoked", { status, step, userId });
+    setSaving(true);
+    setError(null);
 
     // Re-confirm the auth user at submit time (state may not be hydrated yet)
     let uid = userId;
@@ -118,23 +120,26 @@ function NewCoursePage() {
       if (uid) setUserId(uid);
     }
     if (!uid) {
-      console.error("[courses.new] no authenticated user — cannot insert");
+      setSaving(false);
+      setError("You must be signed in to publish a course");
       toast.error("You must be signed in to publish a course");
       return;
     }
 
-    // Required-field validation (logged)
+    // Required-field validation
     const missing: string[] = [];
     if (!courseType) missing.push("course_type");
     if (!name.trim()) missing.push("name");
-    if (!hours || Number(hours) <= 0) missing.push("total_hours");
+    if (!hours || parseFloat(String(hours)) <= 0) missing.push("total_hours");
     if (status === "active") {
-      if (!price || Number(price) <= 0) missing.push("price");
+      if (!price || parseFloat(price) <= 0) missing.push("price");
       if (!startDate) missing.push("start_date");
     }
     if (missing.length > 0) {
-      console.warn("[courses.new] missing required fields", missing);
-      toast.error(`Missing: ${missing.join(", ")}`);
+      setSaving(false);
+      const msg = `Missing required fields: ${missing.join(", ")}`;
+      setError(msg);
+      toast.error(msg);
       if (missing.includes("name") || missing.includes("total_hours") || missing.includes("course_type")) setStep(1);
       else if (missing.includes("start_date")) setStep(2);
       else if (missing.includes("price")) setStep(3);
@@ -145,7 +150,7 @@ function NewCoursePage() {
       instructor_id: uid,
       course_type: courseType,
       name: name.trim(),
-      total_hours: Number(hours),
+      total_hours: parseFloat(String(hours)),
       includes_test: includesTest,
       description: description.trim() || null,
       max_spaces: Number(maxSpaces),
@@ -155,36 +160,30 @@ function NewCoursePage() {
       repeat_type: repeatAllowed ? repeatType : "one-off",
       pickup_area: pickupArea.trim() || null,
       lesson_time_preference: timePref,
-      price: Number(price || 0),
-      deposit_amount: Number(deposit || 0),
+      price: parseFloat(price || "0"),
+      deposit_amount: parseFloat(deposit || "0"),
       deposit_only_to_book: depositOnly,
-      early_bird_discount: earlyBird ? Number(earlyBirdAmount || 0) : 0,
+      early_bird_discount: earlyBird ? parseFloat(earlyBirdAmount || "0") : 0,
       early_bird_expiry: earlyBird && earlyBirdExpiry ? earlyBirdExpiry : null,
       publish_marketplace: publishMarketplace,
       publish_mini_website: publishWebsite,
       status,
     };
-    console.log("[courses.new] inserting payload", payload);
 
-    setSaving(true);
-    const { data, error } = await supabase
+    const { error: insertError } = await supabase
       .from("instructor_courses")
       .insert(payload)
       .select()
       .single();
+
     setSaving(false);
 
-    if (error) {
-      console.error("[courses.new] insert error", {
-        message: error.message,
-        details: (error as { details?: string }).details,
-        hint: (error as { hint?: string }).hint,
-        code: (error as { code?: string }).code,
-      });
-      toast.error(error.message || "Failed to publish course");
+    if (insertError) {
+      setError(insertError.message || "Failed to publish course");
+      toast.error(insertError.message || "Failed to publish course");
       return;
     }
-    console.log("[courses.new] insert success", data);
+
     toast.success(status === "active" ? "Course published!" : "Saved as draft");
     navigate({ to: "/courses" });
   }
@@ -389,13 +388,27 @@ function NewCoursePage() {
                   border: "none",
                   borderRadius: 10,
                   fontWeight: 700,
-                  cursor: "pointer",
+                  cursor: saving ? "not-allowed" : "pointer",
                   fontFamily: "Poppins, sans-serif",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  opacity: saving ? 0.7 : 1,
                 }}
-              >{saving ? "Publishing…" : "Publish course"}</button>
+              >
+                {saving && <Loader2 size={16} className="animate-spin" />}
+                {saving ? "Publishing…" : "Publish course"}
+              </button>
             </>
           )}
         </div>
+
+        {error && (
+          <div style={{ marginTop: 12, color: "#CC2229", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );
