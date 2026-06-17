@@ -419,7 +419,13 @@ function HomePage() {
     const last = todayLessons[todayLessons.length - 1];
     const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
     if (end >= tomorrowStart) return null;
-    return `${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}`;
+    const hh = end.getHours();
+    const mm = end.getMinutes();
+    if (todayEndTime) {
+      const [eh, em] = todayEndTime.split(":").map(Number);
+      if (hh * 60 + mm >= eh * 60 + em) return null;
+    }
+    return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
   })();
 
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
