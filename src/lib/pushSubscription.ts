@@ -48,7 +48,7 @@ export async function getCurrentPushStatus(): Promise<"enabled" | "disabled" | "
 
 export async function subscribeToPush(): Promise<{ ok: boolean; error?: string }> {
   if (!pushSupported()) return { ok: false, error: "Push notifications are not supported in this browser." };
-  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY === "REPLACE_WITH_VAPID_PUBLIC_KEY") {
+  if (!VAPID_PUBLIC_KEY) {
     return { ok: false, error: "VAPID public key is not configured." };
   }
 
