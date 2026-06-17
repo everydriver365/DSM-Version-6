@@ -92,6 +92,8 @@ function NotificationSettingsPage() {
   }
 
   useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
       if (error) console.error("[notificationsettings] auth error", error);
       const user = data.user;
       if (!user) return;
