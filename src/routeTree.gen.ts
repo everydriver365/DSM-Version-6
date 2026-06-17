@@ -15,6 +15,7 @@ import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
+import { Route as TestdayRouteImport } from './routes/testday'
 import { Route as TaxRouteImport } from './routes/tax'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
@@ -116,6 +117,11 @@ const TodosRoute = TodosRouteImport.update({
 const TestsRoute = TestsRouteImport.update({
   id: '/tests',
   path: '/tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestdayRoute = TestdayRouteImport.update({
+  id: '/testday',
+  path: '/testday',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TaxRoute = TaxRouteImport.update({
@@ -534,6 +540,7 @@ export interface FileRoutesByFullPath {
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
+  '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -613,6 +620,7 @@ export interface FileRoutesByTo {
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
+  '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -694,6 +702,7 @@ export interface FileRoutesById {
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/tax': typeof TaxRoute
+  '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
@@ -776,6 +785,7 @@ export interface FileRouteTypes {
     | '/standards'
     | '/subscription'
     | '/tax'
+    | '/testday'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -855,6 +865,7 @@ export interface FileRouteTypes {
     | '/standards'
     | '/subscription'
     | '/tax'
+    | '/testday'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -935,6 +946,7 @@ export interface FileRouteTypes {
     | '/standards'
     | '/subscription'
     | '/tax'
+    | '/testday'
     | '/tests'
     | '/todos'
     | '/vehicle'
@@ -1016,6 +1028,7 @@ export interface RootRouteChildren {
   StandardsRoute: typeof StandardsRoute
   SubscriptionRoute: typeof SubscriptionRoute
   TaxRoute: typeof TaxRoute
+  TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
   VehicleRoute: typeof VehicleRoute
@@ -1081,6 +1094,13 @@ declare module '@tanstack/react-router' {
       path: '/tests'
       fullPath: '/tests'
       preLoaderRoute: typeof TestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/testday': {
+      id: '/testday'
+      path: '/testday'
+      fullPath: '/testday'
+      preLoaderRoute: typeof TestdayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tax': {
@@ -1669,6 +1689,7 @@ const rootRouteChildren: RootRouteChildren = {
   StandardsRoute: StandardsRoute,
   SubscriptionRoute: SubscriptionRoute,
   TaxRoute: TaxRoute,
+  TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
   VehicleRoute: VehicleRoute,
