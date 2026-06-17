@@ -51,6 +51,7 @@ import {
   ChevronDown,
   Send,
   CheckCheck,
+  FileSpreadsheet,
 } from "lucide-react";
 import {
   Dialog,
@@ -436,6 +437,7 @@ function HomePage() {
     { icon: <CalendarDays size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Availability", route: "/availability" },
     { icon: <RefreshCw size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Calendar sync", route: "/calendarsync" },
     { icon: <UserCircle size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Profile", route: "/profile" },
+    { icon: <FileSpreadsheet size={16} color="#92400E" />, tint: "#FEF3C7", label: "MTD", route: "/mtd" },
 
   ] as const;
 
