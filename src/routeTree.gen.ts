@@ -124,11 +124,6 @@ const TestdayRoute = TestdayRouteImport.update({
   path: '/testday',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TestdayRoute = TestdayRouteImport.update({
-  id: '/testday',
-  path: '/testday',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TaxRoute = TaxRouteImport.update({
   id: '/tax',
   path: '/tax',
