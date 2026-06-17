@@ -63,6 +63,7 @@ import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
 import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
+import { Route as BriefingRouteImport } from './routes/briefing'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as IndexRouteImport } from './routes/index'
@@ -355,6 +356,11 @@ const BulkmessageRoute = BulkmessageRouteImport.update({
   path: '/bulkmessage',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BriefingRoute = BriefingRouteImport.update({
+  id: '/briefing',
+  path: '/briefing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilityRoute = AvailabilityRouteImport.update({
   id: '/availability',
   path: '/availability',
@@ -465,6 +471,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/briefing': typeof BriefingRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
@@ -542,6 +549,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/briefing': typeof BriefingRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
@@ -619,6 +627,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/briefing': typeof BriefingRoute
   '/bulkmessage': typeof BulkmessageRoute
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
@@ -698,6 +707,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automations'
     | '/availability'
+    | '/briefing'
     | '/bulkmessage'
     | '/calendarsync'
     | '/certifications'
@@ -775,6 +785,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automations'
     | '/availability'
+    | '/briefing'
     | '/bulkmessage'
     | '/calendarsync'
     | '/certifications'
@@ -851,6 +862,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automations'
     | '/availability'
+    | '/briefing'
     | '/bulkmessage'
     | '/calendarsync'
     | '/certifications'
@@ -929,6 +941,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
+  BriefingRoute: typeof BriefingRoute
   BulkmessageRoute: typeof BulkmessageRoute
   CalendarsyncRoute: typeof CalendarsyncRoute
   CertificationsRoute: typeof CertificationsRoute
@@ -1380,6 +1393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BulkmessageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/briefing': {
+      id: '/briefing'
+      path: '/briefing'
+      fullPath: '/briefing'
+      preLoaderRoute: typeof BriefingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability': {
       id: '/availability'
       path: '/availability'
@@ -1558,6 +1578,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
+  BriefingRoute: BriefingRoute,
   BulkmessageRoute: BulkmessageRoute,
   CalendarsyncRoute: CalendarsyncRoute,
   CertificationsRoute: CertificationsRoute,
