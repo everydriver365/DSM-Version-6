@@ -38,6 +38,7 @@ function initials(name: string) {
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#16A34A";
   if (status === "passed") return "#1A52A0";
+  if (status === "archived") return "#9CA3AF";
   return "#6B7280";
 }
 
