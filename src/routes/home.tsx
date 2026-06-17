@@ -1090,10 +1090,10 @@ function HomePage() {
           }}
         >
           <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
-            Today / {formatShortDate(todayStart)}
+            Today
           </TabBtn>
           <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
-            Tomorrow / {formatShortDate(tomorrowStart)}
+            Tomorrow
           </TabBtn>
           <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
             Next
