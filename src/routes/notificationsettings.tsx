@@ -68,9 +68,30 @@ function NotificationSettingsPage() {
   );
 
 
+  const [pushStatus, setPushStatus] = useState<"enabled" | "disabled" | "unsupported">(
+    () => (pushSupported() ? "disabled" : "unsupported"),
+  );
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
+
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.auth.getUser();
+      setPushStatus(await getCurrentPushStatus());
+    })();
+  }, []);
+
+  async function togglePush(next: boolean) {
+    if (pushBusy) return;
+    setPushBusy(true);
+    setPushError(null);
+    const res = next ? await subscribeToPush() : await unsubscribeFromPush();
+    if (!res.ok) setPushError(res.error ?? "Something went wrong.");
+    setPushStatus(await getCurrentPushStatus());
+    if (next && res.ok) setBrowserPerm(getPermission());
+    setPushBusy(false);
+  }
+
+  useEffect(() => {
       if (error) console.error("[notificationsettings] auth error", error);
       const user = data.user;
       if (!user) return;
