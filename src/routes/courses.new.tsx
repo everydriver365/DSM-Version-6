@@ -676,12 +676,46 @@ function Step2(props: {
         </div>
       )}
 
-      <Input
-        label="Pickup area"
-        value={pickupArea}
-        onChange={(e) => setPickupArea(e.target.value)}
-        placeholder="e.g. Winchester, SO23"
-      />
+      <div>
+        <FieldLabel>
+          Pickup area <span style={{ color: "#CC2229" }}>*</span>
+        </FieldLabel>
+        <Input
+          value={pickupArea}
+          onChange={(e) => setPickupArea(e.target.value)}
+          placeholder="e.g. SO23 or SO23 9AA"
+        />
+        {pickupError && (
+          <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+            {pickupError}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <FieldLabel>Coverage radius</FieldLabel>
+        <select
+          value={radiusMiles}
+          onChange={(e) => setRadiusMiles(Number(e.target.value))}
+          style={{
+            width: "100%",
+            height: 44,
+            borderRadius: 10,
+            border: "0.5px solid #E2E6ED",
+            padding: "0 10px",
+            fontSize: 14,
+            fontFamily: "Poppins, sans-serif",
+            background: "#fff",
+            color: "#1A1A2E",
+          }}
+        >
+          {RADIUS_OPTIONS.map((m) => (
+            <option key={m} value={m}>{m} mile{m === 1 ? "" : "s"}</option>
+          ))}
+        </select>
+      </div>
+
+
 
       <div>
         <FieldLabel>Lesson times</FieldLabel>
