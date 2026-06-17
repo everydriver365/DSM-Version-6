@@ -438,8 +438,8 @@ function PupilDetailPage() {
 
       <ConfirmDialog
         open={removeOpen}
-        title="Remove this pupil?"
-        message="This cannot be undone."
+        title={`Remove ${pupil?.name ?? "pupil"}?`}
+        message={`${pupil?.name ?? "They"} will be marked inactive and hidden from all lists.`}
         confirmLabel="Remove"
         onConfirm={removePupil}
         onCancel={() => setRemoveOpen(false)}
