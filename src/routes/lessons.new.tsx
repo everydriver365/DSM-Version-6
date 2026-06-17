@@ -15,6 +15,7 @@ export const Route = createFileRoute("/lessons/new")({
 interface Pupil {
   id: string;
   name: string;
+  address: string | null;
 }
 
 const DURATIONS = [30, 45, 60, 90, 120];
@@ -45,6 +46,8 @@ function NewLessonPage() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
+  const [pickup, setPickup] = useState("");
+  const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<{
     pupil?: string;
@@ -62,13 +65,21 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, name")
+        .select("id, name, address")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
         .order("name", { ascending: true });
       setPupils((data as Pupil[]) ?? []);
     })();
   }, []);
+
+  // Prefill pickup with the selected pupil's home address when the
+  // instructor hasn't manually edited the pickup field yet.
+  useEffect(() => {
+    if (pickupTouched) return;
+    const p = pupils.find((x) => x.id === pupilId);
+    setPickup(p?.address ?? "");
+  }, [pupilId, pupils, pickupTouched]);
 
   async function handleSave() {
     const next: typeof errors = {};
@@ -89,6 +100,8 @@ function NewLessonPage() {
       setSaving(false);
       return;
     }
+    const selected = pupils.find((p) => p.id === pupilId);
+    const pickupValue = pickup.trim() || selected?.address?.trim() || null;
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -96,6 +109,7 @@ function NewLessonPage() {
       lesson_time: `${time}:00`,
       duration_minutes: duration,
       status: "confirmed",
+      pickup_location: pickupValue,
       notes: notes.trim() || null,
     });
     if (error) {
