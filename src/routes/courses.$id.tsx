@@ -147,6 +147,12 @@ function CourseDetailPage() {
 
   async function saveChanges() {
     if (!form) return;
+    if (!isValidPickupArea(form.pickup_area ?? "")) {
+      setPickupError(PICKUP_ERROR_MSG);
+      setError(PICKUP_ERROR_MSG);
+      toast.error(PICKUP_ERROR_MSG);
+      return;
+    }
     setSaving(true);
     setError(null);
     const { id: _id, instructor_id: _ii, ...patch } = form;
@@ -160,6 +166,7 @@ function CourseDetailPage() {
         early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
         max_spaces: Number(patch.max_spaces) || 1,
         daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
+        radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
       })
       .eq("id", id);
     setSaving(false);
