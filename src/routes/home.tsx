@@ -1329,17 +1329,43 @@ function HomePage() {
             </div>
           ) : (
             <>
-              <SectionHeader>QUICK ACCESS</SectionHeader>
-              <button
-                type="button"
-                aria-label="Search quick access"
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center justify-center"
-                style={{ width: 28, height: 28 }}
-              >
-                <Search size={16} color="#6B7280" />
-              </button>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[11px] uppercase"
+                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
+                >
+                  QUICK ACCESS
+                </span>
+                <button
+                  type="button"
+                  aria-label="Search quick access"
+                  onClick={() => setSearchOpen(true)}
+                  className="flex items-center justify-center"
+                  style={{ width: 24, height: 24 }}
+                >
+                  <Search size={14} color="#6B7280" />
+                </button>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/quickaccess" as never })}
+                  className="text-[13px]"
+                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                >
+                  See all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert("Coming soon")}
+                  className="text-[13px]"
+                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                >
+                  Edit pins
+                </button>
+              </div>
             </>
+
           )}
         </div>
         <div
