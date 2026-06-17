@@ -23,7 +23,9 @@ interface Lesson {
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
-  pupil: { name: string } | null;
+  notes: string | null;
+  lesson_type: string | null;
+  pupil: { name: string; postcode: string | null; balance_owed: number | null } | null;
 }
 
 type TabKey = "today" | "tomorrow" | "next";
