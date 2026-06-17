@@ -29,6 +29,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
@@ -69,6 +70,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
@@ -181,6 +183,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotesRoute = QuotesRouteImport.update({
+  id: '/quotes',
+  path: '/quotes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuickavailabilityRoute = QuickavailabilityRouteImport.update({
@@ -383,6 +390,11 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuotesNewRoute = QuotesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => QuotesRoute,
+} as any)
 const PupilsNewRoute = PupilsNewRouteImport.update({
   id: '/pupils/new',
   path: '/pupils/new',
@@ -487,6 +499,7 @@ export interface FileRoutesByFullPath {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -515,6 +528,7 @@ export interface FileRoutesByFullPath {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -561,6 +575,7 @@ export interface FileRoutesByTo {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -589,6 +604,7 @@ export interface FileRoutesByTo {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses': typeof CoursesIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
@@ -637,6 +653,7 @@ export interface FileRoutesById {
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -665,6 +682,7 @@ export interface FileRoutesById {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -714,6 +732,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/quickavailability'
+    | '/quotes'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -742,6 +761,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
@@ -788,6 +808,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/quickavailability'
+    | '/quotes'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -816,6 +837,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses'
     | '/notes'
     | '/pupils'
@@ -863,6 +885,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/profile'
     | '/quickavailability'
+    | '/quotes'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -891,6 +914,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
@@ -939,6 +963,7 @@ export interface RootRouteChildren {
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
+  QuotesRoute: typeof QuotesRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
   RegisterRoute: typeof RegisterRoute
   ReminderRoute: typeof ReminderRoute
@@ -1114,6 +1139,13 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotes': {
+      id: '/quotes'
+      path: '/quotes'
+      fullPath: '/quotes'
+      preLoaderRoute: typeof QuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quickavailability': {
@@ -1396,6 +1428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quotes/new': {
+      id: '/quotes/new'
+      path: '/new'
+      fullPath: '/quotes/new'
+      preLoaderRoute: typeof QuotesNewRouteImport
+      parentRoute: typeof QuotesRoute
+    }
     '/pupils/new': {
       id: '/pupils/new'
       path: '/pupils/new'
@@ -1514,6 +1553,17 @@ const NotesRouteChildren: NotesRouteChildren = {
 
 const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
 
+interface QuotesRouteChildren {
+  QuotesNewRoute: typeof QuotesNewRoute
+}
+
+const QuotesRouteChildren: QuotesRouteChildren = {
+  QuotesNewRoute: QuotesNewRoute,
+}
+
+const QuotesRouteWithChildren =
+  QuotesRoute._addFileChildren(QuotesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutomationsRoute: AutomationsRoute,
@@ -1552,6 +1602,7 @@ const rootRouteChildren: RootRouteChildren = {
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
+  QuotesRoute: QuotesRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
   RegisterRoute: RegisterRoute,
   ReminderRoute: ReminderRoute,
