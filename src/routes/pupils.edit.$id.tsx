@@ -55,6 +55,7 @@ function EditPupilPage() {
   const [status, setStatus] = useState("active");
   const [testDate, setTestDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -71,7 +72,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
@@ -88,6 +89,7 @@ function EditPupilPage() {
           status: string | null;
           test_date: string | null;
           notes: string | null;
+          address: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -96,6 +98,7 @@ function EditPupilPage() {
         setStatus(p.status ?? "active");
         setTestDate(p.test_date ?? "");
         setNotes(p.notes ?? "");
+        setAddress(p.address ?? "");
       }
       setLoading(false);
     })();
@@ -119,6 +122,7 @@ function EditPupilPage() {
         status: status || "active",
         test_date: testDate || null,
         notes: notes.trim() || null,
+        address: address.trim() || null,
       })
       .eq("id", id);
 
@@ -200,6 +204,14 @@ function EditPupilPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+
+          <Input
+            label="Home address"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+
 
           <div>
             <FieldLabel htmlFor="status">Status</FieldLabel>
