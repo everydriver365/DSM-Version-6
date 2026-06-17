@@ -5,7 +5,7 @@ import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
-export const Route = createFileRoute("/quotes")({
+export const Route = createFileRoute("/quotes/")({
   head: () => ({
     meta: [
       { title: "Quotes — DSM by EveryDriver" },
