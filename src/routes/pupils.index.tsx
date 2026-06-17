@@ -49,6 +49,7 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
+    setPupils(null);
     (async () => {
       const { data: auth, error: authErr } = await supabase.auth.getUser();
       if (authErr) console.error("[pupils] auth error", authErr);
@@ -58,15 +59,26 @@ function PupilsIndexPage() {
         setPupils([]);
         return;
       }
-      const { data, error } = await supabase
+      let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, status")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, status, deleted_at")
         .eq("instructor_id", uid)
-        .is("deleted_at", null)
         .order("name", { ascending: true, nullsFirst: false });
+
+      if (tab === "archived") {
+        q = q.not("deleted_at", "is", null);
+      } else if (tab === "passed") {
+        q = q.is("deleted_at", null).eq("status", "passed");
+      } else if (tab === "inactive") {
+        q = q.is("deleted_at", null).eq("status", "inactive");
+      } else {
+        // active: anything not inactive and not deleted
+        q = q.is("deleted_at", null).neq("status", "inactive").neq("status", "passed");
+      }
+
+      const { data, error } = await q;
       if (error) console.error("[pupils] fetch error", error);
-      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null }>;
-      // Fallback to first_name + last_name when name is null
+      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null }>;
       const normalized: Pupil[] = rows.map((p) => ({
         ...p,
         name:
@@ -76,19 +88,17 @@ function PupilsIndexPage() {
       }));
       setPupils(normalized);
     })();
-  }, []);
+  }, [tab]);
 
 
   const filtered = useMemo(() => {
     if (!pupils) return null;
     const q = query.trim().toLowerCase();
     return pupils.filter((p) => {
-      const status = (p.status ?? "active").toLowerCase() as StatusKey;
-      if (status !== tab) return false;
       if (q && !p.name.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [pupils, tab, query]);
+  }, [pupils, query]);
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe relative" style={POPPINS}>
