@@ -112,9 +112,10 @@ function OutstandingPage() {
       if (todoRes.error) console.error("[outstanding] todos", todoRes.error);
 
       setDebts((debtRes.data ?? []) as PupilDebt[]);
-      setTests(((testRes.data ?? []) as Array<{ id: string; test_date: string; test_centre: string | null; pupils: { name: string } | null }>).map((t) => ({
-        id: t.id, test_date: t.test_date, test_centre: t.test_centre, pupil_name: t.pupils?.name ?? null,
-      })));
+      setTests(((testRes.data ?? []) as unknown as Array<{ id: string; test_date: string; test_centre: string | null; pupils: { name: string } | { name: string }[] | null }>).map((t) => {
+        const p = Array.isArray(t.pupils) ? t.pupils[0] : t.pupils;
+        return { id: t.id, test_date: t.test_date, test_centre: t.test_centre, pupil_name: p?.name ?? null };
+      }));
       setEnquiries((enqRes.data ?? []) as EnquiryRow[]);
       setDocs((docRes.data ?? []) as DocRow[]);
       setCerts((certRes.data ?? []) as CertRow[]);
