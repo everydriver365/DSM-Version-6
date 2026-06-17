@@ -55,6 +55,7 @@ import {
   CheckCheck,
   FileSpreadsheet,
   AlertCircle,
+  Trophy,
 } from "lucide-react";
 import {
   Dialog,
