@@ -214,6 +214,17 @@ function NewCoursePage() {
     navigate({ to: "/courses" });
   }
 
+  function goNext() {
+    if (step === 2 && !isValidPickupArea(pickupArea)) {
+      setPickupError(PICKUP_ERROR_MSG);
+      toast.error(PICKUP_ERROR_MSG);
+      return;
+    }
+    if (step < 3) setStep((step + 1) as 1 | 2 | 3);
+  }
+
+
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 24 }}>
