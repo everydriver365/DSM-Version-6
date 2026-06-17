@@ -252,8 +252,7 @@ function NewCoursePage() {
         <button
           onClick={() => {
             if (step < 3) {
-              console.log("[courses.new] top-bar Publish tapped before step 3 — advancing", { step });
-              setStep((step + 1) as 1 | 2 | 3);
+              goNext();
               return;
             }
             submit("active");
