@@ -211,6 +211,7 @@ function HomePage() {
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
+  const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -349,8 +350,10 @@ function HomePage() {
         const key = dayKeys[todayStart.getDay()];
         const works = (wh as Record<string, unknown>)[key];
         setTodayEndTime(works && wh.end_time ? String(wh.end_time).slice(0, 5) : null);
+        setWorkingHours(wh);
       } else {
         setTodayEndTime(null);
+        setWorkingHours(null);
       }
       setLoading(false);
     })();
@@ -415,17 +418,44 @@ function HomePage() {
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   const nextFreeSlot = (() => {
-    if (todayLessons.length === 0) return null;
-    const last = todayLessons[todayLessons.length - 1];
-    const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
-    if (end >= tomorrowStart) return null;
-    const hh = end.getHours();
-    const mm = end.getMinutes();
-    if (todayEndTime) {
-      const [eh, em] = todayEndTime.split(":").map(Number);
-      if (hh * 60 + mm >= eh * 60 + em) return null;
+    const fmt = (d: Date) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    const isBeforeEnd = (d: Date, endTimeStr: string | null) => {
+      if (!endTimeStr) return true;
+      const [eh, em] = endTimeStr.split(":").map(Number);
+      return d.getHours() * 60 + d.getMinutes() < eh * 60 + em;
+    };
+    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+    const tomorrowWorks = workingHours
+      ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
+      : false;
+    const tomorrowEndTime = tomorrowWorks && workingHours?.end_time
+      ? String(workingHours.end_time).slice(0, 5)
+      : null;
+
+    // Today: free slot after last lesson
+    if (todayLessons.length > 0) {
+      const last = todayLessons[todayLessons.length - 1];
+      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
+        return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
+      }
+    } else if (todayEndTime) {
+      // No lessons today but working — whole day is free
+      return { time: "FREE", dayLabel: formatDayLabel(todayStart) };
     }
-    return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+
+    // No free slot today — check tomorrow
+    if (tomorrowLessons.length > 0) {
+      const last = tomorrowLessons[tomorrowLessons.length - 1];
+      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
+        return { time: fmt(end), dayLabel: formatDayLabel(tomorrowStart) };
+      }
+    } else if (tomorrowEndTime) {
+      return { time: "FREE", dayLabel: formatDayLabel(tomorrowStart) };
+    }
+
+    return null;
   })();
 
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
@@ -973,7 +1003,7 @@ function HomePage() {
       {/* TODAY STRIP — 3 white tiles */}
       <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
         <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot ?? '—'} subValue={nextFreeSlot ? formatDayLabel(todayStart) : undefined} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+        <TodayTile value={nextFreeSlot?.time ?? '—'} subValue={nextFreeSlot?.dayLabel} label="Next free slot" valueColor="#2952b3" valueSize={13} />
         <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
       </div>
 
