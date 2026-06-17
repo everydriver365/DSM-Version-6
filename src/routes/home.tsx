@@ -49,6 +49,7 @@ import {
   UserCircle,
   PlayCircle,
   ChevronDown,
+  ChevronRight,
   Send,
   CheckCheck,
   FileSpreadsheet,
@@ -449,54 +450,165 @@ function HomePage() {
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8 }}>
       {/* TOP BAR */}
       <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
+        className="sticky top-0 z-40 h-[56px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0F2044" }}
       >
-        <div className="flex items-center gap-2">
-          <img
-            src={dsmLogo.url}
-            alt="DSM"
-            style={{ height: 28, width: 'auto', objectFit: 'contain' }}
-          />
-          <span className="text-white text-[15px]">{firstName}</span>
-          <span
-            className="rounded-full"
-            style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
-          />
-        </div>
-        <div className="flex items-center" style={{ gap: 16 }}>
-          <Phone size={20} color="#ffffff" />
-          <Car size={20} color="#ffffff" />
+        {/* LEFT: DSM tri-square logo + name + chevron + status dot */}
+        <div className="flex items-center" style={{ gap: 10 }}>
           <button
             type="button"
-            aria-label="Search"
-            onClick={() => navigate({ to: "/search" })}
-            className="flex items-center justify-center"
-            style={{ width: 28, height: 28 }}
+            onClick={() => navigate({ to: "/home" })}
+            aria-label="DSM home"
+            style={{
+              background: "none", border: "none", padding: 0, cursor: "pointer",
+              width: 42, height: 28, position: "relative",
+            }}
           >
-            <Search size={20} color="#ffffff" />
+            <div style={{
+              position: "absolute", top: 0, left: 0, width: 20, height: 14,
+              background: "#CC2229", borderRadius: 3,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1,
+            }}>D</div>
+            <div style={{
+              position: "absolute", top: 0, right: 0, width: 20, height: 14,
+              background: "#1A52A0", borderRadius: 3,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1,
+            }}>S</div>
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, width: 42, height: 14,
+              background: "#0B1730", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 3,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1, letterSpacing: 0.5,
+            }}>M</div>
           </button>
-
           <button
             type="button"
-            aria-label="Notifications"
-            onClick={() => navigate({ to: "/notifications" })}
-            className="relative flex items-center justify-center"
-            style={{ width: 28, height: 28 }}
+            onClick={() => navigate({ to: "/profile" })}
+            className="flex items-center"
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", gap: 6 }}
+            aria-label="Open profile"
           >
-            <Bell size={20} color="#ffffff" />
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "Poppins, sans-serif" }}>
+              {firstName}
+            </span>
+            <ChevronRight size={14} color="#ffffff" />
+            <span style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: "#16A34A", marginLeft: 2 }} />
+          </button>
+        </div>
+
+        {/* RIGHT: circular icon buttons */}
+        <div className="flex items-center" style={{ gap: 8 }}>
+          <CircleIconBtn
+            ariaLabel="Call next pupil"
+            onClick={() => {
+              const phone = nextLesson?.pupils?.phone;
+              if (phone) window.location.href = `tel:${phone}`;
+              else navigate({ to: "/pupils" });
+            }}
+          >
+            <Phone size={18} color="#ffffff" />
+          </CircleIconBtn>
+          <CircleIconBtn ariaLabel="Vehicle" onClick={() => navigate({ to: "/vehicle" })}>
+            <Car size={18} color="#ffffff" />
+          </CircleIconBtn>
+          <CircleIconBtn ariaLabel="Notifications" onClick={() => navigate({ to: "/notifications" })}>
+            <Bell size={18} color="#ffffff" />
             {notifCount > 0 && (
               <span
-                className="absolute -top-1 -right-1 rounded-full text-white text-[9px] font-bold flex items-center justify-center"
-                style={{ minWidth: 14, height: 14, backgroundColor: "#CC2229", padding: "0 3px" }}
+                className="absolute rounded-full text-white text-[9px] font-bold flex items-center justify-center"
+                style={{
+                  top: -2, right: -2, minWidth: 16, height: 16,
+                  backgroundColor: "#CC2229", padding: "0 4px",
+                  border: "1.5px solid #0F2044",
+                }}
               >
                 {notifCount}
               </span>
             )}
-          </button>
-          <Menu size={20} color="#ffffff" />
+          </CircleIconBtn>
+          <CircleIconBtn ariaLabel="Menu" onClick={() => setMenuOpen(true)}>
+            <Menu size={18} color="#ffffff" />
+          </CircleIconBtn>
         </div>
       </div>
+
+      {/* SLIDE-IN MENU */}
+      {menuOpen && (
+        <div
+          onClick={() => setMenuOpen(false)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
+            zIndex: 50, display: "flex", justifyContent: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(82vw, 320px)", height: "100vh", background: "#fff",
+              boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
+              display: "flex", flexDirection: "column",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div style={{
+              background: "#0F2044", color: "#fff", padding: "16px 18px",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
+              >
+                <X size={22} />
+              </button>
+            </div>
+            <div style={{ overflowY: "auto", padding: "8px 0" }}>
+              {[
+                { label: "Home", to: "/home" as const },
+                { label: "Schedule", to: "/schedule" as const },
+                { label: "Pupils", to: "/pupils" as const },
+                { label: "Lessons", to: "/schedule" as const },
+                { label: "Payments", to: "/payments" as const },
+                { label: "Earnings", to: "/earnings" as const },
+                { label: "Expenses", to: "/expenses" as const },
+                { label: "Mileage", to: "/mileage" as const },
+                { label: "Messages", to: "/messages" as const },
+                { label: "Enquiries", to: "/enquiries" as const },
+                { label: "Tests", to: "/tests" as const },
+                { label: "Courses", to: "/courses" as const },
+                { label: "Quotes", to: "/quotes" as const },
+                { label: "Day briefing", to: "/briefing" as const },
+                { label: "Outstanding tasks", to: "/outstanding" as const },
+                { label: "Reports", to: "/reports" as const },
+                { label: "Vehicle", to: "/vehicle" as const },
+                { label: "Documents", to: "/documents" as const },
+                { label: "MTD", to: "/mtd" as const },
+                { label: "Settings", to: "/settings" as const },
+                { label: "Profile", to: "/profile" as const },
+                { label: "Help", to: "/help" as const },
+              ].map((m) => (
+                <button
+                  key={m.label}
+                  onClick={() => { setMenuOpen(false); navigate({ to: m.to }); }}
+                  style={{
+                    width: "100%", textAlign: "left", padding: "12px 18px",
+                    background: "none", border: "none", cursor: "pointer",
+                    fontSize: 14, fontWeight: 500, color: "#0F2044",
+                    fontFamily: "Poppins, sans-serif",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                  }}
+                >
+                  {m.label}
+                  <ChevronRight size={16} color="#9CA3AF" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20 }}>
