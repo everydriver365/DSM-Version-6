@@ -398,6 +398,7 @@ function HomePage() {
     { icon: <BarChart2 size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={16} color="#059669" />, tint: "#ECFDF5", label: "Tests", route: "/tests" },
+    { icon: <GraduationCap size={16} color="#1A52A0" />, tint: "#E8EEFB", label: "Courses", route: "/courses" },
     { icon: <Star size={16} color="#92400E" />, tint: "#FEF3C7", label: "Reviews", route: "/reviews" },
     { icon: <Inbox size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Enquiries", route: "/enquiries" },
     { icon: <Clock size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Waiting list", route: "/waitinglist" },

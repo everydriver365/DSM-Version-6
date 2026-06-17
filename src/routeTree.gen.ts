@@ -58,6 +58,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DiaryRouteImport } from './routes/diary'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
@@ -73,6 +74,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
+import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
@@ -324,6 +326,11 @@ const CpdRoute = CpdRouteImport.update({
   path: '/cpd',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChecklistRoute = ChecklistRouteImport.update({
   id: '/checklist',
   path: '/checklist',
@@ -399,6 +406,11 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   path: '/lessons/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesNewRoute = CoursesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => CoursesRoute,
+} as any)
 const PupilsProgressIdRoute = PupilsProgressIdRouteImport.update({
   id: '/pupils/progress/$id',
   path: '/pupils/progress/$id',
@@ -433,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -482,6 +495,7 @@ export interface FileRoutesByFullPath {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/courses/new': typeof CoursesNewRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -504,6 +518,7 @@ export interface FileRoutesByTo {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -552,6 +567,7 @@ export interface FileRoutesByTo {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/courses/new': typeof CoursesNewRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -575,6 +591,7 @@ export interface FileRoutesById {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -624,6 +641,7 @@ export interface FileRoutesById {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/courses/new': typeof CoursesNewRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -648,6 +666,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -697,6 +716,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/courses/new'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -719,6 +739,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -767,6 +788,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/courses/new'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -789,6 +811,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -838,6 +861,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/courses/new'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -861,6 +885,7 @@ export interface RootRouteChildren {
   CalendarsyncRoute: typeof CalendarsyncRoute
   CertificationsRoute: typeof CertificationsRoute
   ChecklistRoute: typeof ChecklistRoute
+  CoursesRoute: typeof CoursesRouteWithChildren
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
   DiaryRoute: typeof DiaryRoute
@@ -1267,6 +1292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CpdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checklist': {
       id: '/checklist'
       path: '/checklist'
@@ -1372,6 +1404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/new': {
+      id: '/courses/new'
+      path: '/new'
+      fullPath: '/courses/new'
+      preLoaderRoute: typeof CoursesNewRouteImport
+      parentRoute: typeof CoursesRoute
+    }
     '/pupils/progress/$id': {
       id: '/pupils/progress/$id'
       path: '/pupils/progress/$id'
@@ -1410,6 +1449,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CoursesRouteChildren {
+  CoursesNewRoute: typeof CoursesNewRoute
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesNewRoute: CoursesNewRoute,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
+
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -1442,6 +1492,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarsyncRoute: CalendarsyncRoute,
   CertificationsRoute: CertificationsRoute,
   ChecklistRoute: ChecklistRoute,
+  CoursesRoute: CoursesRouteWithChildren,
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
   DiaryRoute: DiaryRoute,
