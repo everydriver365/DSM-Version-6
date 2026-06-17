@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/edit/$id")({
@@ -56,6 +57,8 @@ function EditPupilPage() {
   const [testDate, setTestDate] = useState("");
   const [notes, setNotes] = useState("");
   const [address, setAddress] = useState("");
+  const originalStatus = useRef<string>("active");
+  const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -96,6 +99,7 @@ function EditPupilPage() {
         setPhone(p.phone ?? "");
         setEmail(p.email ?? "");
         setStatus(p.status ?? "active");
+        originalStatus.current = p.status ?? "active";
         setTestDate(p.test_date ?? "");
         setNotes(p.notes ?? "");
         setAddress(p.address ?? "");
@@ -106,6 +110,15 @@ function EditPupilPage() {
 
   async function handleSave() {
     if (saving) return;
+    if (status === "inactive" && originalStatus.current !== "inactive") {
+      setInactiveConfirmOpen(true);
+      return;
+    }
+    await performSave();
+  }
+
+  async function performSave() {
+    setInactiveConfirmOpen(false);
     setSaving(true);
     setError(null);
 
@@ -257,6 +270,15 @@ function EditPupilPage() {
           )}
         </form>
       )}
+
+      <ConfirmDialog
+        open={inactiveConfirmOpen}
+        title={`Mark ${`${firstName} ${lastName}`.trim() || "pupil"} as inactive?`}
+        message="They will be hidden from active lists and cannot be booked for new lessons."
+        confirmLabel="Mark inactive"
+        onConfirm={performSave}
+        onCancel={() => setInactiveConfirmOpen(false)}
+      />
     </div>
   );
 }
