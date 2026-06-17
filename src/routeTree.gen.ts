@@ -34,6 +34,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as OutstandingRouteImport } from './routes/outstanding'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NotificationsettingsRouteImport } from './routes/notificationsettings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -209,6 +210,11 @@ const PerformanceRoute = PerformanceRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutstandingRoute = OutstandingRouteImport.update({
+  id: '/outstanding',
+  path: '/outstanding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -501,6 +507,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
+  '/outstanding': typeof OutstandingRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -578,6 +585,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
+  '/outstanding': typeof OutstandingRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -657,6 +665,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
+  '/outstanding': typeof OutstandingRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -737,6 +746,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
+    | '/outstanding'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -814,6 +824,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
+    | '/outstanding'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -892,6 +903,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
+    | '/outstanding'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -971,6 +983,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   NotificationsettingsRoute: typeof NotificationsettingsRoute
   OnboardingRoute: typeof OnboardingRoute
+  OutstandingRoute: typeof OutstandingRoute
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
@@ -1188,6 +1201,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outstanding': {
+      id: '/outstanding'
+      path: '/outstanding'
+      fullPath: '/outstanding'
+      preLoaderRoute: typeof OutstandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -1608,6 +1628,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   NotificationsettingsRoute: NotificationsettingsRoute,
   OnboardingRoute: OnboardingRoute,
+  OutstandingRoute: OutstandingRoute,
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,

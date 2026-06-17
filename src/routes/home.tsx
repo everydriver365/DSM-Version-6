@@ -52,6 +52,7 @@ import {
   Send,
   CheckCheck,
   FileSpreadsheet,
+  AlertCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -440,6 +441,7 @@ function HomePage() {
     { icon: <FileSpreadsheet size={16} color="#92400E" />, tint: "#FEF3C7", label: "MTD", route: "/mtd" },
     { icon: <FileText size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Quotes", route: "/quotes" },
     { icon: <Sun size={16} color="#92400E" />, tint: "#FEF3C7", label: "Briefing", route: "/briefing" },
+    { icon: <AlertCircle size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Outstanding", route: "/outstanding" },
 
   ] as const;
 
