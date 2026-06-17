@@ -388,6 +388,7 @@ function HomePage() {
     return d >= tomorrowStart && d < dayAfter;
   });
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
+  const nextTabLessons = nextLessons.slice(0, 10);
 
   const weekLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
@@ -395,7 +396,7 @@ function HomePage() {
   });
 
   const tabLessons =
-    tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextLessons;
+    tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   const nextFreeSlot = (() => {
     if (todayLessons.length === 0) return null;
@@ -976,7 +977,7 @@ function HomePage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "later"}
+                  Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "yet"}
                 </div>
               </div>
               <div className="flex mt-3" style={{ gap: 8 }}>
@@ -1019,6 +1020,69 @@ function HomePage() {
                 </button>
               </div>
             </div>
+          ) : tab === "next" ? (
+            (() => {
+              const grouped = nextTabLessons.reduce((acc, l) => {
+                if (!acc[l.lesson_date]) acc[l.lesson_date] = [];
+                acc[l.lesson_date].push(l);
+                return acc;
+              }, {} as Record<string, LessonRow[]>);
+              return Object.entries(grouped).map(([date, items]) => (
+                <div key={date}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      color: "#6B7280",
+                      fontWeight: 600,
+                      letterSpacing: "0.05em",
+                      marginTop: 8,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {formatDayLabel(new Date(`${date}T00:00:00`))}
+                  </div>
+                  {items.map((l) => (
+                    <div
+                      key={l.id}
+                      className="bg-white flex items-center justify-between"
+                      style={{
+                        padding: 12,
+                        borderRadius: 10,
+                        borderWidth: "0.5px",
+                        borderStyle: "solid",
+                        borderColor: "#E2E6ED",
+                        marginBottom: 6,
+                      }}
+                    >
+                      <div className="flex items-center" style={{ gap: 12 }}>
+                        <span className="text-[14px] font-bold text-[#0F2044]">
+                          {formatTime(l)}
+                        </span>
+                        <div>
+                          <div className="text-[14px] text-[#0F2044]">{pupilName(l)}</div>
+                          <div style={{ fontSize: 13, color: "#6B7280" }}>
+                            {formatDuration(l.duration_minutes)}
+                          </div>
+                        </div>
+                      </div>
+                      <span
+                        className="text-[10px] uppercase font-medium"
+                        style={{
+                          color: statusColor(l.status),
+                          letterSpacing: "0.05em",
+                          padding: "3px 8px",
+                          borderRadius: 999,
+                          backgroundColor: `${statusColor(l.status)}14`,
+                        }}
+                      >
+                        {l.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ));
+            })()
           ) : (
             tabLessons.map((l) => (
               <div
