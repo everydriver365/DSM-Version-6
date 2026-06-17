@@ -28,7 +28,7 @@ function SubscriptionPage() {
         <button
           type="button"
           aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
+          onClick={() => navigate({ to: "/settings" })}
           className="flex items-center justify-center"
           style={{ width: 28, height: 28 }}
         >
