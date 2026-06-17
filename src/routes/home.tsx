@@ -184,9 +184,6 @@ function formatDayLabel(d: Date) {
     .toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" })
     .toUpperCase();
 }
-function formatShortDate(d: Date) {
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
 function formatDuration(mins: number | null) {
   if (!mins) return "";
   const h = Math.floor(mins / 60);
@@ -1090,10 +1087,10 @@ function HomePage() {
           }}
         >
           <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
-            Today / {formatShortDate(todayStart)}
+            Today
           </TabBtn>
           <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
-            Tomorrow / {formatShortDate(tomorrowStart)}
+            Tomorrow
           </TabBtn>
           <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
             Next
