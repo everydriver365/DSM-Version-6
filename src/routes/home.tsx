@@ -276,9 +276,10 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils(name,phone,balance_owed,postcode)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
+        .is("pupils.deleted_at", null)
         .neq("status", "cancelled")
         .neq("status", "completed")
         .gte("lesson_date", todayYmd)
