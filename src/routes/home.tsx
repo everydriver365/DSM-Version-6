@@ -47,8 +47,16 @@ import {
   X,
   UserCircle,
   PlayCircle,
-
+  ChevronDown,
+  Send,
+  CheckCheck,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import {
