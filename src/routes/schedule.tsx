@@ -72,18 +72,6 @@ function formatDuration(mins: number | null) {
   const rem = m % 60;
   return `${h}h ${rem}m`;
 }
-function statusColor(status: string) {
-  switch (status) {
-    case "confirmed":
-      return "#16A34A";
-    case "pending":
-      return "#F59E0B";
-    case "cancelled":
-      return "#CC2229";
-    default:
-      return "#6B7280";
-  }
-}
 
 function SchedulePage() {
   const navigate = useNavigate();
