@@ -16,7 +16,6 @@ import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TestdayRouteImport } from './routes/testday'
-import { Route as TestdayRouteImport } from './routes/testday'
 import { Route as TaxRouteImport } from './routes/tax'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
@@ -118,6 +117,11 @@ const TodosRoute = TodosRouteImport.update({
 const TestsRoute = TestsRouteImport.update({
   id: '/tests',
   path: '/tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestdayRoute = TestdayRouteImport.update({
+  id: '/testday',
+  path: '/testday',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestdayRoute = TestdayRouteImport.update({
