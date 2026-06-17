@@ -600,7 +600,7 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20 }}>
+      <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
           <div
