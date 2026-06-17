@@ -388,10 +388,18 @@ function NewCoursePage() {
                   border: "none",
                   borderRadius: 10,
                   fontWeight: 700,
-                  cursor: "pointer",
+                  cursor: saving ? "not-allowed" : "pointer",
                   fontFamily: "Poppins, sans-serif",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  opacity: saving ? 0.7 : 1,
                 }}
-              >{saving ? "Publishing…" : "Publish course"}</button>
+              >
+                {saving && <Loader2 size={16} className="animate-spin" />}
+                {saving ? "Publishing…" : "Publish course"}
+              </button>
             </>
           )}
         </div>
