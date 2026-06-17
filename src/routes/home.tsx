@@ -494,7 +494,10 @@ function HomePage() {
       <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20 }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '0 16px' }}>
-          <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+          <div
+            onClick={() => upcoming && setHeroExpanded((v) => !v)}
+            style={{ textAlign: 'left', padding: 13, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+          >
             {/* Car image with mask */}
             <img
               src={carAsset.url}
@@ -539,7 +542,8 @@ function HomePage() {
             {upcoming && (
               <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const phone = upcoming?.pupils?.phone;
                     if (phone) window.location.href = `tel:${phone}`;
                     else toast("No phone number for this pupil");
@@ -547,18 +551,67 @@ function HomePage() {
                   style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >📞 Call</button>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const phone = upcoming?.pupils?.phone;
                     if (phone) window.location.href = `sms:${phone}`;
                     else toast("No phone number");
                   }}
                   style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >💬 Text</button>
-                <button onClick={() => navigate({ to: "/livesession" })} style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: "/livesession" }); }}
+                  style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                >➤ Go</button>
+              </div>
+            )}
+            {/* Chevron */}
+            {upcoming && (
+              <div style={{ position: 'absolute', right: 10, bottom: 8, pointerEvents: 'none' }}>
+                <ChevronDown
+                  size={18}
+                  color="#6B7280"
+                  style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                />
               </div>
             )}
           </div>
+          {upcoming && heroExpanded && (
+            <HeroExpandedPanel
+              lesson={upcoming}
+              prev={prevLesson}
+              goingActive={goingActive}
+              setGoingActive={setGoingActive}
+              onOpenLate={() => setLateOpen(true)}
+              navigateTo={(to) => navigate({ to })}
+            />
+          )}
         </div>
+        {/* Late sheet */}
+        <Dialog open={lateOpen} onOpenChange={setLateOpen}>
+          <DialogContent className="max-w-[320px]">
+            <DialogHeader>
+              <DialogTitle style={{ fontFamily: 'Poppins, sans-serif' }}>How many minutes late?</DialogTitle>
+            </DialogHeader>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginTop: 8 }}>
+              {[5, 10, 15, 20].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    const phone = upcoming?.pupils?.phone;
+                    const first = (upcoming?.pupils?.name ?? 'there').split(/\s+/)[0];
+                    if (!phone) { toast('No phone number'); setLateOpen(false); return; }
+                    const body = encodeURIComponent(`Hi ${first}, running ${m} mins late, sorry!`);
+                    window.location.href = `sms:${phone}?&body=${body}`;
+                    setLateOpen(false);
+                  }}
+                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                >{m}m</button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+
 
         {/* STATS STRIP on navy */}
         {loading ? (
