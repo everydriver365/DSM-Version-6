@@ -270,6 +270,15 @@ function EditPupilPage() {
           )}
         </form>
       )}
+
+      <ConfirmDialog
+        open={inactiveConfirmOpen}
+        title={`Mark ${`${firstName} ${lastName}`.trim() || "pupil"} as inactive?`}
+        message="They will be hidden from active lists and cannot be booked for new lessons."
+        confirmLabel="Mark inactive"
+        onConfirm={performSave}
+        onCancel={() => setInactiveConfirmOpen(false)}
+      />
     </div>
   );
 }
