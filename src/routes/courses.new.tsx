@@ -170,7 +170,7 @@ function NewCoursePage() {
       status,
     };
 
-    const { data, error: insertError } = await supabase
+    const { error: insertError } = await supabase
       .from("instructor_courses")
       .insert(payload)
       .select()
