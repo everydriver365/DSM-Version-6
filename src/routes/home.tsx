@@ -332,6 +332,28 @@ function HomePage() {
 
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
+
+  // Fetch previous lesson for the upcoming pupil when hero expands
+  useEffect(() => {
+    if (!heroExpanded || !upcoming?.pupil_id || !userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, status, notes")
+        .eq("instructor_id", userId)
+        .eq("pupil_id", upcoming.pupil_id)
+        .is("deleted_at", null)
+        .lt("lesson_date", ymd(todayStart))
+        .order("lesson_date", { ascending: false })
+        .limit(1);
+      if (!cancelled) setPrevLesson((data?.[0] ?? null) as PrevLessonRow | null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
+
   const todayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
