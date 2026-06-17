@@ -99,6 +99,7 @@ function EditPupilPage() {
         setPhone(p.phone ?? "");
         setEmail(p.email ?? "");
         setStatus(p.status ?? "active");
+        originalStatus.current = p.status ?? "active";
         setTestDate(p.test_date ?? "");
         setNotes(p.notes ?? "");
         setAddress(p.address ?? "");
