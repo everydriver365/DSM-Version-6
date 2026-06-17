@@ -327,6 +327,28 @@ function CourseDetailPage() {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                   />
+                  <SelectRow
+                    label="Course type"
+                    value={form.course_type}
+                    options={[
+                      ["intensive", "Intensive"],
+                      ["semi-intensive", "Semi-intensive"],
+                      ["weekly", "Weekly"],
+                      ["custom", "Custom"],
+                    ]}
+                    onChange={(v) => setForm({ ...form, course_type: v })}
+                  />
+                  <SelectRow
+                    label="Status"
+                    value={form.status}
+                    options={[
+                      ["active", "Active"],
+                      ["draft", "Draft"],
+                      ["full", "Full"],
+                      ["archived", "Archived"],
+                    ]}
+                    onChange={(v) => setForm({ ...form, status: v })}
+                  />
                   <Input
                     label="Total hours"
                     type="number"
