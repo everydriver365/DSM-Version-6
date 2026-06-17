@@ -157,7 +157,7 @@ function CoursesPage() {
               return (
                 <Card
                   key={c.id}
-                  onClick={() => navigate({ to: "/courses" })}
+                  onClick={() => navigate({ to: "/courses/$id", params: { id: c.id } })}
                   style={{ cursor: "pointer", padding: 12 }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
