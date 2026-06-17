@@ -217,6 +217,25 @@ function NewLessonPage() {
           </div>
 
           <div>
+            <FieldLabel htmlFor="pickup">Pickup location</FieldLabel>
+            <input
+              id="pickup"
+              type="text"
+              value={pickup}
+              onChange={(e) => {
+                setPickupTouched(true);
+                setPickup(e.target.value);
+              }}
+              placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              style={fieldBorder}
+            />
+            <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Poppins, sans-serif" }}>
+              Defaults to the pupil&rsquo;s home address if left blank.
+            </p>
+          </div>
+
+          <div>
             <FieldLabel htmlFor="notes">Notes</FieldLabel>
             <textarea
               id="notes"
