@@ -136,7 +136,7 @@ function PupilDetailPage() {
     setRemoveOpen(false);
     const { error } = await supabase
       .from("pupils")
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString(), status: "inactive" })
       .eq("id", id);
     if (error) {
       console.error("[pupil] remove error", error);
