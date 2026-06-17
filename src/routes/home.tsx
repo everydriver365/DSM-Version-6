@@ -231,6 +231,91 @@ function HomePage() {
   const [lateOpen, setLateOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // AT A GLANCE state
+  const [glancePupilCount, setGlancePupilCount] = useState(0);
+  const [glanceCompletedLessons, setGlanceCompletedLessons] = useState(0);
+  const [glancePaymentsCount, setGlancePaymentsCount] = useState(0);
+  const [glancePaymentsTotal, setGlancePaymentsTotal] = useState(0);
+  const [glanceExpensesTotal, setGlanceExpensesTotal] = useState(0);
+  const [glanceMtdEnrolled, setGlanceMtdEnrolled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const taxYearStart = new Date(
+        new Date().getMonth() >= 3 ? new Date().getFullYear() : new Date().getFullYear() - 1,
+        3,
+        6,
+      );
+      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id", { count: "exact", head: true })
+          .eq("instructor_id", userId)
+          .is("deleted_at", null),
+        supabase
+          .from("lessons")
+          .select("id", { count: "exact", head: true })
+          .eq("instructor_id", userId)
+          .eq("status", "completed")
+          .is("deleted_at", null),
+        supabase
+          .from("payments")
+          .select("amount, paid_at")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .gte("paid_at", taxYearStart.toISOString()),
+        supabase
+          .from("expenses")
+          .select("amount, expense_date")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .gte("expense_date", taxYearStart.toISOString().slice(0, 10)),
+        supabase
+          .from("instructor_mtd")
+          .select("enrolled")
+          .eq("instructor_id", userId)
+          .maybeSingle(),
+      ]);
+      setGlancePupilCount(pupilsRes.count ?? 0);
+      setGlanceCompletedLessons(lessonsRes.count ?? 0);
+      const pays = paymentsRes.data ?? [];
+      setGlancePaymentsCount(pays.length);
+      setGlancePaymentsTotal(pays.reduce((s, p: any) => s + Number(p.amount ?? 0), 0));
+      setGlanceExpensesTotal(
+        (expensesRes.data ?? []).reduce((s, e: any) => s + Number(e.amount ?? 0), 0),
+      );
+      setGlanceMtdEnrolled(mtdRes.data ? Boolean((mtdRes.data as any).enrolled) : false);
+    })();
+  }, [userId]);
+
+  const glancePoints = glancePupilCount * 10 + glanceCompletedLessons * 5 + glancePaymentsCount * 2;
+  const glanceTier =
+    glancePoints >= 1000 ? "Platinum" : glancePoints >= 500 ? "Gold" : glancePoints >= 200 ? "Silver" : "Bronze";
+  const glanceTierColor =
+    glanceTier === "Platinum"
+      ? "#0EA5E9"
+      : glanceTier === "Gold"
+      ? "#D97706"
+      : glanceTier === "Silver"
+      ? "#6B7280"
+      : "#B45309";
+  const glanceNetProfit = Math.max(0, glancePaymentsTotal - glanceExpensesTotal);
+  const glanceTaxBill = Math.max(0, (glanceNetProfit - 12570) * 0.2);
+  const monthsElapsed = (() => {
+    const now = new Date();
+    const startMonth = now.getMonth() >= 3 ? 3 : -9; // April = 3
+    const monthsSinceApril = (now.getFullYear() - (now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1)) * 12 + (now.getMonth() - 3) + (now.getMonth() < 3 ? 12 : 0);
+    void startMonth;
+    return Math.min(12, Math.max(0, monthsSinceApril + (now.getDate() / 30)));
+  })();
+  const taxYearLabel = (() => {
+    const now = new Date();
+    const startYear = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+    return `${String(startYear).slice(2)}/${String(startYear + 1).slice(2)}`;
+  })();
+
+
 
 
 
