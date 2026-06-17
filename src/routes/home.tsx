@@ -388,6 +388,7 @@ function HomePage() {
     return d >= tomorrowStart && d < dayAfter;
   });
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
+  const nextTabLessons = nextLessons.slice(0, 10);
 
   const weekLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
@@ -395,7 +396,7 @@ function HomePage() {
   });
 
   const tabLessons =
-    tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextLessons;
+    tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   const nextFreeSlot = (() => {
     if (todayLessons.length === 0) return null;
