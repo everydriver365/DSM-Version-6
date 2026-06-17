@@ -199,6 +199,13 @@ function HomePage() {
     if (typeof window === "undefined") return false;
     return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
   });
+  const [heroExpanded, setHeroExpanded] = useState(false);
+  const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
+  const [goingActive, setGoingActive] = useState(false);
+  const [lateOpen, setLateOpen] = useState(false);
+
+
+
 
 
   const now = useMemo(() => new Date(), []);
