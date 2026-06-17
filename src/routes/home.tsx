@@ -105,6 +105,26 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const WEEKLY_LESSON_GOAL = 30;
 const WEEKLY_EARNINGS_GOAL = 1000;
 
+function CircleIconBtn({
+  children, onClick, ariaLabel,
+}: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      onClick={onClick}
+      className="relative flex items-center justify-center"
+      style={{
+        width: 36, height: 36, borderRadius: 18,
+        background: "rgba(255,255,255,0.15)",
+        border: "none", cursor: "pointer",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
