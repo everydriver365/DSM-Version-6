@@ -77,6 +77,8 @@ function NewCoursePage() {
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
   const [pickupArea, setPickupArea] = useState("");
+  const [pickupError, setPickupError] = useState<string | null>(null);
+  const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
 
   // Step 3
