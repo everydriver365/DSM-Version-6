@@ -411,59 +411,59 @@ function HomePage() {
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
   const quickAccessTiles = [
-    { icon: <CalendarIcon size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Schedule", route: "/schedule" },
-    { icon: <Users size={16} color="#059669" />, tint: "#ECFDF5", label: "Pupils", route: "/pupils" },
-    { icon: <PoundSterling size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Payments", route: "/payments" },
-    { icon: <MessageSquare size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Messages", route: "/messages" },
-    { icon: <TrendingUp size={16} color="#059669" />, tint: "#ECFDF5", label: "Earnings", route: "/earnings" },
-    { icon: <Receipt size={16} color="#92400E" />, tint: "#FEF3C7", label: "Expenses", route: "/expenses" },
-    { icon: <Car size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Mileage", route: "/mileage" },
-    { icon: <Fuel size={16} color="#92400E" />, tint: "#FEF3C7", label: "Fuel", route: "/fuel" },
-    { icon: <BarChart2 size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Reports", route: "/reports" },
-    { icon: <TrendingUp size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Performance", route: "/performance" },
-    { icon: <GraduationCap size={16} color="#059669" />, tint: "#ECFDF5", label: "Tests", route: "/tests" },
-    { icon: <GraduationCap size={16} color="#1A52A0" />, tint: "#E8EEFB", label: "Courses", route: "/courses" },
-    { icon: <Star size={16} color="#92400E" />, tint: "#FEF3C7", label: "Reviews", route: "/reviews" },
-    { icon: <Inbox size={16} color="#1A52A0" />, tint: "#DBEAFE", label: "Enquiries", route: "/enquiries" },
-    { icon: <Clock size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Waiting list", route: "/waitinglist" },
-    { icon: <Gift size={16} color="#059669" />, tint: "#ECFDF5", label: "Referrals", route: "/referrals" },
-    { icon: <Car size={16} color="#52525B" />, tint: "#F4F4F5", label: "Vehicle", route: "/vehicle" },
-    { icon: <BookOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "CPD", route: "/cpd" },
-    { icon: <ClipboardCheck size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Standards", route: "/standards" },
-    { icon: <Calculator size={16} color="#92400E" />, tint: "#FEF3C7", label: "Tax", route: "/tax" },
-    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Todos", route: "/todos" },
-    { icon: <FileText size={16} color="#92400E" />, tint: "#FEF3C7", label: "Notes", route: "/notes" },
-    { icon: <FolderOpen size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Documents", route: "/documents" },
-    { icon: <ClipboardList size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Manifest", route: "/manifest" },
-    { icon: <CheckSquare size={16} color="#059669" />, tint: "#ECFDF5", label: "Checklist", route: "/checklist" },
-    { icon: <Bell size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Reminders", route: "/reminder" },
-    { icon: <Heart size={16} color="#92400E" />, tint: "#FEF3C7", label: "Health", route: "/health" },
-    { icon: <BookOpen size={16} color="#059669" />, tint: "#ECFDF5", label: "Resources", route: "/resources" },
-    { icon: <HelpCircle size={16} color="#52525B" />, tint: "#F4F4F5", label: "Help", route: "/help" },
-    { icon: <LayoutGrid size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Pipeline", route: "/pipeline" },
-    { icon: <FileSignature size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Waivers", route: "/waivers" },
-    { icon: <Search size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Find gaps", route: "/gaps" },
-    { icon: <Users size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Bulk message", route: "/bulkmessage" },
-    { icon: <Navigation size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Sat Nav", route: "/satnav" },
-    { icon: <BarChart2 size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Weekly report", route: "/weeklyreport" },
-    { icon: <MapPin size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Locations", route: "/locations" },
-    { icon: <Upload size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Import", route: "/dataimport" },
-    { icon: <Award size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Certifications", route: "/certifications" },
-    { icon: <ToggleLeft size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Quick avail", route: "/quickavailability" },
-    { icon: <Sun size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "End of day", route: "/eod" },
-    { icon: <Zap size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Automations", route: "/automations" },
-    { icon: <CalendarDays size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Diary", route: "/diary" },
-    { icon: <Crown size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "My plan", route: "/subscription" },
-    { icon: <PlayCircle size={16} color="#16A34A" />, tint: "#ECFDF5", label: "Live session", route: "/livesession" },
-    { icon: <Search size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Search", route: "/search" },
-    { icon: <Bell size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Notifications", route: "/notifications" },
-    { icon: <CalendarDays size={16} color="#1E40AF" />, tint: "#DBEAFE", label: "Availability", route: "/availability" },
-    { icon: <RefreshCw size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Calendar sync", route: "/calendarsync" },
-    { icon: <UserCircle size={16} color="#1A52A0" />, tint: "#EEF4FB", label: "Profile", route: "/profile" },
-    { icon: <FileSpreadsheet size={16} color="#92400E" />, tint: "#FEF3C7", label: "MTD", route: "/mtd" },
-    { icon: <FileText size={16} color="#5B21B6" />, tint: "#EDE9FE", label: "Quotes", route: "/quotes" },
-    { icon: <Sun size={16} color="#92400E" />, tint: "#FEF3C7", label: "Briefing", route: "/briefing" },
-    { icon: <AlertCircle size={16} color="#DC2626" />, tint: "#FEF2F2", label: "Outstanding", route: "/outstanding" },
+    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
+    { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
+    { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Payments", route: "/payments" },
+    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Messages", route: "/messages" },
+    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Earnings", route: "/earnings" },
+    { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#D97706", label: "Expenses", route: "/expenses" },
+    { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
+    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel", route: "/fuel" },
+    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Reports", route: "/reports" },
+    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Performance", route: "/performance" },
+    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
+    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
+    { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
+    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Enquiries", route: "/enquiries" },
+    { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitinglist" },
+    { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
+    { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
+    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "CPD", route: "/cpd" },
+    { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Standards", route: "/standards" },
+    { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
+    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Todos", route: "/todos" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Notes", route: "/notes" },
+    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Documents", route: "/documents" },
+    { icon: <ClipboardList size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Manifest", route: "/manifest" },
+    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Checklist", route: "/checklist" },
+    { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
+    { icon: <Heart size={20} color="#FFFFFF" />, bg: "#D97706", label: "Health", route: "/health" },
+    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Resources", route: "/resources" },
+    { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
+    { icon: <LayoutGrid size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Pipeline", route: "/pipeline" },
+    { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
+    { icon: <Search size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Find gaps", route: "/gaps" },
+    { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
+    { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Sat Nav", route: "/satnav" },
+    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Weekly report", route: "/weeklyreport" },
+    { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
+    { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
+    { icon: <Award size={20} color="#FFFFFF" />, bg: "#D97706", label: "Certifications", route: "/certifications" },
+    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Availability", route: "/availability" },
+    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#D97706", label: "EOD", route: "/eod" },
+    { icon: <Zap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Automations", route: "/automations" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Diary", route: "/diary" },
+    { icon: <Crown size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "My plan", route: "/subscription" },
+    { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
+    { icon: <Search size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
+    { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Availability", route: "/quickavailability" },
+    { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Calendar sync", route: "/calendarsync" },
+    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Profile", route: "/profile" },
+    { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#D97706", label: "MTD", route: "/mtd" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Quotes", route: "/quotes" },
+    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Briefing", route: "/briefing" },
+    { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
 
   ] as const;
 
@@ -1448,12 +1448,12 @@ function TabBtn({
 
 function AccessTile({
   icon,
-  tint,
+  bg,
   label,
   onClick,
 }: {
   icon: React.ReactNode;
-  tint: string;
+  bg: string;
   label: string;
   onClick: () => void;
 }) {
@@ -1467,20 +1467,20 @@ function AccessTile({
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#E2E6ED",
-        borderRadius: 10,
-        gap: 4,
-        padding: "4px 2px",
+        borderRadius: 12,
+        gap: 6,
+        padding: 12,
         scrollSnapAlign: "start",
         flexShrink: 0,
       }}
     >
       <span
-        className="flex items-center justify-center rounded-full"
-        style={{ width: 32, height: 32, backgroundColor: tint }}
+        className="flex items-center justify-center"
+        style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: bg }}
       >
         {icon}
       </span>
-      <span className="text-[10px] text-[#0F2044] text-center leading-tight">{label}</span>
+      <span className="text-[10px] text-[#0F2044] text-center leading-tight" style={{ maxWidth: '100%', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{label}</span>
     </button>
   );
 }
