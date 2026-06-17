@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -47,8 +48,16 @@ import {
   X,
   UserCircle,
   PlayCircle,
-
+  ChevronDown,
+  Send,
+  CheckCheck,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import {
@@ -78,7 +87,15 @@ interface LessonRow {
   duration_minutes: number | null;
   status: string;
   pupil_id: string;
-  pupils?: { name: string; phone: string | null } | null;
+  notes?: string | null;
+  pupils?: { name: string; phone: string | null; balance_owed?: number | null } | null;
+}
+
+interface PrevLessonRow {
+  id: string;
+  lesson_date: string;
+  status: string;
+  notes: string | null;
 }
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -183,6 +200,13 @@ function HomePage() {
     if (typeof window === "undefined") return false;
     return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
   });
+  const [heroExpanded, setHeroExpanded] = useState(false);
+  const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
+  const [goingActive, setGoingActive] = useState(false);
+  const [lateOpen, setLateOpen] = useState(false);
+
+
+
 
 
   const now = useMemo(() => new Date(), []);
@@ -229,7 +253,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils(name,phone,balance_owed)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -244,7 +268,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name,phone)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils(name,phone,balance_owed)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .neq("status", "cancelled")
@@ -309,6 +333,28 @@ function HomePage() {
 
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
+
+  // Fetch previous lesson for the upcoming pupil when hero expands
+  useEffect(() => {
+    if (!heroExpanded || !upcoming?.pupil_id || !userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, status, notes")
+        .eq("instructor_id", userId)
+        .eq("pupil_id", upcoming.pupil_id)
+        .is("deleted_at", null)
+        .lt("lesson_date", ymd(todayStart))
+        .order("lesson_date", { ascending: false })
+        .limit(1);
+      if (!cancelled) setPrevLesson((data?.[0] ?? null) as PrevLessonRow | null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
+
   const todayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
@@ -449,7 +495,10 @@ function HomePage() {
       <div style={{ backgroundColor: '#0F2044', paddingTop: 16, paddingBottom: 20 }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: 'hidden', margin: '0 16px' }}>
-          <div style={{ textAlign: 'left', padding: 13, cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+          <div
+            onClick={() => upcoming && setHeroExpanded((v) => !v)}
+            style={{ textAlign: 'left', padding: 13, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+          >
             {/* Car image with mask */}
             <img
               src={carAsset.url}
@@ -494,7 +543,8 @@ function HomePage() {
             {upcoming && (
               <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const phone = upcoming?.pupils?.phone;
                     if (phone) window.location.href = `tel:${phone}`;
                     else toast("No phone number for this pupil");
@@ -502,18 +552,67 @@ function HomePage() {
                   style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >📞 Call</button>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const phone = upcoming?.pupils?.phone;
                     if (phone) window.location.href = `sms:${phone}`;
                     else toast("No phone number");
                   }}
                   style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >💬 Text</button>
-                <button onClick={() => navigate({ to: "/livesession" })} style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}>➤ Go</button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: "/livesession" }); }}
+                  style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                >➤ Go</button>
+              </div>
+            )}
+            {/* Chevron */}
+            {upcoming && (
+              <div style={{ position: 'absolute', right: 10, bottom: 8, pointerEvents: 'none' }}>
+                <ChevronDown
+                  size={18}
+                  color="#6B7280"
+                  style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                />
               </div>
             )}
           </div>
+          {upcoming && heroExpanded && (
+            <HeroExpandedPanel
+              lesson={upcoming}
+              prev={prevLesson}
+              goingActive={goingActive}
+              setGoingActive={setGoingActive}
+              onOpenLate={() => setLateOpen(true)}
+              navigateTo={(to) => navigate({ to })}
+            />
+          )}
         </div>
+        {/* Late sheet */}
+        <Dialog open={lateOpen} onOpenChange={setLateOpen}>
+          <DialogContent className="max-w-[320px]">
+            <DialogHeader>
+              <DialogTitle style={{ fontFamily: 'Poppins, sans-serif' }}>How many minutes late?</DialogTitle>
+            </DialogHeader>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginTop: 8 }}>
+              {[5, 10, 15, 20].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    const phone = upcoming?.pupils?.phone;
+                    const first = (upcoming?.pupils?.name ?? 'there').split(/\s+/)[0];
+                    if (!phone) { toast('No phone number'); setLateOpen(false); return; }
+                    const body = encodeURIComponent(`Hi ${first}, running ${m} mins late, sorry!`);
+                    window.location.href = `sms:${phone}?&body=${body}`;
+                    setLateOpen(false);
+                  }}
+                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                >{m}m</button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+
 
         {/* STATS STRIP on navy */}
         {loading ? (
@@ -843,6 +942,187 @@ function HomePage() {
     </div>
   );
 }
+
+function HeroExpandedPanel({
+  lesson,
+  prev,
+  goingActive,
+  setGoingActive,
+  onOpenLate,
+  navigateTo,
+}: {
+  lesson: LessonRow;
+  prev: PrevLessonRow | null;
+  goingActive: boolean;
+  setGoingActive: (v: boolean) => void;
+  onOpenLate: () => void;
+  navigateTo: (to: string) => void;
+}) {
+  const phone = lesson.pupils?.phone ?? null;
+  const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
+  const balance = Number(lesson.pupils?.balance_owed ?? 0);
+  const pickupPostcode = ""; // no pickup field on schema
+
+  const sendSms = (body: string) => {
+    if (!phone) { toast("No phone number"); return; }
+    window.location.href = `sms:${phone}?&body=${encodeURIComponent(body)}`;
+  };
+
+  const statusBtn: React.CSSProperties = {
+    flex: 1,
+    height: 36,
+    borderRadius: 10,
+    border: '1px solid #e3e6ec',
+    background: '#fff',
+    fontFamily: 'Poppins, sans-serif',
+    fontWeight: 600,
+    fontSize: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    cursor: 'pointer',
+    color: '#1A1A2E',
+  };
+  const sectionLabel: React.CSSProperties = {
+    fontSize: 10,
+    textTransform: 'uppercase',
+    color: '#999',
+    letterSpacing: 0.6,
+    fontWeight: 700,
+    fontFamily: 'Poppins, sans-serif',
+    marginBottom: 6,
+  };
+
+  return (
+    <div style={{ background: '#F2F4F8', borderRadius: '0 0 14px 14px', padding: 12 }}>
+      {/* Row 1 — status */}
+      <div style={{ display: 'flex', gap: 6 }}>
+        <button
+          style={statusBtn}
+          onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+        >
+          <MapPin size={14} /> Here
+        </button>
+        <button
+          style={{
+            ...statusBtn,
+            background: goingActive ? '#fff8e8' : '#fff',
+            borderColor: goingActive ? '#f59e0b' : '#e3e6ec',
+          }}
+          onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
+        >
+          <Send size={14} /> Going
+        </button>
+        <button style={statusBtn} onClick={onOpenLate}>
+          <Clock size={14} /> Late
+        </button>
+      </div>
+
+      {/* Row 2 — primary CTA */}
+      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+        <button
+          style={{ ...statusBtn, flex: 1 }}
+          onClick={() => navigateTo(`/pupils/${lesson.pupil_id}`)}
+        >
+          <ClipboardList size={14} /> Prep
+        </button>
+        <button
+          style={{
+            flex: 1.6,
+            height: 36,
+            borderRadius: 10,
+            border: 'none',
+            background: '#1A52A0',
+            color: '#fff',
+            fontFamily: 'Poppins, sans-serif',
+            fontWeight: 600,
+            fontSize: 12,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(26,82,160,0.35)',
+          }}
+          onClick={() => {
+            sendSms(`Hi ${firstName}, I'm outside and ready when you are! 🚗`);
+            toast("Marked as arrived");
+          }}
+        >
+          <CheckCheck size={14} /> Arrived
+        </button>
+      </div>
+
+      {/* Pickup */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>PICKUP</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>
+          <MapPin size={14} color="#6B7280" />
+          {pickupPostcode ? (
+            <>
+              <span style={{ color: '#1A1A2E', fontWeight: 600 }}>{pickupPostcode}</span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#1A52A0', fontWeight: 600, marginLeft: 'auto' }}
+              >Navigate</a>
+              <button
+                onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
+                style={{ background: 'none', border: 'none', color: '#1A52A0', fontWeight: 600, fontFamily: 'Poppins, sans-serif', fontSize: 13, cursor: 'pointer' }}
+              >Copy</button>
+            </>
+          ) : (
+            <span style={{ color: '#6B7280' }}>No pickup set</span>
+          )}
+        </div>
+      </div>
+
+      {/* Account */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>ACCOUNT</div>
+        {balance > 0 ? (
+          <div style={{ background: '#fbe8e8', border: '1px solid #f5c5c5', borderRadius: 10, padding: 10, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+            <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: '#991B1B' }}>£{balance.toFixed(2)} outstanding</span>
+            <button
+              onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${balance.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: '1px solid #f5c5c5', background: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+            >Chase</button>
+            <button
+              onClick={() => navigateTo('/payments')}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: 'none', background: '#991B1B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+            >Mark paid</button>
+          </div>
+        ) : (
+          <div style={{ color: '#16A34A', fontWeight: 700, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>Paid up ✓</div>
+        )}
+      </div>
+
+      {/* Last lesson */}
+      <div style={{ marginTop: 12 }}>
+        <div style={sectionLabel}>LAST LESSON</div>
+        {prev ? (
+          <div style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#1A1A2E' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontWeight: 600 }}>{new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, color: '#fff', background: statusColor(prev.status) }}>{prev.status}</span>
+            </div>
+            {prev.notes && (
+              <div style={{ marginTop: 4, color: '#6B7280', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                {prev.notes}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ color: '#6B7280', fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>No previous lesson</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 
 function QuickTile({
   value,
