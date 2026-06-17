@@ -107,28 +107,48 @@ function NewCoursePage() {
   const repeatAllowed = courseType === "weekly" || courseType === "semi-intensive";
 
   async function submit(status: "active" | "draft") {
-    if (!userId) {
-      toast.error("Not signed in");
+    console.log("[courses.new] submit invoked", { status, step, userId });
+
+    // Re-confirm the auth user at submit time (state may not be hydrated yet)
+    let uid = userId;
+    if (!uid) {
+      const { data: authData, error: authErr } = await supabase.auth.getUser();
+      if (authErr) console.error("[courses.new] auth.getUser error", authErr);
+      uid = authData.user?.id ?? null;
+      if (uid) setUserId(uid);
+    }
+    if (!uid) {
+      console.error("[courses.new] no authenticated user — cannot insert");
+      toast.error("You must be signed in to publish a course");
       return;
     }
-    if (!name.trim()) {
-      toast.error("Course name is required");
-      setStep(1);
-      return;
-    }
+
+    // Required-field validation (logged)
+    const missing: string[] = [];
+    if (!courseType) missing.push("course_type");
+    if (!name.trim()) missing.push("name");
+    if (!hours || Number(hours) <= 0) missing.push("total_hours");
     if (status === "active") {
-      if (!startDate) { toast.error("Start date is required"); setStep(2); return; }
-      if (!price || Number(price) <= 0) { toast.error("Price is required"); setStep(3); return; }
+      if (!price || Number(price) <= 0) missing.push("price");
+      if (!startDate) missing.push("start_date");
     }
-    setSaving(true);
-    const { error } = await supabase.from("instructor_courses").insert({
-      instructor_id: userId,
+    if (missing.length > 0) {
+      console.warn("[courses.new] missing required fields", missing);
+      toast.error(`Missing: ${missing.join(", ")}`);
+      if (missing.includes("name") || missing.includes("total_hours") || missing.includes("course_type")) setStep(1);
+      else if (missing.includes("start_date")) setStep(2);
+      else if (missing.includes("price")) setStep(3);
+      return;
+    }
+
+    const payload = {
+      instructor_id: uid,
       course_type: courseType,
       name: name.trim(),
-      total_hours: hours,
+      total_hours: Number(hours),
       includes_test: includesTest,
       description: description.trim() || null,
-      max_spaces: maxSpaces,
+      max_spaces: Number(maxSpaces),
       start_date: startDate || null,
       end_date: endDate || null,
       daily_hours: dailyHours || null,
@@ -143,16 +163,32 @@ function NewCoursePage() {
       publish_marketplace: publishMarketplace,
       publish_mini_website: publishWebsite,
       status,
-    });
+    };
+    console.log("[courses.new] inserting payload", payload);
+
+    setSaving(true);
+    const { data, error } = await supabase
+      .from("instructor_courses")
+      .insert(payload)
+      .select()
+      .single();
     setSaving(false);
+
     if (error) {
-      console.error("[courses.new] insert error", error);
-      toast.error(error.message);
+      console.error("[courses.new] insert error", {
+        message: error.message,
+        details: (error as { details?: string }).details,
+        hint: (error as { hint?: string }).hint,
+        code: (error as { code?: string }).code,
+      });
+      toast.error(error.message || "Failed to publish course");
       return;
     }
+    console.log("[courses.new] insert success", data);
     toast.success(status === "active" ? "Course published!" : "Saved as draft");
     navigate({ to: "/courses" });
   }
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 24 }}>
@@ -178,7 +214,14 @@ function NewCoursePage() {
         </button>
         <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>New course</h1>
         <button
-          onClick={() => submit("active")}
+          onClick={() => {
+            if (step < 3) {
+              console.log("[courses.new] top-bar Publish tapped before step 3 — advancing", { step });
+              setStep((step + 1) as 1 | 2 | 3);
+              return;
+            }
+            submit("active");
+          }}
           disabled={saving}
           style={{
             background: "none",
@@ -187,11 +230,12 @@ function NewCoursePage() {
             color: "#fff",
             fontWeight: 700,
             fontSize: 14,
-            opacity: saving ? 0.5 : 1,
+            opacity: saving ? 0.5 : step < 3 ? 0.7 : 1,
           }}
         >
-          Publish
+          {step < 3 ? "Next" : "Publish"}
         </button>
+
       </div>
 
       {/* Step indicator */}
