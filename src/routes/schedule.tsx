@@ -186,6 +186,7 @@ function SchedulePage() {
           <button
             type="button"
             aria-label="Open calendar"
+            onClick={() => navigate({ to: "/diary" })}
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
