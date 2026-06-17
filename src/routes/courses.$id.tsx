@@ -397,11 +397,48 @@ function CourseDetailPage() {
                     value={form.end_date ?? ""}
                     onChange={(e) => setForm({ ...form, end_date: e.target.value || null })}
                   />
-                  <Input
-                    label="Pickup area"
-                    value={form.pickup_area ?? ""}
-                    onChange={(e) => setForm({ ...form, pickup_area: e.target.value || null })}
-                  />
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                      Pickup area <span style={{ color: "#CC2229" }}>*</span>
+                    </div>
+                    <Input
+                      value={form.pickup_area ?? ""}
+                      onChange={(e) => {
+                        setForm({ ...form, pickup_area: e.target.value || null });
+                        if (pickupError) setPickupError(null);
+                      }}
+                      placeholder="e.g. SO23 or SO23 9AA"
+                    />
+                    {pickupError && (
+                      <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4 }}>
+                        {pickupError}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                      Coverage radius
+                    </div>
+                    <select
+                      value={form.radius_miles ?? 10}
+                      onChange={(e) => setForm({ ...form, radius_miles: Number(e.target.value) })}
+                      style={{
+                        width: "100%",
+                        height: 44,
+                        borderRadius: 8,
+                        border: "0.5px solid #E2E6ED",
+                        padding: "0 10px",
+                        background: "#fff",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 14,
+                        color: "#1A1A2E",
+                      }}
+                    >
+                      {RADIUS_OPTIONS.map((m) => (
+                        <option key={m} value={m}>{m} mile{m === 1 ? "" : "s"}</option>
+                      ))}
+                    </select>
+                  </div>
                   <SelectRow
                     label="Lesson time"
                     value={form.lesson_time_preference}
