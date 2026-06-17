@@ -64,6 +64,7 @@ function statusColor(s: string) {
 function LessonDetailPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const router = useRouter();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
