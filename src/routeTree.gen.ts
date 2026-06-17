@@ -542,7 +542,6 @@ export interface FileRoutesByFullPath {
   '/tax': typeof TaxRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
-  '/testday': typeof TestdayRoute
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
