@@ -338,6 +338,20 @@ function HomePage() {
       });
       setWeekEarnings(wk);
       setTodayEarnings(td);
+
+      const { data: wh } = await supabase
+        .from("working_hours")
+        .select("mon, tue, wed, thu, fri, sat, sun, end_time")
+        .eq("instructor_id", userId)
+        .maybeSingle();
+      if (wh) {
+        const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+        const key = dayKeys[todayStart.getDay()];
+        const works = (wh as Record<string, unknown>)[key];
+        setTodayEndTime(works && wh.end_time ? String(wh.end_time).slice(0, 5) : null);
+      } else {
+        setTodayEndTime(null);
+      }
       setLoading(false);
     })();
   }, [userId, todayStart, weekStart, weekEnd]);
