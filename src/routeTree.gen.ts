@@ -40,6 +40,7 @@ import { Route as NotificationsettingsRouteImport } from './routes/notifications
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MtdRouteImport } from './routes/mtd'
+import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as ManifestRouteImport } from './routes/manifest'
@@ -240,6 +241,11 @@ const NotesRoute = NotesRouteImport.update({
 const MtdRoute = MtdRouteImport.update({
   id: '/mtd',
   path: '/mtd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonthendRoute = MonthendRouteImport.update({
+  id: '/monthend',
+  path: '/monthend',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MileageRoute = MileageRouteImport.update({
@@ -502,6 +508,7 @@ export interface FileRoutesByFullPath {
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
@@ -581,6 +588,7 @@ export interface FileRoutesByTo {
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
@@ -660,6 +668,7 @@ export interface FileRoutesById {
   '/manifest': typeof ManifestRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
+  '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
@@ -741,6 +750,7 @@ export interface FileRouteTypes {
     | '/manifest'
     | '/messages'
     | '/mileage'
+    | '/monthend'
     | '/mtd'
     | '/notes'
     | '/notifications'
@@ -820,6 +830,7 @@ export interface FileRouteTypes {
     | '/manifest'
     | '/messages'
     | '/mileage'
+    | '/monthend'
     | '/mtd'
     | '/notifications'
     | '/notificationsettings'
@@ -898,6 +909,7 @@ export interface FileRouteTypes {
     | '/manifest'
     | '/messages'
     | '/mileage'
+    | '/monthend'
     | '/mtd'
     | '/notes'
     | '/notifications'
@@ -978,6 +990,7 @@ export interface RootRouteChildren {
   ManifestRoute: typeof ManifestRoute
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
+  MonthendRoute: typeof MonthendRoute
   MtdRoute: typeof MtdRoute
   NotesRoute: typeof NotesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
@@ -1243,6 +1256,13 @@ declare module '@tanstack/react-router' {
       path: '/mtd'
       fullPath: '/mtd'
       preLoaderRoute: typeof MtdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monthend': {
+      id: '/monthend'
+      path: '/monthend'
+      fullPath: '/monthend'
+      preLoaderRoute: typeof MonthendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mileage': {
@@ -1623,6 +1643,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManifestRoute: ManifestRoute,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
+  MonthendRoute: MonthendRoute,
   MtdRoute: MtdRoute,
   NotesRoute: NotesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
