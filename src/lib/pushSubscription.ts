@@ -5,8 +5,7 @@
 
 import { supabase } from "./supabaseClient";
 
-// TODO: replace with the real VAPID public key generated for this project.
-export const VAPID_PUBLIC_KEY = "REPLACE_WITH_VAPID_PUBLIC_KEY";
+export const VAPID_PUBLIC_KEY = "BCPt7KU8Me_IlOTU1OlId15UTBFlWgTiZbW-IfQmA0M1NH0__IOfyhekALKRRPFSSCrKDPQ2y0qXK7wwftTBKWE";
 
 const SW_PATH = "/sw.js";
 
@@ -49,7 +48,7 @@ export async function getCurrentPushStatus(): Promise<"enabled" | "disabled" | "
 
 export async function subscribeToPush(): Promise<{ ok: boolean; error?: string }> {
   if (!pushSupported()) return { ok: false, error: "Push notifications are not supported in this browser." };
-  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY === "REPLACE_WITH_VAPID_PUBLIC_KEY") {
+  if (!VAPID_PUBLIC_KEY) {
     return { ok: false, error: "VAPID public key is not configured." };
   }
 
