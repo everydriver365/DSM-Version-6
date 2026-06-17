@@ -566,17 +566,37 @@ function HomePage() {
                 >➤ Go</button>
               </div>
             )}
-            {/* Chevron */}
-            {upcoming && (
-              <div style={{ position: 'absolute', right: 10, bottom: 8, pointerEvents: 'none' }}>
-                <ChevronDown
-                  size={18}
-                  color="#6B7280"
-                  style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                />
-              </div>
-            )}
           </div>
+          {/* Expand affordance footer */}
+          {upcoming && (
+            <div
+              onClick={() => setHeroExpanded((v) => !v)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderTop: '1px solid #EEF1F5',
+                background: '#FAFBFC',
+                cursor: 'pointer',
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: 11,
+                fontWeight: 700,
+                color: '#1A52A0',
+                textTransform: 'uppercase',
+                letterSpacing: 0.6,
+              }}
+            >
+              {heroExpanded ? 'Hide details' : 'Tap for details'}
+              <ChevronDown
+                size={16}
+                color="#1A52A0"
+                style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              />
+            </div>
+          )}
+
           {upcoming && heroExpanded && (
             <HeroExpandedPanel
               lesson={upcoming}
