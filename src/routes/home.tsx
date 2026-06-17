@@ -411,6 +411,98 @@ function HomePage() {
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
+  const renderLessonCard = (l: LessonRow) => {
+    const start = lessonDateTime(l);
+    const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+    const isLive = now >= start && now < end;
+    const status = (l.status ?? "").toLowerCase();
+    const accent =
+      isLive ? "#CC2229"
+      : status === "completed" ? "#16A34A"
+      : status === "cancelled" ? "#9CA3AF"
+      : "#1A52A0";
+    const balance = l.pupils?.balance_owed ?? 0;
+    const paid = balance <= 0;
+    return (
+      <div
+        key={l.id}
+        className="bg-white flex items-center justify-between"
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          padding: 12,
+          paddingLeft: 16,
+          borderRadius: 10,
+          borderWidth: "0.5px",
+          borderStyle: "solid",
+          borderColor: "#E2E6ED",
+          marginBottom: 6,
+          backgroundColor: isLive ? "#FFF5F5" : "#FFFFFF",
+        }}
+      >
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 10,
+            bottom: 10,
+            width: 3,
+            borderRadius: 2,
+            backgroundColor: accent,
+          }}
+        />
+        <div className="flex items-center" style={{ gap: 12 }}>
+          <span className="text-[14px] font-bold" style={{ color: accent }}>
+            {formatTime(l)}
+          </span>
+          <div>
+            <div className="text-[14px] font-semibold text-[#0F2044]">{pupilName(l)}</div>
+            <div style={{ fontSize: 13, color: "#6B7280" }}>
+              {formatDuration(l.duration_minutes)}
+            </div>
+          </div>
+        </div>
+        {isLive ? (
+          <span
+            className="text-[12px] font-medium inline-flex items-center"
+            style={{
+              gap: 6,
+              color: "#CC2229",
+              padding: "3px 8px",
+              borderRadius: 999,
+              backgroundColor: "#FFECEC",
+            }}
+          >
+            <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#CC2229" }} />
+            In progress
+          </span>
+        ) : (
+          <span
+            className="text-[12px] inline-flex items-center"
+            style={{
+              gap: 6,
+              color: paid ? "#1A7A3C" : "#D33B3B",
+              padding: "3px 8px",
+              borderRadius: 999,
+              backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 999,
+                backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
+              }}
+            />
+            {paid ? "Paid" : "Not paid"}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
@@ -1042,85 +1134,12 @@ function HomePage() {
                   >
                     {formatDayLabel(new Date(`${date}T00:00:00`))}
                   </div>
-                  {items.map((l) => (
-                    <div
-                      key={l.id}
-                      className="bg-white flex items-center justify-between"
-                      style={{
-                        padding: 12,
-                        borderRadius: 10,
-                        borderWidth: "0.5px",
-                        borderStyle: "solid",
-                        borderColor: "#E2E6ED",
-                        marginBottom: 6,
-                      }}
-                    >
-                      <div className="flex items-center" style={{ gap: 12 }}>
-                        <span className="text-[14px] font-bold text-[#0F2044]">
-                          {formatTime(l)}
-                        </span>
-                        <div>
-                          <div className="text-[14px] text-[#0F2044]">{pupilName(l)}</div>
-                          <div style={{ fontSize: 13, color: "#6B7280" }}>
-                            {formatDuration(l.duration_minutes)}
-                          </div>
-                        </div>
-                      </div>
-                      <span
-                        className="text-[10px] uppercase font-medium"
-                        style={{
-                          color: statusColor(l.status),
-                          letterSpacing: "0.05em",
-                          padding: "3px 8px",
-                          borderRadius: 999,
-                          backgroundColor: `${statusColor(l.status)}14`,
-                        }}
-                      >
-                        {l.status}
-                      </span>
-                    </div>
-                  ))}
+                  {items.map((l) => renderLessonCard(l))}
                 </div>
               ));
             })()
           ) : (
-            tabLessons.map((l) => (
-              <div
-                key={l.id}
-                className="bg-white flex items-center justify-between"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                }}
-              >
-                <div className="flex items-center" style={{ gap: 12 }}>
-                  <span className="text-[14px] font-bold text-[#0F2044]">
-                    {formatTime(l)}
-                  </span>
-                  <div>
-                    <div className="text-[14px] text-[#0F2044]">{pupilName(l)}</div>
-                    <div className="text-[12px] text-[#6B7280]">
-                      {formatDuration(l.duration_minutes)}
-                    </div>
-                  </div>
-                </div>
-                <span
-                  className="text-[10px] uppercase font-medium"
-                  style={{
-                    color: statusColor(l.status),
-                    letterSpacing: "0.05em",
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                    backgroundColor: `${statusColor(l.status)}14`,
-                  }}
-                >
-                  {l.status}
-                </span>
-              </div>
-            ))
+            tabLessons.map((l) => renderLessonCard(l))
           )}
         </div>
 
