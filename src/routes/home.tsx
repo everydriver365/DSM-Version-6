@@ -1248,7 +1248,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#F2F4F8', borderRadius: '0 0 14px 14px', padding: 12 }}>
+    <div style={{ background: '#F2F4F8', borderRadius: '0 0 16px 16px', padding: 12 }}>
       {/* Row 1 — status */}
       <div style={{ display: 'flex', gap: 6 }}>
         <button
