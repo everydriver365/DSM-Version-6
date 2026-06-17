@@ -113,6 +113,7 @@ function CourseDetailPage() {
 
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
+  const [pickupError, setPickupError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
