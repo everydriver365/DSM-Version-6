@@ -23,6 +23,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as SatnavRouteImport } from './routes/satnav'
+import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ResetpasswordRouteImport } from './routes/resetpassword'
@@ -157,6 +158,11 @@ const ScheduleRoute = ScheduleRouteImport.update({
 const SatnavRoute = SatnavRouteImport.update({
   id: '/satnav',
   path: '/satnav',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewsRoute = ReviewsRouteImport.update({
@@ -533,6 +539,7 @@ export interface FileRoutesByFullPath {
   '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/rewards': typeof RewardsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -613,6 +620,7 @@ export interface FileRoutesByTo {
   '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/rewards': typeof RewardsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -695,6 +703,7 @@ export interface FileRoutesById {
   '/resetpassword': typeof ResetpasswordRoute
   '/resources': typeof ResourcesRoute
   '/reviews': typeof ReviewsRoute
+  '/rewards': typeof RewardsRoute
   '/satnav': typeof SatnavRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -778,6 +787,7 @@ export interface FileRouteTypes {
     | '/resetpassword'
     | '/resources'
     | '/reviews'
+    | '/rewards'
     | '/satnav'
     | '/schedule'
     | '/search'
@@ -858,6 +868,7 @@ export interface FileRouteTypes {
     | '/resetpassword'
     | '/resources'
     | '/reviews'
+    | '/rewards'
     | '/satnav'
     | '/schedule'
     | '/search'
@@ -939,6 +950,7 @@ export interface FileRouteTypes {
     | '/resetpassword'
     | '/resources'
     | '/reviews'
+    | '/rewards'
     | '/satnav'
     | '/schedule'
     | '/search'
@@ -1021,6 +1033,7 @@ export interface RootRouteChildren {
   ResetpasswordRoute: typeof ResetpasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   ReviewsRoute: typeof ReviewsRoute
+  RewardsRoute: typeof RewardsRoute
   SatnavRoute: typeof SatnavRoute
   ScheduleRoute: typeof ScheduleRoute
   SearchRoute: typeof SearchRoute
@@ -1150,6 +1163,13 @@ declare module '@tanstack/react-router' {
       path: '/satnav'
       fullPath: '/satnav'
       preLoaderRoute: typeof SatnavRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reviews': {
@@ -1682,6 +1702,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetpasswordRoute: ResetpasswordRoute,
   ResourcesRoute: ResourcesRoute,
   ReviewsRoute: ReviewsRoute,
+  RewardsRoute: RewardsRoute,
   SatnavRoute: SatnavRoute,
   ScheduleRoute: ScheduleRoute,
   SearchRoute: SearchRoute,

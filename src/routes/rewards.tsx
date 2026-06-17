@@ -91,7 +91,7 @@ function RewardsPage() {
         }
         return count ?? 0;
       };
-      const safeSum = async (table: string, column: string) => {
+      const safeSum = async (table: string, column: string): Promise<number> => {
         const { data, error } = await supabase
           .from(table)
           .select(column)
@@ -100,10 +100,8 @@ function RewardsPage() {
           console.warn(`[rewards] sum ${table}.${column}`, error.message);
           return 0;
         }
-        return (data ?? []).reduce(
-          (a: number, r: Record<string, unknown>) => a + (Number(r[column] ?? 0) || 0),
-          0,
-        );
+        const rows = (data ?? []) as unknown as Array<Record<string, unknown>>;
+        return rows.reduce((a, r) => a + (Number(r[column] ?? 0) || 0), 0);
       };
 
       const [
