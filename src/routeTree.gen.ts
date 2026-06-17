@@ -32,6 +32,7 @@ import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
+import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -204,6 +205,11 @@ const ReferralsRoute = ReferralsRouteImport.update({
 const QuickavailabilityRoute = QuickavailabilityRouteImport.update({
   id: '/quickavailability',
   path: '/quickavailability',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuickaccessRoute = QuickaccessRouteImport.update({
+  id: '/quickaccess',
+  path: '/quickaccess',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -537,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
@@ -619,6 +626,7 @@ export interface FileRoutesByTo {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
@@ -703,6 +711,7 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/profile': typeof ProfileRoute
+  '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
@@ -788,6 +797,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickaccess'
     | '/quickavailability'
     | '/referrals'
     | '/register'
@@ -870,6 +880,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickaccess'
     | '/quickavailability'
     | '/referrals'
     | '/register'
@@ -953,6 +964,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/profile'
+    | '/quickaccess'
     | '/quickavailability'
     | '/referrals'
     | '/register'
@@ -1037,6 +1049,7 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
   ProfileRoute: typeof ProfileRoute
+  QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
   ReferralsRoute: typeof ReferralsRoute
   RegisterRoute: typeof RegisterRoute
@@ -1239,6 +1252,13 @@ declare module '@tanstack/react-router' {
       path: '/quickavailability'
       fullPath: '/quickavailability'
       preLoaderRoute: typeof QuickavailabilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quickaccess': {
+      id: '/quickaccess'
+      path: '/quickaccess'
+      fullPath: '/quickaccess'
+      preLoaderRoute: typeof QuickaccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -1714,6 +1734,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
   ProfileRoute: ProfileRoute,
+  QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
   ReferralsRoute: ReferralsRoute,
   RegisterRoute: RegisterRoute,
@@ -1757,3 +1778,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
