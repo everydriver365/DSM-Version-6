@@ -207,6 +207,7 @@ function HomePage() {
   const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
   const [goingActive, setGoingActive] = useState(false);
   const [lateOpen, setLateOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
 
