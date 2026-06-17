@@ -804,6 +804,29 @@ function AddBookingSheet({
       .update({ spaces_taken: (course.spaces_taken ?? 0) + 1 })
       .eq("id", course.id);
 
+    // Auto-create first lesson for this booking
+    const timeMap: Record<string, string> = {
+      morning: "09:00",
+      afternoon: "13:00",
+      evening: "17:00",
+      flexible: "09:00",
+    };
+    const lessonTime = timeMap[course.lesson_time_preference] ?? "09:00";
+    const durationMinutes = course.daily_hours ? course.daily_hours * 60 : 60;
+
+    if (course.start_date) {
+      const { error: lessonErr } = await supabase.from("lessons").insert({
+        instructor_id: uid,
+        pupil_id: null,
+        lesson_date: course.start_date,
+        lesson_time: lessonTime,
+        duration_minutes: durationMinutes,
+        status: "confirmed",
+        notes: `Course booking: ${course.name} — ${name.trim()}`,
+      });
+      if (lessonErr) console.error("[courses.$id] auto-create lesson", lessonErr);
+    }
+
     // Notification
     await supabase.from("instructor_notifications").insert({
       instructor_id: uid,
@@ -813,7 +836,11 @@ function AddBookingSheet({
     });
 
     setSaving(false);
-    toast.success("Booking added");
+    toast.success(
+      course.start_date
+        ? `Booking confirmed — first lesson added to schedule for ${formatDate(course.start_date)}`
+        : "Booking confirmed",
+    );
     onSaved();
   }
 
