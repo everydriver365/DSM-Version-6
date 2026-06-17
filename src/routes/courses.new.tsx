@@ -333,7 +333,10 @@ function NewCoursePage() {
             repeatType={repeatType}
             setRepeatType={setRepeatType}
             pickupArea={pickupArea}
-            setPickupArea={setPickupArea}
+            setPickupArea={(v) => { setPickupArea(v); if (pickupError) setPickupError(null); }}
+            pickupError={pickupError}
+            radiusMiles={radiusMiles}
+            setRadiusMiles={setRadiusMiles}
             timePref={timePref}
             setTimePref={setTimePref}
           />
