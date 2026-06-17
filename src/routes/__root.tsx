@@ -16,9 +16,18 @@ import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname === "/" || pathname === "/home") return "home";
   if (pathname.startsWith("/pupils")) return "pupils";
-  if (pathname.startsWith("/schedule")) return "schedule";
+  if (pathname.startsWith("/schedule") || pathname.startsWith("/lessons")) return "schedule";
   if (pathname.startsWith("/messages")) return "messages";
-  if (pathname.startsWith("/settings") || pathname === "/profile" || pathname === "/calendarsync") return "settings";
+  if (
+    pathname.startsWith("/settings") ||
+    pathname === "/profile" ||
+    pathname === "/calendarsync" ||
+    pathname === "/notificationsettings" ||
+    pathname === "/availability" ||
+    pathname === "/quickavailability"
+  ) {
+    return "settings";
+  }
   return undefined;
 }
 
