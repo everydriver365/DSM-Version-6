@@ -58,7 +58,6 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DiaryRouteImport } from './routes/diary'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
-import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
@@ -68,6 +67,7 @@ import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
@@ -326,11 +326,6 @@ const CpdRoute = CpdRouteImport.update({
   path: '/cpd',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ChecklistRoute = ChecklistRouteImport.update({
   id: '/checklist',
   path: '/checklist',
@@ -376,6 +371,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NotesRoute,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PupilsNewRoute = PupilsNewRouteImport.update({
   id: '/pupils/new',
   path: '/pupils/new',
@@ -407,9 +407,9 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesNewRoute = CoursesNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsProgressIdRoute = PupilsProgressIdRouteImport.update({
   id: '/pupils/progress/$id',
@@ -445,7 +445,6 @@ export interface FileRoutesByFullPath {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -502,6 +501,7 @@ export interface FileRoutesByFullPath {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -518,7 +518,6 @@ export interface FileRoutesByTo {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -574,6 +573,7 @@ export interface FileRoutesByTo {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/courses': typeof CoursesIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -591,7 +591,6 @@ export interface FileRoutesById {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -648,6 +647,7 @@ export interface FileRoutesById {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -666,7 +666,6 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
-    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -723,6 +722,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/courses/'
     | '/notes/'
     | '/pupils/'
     | '/lessons/edit/$id'
@@ -739,7 +739,6 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
-    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -795,6 +794,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/courses'
     | '/notes'
     | '/pupils'
     | '/lessons/edit/$id'
@@ -811,7 +811,6 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
-    | '/courses'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -868,6 +867,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/courses/'
     | '/notes/'
     | '/pupils/'
     | '/lessons/edit/$id'
@@ -885,7 +885,6 @@ export interface RootRouteChildren {
   CalendarsyncRoute: typeof CalendarsyncRoute
   CertificationsRoute: typeof CertificationsRoute
   ChecklistRoute: typeof ChecklistRoute
-  CoursesRoute: typeof CoursesRouteWithChildren
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
   DiaryRoute: typeof DiaryRoute
@@ -935,10 +934,12 @@ export interface RootRouteChildren {
   WaitinglistRoute: typeof WaitinglistRoute
   WaiversRoute: typeof WaiversRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
+  CoursesNewRoute: typeof CoursesNewRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
@@ -1292,13 +1293,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CpdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/checklist': {
       id: '/checklist'
       path: '/checklist'
@@ -1362,6 +1356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof NotesRoute
     }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pupils/new': {
       id: '/pupils/new'
       path: '/pupils/new'
@@ -1406,10 +1407,10 @@ declare module '@tanstack/react-router' {
     }
     '/courses/new': {
       id: '/courses/new'
-      path: '/new'
+      path: '/courses/new'
       fullPath: '/courses/new'
       preLoaderRoute: typeof CoursesNewRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/pupils/progress/$id': {
       id: '/pupils/progress/$id'
@@ -1449,17 +1450,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface CoursesRouteChildren {
-  CoursesNewRoute: typeof CoursesNewRoute
-}
-
-const CoursesRouteChildren: CoursesRouteChildren = {
-  CoursesNewRoute: CoursesNewRoute,
-}
-
-const CoursesRouteWithChildren =
-  CoursesRoute._addFileChildren(CoursesRouteChildren)
-
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -1492,7 +1482,6 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarsyncRoute: CalendarsyncRoute,
   CertificationsRoute: CertificationsRoute,
   ChecklistRoute: ChecklistRoute,
-  CoursesRoute: CoursesRouteWithChildren,
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
   DiaryRoute: DiaryRoute,
@@ -1542,10 +1531,12 @@ const rootRouteChildren: RootRouteChildren = {
   WaitinglistRoute: WaitinglistRoute,
   WaiversRoute: WaiversRoute,
   WeeklyreportRoute: WeeklyreportRoute,
+  CoursesNewRoute: CoursesNewRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
