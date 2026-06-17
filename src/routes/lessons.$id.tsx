@@ -249,7 +249,11 @@ function LessonDetailPage() {
                 onClick={() => navigate({ to: "/lessons/feedback/$id", params: { id } })}
                 color="#1A52A0"
               />
-              <ActionRow label="Reschedule" onClick={() => {}} color="#0F2044" />
+              <ActionRow
+                label="Reschedule"
+                onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id } })}
+                color="#0F2044"
+              />
             </Card>
           </div>
         </>
