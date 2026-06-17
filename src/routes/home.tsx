@@ -897,9 +897,40 @@ function HomePage() {
 
 
       {/* SCHEDULE */}
-      <div className="mx-4 mt-4">
-        <SectionHeader>SCHEDULE · {formatDayLabel(todayStart)}</SectionHeader>
-        <div className="flex" style={{ gap: 8 }}>
+      <div
+        className="mx-4 mt-3"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 16,
+          padding: 16,
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            fontSize: 10,
+            textTransform: "uppercase",
+            color: "#9CA3AF",
+            letterSpacing: "0.08em",
+            fontWeight: 700,
+            marginBottom: 12,
+          }}
+        >
+          SCHEDULE · {formatDayLabel(todayStart)}
+        </div>
+
+        {/* Tab switcher */}
+        <div
+          className="flex"
+          style={{
+            background: "#F2F4F8",
+            borderRadius: 10,
+            padding: 3,
+            gap: 3,
+          }}
+        >
           <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
             Today / {formatShortDate(todayStart)}
           </TabBtn>
@@ -911,14 +942,82 @@ function HomePage() {
           </TabBtn>
         </div>
 
+        {/* Content */}
         <div className="mt-3 flex flex-col" style={{ gap: 8 }}>
           {tabLessons.length === 0 ? (
-            <div
-              className="flex flex-col items-center justify-center text-[13px]"
-              style={{ color: "#6B7280", padding: "24px 0" }}
-            >
-              <CalendarOff size={24} color="#6B7280" />
-              <div className="mt-2">Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "later"}</div>
+            <div>
+              <div
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  color: "#9CA3AF",
+                  letterSpacing: "0.08em",
+                  fontWeight: 700,
+                  marginBottom: 8,
+                }}
+              >
+                NO LESSONS
+              </div>
+              <div
+                className="flex flex-col items-center justify-center"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E8ECF2",
+                  borderRadius: 12,
+                  padding: 24,
+                }}
+              >
+                <CalendarOff size={32} color="#C4CAD4" />
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: "#9CA3AF",
+                    marginTop: 8,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "later"}
+                </div>
+              </div>
+              <div className="flex mt-3" style={{ gap: 8 }}>
+                <button
+                  type="button"
+                  className="flex items-center justify-center"
+                  style={{
+                    flex: 1,
+                    background: "#FFFFFF",
+                    border: "1px solid #E2E6ED",
+                    borderRadius: 10,
+                    padding: "10px 16px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#16A34A",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                  onClick={() => navigate({ to: "/lessons/new" })}
+                >
+                  + Add lesson
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center"
+                  style={{
+                    flex: 1,
+                    background: "#FFFFFF",
+                    border: "1px solid #E2E6ED",
+                    borderRadius: 10,
+                    padding: "10px 16px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#1A52A0",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  ⟳ Fill gaps
+                </button>
+              </div>
             </div>
           ) : (
             tabLessons.map((l) => (
@@ -961,21 +1060,47 @@ function HomePage() {
           )}
         </div>
 
-        <div className="mt-3 flex" style={{ gap: 16 }}>
-          <button
-            className="flex items-center text-[13px] font-medium"
-            style={{ color: "#16A34A", gap: 4 }}
-            onClick={() => navigate({ to: "/lessons/new" })}
-          >
-            <Plus size={14} /> Add lesson
-          </button>
-          <button
-            className="flex items-center text-[13px] font-medium"
-            style={{ color: "#1A52A0", gap: 4 }}
-          >
-            <RefreshCw size={14} /> Fill gaps
-          </button>
-        </div>
+        {tabLessons.length > 0 && (
+          <div className="flex mt-3" style={{ gap: 8 }}>
+            <button
+              type="button"
+              className="flex items-center justify-center"
+              style={{
+                flex: 1,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                borderRadius: 10,
+                padding: "10px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#16A34A",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+              onClick={() => navigate({ to: "/lessons/new" })}
+            >
+              + Add lesson
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center"
+              style={{
+                flex: 1,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                borderRadius: 10,
+                padding: "10px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#1A52A0",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              ⟳ Fill gaps
+            </button>
+          </div>
+        )}
       </div>
 
       {/* QUICK ACCESS */}
