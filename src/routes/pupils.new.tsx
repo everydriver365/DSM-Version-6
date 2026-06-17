@@ -32,6 +32,7 @@ function NewPupilPage() {
   const [firstName, setFirstName] = useState(preFirst);
   const [lastName, setLastName] = useState(preLast);
   const [phone, setPhone] = useState(search.phone ?? "");
+  const [address, setAddress] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
@@ -67,6 +68,7 @@ function NewPupilPage() {
       status: "active",
     };
     if (phone.trim()) insert.phone = phone.trim();
+    if (address.trim()) insert.address = address.trim();
     const { error } = await supabase.from("pupils").insert(insert);
     if (error) {
       setErrors({ form: error.message });
@@ -138,6 +140,13 @@ function NewPupilPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             maxLength={30}
+          />
+          <Input
+            label="Home address"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            maxLength={255}
           />
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
