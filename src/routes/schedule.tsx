@@ -127,7 +127,31 @@ function SchedulePage() {
 
   const renderLesson = (l: Lesson) => {
     const name = l.pupil?.name ?? "Unknown pupil";
-    const color = statusColor(l.status);
+    const postcode = l.pupil?.postcode ?? null;
+    const duration = l.duration_minutes ?? 60;
+
+    // Compute start/end
+    const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
+    const start = new Date(`${l.lesson_date}T00:00:00`);
+    start.setHours(hh || 0, mm || 0, 0, 0);
+    const end = new Date(start.getTime() + duration * 60 * 1000);
+    const now = new Date();
+    const isLive = now >= start && now < end && l.status !== "cancelled" && l.status !== "completed";
+    const minutesRemaining = isLive ? Math.max(1, Math.ceil((end.getTime() - now.getTime()) / 60000)) : 0;
+
+    const notesLower = (l.notes ?? "").toLowerCase();
+    const typeLower = (l.lesson_type ?? "").toLowerCase();
+    const isTest = notesLower.includes("test") || typeLower.includes("test");
+
+    let accent = "#1A52A0";
+    if (isLive) accent = "#CC2229";
+    else if (l.status === "completed") accent = "#16A34A";
+    else if (l.status === "cancelled") accent = "#9CA3AF";
+    else if (isTest) accent = "#F59E0B";
+
+    const balance = l.pupil?.balance_owed ?? 0;
+    const paid = balance <= 0;
+
     return (
       <button
         key={l.id}
@@ -135,30 +159,86 @@ function SchedulePage() {
         onClick={() => navigate({ to: "/lessons/$id" as never, params: { id: l.id } as never })}
         className="block w-full text-left"
       >
-        <Card>
-          <div className="flex items-center justify-between gap-3">
+        <Card
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            paddingLeft: 16,
+            backgroundColor: isLive ? "#FFF5F5" : undefined,
+          }}
+        >
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 10,
+              bottom: 10,
+              width: 3,
+              borderRadius: 2,
+              backgroundColor: accent,
+            }}
+          />
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-bold" style={{ color: accent, ...POPPINS }}>
                 {formatTime(l.lesson_time)}
               </div>
-              <div className="text-[14px] text-[#1A1A2E] truncate" style={POPPINS}>
+              <div className="text-[14px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
                 {name}
               </div>
+              {isLive && (
+                <div className="text-[11px]" style={{ color: "#CC2229", ...POPPINS }}>
+                  In progress · {minutesRemaining} min remaining
+                </div>
+              )}
+              {postcode && (
+                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                  {postcode}
+                </div>
+              )}
               <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
                 {formatDuration(l.duration_minutes)}
               </div>
             </div>
-            <span
-              className="text-[11px] text-white px-2 py-1 rounded-full shrink-0 capitalize"
-              style={{ backgroundColor: color, ...POPPINS }}
-            >
-              {l.status}
-            </span>
+            <div className="flex flex-col items-end shrink-0" style={{ gap: 4 }}>
+              <span
+                className="inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[12px]"
+                style={{
+                  backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
+                  color: paid ? "#1A7A3C" : "#D33B3B",
+                  ...POPPINS,
+                }}
+              >
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 999,
+                    backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
+                    display: "inline-block",
+                  }}
+                />
+                {paid ? "Paid" : "Not paid"}
+              </span>
+              {(l.status === "cancelled" || l.status === "completed") && (
+                <span
+                  className="text-[11px] text-white px-2 py-[2px] rounded-full capitalize"
+                  style={{
+                    backgroundColor: l.status === "completed" ? "#16A34A" : "#9CA3AF",
+                    ...POPPINS,
+                  }}
+                >
+                  {l.status}
+                </span>
+              )}
+            </div>
           </div>
         </Card>
       </button>
     );
   };
+
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe relative" style={POPPINS}>
