@@ -868,8 +868,8 @@ function HomePage() {
                     if (phone) window.location.href = `tel:${phone}`;
                     else toast("No phone number for this pupil");
                   }}
-                  style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                >📞 Call</button>
+                  style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                ><Phone size={16} color="#ffffff" /> Call</button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
