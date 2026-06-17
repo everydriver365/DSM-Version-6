@@ -952,7 +952,7 @@ function HomePage() {
       {/* TODAY STRIP — 3 white tiles */}
       <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
         <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+        <TodayTile value={nextFreeSlot ?? '—'} subValue={nextFreeSlot ? formatDayLabel(todayStart) : undefined} label="Next free slot" valueColor="#2952b3" valueSize={13} />
         <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
       </div>
 
@@ -1637,11 +1637,13 @@ function TodayTile({
   label,
   valueColor,
   valueSize,
+  subValue,
 }: {
   value: string;
   label: string;
   valueColor: string;
   valueSize: number;
+  subValue?: string;
 }) {
   return (
     <div
@@ -1662,7 +1664,12 @@ function TodayTile({
       <div style={{ fontSize: valueSize, fontWeight: 700, color: valueColor, lineHeight: 1.1 }}>
         {value}
       </div>
-      <div style={{ fontSize: 10, color: '#999', marginTop: 4, textAlign: 'center' }}>
+      {subValue && (
+        <div style={{ fontSize: 10, color: '#6B7280', marginTop: 2, lineHeight: 1.1 }}>
+          {subValue}
+        </div>
+      )}
+      <div style={{ fontSize: 10, color: '#999', marginTop: subValue ? 2 : 4, textAlign: 'center' }}>
         {label}
       </div>
     </div>
