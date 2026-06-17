@@ -184,9 +184,6 @@ function formatDayLabel(d: Date) {
     .toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" })
     .toUpperCase();
 }
-function formatShortDate(d: Date) {
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
 function formatDuration(mins: number | null) {
   if (!mins) return "";
   const h = Math.floor(mins / 60);
