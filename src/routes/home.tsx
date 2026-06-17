@@ -1162,7 +1162,7 @@ function HomePage() {
               <AccessTile
                 key={t.label}
                 icon={t.icon}
-                tint={t.tint}
+                bg={t.bg}
                 label={t.label}
                 onClick={() => navigate({ to: t.route })}
               />
