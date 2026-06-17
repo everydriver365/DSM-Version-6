@@ -41,7 +41,6 @@ import { Route as OutstandingRouteImport } from './routes/outstanding'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NotificationsettingsRouteImport } from './routes/notificationsettings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MileageRouteImport } from './routes/mileage'
@@ -250,11 +249,6 @@ const NotificationsettingsRoute = NotificationsettingsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotesRoute = NotesRouteImport.update({
-  id: '/notes',
-  path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MtdRoute = MtdRouteImport.update({
@@ -534,7 +528,6 @@ export interface FileRoutesByFullPath {
   '/mileage': typeof MileageRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
-  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -702,7 +695,6 @@ export interface FileRoutesById {
   '/mileage': typeof MileageRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
-  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -788,7 +780,6 @@ export interface FileRouteTypes {
     | '/mileage'
     | '/monthend'
     | '/mtd'
-    | '/notes'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -955,7 +946,6 @@ export interface FileRouteTypes {
     | '/mileage'
     | '/monthend'
     | '/mtd'
-    | '/notes'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -1040,7 +1030,6 @@ export interface RootRouteChildren {
   MileageRoute: typeof MileageRoute
   MonthendRoute: typeof MonthendRoute
   MtdRoute: typeof MtdRoute
-  NotesRoute: typeof NotesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   NotificationsettingsRoute: typeof NotificationsettingsRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -1315,13 +1304,6 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notes': {
-      id: '/notes'
-      path: '/notes'
-      fullPath: '/notes'
-      preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mtd': {
@@ -1682,18 +1664,6 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
-interface NotesRouteChildren {
-  NotesIdRoute: typeof NotesIdRoute
-  NotesIndexRoute: typeof NotesIndexRoute
-}
-
-const NotesRouteChildren: NotesRouteChildren = {
-  NotesIdRoute: NotesIdRoute,
-  NotesIndexRoute: NotesIndexRoute,
-}
-
-const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutomationsRoute: AutomationsRoute,
@@ -1725,7 +1695,6 @@ const rootRouteChildren: RootRouteChildren = {
   MileageRoute: MileageRoute,
   MonthendRoute: MonthendRoute,
   MtdRoute: MtdRoute,
-  NotesRoute: NotesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   NotificationsettingsRoute: NotificationsettingsRoute,
   OnboardingRoute: OnboardingRoute,
@@ -1778,3 +1747,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -10,6 +10,7 @@ import {
   ChevronRight,
   ChevronDown,
   PoundSterling,
+  Crown,
 } from "lucide-react";
 
 import { Card } from "../components/dsm/Card";
@@ -211,6 +212,14 @@ function SettingsPage() {
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
           />
+
+          <MenuRow
+            icon={<Crown size={18} color="#5B21B6" />}
+            iconBg="#EDE9FE"
+            label="My plan"
+            value="DSM Free"
+            onClick={() => navigate({ to: "/subscription" })}
+          />
         </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
@@ -254,6 +263,7 @@ function MenuRow({
   icon,
   iconBg,
   label,
+  value,
   onClick,
   expanded,
   isFirst,
@@ -261,6 +271,7 @@ function MenuRow({
   icon: React.ReactNode;
   iconBg: string;
   label: string;
+  value?: string;
   onClick: () => void;
   expanded?: boolean;
   isFirst?: boolean;
@@ -279,6 +290,9 @@ function MenuRow({
         {icon}
       </div>
       <span className="flex-1 text-[14px] text-[#0F2044]" style={POPPINS}>{label}</span>
+      {value ? (
+        <span className="text-[13px] text-[#6B7280]" style={POPPINS}>{value}</span>
+      ) : null}
       {expanded ? (
         <ChevronDown size={18} color="#6B7280" />
       ) : (
