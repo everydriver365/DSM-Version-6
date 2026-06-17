@@ -66,9 +66,11 @@ import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
@@ -368,6 +370,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuotesIndexRoute = QuotesIndexRouteImport.update({
+  id: '/quotes/',
+  path: '/quotes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PupilsIndexRoute = PupilsIndexRouteImport.update({
   id: '/pupils/',
   path: '/pupils/',
@@ -381,6 +388,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotesNewRoute = QuotesNewRouteImport.update({
+  id: '/quotes/new',
+  path: '/quotes/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsNewRoute = PupilsNewRouteImport.update({
@@ -515,9 +527,11 @@ export interface FileRoutesByFullPath {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
+  '/quotes/': typeof QuotesIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
@@ -589,9 +603,11 @@ export interface FileRoutesByTo {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses': typeof CoursesIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
+  '/quotes': typeof QuotesIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
@@ -665,9 +681,11 @@ export interface FileRoutesById {
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
+  '/quotes/new': typeof QuotesNewRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
+  '/quotes/': typeof QuotesIndexRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
@@ -742,9 +760,11 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
+    | '/quotes/'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/pupils/edit/$id'
@@ -816,9 +836,11 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses'
     | '/notes'
     | '/pupils'
+    | '/quotes'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/pupils/edit/$id'
@@ -891,9 +913,11 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
+    | '/quotes/new'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
+    | '/quotes/'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/pupils/edit/$id'
@@ -965,8 +989,10 @@ export interface RootRouteChildren {
   LessonsNewRoute: typeof LessonsNewRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
+  QuotesNewRoute: typeof QuotesNewRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  QuotesIndexRoute: typeof QuotesIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
   PupilsEditIdRoute: typeof PupilsEditIdRoute
@@ -1375,6 +1401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quotes/': {
+      id: '/quotes/'
+      path: '/quotes'
+      fullPath: '/quotes/'
+      preLoaderRoute: typeof QuotesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pupils/': {
       id: '/pupils/'
       path: '/pupils'
@@ -1394,6 +1427,13 @@ declare module '@tanstack/react-router' {
       path: '/courses'
       fullPath: '/courses/'
       preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotes/new': {
+      id: '/quotes/new'
+      path: '/quotes/new'
+      fullPath: '/quotes/new'
+      preLoaderRoute: typeof QuotesNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pupils/new': {
@@ -1578,8 +1618,10 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsNewRoute: LessonsNewRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
+  QuotesNewRoute: QuotesNewRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  QuotesIndexRoute: QuotesIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
   PupilsEditIdRoute: PupilsEditIdRoute,
