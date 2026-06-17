@@ -249,7 +249,7 @@ function PupilsIndexPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((p) => {
-              const status = ((p.status ?? "active").toLowerCase() as StatusKey);
+              const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const balance = Number(p.balance_owed ?? 0);
               const lessons = Number(p.lesson_count ?? 0);
               return (
