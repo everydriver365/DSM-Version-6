@@ -91,7 +91,8 @@ interface LessonRow {
   status: string;
   pupil_id: string;
   notes?: string | null;
-  pupils?: { name: string; phone: string | null; balance_owed?: number | null } | null;
+  lesson_type?: string | null;
+  pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
 interface PrevLessonRow {
