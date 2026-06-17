@@ -952,7 +952,7 @@ function HomePage() {
       {/* TODAY STRIP — 3 white tiles */}
       <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
         <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+        <TodayTile value={nextFreeSlot ?? '—'} subValue={nextFreeSlot ? formatDayLabel(todayStart) : undefined} label="Next free slot" valueColor="#2952b3" valueSize={13} />
         <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
       </div>
 
