@@ -153,7 +153,7 @@ function RootComponent() {
   const router = useRouter();
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
-  const hideNavPaths = new Set([
+  const hideNavExact = new Set([
     "/satnav",
     "/weeklyreport",
     "/login",
@@ -164,10 +164,11 @@ function RootComponent() {
     "/forgotpassword",
     "/resetpassword",
     "/search",
-    "/courses",
-    "/courses/new",
   ]);
-  const hideNav = hideNavPaths.has(pathname);
+  const hideNav =
+    hideNavExact.has(pathname) ||
+    pathname === "/courses" ||
+    pathname.startsWith("/courses/");
 
   // Track recent screens for the search screen's "Recent" list.
   useEffect(() => {
