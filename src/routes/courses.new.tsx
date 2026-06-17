@@ -383,7 +383,7 @@ function NewCoursePage() {
           )}
           {step < 3 ? (
             <button
-              onClick={() => setStep((step + 1) as 1 | 2 | 3)}
+              onClick={goNext}
               style={{
                 flex: 1,
                 height: 44,
