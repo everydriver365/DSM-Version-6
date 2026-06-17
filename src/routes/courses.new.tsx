@@ -403,6 +403,12 @@ function NewCoursePage() {
             </>
           )}
         </div>
+
+        {error && (
+          <div style={{ marginTop: 12, color: "#CC2229", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );
