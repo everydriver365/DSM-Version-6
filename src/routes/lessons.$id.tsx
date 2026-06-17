@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Pencil, Navigation, ChevronRight, X } from "lucide-react";
 import { toast } from "sonner";
@@ -64,6 +64,7 @@ function statusColor(s: string) {
 function LessonDetailPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const router = useRouter();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
@@ -116,7 +117,7 @@ function LessonDetailPage() {
         <button
           type="button"
           aria-label="Back"
-          onClick={() => navigate({ to: "/schedule" })}
+          onClick={() => router.history.back()}
           className="flex items-center justify-center"
           style={{ width: 40, height: 40 }}
         >
