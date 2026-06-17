@@ -474,49 +474,17 @@ function HomePage() {
         className="sticky top-0 z-40 h-[56px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0F2044" }}
       >
-        {/* LEFT: DSM tri-square logo + name + chevron + status dot */}
-        <div className="flex items-center" style={{ gap: 10 }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/home" })}
-            aria-label="DSM home"
-            style={{
-              background: "none", border: "none", padding: 0, cursor: "pointer",
-              width: 42, height: 28, position: "relative",
-            }}
-          >
-            <div style={{
-              position: "absolute", top: 0, left: 0, width: 20, height: 14,
-              background: "#CC2229", borderRadius: 3,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1,
-            }}>D</div>
-            <div style={{
-              position: "absolute", top: 0, right: 0, width: 20, height: 14,
-              background: "#1A52A0", borderRadius: 3,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1,
-            }}>S</div>
-            <div style={{
-              position: "absolute", bottom: 0, left: 0, width: 42, height: 14,
-              background: "#0B1730", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 3,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#fff", fontWeight: 800, fontSize: 10, lineHeight: 1, letterSpacing: 0.5,
-            }}>M</div>
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/profile" })}
-            className="flex items-center"
-            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", gap: 6 }}
-            aria-label="Open profile"
-          >
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "Poppins, sans-serif" }}>
-              {firstName}
-            </span>
-            <ChevronRight size={14} color="#ffffff" />
-            <span style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: "#16A34A", marginLeft: 2 }} />
-          </button>
+        <div className="flex items-center gap-2">
+          <img
+            src={dsmLogo.url}
+            alt="DSM"
+            style={{ height: 28, width: 'auto', objectFit: 'contain' }}
+          />
+          <span className="text-white text-[15px]">{firstName}</span>
+          <span
+            className="rounded-full"
+            style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
+          />
         </div>
 
         {/* RIGHT: circular icon buttons */}
