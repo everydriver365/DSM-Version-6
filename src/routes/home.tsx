@@ -12,6 +12,7 @@ import {
   CalendarOff,
   Search,
   Calendar as CalendarIcon,
+  CalendarCheck,
   Users,
   PoundSterling,
   Settings as SettingsIcon,
@@ -568,6 +569,7 @@ function HomePage() {
 
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
+    { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Month end", route: "/monthend" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
     { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Payments", route: "/payments" },
     { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Messages", route: "/messages" },
