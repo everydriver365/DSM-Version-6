@@ -10,6 +10,12 @@ import {
   requestPermission,
   isSupported as notificationsSupported,
 } from "../lib/pushNotifications";
+import {
+  subscribeToPush,
+  unsubscribeFromPush,
+  getCurrentPushStatus,
+  pushSupported,
+} from "../lib/pushSubscription";
 
 
 export const Route = createFileRoute("/notificationsettings")({
@@ -61,6 +67,29 @@ function NotificationSettingsPage() {
     () => (notificationsSupported() ? getPermission() : "denied"),
   );
 
+
+  const [pushStatus, setPushStatus] = useState<"enabled" | "disabled" | "unsupported">(
+    () => (pushSupported() ? "disabled" : "unsupported"),
+  );
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setPushStatus(await getCurrentPushStatus());
+    })();
+  }, []);
+
+  async function togglePush(next: boolean) {
+    if (pushBusy) return;
+    setPushBusy(true);
+    setPushError(null);
+    const res = next ? await subscribeToPush() : await unsubscribeFromPush();
+    if (!res.ok) setPushError(res.error ?? "Something went wrong.");
+    setPushStatus(await getCurrentPushStatus());
+    if (next && res.ok) setBrowserPerm(getPermission());
+    setPushBusy(false);
+  }
 
   useEffect(() => {
     (async () => {
@@ -129,6 +158,59 @@ function NotificationSettingsPage() {
       </div>
 
       <div className="px-4">
+        <SectionHeader>PUSH NOTIFICATIONS</SectionHeader>
+        <Card>
+          <div className="flex items-center gap-3">
+            <span
+              className="flex items-center justify-center rounded-full"
+              style={{ width: 32, height: 32, backgroundColor: "#DBEAFE", flexShrink: 0 }}
+            >
+              <Bell size={16} color="#1A52A0" />
+            </span>
+            <div className="flex-1">
+              <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
+                Push notifications
+              </div>
+              <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                {pushStatus === "unsupported"
+                  ? "Not supported on this device"
+                  : pushStatus === "enabled"
+                    ? "Enabled on this device"
+                    : "Not enabled"}
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={pushStatus === "enabled"}
+              disabled={pushStatus === "unsupported" || pushBusy}
+              onClick={() => togglePush(pushStatus !== "enabled")}
+              className="relative shrink-0 rounded-full transition-colors"
+              style={{
+                width: 44,
+                height: 26,
+                backgroundColor: pushStatus === "enabled" ? "#1A52A0" : "#E2E6ED",
+                opacity: pushStatus === "unsupported" || pushBusy ? 0.5 : 1,
+              }}
+            >
+              <span
+                className="absolute top-[3px] rounded-full bg-white transition-all"
+                style={{
+                  width: 20,
+                  height: 20,
+                  left: pushStatus === "enabled" ? 21 : 3,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              />
+            </button>
+          </div>
+          {pushError && (
+            <div className="text-[11px] text-[#B91C1C] mt-2" style={POPPINS}>
+              {pushError}
+            </div>
+          )}
+        </Card>
+
         <SectionHeader>BROWSER PERMISSION</SectionHeader>
         <Card>
           {(() => {
