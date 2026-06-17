@@ -41,7 +41,6 @@ import { Route as OutstandingRouteImport } from './routes/outstanding'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NotificationsettingsRouteImport } from './routes/notificationsettings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MileageRouteImport } from './routes/mileage'
@@ -252,11 +251,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NotesRoute = NotesRouteImport.update({
-  id: '/notes',
-  path: '/notes',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MtdRoute = MtdRouteImport.update({
   id: '/mtd',
   path: '/mtd',
@@ -418,9 +412,9 @@ const PupilsIndexRoute = PupilsIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIndexRoute = NotesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NotesRoute,
+  id: '/notes/',
+  path: '/notes/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
@@ -443,9 +437,9 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIdRoute = NotesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => NotesRoute,
+  id: '/notes/$id',
+  path: '/notes/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesIdRoute = MessagesIdRouteImport.update({
   id: '/$id',
@@ -534,7 +528,6 @@ export interface FileRoutesByFullPath {
   '/mileage': typeof MileageRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
-  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -702,7 +695,6 @@ export interface FileRoutesById {
   '/mileage': typeof MileageRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
-  '/notes': typeof NotesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -788,7 +780,6 @@ export interface FileRouteTypes {
     | '/mileage'
     | '/monthend'
     | '/mtd'
-    | '/notes'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -955,7 +946,6 @@ export interface FileRouteTypes {
     | '/mileage'
     | '/monthend'
     | '/mtd'
-    | '/notes'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -1040,7 +1030,6 @@ export interface RootRouteChildren {
   MileageRoute: typeof MileageRoute
   MonthendRoute: typeof MonthendRoute
   MtdRoute: typeof MtdRoute
-  NotesRoute: typeof NotesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   NotificationsettingsRoute: typeof NotificationsettingsRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -1077,10 +1066,12 @@ export interface RootRouteChildren {
   CoursesNewRoute: typeof CoursesNewRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
+  NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuotesNewRoute: typeof QuotesNewRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
   QuotesIndexRoute: typeof QuotesIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
@@ -1317,13 +1308,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/notes': {
-      id: '/notes'
-      path: '/notes'
-      fullPath: '/notes'
-      preLoaderRoute: typeof NotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/mtd': {
       id: '/mtd'
       path: '/mtd'
@@ -1550,10 +1534,10 @@ declare module '@tanstack/react-router' {
     }
     '/notes/': {
       id: '/notes/'
-      path: '/'
+      path: '/notes'
       fullPath: '/notes/'
       preLoaderRoute: typeof NotesIndexRouteImport
-      parentRoute: typeof NotesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/': {
       id: '/courses/'
@@ -1585,10 +1569,10 @@ declare module '@tanstack/react-router' {
     }
     '/notes/$id': {
       id: '/notes/$id'
-      path: '/$id'
+      path: '/notes/$id'
       fullPath: '/notes/$id'
       preLoaderRoute: typeof NotesIdRouteImport
-      parentRoute: typeof NotesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/messages/$id': {
       id: '/messages/$id'
@@ -1682,18 +1666,6 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
-interface NotesRouteChildren {
-  NotesIdRoute: typeof NotesIdRoute
-  NotesIndexRoute: typeof NotesIndexRoute
-}
-
-const NotesRouteChildren: NotesRouteChildren = {
-  NotesIdRoute: NotesIdRoute,
-  NotesIndexRoute: NotesIndexRoute,
-}
-
-const NotesRouteWithChildren = NotesRoute._addFileChildren(NotesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutomationsRoute: AutomationsRoute,
@@ -1725,7 +1697,6 @@ const rootRouteChildren: RootRouteChildren = {
   MileageRoute: MileageRoute,
   MonthendRoute: MonthendRoute,
   MtdRoute: MtdRoute,
-  NotesRoute: NotesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   NotificationsettingsRoute: NotificationsettingsRoute,
   OnboardingRoute: OnboardingRoute,
@@ -1762,10 +1733,12 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesNewRoute: CoursesNewRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
+  NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuotesNewRoute: QuotesNewRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
   QuotesIndexRoute: QuotesIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
