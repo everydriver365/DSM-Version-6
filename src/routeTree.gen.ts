@@ -412,9 +412,9 @@ const PupilsIndexRoute = PupilsIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIndexRoute = NotesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NotesRoute,
+  id: '/notes/',
+  path: '/notes/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
@@ -437,9 +437,9 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesIdRoute = NotesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => NotesRoute,
+  id: '/notes/$id',
+  path: '/notes/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesIdRoute = MessagesIdRouteImport.update({
   id: '/$id',
@@ -1066,10 +1066,12 @@ export interface RootRouteChildren {
   CoursesNewRoute: typeof CoursesNewRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
+  NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuotesNewRoute: typeof QuotesNewRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
   QuotesIndexRoute: typeof QuotesIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
@@ -1532,10 +1534,10 @@ declare module '@tanstack/react-router' {
     }
     '/notes/': {
       id: '/notes/'
-      path: '/'
+      path: '/notes'
       fullPath: '/notes/'
       preLoaderRoute: typeof NotesIndexRouteImport
-      parentRoute: typeof NotesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/': {
       id: '/courses/'
@@ -1567,10 +1569,10 @@ declare module '@tanstack/react-router' {
     }
     '/notes/$id': {
       id: '/notes/$id'
-      path: '/$id'
+      path: '/notes/$id'
       fullPath: '/notes/$id'
       preLoaderRoute: typeof NotesIdRouteImport
-      parentRoute: typeof NotesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/messages/$id': {
       id: '/messages/$id'
@@ -1731,10 +1733,12 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesNewRoute: CoursesNewRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
+  NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuotesNewRoute: QuotesNewRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
   QuotesIndexRoute: QuotesIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
@@ -1747,13 +1751,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
