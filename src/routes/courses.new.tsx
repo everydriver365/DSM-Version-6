@@ -703,15 +703,16 @@ function Step2(props: {
 
       <div>
         <FieldLabel>
-          Pickup area <span style={{ color: "#CC2229" }}>*</span>
+          Pickup postcodes <span style={{ color: "#CC2229" }}>*</span>
         </FieldLabel>
-        <PostcodeAutocomplete
-          value={pickupArea}
-          onChange={setPickup}
+        <PostcodeMultiPicker
+          values={pickups}
+          onChange={setPickups}
           error={pickupError}
           onErrorChange={setPickupError}
         />
       </div>
+
 
 
       <div>
