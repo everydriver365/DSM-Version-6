@@ -801,6 +801,7 @@ function Step2(props: {
     pickup, setPickup,
     pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
+    lessonTimeFrom, setLessonTimeFrom, lessonTimeTo, setLessonTimeTo,
   } = props;
 
   const occurrences = useMemo(
