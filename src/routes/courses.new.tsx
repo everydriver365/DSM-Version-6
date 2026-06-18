@@ -520,6 +520,10 @@ function NewCoursePage() {
             setRadiusMiles={setRadiusMiles}
             timePref={timePref}
             setTimePref={setTimePref}
+            lessonTimeFrom={lessonTimeFrom}
+            setLessonTimeFrom={setLessonTimeFrom}
+            lessonTimeTo={lessonTimeTo}
+            setLessonTimeTo={setLessonTimeTo}
           />
         )}
         {step === 3 && (
