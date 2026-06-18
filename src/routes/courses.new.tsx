@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
+
 
 export const Route = createFileRoute("/courses/new")({
   head: () => ({
@@ -26,14 +27,17 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 
 // SQL to run manually:
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
+// alter table instructor_courses add column if not exists pickup_lat double precision;
+// alter table instructor_courses add column if not exists pickup_lng double precision;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
-function isValidPickupArea(value: string): boolean {
+function isValidUKPostcode(value: string): boolean {
   const v = value.trim();
   return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
 }
-const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO23 or SO23 9AA)";
+const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO22 or SO22 5DB)";
+
 
 
 const TYPE_META: Record<
@@ -77,9 +81,12 @@ function NewCoursePage() {
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
   const [pickupArea, setPickupArea] = useState("");
+  const [pickupLat, setPickupLat] = useState<number | null>(null);
+  const [pickupLng, setPickupLng] = useState<number | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
   const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
+
 
   // Step 3
   const [price, setPrice] = useState<string>("");
@@ -150,8 +157,8 @@ function NewCoursePage() {
       if (!price || parseFloat(price) <= 0) missing.push("price");
       if (!startDate) missing.push("start_date");
     }
-    // Pickup area required & must be a valid UK postcode/outcode (active publish only)
-    if (status === "active" && !isValidPickupArea(pickupArea)) {
+    // Pickup area is required and must be a valid UK postcode/outcode (always)
+    if (!isValidUKPostcode(pickupArea)) {
       setSaving(false);
       setPickupError(PICKUP_ERROR_MSG);
       setError(PICKUP_ERROR_MSG);
@@ -159,6 +166,7 @@ function NewCoursePage() {
       setStep(2);
       return;
     }
+
     if (missing.length > 0) {
       setSaving(false);
       const msg = `Missing required fields: ${missing.join(", ")}`;
@@ -184,7 +192,10 @@ function NewCoursePage() {
       daily_hours: dailyHours || null,
       repeat_type: repeatAllowed ? repeatType : "one-off",
       pickup_area: pickupArea.trim() || null,
+      pickup_lat: pickupLat,
+      pickup_lng: pickupLng,
       radius_miles: Number(radiusMiles) || 10,
+
       lesson_time_preference: timePref,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
@@ -215,7 +226,7 @@ function NewCoursePage() {
   }
 
   function goNext() {
-    if (step === 2 && !isValidPickupArea(pickupArea)) {
+    if (step === 2 && !isValidUKPostcode(pickupArea)) {
       setPickupError(PICKUP_ERROR_MSG);
       toast.error(PICKUP_ERROR_MSG);
       return;
@@ -333,8 +344,10 @@ function NewCoursePage() {
             repeatType={repeatType}
             setRepeatType={setRepeatType}
             pickupArea={pickupArea}
-            setPickupArea={(v) => { setPickupArea(v); if (pickupError) setPickupError(null); }}
+            setPickup={(pc, lat, lng) => { setPickupArea(pc); setPickupLat(lat); setPickupLng(lng); }}
             pickupError={pickupError}
+            setPickupError={setPickupError}
+
             radiusMiles={radiusMiles}
             setRadiusMiles={setRadiusMiles}
             timePref={timePref}
@@ -589,8 +602,9 @@ function Step2(props: {
   repeatType: RepeatType;
   setRepeatType: (v: RepeatType) => void;
   pickupArea: string;
-  setPickupArea: (v: string) => void;
+  setPickup: (postcode: string, lat: number | null, lng: number | null) => void;
   pickupError: string | null;
+  setPickupError: (e: string | null) => void;
   radiusMiles: number;
   setRadiusMiles: (n: number) => void;
   timePref: TimePref;
@@ -598,10 +612,11 @@ function Step2(props: {
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
-    repeatAllowed, repeatType, setRepeatType, pickupArea, setPickupArea,
-    pickupError, radiusMiles, setRadiusMiles,
+    repeatAllowed, repeatType, setRepeatType, pickupArea, setPickup,
+    pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
   } = props;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Input
@@ -680,17 +695,14 @@ function Step2(props: {
         <FieldLabel>
           Pickup area <span style={{ color: "#CC2229" }}>*</span>
         </FieldLabel>
-        <Input
+        <PostcodeAutocomplete
           value={pickupArea}
-          onChange={(e) => setPickupArea(e.target.value)}
-          placeholder="e.g. SO23 or SO23 9AA"
+          onChange={setPickup}
+          error={pickupError}
+          onErrorChange={setPickupError}
         />
-        {pickupError && (
-          <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
-            {pickupError}
-          </div>
-        )}
       </div>
+
 
       <div>
         <FieldLabel>Coverage radius</FieldLabel>
@@ -965,5 +977,195 @@ function CheckRow({
       </div>
       <span>{label}</span>
     </button>
+  );
+}
+
+/* ---------- PostcodeAutocomplete ---------- */
+type PostcodeSuggestion = { postcode: string; area: string };
+
+function PostcodeAutocomplete(props: {
+  value: string;
+  onChange: (postcode: string, lat: number | null, lng: number | null) => void;
+  error: string | null;
+  onErrorChange: (e: string | null) => void;
+}) {
+  const { value, onChange, error, onErrorChange } = props;
+  const [suggestions, setSuggestions] = useState<PostcodeSuggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const [focused, setFocused] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const q = value.trim();
+    if (q.length < 2) {
+      setSuggestions([]);
+      setOpen(false);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://api.postcodes.io/postcodes?q=${encodeURIComponent(q)}&limit=8`,
+        );
+        const json = await res.json();
+        const items: PostcodeSuggestion[] = (json?.result ?? []).map((r: { postcode: string; admin_district: string }) => ({
+          postcode: r.postcode,
+          area: r.admin_district,
+        }));
+        setSuggestions(items);
+        setOpen(items.length > 0);
+        setActive(-1);
+      } catch (err) {
+        console.error("[postcode] lookup failed", err);
+      }
+    }, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [value]);
+
+  async function resolveAndValidate(raw: string) {
+    const v = raw.trim();
+    if (!v) {
+      onChange("", null, null);
+      onErrorChange(PICKUP_ERROR_MSG);
+      return;
+    }
+    if (!isValidUKPostcode(v)) {
+      onChange(v, null, null);
+      onErrorChange(PICKUP_ERROR_MSG);
+      return;
+    }
+    onErrorChange(null);
+    if (!UK_POSTCODE_RE.test(v)) {
+      onChange(v.toUpperCase(), null, null);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `https://api.postcodes.io/postcodes/${encodeURIComponent(v)}`,
+      );
+      const json = await res.json();
+      if (json?.status === 200 && json.result) {
+        onChange(json.result.postcode, json.result.latitude, json.result.longitude);
+      } else {
+        onChange(v.toUpperCase(), null, null);
+        onErrorChange(PICKUP_ERROR_MSG);
+      }
+    } catch {
+      onChange(v.toUpperCase(), null, null);
+    }
+  }
+
+  function selectSuggestion(s: PostcodeSuggestion) {
+    setOpen(false);
+    setSuggestions([]);
+    void resolveAndValidate(s.postcode);
+  }
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ position: "relative" }}>
+        <MapPin
+          size={16}
+          color="#6B7280"
+          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+        />
+        <input
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value, null, null);
+            if (error) onErrorChange(null);
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => {
+            setFocused(false);
+            setTimeout(() => setOpen(false), 150);
+            if (value.trim()) void resolveAndValidate(value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setOpen(false);
+              return;
+            }
+            if (!open || suggestions.length === 0) return;
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setActive((a) => Math.min(a + 1, suggestions.length - 1));
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setActive((a) => Math.max(a - 1, 0));
+            } else if (e.key === "Enter") {
+              if (active >= 0 && suggestions[active]) {
+                e.preventDefault();
+                selectSuggestion(suggestions[active]);
+              }
+            }
+          }}
+          placeholder="Enter postcode (e.g. SO22 5DB)"
+          style={{
+            width: "100%",
+            height: 44,
+            border: `1.5px solid ${focused ? "#1A52A0" : "#E2E6ED"}`,
+            borderRadius: 8,
+            padding: "0 12px 0 40px",
+            fontFamily: "Poppins, sans-serif",
+            fontSize: 14,
+            color: "#1A1A2E",
+            background: "#fff",
+            outline: "none",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+      {error && (
+        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+          {error}
+        </div>
+      )}
+      {open && suggestions.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: 48,
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 8,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+            maxHeight: 240,
+            overflowY: "auto",
+          }}
+        >
+          {suggestions.map((s, i) => (
+            <div
+              key={s.postcode}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                selectSuggestion(s);
+              }}
+              onMouseEnter={() => setActive(i)}
+              style={{
+                padding: "10px 12px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                background: active === i ? "#F8F9FB" : "#fff",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <MapPin size={14} color="#6B7280" />
+              <span style={{ fontWeight: 700, color: "#0F2044", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
