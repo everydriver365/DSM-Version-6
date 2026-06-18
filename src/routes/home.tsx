@@ -56,6 +56,8 @@ import {
   FileSpreadsheet,
   AlertCircle,
   Trophy,
+  LogOut,
+  LogIn,
 } from "lucide-react";
 import {
   Dialog,
