@@ -426,17 +426,16 @@ function CourseDetailPage() {
                   />
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
-                      Pickup area <span style={{ color: "#CC2229" }}>*</span>
+                      Pickup postcodes <span style={{ color: "#CC2229" }}>*</span>
                     </div>
-                    <PostcodeAutocomplete
-                      value={form.pickup_area ?? ""}
-                      onChange={(pc, lat, lng) =>
-                        setForm({ ...form, pickup_area: pc || null, pickup_lat: lat, pickup_lng: lng })
-                      }
+                    <PostcodeMultiPicker
+                      values={form.pickup_postcodes ?? []}
+                      onChange={(vs) => setForm({ ...form, pickup_postcodes: vs })}
                       error={pickupError}
                       onErrorChange={setPickupError}
                     />
                   </div>
+
 
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
