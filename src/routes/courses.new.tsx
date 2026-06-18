@@ -286,7 +286,33 @@ function NewCoursePage() {
     }
 
 
-    const payload = {
+    // Build occurrence start dates for repeating courses
+    const occurrences = generateOccurrences(
+      startDate,
+      repeatType,
+      repeatDays,
+      weekdaysOnlyDaily,
+      repeatEndDate,
+      parseInt(repeatCount || "0", 10) || 0,
+    );
+    if (repeatType !== "one-off" && occurrences.length === 0) {
+      setSaving(false);
+      const msg = "Set an end date or a repeat count for the recurrence";
+      setError(msg);
+      toast.error(msg);
+      setStep(2);
+      return;
+    }
+    if (repeatType === "weekly" && repeatDays.length === 0) {
+      setSaving(false);
+      const msg = "Pick at least one day of the week";
+      setError(msg);
+      toast.error(msg);
+      setStep(2);
+      return;
+    }
+
+    const basePayload = {
       instructor_id: uid,
       course_type: courseType,
       name: name.trim(),
@@ -294,16 +320,15 @@ function NewCoursePage() {
       includes_test: includesTest,
       description: description.trim() || null,
       max_spaces: Number(maxSpaces),
-      start_date: startDate || null,
-      end_date: endDate || null,
       daily_hours: dailyHours || null,
-      repeat_type: repeatAllowed ? repeatType : "one-off",
+      repeat_type: repeatType,
+      repeat_days: repeatType === "weekly" ? repeatDays : null,
+      repeat_end_date: repeatType !== "one-off" && repeatEndDate ? repeatEndDate : null,
+      repeat_count: repeatType !== "one-off" && repeatCount ? parseInt(repeatCount, 10) : null,
       pickup_area: pickup?.postcode ?? null,
       pickup_lat: pickup?.lat ?? null,
       pickup_lng: pickup?.lng ?? null,
-
       radius_miles: Number(radiusMiles) || 10,
-
       lesson_time_preference: timePref,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
@@ -315,11 +340,22 @@ function NewCoursePage() {
       status,
     };
 
+    const dailyH = dailyHours && dailyHours > 0 ? dailyHours : 1;
+    const spanDays = Math.max(1, Math.ceil(parseFloat(String(hours)) / dailyH));
+    const rows = (repeatType === "one-off" ? [startDate] : occurrences).map((sd) => {
+      const ed = new Date(sd + "T00:00:00");
+      ed.setDate(ed.getDate() + spanDays - 1);
+      return {
+        ...basePayload,
+        start_date: sd,
+        end_date: ymd(ed),
+      };
+    });
+
     const { error: insertError } = await supabase
       .from("instructor_courses")
-      .insert(payload)
-      .select()
-      .single();
+      .insert(rows)
+      .select();
 
     setSaving(false);
 
@@ -329,7 +365,11 @@ function NewCoursePage() {
       return;
     }
 
-    toast.success(status === "active" ? "Course published!" : "Saved as draft");
+    if (status === "active") {
+      toast.success(rows.length === 1 ? "Course published!" : `${rows.length} courses published!`);
+    } else {
+      toast.success(rows.length === 1 ? "Saved as draft" : `${rows.length} drafts saved`);
+    }
     navigate({ to: "/courses" });
   }
 
