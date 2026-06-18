@@ -71,11 +71,24 @@ function CoursesPage() {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase
+      const query = supabase
         .from("instructor_courses")
         .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken, pickup_area, pickup_postcodes")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
+
+      let { data, error } = await query;
+
+      if (error?.code === "42703" && error.message.includes("pickup_postcodes")) {
+        const fallback = await supabase
+          .from("instructor_courses")
+          .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken, pickup_area")
+          .eq("instructor_id", uid)
+          .order("created_at", { ascending: false });
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
+        error = fallback.error;
+      }
+
       if (error) console.error("[courses] fetch error", error);
       setCourses((data ?? []) as CourseRow[]);
       setLoading(false);
@@ -218,8 +231,8 @@ function CoursesPage() {
                     return (
                       <div style={{ marginTop: 8, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
                         <MapPin size={12} color="#1A52A0" />
-                        {list.slice(0, 3).map((pc) => (
-                          <span key={pc} style={{
+                        {list.slice(0, 3).map((pc, index) => (
+                          <span key={`${pc}-${index}`} style={{
                             background: "#e8eefb", color: "#0F2044", fontWeight: 600,
                             fontSize: 11, padding: "2px 8px", borderRadius: 10,
                           }}>{pc}</span>
