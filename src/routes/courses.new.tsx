@@ -868,6 +868,7 @@ function Step2(props: {
             return (
               <button
                 key={key}
+                type="button"
                 onClick={() => setRepeatType(key)}
                 style={{
                   display: "flex",
