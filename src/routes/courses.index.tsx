@@ -73,7 +73,7 @@ function CoursesPage() {
       }
       const { data, error } = await supabase
         .from("instructor_courses")
-        .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken")
+        .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken, pickup_area, pickup_postcodes")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
       if (error) console.error("[courses] fetch error", error);
