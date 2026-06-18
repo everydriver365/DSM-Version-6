@@ -85,10 +85,9 @@ function NewCoursePage() {
   const [startDate, setStartDate] = useState<string>("");
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
-  const [pickupArea, setPickupArea] = useState("");
-  const [pickupLat, setPickupLat] = useState<number | null>(null);
-  const [pickupLng, setPickupLng] = useState<number | null>(null);
+  const [pickups, setPickups] = useState<PickupItem[]>([]);
   const [pickupError, setPickupError] = useState<string | null>(null);
+
   const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
 
