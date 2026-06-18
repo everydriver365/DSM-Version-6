@@ -763,7 +763,7 @@ function Step2(props: {
   repeatType: RepeatType;
   setRepeatType: (v: RepeatType) => void;
   repeatDays: number[];
-  setRepeatDays: (v: number[]) => void;
+  setRepeatDays: React.Dispatch<React.SetStateAction<number[]>>;
   weekdaysOnlyDaily: boolean;
   setWeekdaysOnlyDaily: (v: boolean) => void;
   repeatEndDate: string;
@@ -811,8 +811,11 @@ function Step2(props: {
   ];
 
   function toggleDay(d: number) {
-    if (repeatDays.includes(d)) setRepeatDays(repeatDays.filter((x) => x !== d));
-    else setRepeatDays([...repeatDays, d].sort());
+    setRepeatDays((prev) =>
+      prev.includes(d)
+        ? prev.filter((x) => x !== d)
+        : [...prev, d].sort((a, b) => a - b)
+    );
   }
 
   return (
