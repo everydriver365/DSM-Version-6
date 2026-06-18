@@ -154,11 +154,26 @@ function CoursesPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {courses.map((c) => {
               const spacesLeft = Math.max(0, (c.max_spaces ?? 0) - (c.spaces_taken ?? 0));
+              const goToCourse = () => navigate({ to: "/courses/$id", params: { id: c.id } });
               return (
                 <Card
                   key={c.id}
-                  onClick={() => navigate({ to: "/courses/$id", params: { id: c.id } })}
-                  style={{ cursor: "pointer", padding: 12 }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={goToCourse}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      goToCourse();
+                    }
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    padding: 12,
+                    userSelect: "none",
+                    WebkitUserSelect: "none",
+                    WebkitTapHighlightColor: "rgba(15,32,68,0.08)",
+                  }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span
@@ -222,6 +237,43 @@ function CoursesPage() {
                         {spacesLeft} spaces left
                       </span>
                     </div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 10,
+                      paddingTop: 10,
+                      borderTop: "0.5px solid #E2E6ED",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToCourse();
+                      }}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        background: "#0F2044",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        fontWeight: 600,
+                        fontSize: 13,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      <Pencil size={14} />
+                      Edit course
+                    </button>
+                    <ChevronRight size={18} color="#6B7280" />
                   </div>
                 </Card>
               );
