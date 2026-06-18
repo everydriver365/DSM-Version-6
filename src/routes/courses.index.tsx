@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, GraduationCap, ChevronRight, Pencil } from "lucide-react";
+import { ChevronLeft, Plus, GraduationCap, ChevronRight, Pencil, MapPin } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
