@@ -529,7 +529,15 @@ function CourseDetailPage() {
                   <DetailRow label="Start date" value={formatDate(course.start_date)} />
                   <DetailRow label="End date" value={formatDate(course.end_date)} />
                   <DetailRow label="Daily hours" value={course.daily_hours ? `${course.daily_hours}h` : "—"} />
-                  <DetailRow label="Pickup area" value={course.pickup_area || "—"} />
+                  <DetailRow
+                    label="Pickup postcodes"
+                    value={
+                      (course.pickup_postcodes ?? []).length > 0
+                        ? (course.pickup_postcodes ?? []).map((p) => p.postcode).join(", ")
+                        : (course.pickup_area || "—")
+                    }
+                  />
+
                   <DetailRow
                     label="Lesson time"
                     value={course.lesson_time_preference || "flexible"}
