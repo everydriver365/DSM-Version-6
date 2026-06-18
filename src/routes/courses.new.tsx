@@ -862,6 +862,7 @@ function Step2(props: {
       {/* REPEAT */}
       <div>
         <FieldLabel>Repeat</FieldLabel>
+        <div style={{ color: "red", fontSize: 14 }}>REPEAT TYPE: {repeatType}</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {REPEAT_CARDS.map(({ key, label, desc, Icon }) => {
             const active = repeatType === key;
