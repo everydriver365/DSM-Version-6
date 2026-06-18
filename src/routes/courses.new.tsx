@@ -788,6 +788,10 @@ function Step2(props: {
   setRadiusMiles: (n: number) => void;
   timePref: TimePref;
   setTimePref: (v: TimePref) => void;
+  lessonTimeFrom: string;
+  setLessonTimeFrom: (v: string) => void;
+  lessonTimeTo: string;
+  setLessonTimeTo: (v: string) => void;
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
