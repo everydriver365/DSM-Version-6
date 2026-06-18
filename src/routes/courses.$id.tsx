@@ -52,7 +52,10 @@ interface Course {
   daily_hours: number | null;
   repeat_type: string;
   pickup_area: string | null;
+  pickup_lat: number | null;
+  pickup_lng: number | null;
   radius_miles: number | null;
+
   lesson_time_preference: string;
   price: number;
   deposit_amount: number;
