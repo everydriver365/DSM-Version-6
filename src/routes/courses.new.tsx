@@ -233,13 +233,14 @@ function NewCoursePage() {
   }
 
   function goNext() {
-    if (step === 2 && !isValidUKPostcode(pickupArea)) {
-      setPickupError(PICKUP_ERROR_MSG);
-      toast.error(PICKUP_ERROR_MSG);
+    if (step === 2 && pickups.length === 0) {
+      setPickupError(PICKUP_EMPTY_MSG);
+      toast.error(PICKUP_EMPTY_MSG);
       return;
     }
     if (step < 3) setStep((step + 1) as 1 | 2 | 3);
   }
+
 
 
 
