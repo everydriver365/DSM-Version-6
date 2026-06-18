@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/courses/new")({
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
-type RepeatType = "one-off" | "weekly" | "monthly";
+type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
 type TimePref = "morning" | "afternoon" | "evening" | "flexible";
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
@@ -29,6 +29,10 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
 // alter table instructor_courses add column if not exists pickup_lat double precision;
 // alter table instructor_courses add column if not exists pickup_lng double precision;
+// alter table instructor_courses add column if not exists repeat_type text default 'one-off';
+// alter table instructor_courses add column if not exists repeat_days integer[];
+// alter table instructor_courses add column if not exists repeat_end_date date;
+// alter table instructor_courses add column if not exists repeat_count integer;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -63,6 +67,100 @@ function autoName(t: CourseType, hours: number, includesTest: boolean) {
   return includesTest ? `${base} + Test` : base;
 }
 
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = [1, 2, 3, 4, 5];
+const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
+
+function fmtDate(s: string): string {
+  return new Date(s + "T00:00:00").toLocaleDateString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+}
+
+function generateOccurrences(
+  startDate: string,
+  repeatType: RepeatType,
+  repeatDays: number[],
+  weekdaysOnlyDaily: boolean,
+  repeatEndDate: string,
+  repeatCount: number,
+): string[] {
+  if (!startDate) return [];
+  if (repeatType === "one-off") return [startDate];
+  const start = new Date(startDate + "T00:00:00");
+  const end = repeatEndDate ? new Date(repeatEndDate + "T00:00:00") : null;
+  const cap = repeatCount > 0 ? repeatCount : 500;
+  const out: string[] = [];
+
+  if (repeatType === "daily") {
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 365 * 5) {
+      if (end && d > end) break;
+      const dow = d.getDay();
+      if (!weekdaysOnlyDaily || (dow !== 0 && dow !== 6)) {
+        out.push(ymd(d));
+      }
+      d.setDate(d.getDate() + 1);
+      safety++;
+    }
+  } else if (repeatType === "weekly") {
+    if (repeatDays.length === 0) return [];
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 365 * 5) {
+      if (end && d > end) break;
+      if (repeatDays.includes(d.getDay())) out.push(ymd(d));
+      d.setDate(d.getDate() + 1);
+      safety++;
+    }
+  } else if (repeatType === "monthly") {
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 240) {
+      if (end && d > end) break;
+      out.push(ymd(d));
+      d.setMonth(d.getMonth() + 1);
+      safety++;
+    }
+  }
+  return out;
+}
+
+function ordinalSuffix(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function summaryText(
+  startDate: string,
+  repeatType: RepeatType,
+  repeatDays: number[],
+  weekdaysOnlyDaily: boolean,
+  occurrences: string[],
+): string {
+  if (!startDate) return "Pick a start date to preview";
+  if (repeatType === "one-off") return `1 course starting ${fmtDate(startDate)}`;
+  if (occurrences.length === 0) return "No occurrences — set an end date or repeat count";
+  const last = occurrences[occurrences.length - 1];
+  const n = occurrences.length;
+  const occ = `${n} occurrence${n === 1 ? "" : "s"}`;
+  if (repeatType === "daily") {
+    const label = weekdaysOnlyDaily ? "Mon-Fri" : "daily";
+    return `Course runs ${label} from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  if (repeatType === "weekly") {
+    const names = [...repeatDays].sort().map((d) => DAY_LABELS[d]).join(", ");
+    return `Course runs every ${names} from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  if (repeatType === "monthly") {
+    const dom = new Date(startDate + "T00:00:00").getDate();
+    return `Course runs on the ${dom}${ordinalSuffix(dom)} of each month from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  return "";
+}
+
 function NewCoursePage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -84,6 +182,10 @@ function NewCoursePage() {
   const [startDate, setStartDate] = useState<string>("");
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
+  const [repeatDays, setRepeatDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [weekdaysOnlyDaily, setWeekdaysOnlyDaily] = useState(false);
+  const [repeatEndDate, setRepeatEndDate] = useState<string>("");
+  const [repeatCount, setRepeatCount] = useState<string>("");
   const [pickup, setPickup] = useState<PickupItem | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
 
