@@ -161,10 +161,11 @@ function CourseDetailPage() {
 
   async function saveChanges() {
     if (!form) return;
-    if (!isValidUKPostcode(form.pickup_area ?? "")) {
-      setPickupError(PICKUP_ERROR_MSG);
-      setError(PICKUP_ERROR_MSG);
-      toast.error(PICKUP_ERROR_MSG);
+    const pickups = form.pickup_postcodes ?? [];
+    if (pickups.length === 0) {
+      setPickupError(PICKUP_EMPTY_MSG);
+      setError(PICKUP_EMPTY_MSG);
+      toast.error(PICKUP_EMPTY_MSG);
       return;
     }
     setSaving(true);
@@ -181,8 +182,13 @@ function CourseDetailPage() {
         max_spaces: Number(patch.max_spaces) || 1,
         daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
         radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
+        pickup_postcodes: pickups,
+        pickup_area: pickups[0]?.postcode ?? null,
+        pickup_lat: pickups[0]?.lat ?? null,
+        pickup_lng: pickups[0]?.lng ?? null,
       })
       .eq("id", id);
+
     setSaving(false);
     if (upErr) {
       setError(upErr.message);
