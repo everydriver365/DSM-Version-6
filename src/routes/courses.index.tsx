@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, GraduationCap, ChevronRight, Pencil } from "lucide-react";
+import { ChevronLeft, Plus, GraduationCap, ChevronRight, Pencil, MapPin } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -26,7 +26,10 @@ interface CourseRow {
   status: string;
   max_spaces: number;
   spaces_taken: number;
+  pickup_area: string | null;
+  pickup_postcodes: { postcode: string; lat: number | null; lng: number | null }[] | null;
 }
+
 
 function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
@@ -70,7 +73,7 @@ function CoursesPage() {
       }
       const { data, error } = await supabase
         .from("instructor_courses")
-        .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken")
+        .select("id, course_type, name, price, start_date, status, max_spaces, spaces_taken, pickup_area, pickup_postcodes")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
       if (error) console.error("[courses] fetch error", error);
@@ -208,6 +211,26 @@ function CoursesPage() {
                       £{Number(c.price).toFixed(0)}
                     </div>
                   </div>
+                  {(() => {
+                    const pcs = (c.pickup_postcodes ?? []).map((p) => p.postcode);
+                    const list = pcs.length > 0 ? pcs : (c.pickup_area ? [c.pickup_area] : []);
+                    if (list.length === 0) return null;
+                    return (
+                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+                        <MapPin size={12} color="#1A52A0" />
+                        {list.slice(0, 3).map((pc) => (
+                          <span key={pc} style={{
+                            background: "#e8eefb", color: "#0F2044", fontWeight: 600,
+                            fontSize: 11, padding: "2px 8px", borderRadius: 10,
+                          }}>{pc}</span>
+                        ))}
+                        {list.length > 3 && (
+                          <span style={{ fontSize: 11, color: "#6B7280", fontWeight: 600 }}>+{list.length - 3} more</span>
+                        )}
+                      </div>
+                    );
+                  })()}
+
                   <div
                     style={{
                       marginTop: 8,

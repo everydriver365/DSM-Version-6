@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin, X } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -29,6 +29,7 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
 // alter table instructor_courses add column if not exists pickup_lat double precision;
 // alter table instructor_courses add column if not exists pickup_lng double precision;
+// alter table instructor_courses add column if not exists pickup_postcodes jsonb default '[]'::jsonb;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -37,6 +38,10 @@ function isValidUKPostcode(value: string): boolean {
   return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
 }
 const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO22 or SO22 5DB)";
+const PICKUP_EMPTY_MSG = "Add at least one pickup postcode";
+
+type PickupItem = { postcode: string; lat: number | null; lng: number | null };
+
 
 
 
@@ -80,10 +85,9 @@ function NewCoursePage() {
   const [startDate, setStartDate] = useState<string>("");
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
-  const [pickupArea, setPickupArea] = useState("");
-  const [pickupLat, setPickupLat] = useState<number | null>(null);
-  const [pickupLng, setPickupLng] = useState<number | null>(null);
+  const [pickups, setPickups] = useState<PickupItem[]>([]);
   const [pickupError, setPickupError] = useState<string | null>(null);
+
   const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
 
@@ -157,15 +161,16 @@ function NewCoursePage() {
       if (!price || parseFloat(price) <= 0) missing.push("price");
       if (!startDate) missing.push("start_date");
     }
-    // Pickup area is required and must be a valid UK postcode/outcode (always)
-    if (!isValidUKPostcode(pickupArea)) {
+    // At least one valid pickup postcode is required (always)
+    if (pickups.length === 0) {
       setSaving(false);
-      setPickupError(PICKUP_ERROR_MSG);
-      setError(PICKUP_ERROR_MSG);
-      toast.error(PICKUP_ERROR_MSG);
+      setPickupError(PICKUP_EMPTY_MSG);
+      setError(PICKUP_EMPTY_MSG);
+      toast.error(PICKUP_EMPTY_MSG);
       setStep(2);
       return;
     }
+
 
     if (missing.length > 0) {
       setSaving(false);
@@ -191,9 +196,11 @@ function NewCoursePage() {
       end_date: endDate || null,
       daily_hours: dailyHours || null,
       repeat_type: repeatAllowed ? repeatType : "one-off",
-      pickup_area: pickupArea.trim() || null,
-      pickup_lat: pickupLat,
-      pickup_lng: pickupLng,
+      pickup_area: pickups[0]?.postcode ?? null,
+      pickup_lat: pickups[0]?.lat ?? null,
+      pickup_lng: pickups[0]?.lng ?? null,
+      pickup_postcodes: pickups,
+
       radius_miles: Number(radiusMiles) || 10,
 
       lesson_time_preference: timePref,
@@ -226,13 +233,14 @@ function NewCoursePage() {
   }
 
   function goNext() {
-    if (step === 2 && !isValidUKPostcode(pickupArea)) {
-      setPickupError(PICKUP_ERROR_MSG);
-      toast.error(PICKUP_ERROR_MSG);
+    if (step === 2 && pickups.length === 0) {
+      setPickupError(PICKUP_EMPTY_MSG);
+      toast.error(PICKUP_EMPTY_MSG);
       return;
     }
     if (step < 3) setStep((step + 1) as 1 | 2 | 3);
   }
+
 
 
 
@@ -343,10 +351,11 @@ function NewCoursePage() {
             repeatAllowed={repeatAllowed}
             repeatType={repeatType}
             setRepeatType={setRepeatType}
-            pickupArea={pickupArea}
-            setPickup={(pc, lat, lng) => { setPickupArea(pc); setPickupLat(lat); setPickupLng(lng); }}
+            pickups={pickups}
+            setPickups={setPickups}
             pickupError={pickupError}
             setPickupError={setPickupError}
+
 
             radiusMiles={radiusMiles}
             setRadiusMiles={setRadiusMiles}
@@ -601,8 +610,8 @@ function Step2(props: {
   repeatAllowed: boolean;
   repeatType: RepeatType;
   setRepeatType: (v: RepeatType) => void;
-  pickupArea: string;
-  setPickup: (postcode: string, lat: number | null, lng: number | null) => void;
+  pickups: PickupItem[];
+  setPickups: (v: PickupItem[]) => void;
   pickupError: string | null;
   setPickupError: (e: string | null) => void;
   radiusMiles: number;
@@ -612,10 +621,11 @@ function Step2(props: {
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
-    repeatAllowed, repeatType, setRepeatType, pickupArea, setPickup,
+    repeatAllowed, repeatType, setRepeatType, pickups, setPickups,
     pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
   } = props;
+
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -693,15 +703,16 @@ function Step2(props: {
 
       <div>
         <FieldLabel>
-          Pickup area <span style={{ color: "#CC2229" }}>*</span>
+          Pickup postcodes <span style={{ color: "#CC2229" }}>*</span>
         </FieldLabel>
-        <PostcodeAutocomplete
-          value={pickupArea}
-          onChange={setPickup}
+        <PostcodeMultiPicker
+          values={pickups}
+          onChange={setPickups}
           error={pickupError}
           onErrorChange={setPickupError}
         />
       </div>
+
 
 
       <div>
@@ -980,16 +991,17 @@ function CheckRow({
   );
 }
 
-/* ---------- PostcodeAutocomplete ---------- */
+/* ---------- PostcodeMultiPicker ---------- */
 type PostcodeSuggestion = { postcode: string; area: string };
 
-function PostcodeAutocomplete(props: {
-  value: string;
-  onChange: (postcode: string, lat: number | null, lng: number | null) => void;
+function PostcodeMultiPicker(props: {
+  values: PickupItem[];
+  onChange: (values: PickupItem[]) => void;
   error: string | null;
   onErrorChange: (e: string | null) => void;
 }) {
-  const { value, onChange, error, onErrorChange } = props;
+  const { values, onChange, error, onErrorChange } = props;
+  const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<PostcodeSuggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -998,7 +1010,7 @@ function PostcodeAutocomplete(props: {
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    const q = value.trim();
+    const q = input.trim();
     if (q.length < 2) {
       setSuggestions([]);
       setOpen(false);
@@ -1024,49 +1036,94 @@ function PostcodeAutocomplete(props: {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [value]);
+  }, [input]);
 
-  async function resolveAndValidate(raw: string) {
-    const v = raw.trim();
-    if (!v) {
-      onChange("", null, null);
+  async function addByText(raw: string) {
+    const v = raw.trim().toUpperCase();
+    if (!v) return;
+    if (!isValidUKPostcode(v)) {
       onErrorChange(PICKUP_ERROR_MSG);
       return;
     }
-    if (!isValidUKPostcode(v)) {
-      onChange(v, null, null);
-      onErrorChange(PICKUP_ERROR_MSG);
+    if (values.some((p) => p.postcode.toUpperCase() === v)) {
+      setInput("");
+      return;
+    }
+    let canonical = v;
+    let lat: number | null = null;
+    let lng: number | null = null;
+    if (UK_POSTCODE_RE.test(v)) {
+      try {
+        const res = await fetch(
+          `https://api.postcodes.io/postcodes/${encodeURIComponent(v)}`,
+        );
+        const json = await res.json();
+        if (json?.status === 200 && json.result) {
+          canonical = json.result.postcode;
+          lat = json.result.latitude;
+          lng = json.result.longitude;
+        } else {
+          onErrorChange(PICKUP_ERROR_MSG);
+          return;
+        }
+      } catch {
+        /* keep raw */
+      }
+    }
+    if (values.some((p) => p.postcode === canonical)) {
+      setInput("");
       return;
     }
     onErrorChange(null);
-    if (!UK_POSTCODE_RE.test(v)) {
-      onChange(v.toUpperCase(), null, null);
-      return;
-    }
-    try {
-      const res = await fetch(
-        `https://api.postcodes.io/postcodes/${encodeURIComponent(v)}`,
-      );
-      const json = await res.json();
-      if (json?.status === 200 && json.result) {
-        onChange(json.result.postcode, json.result.latitude, json.result.longitude);
-      } else {
-        onChange(v.toUpperCase(), null, null);
-        onErrorChange(PICKUP_ERROR_MSG);
-      }
-    } catch {
-      onChange(v.toUpperCase(), null, null);
-    }
-  }
-
-  function selectSuggestion(s: PostcodeSuggestion) {
+    onChange([...values, { postcode: canonical, lat, lng }]);
+    setInput("");
     setOpen(false);
     setSuggestions([]);
-    void resolveAndValidate(s.postcode);
+  }
+
+  function removeAt(i: number) {
+    onChange(values.filter((_, idx) => idx !== i));
+  }
+
+  async function selectSuggestion(s: PostcodeSuggestion) {
+    setOpen(false);
+    await addByText(s.postcode);
   }
 
   return (
     <div style={{ position: "relative" }}>
+      {values.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+          {values.map((p, i) => (
+            <span
+              key={`${p.postcode}-${i}`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "#e8eefb",
+                color: "#0F2044",
+                fontWeight: 600,
+                fontSize: 13,
+                padding: "4px 6px 4px 10px",
+                borderRadius: 16,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <MapPin size={12} color="#1A52A0" />
+              {p.postcode}
+              <button
+                type="button"
+                onClick={() => removeAt(i)}
+                aria-label={`Remove ${p.postcode}`}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "#1A52A0", display: "flex", padding: 2 }}
+              >
+                <X size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
       <div style={{ position: "relative" }}>
         <MapPin
           size={16}
@@ -1074,20 +1131,29 @@ function PostcodeAutocomplete(props: {
           style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
         />
         <input
-          value={value}
+          value={input}
           onChange={(e) => {
-            onChange(e.target.value, null, null);
+            setInput(e.target.value);
             if (error) onErrorChange(null);
           }}
           onFocus={() => setFocused(true)}
           onBlur={() => {
             setFocused(false);
             setTimeout(() => setOpen(false), 150);
-            if (value.trim()) void resolveAndValidate(value);
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setOpen(false);
+              return;
+            }
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (open && active >= 0 && suggestions[active]) void selectSuggestion(suggestions[active]);
+              else void addByText(input);
+              return;
+            }
+            if (e.key === "Backspace" && !input && values.length > 0) {
+              removeAt(values.length - 1);
               return;
             }
             if (!open || suggestions.length === 0) return;
@@ -1097,14 +1163,9 @@ function PostcodeAutocomplete(props: {
             } else if (e.key === "ArrowUp") {
               e.preventDefault();
               setActive((a) => Math.max(a - 1, 0));
-            } else if (e.key === "Enter") {
-              if (active >= 0 && suggestions[active]) {
-                e.preventDefault();
-                selectSuggestion(suggestions[active]);
-              }
             }
           }}
-          placeholder="Enter postcode (e.g. SO22 5DB)"
+          placeholder={values.length === 0 ? "Add a postcode (e.g. SO22 5DB)" : "Add another postcode"}
           style={{
             width: "100%",
             height: 44,
@@ -1129,10 +1190,11 @@ function PostcodeAutocomplete(props: {
         <div
           style={{
             position: "absolute",
-            top: 48,
+            top: "100%",
             left: 0,
             right: 0,
             zIndex: 50,
+            marginTop: 4,
             background: "#fff",
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
@@ -1146,7 +1208,7 @@ function PostcodeAutocomplete(props: {
               key={s.postcode}
               onMouseDown={(e) => {
                 e.preventDefault();
-                selectSuggestion(s);
+                void selectSuggestion(s);
               }}
               onMouseEnter={() => setActive(i)}
               style={{
@@ -1169,3 +1231,4 @@ function PostcodeAutocomplete(props: {
     </div>
   );
 }
+
