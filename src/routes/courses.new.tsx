@@ -862,6 +862,7 @@ function Step2(props: {
       {/* REPEAT */}
       <div>
         <FieldLabel>Repeat</FieldLabel>
+        <div style={{ color: "red", fontSize: 14 }}>REPEAT TYPE: {repeatType}</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {REPEAT_CARDS.map(({ key, label, desc, Icon }) => {
             const active = repeatType === key;
@@ -897,6 +898,7 @@ function Step2(props: {
       {repeatType === "weekly" && (
         <div>
           <FieldLabel>Days of the week</FieldLabel>
+          <div style={{ color: "red", fontSize: 14 }}>SHOW DAYS: {String(repeatType === "weekly")}</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {[1, 2, 3, 4, 5, 6, 0].map((d) => {
               const active = repeatDays.includes(d);
