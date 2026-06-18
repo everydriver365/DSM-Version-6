@@ -852,7 +852,7 @@ function HomePage() {
                 <X size={22} />
               </button>
             </div>
-            <div style={{ overflowY: "auto", padding: "8px 0" }}>
+            <div style={{ overflowY: "auto", padding: "8px 0", flex: 1 }}>
               {[
                 { label: "Home", to: "/home" as const },
                 { label: "Schedule", to: "/schedule" as const },
@@ -892,6 +892,43 @@ function HomePage() {
                   <ChevronRight size={16} color="#9CA3AF" />
                 </button>
               ))}
+            </div>
+
+            {/* Auth action at bottom */}
+            <div style={{ borderTop: "0.5px solid #E2E6ED", padding: "12px 18px" }}>
+              {userId ? (
+                <button
+                  onClick={async () => {
+                    setMenuOpen(false);
+                    await supabase.auth.signOut();
+                    navigate({ to: "/login", replace: true });
+                  }}
+                  style={{
+                    width: "100%", textAlign: "left", padding: "12px 0",
+                    background: "none", border: "none", cursor: "pointer",
+                    fontSize: 14, fontWeight: 600, color: "#CC2229",
+                    fontFamily: "Poppins, sans-serif",
+                    display: "flex", alignItems: "center", gap: 10,
+                  }}
+                >
+                  <LogOut size={18} />
+                  Sign out
+                </button>
+              ) : (
+                <button
+                  onClick={() => { setMenuOpen(false); navigate({ to: "/login" }); }}
+                  style={{
+                    width: "100%", textAlign: "left", padding: "12px 0",
+                    background: "none", border: "none", cursor: "pointer",
+                    fontSize: 14, fontWeight: 600, color: "#1A52A0",
+                    fontFamily: "Poppins, sans-serif",
+                    display: "flex", alignItems: "center", gap: 10,
+                  }}
+                >
+                  <LogIn size={18} />
+                  Log in
+                </button>
+              )}
             </div>
           </div>
         </div>
