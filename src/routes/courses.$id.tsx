@@ -66,6 +66,8 @@ interface Course {
   radius_miles: number | null;
 
   lesson_time_preference: string;
+  lesson_time_from: string | null;
+  lesson_time_to: string | null;
   price: number;
   deposit_amount: number;
   deposit_only_to_book: boolean;
