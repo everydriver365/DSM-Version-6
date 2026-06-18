@@ -232,7 +232,7 @@ function NewCoursePage() {
     return ymd(d);
   }, [startDate, dailyHours, hours]);
 
-  const repeatAllowed = courseType === "weekly" || courseType === "semi-intensive";
+  
 
   async function submit(status: "active" | "draft") {
     setSaving(true);
