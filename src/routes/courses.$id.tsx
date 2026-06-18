@@ -25,6 +25,8 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 
 // SQL to run manually:
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
+// alter table instructor_courses add column if not exists pickup_lat double precision;
+// alter table instructor_courses add column if not exists pickup_lng double precision;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -32,7 +34,8 @@ function isValidUKPostcode(value: string): boolean {
   const v = value.trim();
   return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
 }
-const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO23 or SO23 9AA)";
+const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO22 or SO22 5DB)";
+
 
 interface Course {
   id: string;
