@@ -334,6 +334,8 @@ function NewCoursePage() {
       pickup_lng: pickup?.lng ?? null,
       radius_miles: Number(radiusMiles) || 10,
       lesson_time_preference: timePref,
+      lesson_time_from: timePref === "custom" ? lessonTimeFrom : null,
+      lesson_time_to: timePref === "custom" ? lessonTimeTo : null,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
       deposit_only_to_book: depositOnly,
