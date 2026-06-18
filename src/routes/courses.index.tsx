@@ -26,7 +26,10 @@ interface CourseRow {
   status: string;
   max_spaces: number;
   spaces_taken: number;
+  pickup_area: string | null;
+  pickup_postcodes: { postcode: string; lat: number | null; lng: number | null }[] | null;
 }
+
 
 function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
