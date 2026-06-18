@@ -1016,3 +1016,193 @@ function AddBookingSheet({
     </div>
   );
 }
+
+/* ---------- PostcodeAutocomplete ---------- */
+type PostcodeSuggestion = { postcode: string; area: string };
+
+function PostcodeAutocomplete(props: {
+  value: string;
+  onChange: (postcode: string, lat: number | null, lng: number | null) => void;
+  error: string | null;
+  onErrorChange: (e: string | null) => void;
+}) {
+  const { value, onChange, error, onErrorChange } = props;
+  const [suggestions, setSuggestions] = useState<PostcodeSuggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const [focused, setFocused] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const q = value.trim();
+    if (q.length < 2) {
+      setSuggestions([]);
+      setOpen(false);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://api.postcodes.io/postcodes?q=${encodeURIComponent(q)}&limit=8`,
+        );
+        const json = await res.json();
+        const items: PostcodeSuggestion[] = (json?.result ?? []).map((r: { postcode: string; admin_district: string }) => ({
+          postcode: r.postcode,
+          area: r.admin_district,
+        }));
+        setSuggestions(items);
+        setOpen(items.length > 0);
+        setActive(-1);
+      } catch (err) {
+        console.error("[postcode] lookup failed", err);
+      }
+    }, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [value]);
+
+  async function resolveAndValidate(raw: string) {
+    const v = raw.trim();
+    if (!v) {
+      onChange("", null, null);
+      onErrorChange(PICKUP_ERROR_MSG);
+      return;
+    }
+    if (!isValidUKPostcode(v)) {
+      onChange(v, null, null);
+      onErrorChange(PICKUP_ERROR_MSG);
+      return;
+    }
+    onErrorChange(null);
+    if (!UK_POSTCODE_RE.test(v)) {
+      onChange(v.toUpperCase(), null, null);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `https://api.postcodes.io/postcodes/${encodeURIComponent(v)}`,
+      );
+      const json = await res.json();
+      if (json?.status === 200 && json.result) {
+        onChange(json.result.postcode, json.result.latitude, json.result.longitude);
+      } else {
+        onChange(v.toUpperCase(), null, null);
+        onErrorChange(PICKUP_ERROR_MSG);
+      }
+    } catch {
+      onChange(v.toUpperCase(), null, null);
+    }
+  }
+
+  function selectSuggestion(s: PostcodeSuggestion) {
+    setOpen(false);
+    setSuggestions([]);
+    void resolveAndValidate(s.postcode);
+  }
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ position: "relative" }}>
+        <MapPin
+          size={16}
+          color="#6B7280"
+          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+        />
+        <input
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value, null, null);
+            if (error) onErrorChange(null);
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => {
+            setFocused(false);
+            setTimeout(() => setOpen(false), 150);
+            if (value.trim()) void resolveAndValidate(value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setOpen(false);
+              return;
+            }
+            if (!open || suggestions.length === 0) return;
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setActive((a) => Math.min(a + 1, suggestions.length - 1));
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setActive((a) => Math.max(a - 1, 0));
+            } else if (e.key === "Enter") {
+              if (active >= 0 && suggestions[active]) {
+                e.preventDefault();
+                selectSuggestion(suggestions[active]);
+              }
+            }
+          }}
+          placeholder="Enter postcode (e.g. SO22 5DB)"
+          style={{
+            width: "100%",
+            height: 44,
+            border: `1.5px solid ${focused ? "#1A52A0" : "#E2E6ED"}`,
+            borderRadius: 8,
+            padding: "0 12px 0 40px",
+            fontFamily: "Poppins, sans-serif",
+            fontSize: 14,
+            color: "#1A1A2E",
+            background: "#fff",
+            outline: "none",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+      {error && (
+        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+          {error}
+        </div>
+      )}
+      {open && suggestions.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: 48,
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 8,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+            maxHeight: 240,
+            overflowY: "auto",
+          }}
+        >
+          {suggestions.map((s, i) => (
+            <div
+              key={s.postcode}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                selectSuggestion(s);
+              }}
+              onMouseEnter={() => setActive(i)}
+              style={{
+                padding: "10px 12px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                background: active === i ? "#F8F9FB" : "#fff",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <MapPin size={14} color="#6B7280" />
+              <span style={{ fontWeight: 700, color: "#0F2044", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
