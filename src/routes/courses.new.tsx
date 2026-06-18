@@ -998,6 +998,8 @@ function Step2(props: {
         </div>
       )}
 
+      {repeatType !== "one-off" && (
+        <>
           <Input
             label="Repeat until (end date)"
             type="date"
