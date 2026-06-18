@@ -899,13 +899,14 @@ function Step2(props: {
               return (
                 <button
                   key={d}
+                  type="button"
                   onClick={() => toggleDay(d)}
                   style={{
                     flex: "1 1 calc(14% - 6px)",
                     minWidth: 44,
                     height: 40,
                     borderRadius: 20,
-                    border: `1px solid #0F2044`,
+                    border: `1.5px solid ${active ? "#0F2044" : "#E2E6ED"}`,
                     background: active ? "#0F2044" : "#fff",
                     color: active ? "#fff" : "#0F2044",
                     fontWeight: 600,
@@ -919,30 +920,22 @@ function Step2(props: {
               );
             })}
           </div>
-        </div>
-      )}
 
-      {repeatType !== "one-off" && (
-        <>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
             <button
-              onClick={() => {
-                if (repeatType === "weekly") setRepeatDays(WEEKDAYS);
-                if (repeatType === "daily") setWeekdaysOnlyDaily(true);
-              }}
+              type="button"
+              onClick={() => setRepeatDays(WEEKDAYS)}
               style={{
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                border: "1px solid #0F2044",
+                border: "1px solid #E2E6ED",
                 background:
-                  (repeatType === "weekly" && repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))) ||
-                  (repeatType === "daily" && weekdaysOnlyDaily)
+                  repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
                     ? "#0F2044"
                     : "#fff",
                 color:
-                  (repeatType === "weekly" && repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))) ||
-                  (repeatType === "daily" && weekdaysOnlyDaily)
+                  repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
                     : "#0F2044",
                 fontWeight: 600,
@@ -951,26 +944,22 @@ function Step2(props: {
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              Weekdays only
+              Weekdays
             </button>
             <button
-              onClick={() => {
-                if (repeatType === "weekly") setRepeatDays(ALL_DAYS);
-                if (repeatType === "daily") setWeekdaysOnlyDaily(false);
-              }}
+              type="button"
+              onClick={() => setRepeatDays([6, 0])}
               style={{
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                border: "1px solid #0F2044",
+                border: "1px solid #E2E6ED",
                 background:
-                  (repeatType === "weekly" && repeatDays.length === 7) ||
-                  (repeatType === "daily" && !weekdaysOnlyDaily)
+                  repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
                     ? "#0F2044"
                     : "#fff",
                 color:
-                  (repeatType === "weekly" && repeatDays.length === 7) ||
-                  (repeatType === "daily" && !weekdaysOnlyDaily)
+                  repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
                     ? "#fff"
                     : "#0F2044",
                 fontWeight: 600,
@@ -979,9 +968,35 @@ function Step2(props: {
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              Include weekends
+              Weekends
+            </button>
+            <button
+              type="button"
+              onClick={() => setRepeatDays(ALL_DAYS)}
+              style={{
+                flex: 1,
+                height: 40,
+                borderRadius: 10,
+                border: "1px solid #E2E6ED",
+                background:
+                  repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
+                    ? "#0F2044"
+                    : "#fff",
+                color:
+                  repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
+                    ? "#fff"
+                    : "#0F2044",
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              All days
             </button>
           </div>
+        </div>
+      )}
 
           <Input
             label="Repeat until (end date)"
