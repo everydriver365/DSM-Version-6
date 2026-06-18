@@ -196,9 +196,11 @@ function NewCoursePage() {
       end_date: endDate || null,
       daily_hours: dailyHours || null,
       repeat_type: repeatAllowed ? repeatType : "one-off",
-      pickup_area: pickupArea.trim() || null,
-      pickup_lat: pickupLat,
-      pickup_lng: pickupLng,
+      pickup_area: pickups[0]?.postcode ?? null,
+      pickup_lat: pickups[0]?.lat ?? null,
+      pickup_lng: pickups[0]?.lng ?? null,
+      pickup_postcodes: pickups,
+
       radius_miles: Number(radiusMiles) || 10,
 
       lesson_time_preference: timePref,
