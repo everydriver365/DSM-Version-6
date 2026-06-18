@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -20,7 +20,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
-type TimePref = "morning" | "afternoon" | "evening" | "flexible";
+type TimePref = "flexible" | "morning" | "afternoon" | "evening" | "daytime" | "school" | "custom";
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
 const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
@@ -33,6 +33,8 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists repeat_days integer[];
 // alter table instructor_courses add column if not exists repeat_end_date date;
 // alter table instructor_courses add column if not exists repeat_count integer;
+// alter table instructor_courses add column if not exists lesson_time_from time;
+// alter table instructor_courses add column if not exists lesson_time_to time;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -191,6 +193,8 @@ function NewCoursePage() {
 
   const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
+  const [lessonTimeFrom, setLessonTimeFrom] = useState<string>("09:00");
+  const [lessonTimeTo, setLessonTimeTo] = useState<string>("17:00");
 
 
   // Step 3
@@ -330,6 +334,8 @@ function NewCoursePage() {
       pickup_lng: pickup?.lng ?? null,
       radius_miles: Number(radiusMiles) || 10,
       lesson_time_preference: timePref,
+      lesson_time_from: timePref === "custom" ? lessonTimeFrom : null,
+      lesson_time_to: timePref === "custom" ? lessonTimeTo : null,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
       deposit_only_to_book: depositOnly,
@@ -514,6 +520,10 @@ function NewCoursePage() {
             setRadiusMiles={setRadiusMiles}
             timePref={timePref}
             setTimePref={setTimePref}
+            lessonTimeFrom={lessonTimeFrom}
+            setLessonTimeFrom={setLessonTimeFrom}
+            lessonTimeTo={lessonTimeTo}
+            setLessonTimeTo={setLessonTimeTo}
           />
         )}
         {step === 3 && (
@@ -778,6 +788,10 @@ function Step2(props: {
   setRadiusMiles: (n: number) => void;
   timePref: TimePref;
   setTimePref: (v: TimePref) => void;
+  lessonTimeFrom: string;
+  setLessonTimeFrom: (v: string) => void;
+  lessonTimeTo: string;
+  setLessonTimeTo: (v: string) => void;
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
@@ -787,6 +801,7 @@ function Step2(props: {
     pickup, setPickup,
     pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
+    lessonTimeFrom, setLessonTimeFrom, lessonTimeTo, setLessonTimeTo,
   } = props;
 
   const occurrences = useMemo(
@@ -1081,33 +1096,82 @@ function Step2(props: {
 
       <div>
         <FieldLabel>Lesson times</FieldLabel>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            ["morning", "Morning (08:00–12:00)"],
-            ["afternoon", "Afternoon (12:00–17:00)"],
-            ["evening", "Evening (17:00–20:00)"],
-            ["flexible", "Flexible"],
-          ] as Array<[TimePref, string]>).map(([k, label]) => {
-            const active = timePref === k;
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A52A0", full: false },
+            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
+            { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
+            { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
+            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A52A0", full: false },
+            { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
+          ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
+            const active = timePref === key;
             return (
               <button
-                key={k}
-                onClick={() => setTimePref(k)}
+                key={key}
+                type="button"
+                onClick={() => setTimePref(key)}
                 style={{
-                  height: 44,
-                  borderRadius: 10,
-                  border: `1px solid ${active ? "#1A52A0" : "#e3e6ec"}`,
-                  background: active ? "#1A52A0" : "#fff",
-                  color: active ? "#fff" : "#1A1A2E",
-                  fontWeight: 600,
-                  fontSize: 12,
+                  gridColumn: full ? "1 / -1" : undefined,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: `1.5px solid ${active ? color : "#e3e6ec"}`,
+                  background: active ? `${color}10` : "#fff",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
+                  textAlign: "left",
                 }}
-              >{label}</button>
+              >
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: `${color}1a`, color,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <Icon size={18} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#1A1A2E" }}>{label}</span>
+                  <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
+                </div>
+              </button>
             );
           })}
         </div>
+        {timePref === "custom" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>From</span>
+              <input
+                type="time"
+                value={lessonTimeFrom}
+                onChange={(e) => setLessonTimeFrom(e.target.value)}
+                style={{
+                  height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                  color: "#1A1A2E", background: "#fff",
+                }}
+              />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>To</span>
+              <input
+                type="time"
+                value={lessonTimeTo}
+                onChange={(e) => setLessonTimeTo(e.target.value)}
+                style={{
+                  height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                  color: "#1A1A2E", background: "#fff",
+                }}
+              />
+            </label>
+          </div>
+        )}
       </div>
     </div>
   );
