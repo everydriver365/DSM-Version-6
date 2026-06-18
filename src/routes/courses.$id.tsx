@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Pencil, Archive, Phone, MessageSquare, X, Loader2, MapPin } from "lucide-react";
+import { ChevronLeft, Pencil, Archive, Phone, MessageSquare, X, Loader2, MapPin, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
