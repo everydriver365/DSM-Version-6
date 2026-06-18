@@ -747,7 +747,23 @@ function CourseDetailPage() {
 
                   <DetailRow
                     label="Lesson time"
-                    value={course.lesson_time_preference || "flexible"}
+                    value={(() => {
+                      const map: Record<string, string> = {
+                        flexible: "Flexible (any time)",
+                        morning: "Morning (08:00 – 12:00)",
+                        afternoon: "Afternoon (12:00 – 17:00)",
+                        evening: "Evening (17:00 – 20:00)",
+                        daytime: "Daytime (08:00 – 17:00)",
+                        school: "School hours (09:00 – 15:00)",
+                      };
+                      const k = course.lesson_time_preference || "flexible";
+                      if (k === "custom") {
+                        const f = (course.lesson_time_from ?? "09:00").slice(0, 5);
+                        const t = (course.lesson_time_to ?? "17:00").slice(0, 5);
+                        return `Custom (${f} – ${t})`;
+                      }
+                      return map[k] ?? k;
+                    })()}
                   />
                   <DetailRow label="Includes test" value={course.includes_test ? "Yes" : "No"} />
                   <DetailRow label="Repeat" value={course.repeat_type || "one-off"} />
