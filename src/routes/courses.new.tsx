@@ -602,8 +602,9 @@ function Step2(props: {
   repeatType: RepeatType;
   setRepeatType: (v: RepeatType) => void;
   pickupArea: string;
-  setPickupArea: (v: string) => void;
+  setPickup: (postcode: string, lat: number | null, lng: number | null) => void;
   pickupError: string | null;
+  setPickupError: (e: string | null) => void;
   radiusMiles: number;
   setRadiusMiles: (n: number) => void;
   timePref: TimePref;
@@ -611,10 +612,11 @@ function Step2(props: {
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
-    repeatAllowed, repeatType, setRepeatType, pickupArea, setPickupArea,
-    pickupError, radiusMiles, setRadiusMiles,
+    repeatAllowed, repeatType, setRepeatType, pickupArea, setPickup,
+    pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
   } = props;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Input
