@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/courses/new")({
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
-type RepeatType = "one-off" | "weekly" | "monthly";
+type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
 type TimePref = "morning" | "afternoon" | "evening" | "flexible";
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
@@ -29,6 +29,10 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
 // alter table instructor_courses add column if not exists pickup_lat double precision;
 // alter table instructor_courses add column if not exists pickup_lng double precision;
+// alter table instructor_courses add column if not exists repeat_type text default 'one-off';
+// alter table instructor_courses add column if not exists repeat_days integer[];
+// alter table instructor_courses add column if not exists repeat_end_date date;
+// alter table instructor_courses add column if not exists repeat_count integer;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -63,6 +67,100 @@ function autoName(t: CourseType, hours: number, includesTest: boolean) {
   return includesTest ? `${base} + Test` : base;
 }
 
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = [1, 2, 3, 4, 5];
+const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
+
+function fmtDate(s: string): string {
+  return new Date(s + "T00:00:00").toLocaleDateString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+}
+
+function generateOccurrences(
+  startDate: string,
+  repeatType: RepeatType,
+  repeatDays: number[],
+  weekdaysOnlyDaily: boolean,
+  repeatEndDate: string,
+  repeatCount: number,
+): string[] {
+  if (!startDate) return [];
+  if (repeatType === "one-off") return [startDate];
+  const start = new Date(startDate + "T00:00:00");
+  const end = repeatEndDate ? new Date(repeatEndDate + "T00:00:00") : null;
+  const cap = repeatCount > 0 ? repeatCount : 500;
+  const out: string[] = [];
+
+  if (repeatType === "daily") {
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 365 * 5) {
+      if (end && d > end) break;
+      const dow = d.getDay();
+      if (!weekdaysOnlyDaily || (dow !== 0 && dow !== 6)) {
+        out.push(ymd(d));
+      }
+      d.setDate(d.getDate() + 1);
+      safety++;
+    }
+  } else if (repeatType === "weekly") {
+    if (repeatDays.length === 0) return [];
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 365 * 5) {
+      if (end && d > end) break;
+      if (repeatDays.includes(d.getDay())) out.push(ymd(d));
+      d.setDate(d.getDate() + 1);
+      safety++;
+    }
+  } else if (repeatType === "monthly") {
+    const d = new Date(start);
+    let safety = 0;
+    while (out.length < cap && safety < 240) {
+      if (end && d > end) break;
+      out.push(ymd(d));
+      d.setMonth(d.getMonth() + 1);
+      safety++;
+    }
+  }
+  return out;
+}
+
+function ordinalSuffix(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function summaryText(
+  startDate: string,
+  repeatType: RepeatType,
+  repeatDays: number[],
+  weekdaysOnlyDaily: boolean,
+  occurrences: string[],
+): string {
+  if (!startDate) return "Pick a start date to preview";
+  if (repeatType === "one-off") return `1 course starting ${fmtDate(startDate)}`;
+  if (occurrences.length === 0) return "No occurrences — set an end date or repeat count";
+  const last = occurrences[occurrences.length - 1];
+  const n = occurrences.length;
+  const occ = `${n} occurrence${n === 1 ? "" : "s"}`;
+  if (repeatType === "daily") {
+    const label = weekdaysOnlyDaily ? "Mon-Fri" : "daily";
+    return `Course runs ${label} from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  if (repeatType === "weekly") {
+    const names = [...repeatDays].sort().map((d) => DAY_LABELS[d]).join(", ");
+    return `Course runs every ${names} from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  if (repeatType === "monthly") {
+    const dom = new Date(startDate + "T00:00:00").getDate();
+    return `Course runs on the ${dom}${ordinalSuffix(dom)} of each month from ${fmtDate(startDate)} to ${fmtDate(last)} (${occ})`;
+  }
+  return "";
+}
+
 function NewCoursePage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -84,6 +182,10 @@ function NewCoursePage() {
   const [startDate, setStartDate] = useState<string>("");
   const [dailyHours, setDailyHours] = useState<number>(4);
   const [repeatType, setRepeatType] = useState<RepeatType>("one-off");
+  const [repeatDays, setRepeatDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [weekdaysOnlyDaily, setWeekdaysOnlyDaily] = useState(false);
+  const [repeatEndDate, setRepeatEndDate] = useState<string>("");
+  const [repeatCount, setRepeatCount] = useState<string>("");
   const [pickup, setPickup] = useState<PickupItem | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
 
@@ -130,7 +232,7 @@ function NewCoursePage() {
     return ymd(d);
   }, [startDate, dailyHours, hours]);
 
-  const repeatAllowed = courseType === "weekly" || courseType === "semi-intensive";
+  
 
   async function submit(status: "active" | "draft") {
     setSaving(true);
@@ -184,7 +286,33 @@ function NewCoursePage() {
     }
 
 
-    const payload = {
+    // Build occurrence start dates for repeating courses
+    const occurrences = generateOccurrences(
+      startDate,
+      repeatType,
+      repeatDays,
+      weekdaysOnlyDaily,
+      repeatEndDate,
+      parseInt(repeatCount || "0", 10) || 0,
+    );
+    if (repeatType !== "one-off" && occurrences.length === 0) {
+      setSaving(false);
+      const msg = "Set an end date or a repeat count for the recurrence";
+      setError(msg);
+      toast.error(msg);
+      setStep(2);
+      return;
+    }
+    if (repeatType === "weekly" && repeatDays.length === 0) {
+      setSaving(false);
+      const msg = "Pick at least one day of the week";
+      setError(msg);
+      toast.error(msg);
+      setStep(2);
+      return;
+    }
+
+    const basePayload = {
       instructor_id: uid,
       course_type: courseType,
       name: name.trim(),
@@ -192,16 +320,15 @@ function NewCoursePage() {
       includes_test: includesTest,
       description: description.trim() || null,
       max_spaces: Number(maxSpaces),
-      start_date: startDate || null,
-      end_date: endDate || null,
       daily_hours: dailyHours || null,
-      repeat_type: repeatAllowed ? repeatType : "one-off",
+      repeat_type: repeatType,
+      repeat_days: repeatType === "weekly" ? repeatDays : null,
+      repeat_end_date: repeatType !== "one-off" && repeatEndDate ? repeatEndDate : null,
+      repeat_count: repeatType !== "one-off" && repeatCount ? parseInt(repeatCount, 10) : null,
       pickup_area: pickup?.postcode ?? null,
       pickup_lat: pickup?.lat ?? null,
       pickup_lng: pickup?.lng ?? null,
-
       radius_miles: Number(radiusMiles) || 10,
-
       lesson_time_preference: timePref,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
@@ -213,11 +340,22 @@ function NewCoursePage() {
       status,
     };
 
+    const dailyH = dailyHours && dailyHours > 0 ? dailyHours : 1;
+    const spanDays = Math.max(1, Math.ceil(parseFloat(String(hours)) / dailyH));
+    const rows = (repeatType === "one-off" ? [startDate] : occurrences).map((sd) => {
+      const ed = new Date(sd + "T00:00:00");
+      ed.setDate(ed.getDate() + spanDays - 1);
+      return {
+        ...basePayload,
+        start_date: sd,
+        end_date: ymd(ed),
+      };
+    });
+
     const { error: insertError } = await supabase
       .from("instructor_courses")
-      .insert(payload)
-      .select()
-      .single();
+      .insert(rows)
+      .select();
 
     setSaving(false);
 
@@ -227,7 +365,11 @@ function NewCoursePage() {
       return;
     }
 
-    toast.success(status === "active" ? "Course published!" : "Saved as draft");
+    if (status === "active") {
+      toast.success(rows.length === 1 ? "Course published!" : `${rows.length} courses published!`);
+    } else {
+      toast.success(rows.length === 1 ? "Saved as draft" : `${rows.length} drafts saved`);
+    }
     navigate({ to: "/courses" });
   }
 
@@ -354,9 +496,16 @@ function NewCoursePage() {
             dailyHours={dailyHours}
             setDailyHours={setDailyHours}
             endDate={endDate}
-            repeatAllowed={repeatAllowed}
             repeatType={repeatType}
             setRepeatType={setRepeatType}
+            repeatDays={repeatDays}
+            setRepeatDays={setRepeatDays}
+            weekdaysOnlyDaily={weekdaysOnlyDaily}
+            setWeekdaysOnlyDaily={setWeekdaysOnlyDaily}
+            repeatEndDate={repeatEndDate}
+            setRepeatEndDate={setRepeatEndDate}
+            repeatCount={repeatCount}
+            setRepeatCount={setRepeatCount}
             pickup={pickup}
             setPickup={setPickup}
             pickupError={pickupError}
@@ -611,9 +760,16 @@ function Step2(props: {
   dailyHours: number;
   setDailyHours: (n: number) => void;
   endDate: string;
-  repeatAllowed: boolean;
   repeatType: RepeatType;
   setRepeatType: (v: RepeatType) => void;
+  repeatDays: number[];
+  setRepeatDays: (v: number[]) => void;
+  weekdaysOnlyDaily: boolean;
+  setWeekdaysOnlyDaily: (v: boolean) => void;
+  repeatEndDate: string;
+  setRepeatEndDate: (v: string) => void;
+  repeatCount: string;
+  setRepeatCount: (v: string) => void;
   pickup: PickupItem | null;
   setPickup: (v: PickupItem | null) => void;
   pickupError: string | null;
@@ -625,12 +781,39 @@ function Step2(props: {
 }) {
   const {
     startDate, setStartDate, dailyHours, setDailyHours, endDate,
-    repeatAllowed, repeatType, setRepeatType, pickup, setPickup,
+    repeatType, setRepeatType, repeatDays, setRepeatDays,
+    weekdaysOnlyDaily, setWeekdaysOnlyDaily,
+    repeatEndDate, setRepeatEndDate, repeatCount, setRepeatCount,
+    pickup, setPickup,
     pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
   } = props;
 
+  const occurrences = useMemo(
+    () => generateOccurrences(
+      startDate, repeatType, repeatDays, weekdaysOnlyDaily,
+      repeatEndDate, parseInt(repeatCount || "0", 10) || 0,
+    ),
+    [startDate, repeatType, repeatDays, weekdaysOnlyDaily, repeatEndDate, repeatCount],
+  );
+  const summary = summaryText(startDate, repeatType, repeatDays, weekdaysOnlyDaily, occurrences);
 
+  const REPEAT_CARDS: Array<{
+    key: RepeatType;
+    label: string;
+    desc: string;
+    Icon: typeof Calendar;
+  }> = [
+    { key: "one-off", label: "One-off", desc: "Runs once", Icon: Calendar },
+    { key: "daily", label: "Daily", desc: "Every day", Icon: Repeat },
+    { key: "weekly", label: "Weekly", desc: "Chosen days", Icon: CalendarDays },
+    { key: "monthly", label: "Monthly", desc: "Same date each month", Icon: CalendarCheck },
+  ];
+
+  function toggleDay(d: number) {
+    if (repeatDays.includes(d)) setRepeatDays(repeatDays.filter((x) => x !== d));
+    else setRepeatDays([...repeatDays, d].sort());
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -673,38 +856,166 @@ function Step2(props: {
         </div>
       </div>
 
-      {repeatAllowed && (
+      {/* REPEAT */}
+      <div>
+        <FieldLabel>Repeat</FieldLabel>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {REPEAT_CARDS.map(({ key, label, desc, Icon }) => {
+            const active = repeatType === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setRepeatType(key)}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 4,
+                  padding: 12,
+                  borderRadius: 12,
+                  border: `2px solid ${active ? "#0F2044" : "#e3e6ec"}`,
+                  background: active ? "#0F2044" : "#fff",
+                  color: active ? "#fff" : "#1A1A2E",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                <Icon size={18} color={active ? "#fff" : "#0F2044"} />
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
+                <div style={{ fontSize: 11, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {repeatType === "weekly" && (
         <div>
-          <FieldLabel>Repeat</FieldLabel>
-          <div style={{ display: "flex", gap: 6 }}>
-            {([
-              ["one-off", "One-off"],
-              ["weekly", "Weekly"],
-              ["monthly", "Monthly"],
-            ] as Array<[RepeatType, string]>).map(([k, label]) => {
-              const active = repeatType === k;
+          <FieldLabel>Days of the week</FieldLabel>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {[1, 2, 3, 4, 5, 6, 0].map((d) => {
+              const active = repeatDays.includes(d);
               return (
                 <button
-                  key={k}
-                  onClick={() => setRepeatType(k)}
+                  key={d}
+                  onClick={() => toggleDay(d)}
                   style={{
-                    flex: 1,
+                    flex: "1 1 calc(14% - 6px)",
+                    minWidth: 44,
                     height: 40,
-                    borderRadius: 10,
-                    border: `1px solid ${active ? "#1A52A0" : "#e3e6ec"}`,
-                    background: active ? "#1A52A0" : "#fff",
-                    color: active ? "#fff" : "#1A1A2E",
+                    borderRadius: 20,
+                    border: `1px solid #0F2044`,
+                    background: active ? "#0F2044" : "#fff",
+                    color: active ? "#fff" : "#0F2044",
                     fontWeight: 600,
-                    fontSize: 13,
+                    fontSize: 12,
                     cursor: "pointer",
                     fontFamily: "Poppins, sans-serif",
                   }}
-                >{label}</button>
+                >
+                  {DAY_LABELS[d]}
+                </button>
               );
             })}
           </div>
         </div>
       )}
+
+      {repeatType !== "one-off" && (
+        <>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => {
+                if (repeatType === "weekly") setRepeatDays(WEEKDAYS);
+                if (repeatType === "daily") setWeekdaysOnlyDaily(true);
+              }}
+              style={{
+                flex: 1,
+                height: 40,
+                borderRadius: 10,
+                border: "1px solid #0F2044",
+                background:
+                  (repeatType === "weekly" && repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))) ||
+                  (repeatType === "daily" && weekdaysOnlyDaily)
+                    ? "#0F2044"
+                    : "#fff",
+                color:
+                  (repeatType === "weekly" && repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))) ||
+                  (repeatType === "daily" && weekdaysOnlyDaily)
+                    ? "#fff"
+                    : "#0F2044",
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Weekdays only
+            </button>
+            <button
+              onClick={() => {
+                if (repeatType === "weekly") setRepeatDays(ALL_DAYS);
+                if (repeatType === "daily") setWeekdaysOnlyDaily(false);
+              }}
+              style={{
+                flex: 1,
+                height: 40,
+                borderRadius: 10,
+                border: "1px solid #0F2044",
+                background:
+                  (repeatType === "weekly" && repeatDays.length === 7) ||
+                  (repeatType === "daily" && !weekdaysOnlyDaily)
+                    ? "#0F2044"
+                    : "#fff",
+                color:
+                  (repeatType === "weekly" && repeatDays.length === 7) ||
+                  (repeatType === "daily" && !weekdaysOnlyDaily)
+                    ? "#fff"
+                    : "#0F2044",
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Include weekends
+            </button>
+          </div>
+
+          <Input
+            label="Repeat until (end date)"
+            type="date"
+            value={repeatEndDate}
+            onChange={(e) => setRepeatEndDate(e.target.value)}
+          />
+          <Input
+            label="Or repeat X times"
+            type="number"
+            min={1}
+            max={500}
+            value={repeatCount}
+            onChange={(e) => setRepeatCount(e.target.value)}
+            placeholder="e.g. 12"
+          />
+        </>
+      )}
+
+      <div
+        style={{
+          padding: 12,
+          background: "#F8F9FB",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 10,
+          fontSize: 13,
+          color: "#0F2044",
+          fontFamily: "Poppins, sans-serif",
+          lineHeight: 1.4,
+        }}
+      >
+        {summary}
+      </div>
+
 
       <div>
         <FieldLabel>
