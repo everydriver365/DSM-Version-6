@@ -27,6 +27,8 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
 // alter table instructor_courses add column if not exists pickup_lat double precision;
 // alter table instructor_courses add column if not exists pickup_lng double precision;
+// alter table instructor_courses add column if not exists lesson_time_from time;
+// alter table instructor_courses add column if not exists lesson_time_to time;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
