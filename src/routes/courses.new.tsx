@@ -193,6 +193,8 @@ function NewCoursePage() {
 
   const [radiusMiles, setRadiusMiles] = useState<number>(10);
   const [timePref, setTimePref] = useState<TimePref>("flexible");
+  const [lessonTimeFrom, setLessonTimeFrom] = useState<string>("09:00");
+  const [lessonTimeTo, setLessonTimeTo] = useState<string>("17:00");
 
 
   // Step 3
