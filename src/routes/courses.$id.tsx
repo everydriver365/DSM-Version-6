@@ -59,6 +59,8 @@ interface Course {
   pickup_area: string | null;
   pickup_lat: number | null;
   pickup_lng: number | null;
+  pickup_postcodes: PickupItem[] | null;
+
   radius_miles: number | null;
 
   lesson_time_preference: string;
