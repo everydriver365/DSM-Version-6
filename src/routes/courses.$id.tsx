@@ -27,7 +27,6 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists radius_miles integer default 10;
 // alter table instructor_courses add column if not exists pickup_lat double precision;
 // alter table instructor_courses add column if not exists pickup_lng double precision;
-// alter table instructor_courses add column if not exists pickup_postcodes jsonb default '[]'::jsonb;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
@@ -36,7 +35,7 @@ function isValidUKPostcode(value: string): boolean {
   return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
 }
 const PICKUP_ERROR_MSG = "Please enter a valid UK postcode or outcode (e.g. SO22 or SO22 5DB)";
-const PICKUP_EMPTY_MSG = "Add at least one pickup postcode";
+const PICKUP_EMPTY_MSG = "Pickup postcode is required";
 
 type PickupItem = { postcode: string; lat: number | null; lng: number | null };
 
@@ -59,7 +58,6 @@ interface Course {
   pickup_area: string | null;
   pickup_lat: number | null;
   pickup_lng: number | null;
-  pickup_postcodes: PickupItem[] | null;
 
   radius_miles: number | null;
 
@@ -142,11 +140,6 @@ function CourseDetailPage() {
     }
     if (c) {
       const row = c as Course;
-      // Backfill pickup_postcodes from legacy single pickup_area when missing
-      if ((!row.pickup_postcodes || row.pickup_postcodes.length === 0) && row.pickup_area) {
-        row.pickup_postcodes = [{ postcode: row.pickup_area, lat: row.pickup_lat, lng: row.pickup_lng }];
-      }
-      if (!row.pickup_postcodes) row.pickup_postcodes = [];
       setCourse(row);
       setForm(row);
     }
@@ -168,11 +161,11 @@ function CourseDetailPage() {
 
   async function saveChanges() {
     if (!form) return;
-    const pickups = form.pickup_postcodes ?? [];
-    if (pickups.length === 0) {
-      setPickupError(PICKUP_EMPTY_MSG);
-      setError(PICKUP_EMPTY_MSG);
-      toast.error(PICKUP_EMPTY_MSG);
+    if (!form.pickup_area || !isValidUKPostcode(form.pickup_area)) {
+      const msg = !form.pickup_area ? PICKUP_EMPTY_MSG : PICKUP_ERROR_MSG;
+      setPickupError(msg);
+      setError(msg);
+      toast.error(msg);
       return;
     }
     setSaving(true);
@@ -189,10 +182,9 @@ function CourseDetailPage() {
         max_spaces: Number(patch.max_spaces) || 1,
         daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
         radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
-        pickup_postcodes: pickups,
-        pickup_area: pickups[0]?.postcode ?? null,
-        pickup_lat: pickups[0]?.lat ?? null,
-        pickup_lng: pickups[0]?.lng ?? null,
+        pickup_area: form.pickup_area,
+        pickup_lat: form.pickup_lat,
+        pickup_lng: form.pickup_lng,
       })
       .eq("id", id);
 
@@ -426,11 +418,22 @@ function CourseDetailPage() {
                   />
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
-                      Pickup postcodes <span style={{ color: "#CC2229" }}>*</span>
+                      Pickup postcode <span style={{ color: "#CC2229" }}>*</span>
                     </div>
-                    <PostcodeMultiPicker
-                      values={form.pickup_postcodes ?? []}
-                      onChange={(vs) => setForm({ ...form, pickup_postcodes: vs })}
+                    <PostcodeAutocomplete
+                      value={
+                        form.pickup_area
+                          ? { postcode: form.pickup_area, lat: form.pickup_lat, lng: form.pickup_lng }
+                          : null
+                      }
+                      onChange={(v) =>
+                        setForm({
+                          ...form,
+                          pickup_area: v?.postcode ?? null,
+                          pickup_lat: v?.lat ?? null,
+                          pickup_lng: v?.lng ?? null,
+                        })
+                      }
                       error={pickupError}
                       onErrorChange={setPickupError}
                     />
@@ -530,12 +533,8 @@ function CourseDetailPage() {
                   <DetailRow label="End date" value={formatDate(course.end_date)} />
                   <DetailRow label="Daily hours" value={course.daily_hours ? `${course.daily_hours}h` : "—"} />
                   <DetailRow
-                    label="Pickup postcodes"
-                    value={
-                      (course.pickup_postcodes ?? []).length > 0
-                        ? (course.pickup_postcodes ?? []).map((p) => p.postcode).join(", ")
-                        : (course.pickup_area || "—")
-                    }
+                    label="Pickup postcode"
+                    value={course.pickup_area || "—"}
                   />
 
                   <DetailRow
@@ -1044,27 +1043,36 @@ function AddBookingSheet({
   );
 }
 
-/* ---------- PostcodeMultiPicker ---------- */
+/* ---------- PostcodeAutocomplete ---------- */
 type PostcodeSuggestion = { postcode: string; area: string };
 
-function PostcodeMultiPicker(props: {
-  values: PickupItem[];
-  onChange: (values: PickupItem[]) => void;
+function PostcodeAutocomplete(props: {
+  value: PickupItem | null;
+  onChange: (v: PickupItem | null) => void;
   error: string | null;
   onErrorChange: (e: string | null) => void;
 }) {
-  const { values, onChange, error, onErrorChange } = props;
-  const [input, setInput] = useState("");
+  const { value, onChange, error, onErrorChange } = props;
+  const [input, setInput] = useState(value?.postcode ?? "");
   const [suggestions, setSuggestions] = useState<PostcodeSuggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [focused, setFocused] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastValueRef = useRef<string>(value?.postcode ?? "");
+
+  useEffect(() => {
+    const pc = value?.postcode ?? "";
+    if (pc !== lastValueRef.current) {
+      lastValueRef.current = pc;
+      setInput(pc);
+    }
+  }, [value?.postcode]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const q = input.trim();
-    if (q.length < 2) {
+    if (q.length < 2 || q.toUpperCase() === (value?.postcode ?? "").toUpperCase()) {
       setSuggestions([]);
       setOpen(false);
       return;
@@ -1089,17 +1097,17 @@ function PostcodeMultiPicker(props: {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [input]);
+  }, [input, value?.postcode]);
 
-  async function addByText(raw: string) {
+  async function commitText(raw: string) {
     const v = raw.trim().toUpperCase();
-    if (!v) return;
-    if (!isValidUKPostcode(v)) {
-      onErrorChange(PICKUP_ERROR_MSG);
+    if (!v) {
+      onChange(null);
+      lastValueRef.current = "";
       return;
     }
-    if (values.some((p) => p.postcode.toUpperCase() === v)) {
-      setInput("");
+    if (!isValidUKPostcode(v)) {
+      onErrorChange(PICKUP_ERROR_MSG);
       return;
     }
     let canonical = v;
@@ -1123,60 +1131,21 @@ function PostcodeMultiPicker(props: {
         /* keep raw */
       }
     }
-    if (values.some((p) => p.postcode === canonical)) {
-      setInput("");
-      return;
-    }
     onErrorChange(null);
-    onChange([...values, { postcode: canonical, lat, lng }]);
-    setInput("");
+    lastValueRef.current = canonical;
+    onChange({ postcode: canonical, lat, lng });
+    setInput(canonical);
     setOpen(false);
     setSuggestions([]);
   }
 
-  function removeAt(i: number) {
-    onChange(values.filter((_, idx) => idx !== i));
-  }
-
   async function selectSuggestion(s: PostcodeSuggestion) {
     setOpen(false);
-    await addByText(s.postcode);
+    await commitText(s.postcode);
   }
 
   return (
     <div style={{ position: "relative" }}>
-      {values.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-          {values.map((p, i) => (
-            <span
-              key={`${p.postcode}-${i}`}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "#e8eefb",
-                color: "#0F2044",
-                fontWeight: 600,
-                fontSize: 13,
-                padding: "4px 6px 4px 10px",
-                borderRadius: 16,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              <MapPin size={12} color="#1A52A0" />
-              {p.postcode}
-              <button
-                type="button"
-                onClick={() => removeAt(i)}
-                aria-label={`Remove ${p.postcode}`}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#1A52A0", display: "flex", padding: 2 }}
-              >
-                <X size={12} />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
       <div style={{ position: "relative" }}>
         <MapPin
           size={16}
@@ -1193,6 +1162,15 @@ function PostcodeMultiPicker(props: {
           onBlur={() => {
             setFocused(false);
             setTimeout(() => setOpen(false), 150);
+            const trimmed = input.trim();
+            if (!trimmed) {
+              onChange(null);
+              lastValueRef.current = "";
+              return;
+            }
+            if (trimmed.toUpperCase() !== (value?.postcode ?? "").toUpperCase()) {
+              void commitText(trimmed);
+            }
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -1202,11 +1180,7 @@ function PostcodeMultiPicker(props: {
             if (e.key === "Enter") {
               e.preventDefault();
               if (open && active >= 0 && suggestions[active]) void selectSuggestion(suggestions[active]);
-              else void addByText(input);
-              return;
-            }
-            if (e.key === "Backspace" && !input && values.length > 0) {
-              removeAt(values.length - 1);
+              else void commitText(input);
               return;
             }
             if (!open || suggestions.length === 0) return;
@@ -1218,11 +1192,11 @@ function PostcodeMultiPicker(props: {
               setActive((a) => Math.max(a - 1, 0));
             }
           }}
-          placeholder={values.length === 0 ? "Add a postcode (e.g. SO22 5DB)" : "Add another postcode"}
+          placeholder="e.g. SO22 5DB"
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${focused ? "#1A52A0" : "#E2E6ED"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A52A0" : "#E2E6ED"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Poppins, sans-serif",
