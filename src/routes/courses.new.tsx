@@ -192,7 +192,10 @@ function NewCoursePage() {
       daily_hours: dailyHours || null,
       repeat_type: repeatAllowed ? repeatType : "one-off",
       pickup_area: pickupArea.trim() || null,
+      pickup_lat: pickupLat,
+      pickup_lng: pickupLng,
       radius_miles: Number(radiusMiles) || 10,
+
       lesson_time_preference: timePref,
       price: parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
