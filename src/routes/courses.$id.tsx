@@ -470,17 +470,95 @@ function CourseDetailPage() {
                       ))}
                     </select>
                   </div>
-                  <SelectRow
-                    label="Lesson time"
-                    value={form.lesson_time_preference}
-                    options={[
-                      ["flexible", "Flexible"],
-                      ["morning", "Morning"],
-                      ["afternoon", "Afternoon"],
-                      ["evening", "Evening"],
-                    ]}
-                    onChange={(v) => setForm({ ...form, lesson_time_preference: v })}
-                  />
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                      Lesson time
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                      {([
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A52A0", full: false },
+                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
+                        { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
+                        { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
+                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A52A0", full: false },
+                        { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
+                      ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
+                        const active = (form.lesson_time_preference || "flexible") === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() =>
+                              setForm((prev) =>
+                                prev ? { ...prev, lesson_time_preference: key } : prev,
+                              )
+                            }
+                            style={{
+                              gridColumn: full ? "1 / -1" : undefined,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: `1.5px solid ${active ? color : "#E2E6ED"}`,
+                              background: active ? `${color}10` : "#fff",
+                              cursor: "pointer",
+                              fontFamily: "Poppins, sans-serif",
+                              textAlign: "left",
+                            }}
+                          >
+                            <div style={{
+                              width: 32, height: 32, borderRadius: 8,
+                              background: `${color}1a`, color,
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              flexShrink: 0,
+                            }}>
+                              <Icon size={18} />
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>{label}</span>
+                              <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {form.lesson_time_preference === "custom" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+                        <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>From</span>
+                          <input
+                            type="time"
+                            value={form.lesson_time_from ?? "09:00"}
+                            onChange={(e) =>
+                              setForm((prev) => (prev ? { ...prev, lesson_time_from: e.target.value || null } : prev))
+                            }
+                            style={{
+                              height: 44, borderRadius: 10, border: "0.5px solid #E2E6ED",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                              color: "#1A1A2E", background: "#fff",
+                            }}
+                          />
+                        </label>
+                        <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>To</span>
+                          <input
+                            type="time"
+                            value={form.lesson_time_to ?? "17:00"}
+                            onChange={(e) =>
+                              setForm((prev) => (prev ? { ...prev, lesson_time_to: e.target.value || null } : prev))
+                            }
+                            style={{
+                              height: 44, borderRadius: 10, border: "0.5px solid #E2E6ED",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                              color: "#1A1A2E", background: "#fff",
+                            }}
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
                       Repeat
