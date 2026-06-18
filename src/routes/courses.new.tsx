@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck } from "lucide-react";
+import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
