@@ -141,9 +141,16 @@ function CourseDetailPage() {
       setError(cErr.message);
     }
     if (c) {
-      setCourse(c as Course);
-      setForm(c as Course);
+      const row = c as Course;
+      // Backfill pickup_postcodes from legacy single pickup_area when missing
+      if ((!row.pickup_postcodes || row.pickup_postcodes.length === 0) && row.pickup_area) {
+        row.pickup_postcodes = [{ postcode: row.pickup_area, lat: row.pickup_lat, lng: row.pickup_lng }];
+      }
+      if (!row.pickup_postcodes) row.pickup_postcodes = [];
+      setCourse(row);
+      setForm(row);
     }
+
     const { data: bs, error: bErr } = await supabase
       .from("course_bookings")
       .select("*")
