@@ -408,20 +408,16 @@ function CourseDetailPage() {
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
                       Pickup area <span style={{ color: "#CC2229" }}>*</span>
                     </div>
-                    <Input
+                    <PostcodeAutocomplete
                       value={form.pickup_area ?? ""}
-                      onChange={(e) => {
-                        setForm({ ...form, pickup_area: e.target.value || null });
-                        if (pickupError) setPickupError(null);
-                      }}
-                      placeholder="e.g. SO23 or SO23 9AA"
+                      onChange={(pc, lat, lng) =>
+                        setForm({ ...form, pickup_area: pc || null, pickup_lat: lat, pickup_lng: lng })
+                      }
+                      error={pickupError}
+                      onErrorChange={setPickupError}
                     />
-                    {pickupError && (
-                      <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4 }}>
-                        {pickupError}
-                      </div>
-                    )}
                   </div>
+
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
                       Coverage radius
