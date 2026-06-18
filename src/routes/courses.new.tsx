@@ -20,7 +20,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
-type TimePref = "morning" | "afternoon" | "evening" | "flexible";
+type TimePref = "flexible" | "morning" | "afternoon" | "evening" | "daytime" | "school" | "custom";
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
 const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
@@ -33,6 +33,8 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 // alter table instructor_courses add column if not exists repeat_days integer[];
 // alter table instructor_courses add column if not exists repeat_end_date date;
 // alter table instructor_courses add column if not exists repeat_count integer;
+// alter table instructor_courses add column if not exists lesson_time_from time;
+// alter table instructor_courses add column if not exists lesson_time_to time;
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
