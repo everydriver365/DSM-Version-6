@@ -351,10 +351,11 @@ function NewCoursePage() {
             repeatAllowed={repeatAllowed}
             repeatType={repeatType}
             setRepeatType={setRepeatType}
-            pickupArea={pickupArea}
-            setPickup={(pc, lat, lng) => { setPickupArea(pc); setPickupLat(lat); setPickupLng(lng); }}
+            pickups={pickups}
+            setPickups={setPickups}
             pickupError={pickupError}
             setPickupError={setPickupError}
+
 
             radiusMiles={radiusMiles}
             setRadiusMiles={setRadiusMiles}
