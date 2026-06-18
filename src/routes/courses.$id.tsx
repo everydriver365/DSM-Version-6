@@ -27,7 +27,7 @@ const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 const UK_OUTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?$/i;
-function isValidPickupArea(value: string): boolean {
+function isValidUKPostcode(value: string): boolean {
   const v = value.trim();
   return UK_POSTCODE_RE.test(v) || UK_OUTCODE_RE.test(v);
 }
@@ -147,7 +147,7 @@ function CourseDetailPage() {
 
   async function saveChanges() {
     if (!form) return;
-    if (!isValidPickupArea(form.pickup_area ?? "")) {
+    if (!isValidUKPostcode(form.pickup_area ?? "")) {
       setPickupError(PICKUP_ERROR_MSG);
       setError(PICKUP_ERROR_MSG);
       toast.error(PICKUP_ERROR_MSG);

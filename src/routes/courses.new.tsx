@@ -155,7 +155,7 @@ function NewCoursePage() {
       if (!startDate) missing.push("start_date");
     }
     // Pickup area required & must be a valid UK postcode/outcode (active publish only)
-    if (status === "active" && !isValidPickupArea(pickupArea)) {
+    if (status === "active" && !isValidUKPostcode(pickupArea)) {
       setSaving(false);
       setPickupError(PICKUP_ERROR_MSG);
       setError(PICKUP_ERROR_MSG);
@@ -219,7 +219,7 @@ function NewCoursePage() {
   }
 
   function goNext() {
-    if (step === 2 && !isValidPickupArea(pickupArea)) {
+    if (step === 2 && !isValidUKPostcode(pickupArea)) {
       setPickupError(PICKUP_ERROR_MSG);
       toast.error(PICKUP_ERROR_MSG);
       return;
