@@ -55,6 +55,8 @@ interface Course {
   end_date: string | null;
   daily_hours: number | null;
   repeat_type: string;
+  repeat_days: number[] | null;
+  repeat_end_date: string | null;
   pickup_area: string | null;
   pickup_lat: number | null;
   pickup_lng: number | null;
@@ -475,16 +477,140 @@ function CourseDetailPage() {
                     ]}
                     onChange={(v) => setForm({ ...form, lesson_time_preference: v })}
                   />
-                  <SelectRow
-                    label="Repeat"
-                    value={form.repeat_type}
-                    options={[
-                      ["one-off", "One-off"],
-                      ["weekly", "Weekly"],
-                      ["monthly", "Monthly"],
-                    ]}
-                    onChange={(v) => setForm({ ...form, repeat_type: v })}
-                  />
+                  <div>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                      Repeat
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+                      {([
+                        ["one-off", "One-off"],
+                        ["daily", "Daily"],
+                        ["weekly", "Weekly"],
+                        ["monthly", "Monthly"],
+                      ] as const).map(([key, label]) => {
+                        const active = form.repeat_type === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() =>
+                              setForm((prev) =>
+                                prev ? { ...prev, repeat_type: key } : prev,
+                              )
+                            }
+                            style={{
+                              height: 36,
+                              borderRadius: 8,
+                              border: `1px solid ${active ? "#0F2044" : "#E2E6ED"}`,
+                              background: active ? "#0F2044" : "#fff",
+                              color: active ? "#fff" : "#0F2044",
+                              fontFamily: "Poppins, sans-serif",
+                              fontSize: 12,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {form.repeat_type === "weekly" && (
+                    <div>
+                      <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                        Repeat on
+                      </div>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                        {([
+                          [1, "Mon"],
+                          [2, "Tue"],
+                          [3, "Wed"],
+                          [4, "Thu"],
+                          [5, "Fri"],
+                          [6, "Sat"],
+                          [0, "Sun"],
+                        ] as const).map(([d, lbl]) => {
+                          const days = form.repeat_days ?? [];
+                          const active = days.includes(d);
+                          return (
+                            <button
+                              key={d}
+                              type="button"
+                              onClick={() =>
+                                setForm((prev) => {
+                                  if (!prev) return prev;
+                                  const cur = prev.repeat_days ?? [];
+                                  const next = cur.includes(d)
+                                    ? cur.filter((x) => x !== d)
+                                    : [...cur, d].sort((a, b) => a - b);
+                                  return { ...prev, repeat_days: next };
+                                })
+                              }
+                              style={{
+                                minWidth: 44,
+                                height: 36,
+                                padding: "0 10px",
+                                borderRadius: 999,
+                                border: `1px solid ${active ? "#0F2044" : "#E2E6ED"}`,
+                                background: active ? "#0F2044" : "#fff",
+                                color: active ? "#fff" : "#0F2044",
+                                fontFamily: "Poppins, sans-serif",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {lbl}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                        {([
+                          ["Weekdays", [1, 2, 3, 4, 5]],
+                          ["Weekends", [0, 6]],
+                          ["All", [0, 1, 2, 3, 4, 5, 6]],
+                        ] as const).map(([lbl, arr]) => (
+                          <button
+                            key={lbl}
+                            type="button"
+                            onClick={() =>
+                              setForm((prev) =>
+                                prev ? { ...prev, repeat_days: [...arr] } : prev,
+                              )
+                            }
+                            style={{
+                              height: 30,
+                              padding: "0 12px",
+                              borderRadius: 999,
+                              border: "1px solid #E2E6ED",
+                              background: "#fff",
+                              color: "#0F2044",
+                              fontFamily: "Poppins, sans-serif",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {lbl}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {form.repeat_type !== "one-off" && (
+                    <Input
+                      label="Repeat until"
+                      type="date"
+                      value={form.repeat_end_date ?? ""}
+                      onChange={(e) =>
+                        setForm({ ...form, repeat_end_date: e.target.value || null })
+                      }
+                    />
+                  )}
                   <ToggleRow
                     label="Includes test"
                     value={form.includes_test}
