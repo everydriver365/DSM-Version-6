@@ -344,8 +344,10 @@ function NewCoursePage() {
             repeatType={repeatType}
             setRepeatType={setRepeatType}
             pickupArea={pickupArea}
-            setPickupArea={(v) => { setPickupArea(v); if (pickupError) setPickupError(null); }}
+            setPickup={(pc, lat, lng) => { setPickupArea(pc); setPickupLat(lat); setPickupLng(lng); }}
             pickupError={pickupError}
+            setPickupError={setPickupError}
+
             radiusMiles={radiusMiles}
             setRadiusMiles={setRadiusMiles}
             timePref={timePref}
