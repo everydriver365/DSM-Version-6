@@ -695,17 +695,14 @@ function Step2(props: {
         <FieldLabel>
           Pickup area <span style={{ color: "#CC2229" }}>*</span>
         </FieldLabel>
-        <Input
+        <PostcodeAutocomplete
           value={pickupArea}
-          onChange={(e) => setPickupArea(e.target.value)}
-          placeholder="e.g. SO23 or SO23 9AA"
+          onChange={setPickup}
+          error={pickupError}
+          onErrorChange={setPickupError}
         />
-        {pickupError && (
-          <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
-            {pickupError}
-          </div>
-        )}
       </div>
+
 
       <div>
         <FieldLabel>Coverage radius</FieldLabel>
