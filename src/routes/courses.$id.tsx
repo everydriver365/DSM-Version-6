@@ -155,6 +155,7 @@ function CourseDetailPage() {
       .select("*")
       .eq("course_id", id)
       .order("booked_at", { ascending: false });
+    console.log("[courses.$id] bookings fetch result:", bs, bErr);
     if (bErr) console.error("[courses.$id] load bookings", bErr);
     setBookings((bs ?? []) as Booking[]);
     setLoading(false);
