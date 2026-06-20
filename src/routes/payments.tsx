@@ -547,6 +547,15 @@ function RecordSheet({
       .eq("id", pupilId);
     if (updErr) console.error("[payments] record update balance error", updErr);
 
+    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      instructor_id: userId,
+      title: "Payment received",
+      body: `£${amt.toFixed(2)} received from ${pupil?.name ?? "pupil"}`,
+      type: "payment",
+      read: false,
+    });
+    if (notifErr) console.error("[payments] record notification error", notifErr);
+
     const payment: PaymentRow = {
       ...inserted!,
       pupils: { name: pupil?.name ?? "Unknown pupil" },
