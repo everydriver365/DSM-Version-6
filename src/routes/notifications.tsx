@@ -78,7 +78,7 @@ function NotificationsPage() {
       if (!uid) return;
       const { data: rows, error } = await supabase
         .from("instructor_notifications")
-        .select("id, instructor_id, title, body, type, read, created_at")
+        .select("id, instructor_id, title, body, type, read, created_at, reference_id, reference_type")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
       if (error) console.error("[notifications] fetch error", error);
