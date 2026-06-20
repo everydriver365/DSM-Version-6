@@ -27,6 +27,8 @@ interface Notification {
   type: string | null;
   read: boolean;
   created_at: string;
+  reference_id: string | null;
+  reference_type: string | null;
 }
 
 function startOfDay(d: Date) {
