@@ -216,7 +216,21 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
-  const [notifCount] = useState(3);
+  const [notifCount, setNotifCount] = useState(0);
+
+  useEffect(() => {
+    async function loadCount() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { count } = await supabase
+        .from("instructor_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .eq("read", false);
+      setNotifCount(count || 0);
+    }
+    loadCount();
+  }, []);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
