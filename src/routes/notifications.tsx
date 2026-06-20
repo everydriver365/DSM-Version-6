@@ -27,6 +27,8 @@ interface Notification {
   type: string | null;
   read: boolean;
   created_at: string;
+  reference_id: string | null;
+  reference_type: string | null;
 }
 
 function startOfDay(d: Date) {
@@ -76,7 +78,7 @@ function NotificationsPage() {
       if (!uid) return;
       const { data: rows, error } = await supabase
         .from("instructor_notifications")
-        .select("id, instructor_id, title, body, type, read, created_at")
+        .select("id, instructor_id, title, body, type, read, created_at, reference_id, reference_type")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
       if (error) console.error("[notifications] fetch error", error);
@@ -174,7 +176,11 @@ function NotificationsPage() {
                       onClick={() => {
                         markRead(n.id);
                         if (n.type === "booking") {
-                          navigate({ to: "/courses" });
+                          if (n.reference_id) {
+                            navigate({ to: "/courses/$id", params: { id: n.reference_id } });
+                          } else {
+                            navigate({ to: "/courses" });
+                          }
                         } else if (n.type === "enquiry") {
                           navigate({ to: "/enquiries" });
                         } else if (n.type === "message") {
