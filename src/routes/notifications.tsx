@@ -171,7 +171,16 @@ function NotificationsPage() {
                     <button
                       key={n.id}
                       type="button"
-                      onClick={() => !n.read && markRead(n.id)}
+                      onClick={() => {
+                        markRead(n.id);
+                        if (n.type === "booking") {
+                          navigate({ to: "/courses" });
+                        } else if (n.type === "enquiry") {
+                          navigate({ to: "/enquiries" });
+                        } else if (n.type === "message") {
+                          navigate({ to: "/messages" });
+                        }
+                      }}
                       className="w-full text-left rounded-xl overflow-hidden"
                       style={{
                         backgroundColor: n.read ? "#F8F9FB" : "#EEF4FB",
