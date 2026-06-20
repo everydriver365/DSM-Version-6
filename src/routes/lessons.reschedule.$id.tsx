@@ -138,7 +138,8 @@ function RescheduleLessonPage() {
         instructor_id: instructorId,
         title: "Lesson rescheduled",
         body: `${pupilName} moved to ${formatDateLong(newDateObj)} ${time}`,
-        type: "info",
+        type: "lesson",
+        read: false,
       });
       if (notifErr) console.error("[reschedule] notification error", notifErr);
     }

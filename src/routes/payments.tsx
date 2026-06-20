@@ -157,6 +157,15 @@ function PaymentsPage() {
       return;
     }
 
+    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      instructor_id: userId,
+      title: "Payment received",
+      body: `£${Number(amount).toFixed(2)} received from ${pupil.name}`,
+      type: "payment",
+      read: false,
+    });
+    if (notifErr) console.error("[payments] notification error", notifErr);
+
     setOutstanding((prev) => (prev ?? []).filter((p) => p.id !== pupil.id));
     setAllPupils((prev) =>
       prev.map((p) => (p.id === pupil.id ? { ...p, balance_owed: 0 } : p)),
@@ -537,6 +546,15 @@ function RecordSheet({
       .update({ balance_owed: newBalance })
       .eq("id", pupilId);
     if (updErr) console.error("[payments] record update balance error", updErr);
+
+    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      instructor_id: userId,
+      title: "Payment received",
+      body: `£${amt.toFixed(2)} received from ${pupil?.name ?? "pupil"}`,
+      type: "payment",
+      read: false,
+    });
+    if (notifErr) console.error("[payments] record notification error", notifErr);
 
     const payment: PaymentRow = {
       ...inserted!,

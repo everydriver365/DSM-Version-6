@@ -354,6 +354,19 @@ function CancelLessonSheet({
       if (updErr) console.error("[cancel] pupil balance update error", updErr);
     }
 
+    const { data: userRes } = await supabase.auth.getUser();
+    const instructorId = userRes.user?.id ?? null;
+    if (instructorId) {
+      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+        instructor_id: instructorId,
+        title: "Lesson cancelled",
+        body: `${pupilName}'s lesson on ${when} was cancelled`,
+        type: "lesson",
+        read: false,
+      });
+      if (notifErr) console.error("[cancel] notification error", notifErr);
+    }
+
     setSubmitting(false);
     onCancelled();
   }

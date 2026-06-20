@@ -404,6 +404,15 @@ function AddTestSheet({
       toast.error("Couldn't add test");
       return;
     }
+    const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "Pupil";
+    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      instructor_id: userId,
+      title: "Test date set",
+      body: `${pupilName}'s test is on ${formatDateLong(date)} at ${centre || "TBC"}`,
+      type: "test",
+      read: false,
+    });
+    if (notifErr) console.error("[tests] notification error", notifErr);
     toast.success("Test added");
     onAdded();
   }
