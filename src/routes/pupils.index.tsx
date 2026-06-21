@@ -26,7 +26,7 @@ interface Pupil {
   status: string | null;
 }
 
-type StatusKey = "active" | "passed" | "inactive" | "archived";
+type StatusKey = "active" | "passed" | "archived";
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -66,14 +66,16 @@ function PupilsIndexPage() {
         .order("name", { ascending: true, nullsFirst: false });
 
       if (tab === "archived") {
-        q = q.not("deleted_at", "is", null);
+        q = q.or("deleted_at.not.is.null,status.eq.inactive,status.eq.cancelled");
       } else if (tab === "passed") {
         q = q.is("deleted_at", null).eq("status", "passed");
-      } else if (tab === "inactive") {
-        q = q.is("deleted_at", null).eq("status", "inactive");
       } else {
-        // active: anything not inactive and not deleted
-        q = q.is("deleted_at", null).neq("status", "inactive").neq("status", "passed");
+        // active: not deleted and not passed/inactive/cancelled
+        q = q
+          .is("deleted_at", null)
+          .neq("status", "inactive")
+          .neq("status", "passed")
+          .neq("status", "cancelled");
       }
 
       const { data, error } = await q;
@@ -170,7 +172,6 @@ function PupilsIndexPage() {
             [
               { k: "active", label: "Active" },
               { k: "passed", label: "Passed" },
-              { k: "inactive", label: "Inactive" },
               { k: "archived", label: "Archived" },
             ] as { k: StatusKey; label: string }[]
           ).map((s) => {
