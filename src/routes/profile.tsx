@@ -438,13 +438,29 @@ function ProfilePage() {
     console.log("[profile] save payload includes profile_image_url:", payload.profile_image_url);
     const saveResponse = await supabase.from("instructors").upsert(payload);
     console.log("[profile] save response:", saveResponse);
+
+    const newEmail = email.trim();
+    const emailChanged = newEmail.length > 0 && newEmail.toLowerCase() !== originalEmail.trim().toLowerCase();
+    if (emailChanged) {
+      console.log("[profile] saving email:", newEmail);
+      const { data: emailData, error: emailError } = await supabase.auth.updateUser({ email: newEmail });
+      console.log("[profile] auth.updateUser response:", { emailData, emailError });
+      if (emailError) {
+        console.error("[profile] email update", emailError);
+        toast.error(emailError.message || "Couldn't update email");
+        setSaving(false);
+        return;
+      }
+      toast.success("Check your new email address to confirm the change");
+    }
+
     setSaving(false);
     if (saveResponse.error) {
       console.error("[profile] save", saveResponse.error);
       toast.error("Couldn't save profile");
       return;
     }
-    toast.success("Saved");
+    if (!emailChanged) toast.success("Saved");
   }
 
   async function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
