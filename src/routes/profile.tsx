@@ -270,6 +270,9 @@ function ProfilePage() {
   const [transmission, setTransmission] = useState("Manual");
   const [dualControls, setDualControls] = useState(false);
   const [insuranceExpiry, setInsuranceExpiry] = useState("");
+  const [vehiclePhotoUrl, setVehiclePhotoUrl] = useState<string | null>(null);
+  const [uploadingVehicle, setUploadingVehicle] = useState(false);
+  const vehiclePhotoRef = useRef<HTMLInputElement>(null);
 
   // Notifications
   const [notifPrefs, setNotifPrefs] = useState<NotifPrefs>(defaultNotifPrefs());
