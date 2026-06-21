@@ -58,6 +58,7 @@ import {
   Trophy,
   LogOut,
   LogIn,
+  Globe,
 } from "lucide-react";
 import {
   Dialog,
@@ -776,6 +777,7 @@ function HomePage() {
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Quotes", route: "/quotes" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Briefing", route: "/briefing" },
     { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
+    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "My website", route: "/minisite" },
 
   ] as const;
 
