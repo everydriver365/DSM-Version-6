@@ -673,6 +673,3 @@ function MiniSitePage() {
     </div>
   );
 }
-
-// Re-export so tree-shake keeps the icon for the home tile reference.
-export { Globe };
