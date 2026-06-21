@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Check, CheckCircle, Globe, Clock } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -13,7 +13,9 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
+
+type WebsiteChoice = "yes" | "existing" | "later" | null;
 
 type Day = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 const DAYS: { key: Day; label: string }[] = [
@@ -46,6 +48,7 @@ function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +64,10 @@ function OnboardingPage() {
 
   const [hours, setHours] = useState<Record<Day, DayHours>>(DEFAULT_HOURS);
 
+  const [websiteChoice, setWebsiteChoice] = useState<WebsiteChoice>(null);
+  const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
+  const [existingWebsiteUrl, setExistingWebsiteUrl] = useState("");
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -69,6 +76,7 @@ function OnboardingPage() {
         return;
       }
       setUserId(data.user.id);
+      setUserEmail(data.user.email ?? null);
     })();
   }, [navigate]);
 
@@ -84,33 +92,34 @@ function OnboardingPage() {
     try {
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
-      // Generate a unique app_slug from the name
-      const base =
-        fullName
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "") || "instructor";
+      let uniqueSlug: string | null = null;
+      if (websiteChoice === "yes") {
+        // Generate a unique app_slug from the name
+        const base =
+          fullName
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9-]/g, "")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "") || "instructor";
 
-      let uniqueSlug = base;
-      let suffix = 1;
-      // Loop until we find a slug not taken by another instructor
-      // (allow our own existing row to keep its slug)
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { data: existing, error: slugErr } = await supabase
-          .from("instructors")
-          .select("id")
-          .eq("app_slug", uniqueSlug)
-          .maybeSingle();
-        if (slugErr) {
-          console.warn("[onboarding] slug lookup error", slugErr);
-          break;
+        uniqueSlug = base;
+        let suffix = 1;
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const { data: existing, error: slugErr } = await supabase
+            .from("instructors")
+            .select("id")
+            .eq("app_slug", uniqueSlug)
+            .maybeSingle();
+          if (slugErr) {
+            console.warn("[onboarding] slug lookup error", slugErr);
+            break;
+          }
+          if (!existing || existing.id === userId) break;
+          suffix += 1;
+          uniqueSlug = `${base}-${suffix}`;
         }
-        if (!existing || existing.id === userId) break;
-        suffix += 1;
-        uniqueSlug = `${base}-${suffix}`;
       }
 
       const { error: instErr } = await supabase.from("instructors").upsert({
@@ -121,8 +130,23 @@ function OnboardingPage() {
         car_model: carModel.trim() || null,
         app_slug: uniqueSlug,
         website_published: false,
+        wants_custom_domain: websiteChoice === "yes" && wantsCustomDomain,
+        existing_website_url:
+          websiteChoice === "existing" && existingWebsiteUrl.trim()
+            ? existingWebsiteUrl.trim()
+            : null,
       });
       if (instErr) throw instErr;
+
+      if (websiteChoice === "yes" && wantsCustomDomain) {
+        const { error: csErr } = await supabase.from("contact_submissions").insert({
+          name: fullName,
+          email: userEmail,
+          subject: "Custom domain request",
+          message: "Instructor requested a custom domain during onboarding",
+        });
+        if (csErr) console.warn("[onboarding] contact_submissions insert error", csErr);
+      }
 
       const rows = DAYS.map(({ key }) => ({
         instructor_id: userId,
@@ -277,6 +301,78 @@ function OnboardingPage() {
         )}
 
         {step === 5 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-[24px] font-bold text-[#0F2044]">Want a free website?</h2>
+            <p className="text-[14px] text-[#6B7280]">
+              Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
+            </p>
+
+            <ChoiceCard
+              icon={<CheckCircle size={22} color="#10B981" />}
+              title="Yes, set me up"
+              subtitle="I'll get a free page at everydriver.co.uk/i/[your-name]"
+              selected={websiteChoice === "yes"}
+              onClick={() => setWebsiteChoice("yes")}
+            />
+            {websiteChoice === "yes" && (
+              <div className="pl-2 -mt-2 flex flex-col gap-2">
+                <label className="flex items-start gap-2 text-[13px] text-[#0F2044] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={wantsCustomDomain}
+                    onChange={(e) => setWantsCustomDomain(e.target.checked)}
+                    className="h-4 w-4 mt-0.5 accent-[#1A52A0]"
+                  />
+                  <span>
+                    I&apos;d like a custom domain (e.g. www.myname.co.uk) — contact me about this
+                  </span>
+                </label>
+                {wantsCustomDomain && (
+                  <p className="text-[12px] text-[#1A52A0] bg-[#EEF3FB] rounded-md px-3 py-2">
+                    Our team will be in touch to help set this up
+                  </p>
+                )}
+              </div>
+            )}
+
+            <ChoiceCard
+              icon={<Globe size={22} color="#1A52A0" />}
+              title="I already have a website"
+              subtitle="Skip this — I'll link my existing site instead"
+              selected={websiteChoice === "existing"}
+              onClick={() => setWebsiteChoice("existing")}
+            />
+            {websiteChoice === "existing" && (
+              <div className="pl-2 -mt-2">
+                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
+                  Your website URL (optional)
+                </label>
+                <input
+                  type="url"
+                  value={existingWebsiteUrl}
+                  placeholder="https://www.mydrivingschool.co.uk"
+                  onChange={(e) => setExistingWebsiteUrl(e.target.value)}
+                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+                  style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
+                />
+              </div>
+            )}
+
+            <ChoiceCard
+              icon={<Clock size={22} color="#6B7280" />}
+              title="Not right now"
+              subtitle="I can set this up later from settings"
+              selected={websiteChoice === "later"}
+              onClick={() => setWebsiteChoice("later")}
+            />
+
+            <Button onClick={next} className="h-12 mt-2" disabled={!websiteChoice}>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step === 6 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
@@ -328,5 +424,38 @@ function Field({
         style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
       />
     </div>
+  );
+}
+
+function ChoiceCard({
+  icon,
+  title,
+  subtitle,
+  selected,
+  onClick,
+}: {
+  icon: ReactNode;
+  title: string;
+  subtitle: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-start gap-3 rounded-xl p-3 text-left transition-colors"
+      style={{
+        ...POPPINS,
+        border: selected ? "1.5px solid #1A52A0" : "1px solid #E2E6ED",
+        background: selected ? "#EEF3FB" : "#FFFFFF",
+      }}
+    >
+      <div className="mt-0.5">{icon}</div>
+      <div className="flex-1">
+        <div className="text-[14px] font-semibold text-[#0F2044]">{title}</div>
+        <div className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</div>
+      </div>
+    </button>
   );
 }
