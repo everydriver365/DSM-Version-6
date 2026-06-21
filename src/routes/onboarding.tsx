@@ -48,6 +48,7 @@ function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
