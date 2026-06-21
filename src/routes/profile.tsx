@@ -16,6 +16,7 @@ import {
   ChevronDown,
   Calendar as CalendarIcon,
   Apple,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -395,21 +396,36 @@ function ProfilePage() {
       toast.error("Image must be under 5MB");
       return;
     }
+    // Instant local preview
+    const localPreview = URL.createObjectURL(f);
+    const previousUrl = imageUrl;
+    setImageUrl(localPreview);
     setUploading(true);
-    const ext = f.name.split(".").pop() ?? "jpg";
-    const path = `${userId}/${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage
-      .from("avatars")
-      .upload(path, f, { contentType: f.type, upsert: true });
-    if (upErr) {
-      console.error("[profile] avatar upload", upErr);
+    try {
+      const ext = f.name.split(".").pop() ?? "jpg";
+      const path = `${userId}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("avatars")
+        .upload(path, f, { contentType: f.type, upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const { error: dbErr } = await supabase
+        .from("instructors")
+        .update({ profile_image_url: publicUrl })
+        .eq("id", userId);
+      if (dbErr) throw dbErr;
+      setImageUrl(publicUrl);
+      URL.revokeObjectURL(localPreview);
+      toast.success("Photo updated");
+    } catch (err) {
+      console.error("[profile] avatar upload", err);
       toast.error("Couldn't upload photo");
+      setImageUrl(previousUrl);
+      URL.revokeObjectURL(localPreview);
+    } finally {
       setUploading(false);
-      return;
     }
-    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
-    setImageUrl(pub.publicUrl);
-    setUploading(false);
   }
 
   async function onPickDbs(e: React.ChangeEvent<HTMLInputElement>) {
@@ -589,8 +605,12 @@ function ProfilePage() {
         {/* Personal */}
         <AccordionCard sectionKey="personal">
           <div className="flex flex-col items-center mb-4">
-            <div
-              className="rounded-full overflow-hidden flex items-center justify-center text-[24px] font-semibold text-white"
+            <button
+              type="button"
+              onClick={() => !uploading && fileRef.current?.click()}
+              disabled={uploading}
+              aria-label="Upload profile photo"
+              className="relative rounded-full overflow-hidden flex items-center justify-center text-[24px] font-semibold text-white"
               style={{ width: 80, height: 80, backgroundColor: currentAvatarBg, ...POPPINS }}
             >
               {imageUrl ? (
@@ -598,7 +618,26 @@ function ProfilePage() {
               ) : (
                 <span>{initials(firstName, lastName, email)}</span>
               )}
-            </div>
+              {uploading && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+                >
+                  <Loader2 size={24} color="#FFFFFF" className="animate-spin" />
+                </div>
+              )}
+              <span
+                className="absolute bottom-0 right-0 flex items-center justify-center rounded-full"
+                style={{
+                  width: 26,
+                  height: 26,
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E2E6ED",
+                }}
+              >
+                <Camera size={14} color="#1A52A0" />
+              </span>
+            </button>
             <input
               ref={fileRef}
               type="file"
@@ -613,7 +652,6 @@ function ProfilePage() {
               className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
               style={{ color: "#1A52A0", ...POPPINS }}
             >
-              <Camera size={14} color="#1A52A0" />
               {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
             </button>
             {!imageUrl && (
