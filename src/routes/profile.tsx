@@ -467,6 +467,65 @@ function ProfilePage() {
     toast.success("DBS uploaded");
   }
 
+  async function onPickVehiclePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f || !userId) return;
+    if (!/^image\//.test(f.type)) {
+      toast.error("Use an image file");
+      return;
+    }
+    if (f.size > 8 * 1024 * 1024) {
+      toast.error("Image must be under 8MB");
+      return;
+    }
+    const localPreview = URL.createObjectURL(f);
+    const previous = vehiclePhotoUrl;
+    setVehiclePhotoUrl(localPreview);
+    setUploadingVehicle(true);
+    try {
+      const ext = f.name.split(".").pop() ?? "jpg";
+      const path = `${userId}/vehicle-${Date.now()}.${ext}`;
+      const uploadResult = await supabase.storage
+        .from("vehicle-images")
+        .upload(path, f, { contentType: f.type, upsert: true });
+      if (uploadResult.error) throw uploadResult.error;
+      const { data: pub } = supabase.storage.from("vehicle-images").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const saveResponse = await supabase
+        .from("instructors")
+        .upsert({ id: userId, vehicle_photo_url: publicUrl })
+        .select();
+      if (saveResponse.error) throw saveResponse.error;
+      setVehiclePhotoUrl(publicUrl);
+      URL.revokeObjectURL(localPreview);
+      toast.success("Vehicle photo updated");
+    } catch (err) {
+      console.error("[profile] vehicle photo upload", err);
+      toast.error("Couldn't upload vehicle photo");
+      setVehiclePhotoUrl(previous);
+      URL.revokeObjectURL(localPreview);
+    } finally {
+      setUploadingVehicle(false);
+    }
+  }
+
+  async function removeVehiclePhoto() {
+    if (!userId) return;
+    const previous = vehiclePhotoUrl;
+    setVehiclePhotoUrl(null);
+    const { error } = await supabase
+      .from("instructors")
+      .upsert({ id: userId, vehicle_photo_url: null });
+    if (error) {
+      console.error("[profile] remove vehicle photo", error);
+      toast.error("Couldn't remove photo");
+      setVehiclePhotoUrl(previous);
+      return;
+    }
+    toast.success("Vehicle photo removed");
+  }
+
   function addServiceArea() {
     const v = serviceAreaInput.trim();
     if (!v) return;
