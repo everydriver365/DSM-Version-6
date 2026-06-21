@@ -90,11 +90,13 @@ function PupilDetailPage() {
   const [noteSaved, setNoteSaved] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
