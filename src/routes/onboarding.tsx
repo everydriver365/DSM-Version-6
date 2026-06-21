@@ -434,7 +434,7 @@ function ChoiceCard({
   selected,
   onClick,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   subtitle: string;
   selected: boolean;
