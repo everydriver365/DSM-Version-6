@@ -12,9 +12,8 @@ import {
   Car,
   Bell,
   Shield,
-  Plug,
-  Trash2,
-  X,
+  Puzzle,
+  ChevronDown,
   Calendar as CalendarIcon,
   Apple,
 } from "lucide-react";
@@ -46,14 +45,19 @@ type TabKey =
   | "integrations"
   | "danger";
 
-const TABS: { key: TabKey; label: string; icon: React.ComponentType<{ size?: number; color?: string }> }[] = [
-  { key: "personal", label: "Personal", icon: User },
-  { key: "business", label: "Business", icon: Briefcase },
-  { key: "vehicle", label: "Vehicle", icon: Car },
-  { key: "notifications", label: "Notifications", icon: Bell },
-  { key: "security", label: "Security", icon: Shield },
-  { key: "integrations", label: "Integrations", icon: Plug },
-  { key: "danger", label: "Danger zone", icon: Trash2 },
+const SECTION_META: {
+  key: TabKey;
+  label: string;
+  icon: React.ComponentType<{ size?: number; color?: string }>;
+  iconColor: string;
+}[] = [
+  { key: "personal", label: "Personal", icon: User, iconColor: "#1A52A0" },
+  { key: "business", label: "Business", icon: Briefcase, iconColor: "#16A34A" },
+  { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#F59E0B" },
+  { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#7C3AED" },
+  { key: "security", label: "Security", icon: Shield, iconColor: "#CC2229" },
+  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1A52A0" },
+  { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#CC2229" },
 ];
 
 const NOTIF_EVENTS: { key: string; label: string }[] = [
@@ -203,17 +207,6 @@ function VerifiedPill() {
   );
 }
 
-function SectionCard({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-xl bg-white p-4"
-      style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-    >
-      {children}
-    </div>
-  );
-}
-
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="text-[16px] font-semibold text-[#0F2044] mb-3" style={POPPINS}>
@@ -227,7 +220,20 @@ function ProfilePage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const dbsRef = useRef<HTMLInputElement>(null);
 
-  const [tab, setTab] = useState<TabKey>("personal");
+  const [expanded, setExpanded] = useState<Record<TabKey, boolean>>({
+    personal: true,
+    business: false,
+    vehicle: false,
+    notifications: false,
+    security: false,
+    integrations: false,
+    danger: false,
+  });
+
+  function toggleSection(key: TabKey) {
+    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -499,6 +505,56 @@ function ProfilePage() {
 
   const currentAvatarBg = AVATAR_COLORS[avatarColor] ?? AVATAR_COLORS.blue;
 
+  function AccordionCard({
+    sectionKey,
+    children,
+  }: {
+    sectionKey: TabKey;
+    children: React.ReactNode;
+  }) {
+    const meta = SECTION_META.find((s) => s.key === sectionKey)!;
+    const Icon = meta.icon;
+    const isOpen = expanded[sectionKey];
+    return (
+      <div
+        className="bg-white mb-3"
+        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", borderRadius: 12 }}
+      >
+        <button
+          type="button"
+          onClick={() => toggleSection(sectionKey)}
+          className="w-full flex items-center gap-3 px-4 py-3"
+        >
+          <Icon size={18} color={meta.iconColor} />
+          <span className="flex-1 text-left text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>
+            {meta.label}
+          </span>
+          <ChevronDown
+            size={18}
+            color="#6B7280"
+            style={{
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 200ms",
+            }}
+          />
+        </button>
+        {isOpen && (
+          <div
+            className="px-4 pb-4"
+            style={{
+              borderTopWidth: "0.5px",
+              borderTopStyle: "solid",
+              borderTopColor: "#E2E6ED",
+              paddingTop: 16,
+            }}
+          >
+            {children}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F9FB]" style={POPPINS}>
       {/* Top bar */}
@@ -529,492 +585,452 @@ function ProfilePage() {
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white border-b" style={{ borderColor: "#E2E6ED" }}>
-        <div className="flex gap-1 overflow-x-auto px-2 py-2" style={{ scrollbarWidth: "thin" }}>
-          {TABS.map((t) => {
-            const Icon = t.icon;
-            const active = tab === t.key;
-            return (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() => setTab(t.key)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-medium whitespace-nowrap"
-                style={{
-                  backgroundColor: active ? "#1A52A0" : "transparent",
-                  color: active ? "#FFFFFF" : "#6B7280",
-                  ...POPPINS,
-                }}
-              >
-                <Icon size={14} color={active ? "#FFFFFF" : "#6B7280"} />
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       <div className="px-4 py-4 pb-24 max-w-3xl mx-auto">
-        {tab === "personal" && (
-          <SectionCard>
-            <SectionTitle>Personal</SectionTitle>
-            <div className="flex flex-col items-center mb-4">
-              <div
-                className="rounded-full overflow-hidden flex items-center justify-center text-[24px] font-semibold text-white"
-                style={{ width: 80, height: 80, backgroundColor: currentAvatarBg, ...POPPINS }}
-              >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span>{initials(firstName, lastName, email)}</span>
-                )}
+        {/* Personal */}
+        <AccordionCard sectionKey="personal">
+          <div className="flex flex-col items-center mb-4">
+            <div
+              className="rounded-full overflow-hidden flex items-center justify-center text-[24px] font-semibold text-white"
+              style={{ width: 80, height: 80, backgroundColor: currentAvatarBg, ...POPPINS }}
+            >
+              {imageUrl ? (
+                <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span>{initials(firstName, lastName, email)}</span>
+              )}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={onPickPhoto}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
+              style={{ color: "#1A52A0", ...POPPINS }}
+            >
+              <Camera size={14} color="#1A52A0" />
+              {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
+            </button>
+            {!imageUrl && (
+              <div className="mt-3 flex items-center gap-2">
+                {Object.entries(AVATAR_COLORS).map(([key, hex]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setAvatarColor(key)}
+                    aria-label={`Avatar color ${key}`}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: 999,
+                      backgroundColor: hex,
+                      outline: avatarColor === key ? "2px solid #0F2044" : "none",
+                      outlineOffset: 2,
+                    }}
+                  />
+                ))}
               </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="Jane" />
+            <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Smith" />
+            <TextField
+              label="Email"
+              value={email}
+              onChange={setEmail}
+              placeholder="you@example.com"
+              type="email"
+              icon={<Mail size={16} color="#6B7280" />}
+              rightSlot={emailVerified ? <VerifiedPill /> : null}
+            />
+            <TextField
+              label="Phone"
+              value={phone}
+              onChange={setPhone}
+              placeholder="07…"
+              inputMode="tel"
+              icon={<Smartphone size={16} color="#6B7280" />}
+              rightSlot={phoneVerified ? <VerifiedPill /> : null}
+            />
+            <div className="sm:col-span-2">
+              <TextField
+                label="Address"
+                value={address}
+                onChange={setAddress}
+                placeholder="Street, city, postcode"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <SelectField
+                label="Timezone"
+                value={timezone}
+                onChange={setTimezone}
+                options={[
+                  { value: "Europe/London", label: "Europe/London" },
+                  { value: "Europe/Dublin", label: "Europe/Dublin" },
+                  { value: "Europe/Paris", label: "Europe/Paris" },
+                  { value: "UTC", label: "UTC" },
+                ]}
+              />
+            </div>
+          </div>
+        </AccordionCard>
+
+        {/* Business */}
+        <AccordionCard sectionKey="business">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <TextField label="DVSA badge number" value={dvsaBadge} onChange={setDvsaBadge} placeholder="123456" />
+            <SelectField
+              label="DVSA grade"
+              value={dvsaGrade}
+              onChange={setDvsaGrade}
+              options={[
+                { value: "A", label: "A" },
+                { value: "B", label: "B" },
+                { value: "Trainee", label: "Trainee" },
+              ]}
+            />
+            <SelectField
+              label="DVSA type"
+              value={dvsaType}
+              onChange={setDvsaType}
+              options={[
+                { value: "ADI", label: "ADI" },
+                { value: "PDI", label: "PDI" },
+              ]}
+            />
+            <TextField label="Trading name" value={tradingName} onChange={setTradingName} placeholder="e.g. Jane's Driving School" />
+            <div className="sm:col-span-2">
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+                Bio
+              </label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={3}
+                placeholder="Tell pupils a bit about yourself"
+                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#E2E6ED",
+                  resize: "vertical",
+                }}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+                DBS certificate
+              </label>
               <input
-                ref={fileRef}
+                ref={dbsRef}
                 type="file"
-                accept="image/png,image/jpeg,image/webp"
+                accept="application/pdf,image/*"
                 className="hidden"
-                onChange={onPickPhoto}
+                onChange={onPickDbs}
               />
               <button
                 type="button"
-                onClick={() => fileRef.current?.click()}
-                disabled={uploading}
-                className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
-                style={{ color: "#1A52A0", ...POPPINS }}
+                onClick={() => dbsRef.current?.click()}
+                className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
               >
-                <Camera size={14} color="#1A52A0" />
-                {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
+                <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
+                  {dbsUploaded ? (
+                    <>
+                      <Check size={16} color="#15803D" />
+                      <span className="text-[#15803D] font-medium">Uploaded</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle size={16} color="#D97706" />
+                      <span className="text-[#D97706]">Upload DBS certificate</span>
+                    </>
+                  )}
+                </span>
+                <span className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
+                  {dbsUploaded ? "Replace" : "Upload"}
+                </span>
               </button>
-              {!imageUrl && (
-                <div className="mt-3 flex items-center gap-2">
-                  {Object.entries(AVATAR_COLORS).map(([key, hex]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setAvatarColor(key)}
-                      aria-label={`Avatar color ${key}`}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: 999,
-                        backgroundColor: hex,
-                        outline: avatarColor === key ? "2px solid #0F2044" : "none",
-                        outlineOffset: 2,
-                      }}
-                    />
-                  ))}
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+                Service areas
+              </label>
+              <div
+                className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", minHeight: 44 }}
+              >
+                {serviceAreas.map((a) => (
+                  <span
+                    key={a}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px]"
+                    style={{ backgroundColor: "#E0ECFA", color: "#0F2044", ...POPPINS }}
+                  >
+                    {a}
+                    <button type="button" onClick={() => removeServiceArea(a)} aria-label={`Remove ${a}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0F2044" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </span>
+                ))}
+                <input
+                  value={serviceAreaInput}
+                  onChange={(e) => setServiceAreaInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      addServiceArea();
+                    }
+                  }}
+                  onBlur={addServiceArea}
+                  placeholder="Add a town and press Enter"
+                  className="flex-1 min-w-[140px] bg-transparent text-[14px] text-[#1A1A2E] outline-none px-1"
+                  style={POPPINS}
+                />
+              </div>
+            </div>
+          </div>
+        </AccordionCard>
+
+        {/* Vehicle */}
+        <AccordionCard sectionKey="vehicle">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
+            <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
+            <TextField label="Registration" value={vehicleReg} onChange={setVehicleReg} placeholder="AB12 CDE" />
+            <SelectField
+              label="Transmission"
+              value={transmission}
+              onChange={setTransmission}
+              options={[
+                { value: "Manual", label: "Manual" },
+                { value: "Automatic", label: "Automatic" },
+                { value: "Both", label: "Both" },
+              ]}
+            />
+            <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 48 }}>
+              <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Dual controls fitted</span>
+              <Toggle checked={dualControls} onChange={setDualControls} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+                Insurance expiry
+              </label>
+              <div
+                className="flex items-center gap-2 rounded-lg bg-white px-3"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 40 }}
+              >
+                <input
+                  type="date"
+                  value={insuranceExpiry}
+                  onChange={(e) => setInsuranceExpiry(e.target.value)}
+                  className="flex-1 bg-transparent text-[14px] text-[#1A1A2E] outline-none"
+                  style={POPPINS}
+                />
+                {insuranceWarning ? (
+                  <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#D97706", ...POPPINS }}>
+                    <AlertTriangle size={14} color="#D97706" /> Expiring soon
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </AccordionCard>
+
+        {/* Notifications */}
+        <AccordionCard sectionKey="notifications">
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]" style={POPPINS}>
+              <thead>
+                <tr className="text-left text-[#6B7280]">
+                  <th className="py-2 pr-2 font-medium">Event</th>
+                  <th className="py-2 px-2 font-medium text-center">Email</th>
+                  <th className="py-2 px-2 font-medium text-center">SMS</th>
+                  <th className="py-2 px-2 font-medium text-center">Push</th>
+                </tr>
+              </thead>
+              <tbody>
+                {NOTIF_EVENTS.map((ev) => {
+                  const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
+                  return (
+                    <tr key={ev.key} className="border-t" style={{ borderColor: "#E2E6ED" }}>
+                      <td className="py-2 pr-2 text-[#1A1A2E]">{ev.label}</td>
+                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.email} onChange={(v) => setNotif(ev.key, "email", v)} /></div></td>
+                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.sms} onChange={(v) => setNotif(ev.key, "sms", v)} /></div></td>
+                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.push} onChange={(v) => setNotif(ev.key, "push", v)} /></div></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </AccordionCard>
+
+        {/* Security */}
+        <AccordionCard sectionKey="security">
+          <div className="flex flex-col gap-3">
+            <div
+              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <div>
+                <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Password</div>
+                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                  Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
                 </div>
+              </div>
+              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
+                Change password
+              </Link>
+            </div>
+
+            <div
+              className="rounded-lg bg-white px-3 py-3 flex flex-col gap-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Two-factor authentication</span>
+                <Toggle checked={twoFactorEnabled} onChange={setTwoFactorEnabled} />
+              </div>
+              {twoFactorEnabled && (
+                <SelectField
+                  label="Method"
+                  value={twoFactorMethod}
+                  onChange={setTwoFactorMethod}
+                  options={[
+                    { value: "Authenticator app", label: "Authenticator app" },
+                    { value: "SMS", label: "SMS" },
+                  ]}
+                />
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="Jane" />
-              <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Smith" />
-              <TextField
-                label="Email"
-                value={email}
-                onChange={setEmail}
-                placeholder="you@example.com"
-                type="email"
-                icon={<Mail size={16} color="#6B7280" />}
-                rightSlot={emailVerified ? <VerifiedPill /> : null}
-              />
-              <TextField
-                label="Phone"
-                value={phone}
-                onChange={setPhone}
-                placeholder="07…"
-                inputMode="tel"
-                icon={<Smartphone size={16} color="#6B7280" />}
-                rightSlot={phoneVerified ? <VerifiedPill /> : null}
-              />
-              <div className="sm:col-span-2">
-                <TextField
-                  label="Address"
-                  value={address}
-                  onChange={setAddress}
-                  placeholder="Street, city, postcode"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <SelectField
-                  label="Timezone"
-                  value={timezone}
-                  onChange={setTimezone}
-                  options={[
-                    { value: "Europe/London", label: "Europe/London" },
-                    { value: "Europe/Dublin", label: "Europe/Dublin" },
-                    { value: "Europe/Paris", label: "Europe/Paris" },
-                    { value: "UTC", label: "UTC" },
-                  ]}
-                />
+            <div
+              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <div>
+                <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Active sessions</div>
+                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>{activeSessions} device signed in</div>
               </div>
             </div>
-          </SectionCard>
-        )}
 
-        {tab === "business" && (
-          <SectionCard>
-            <SectionTitle>Business</SectionTitle>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <TextField label="DVSA badge number" value={dvsaBadge} onChange={setDvsaBadge} placeholder="123456" />
-              <SelectField
-                label="DVSA grade"
-                value={dvsaGrade}
-                onChange={setDvsaGrade}
-                options={[
-                  { value: "A", label: "A" },
-                  { value: "B", label: "B" },
-                  { value: "Trainee", label: "Trainee" },
-                ]}
-              />
-              <SelectField
-                label="DVSA type"
-                value={dvsaType}
-                onChange={setDvsaType}
-                options={[
-                  { value: "ADI", label: "ADI" },
-                  { value: "PDI", label: "PDI" },
-                ]}
-              />
-              <TextField label="Trading name" value={tradingName} onChange={setTradingName} placeholder="e.g. Jane's Driving School" />
-              <div className="sm:col-span-2">
-                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                  Bio
-                </label>
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={3}
-                  placeholder="Tell pupils a bit about yourself"
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    borderWidth: "0.5px",
-                    borderStyle: "solid",
-                    borderColor: "#E2E6ED",
-                    resize: "vertical",
-                  }}
-                />
+            <div
+              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Login alerts</span>
+              <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
+            </div>
+          </div>
+        </AccordionCard>
+
+        {/* Integrations */}
+        <AccordionCard sectionKey="integrations">
+          <div className="flex flex-col gap-3">
+            <Link
+              to="/calendarsync"
+              className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <div
+                className="flex items-center justify-center rounded-lg"
+                style={{ width: 36, height: 36, backgroundColor: "#E8F0FE" }}
+              >
+                <CalendarIcon size={20} color="#4285F4" />
               </div>
+              <div className="flex-1">
+                <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Google Calendar</div>
+                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                  Two-way sync your DSM schedule with Google Calendar
+                </div>
+              </div>
+            </Link>
 
-              <div className="sm:col-span-2">
-                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                  DBS certificate
-                </label>
+            <Link
+              to="/calendarsync"
+              className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <div
+                className="flex items-center justify-center rounded-lg"
+                style={{ width: 36, height: 36, backgroundColor: "#F3F4F6" }}
+              >
+                <Apple size={20} color="#000000" />
+              </div>
+              <div className="flex-1">
+                <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Apple Calendar</div>
+                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                  Subscribe to your DSM schedule on iPhone
+                </div>
+              </div>
+            </Link>
+          </div>
+        </AccordionCard>
+
+        {/* Danger zone */}
+        <AccordionCard sectionKey="danger">
+          <div className="flex flex-col gap-4">
+            <div
+              className="rounded-lg p-3 flex items-center justify-between"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCD34D", backgroundColor: "#FFFBEB" }}
+            >
+              <div>
+                <div className="text-[14px] font-medium text-[#92400E]" style={POPPINS}>Deactivate account</div>
+                <div className="text-[12px] text-[#92400E]" style={POPPINS}>
+                  Temporarily disable your account. You can sign back in to reactivate.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={deactivate}
+                className="text-[13px] font-medium px-3 py-2 rounded-lg"
+                style={{ backgroundColor: "#D97706", color: "#FFFFFF", ...POPPINS }}
+              >
+                Deactivate
+              </button>
+            </div>
+
+            <div
+              className="rounded-lg p-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCA5A5", backgroundColor: "#FEF2F2" }}
+            >
+              <div className="text-[14px] font-medium text-[#991B1B]" style={POPPINS}>Delete account</div>
+              <div className="text-[12px] text-[#991B1B] mb-2" style={POPPINS}>
+                Permanently delete your account and data. Type DELETE to confirm.
+              </div>
+              <div className="flex items-center gap-2">
                 <input
-                  ref={dbsRef}
-                  type="file"
-                  accept="application/pdf,image/*"
-                  className="hidden"
-                  onChange={onPickDbs}
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  placeholder="Type DELETE"
+                  className="flex-1 h-10 rounded-lg bg-white px-3 text-[14px] outline-none"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCA5A5", ...POPPINS }}
                 />
                 <button
                   type="button"
-                  onClick={() => dbsRef.current?.click()}
-                  className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+                  onClick={deleteAccount}
+                  disabled={deleteConfirm !== "DELETE"}
+                  className="text-[13px] font-medium px-3 py-2 rounded-lg disabled:opacity-50"
+                  style={{ backgroundColor: "#DC2626", color: "#FFFFFF", ...POPPINS }}
                 >
-                  <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
-                    {dbsUploaded ? (
-                      <>
-                        <Check size={16} color="#15803D" />
-                        <span className="text-[#15803D] font-medium">Uploaded</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle size={16} color="#D97706" />
-                        <span className="text-[#D97706]">Upload DBS certificate</span>
-                      </>
-                    )}
-                  </span>
-                  <span className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
-                    {dbsUploaded ? "Replace" : "Upload"}
-                  </span>
+                  Delete
                 </button>
               </div>
-
-              <div className="sm:col-span-2">
-                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                  Service areas
-                </label>
-                <div
-                  className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", minHeight: 44 }}
-                >
-                  {serviceAreas.map((a) => (
-                    <span
-                      key={a}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px]"
-                      style={{ backgroundColor: "#E0ECFA", color: "#0F2044", ...POPPINS }}
-                    >
-                      {a}
-                      <button type="button" onClick={() => removeServiceArea(a)} aria-label={`Remove ${a}`}>
-                        <X size={12} color="#0F2044" />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    value={serviceAreaInput}
-                    onChange={(e) => setServiceAreaInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === ",") {
-                        e.preventDefault();
-                        addServiceArea();
-                      }
-                    }}
-                    onBlur={addServiceArea}
-                    placeholder="Add a town and press Enter"
-                    className="flex-1 min-w-[140px] bg-transparent text-[14px] text-[#1A1A2E] outline-none px-1"
-                    style={POPPINS}
-                  />
-                </div>
-              </div>
             </div>
-          </SectionCard>
-        )}
-
-        {tab === "vehicle" && (
-          <SectionCard>
-            <SectionTitle>Vehicle</SectionTitle>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
-              <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
-              <TextField label="Registration" value={vehicleReg} onChange={setVehicleReg} placeholder="AB12 CDE" />
-              <SelectField
-                label="Transmission"
-                value={transmission}
-                onChange={setTransmission}
-                options={[
-                  { value: "Manual", label: "Manual" },
-                  { value: "Automatic", label: "Automatic" },
-                  { value: "Both", label: "Both" },
-                ]}
-              />
-              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 48 }}>
-                <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Dual controls fitted</span>
-                <Toggle checked={dualControls} onChange={setDualControls} />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                  Insurance expiry
-                </label>
-                <div
-                  className="flex items-center gap-2 rounded-lg bg-white px-3"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 40 }}
-                >
-                  <input
-                    type="date"
-                    value={insuranceExpiry}
-                    onChange={(e) => setInsuranceExpiry(e.target.value)}
-                    className="flex-1 bg-transparent text-[14px] text-[#1A1A2E] outline-none"
-                    style={POPPINS}
-                  />
-                  {insuranceWarning ? (
-                    <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#D97706", ...POPPINS }}>
-                      <AlertTriangle size={14} color="#D97706" /> Expiring soon
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </SectionCard>
-        )}
-
-        {tab === "notifications" && (
-          <SectionCard>
-            <SectionTitle>Notifications</SectionTitle>
-            <div className="overflow-x-auto">
-              <table className="w-full text-[13px]" style={POPPINS}>
-                <thead>
-                  <tr className="text-left text-[#6B7280]">
-                    <th className="py-2 pr-2 font-medium">Event</th>
-                    <th className="py-2 px-2 font-medium text-center">Email</th>
-                    <th className="py-2 px-2 font-medium text-center">SMS</th>
-                    <th className="py-2 px-2 font-medium text-center">Push</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {NOTIF_EVENTS.map((ev) => {
-                    const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
-                    return (
-                      <tr key={ev.key} className="border-t" style={{ borderColor: "#E2E6ED" }}>
-                        <td className="py-2 pr-2 text-[#1A1A2E]">{ev.label}</td>
-                        <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.email} onChange={(v) => setNotif(ev.key, "email", v)} /></div></td>
-                        <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.sms} onChange={(v) => setNotif(ev.key, "sms", v)} /></div></td>
-                        <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.push} onChange={(v) => setNotif(ev.key, "push", v)} /></div></td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </SectionCard>
-        )}
-
-        {tab === "security" && (
-          <SectionCard>
-            <SectionTitle>Security</SectionTitle>
-            <div className="flex flex-col gap-3">
-              <div
-                className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <div>
-                  <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Password</div>
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
-                  </div>
-                </div>
-                <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
-                  Change password
-                </Link>
-              </div>
-
-              <div
-                className="rounded-lg bg-white px-3 py-3 flex flex-col gap-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Two-factor authentication</span>
-                  <Toggle checked={twoFactorEnabled} onChange={setTwoFactorEnabled} />
-                </div>
-                {twoFactorEnabled && (
-                  <SelectField
-                    label="Method"
-                    value={twoFactorMethod}
-                    onChange={setTwoFactorMethod}
-                    options={[
-                      { value: "Authenticator app", label: "Authenticator app" },
-                      { value: "SMS", label: "SMS" },
-                    ]}
-                  />
-                )}
-              </div>
-
-              <div
-                className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <div>
-                  <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Active sessions</div>
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>{activeSessions} device signed in</div>
-                </div>
-              </div>
-
-              <div
-                className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Login alerts</span>
-                <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
-              </div>
-            </div>
-          </SectionCard>
-        )}
-
-        {tab === "integrations" && (
-          <SectionCard>
-            <SectionTitle>Integrations</SectionTitle>
-            <div className="flex flex-col gap-3">
-              <Link
-                to="/calendarsync"
-                className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <div
-                  className="flex items-center justify-center rounded-lg"
-                  style={{ width: 36, height: 36, backgroundColor: "#E8F0FE" }}
-                >
-                  <CalendarIcon size={20} color="#4285F4" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Google Calendar</div>
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    Two-way sync your DSM schedule with Google Calendar
-                  </div>
-                </div>
-              </Link>
-
-              <Link
-                to="/calendarsync"
-                className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
-              >
-                <div
-                  className="flex items-center justify-center rounded-lg"
-                  style={{ width: 36, height: 36, backgroundColor: "#F3F4F6" }}
-                >
-                  <Apple size={20} color="#000000" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Apple Calendar</div>
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    Subscribe to your DSM schedule on iPhone
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </SectionCard>
-        )}
-
-        {tab === "danger" && (
-          <SectionCard>
-            <SectionTitle>Danger zone</SectionTitle>
-            <div className="flex flex-col gap-4">
-              <div
-                className="rounded-lg p-3 flex items-center justify-between"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCD34D", backgroundColor: "#FFFBEB" }}
-              >
-                <div>
-                  <div className="text-[14px] font-medium text-[#92400E]" style={POPPINS}>Deactivate account</div>
-                  <div className="text-[12px] text-[#92400E]" style={POPPINS}>
-                    Temporarily disable your account. You can sign back in to reactivate.
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={deactivate}
-                  className="text-[13px] font-medium px-3 py-2 rounded-lg"
-                  style={{ backgroundColor: "#D97706", color: "#FFFFFF", ...POPPINS }}
-                >
-                  Deactivate
-                </button>
-              </div>
-
-              <div
-                className="rounded-lg p-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCA5A5", backgroundColor: "#FEF2F2" }}
-              >
-                <div className="text-[14px] font-medium text-[#991B1B]" style={POPPINS}>Delete account</div>
-                <div className="text-[12px] text-[#991B1B] mb-2" style={POPPINS}>
-                  Permanently delete your account and data. Type DELETE to confirm.
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    value={deleteConfirm}
-                    onChange={(e) => setDeleteConfirm(e.target.value)}
-                    placeholder="Type DELETE"
-                    className="flex-1 h-10 rounded-lg bg-white px-3 text-[14px] outline-none"
-                    style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCA5A5", ...POPPINS }}
-                  />
-                  <button
-                    type="button"
-                    onClick={deleteAccount}
-                    disabled={deleteConfirm !== "DELETE"}
-                    className="text-[13px] font-medium px-3 py-2 rounded-lg disabled:opacity-50"
-                    style={{ backgroundColor: "#DC2626", color: "#FFFFFF", ...POPPINS }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </SectionCard>
-        )}
+          </div>
+        </AccordionCard>
       </div>
     </div>
   );
