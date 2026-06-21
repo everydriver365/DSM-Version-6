@@ -26,6 +26,8 @@ interface Pupil {
   status: string | null;
   test_date: string | null;
   notes: string | null;
+  photo_url: string | null;
+  photo_consent: boolean | null;
 }
 
 interface Lesson {
