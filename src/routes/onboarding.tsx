@@ -64,6 +64,10 @@ function OnboardingPage() {
 
   const [hours, setHours] = useState<Record<Day, DayHours>>(DEFAULT_HOURS);
 
+  const [websiteChoice, setWebsiteChoice] = useState<WebsiteChoice>(null);
+  const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
+  const [existingWebsiteUrl, setExistingWebsiteUrl] = useState("");
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -72,6 +76,7 @@ function OnboardingPage() {
         return;
       }
       setUserId(data.user.id);
+      setUserEmail(data.user.email ?? null);
     })();
   }, [navigate]);
 
