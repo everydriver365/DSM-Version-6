@@ -1,11 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
 type NewPupilSearch = { name?: string; phone?: string };
+
+const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 
 export const Route = createFileRoute("/pupils/new")({
   head: () => ({
@@ -25,6 +28,31 @@ function splitName(full: string): [string, string] {
   return [parts[0], parts.slice(1).join(" ")];
 }
 
+function loadGoogleMaps(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as unknown as { google?: { maps?: { places?: unknown } } };
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById(
+    "google-maps-places-script",
+  ) as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      existing.addEventListener("load", () => resolve());
+      if (w.google?.maps?.places) resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.id = "google-maps-places-script";
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(s);
+  });
+}
+
 function NewPupilPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
@@ -33,17 +61,76 @@ function NewPupilPage() {
   const [lastName, setLastName] = useState(preLast);
   const [phone, setPhone] = useState(search.phone ?? "");
   const [address, setAddress] = useState("");
+  const [postcode, setPostcode] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
+    postcode?: string;
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadGoogleMaps()
+      .then(() => {
+        if (cancelled) return;
+        const input = addressInputRef.current;
+        const g = (window as unknown as {
+          google?: {
+            maps?: {
+              places?: {
+                Autocomplete: new (
+                  el: HTMLInputElement,
+                  opts: Record<string, unknown>,
+                ) => {
+                  addListener: (e: string, cb: () => void) => void;
+                  getPlace: () => {
+                    formatted_address?: string;
+                    address_components?: Array<{
+                      long_name: string;
+                      short_name: string;
+                      types: string[];
+                    }>;
+                  };
+                };
+              };
+            };
+          };
+        }).google;
+        if (!input || !g?.maps?.places) return;
+        const ac = new g.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: "gb" },
+          types: ["address"],
+          fields: ["formatted_address", "address_components"],
+        });
+        ac.addListener("place_changed", () => {
+          const place = ac.getPlace();
+          const formatted = place.formatted_address ?? "";
+          const pc =
+            place.address_components?.find((c) =>
+              c.types.includes("postal_code"),
+            )?.long_name ?? "";
+          if (formatted) setAddress(() => formatted);
+          if (pc) setPostcode(() => pc);
+        });
+      })
+      .catch(() => {
+        // silently ignore — manual entry still works
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSave() {
     const next: typeof errors = {};
     if (!firstName.trim()) next.firstName = "First name is required";
     if (!lastName.trim()) next.lastName = "Last name is required";
+    if (postcode.trim() && !UK_POSTCODE_RE.test(postcode.trim())) {
+      next.postcode = "Enter a valid UK postcode";
+    }
     if (Object.keys(next).length) {
       setErrors(next);
       return;
@@ -64,11 +151,12 @@ function NewPupilPage() {
       instructor_id: user.id,
       first_name: first,
       last_name: last,
-      name: `${first} ${last}`,
+      name: `${first} ${last}`.trim(),
       status: "active",
     };
     if (phone.trim()) insert.phone = phone.trim();
     if (address.trim()) insert.address = address.trim();
+    if (postcode.trim()) insert.postcode = postcode.trim().toUpperCase();
     const { error } = await supabase.from("pupils").insert(insert);
     if (error) {
       setErrors({ form: error.message });
@@ -142,12 +230,30 @@ function NewPupilPage() {
             maxLength={30}
           />
           <Input
+            ref={addressInputRef}
             label="Home address"
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             maxLength={255}
+            autoComplete="off"
+            placeholder="Start typing an address…"
           />
+          <div>
+            <Input
+              label="Postcode"
+              type="text"
+              value={postcode}
+              onChange={(e) => setPostcode(e.target.value)}
+              maxLength={10}
+              autoComplete="postal-code"
+            />
+            {errors.postcode && (
+              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+                {errors.postcode}
+              </p>
+            )}
+          </div>
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}
