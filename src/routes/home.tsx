@@ -786,7 +786,7 @@ function HomePage() {
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044", height: 52 }}
+        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top))', paddingTop: 'env(safe-area-inset-top)' }}
       >
         <div className="flex items-center gap-2">
           <img
