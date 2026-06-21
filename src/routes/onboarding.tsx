@@ -426,3 +426,36 @@ function Field({
     </div>
   );
 }
+
+function ChoiceCard({
+  icon,
+  title,
+  subtitle,
+  selected,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-start gap-3 rounded-xl p-3 text-left transition-colors"
+      style={{
+        ...POPPINS,
+        border: selected ? "1.5px solid #1A52A0" : "1px solid #E2E6ED",
+        background: selected ? "#EEF3FB" : "#FFFFFF",
+      }}
+    >
+      <div className="mt-0.5">{icon}</div>
+      <div className="flex-1">
+        <div className="text-[14px] font-semibold text-[#0F2044]">{title}</div>
+        <div className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</div>
+      </div>
+    </button>
+  );
+}
