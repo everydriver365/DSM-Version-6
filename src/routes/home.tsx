@@ -782,7 +782,7 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8, paddingTop: 52 }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8, paddingTop: 'calc(52px + env(safe-area-inset-top))' }}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
