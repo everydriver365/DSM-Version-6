@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, CheckCircle, Globe, Clock } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -13,7 +13,9 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
+
+type WebsiteChoice = "yes" | "existing" | "later" | null;
 
 type Day = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 const DAYS: { key: Day; label: string }[] = [
