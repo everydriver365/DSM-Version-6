@@ -527,6 +527,7 @@ function HomePage() {
     const d = lessonDateTime(l);
     return d >= weekStart && d < weekEnd;
   });
+  const weekLessonsTotal = Math.max(weekLessonCount, weekLessons.length);
 
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
