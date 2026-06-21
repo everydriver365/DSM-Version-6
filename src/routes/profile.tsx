@@ -351,6 +351,7 @@ function ProfilePage() {
       }
       setUserId(user.id);
       setEmail(user.email ?? "");
+      setOriginalEmail(user.email ?? "");
       setEmailVerified(Boolean(user.email_confirmed_at));
       setPhoneVerified(Boolean((user as { phone_confirmed_at?: string }).phone_confirmed_at));
       const updatedAt = (user as { updated_at?: string }).updated_at;
