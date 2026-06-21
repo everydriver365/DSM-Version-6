@@ -375,10 +375,12 @@ function ProfilePage() {
       two_factor_method: twoFactorMethod,
       login_alerts: loginAlerts,
     };
-    const { error } = await supabase.from("instructors").upsert(payload);
+    console.log("[profile] save payload includes profile_image_url:", payload.profile_image_url);
+    const saveResponse = await supabase.from("instructors").upsert(payload);
+    console.log("[profile] save response:", saveResponse);
     setSaving(false);
-    if (error) {
-      console.error("[profile] save", error);
+    if (saveResponse.error) {
+      console.error("[profile] save", saveResponse.error);
       toast.error("Couldn't save profile");
       return;
     }
@@ -405,21 +407,21 @@ function ProfilePage() {
     try {
       const ext = f.name.split(".").pop() ?? "jpg";
       const path = `${userId}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
+      const uploadResult = await supabase.storage
         .from("avatars")
         .upload(path, f, { contentType: f.type, upsert: true });
-      if (upErr) throw upErr;
+      if (uploadResult.error) throw uploadResult.error;
       const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
       const publicUrl = pub.publicUrl;
-      console.log("[profile] avatar uploaded, publicUrl =", publicUrl);
-      const dbPayload = { id: userId, profile_image_url: publicUrl };
-      console.log("[profile] saving avatar to instructors, payload =", dbPayload);
-      const { data: dbData, error: dbErr } = await supabase
+      console.log("[profile] photo upload result:", uploadResult, "public URL:", publicUrl);
+      const payload = { id: userId, profile_image_url: publicUrl };
+      console.log("[profile] save payload includes profile_image_url:", payload.profile_image_url);
+      const saveResponse = await supabase
         .from("instructors")
-        .upsert(dbPayload)
+        .upsert(payload)
         .select();
-      console.log("[profile] avatar upsert result", { dbData, dbErr });
-      if (dbErr) throw dbErr;
+      console.log("[profile] save response:", saveResponse);
+      if (saveResponse.error) throw saveResponse.error;
       setImageUrl(publicUrl);
       URL.revokeObjectURL(localPreview);
       toast.success("Photo updated");
