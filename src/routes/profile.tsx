@@ -297,6 +297,7 @@ function ProfilePage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [originalEmail, setOriginalEmail] = useState("");
   const [emailVerified, setEmailVerified] = useState(false);
   const [phone, setPhone] = useState("");
   const [phoneVerified, setPhoneVerified] = useState(false);
