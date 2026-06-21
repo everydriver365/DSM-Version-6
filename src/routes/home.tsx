@@ -444,6 +444,16 @@ function HomePage() {
       setWeekEarnings(wk);
       setTodayEarnings(td);
 
+      const { count: wkLessonCount } = await supabase
+        .from("lessons")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .neq("status", "cancelled")
+        .gte("lesson_date", ymd(weekStart))
+        .lt("lesson_date", ymd(weekEnd));
+      setWeekLessonCount(wkLessonCount ?? 0);
+
       const { data: wh } = await supabase
         .from("working_hours")
         .select("mon, tue, wed, thu, fri, sat, sun, end_time")
