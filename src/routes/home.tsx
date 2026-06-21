@@ -1159,7 +1159,7 @@ function HomePage() {
                 LESSONS · WEEK
               </div>
               <div style={{ fontSize: 19, fontWeight: 800, color: '#8FF0C2', marginTop: 2, lineHeight: 1.1 }}>
-                {weekLessons.length}/{WEEKLY_LESSON_GOAL}
+                {weekLessonsTotal}/{WEEKLY_LESSON_GOAL}
               </div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
                 {todayLessons.length} today
