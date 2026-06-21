@@ -104,7 +104,7 @@ function SchedulePage() {
 
     if (tab === "today") q = q.eq("lesson_date", ymd(today));
     else if (tab === "tomorrow") q = q.eq("lesson_date", ymd(tomorrow));
-    else q = q.gte("lesson_date", ymd(dayAfter)).lte("lesson_date", ymd(next14End));
+    else q = q.gte("lesson_date", ymd(tomorrow)).lte("lesson_date", ymd(next14End));
 
     q.then(({ data, error }) => {
       if (error) console.error("[schedule] fetch error", error);
