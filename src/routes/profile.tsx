@@ -299,13 +299,14 @@ function ProfilePage() {
       const updatedAt = (user as { updated_at?: string }).updated_at;
       if (updatedAt) setPasswordChangedAt(updatedAt);
 
-      const { data: inst } = await supabase
+      const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
           "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
+      console.log("[profile] load instructor row", { userId: user.id, inst, instErr });
       if (inst) {
         const fullName = (inst.name ?? "").trim();
         const sp = fullName.split(/\s+/);
@@ -410,10 +411,14 @@ function ProfilePage() {
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
       const publicUrl = pub.publicUrl;
-      const { error: dbErr } = await supabase
+      console.log("[profile] avatar uploaded, publicUrl =", publicUrl);
+      const dbPayload = { id: userId, profile_image_url: publicUrl };
+      console.log("[profile] saving avatar to instructors, payload =", dbPayload);
+      const { data: dbData, error: dbErr } = await supabase
         .from("instructors")
-        .update({ profile_image_url: publicUrl })
-        .eq("id", userId);
+        .upsert(dbPayload)
+        .select();
+      console.log("[profile] avatar upsert result", { dbData, dbErr });
       if (dbErr) throw dbErr;
       setImageUrl(publicUrl);
       URL.revokeObjectURL(localPreview);
