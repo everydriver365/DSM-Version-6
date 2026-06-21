@@ -305,7 +305,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
