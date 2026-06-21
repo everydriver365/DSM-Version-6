@@ -951,12 +951,12 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingTop: 0, paddingBottom: 20, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
           <div
             onClick={() => upcoming && setHeroExpanded((v) => !v)}
-            style={{ textAlign: 'left', padding: 13, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+            style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
           >
             {/* Car image with mask */}
             <img
