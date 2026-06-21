@@ -92,33 +92,34 @@ function OnboardingPage() {
     try {
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
-      // Generate a unique app_slug from the name
-      const base =
-        fullName
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "") || "instructor";
+      let uniqueSlug: string | null = null;
+      if (websiteChoice === "yes") {
+        // Generate a unique app_slug from the name
+        const base =
+          fullName
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9-]/g, "")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "") || "instructor";
 
-      let uniqueSlug = base;
-      let suffix = 1;
-      // Loop until we find a slug not taken by another instructor
-      // (allow our own existing row to keep its slug)
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { data: existing, error: slugErr } = await supabase
-          .from("instructors")
-          .select("id")
-          .eq("app_slug", uniqueSlug)
-          .maybeSingle();
-        if (slugErr) {
-          console.warn("[onboarding] slug lookup error", slugErr);
-          break;
+        uniqueSlug = base;
+        let suffix = 1;
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const { data: existing, error: slugErr } = await supabase
+            .from("instructors")
+            .select("id")
+            .eq("app_slug", uniqueSlug)
+            .maybeSingle();
+          if (slugErr) {
+            console.warn("[onboarding] slug lookup error", slugErr);
+            break;
+          }
+          if (!existing || existing.id === userId) break;
+          suffix += 1;
+          uniqueSlug = `${base}-${suffix}`;
         }
-        if (!existing || existing.id === userId) break;
-        suffix += 1;
-        uniqueSlug = `${base}-${suffix}`;
       }
 
       const { error: instErr } = await supabase.from("instructors").upsert({
@@ -129,8 +130,23 @@ function OnboardingPage() {
         car_model: carModel.trim() || null,
         app_slug: uniqueSlug,
         website_published: false,
+        wants_custom_domain: websiteChoice === "yes" && wantsCustomDomain,
+        existing_website_url:
+          websiteChoice === "existing" && existingWebsiteUrl.trim()
+            ? existingWebsiteUrl.trim()
+            : null,
       });
       if (instErr) throw instErr;
+
+      if (websiteChoice === "yes" && wantsCustomDomain) {
+        const { error: csErr } = await supabase.from("contact_submissions").insert({
+          name: fullName,
+          email: userEmail,
+          subject: "Custom domain request",
+          message: "Instructor requested a custom domain during onboarding",
+        });
+        if (csErr) console.warn("[onboarding] contact_submissions insert error", csErr);
+      }
 
       const rows = DAYS.map(({ key }) => ({
         instructor_id: userId,
