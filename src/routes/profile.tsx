@@ -592,55 +592,6 @@ function ProfilePage() {
 
   const currentAvatarBg = AVATAR_COLORS[avatarColor] ?? AVATAR_COLORS.blue;
 
-  function AccordionCard({
-    sectionKey,
-    children,
-  }: {
-    sectionKey: TabKey;
-    children: React.ReactNode;
-  }) {
-    const meta = SECTION_META.find((s) => s.key === sectionKey)!;
-    const Icon = meta.icon;
-    const isOpen = expanded[sectionKey];
-    return (
-      <div
-        className="bg-white mb-3"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", borderRadius: 12 }}
-      >
-        <button
-          type="button"
-          onClick={() => toggleSection(sectionKey)}
-          className="w-full flex items-center gap-3 px-4 py-3"
-        >
-          <Icon size={18} color={meta.iconColor} />
-          <span className="flex-1 text-left text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>
-            {meta.label}
-          </span>
-          <ChevronDown
-            size={18}
-            color="#6B7280"
-            style={{
-              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 200ms",
-            }}
-          />
-        </button>
-        {isOpen && (
-          <div
-            className="px-4 pb-4"
-            style={{
-              borderTopWidth: "0.5px",
-              borderTopStyle: "solid",
-              borderTopColor: "#E2E6ED",
-              paddingTop: 16,
-            }}
-          >
-            {children}
-          </div>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#F8F9FB]" style={POPPINS}>
