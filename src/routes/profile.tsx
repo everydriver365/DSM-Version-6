@@ -374,6 +374,7 @@ function ProfilePage() {
       vehicle_reg: vehicleReg.trim() || null,
       dual_controls: dualControls,
       insurance_expiry: insuranceExpiry || null,
+      vehicle_photo_url: vehiclePhotoUrl,
       notification_prefs: notifPrefs,
       two_factor_enabled: twoFactorEnabled,
       two_factor_method: twoFactorMethod,
