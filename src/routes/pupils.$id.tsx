@@ -267,8 +267,20 @@ function PupilDetailPage() {
         <div className="mx-4 mt-3">
           <Card>
             <div className="flex items-center gap-3">
-              <div
-                className="flex items-center justify-center rounded-full shrink-0 text-[18px] font-semibold"
+              <input
+                ref={photoRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={onPickPupilPhoto}
+              />
+              <button
+                type="button"
+                onClick={() => !uploadingPhoto && photoRef.current?.click()}
+                disabled={uploadingPhoto}
+                aria-label="Upload pupil photo"
+                className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden text-[18px] font-semibold"
                 style={{
                   width: 56,
                   height: 56,
@@ -277,8 +289,31 @@ function PupilDetailPage() {
                   ...POPPINS,
                 }}
               >
-                {initials(pupil.name)}
-              </div>
+                {pupil.photo_url ? (
+                  <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span>{initials(pupil.name)}</span>
+                )}
+                {uploadingPhoto && (
+                  <span
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+                  >
+                    <Loader2 size={18} color="#FFFFFF" className="animate-spin" />
+                  </span>
+                )}
+                <span
+                  className="absolute bottom-0 right-0 flex items-center justify-center rounded-full"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E2E6ED",
+                  }}
+                >
+                  <Camera size={11} color="#1A52A0" />
+                </span>
+              </button>
               <div className="min-w-0 flex-1">
                 <div
                   className="text-[18px] font-semibold text-[#0F2044] truncate"
@@ -293,6 +328,26 @@ function PupilDetailPage() {
                   {badge.label}
                 </span>
               </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                Used on EveryDriver website with pupil consent
+              </div>
+              <label
+                className="mt-2 flex items-start gap-2 cursor-pointer"
+                style={POPPINS}
+              >
+                <input
+                  type="checkbox"
+                  checked={Boolean(pupil.photo_consent)}
+                  onChange={(e) => togglePhotoConsent(e.target.checked)}
+                  style={{ marginTop: 2 }}
+                />
+                <span className="text-[12px] text-[#1A1A2E]">
+                  I have consent to use this pupil&apos;s photo publicly
+                </span>
+              </label>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-4">
