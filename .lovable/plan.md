@@ -1,52 +1,31 @@
-# Postcode autocomplete & geocoding for course pickup area
+# Fix: cursor disappears / deletion stops in profile inputs
 
-## Why
-Today the pickup area field is only regex-checked. Fake-but-well-formed postcodes pass, and we store no coordinates — so the `radius_miles` field can't actually be used to match pupils to courses by distance. We should make the instructor pick a real, confirmed location.
+## Cause
 
-## What the instructor will see
-In both **Create course** (`src/routes/courses.new.tsx`) and **Edit course** (`src/routes/courses.$id.tsx`):
+In `src/routes/profile.tsx`, the `AccordionCard` component is defined **inside** the `ProfilePage` component body (line 595). Every keystroke causes `ProfilePage` to re-render, which creates a brand-new `AccordionCard` function reference. React sees a different component type and unmounts/remounts the entire subtree — including every `TextField` inside it.
 
-1. Pickup area input becomes a search box ("Enter postcode or town").
-2. As they type (debounced ~300ms, min 3 chars), a dropdown shows up to 5 matching UK locations — e.g. `SO23 9AA — Winchester, UK`.
-3. They tap a suggestion to confirm. The confirmed postcode + formatted address are shown as a "chip" with an X to clear and re-search.
-4. Save is blocked until a suggestion has been confirmed (for `status = active`). Draft courses can still save without one.
-5. Existing courses that already have a `pickup_area` string but no coordinates show as "Unverified — tap to confirm" so instructors can upgrade them.
+Result on every keystroke:
+- The `<input>` is destroyed and recreated → focus is lost, the cursor disappears.
+- Held-down Backspace stops deleting after the first character because the input it was repeating into no longer exists.
 
-## What we store
-Add to `instructor_courses` (new migration):
-- `pickup_postcode text` — normalised, e.g. `SO23 9AA`
-- `pickup_formatted_address text` — human label shown to pupils
-- `pickup_lat double precision`
-- `pickup_lng double precision`
-- `pickup_place_id text` — Google place id (for re-lookup)
+The session replay confirms this: rrweb node IDs for the same field jump (1149 → 1272 → 1395 → 1518) on consecutive keystrokes, which only happens when the DOM node is replaced.
 
-Keep existing `pickup_area` for backward compatibility (mirror of postcode).
+## Fix
 
-## Technical approach
+Move `AccordionCard` out of `ProfilePage` to module scope so its identity is stable across renders.
 
-**Google Maps Platform connector** (not yet linked to this project). I'll link it via `standard_connectors--connect` before writing code. Uses the existing managed key — no setup for the user.
+1. In `src/routes/profile.tsx`, cut the `AccordionCard` function (lines ~595–643) out of `ProfilePage`.
+2. Re-declare it at module scope (next to the other module-level helpers like `TextField` and `SelectField`).
+3. Since it currently closes over `expanded` and `toggleSection`, add them as props:
+   - `isOpen: boolean`
+   - `onToggle: () => void`
+   - Keep `sectionKey` only if needed for the meta lookup; otherwise pass `meta` directly. Simplest: keep `sectionKey`, look up `SECTION_META` inside (it's already module-level).
+4. Update each call site (`<AccordionCard sectionKey="personal">…`) to also pass `isOpen={expanded.personal}` and `onToggle={() => toggleSection("personal")}`.
 
-**Browser autocomplete** — Places API (New) via `AutocompleteSuggestion.fetchAutocompleteSuggestions()`, restricted to UK (`includedRegionCodes: ['GB']`) and biased to postal codes/localities. Loaded with the browser key (`VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`) and a session token for billing efficiency.
+No other files change. No behavior changes beyond inputs keeping focus.
 
-**Server-side resolve on selection** — a new `resolvePickupLocation` server function (`src/lib/courses.functions.ts`) calls Places Details + Geocoding through the gateway to get the canonical postcode + lat/lng. This avoids trusting the client and avoids exposing geocoding via the browser key (which isn't authorised for it).
+## Verification
 
-**Shared component** — `src/components/PickupAreaPicker.tsx` so both routes use the same UI/logic. Returns `{ postcode, formatted_address, lat, lng, place_id }` to the parent.
-
-## Files
-
-- New: `db/040_course_pickup_geocode.sql` — adds the columns + grants (no RLS change needed)
-- New: `src/components/PickupAreaPicker.tsx`
-- New: `src/lib/courses.functions.ts` — `resolvePickupLocation` server fn
-- Edited: `src/routes/courses.new.tsx` — replace pickup input + save the new fields
-- Edited: `src/routes/courses.$id.tsx` — same, plus migration banner for legacy rows
-- Edited: `src/routes/__root.tsx` — load Maps JS API with `loading=async` + callback
-
-## Out of scope (ask if you want them)
-- Pupil-side "courses near me" filtering using the new lat/lng + `radius_miles`
-- Backfilling coordinates for existing courses automatically
-- Showing a small map preview under the confirmed chip
-
-## Confirm before I build
-1. OK to link the **Google Maps Platform** connector to this project?
-2. Restrict suggestions to **UK only**, postal codes + towns? (vs. full addresses)
-3. Block "active" courses without a confirmed location, but allow "draft" to skip? (recommended)
+- Type into First name / Last name / Email and hold Backspace — characters delete continuously and the cursor stays visible.
+- Accordion open/close still works for every section.
+- No console warnings about controlled inputs.
