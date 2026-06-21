@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Phone, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Camera, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -26,6 +26,8 @@ interface Pupil {
   status: string | null;
   test_date: string | null;
   notes: string | null;
+  photo_url: string | null;
+  photo_consent: boolean | null;
 }
 
 interface Lesson {
@@ -88,11 +90,13 @@ function PupilDetailPage() {
   const [noteSaved, setNoteSaved] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -161,6 +165,47 @@ function PupilDetailPage() {
     setTimeout(() => setNoteSaved(false), 2000);
   }
 
+  async function onPickPupilPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    if (!/^image\//.test(f.type)) return;
+    if (f.size > 8 * 1024 * 1024) return;
+    setUploadingPhoto(true);
+    try {
+      const ext = f.name.split(".").pop() ?? "jpg";
+      const path = `${id}/${Date.now()}.${ext}`;
+      const up = await supabase.storage
+        .from("pupil-photos")
+        .upload(path, f, { contentType: f.type, upsert: true });
+      if (up.error) throw up.error;
+      const { data: pub } = supabase.storage.from("pupil-photos").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const { error } = await supabase
+        .from("pupils")
+        .update({ photo_url: publicUrl })
+        .eq("id", id);
+      if (error) throw error;
+      setPupil((p) => (p ? { ...p, photo_url: publicUrl } : p));
+    } catch (err) {
+      console.error("[pupil] photo upload", err);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
+  async function togglePhotoConsent(value: boolean) {
+    setPupil((p) => (p ? { ...p, photo_consent: value } : p));
+    const { error } = await supabase
+      .from("pupils")
+      .update({ photo_consent: value })
+      .eq("id", id);
+    if (error) {
+      console.error("[pupil] consent error", error);
+      setPupil((p) => (p ? { ...p, photo_consent: !value } : p));
+    }
+  }
+
   const badge = statusBadge(pupil?.status ?? null);
   const balance = Number(pupil?.balance_owed ?? 0);
   const lessonCount = Number(pupil?.lesson_count ?? 0);
@@ -222,8 +267,20 @@ function PupilDetailPage() {
         <div className="mx-4 mt-3">
           <Card>
             <div className="flex items-center gap-3">
-              <div
-                className="flex items-center justify-center rounded-full shrink-0 text-[18px] font-semibold"
+              <input
+                ref={photoRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={onPickPupilPhoto}
+              />
+              <button
+                type="button"
+                onClick={() => !uploadingPhoto && photoRef.current?.click()}
+                disabled={uploadingPhoto}
+                aria-label="Upload pupil photo"
+                className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden text-[18px] font-semibold"
                 style={{
                   width: 56,
                   height: 56,
@@ -232,8 +289,31 @@ function PupilDetailPage() {
                   ...POPPINS,
                 }}
               >
-                {initials(pupil.name)}
-              </div>
+                {pupil.photo_url ? (
+                  <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span>{initials(pupil.name)}</span>
+                )}
+                {uploadingPhoto && (
+                  <span
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+                  >
+                    <Loader2 size={18} color="#FFFFFF" className="animate-spin" />
+                  </span>
+                )}
+                <span
+                  className="absolute bottom-0 right-0 flex items-center justify-center rounded-full"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E2E6ED",
+                  }}
+                >
+                  <Camera size={11} color="#1A52A0" />
+                </span>
+              </button>
               <div className="min-w-0 flex-1">
                 <div
                   className="text-[18px] font-semibold text-[#0F2044] truncate"
@@ -248,6 +328,26 @@ function PupilDetailPage() {
                   {badge.label}
                 </span>
               </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                Used on EveryDriver website with pupil consent
+              </div>
+              <label
+                className="mt-2 flex items-start gap-2 cursor-pointer"
+                style={POPPINS}
+              >
+                <input
+                  type="checkbox"
+                  checked={Boolean(pupil.photo_consent)}
+                  onChange={(e) => togglePhotoConsent(e.target.checked)}
+                  style={{ marginTop: 2 }}
+                />
+                <span className="text-[12px] text-[#1A1A2E]">
+                  I have consent to use this pupil&apos;s photo publicly
+                </span>
+              </label>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-4">

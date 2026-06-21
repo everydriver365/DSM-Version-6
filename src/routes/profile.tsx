@@ -270,6 +270,9 @@ function ProfilePage() {
   const [transmission, setTransmission] = useState("Manual");
   const [dualControls, setDualControls] = useState(false);
   const [insuranceExpiry, setInsuranceExpiry] = useState("");
+  const [vehiclePhotoUrl, setVehiclePhotoUrl] = useState<string | null>(null);
+  const [uploadingVehicle, setUploadingVehicle] = useState(false);
+  const vehiclePhotoRef = useRef<HTMLInputElement>(null);
 
   // Notifications
   const [notifPrefs, setNotifPrefs] = useState<NotifPrefs>(defaultNotifPrefs());
@@ -302,7 +305,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -332,6 +335,7 @@ function ProfilePage() {
         setVehicleReg(inst.vehicle_reg ?? "");
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
+        setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
         if (inst.notification_prefs && typeof inst.notification_prefs === "object") {
           setNotifPrefs({ ...defaultNotifPrefs(), ...(inst.notification_prefs as NotifPrefs) });
         }
@@ -370,6 +374,7 @@ function ProfilePage() {
       vehicle_reg: vehicleReg.trim() || null,
       dual_controls: dualControls,
       insurance_expiry: insuranceExpiry || null,
+      vehicle_photo_url: vehiclePhotoUrl,
       notification_prefs: notifPrefs,
       two_factor_enabled: twoFactorEnabled,
       two_factor_method: twoFactorMethod,
@@ -460,6 +465,65 @@ function ProfilePage() {
     setDbsUploaded(true);
     setUploading(false);
     toast.success("DBS uploaded");
+  }
+
+  async function onPickVehiclePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f || !userId) return;
+    if (!/^image\//.test(f.type)) {
+      toast.error("Use an image file");
+      return;
+    }
+    if (f.size > 8 * 1024 * 1024) {
+      toast.error("Image must be under 8MB");
+      return;
+    }
+    const localPreview = URL.createObjectURL(f);
+    const previous = vehiclePhotoUrl;
+    setVehiclePhotoUrl(localPreview);
+    setUploadingVehicle(true);
+    try {
+      const ext = f.name.split(".").pop() ?? "jpg";
+      const path = `${userId}/vehicle-${Date.now()}.${ext}`;
+      const uploadResult = await supabase.storage
+        .from("vehicle-images")
+        .upload(path, f, { contentType: f.type, upsert: true });
+      if (uploadResult.error) throw uploadResult.error;
+      const { data: pub } = supabase.storage.from("vehicle-images").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const saveResponse = await supabase
+        .from("instructors")
+        .upsert({ id: userId, vehicle_photo_url: publicUrl })
+        .select();
+      if (saveResponse.error) throw saveResponse.error;
+      setVehiclePhotoUrl(publicUrl);
+      URL.revokeObjectURL(localPreview);
+      toast.success("Vehicle photo updated");
+    } catch (err) {
+      console.error("[profile] vehicle photo upload", err);
+      toast.error("Couldn't upload vehicle photo");
+      setVehiclePhotoUrl(previous);
+      URL.revokeObjectURL(localPreview);
+    } finally {
+      setUploadingVehicle(false);
+    }
+  }
+
+  async function removeVehiclePhoto() {
+    if (!userId) return;
+    const previous = vehiclePhotoUrl;
+    setVehiclePhotoUrl(null);
+    const { error } = await supabase
+      .from("instructors")
+      .upsert({ id: userId, vehicle_photo_url: null });
+    if (error) {
+      console.error("[profile] remove vehicle photo", error);
+      toast.error("Couldn't remove photo");
+      setVehiclePhotoUrl(previous);
+      return;
+    }
+    toast.success("Vehicle photo removed");
   }
 
   function addServiceArea() {
@@ -849,6 +913,73 @@ function ProfilePage() {
 
         {/* Vehicle */}
         <AccordionCard sectionKey="vehicle">
+          <input
+            ref={vehiclePhotoRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onPickVehiclePhoto}
+          />
+          <div className="mb-3">
+            {vehiclePhotoUrl ? (
+              <div>
+                <img
+                  src={vehiclePhotoUrl}
+                  alt="Vehicle"
+                  style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8 }}
+                />
+                <div className="mt-2 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => vehiclePhotoRef.current?.click()}
+                    disabled={uploadingVehicle}
+                    className="text-[13px] disabled:opacity-50"
+                    style={{ color: "#1A52A0", ...POPPINS }}
+                  >
+                    {uploadingVehicle ? "Uploading…" : "Change photo"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={removeVehiclePhoto}
+                    disabled={uploadingVehicle}
+                    className="text-[13px] disabled:opacity-50"
+                    style={{ color: "#CC2229", ...POPPINS }}
+                  >
+                    Remove photo
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => vehiclePhotoRef.current?.click()}
+                disabled={uploadingVehicle}
+                className="w-full flex flex-col items-center justify-center bg-white"
+                style={{
+                  borderWidth: "1px",
+                  borderStyle: "dashed",
+                  borderColor: "#E2E6ED",
+                  borderRadius: 12,
+                  padding: 24,
+                }}
+              >
+                {uploadingVehicle ? (
+                  <Loader2 size={24} color="#1A52A0" className="animate-spin" />
+                ) : (
+                  <Car size={28} color="#F59E0B" />
+                )}
+                <span
+                  className="mt-2 text-[13px]"
+                  style={{ color: "#1A52A0", ...POPPINS }}
+                >
+                  {uploadingVehicle ? "Uploading…" : "Tap to upload vehicle photo"}
+                </span>
+                <span className="mt-1 text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  PNG or JPG, up to 8MB
+                </span>
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
             <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
