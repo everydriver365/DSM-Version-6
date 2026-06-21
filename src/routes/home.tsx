@@ -574,7 +574,7 @@ function HomePage() {
   })();
 
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
-  const lessonsPct = Math.min(100, (weekLessons.length / WEEKLY_LESSON_GOAL) * 100);
+  const lessonsPct = Math.min(100, (weekLessonsTotal / WEEKLY_LESSON_GOAL) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
