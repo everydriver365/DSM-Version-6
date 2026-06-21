@@ -467,6 +467,7 @@ function ProfilePage() {
     const f = e.target.files?.[0];
     e.target.value = "";
     if (!f || !userId) return;
+    console.log("[profile] file selected:", f.name, f.size);
     if (!/^image\/(png|jpe?g|webp)$/.test(f.type)) {
       toast.error("Use a PNG or JPG image");
       return;
@@ -483,21 +484,21 @@ function ProfilePage() {
     try {
       const ext = f.name.split(".").pop() ?? "jpg";
       const path = `${userId}/${Date.now()}.${ext}`;
-      const uploadResult = await supabase.storage
+      const uploadRes = await supabase.storage
         .from("avatars")
         .upload(path, f, { contentType: f.type, upsert: true });
-      if (uploadResult.error) throw uploadResult.error;
+      console.log("[profile] storage upload response:", uploadRes);
+      if (uploadRes.error) throw uploadRes.error;
       const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
       const publicUrl = pub.publicUrl;
-      console.log("[profile] photo upload result:", uploadResult, "public URL:", publicUrl);
+      console.log("[profile] public URL:", publicUrl);
       const payload = { id: userId, profile_image_url: publicUrl };
-      console.log("[profile] save payload includes profile_image_url:", payload.profile_image_url);
-      const saveResponse = await supabase
+      const avatarSaveRes = await supabase
         .from("instructors")
         .upsert(payload)
         .select();
-      console.log("[profile] save response:", saveResponse);
-      if (saveResponse.error) throw saveResponse.error;
+      console.log("[profile] avatar save response:", avatarSaveRes);
+      if (avatarSaveRes.error) throw avatarSaveRes.error;
       setImageUrl(publicUrl);
       URL.revokeObjectURL(localPreview);
       toast.success("Photo updated");
