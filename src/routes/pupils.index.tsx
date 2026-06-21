@@ -172,7 +172,6 @@ function PupilsIndexPage() {
             [
               { k: "active", label: "Active" },
               { k: "passed", label: "Passed" },
-              { k: "inactive", label: "Inactive" },
               { k: "archived", label: "Archived" },
             ] as { k: StatusKey; label: string }[]
           ).map((s) => {
