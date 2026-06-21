@@ -103,6 +103,12 @@ function NewLessonPage() {
     }
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
+    const baseNotes = notes.trim() || null;
+    const fullNotes = pickupValue
+      ? baseNotes
+        ? `${baseNotes}\n\nPickup: ${pickupValue}`
+        : `Pickup: ${pickupValue}`
+      : baseNotes;
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -110,8 +116,7 @@ function NewLessonPage() {
       lesson_time: `${time}:00`,
       duration_minutes: duration,
       status: "confirmed",
-      pickup_location: pickupValue,
-      notes: notes.trim() || null,
+      notes: fullNotes,
     });
     if (error) {
       setErrors({ form: error.message });
