@@ -83,6 +83,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
+import { Route as ISlugRouteImport } from './routes/i.$slug'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
@@ -462,6 +463,11 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
   path: '/lessons/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ISlugRoute = ISlugRouteImport.update({
+  id: '/i/$slug',
+  path: '/i/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoursesNewRoute = CoursesNewRouteImport.update({
   id: '/courses/new',
   path: '/courses/new',
@@ -569,6 +575,7 @@ export interface FileRoutesByFullPath {
   '/weeklyreport': typeof WeeklyreportRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -653,6 +660,7 @@ export interface FileRoutesByTo {
   '/weeklyreport': typeof WeeklyreportRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -738,6 +746,7 @@ export interface FileRoutesById {
   '/weeklyreport': typeof WeeklyreportRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/messages/$id': typeof MessagesIdRoute
@@ -824,6 +833,7 @@ export interface FileRouteTypes {
     | '/weeklyreport'
     | '/courses/$id'
     | '/courses/new'
+    | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -908,6 +918,7 @@ export interface FileRouteTypes {
     | '/weeklyreport'
     | '/courses/$id'
     | '/courses/new'
+    | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -992,6 +1003,7 @@ export interface FileRouteTypes {
     | '/weeklyreport'
     | '/courses/$id'
     | '/courses/new'
+    | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
     | '/messages/$id'
@@ -1077,6 +1089,7 @@ export interface RootRouteChildren {
   WeeklyreportRoute: typeof WeeklyreportRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
+  ISlugRoute: typeof ISlugRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
   NotesIdRoute: typeof NotesIdRoute
@@ -1615,6 +1628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/i/$slug': {
+      id: '/i/$slug'
+      path: '/i/$slug'
+      fullPath: '/i/$slug'
+      preLoaderRoute: typeof ISlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/courses/new': {
       id: '/courses/new'
       path: '/courses/new'
@@ -1752,6 +1772,7 @@ const rootRouteChildren: RootRouteChildren = {
   WeeklyreportRoute: WeeklyreportRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
+  ISlugRoute: ISlugRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
   NotesIdRoute: NotesIdRoute,
