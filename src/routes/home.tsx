@@ -782,11 +782,11 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8, paddingTop: 'calc(52px + env(safe-area-inset-top))' }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(52px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top))', paddingTop: 'env(safe-area-inset-top)' }}
+        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="flex items-center gap-2">
           <img
@@ -951,12 +951,12 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingTop: 0, paddingBottom: 20, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
           <div
             onClick={() => upcoming && setHeroExpanded((v) => !v)}
-            style={{ textAlign: 'left', padding: 13, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+            style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
           >
             {/* Car image with mask */}
             <img
@@ -967,7 +967,7 @@ function HomePage() {
                 position: 'absolute',
                 zIndex: 0,
                 right: -30,
-                top: -45,
+                top: -25,
                 height: '100%',
                 width: '65%',
                 objectFit: 'cover',
