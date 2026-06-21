@@ -213,6 +213,7 @@ function HomePage() {
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [weekEarnings, setWeekEarnings] = useState(0);
+  const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
@@ -443,6 +444,16 @@ function HomePage() {
       setWeekEarnings(wk);
       setTodayEarnings(td);
 
+      const { count: wkLessonCount } = await supabase
+        .from("lessons")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .neq("status", "cancelled")
+        .gte("lesson_date", ymd(weekStart))
+        .lt("lesson_date", ymd(weekEnd));
+      setWeekLessonCount(wkLessonCount ?? 0);
+
       const { data: wh } = await supabase
         .from("working_hours")
         .select("mon, tue, wed, thu, fri, sat, sun, end_time")
@@ -516,6 +527,7 @@ function HomePage() {
     const d = lessonDateTime(l);
     return d >= weekStart && d < weekEnd;
   });
+  const weekLessonsTotal = Math.max(weekLessonCount, weekLessons.length);
 
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
@@ -562,7 +574,7 @@ function HomePage() {
   })();
 
   const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
-  const lessonsPct = Math.min(100, (weekLessons.length / WEEKLY_LESSON_GOAL) * 100);
+  const lessonsPct = Math.min(100, (weekLessonsTotal / WEEKLY_LESSON_GOAL) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
@@ -1147,7 +1159,7 @@ function HomePage() {
                 LESSONS · WEEK
               </div>
               <div style={{ fontSize: 19, fontWeight: 800, color: '#8FF0C2', marginTop: 2, lineHeight: 1.1 }}>
-                {weekLessons.length}/{WEEKLY_LESSON_GOAL}
+                {weekLessonsTotal}/{WEEKLY_LESSON_GOAL}
               </div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
                 {todayLessons.length} today
