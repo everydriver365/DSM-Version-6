@@ -782,11 +782,11 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', margin: -8, paddingTop: 'calc(52px + env(safe-area-inset-top))' }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(52px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top))', paddingTop: 'env(safe-area-inset-top)' }}
+        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="flex items-center gap-2">
           <img
