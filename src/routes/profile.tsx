@@ -913,6 +913,73 @@ function ProfilePage() {
 
         {/* Vehicle */}
         <AccordionCard sectionKey="vehicle">
+          <input
+            ref={vehiclePhotoRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onPickVehiclePhoto}
+          />
+          <div className="mb-3">
+            {vehiclePhotoUrl ? (
+              <div>
+                <img
+                  src={vehiclePhotoUrl}
+                  alt="Vehicle"
+                  style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8 }}
+                />
+                <div className="mt-2 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => vehiclePhotoRef.current?.click()}
+                    disabled={uploadingVehicle}
+                    className="text-[13px] disabled:opacity-50"
+                    style={{ color: "#1A52A0", ...POPPINS }}
+                  >
+                    {uploadingVehicle ? "Uploading…" : "Change photo"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={removeVehiclePhoto}
+                    disabled={uploadingVehicle}
+                    className="text-[13px] disabled:opacity-50"
+                    style={{ color: "#CC2229", ...POPPINS }}
+                  >
+                    Remove photo
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => vehiclePhotoRef.current?.click()}
+                disabled={uploadingVehicle}
+                className="w-full flex flex-col items-center justify-center bg-white"
+                style={{
+                  borderWidth: "1px",
+                  borderStyle: "dashed",
+                  borderColor: "#E2E6ED",
+                  borderRadius: 12,
+                  padding: 24,
+                }}
+              >
+                {uploadingVehicle ? (
+                  <Loader2 size={24} color="#1A52A0" className="animate-spin" />
+                ) : (
+                  <Car size={28} color="#F59E0B" />
+                )}
+                <span
+                  className="mt-2 text-[13px]"
+                  style={{ color: "#1A52A0", ...POPPINS }}
+                >
+                  {uploadingVehicle ? "Uploading…" : "Tap to upload vehicle photo"}
+                </span>
+                <span className="mt-1 text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  PNG or JPG, up to 8MB
+                </span>
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
             <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
