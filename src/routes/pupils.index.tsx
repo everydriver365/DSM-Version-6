@@ -26,7 +26,7 @@ interface Pupil {
   status: string | null;
 }
 
-type StatusKey = "active" | "passed" | "inactive" | "archived";
+type StatusKey = "active" | "passed" | "archived";
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
