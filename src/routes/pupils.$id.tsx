@@ -165,6 +165,47 @@ function PupilDetailPage() {
     setTimeout(() => setNoteSaved(false), 2000);
   }
 
+  async function onPickPupilPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    if (!/^image\//.test(f.type)) return;
+    if (f.size > 8 * 1024 * 1024) return;
+    setUploadingPhoto(true);
+    try {
+      const ext = f.name.split(".").pop() ?? "jpg";
+      const path = `${id}/${Date.now()}.${ext}`;
+      const up = await supabase.storage
+        .from("pupil-photos")
+        .upload(path, f, { contentType: f.type, upsert: true });
+      if (up.error) throw up.error;
+      const { data: pub } = supabase.storage.from("pupil-photos").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const { error } = await supabase
+        .from("pupils")
+        .update({ photo_url: publicUrl })
+        .eq("id", id);
+      if (error) throw error;
+      setPupil((p) => (p ? { ...p, photo_url: publicUrl } : p));
+    } catch (err) {
+      console.error("[pupil] photo upload", err);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
+  async function togglePhotoConsent(value: boolean) {
+    setPupil((p) => (p ? { ...p, photo_consent: value } : p));
+    const { error } = await supabase
+      .from("pupils")
+      .update({ photo_consent: value })
+      .eq("id", id);
+    if (error) {
+      console.error("[pupil] consent error", error);
+      setPupil((p) => (p ? { ...p, photo_consent: !value } : p));
+    }
+  }
+
   const badge = statusBadge(pupil?.status ?? null);
   const balance = Number(pupil?.balance_owed ?? 0);
   const lessonCount = Number(pupil?.lesson_count ?? 0);
