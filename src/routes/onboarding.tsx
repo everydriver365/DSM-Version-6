@@ -301,6 +301,78 @@ function OnboardingPage() {
         )}
 
         {step === 5 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-[24px] font-bold text-[#0F2044]">Want a free website?</h2>
+            <p className="text-[14px] text-[#6B7280]">
+              Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
+            </p>
+
+            <ChoiceCard
+              icon={<CheckCircle size={22} color="#10B981" />}
+              title="Yes, set me up"
+              subtitle="I'll get a free page at everydriver.co.uk/i/[your-name]"
+              selected={websiteChoice === "yes"}
+              onClick={() => setWebsiteChoice("yes")}
+            />
+            {websiteChoice === "yes" && (
+              <div className="pl-2 -mt-2 flex flex-col gap-2">
+                <label className="flex items-start gap-2 text-[13px] text-[#0F2044] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={wantsCustomDomain}
+                    onChange={(e) => setWantsCustomDomain(e.target.checked)}
+                    className="h-4 w-4 mt-0.5 accent-[#1A52A0]"
+                  />
+                  <span>
+                    I&apos;d like a custom domain (e.g. www.myname.co.uk) — contact me about this
+                  </span>
+                </label>
+                {wantsCustomDomain && (
+                  <p className="text-[12px] text-[#1A52A0] bg-[#EEF3FB] rounded-md px-3 py-2">
+                    Our team will be in touch to help set this up
+                  </p>
+                )}
+              </div>
+            )}
+
+            <ChoiceCard
+              icon={<Globe size={22} color="#1A52A0" />}
+              title="I already have a website"
+              subtitle="Skip this — I'll link my existing site instead"
+              selected={websiteChoice === "existing"}
+              onClick={() => setWebsiteChoice("existing")}
+            />
+            {websiteChoice === "existing" && (
+              <div className="pl-2 -mt-2">
+                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
+                  Your website URL (optional)
+                </label>
+                <input
+                  type="url"
+                  value={existingWebsiteUrl}
+                  placeholder="https://www.mydrivingschool.co.uk"
+                  onChange={(e) => setExistingWebsiteUrl(e.target.value)}
+                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+                  style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
+                />
+              </div>
+            )}
+
+            <ChoiceCard
+              icon={<Clock size={22} color="#6B7280" />}
+              title="Not right now"
+              subtitle="I can set this up later from settings"
+              selected={websiteChoice === "later"}
+              onClick={() => setWebsiteChoice("later")}
+            />
+
+            <Button onClick={next} className="h-12 mt-2" disabled={!websiteChoice}>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step === 6 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
