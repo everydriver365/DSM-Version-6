@@ -999,32 +999,49 @@ function HomePage() {
               </div>
             </div>
             {/* Action buttons */}
-            {upcoming && (
-              <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const phone = upcoming?.pupils?.phone;
-                    if (phone) window.location.href = `tel:${phone}`;
-                    else toast("No phone number for this pupil");
-                  }}
-                  style={{ flex: 1, height: 36, background: '#CC2229', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                ><Phone size={16} color="#ffffff" /> Call</button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const phone = upcoming?.pupils?.phone;
-                    if (phone) window.location.href = `sms:${phone}`;
-                    else toast("No phone number");
-                  }}
-                  style={{ flex: 1, height: 36, background: '#F3F4F6', color: '#1A1A2E', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                ><MessageSquare size={16} color="#1A1A2E" /> Text</button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate({ to: "/livesession" }); }}
-                  style={{ flex: 1, height: 36, background: '#16A34A', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                ><Navigation size={16} color="#ffffff" /> Go</button>
-              </div>
-            )}
+            {upcoming && (() => {
+              const phone = upcoming?.pupils?.phone ?? "";
+              const postcode = upcoming?.pupils?.postcode ?? "";
+              const stop = (e: React.MouseEvent) => e.stopPropagation();
+              const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
+              return (
+                <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative' }}>
+                  {phone ? (
+                    <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#CC2229', color: '#fff' }}>
+                      <Phone size={16} color="#ffffff" /> Call
+                    </a>
+                  ) : (
+                    <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#CC2229', color: '#fff', border: 'none', opacity: 0.6 }}>
+                      <Phone size={16} color="#ffffff" /> Call
+                    </button>
+                  )}
+                  {phone ? (
+                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E' }}>
+                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    </a>
+                  ) : (
+                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E', border: 'none', opacity: 0.6 }}>
+                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    </button>
+                  )}
+                  {postcode ? (
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(postcode)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={stop}
+                      style={{ ...btnBase, background: '#16A34A', color: '#fff' }}
+                    >
+                      <Navigation size={16} color="#ffffff" /> Go
+                    </a>
+                  ) : (
+                    <button onClick={(e) => { stop(e); toast("No pickup postcode set"); }} style={{ ...btnBase, background: '#16A34A', color: '#fff', border: 'none', opacity: 0.6 }}>
+                      <Navigation size={16} color="#ffffff" /> Go
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
           </div>
           {/* Expand affordance footer */}
           {upcoming && (
