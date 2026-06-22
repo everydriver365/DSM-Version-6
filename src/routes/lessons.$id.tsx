@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Navigation, ChevronRight, X } from "lucide-react";
+import { ArrowLeft, Pencil, Navigation, ChevronRight, X, Map, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -36,6 +36,23 @@ interface Lesson {
   pupils: { id: string; name: string; phone: string | null } | null;
 }
 
+interface RouteRow {
+  id: string;
+  distance_miles: number | null;
+  duration_minutes: number | null;
+  max_speed_mph: number | null;
+  avg_speed_mph: number | null;
+}
+
+interface OverspeedEvent {
+  id: string;
+  recorded_at: string;
+  speed_mph: number;
+  speed_limit_mph: number;
+  excess_mph: number;
+  road_name: string | null;
+}
+
 function formatTime(t: string) {
   return (t ?? "").slice(0, 5);
 }
@@ -66,6 +83,8 @@ function LessonDetailPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [route, setRoute] = useState<RouteRow | null>(null);
+  const [overspeedEvents, setOverspeedEvents] = useState<OverspeedEvent[]>([]);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -84,6 +103,31 @@ function LessonDetailPage() {
         setLesson((data as unknown as Lesson) ?? null);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (!lesson) return;
+    (async () => {
+      const { data: routeData, error: routeError } = await supabase
+        .from("lesson_routes")
+        .select("id, distance_miles, duration_minutes, max_speed_mph, avg_speed_mph")
+        .eq("lesson_id", lesson.id)
+        .maybeSingle();
+      if (routeError) {
+        console.error("[lesson] route fetch error", routeError);
+        return;
+      }
+      if (!routeData) return;
+      setRoute(routeData as unknown as RouteRow);
+
+      const { data: events, error: eventsError } = await supabase
+        .from("overspeed_events")
+        .select("id, recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .eq("lesson_route_id", routeData.id)
+        .order("recorded_at", { ascending: true });
+      if (eventsError) console.error("[lesson] overspeed fetch error", eventsError);
+      setOverspeedEvents((events as unknown as OverspeedEvent[]) ?? []);
+    })();
+  }, [lesson]);
 
   async function updateStatus(status: string) {
     if (!lesson || updating) return;
@@ -229,6 +273,124 @@ function LessonDetailPage() {
               <DetailRow label="Pupil" value={pupilName} />
               <DetailRow label="Notes" value={lesson.notes || "—"} multiline />
             </Card>
+
+            {route && (
+              <>
+                <SectionHeader>ROUTE & TRACKING</SectionHeader>
+                <div
+                  className="bg-white"
+                  style={{
+                    border: "0.5px solid #E2E6ED",
+                    borderRadius: 12,
+                    padding: 16,
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Map size={18} color="#1A52A0" />
+                    <span
+                      className="text-[11px] font-semibold tracking-wider"
+                      style={{ color: "#1A52A0", ...POPPINS }}
+                    >
+                      Route & tracking
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {(route.distance_miles ?? 0).toFixed(1)} mi
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Distance
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {route.duration_minutes ?? 0} mins
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Duration
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {(route.max_speed_mph ?? 0).toFixed(0)} mph
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Max speed
+                      </div>
+                    </div>
+                  </div>
+
+                  {overspeedEvents.length > 0 && (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle size={16} color="#F59E0B" />
+                        <span
+                          className="text-[12px] font-semibold"
+                          style={{ color: "#F59E0B", ...POPPINS }}
+                        >
+                          Overspeed events
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {overspeedEvents.map((ev) => {
+                          const t = new Date(ev.recorded_at);
+                          const time = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+                          return (
+                            <div
+                              key={ev.id}
+                              className="text-[12px]"
+                              style={{ color: "#374151", ...POPPINS }}
+                            >
+                              {time} · {ev.road_name ?? "Unknown road"} ·{" "}
+                              {ev.speed_mph}mph in {ev.speed_limit_mph}mph zone{" "}
+                              <span style={{ color: "#EF4444", fontWeight: 700 }}>
+                                (+{ev.excess_mph}mph)
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => toast("Map replay coming soon")}
+                    className="w-full text-center text-[13px] font-semibold"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#1A52A0",
+                      padding: "10px 0",
+                      cursor: "pointer",
+                      ...POPPINS,
+                    }}
+                  >
+                    View on map
+                  </button>
+                </div>
+              </>
+            )}
 
             <SectionHeader>ACTIONS</SectionHeader>
             <Card className="!p-0">
