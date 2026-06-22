@@ -809,6 +809,21 @@ function HomePage() {
             style={{ height: 28, width: 'auto', objectFit: 'contain' }}
           />
           <span className="text-white text-[15px]">{firstName}</span>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={`${firstName} profile`}
+              className="rounded-full"
+              style={{ width: 32, height: 32, objectFit: 'cover' }}
+            />
+          ) : (
+            <div
+              className="rounded-full flex items-center justify-center text-white text-[13px] font-bold"
+              style={{ width: 32, height: 32, backgroundColor: '#1A52A0' }}
+            >
+              {firstName.charAt(0).toUpperCase()}
+            </div>
+          )}
           <span
             className="rounded-full"
             style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
