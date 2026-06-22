@@ -32,6 +32,7 @@ interface Lesson {
   duration_minutes: number | null;
   status: string;
   notes: string | null;
+  pickup_address: string | null;
   pupil_id: string;
   pupils: { id: string; name: string; phone: string | null } | null;
 }
@@ -93,7 +94,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pupil_id, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -144,6 +145,21 @@ function LessonDetailPage() {
   const confirmComplete = async () => {
     setPendingComplete(false);
     await updateStatus("completed");
+  };
+
+  const handleNavigate = () => {
+    const address = lesson?.pickup_address || lesson?.notes || "";
+    if (!address) {
+      toast("No pickup address set for this lesson");
+      return;
+    }
+    const encodedAddress = encodeURIComponent(address);
+    const isIOS = /iPhone|iPad/.test(navigator.userAgent);
+    if (isIOS) {
+      window.open(`maps://maps.apple.com/?daddr=${encodedAddress}`, "_blank");
+    } else {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, "_blank");
+    }
   };
 
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
@@ -253,6 +269,7 @@ function LessonDetailPage() {
                 border: "none",
                 ...POPPINS,
               }}
+              onClick={handleNavigate}
             >
               <Navigation size={14} color="#FFFFFF" />
               Navigate
