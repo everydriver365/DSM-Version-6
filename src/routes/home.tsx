@@ -1730,7 +1730,7 @@ function HomePage() {
                   >
                     {formatDayLabel(new Date(`${date}T00:00:00`))}
                   </div>
-                  {items.map((l) => renderLessonCard(l))}
+                  {items.map((l, i, arr) => renderTimelineLesson(l, i, arr, null, null, false))}
                 </div>
               ));
             })()
