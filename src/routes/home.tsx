@@ -1603,7 +1603,7 @@ function HomePage() {
                   marginBottom: 8,
                 }}
               >
-                NO LESSONS
+                {tab === "today" && allTodayLessons.length > 0 ? "ALL DONE" : "NO LESSONS"}
               </div>
               <div
                 className="flex flex-col items-center justify-center"
@@ -1623,7 +1623,9 @@ function HomePage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "yet"}
+                  {tab === "today" && allTodayLessons.length > 0
+                    ? "All done for today! 🎉"
+                    : `Nothing scheduled for ${tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "yet"}`}
                 </div>
               </div>
               <div className="flex mt-3" style={{ gap: 8 }}>
