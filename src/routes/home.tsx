@@ -938,7 +938,7 @@ function HomePage() {
             {/* Upper content area with car image */}
             <div
               onClick={() => upcoming && setHeroExpanded((v) => !v)}
-              style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden', minHeight: 190 }}
+              style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden', minHeight: 200 }}
             >
               {/* Car image - fills the upper area, buttons sit below in their own row */}
               <img
@@ -949,7 +949,7 @@ function HomePage() {
                   position: 'absolute',
                   zIndex: 0,
                   right: -30,
-                  top: -25,
+                  top: 0,
                   height: '100%',
                   width: '65%',
                   objectFit: 'cover',
