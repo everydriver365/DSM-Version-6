@@ -182,7 +182,7 @@ function CertificationsPage() {
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
-        style={{ background: "#0F2044" }}
+        style={{ background: "#072b47" }}
       >
         <button
           type="button"

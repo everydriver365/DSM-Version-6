@@ -290,7 +290,7 @@ function MtdPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: "#0F2044" }}
+        style={{ backgroundColor: "#072b47" }}
       >
         <button
           onClick={() => navigate({ to: "/home" })}

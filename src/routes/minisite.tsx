@@ -300,7 +300,7 @@ function MiniSitePage() {
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center"
-        style={{ backgroundColor: "#0F2044", height: 52 }}
+        style={{ backgroundColor: "#072b47", height: 52 }}
       >
         <button
           onClick={() => navigate({ to: "/home" })}
