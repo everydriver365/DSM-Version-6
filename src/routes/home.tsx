@@ -831,6 +831,8 @@ function HomePage() {
     else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
     else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0F2044", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
 
+    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
+    const nameColor = isPast ? "#9CA3AF" : "#0F2044";
     const endPassed = end.getTime() < now.getTime();
     const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const eolDone = l.eol_completed === true;
