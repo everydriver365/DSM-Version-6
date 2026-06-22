@@ -1090,6 +1090,55 @@ function HomePage() {
               );
             })()}
           </div>
+          {carEditMode && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                margin: '12px 16px 16px',
+                background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
+                padding: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                fontSize: 11, fontFamily: 'Poppins, sans-serif', color: '#0F2044',
+                display: 'flex', flexDirection: 'column', gap: 6,
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>Drag image to move</div>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                W {carPos.width}%
+                <input type="range" min={20} max={120} value={carPos.width}
+                  onChange={(e) => setCarPos((p) => ({ ...p, width: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                H {carPos.heightPct}%
+                <input type="range" min={40} max={160} value={carPos.heightPct}
+                  onChange={(e) => setCarPos((p) => ({ ...p, heightPct: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                Y-focus {carPos.objectPositionY}%
+                <input type="range" min={0} max={100} value={carPos.objectPositionY}
+                  onChange={(e) => setCarPos((p) => ({ ...p, objectPositionY: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <div style={{ fontSize: 10, color: '#6B7280' }}>
+                right: {carPos.right}, top: {carPos.top}
+              </div>
+              <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                <button type="button" onClick={() => { setCarPos(defaultCarPos); toast("Car position reset"); }}
+                  style={{ flex: 1, fontSize: 11, padding: '6px 8px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  Reset
+                </button>
+                <button type="button" onClick={() => {
+                  const txt = JSON.stringify(carPos);
+                  try { navigator.clipboard?.writeText(txt); toast.success("Car position copied to clipboard"); } catch {}
+                  console.log('[car position]', txt);
+                }}
+                  style={{ flex: 1, fontSize: 11, padding: '6px 8px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  Copy
+                </button>
+              </div>
+            </div>
+          )}
           {/* Expand affordance footer */}
           {upcoming && (
             <div
