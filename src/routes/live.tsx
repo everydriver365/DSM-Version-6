@@ -109,6 +109,7 @@ function LivePage() {
   const [geoError, setGeoError] = useState<string | null>(null);
 
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [lessonsLoaded, setLessonsLoaded] = useState(false);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
   const activeLesson = useMemo(
