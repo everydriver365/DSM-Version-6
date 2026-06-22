@@ -329,24 +329,32 @@ function LivePage() {
     limit: number,
     lat: number,
     lng: number,
+    road: string | null,
   ) {
-    if (!routeIdRef.current || !userIdRef.current) return;
-    try {
-      await supabase.from("overspeed_events").insert({
-        lesson_route_id: routeIdRef.current,
-        instructor_id: userIdRef.current,
-        recorded_at: new Date().toISOString(),
-        speed_mph: speed,
-        speed_limit_mph: limit,
-        excess_mph: speed - limit,
-        latitude: lat,
-        longitude: lng,
-        road_name: roadName,
-      });
-    } catch (e) {
-      console.warn("[live] overspeed insert failed", e);
+    const excess = speed - limit;
+    const at = Date.now();
+    if (routeIdRef.current && userIdRef.current) {
+      try {
+        await supabase.from("overspeed_events").insert({
+          lesson_route_id: routeIdRef.current,
+          instructor_id: userIdRef.current,
+          recorded_at: new Date(at).toISOString(),
+          speed_mph: speed,
+          speed_limit_mph: limit,
+          excess_mph: excess,
+          latitude: lat,
+          longitude: lng,
+          road_name: road,
+        });
+      } catch (e) {
+        console.warn("[live] overspeed insert failed", e);
+      }
     }
     setOverspeedCount((c) => c + 1);
+    setOverspeedEvents((arr) => [
+      { at, speed_mph: speed, speed_limit_mph: limit, excess_mph: excess, road_name: road },
+      ...arr,
+    ]);
   }
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
