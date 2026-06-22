@@ -662,7 +662,74 @@ function LivePage() {
             }}
           >
             {roadName}
+      </div>
+
+      {/* MANUAL START OVERLAY — shown when no active lesson and not yet tracking */}
+      {lessonsLoaded && !tracking && !activeLessonId && !geoError && (
+        <div
+          className="absolute z-[1050]"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "calc(100% - 40px)",
+            maxWidth: 340,
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 16,
+            padding: 24,
+            textAlign: "center",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+          }}
+        >
+          <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
+            <MapIcon size={44} color="#1A52A0" strokeWidth={1.8} />
           </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", marginBottom: 6 }}>
+            No active lesson
+          </div>
+          <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
+            You can still track this journey manually
+          </div>
+          <button
+            type="button"
+            onClick={() => startTracking(null, null)}
+            style={{
+              width: "100%",
+              height: 46,
+              borderRadius: 10,
+              background: "#1A52A0",
+              border: "none",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              marginBottom: 8,
+              boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
+            }}
+          >
+            Start manual tracking
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/home" })}
+            style={{
+              width: "100%",
+              height: 42,
+              borderRadius: 10,
+              background: "transparent",
+              border: "none",
+              color: "#6B7280",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Back
+          </button>
+        </div>
+      )}
+
         )}
       </div>
 
