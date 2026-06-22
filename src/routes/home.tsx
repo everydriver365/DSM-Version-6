@@ -422,6 +422,9 @@ function HomePage() {
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
+      if (lessonRows && lessonRows.length > 0) {
+        console.log("[home] first lesson row sample:", lessonRows[0]);
+      }
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
 
@@ -547,7 +550,12 @@ function HomePage() {
   });
   const todayLessons = allTodayLessons.filter((l) => {
     const end = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-    return end.getTime() > now.getTime();
+    if (end.getTime() > now.getTime()) return true;
+    // keep past lessons that still need action (EOL pending or payment unpaid)
+    const paymentStatus = (l.payment_status ?? "").toLowerCase();
+    const needsEol = l.eol_completed !== true;
+    const needsPayment = paymentStatus === "unpaid" || paymentStatus === "";
+    return needsEol || needsPayment;
   });
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
@@ -765,13 +773,13 @@ function HomePage() {
     );
   };
 
-  // Timeline renderer for today's lessons (compact)
   const renderTimelineLesson = (
     l: LessonRow,
     idx: number,
     arr: LessonRow[],
     currentId: string | null,
     nextId: string | null,
+    showTimeline: boolean = true,
   ) => {
     const start = lessonDateTime(l);
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
@@ -843,6 +851,61 @@ function HomePage() {
     if (endPassed && paymentStatus === "unpaid") badges.push({ label: "£", bg: "#FFECEC", color: "#D33B3B" });
     if (paymentStatus === "paid") badges.push({ label: "✓", bg: "#E8F8ED", color: "#1A7A3C" });
 
+    const rowInner = (
+      <div style={cardStyle}>
+        {!showTimeline && (
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: timeColor,
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+              minWidth: 48,
+            }}
+          >
+            {formatTime(l)}
+          </span>
+        )}
+        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
+          {pupilName(l)}
+        </div>
+        <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+          {badges.map((b, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: 10,
+                padding: "2px 6px",
+                borderRadius: 999,
+                backgroundColor: b.bg,
+                color: b.color,
+                fontWeight: 700,
+                fontFamily: "Poppins, sans-serif",
+                lineHeight: 1.4,
+              }}
+            >
+              {b.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+
+    if (!showTimeline) {
+      return (
+        <button
+          key={l.id}
+          type="button"
+          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          className="text-left w-full"
+          style={{ paddingBottom: 6 }}
+        >
+          {rowInner}
+        </button>
+      );
+    }
+
     return (
       <div key={l.id} className="flex" style={{ position: "relative" }}>
         <div
@@ -883,30 +946,7 @@ function HomePage() {
           className="flex-1 text-left"
           style={{ paddingBottom: 8 }}
         >
-          <div style={cardStyle}>
-            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
-              {pupilName(l)}
-            </div>
-            <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
-              {badges.map((b, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontSize: 10,
-                    padding: "2px 6px",
-                    borderRadius: 999,
-                    backgroundColor: b.bg,
-                    color: b.color,
-                    fontWeight: 700,
-                    fontFamily: "Poppins, sans-serif",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {b.label}
-                </span>
-              ))}
-            </div>
-          </div>
+          {rowInner}
         </button>
       </div>
     );
@@ -1690,7 +1730,7 @@ function HomePage() {
                   >
                     {formatDayLabel(new Date(`${date}T00:00:00`))}
                   </div>
-                  {items.map((l) => renderLessonCard(l))}
+                  {items.map((l, i, arr) => renderTimelineLesson(l, i, arr, null, null, false))}
                 </div>
               ));
             })()
@@ -1738,7 +1778,7 @@ function HomePage() {
               );
             })()
           ) : (
-            tabLessons.map((l) => renderLessonCard(l))
+            tabLessons.map((l, i, arr) => renderTimelineLesson(l, i, arr, null, null, false))
           )}
         </div>
 
