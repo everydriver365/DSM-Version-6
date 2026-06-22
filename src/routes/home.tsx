@@ -759,6 +759,153 @@ function HomePage() {
     );
   };
 
+  // Timeline renderer for today's lessons (compact)
+  const renderTimelineLesson = (
+    l: LessonRow,
+    idx: number,
+    arr: LessonRow[],
+    currentId: string | null,
+    nextId: string | null,
+  ) => {
+    const start = lessonDateTime(l);
+    const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+    const isCurrent = l.id === currentId;
+    const isNext = l.id === nextId;
+    const isPast = !isCurrent && end.getTime() < now.getTime();
+    const state: "past" | "current" | "next" | "future" =
+      isCurrent ? "current" : isNext ? "next" : isPast ? "past" : "future";
+
+    const lineColor = isPast ? "#9CA3AF" : "#E2E6ED";
+    const isLast = idx === arr.length - 1;
+
+    let dot: React.ReactNode;
+    if (state === "past") {
+      dot = <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#9CA3AF" }} />;
+    } else if (state === "current") {
+      dot = (
+        <div style={{ position: "relative", width: 14, height: 14 }}>
+          <span
+            className="animate-ping"
+            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: "#16A34A", opacity: 0.6 }}
+          />
+          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: "#16A34A" }} />
+        </div>
+      );
+    } else if (state === "next") {
+      dot = (
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            backgroundColor: "#0F2044",
+            border: "2px solid #FFFFFF",
+            boxShadow: "0 0 0 1px #0F2044",
+          }}
+        />
+      );
+    } else {
+      dot = (
+        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#FFFFFF", border: "2px solid #E2E6ED" }} />
+      );
+    }
+
+    const cardBase: React.CSSProperties = {
+      minHeight: 56,
+      padding: "8px 12px",
+      borderRadius: 10,
+      backgroundColor: "#FFFFFF",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 8,
+    };
+    let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #E2E6ED" };
+    if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #E2E6ED" };
+    else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
+    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0F2044", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
+
+    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
+    const nameColor = isPast ? "#9CA3AF" : "#0F2044";
+    const statusLower = (l.status ?? "").toLowerCase();
+    const badgeBg =
+      isPast ? "#E5E7EB"
+      : statusLower === "confirmed" ? "#E8F8ED"
+      : statusLower === "pending" ? "#FEF3C7"
+      : statusLower === "cancelled" ? "#FFECEC"
+      : "#EEF4FB";
+    const badgeColor =
+      isPast ? "#6B7280"
+      : statusLower === "confirmed" ? "#1A7A3C"
+      : statusLower === "pending" ? "#92400E"
+      : statusLower === "cancelled" ? "#D33B3B"
+      : "#1A52A0";
+
+    return (
+      <div key={l.id} className="flex" style={{ position: "relative" }}>
+        <div
+          style={{
+            width: 48,
+            flexShrink: 0,
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {idx !== 0 && (
+            <div style={{ position: "absolute", left: "50%", top: 0, transform: "translateX(-1px)", width: 2, height: 18, backgroundColor: lineColor }} />
+          )}
+          {!isLast && (
+            <div style={{ position: "absolute", left: "50%", top: 18, bottom: 0, transform: "translateX(-1px)", width: 2, backgroundColor: lineColor }} />
+          )}
+          <div style={{ marginTop: 12, zIndex: 1 }}>{dot}</div>
+          <div
+            className="mt-1"
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: timeColor,
+              textDecoration: isPast ? "line-through" : "none",
+              zIndex: 1,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {formatTime(l)}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          className="flex-1 text-left"
+          style={{ paddingBottom: 8 }}
+        >
+          <div style={cardStyle}>
+            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate">
+              {pupilName(l)}
+            </div>
+            <span
+              className="capitalize"
+              style={{
+                fontSize: 11,
+                padding: "2px 8px",
+                borderRadius: 999,
+                backgroundColor: badgeBg,
+                color: badgeColor,
+                fontWeight: 600,
+                flexShrink: 0,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {l.status || "scheduled"}
+            </span>
+          </div>
+        </button>
+      </div>
+    );
+  };
+
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
     { icon: <Map size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Start tracking", route: "/live" },
