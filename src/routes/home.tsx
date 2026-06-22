@@ -1686,6 +1686,49 @@ function HomePage() {
                 </div>
               ));
             })()
+          ) : tab === "today" ? (
+            (() => {
+              // Compute current/next for today's lessons
+              let currentId: string | null = null;
+              let nextId: string | null = null;
+              let nextTime = Infinity;
+              const t = now.getTime();
+              for (const l of tabLessons) {
+                const s = lessonDateTime(l).getTime();
+                const e = s + (l.duration_minutes ?? 60) * 60000;
+                if (s <= t && t <= e) currentId = l.id;
+                else if (s > t && s < nextTime) {
+                  nextTime = s;
+                  nextId = l.id;
+                }
+              }
+              const shown = tabLessons.slice(0, 6);
+              const hiddenCount = tabLessons.length - shown.length;
+              return (
+                <>
+                  {shown.map((l, i, arr) => renderTimelineLesson(l, i, arr, currentId, nextId))}
+                  {hiddenCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: "/schedule" })}
+                      style={{
+                        marginTop: 4,
+                        marginLeft: 48,
+                        textAlign: "left",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#1A52A0",
+                        fontFamily: "Poppins, sans-serif",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      View all {tabLessons.length} lessons →
+                    </button>
+                  )}
+                </>
+              );
+            })()
           ) : (
             tabLessons.map((l) => renderLessonCard(l))
           )}
