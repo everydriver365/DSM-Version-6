@@ -1009,15 +1009,15 @@ function HomePage() {
                 window.addEventListener("pointerup", onUp);
               }}
               style={{
-                position: 'absolute',
-                zIndex: carEditMode ? 5 : 0,
-                right: carPos.right,
-                top: carPos.top,
-                height: `${carPos.heightPct}%`,
-                width: `${carPos.width}%`,
+                width: '62%',
+                height: '88%',
                 objectFit: 'cover',
-                objectPosition: `center ${carPos.objectPositionY}%`,
+                objectPosition: 'right',
+                position: 'absolute',
+                right: '-1px',
+                top: '-44px',
                 opacity: 1,
+                zIndex: carEditMode ? 5 : 0,
                 pointerEvents: carEditMode ? 'auto' : 'none',
                 cursor: carEditMode ? 'move' : 'default',
                 outline: carEditMode ? '2px dashed #1A52A0' : 'none',
