@@ -831,21 +831,15 @@ function HomePage() {
     else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
     else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0F2044", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
 
-    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
-    const nameColor = isPast ? "#9CA3AF" : "#0F2044";
-    const statusLower = (l.status ?? "").toLowerCase();
-    const badgeBg =
-      isPast ? "#E5E7EB"
-      : statusLower === "confirmed" ? "#E8F8ED"
-      : statusLower === "pending" ? "#FEF3C7"
-      : statusLower === "cancelled" ? "#FFECEC"
-      : "#EEF4FB";
-    const badgeColor =
-      isPast ? "#6B7280"
-      : statusLower === "confirmed" ? "#1A7A3C"
-      : statusLower === "pending" ? "#92400E"
-      : statusLower === "cancelled" ? "#D33B3B"
-      : "#1A52A0";
+    const endPassed = end.getTime() < now.getTime();
+    const paymentStatus = (l.payment_status ?? "").toLowerCase();
+    const eolDone = l.eol_completed === true;
+
+    type Badge = { label: string; bg: string; color: string };
+    const badges: Badge[] = [];
+    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#FEF3C7", color: "#92400E" });
+    if (endPassed && paymentStatus === "unpaid") badges.push({ label: "£", bg: "#FFECEC", color: "#D33B3B" });
+    if (paymentStatus === "paid") badges.push({ label: "✓", bg: "#E8F8ED", color: "#1A7A3C" });
 
     return (
       <div key={l.id} className="flex" style={{ position: "relative" }}>
@@ -888,24 +882,28 @@ function HomePage() {
           style={{ paddingBottom: 8 }}
         >
           <div style={cardStyle}>
-            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate">
+            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
               {pupilName(l)}
             </div>
-            <span
-              className="capitalize"
-              style={{
-                fontSize: 11,
-                padding: "2px 8px",
-                borderRadius: 999,
-                backgroundColor: badgeBg,
-                color: badgeColor,
-                fontWeight: 600,
-                flexShrink: 0,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {l.status || "scheduled"}
-            </span>
+            <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+              {badges.map((b, i) => (
+                <span
+                  key={i}
+                  style={{
+                    fontSize: 10,
+                    padding: "2px 6px",
+                    borderRadius: 999,
+                    backgroundColor: b.bg,
+                    color: b.color,
+                    fontWeight: 700,
+                    fontFamily: "Poppins, sans-serif",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {b.label}
+                </span>
+              ))}
+            </div>
           </div>
         </button>
       </div>
