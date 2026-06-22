@@ -360,7 +360,11 @@ function HomePage() {
 
 
 
-  const now = useMemo(() => new Date(), []);
+  const [now, setNow] = useState<Date>(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
@@ -751,6 +755,153 @@ function HomePage() {
             </span>
           )}
         </div>
+      </div>
+    );
+  };
+
+  // Timeline renderer for today's lessons (compact)
+  const renderTimelineLesson = (
+    l: LessonRow,
+    idx: number,
+    arr: LessonRow[],
+    currentId: string | null,
+    nextId: string | null,
+  ) => {
+    const start = lessonDateTime(l);
+    const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+    const isCurrent = l.id === currentId;
+    const isNext = l.id === nextId;
+    const isPast = !isCurrent && end.getTime() < now.getTime();
+    const state: "past" | "current" | "next" | "future" =
+      isCurrent ? "current" : isNext ? "next" : isPast ? "past" : "future";
+
+    const lineColor = isPast ? "#9CA3AF" : "#E2E6ED";
+    const isLast = idx === arr.length - 1;
+
+    let dot: React.ReactNode;
+    if (state === "past") {
+      dot = <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#9CA3AF" }} />;
+    } else if (state === "current") {
+      dot = (
+        <div style={{ position: "relative", width: 14, height: 14 }}>
+          <span
+            className="animate-ping"
+            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: "#16A34A", opacity: 0.6 }}
+          />
+          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: "#16A34A" }} />
+        </div>
+      );
+    } else if (state === "next") {
+      dot = (
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            backgroundColor: "#0F2044",
+            border: "2px solid #FFFFFF",
+            boxShadow: "0 0 0 1px #0F2044",
+          }}
+        />
+      );
+    } else {
+      dot = (
+        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#FFFFFF", border: "2px solid #E2E6ED" }} />
+      );
+    }
+
+    const cardBase: React.CSSProperties = {
+      minHeight: 56,
+      padding: "8px 12px",
+      borderRadius: 10,
+      backgroundColor: "#FFFFFF",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 8,
+    };
+    let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #E2E6ED" };
+    if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #E2E6ED" };
+    else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
+    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0F2044", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
+
+    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
+    const nameColor = isPast ? "#9CA3AF" : "#0F2044";
+    const statusLower = (l.status ?? "").toLowerCase();
+    const badgeBg =
+      isPast ? "#E5E7EB"
+      : statusLower === "confirmed" ? "#E8F8ED"
+      : statusLower === "pending" ? "#FEF3C7"
+      : statusLower === "cancelled" ? "#FFECEC"
+      : "#EEF4FB";
+    const badgeColor =
+      isPast ? "#6B7280"
+      : statusLower === "confirmed" ? "#1A7A3C"
+      : statusLower === "pending" ? "#92400E"
+      : statusLower === "cancelled" ? "#D33B3B"
+      : "#1A52A0";
+
+    return (
+      <div key={l.id} className="flex" style={{ position: "relative" }}>
+        <div
+          style={{
+            width: 48,
+            flexShrink: 0,
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {idx !== 0 && (
+            <div style={{ position: "absolute", left: "50%", top: 0, transform: "translateX(-1px)", width: 2, height: 18, backgroundColor: lineColor }} />
+          )}
+          {!isLast && (
+            <div style={{ position: "absolute", left: "50%", top: 18, bottom: 0, transform: "translateX(-1px)", width: 2, backgroundColor: lineColor }} />
+          )}
+          <div style={{ marginTop: 12, zIndex: 1 }}>{dot}</div>
+          <div
+            className="mt-1"
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: timeColor,
+              textDecoration: isPast ? "line-through" : "none",
+              zIndex: 1,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {formatTime(l)}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          className="flex-1 text-left"
+          style={{ paddingBottom: 8 }}
+        >
+          <div style={cardStyle}>
+            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate">
+              {pupilName(l)}
+            </div>
+            <span
+              className="capitalize"
+              style={{
+                fontSize: 11,
+                padding: "2px 8px",
+                borderRadius: 999,
+                backgroundColor: badgeBg,
+                color: badgeColor,
+                fontWeight: 600,
+                flexShrink: 0,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {l.status || "scheduled"}
+            </span>
+          </div>
+        </button>
       </div>
     );
   };
@@ -1534,6 +1685,49 @@ function HomePage() {
                   {items.map((l) => renderLessonCard(l))}
                 </div>
               ));
+            })()
+          ) : tab === "today" ? (
+            (() => {
+              // Compute current/next for today's lessons
+              let currentId: string | null = null;
+              let nextId: string | null = null;
+              let nextTime = Infinity;
+              const t = now.getTime();
+              for (const l of tabLessons) {
+                const s = lessonDateTime(l).getTime();
+                const e = s + (l.duration_minutes ?? 60) * 60000;
+                if (s <= t && t <= e) currentId = l.id;
+                else if (s > t && s < nextTime) {
+                  nextTime = s;
+                  nextId = l.id;
+                }
+              }
+              const shown = tabLessons.slice(0, 6);
+              const hiddenCount = tabLessons.length - shown.length;
+              return (
+                <>
+                  {shown.map((l, i, arr) => renderTimelineLesson(l, i, arr, currentId, nextId))}
+                  {hiddenCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: "/schedule" })}
+                      style={{
+                        marginTop: 4,
+                        marginLeft: 48,
+                        textAlign: "left",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#1A52A0",
+                        fontFamily: "Poppins, sans-serif",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      View all {tabLessons.length} lessons →
+                    </button>
+                  )}
+                </>
+              );
             })()
           ) : (
             tabLessons.map((l) => renderLessonCard(l))
