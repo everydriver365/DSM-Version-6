@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
   Phone,
   Car,
