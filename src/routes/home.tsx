@@ -851,6 +851,61 @@ function HomePage() {
     if (endPassed && paymentStatus === "unpaid") badges.push({ label: "£", bg: "#FFECEC", color: "#D33B3B" });
     if (paymentStatus === "paid") badges.push({ label: "✓", bg: "#E8F8ED", color: "#1A7A3C" });
 
+    const rowInner = (
+      <div style={cardStyle}>
+        {!showTimeline && (
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: timeColor,
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+              minWidth: 48,
+            }}
+          >
+            {formatTime(l)}
+          </span>
+        )}
+        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
+          {pupilName(l)}
+        </div>
+        <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+          {badges.map((b, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: 10,
+                padding: "2px 6px",
+                borderRadius: 999,
+                backgroundColor: b.bg,
+                color: b.color,
+                fontWeight: 700,
+                fontFamily: "Poppins, sans-serif",
+                lineHeight: 1.4,
+              }}
+            >
+              {b.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+
+    if (!showTimeline) {
+      return (
+        <button
+          key={l.id}
+          type="button"
+          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          className="text-left w-full"
+          style={{ paddingBottom: 6 }}
+        >
+          {rowInner}
+        </button>
+      );
+    }
+
     return (
       <div key={l.id} className="flex" style={{ position: "relative" }}>
         <div
@@ -891,30 +946,7 @@ function HomePage() {
           className="flex-1 text-left"
           style={{ paddingBottom: 8 }}
         >
-          <div style={cardStyle}>
-            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
-              {pupilName(l)}
-            </div>
-            <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
-              {badges.map((b, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontSize: 10,
-                    padding: "2px 6px",
-                    borderRadius: 999,
-                    backgroundColor: b.bg,
-                    color: b.color,
-                    fontWeight: 700,
-                    fontFamily: "Poppins, sans-serif",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {b.label}
-                </span>
-              ))}
-            </div>
-          </div>
+          {rowInner}
         </button>
       </div>
     );
