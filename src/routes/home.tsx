@@ -225,6 +225,7 @@ function HomePage() {
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
+  const [enqCount, setEnqCount] = useState(0);
 
   useEffect(() => {
     async function loadCount() {
@@ -236,9 +237,18 @@ function HomePage() {
         .eq("instructor_id", user.id)
         .eq("read", false);
       setNotifCount(count || 0);
+
+      const { count: eCount } = await supabase
+        .from("instructor_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .eq("type", "enquiry")
+        .eq("read", false);
+      setEnqCount(eCount || 0);
     }
     loadCount();
   }, []);
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -1593,7 +1603,7 @@ function HomePage() {
         jobs={0}
         tests={0}
         calls={0}
-        enqs={0}
+        enqs={enqCount}
         onNavigate={(to) => navigate({ to })}
       />
 
