@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Calendar as CalendarIcon, CalendarOff, RefreshCw } from "lucide-react";
-import { Card } from "../components/dsm/Card";
+import type React from "react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
