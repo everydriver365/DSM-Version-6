@@ -701,6 +701,23 @@ function LivePage() {
               </div>
             </div>
           </div>
+        ) : tracking ? (
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.08em",
+                color: "#6B7280",
+                textTransform: "uppercase",
+                fontWeight: 600,
+              }}
+            >
+              Tracking
+            </div>
+            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0F2044" }}>
+              Manual journey
+            </div>
+          </div>
         ) : (
           <div
             style={{
