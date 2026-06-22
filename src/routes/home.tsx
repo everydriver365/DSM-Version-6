@@ -934,61 +934,59 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-          <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
-            {/* Upper content area with car image */}
-            <div
-              onClick={() => upcoming && setHeroExpanded((v) => !v)}
-              style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden', minHeight: 200 }}
-            >
-              {/* Car image - fills the upper area, buttons sit below in their own row */}
-              <img
-                src={carAsset.url}
-                alt=""
-                aria-hidden
-                style={{
-                  position: 'absolute',
-                  zIndex: 0,
-                  right: -30,
-                  top: 0,
-                  height: '100%',
-                  width: '65%',
-                  objectFit: 'cover',
-                  objectPosition: 'center 20%',
-                  opacity: 1,
-                  pointerEvents: 'none',
-                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 100%)',
-                  WebkitMaskComposite: 'source-in',
-                  maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 60%), linear-gradient(to bottom, #000 0%, #000 100%)',
-                  maskComposite: 'intersect',
-                }}
-              />
-              {/* Label */}
-              <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
-                Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
-              </div>
-              {/* Content */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                    {upcoming ? formatTime(upcoming) : '—'}
-                  </div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                    {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                    {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
-                  </div>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
+          <div
+            onClick={() => upcoming && setHeroExpanded((v) => !v)}
+            style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+          >
+            {/* Car image with mask - confined to upper content area so it doesn't overlap action buttons */}
+            <img
+              src={carAsset.url}
+              alt=""
+              aria-hidden
+              style={{
+                position: 'absolute',
+                zIndex: 0,
+                right: -30,
+                top: -25,
+                height: 'calc(100% - 64px)',
+                width: '60%',
+                objectFit: 'cover',
+                objectPosition: 'center 25%',
+                opacity: 1,
+                pointerEvents: 'none',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 55%), linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 82%, transparent 100%)',
+                WebkitMaskComposite: 'source-in',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 55%), linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 82%, transparent 100%)',
+                maskComposite: 'intersect',
+              }}
+            />
+            {/* Label */}
+            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
+              Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
+            </div>
+            {/* Content */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? formatTime(upcoming) : '—'}
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                  {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
                 </div>
               </div>
             </div>
-            {/* Action buttons - separate row below the car image */}
+            {/* Action buttons - raised above the car image */}
             {upcoming && (() => {
               const phone = upcoming?.pupils?.phone ?? "";
               const postcode = upcoming?.pupils?.postcode ?? "";
               const stop = (e: React.MouseEvent) => e.stopPropagation();
               const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
               return (
-                <div style={{ display: 'flex', gap: 8, padding: '0 16px 16px', position: 'relative', zIndex: 2 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
                   {phone ? (
                     <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#CC2229', color: '#fff' }}>
                       <Phone size={16} color="#ffffff" /> Call
@@ -1025,7 +1023,8 @@ function HomePage() {
                 </div>
               );
             })()}
-            {/* Expand affordance footer */}
+          </div>
+          {/* Expand affordance footer */}
           {upcoming && (
             <div
               onClick={() => setHeroExpanded((v) => !v)}
