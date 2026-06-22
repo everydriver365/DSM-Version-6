@@ -1778,7 +1778,7 @@ function HomePage() {
               );
             })()
           ) : (
-            tabLessons.map((l) => renderLessonCard(l))
+            tabLessons.map((l, i, arr) => renderTimelineLesson(l, i, arr, null, null, false))
           )}
         </div>
 
