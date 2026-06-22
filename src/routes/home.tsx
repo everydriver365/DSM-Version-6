@@ -934,12 +934,12 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '0 16px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0' }}>
           <div
             onClick={() => upcoming && setHeroExpanded((v) => !v)}
             style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
           >
-            {/* Car image with mask - confined to upper content area so it doesn't overlap action buttons */}
+            {/* Car image - fills the tile and fades behind content/buttons via mask */}
             <img
               src={carAsset.url}
               alt=""
@@ -948,16 +948,16 @@ function HomePage() {
                 position: 'absolute',
                 zIndex: 0,
                 right: -30,
-                top: -25,
-                height: 'calc(100% - 64px)',
+                top: 0,
+                height: '100%',
                 width: '60%',
                 objectFit: 'cover',
                 objectPosition: 'center 25%',
                 opacity: 1,
                 pointerEvents: 'none',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 55%), linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 82%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.9) 25%, #000 55%), linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 82%, transparent 100%)',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 maskComposite: 'intersect',
               }}
             />
