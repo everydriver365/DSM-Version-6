@@ -368,6 +368,7 @@ function LivePage() {
     setCoordinates([]);
     setDistanceKm(0);
     setOverspeedCount(0);
+    setOverspeedEvents([]);
     setElapsedSec(0);
 
     try {
