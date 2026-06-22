@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Calendar as CalendarIcon, CalendarOff, RefreshCw } from "lucide-react";
-import { Card } from "../components/dsm/Card";
+import type React from "react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
@@ -83,6 +83,15 @@ function statusColor(status: string) {
   }
 }
 
+type LessonState = "past" | "current" | "next" | "future";
+
+function lessonStart(l: Lesson) {
+  return new Date(`${l.lesson_date}T${(l.lesson_time ?? "00:00:00").slice(0, 8)}`);
+}
+function lessonEnd(l: Lesson) {
+  return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+}
+
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
@@ -92,6 +101,12 @@ function SchedulePage() {
 
   const [tab, setTab] = useState<TabKey>("today");
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [now, setNow] = useState<Date>(() => new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     setLessons(null);
@@ -123,38 +138,241 @@ function SchedulePage() {
     return Array.from(map.entries()).map(([date, items]) => ({ date, items }));
   }, [lessons]);
 
-  const renderLesson = (l: Lesson) => {
+  const { currentId, nextId } = useMemo(() => {
+    if (!lessons) return { currentId: null as string | null, nextId: null as string | null };
+    let cur: string | null = null;
+    let nxt: string | null = null;
+    let nxtTime = Infinity;
+    for (const l of lessons) {
+      const s = lessonStart(l).getTime();
+      const e = lessonEnd(l).getTime();
+      const t = now.getTime();
+      if (s <= t && t <= e) cur = l.id;
+      else if (s > t && s < nxtTime) {
+        nxtTime = s;
+        nxt = l.id;
+      }
+    }
+    return { currentId: cur, nextId: nxt };
+  }, [lessons, now]);
+
+  const getState = (l: Lesson): LessonState => {
+    if (l.id === currentId) return "current";
+    if (l.id === nextId) return "next";
+    if (lessonEnd(l).getTime() < now.getTime()) return "past";
+    return "future";
+  };
+
+  const renderLesson = (l: Lesson, idx: number, arr: Lesson[]) => {
     const name = l.pupil?.name ?? "Unknown pupil";
     const color = statusColor(l.status);
+    const state = getState(l);
+    const isLast = idx === arr.length - 1;
+    const isPast = state === "past";
+
+    // Line segment color: grey for past, light for everything else
+    const lineColor = isPast ? "#9CA3AF" : "#E2E6ED";
+
+    // Dot styles
+    let dot: React.ReactNode = null;
+    if (state === "past") {
+      dot = (
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            backgroundColor: "#9CA3AF",
+          }}
+        />
+      );
+    } else if (state === "current") {
+      dot = (
+        <div style={{ position: "relative", width: 14, height: 14 }}>
+          <span
+            className="animate-ping"
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 999,
+              backgroundColor: "#16A34A",
+              opacity: 0.6,
+            }}
+          />
+          <div
+            style={{
+              position: "relative",
+              width: 14,
+              height: 14,
+              borderRadius: 999,
+              backgroundColor: "#16A34A",
+            }}
+          />
+        </div>
+      );
+    } else if (state === "next") {
+      dot = (
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            backgroundColor: "#0F2044",
+            border: "2px solid #FFFFFF",
+            boxShadow: "0 0 0 1px #0F2044",
+          }}
+        />
+      );
+    } else {
+      dot = (
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            backgroundColor: "#FFFFFF",
+            border: "2px solid #E2E6ED",
+          }}
+        />
+      );
+    }
+
+    // Card styles per state
+    const cardBase: React.CSSProperties = {
+      padding: 12,
+      borderRadius: 10,
+      backgroundColor: "#FFFFFF",
+    };
+    let cardStyle: React.CSSProperties = { ...cardBase };
+    if (state === "past") {
+      cardStyle = {
+        ...cardBase,
+        backgroundColor: "#F8F9FB",
+        opacity: 0.7,
+        border: "0.5px solid #E2E6ED",
+      };
+    } else if (state === "current") {
+      cardStyle = {
+        ...cardBase,
+        borderLeft: "3px solid #16A34A",
+        boxShadow: "0 0 0 1px #16A34A20",
+      };
+    } else if (state === "next") {
+      cardStyle = {
+        ...cardBase,
+        borderLeft: "3px solid #0F2044",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+      };
+    } else {
+      cardStyle = { ...cardBase, border: "0.5px solid #E2E6ED" };
+    }
+
+    const mutedText = isPast ? "#9CA3AF" : undefined;
+    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
+    const nameColor = isPast ? "#9CA3AF" : "#1A1A2E";
+    const durColor = isPast ? "#9CA3AF" : "#6B7280";
+    const nameWeight = state === "next" ? 600 : 400;
+
     return (
-      <button
-        key={l.id}
-        type="button"
-        onClick={() => navigate({ to: "/lessons/$id" as never, params: { id: l.id } as never })}
-        className="block w-full text-left"
-      >
-        <Card>
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
-                {formatTime(l.lesson_time)}
-              </div>
-              <div className="text-[14px] text-[#1A1A2E] truncate" style={POPPINS}>
-                {name}
-              </div>
-              <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                {formatDuration(l.duration_minutes)}
-              </div>
-            </div>
-            <span
-              className="text-[11px] text-white px-2 py-1 rounded-full shrink-0 capitalize"
-              style={{ backgroundColor: color, ...POPPINS }}
-            >
-              {l.status}
-            </span>
+      <div key={l.id} className="flex" style={{ position: "relative" }}>
+        {/* Left timeline column */}
+        <div
+          style={{
+            width: 48,
+            position: "relative",
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {/* Vertical line — top half */}
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              transform: "translateX(-1px)",
+              width: 2,
+              height: 18,
+              backgroundColor: idx === 0 ? "transparent" : lineColor,
+            }}
+          />
+          {/* Vertical line — bottom half (to next item) */}
+          {!isLast && (
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: 18,
+                bottom: 0,
+                transform: "translateX(-1px)",
+                width: 2,
+                backgroundColor: lineColor,
+              }}
+            />
+          )}
+          {/* Dot */}
+          <div
+            style={{
+              marginTop: 12,
+              zIndex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {dot}
           </div>
-        </Card>
-      </button>
+          {/* Time below dot */}
+          <div
+            className="text-[11px] mt-1"
+            style={{
+              ...POPPINS,
+              color: timeColor,
+              fontWeight: 600,
+              textDecoration: isPast ? "line-through" : "none",
+              zIndex: 1,
+            }}
+          >
+            {formatTime(l.lesson_time)}
+          </div>
+        </div>
+
+        {/* Right card column */}
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/lessons/$id" as never, params: { id: l.id } as never })}
+          className="block flex-1 text-left"
+          style={{ paddingBottom: 12 }}
+        >
+          <div style={cardStyle}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div
+                  className="text-[14px] truncate"
+                  style={{ ...POPPINS, color: nameColor, fontWeight: nameWeight }}
+                >
+                  {name}
+                </div>
+                <div className="text-[13px]" style={{ ...POPPINS, color: durColor }}>
+                  {formatDuration(l.duration_minutes)}
+                </div>
+              </div>
+              <span
+                className="text-[11px] text-white px-2 py-1 rounded-full shrink-0 capitalize"
+                style={{
+                  backgroundColor: isPast ? "#9CA3AF" : color,
+                  color: mutedText ? "#FFFFFF" : "#FFFFFF",
+                  ...POPPINS,
+                }}
+              >
+                {l.status}
+              </span>
+            </div>
+          </div>
+        </button>
+      </div>
     );
   };
 
