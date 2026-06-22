@@ -732,18 +732,30 @@ function LivePage() {
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>duration</div>
           </div>
           <div style={{ width: 1, background: "#E5E7EB" }} />
-          <div className="flex-1" style={{ textAlign: "center" }}>
+          <button
+            type="button"
+            className="flex-1"
+            onClick={() => overspeedCount > 0 && setShowOverspeedList(true)}
+            style={{
+              textAlign: "center",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: overspeedCount > 0 ? "pointer" : "default",
+            }}
+          >
             <div
               style={{
                 fontSize: 16,
                 fontWeight: 700,
                 color: overspeedCount > 0 ? "#EF4444" : "#0F2044",
+                textDecoration: overspeedCount > 0 ? "underline" : "none",
               }}
             >
               {overspeedCount}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>overspeed</div>
-          </div>
+          </button>
         </div>
 
         {tracking ? (
