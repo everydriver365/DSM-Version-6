@@ -276,8 +276,14 @@ function LivePage() {
       console.warn("[live] geocode failed", e);
     }
 
-    if (limit != null) setSpeedLimit(limit);
-    if (road) setRoadName(road);
+    if (limit != null) {
+      setSpeedLimit(limit);
+      speedLimitRef.current = limit;
+    }
+    if (road) {
+      setRoadName(road);
+      roadNameRef.current = road;
+    }
     try {
       await supabase.from("speed_limit_cache").upsert({
         lat_key: Number(lat.toFixed(3)),
