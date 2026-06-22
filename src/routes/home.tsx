@@ -802,49 +802,38 @@ function HomePage() {
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
-        <div className="flex items-center gap-2">
-          <img
-            src={dsmLogo.url}
-            alt="DSM"
-            style={{ height: 28, width: 'auto', objectFit: 'contain' }}
-          />
+        <div className="flex items-center" style={{ gap: 10 }}>
+          <button
+            type="button"
+            aria-label="Go to profile"
+            onClick={() => navigate({ to: "/profile" })}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+          >
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={`${firstName} profile`}
+                className="rounded-full"
+                style={{ width: 32, height: 32, objectFit: 'cover' }}
+              />
+            ) : (
+              <div
+                className="rounded-full flex items-center justify-center text-white text-[13px] font-bold"
+                style={{ width: 32, height: 32, backgroundColor: '#1A52A0' }}
+              >
+                {firstName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </button>
           <span className="text-white text-[15px]">{firstName}</span>
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={`${firstName} profile`}
-              className="rounded-full"
-              style={{ width: 32, height: 32, objectFit: 'cover' }}
-            />
-          ) : (
-            <div
-              className="rounded-full flex items-center justify-center text-white text-[13px] font-bold"
-              style={{ width: 32, height: 32, backgroundColor: '#1A52A0' }}
-            >
-              {firstName.charAt(0).toUpperCase()}
-            </div>
-          )}
           <span
             className="rounded-full"
             style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
           />
         </div>
 
-        {/* RIGHT: circular icon buttons */}
+        {/* RIGHT: notifications */}
         <div className="flex items-center" style={{ gap: 8 }}>
-          <CircleIconBtn
-            ariaLabel="Call next pupil"
-            onClick={() => {
-              const phone = nextLesson?.pupils?.phone;
-              if (phone) window.location.href = `tel:${phone}`;
-              else navigate({ to: "/pupils" });
-            }}
-          >
-            <Phone size={18} color="#ffffff" />
-          </CircleIconBtn>
-          <CircleIconBtn ariaLabel="Vehicle" onClick={() => navigate({ to: "/vehicle" })}>
-            <Car size={18} color="#ffffff" />
-          </CircleIconBtn>
           <CircleIconBtn ariaLabel="Notifications" onClick={() => navigate({ to: "/notifications" })}>
             <Bell size={18} color="#ffffff" />
             {notifCount > 0 && (
@@ -859,9 +848,6 @@ function HomePage() {
                 {notifCount}
               </span>
             )}
-          </CircleIconBtn>
-          <CircleIconBtn ariaLabel="Menu" onClick={() => setMenuOpen(true)}>
-            <Menu size={18} color="#ffffff" />
           </CircleIconBtn>
         </div>
       </div>
