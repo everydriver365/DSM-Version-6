@@ -99,6 +99,8 @@ interface LessonRow {
   pupil_id: string;
   notes?: string | null;
   lesson_type?: string | null;
+  payment_status?: string | null;
+  eol_completed?: boolean | null;
   pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
@@ -409,7 +411,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -425,7 +427,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -539,9 +541,13 @@ function HomePage() {
     };
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
-  const todayLessons = lessons.filter((l) => {
+  const allTodayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
+  });
+  const todayLessons = allTodayLessons.filter((l) => {
+    const end = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+    return end.getTime() > now.getTime();
   });
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
@@ -827,19 +833,15 @@ function HomePage() {
 
     const timeColor = isPast ? "#9CA3AF" : "#0F2044";
     const nameColor = isPast ? "#9CA3AF" : "#0F2044";
-    const statusLower = (l.status ?? "").toLowerCase();
-    const badgeBg =
-      isPast ? "#E5E7EB"
-      : statusLower === "confirmed" ? "#E8F8ED"
-      : statusLower === "pending" ? "#FEF3C7"
-      : statusLower === "cancelled" ? "#FFECEC"
-      : "#EEF4FB";
-    const badgeColor =
-      isPast ? "#6B7280"
-      : statusLower === "confirmed" ? "#1A7A3C"
-      : statusLower === "pending" ? "#92400E"
-      : statusLower === "cancelled" ? "#D33B3B"
-      : "#1A52A0";
+    const endPassed = end.getTime() < now.getTime();
+    const paymentStatus = (l.payment_status ?? "").toLowerCase();
+    const eolDone = l.eol_completed === true;
+
+    type Badge = { label: string; bg: string; color: string };
+    const badges: Badge[] = [];
+    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#FEF3C7", color: "#92400E" });
+    if (endPassed && paymentStatus === "unpaid") badges.push({ label: "£", bg: "#FFECEC", color: "#D33B3B" });
+    if (paymentStatus === "paid") badges.push({ label: "✓", bg: "#E8F8ED", color: "#1A7A3C" });
 
     return (
       <div key={l.id} className="flex" style={{ position: "relative" }}>
@@ -882,24 +884,28 @@ function HomePage() {
           style={{ paddingBottom: 8 }}
         >
           <div style={cardStyle}>
-            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate">
+            <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
               {pupilName(l)}
             </div>
-            <span
-              className="capitalize"
-              style={{
-                fontSize: 11,
-                padding: "2px 8px",
-                borderRadius: 999,
-                backgroundColor: badgeBg,
-                color: badgeColor,
-                fontWeight: 600,
-                flexShrink: 0,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {l.status || "scheduled"}
-            </span>
+            <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+              {badges.map((b, i) => (
+                <span
+                  key={i}
+                  style={{
+                    fontSize: 10,
+                    padding: "2px 6px",
+                    borderRadius: 999,
+                    backgroundColor: b.bg,
+                    color: b.color,
+                    fontWeight: 700,
+                    fontFamily: "Poppins, sans-serif",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {b.label}
+                </span>
+              ))}
+            </div>
           </div>
         </button>
       </div>
@@ -1597,7 +1603,7 @@ function HomePage() {
                   marginBottom: 8,
                 }}
               >
-                NO LESSONS
+                {tab === "today" && allTodayLessons.length > 0 ? "ALL DONE" : "NO LESSONS"}
               </div>
               <div
                 className="flex flex-col items-center justify-center"
@@ -1617,7 +1623,9 @@ function HomePage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  Nothing scheduled for {tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "yet"}
+                  {tab === "today" && allTodayLessons.length > 0
+                    ? "All done for today! 🎉"
+                    : `Nothing scheduled for ${tab === "today" ? "today" : tab === "tomorrow" ? "tomorrow" : "yet"}`}
                 </div>
               </div>
               <div className="flex mt-3" style={{ gap: 8 }}>
