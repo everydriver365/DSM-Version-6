@@ -721,9 +721,9 @@ function LivePage() {
         >
           <div className="flex-1" style={{ textAlign: "center" }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
-              {distanceKm.toFixed(2)}
+              {distanceMiles.toFixed(1)}
             </div>
-            <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>km</div>
+            <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>mi</div>
           </div>
           <div style={{ width: 1, background: "#E5E7EB" }} />
           <div className="flex-1" style={{ textAlign: "center" }}>
