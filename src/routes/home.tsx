@@ -804,8 +804,8 @@ function HomePage() {
         avatarUrl={avatarUrl}
         unreadCount={notifCount}
         onProfile={() => navigate({ to: "/profile" })}
-        onPhone={() => toast("Coming soon")}
-        onLiveTrack={() => toast("Coming soon")}
+        onPhone={() => navigate({ to: "/enquiries" })}
+        onLiveTrack={() => toast("Live tracking coming soon")}
         onBell={() => navigate({ to: "/notifications" })}
         onMenu={() => navigate({ to: "/settings" })}
         statusDot={
