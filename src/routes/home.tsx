@@ -252,6 +252,25 @@ function HomePage() {
   const [lateOpen, setLateOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // ----- Car image position (drag-to-reposition, persisted in localStorage) -----
+  type CarPos = { right: number; top: number; width: number; heightPct: number; objectPositionY: number };
+  const CAR_POS_KEY = "home.nextLessonCar.pos.v1";
+  const defaultCarPos: CarPos = { right: -30, top: 0, width: 60, heightPct: 100, objectPositionY: 25 };
+  const [carPos, setCarPos] = useState<CarPos>(() => {
+    if (typeof window === "undefined") return defaultCarPos;
+    try {
+      const raw = window.localStorage.getItem(CAR_POS_KEY);
+      if (!raw) return defaultCarPos;
+      return { ...defaultCarPos, ...JSON.parse(raw) };
+    } catch { return defaultCarPos; }
+  });
+  const [carEditMode, setCarEditMode] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
+  }, [carPos]);
+
+
   // AT A GLANCE state
   const [glancePupilCount, setGlancePupilCount] = useState(0);
   const [glanceCompletedLessons, setGlanceCompletedLessons] = useState(0);
