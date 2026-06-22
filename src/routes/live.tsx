@@ -90,6 +90,8 @@ function LivePage() {
   const overspeedSinceRef = useRef<number | null>(null);
   const lastOverspeedInsertRef = useRef<number>(0);
   const speedLimitFetchedRef = useRef<{ key: string; at: number } | null>(null);
+  const speedLimitRef = useRef<number | null>(null);
+  const roadNameRef = useRef<string | null>(null);
 
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
@@ -98,6 +100,10 @@ function LivePage() {
   const [roadName, setRoadName] = useState<string | null>(null);
   const [isOverSpeeding, setIsOverSpeeding] = useState(false);
   const [overspeedCount, setOverspeedCount] = useState(0);
+  const [overspeedEvents, setOverspeedEvents] = useState<
+    { at: number; speed_mph: number; speed_limit_mph: number; excess_mph: number; road_name: string | null }[]
+  >([]);
+  const [showOverspeedList, setShowOverspeedList] = useState(false);
   const [distanceKm, setDistanceKm] = useState(0);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -231,8 +237,14 @@ function LivePage() {
       if (cached && cached.fetched_at) {
         const age = now - new Date(cached.fetched_at).getTime();
         if (age < 24 * 60 * 60 * 1000) {
-          if (cached.speed_limit_mph != null) setSpeedLimit(cached.speed_limit_mph);
-          if (cached.road_name) setRoadName(cached.road_name);
+          if (cached.speed_limit_mph != null) {
+            setSpeedLimit(cached.speed_limit_mph);
+            speedLimitRef.current = cached.speed_limit_mph;
+          }
+          if (cached.road_name) {
+            setRoadName(cached.road_name);
+            roadNameRef.current = cached.road_name;
+          }
           return;
         }
       }
@@ -264,8 +276,14 @@ function LivePage() {
       console.warn("[live] geocode failed", e);
     }
 
-    if (limit != null) setSpeedLimit(limit);
-    if (road) setRoadName(road);
+    if (limit != null) {
+      setSpeedLimit(limit);
+      speedLimitRef.current = limit;
+    }
+    if (road) {
+      setRoadName(road);
+      roadNameRef.current = road;
+    }
     try {
       await supabase.from("speed_limit_cache").upsert({
         lat_key: Number(lat.toFixed(3)),
@@ -311,24 +329,32 @@ function LivePage() {
     limit: number,
     lat: number,
     lng: number,
+    road: string | null,
   ) {
-    if (!routeIdRef.current || !userIdRef.current) return;
-    try {
-      await supabase.from("overspeed_events").insert({
-        lesson_route_id: routeIdRef.current,
-        instructor_id: userIdRef.current,
-        recorded_at: new Date().toISOString(),
-        speed_mph: speed,
-        speed_limit_mph: limit,
-        excess_mph: speed - limit,
-        latitude: lat,
-        longitude: lng,
-        road_name: roadName,
-      });
-    } catch (e) {
-      console.warn("[live] overspeed insert failed", e);
+    const excess = speed - limit;
+    const at = Date.now();
+    if (routeIdRef.current && userIdRef.current) {
+      try {
+        await supabase.from("overspeed_events").insert({
+          lesson_route_id: routeIdRef.current,
+          instructor_id: userIdRef.current,
+          recorded_at: new Date(at).toISOString(),
+          speed_mph: speed,
+          speed_limit_mph: limit,
+          excess_mph: excess,
+          latitude: lat,
+          longitude: lng,
+          road_name: road,
+        });
+      } catch (e) {
+        console.warn("[live] overspeed insert failed", e);
+      }
     }
     setOverspeedCount((c) => c + 1);
+    setOverspeedEvents((arr) => [
+      { at, speed_mph: speed, speed_limit_mph: limit, excess_mph: excess, road_name: road },
+      ...arr,
+    ]);
   }
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
@@ -342,6 +368,7 @@ function LivePage() {
     setCoordinates([]);
     setDistanceKm(0);
     setOverspeedCount(0);
+    setOverspeedEvents([]);
     setElapsedSec(0);
 
     try {
@@ -377,7 +404,7 @@ function LivePage() {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
-    const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.237) : 0;
+    const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now() };
 
@@ -428,7 +455,9 @@ function LivePage() {
 
     ensureSpeedLimit(lat, lng);
 
-    if (speedLimit != null && mph > speedLimit + 2) {
+    const currentLimit = speedLimitRef.current;
+    const currentRoad = roadNameRef.current;
+    if (currentLimit != null && mph > currentLimit + 2) {
       const now = Date.now();
       if (overspeedSinceRef.current == null) {
         overspeedSinceRef.current = now;
@@ -438,7 +467,7 @@ function LivePage() {
       ) {
         lastOverspeedInsertRef.current = now;
         setIsOverSpeeding(true);
-        recordOverspeed(mph, speedLimit, lat, lng);
+        recordOverspeed(mph, currentLimit, lat, lng, currentRoad);
       } else if (now - overspeedSinceRef.current > 2000) {
         setIsOverSpeeding(true);
       }
@@ -446,6 +475,7 @@ function LivePage() {
       overspeedSinceRef.current = null;
       setIsOverSpeeding(false);
     }
+
 
     const now = Date.now();
     if (
@@ -546,7 +576,7 @@ function LivePage() {
             whiteSpace: "nowrap",
           }}
         >
-          OVER SPEED LIMIT · {currentSpeed}mph in a {speedLimit} zone
+          OVER SPEED LIMIT · {currentSpeed}mph in a {speedLimit}mph zone{roadName ? ` · ${roadName}` : ""}
         </div>
       )}
 
@@ -702,18 +732,30 @@ function LivePage() {
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>duration</div>
           </div>
           <div style={{ width: 1, background: "#E5E7EB" }} />
-          <div className="flex-1" style={{ textAlign: "center" }}>
+          <button
+            type="button"
+            className="flex-1"
+            onClick={() => overspeedCount > 0 && setShowOverspeedList(true)}
+            style={{
+              textAlign: "center",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: overspeedCount > 0 ? "pointer" : "default",
+            }}
+          >
             <div
               style={{
                 fontSize: 16,
                 fontWeight: 700,
                 color: overspeedCount > 0 ? "#EF4444" : "#0F2044",
+                textDecoration: overspeedCount > 0 ? "underline" : "none",
               }}
             >
               {overspeedCount}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>overspeed</div>
-          </div>
+          </button>
         </div>
 
         {tracking ? (
@@ -758,6 +800,84 @@ function LivePage() {
           </button>
         )}
       </div>
+
+      {/* OVERSPEED LIST MODAL */}
+      {showOverspeedList && (
+        <div
+          className="absolute inset-0 z-[1100] flex items-end"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+          onClick={() => setShowOverspeedList(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "16px 16px 0 0",
+              padding: "16px 20px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+              maxHeight: "70%",
+              overflowY: "auto",
+            }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+                Overspeed events ({overspeedEvents.length})
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowOverspeedList(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#6B7280",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+            {overspeedEvents.length === 0 ? (
+              <div style={{ fontSize: 13, color: "#6B7280" }}>No events yet.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {overspeedEvents.map((ev, i) => {
+                  const t = new Date(ev.at);
+                  const hh = String(t.getHours()).padStart(2, "0");
+                  const mm = String(t.getMinutes()).padStart(2, "0");
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        background: "#F3F4F6",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+                          {ev.road_name ?? "Unknown road"}
+                        </div>
+                        <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>
+                          {hh}:{mm}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#374151", marginTop: 4 }}>
+                        {ev.speed_mph}mph in a {ev.speed_limit_mph}mph zone{" "}
+                        <span style={{ color: "#EF4444", fontWeight: 700 }}>
+                          (excess: +{ev.excess_mph}mph)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
