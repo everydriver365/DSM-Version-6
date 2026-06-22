@@ -799,59 +799,22 @@ function HomePage() {
   return (
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(52px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
-      <div
-        className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044", height: 'calc(52px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}
-      >
-        <div className="flex items-center" style={{ gap: 10 }}>
-          <button
-            type="button"
-            aria-label="Go to profile"
-            onClick={() => navigate({ to: "/profile" })}
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-          >
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt={`${firstName} profile`}
-                className="rounded-full"
-                style={{ width: 32, height: 32, objectFit: 'cover' }}
-              />
-            ) : (
-              <div
-                className="rounded-full flex items-center justify-center text-white text-[13px] font-bold"
-                style={{ width: 32, height: 32, backgroundColor: '#1A52A0' }}
-              >
-                {firstName.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </button>
-          <span className="text-white text-[15px]">{firstName}</span>
+      <InstructorTopBar
+        firstName={firstName}
+        avatarUrl={avatarUrl}
+        unreadCount={notifCount}
+        onProfile={() => navigate({ to: "/profile" })}
+        onPhone={() => toast("Coming soon")}
+        onLiveTrack={() => toast("Coming soon")}
+        onBell={() => navigate({ to: "/notifications" })}
+        onMenu={() => navigate({ to: "/settings" })}
+        statusDot={
           <span
             className="rounded-full"
-            style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
+            style={{ width: 8, height: 8, backgroundColor: "#16A34A", marginLeft: 4 }}
           />
-        </div>
-
-        {/* RIGHT: notifications */}
-        <div className="flex items-center" style={{ gap: 8 }}>
-          <CircleIconBtn ariaLabel="Notifications" onClick={() => navigate({ to: "/notifications" })}>
-            <Bell size={18} color="#ffffff" />
-            {notifCount > 0 && (
-              <span
-                className="absolute rounded-full text-white text-[9px] font-bold flex items-center justify-center"
-                style={{
-                  top: -2, right: -2, minWidth: 16, height: 16,
-                  backgroundColor: "#CC2229", padding: "0 4px",
-                  border: "1.5px solid #0F2044",
-                }}
-              >
-                {notifCount}
-              </span>
-            )}
-          </CircleIconBtn>
-        </div>
-      </div>
+        }
+      />
 
       {/* SLIDE-IN MENU */}
       {menuOpen && (
