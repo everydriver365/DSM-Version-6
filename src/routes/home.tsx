@@ -805,7 +805,7 @@ function HomePage() {
         unreadCount={notifCount}
         onProfile={() => navigate({ to: "/profile" })}
         onPhone={() => navigate({ to: "/enquiries" })}
-        onLiveTrack={() => toast("Live tracking coming soon")}
+        onLiveTrack={() => navigate({ to: "/live" })}
         onBell={() => navigate({ to: "/notifications" })}
         onMenu={() => navigate({ to: "/settings" })}
         statusDot={
