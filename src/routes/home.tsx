@@ -550,7 +550,12 @@ function HomePage() {
   });
   const todayLessons = allTodayLessons.filter((l) => {
     const end = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-    return end.getTime() > now.getTime();
+    if (end.getTime() > now.getTime()) return true;
+    // keep past lessons that still need action (EOL pending or payment unpaid)
+    const paymentStatus = (l.payment_status ?? "").toLowerCase();
+    const needsEol = l.eol_completed !== true;
+    const needsPayment = paymentStatus === "unpaid" || paymentStatus === "";
+    return needsEol || needsPayment;
   });
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
