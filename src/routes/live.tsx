@@ -237,8 +237,14 @@ function LivePage() {
       if (cached && cached.fetched_at) {
         const age = now - new Date(cached.fetched_at).getTime();
         if (age < 24 * 60 * 60 * 1000) {
-          if (cached.speed_limit_mph != null) setSpeedLimit(cached.speed_limit_mph);
-          if (cached.road_name) setRoadName(cached.road_name);
+          if (cached.speed_limit_mph != null) {
+            setSpeedLimit(cached.speed_limit_mph);
+            speedLimitRef.current = cached.speed_limit_mph;
+          }
+          if (cached.road_name) {
+            setRoadName(cached.road_name);
+            roadNameRef.current = cached.road_name;
+          }
           return;
         }
       }
