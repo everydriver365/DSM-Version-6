@@ -963,23 +963,49 @@ function HomePage() {
               src={carAsset.url}
               alt=""
               aria-hidden
+              onPointerDown={(e) => {
+                if (!carEditMode) return;
+                e.stopPropagation();
+                e.preventDefault();
+                const target = e.currentTarget;
+                target.setPointerCapture(e.pointerId);
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startRight = carPos.right;
+                const startTop = carPos.top;
+                const onMove = (ev: PointerEvent) => {
+                  const dx = ev.clientX - startX;
+                  const dy = ev.clientY - startY;
+                  setCarPos((p) => ({ ...p, right: Math.round(startRight - dx), top: Math.round(startTop + dy) }));
+                };
+                const onUp = (ev: PointerEvent) => {
+                  try { target.releasePointerCapture(ev.pointerId); } catch {}
+                  window.removeEventListener("pointermove", onMove);
+                  window.removeEventListener("pointerup", onUp);
+                };
+                window.addEventListener("pointermove", onMove);
+                window.addEventListener("pointerup", onUp);
+              }}
               style={{
                 position: 'absolute',
-                zIndex: 0,
-                right: -30,
-                top: 0,
-                height: '100%',
-                width: '60%',
+                zIndex: carEditMode ? 5 : 0,
+                right: carPos.right,
+                top: carPos.top,
+                height: `${carPos.heightPct}%`,
+                width: `${carPos.width}%`,
                 objectFit: 'cover',
-                objectPosition: 'center 25%',
+                objectPosition: `center ${carPos.objectPositionY}%`,
                 opacity: 1,
-                pointerEvents: 'none',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
+                pointerEvents: carEditMode ? 'auto' : 'none',
+                cursor: carEditMode ? 'move' : 'default',
+                outline: carEditMode ? '2px dashed #1A52A0' : 'none',
+                WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
+                maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 maskComposite: 'intersect',
               }}
             />
+
             {/* Label */}
             <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
               Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
