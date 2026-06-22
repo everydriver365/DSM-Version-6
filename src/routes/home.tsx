@@ -208,6 +208,7 @@ type TabKey = "today" | "tomorrow" | "next";
 function HomePage() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("there");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
