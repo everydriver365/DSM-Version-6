@@ -90,6 +90,8 @@ function LivePage() {
   const overspeedSinceRef = useRef<number | null>(null);
   const lastOverspeedInsertRef = useRef<number>(0);
   const speedLimitFetchedRef = useRef<{ key: string; at: number } | null>(null);
+  const speedLimitRef = useRef<number | null>(null);
+  const roadNameRef = useRef<string | null>(null);
 
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
@@ -98,6 +100,10 @@ function LivePage() {
   const [roadName, setRoadName] = useState<string | null>(null);
   const [isOverSpeeding, setIsOverSpeeding] = useState(false);
   const [overspeedCount, setOverspeedCount] = useState(0);
+  const [overspeedEvents, setOverspeedEvents] = useState<
+    { at: number; speed_mph: number; speed_limit_mph: number; excess_mph: number; road_name: string | null }[]
+  >([]);
+  const [showOverspeedList, setShowOverspeedList] = useState(false);
   const [distanceKm, setDistanceKm] = useState(0);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [geoError, setGeoError] = useState<string | null>(null);
