@@ -953,10 +953,74 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative' }}>
+          {/* Car edit toggle */}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setCarEditMode((v) => !v); }}
+            style={{
+              position: 'absolute', top: 6, right: 6, zIndex: 10,
+              fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+              padding: '4px 8px', borderRadius: 6, border: 'none',
+              background: carEditMode ? '#1A52A0' : 'rgba(15,32,68,0.08)',
+              color: carEditMode ? '#FFFFFF' : '#0F2044', cursor: 'pointer',
+            }}
+            title="Drag the car to reposition. Values are saved automatically."
+          >
+            {carEditMode ? '✓ Done' : '✎ Car'}
+          </button>
+          {carEditMode && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                position: 'absolute', top: 32, right: 6, zIndex: 10,
+                background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
+                padding: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                fontSize: 10, fontFamily: 'Poppins, sans-serif', color: '#0F2044',
+                display: 'flex', flexDirection: 'column', gap: 4, minWidth: 160,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: 2 }}>Drag image to move</div>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                W {carPos.width}%
+                <input type="range" min={20} max={120} value={carPos.width}
+                  onChange={(e) => setCarPos((p) => ({ ...p, width: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                H {carPos.heightPct}%
+                <input type="range" min={40} max={160} value={carPos.heightPct}
+                  onChange={(e) => setCarPos((p) => ({ ...p, heightPct: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                Y-focus {carPos.objectPositionY}%
+                <input type="range" min={0} max={100} value={carPos.objectPositionY}
+                  onChange={(e) => setCarPos((p) => ({ ...p, objectPositionY: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <div style={{ fontSize: 9, color: '#6B7280', marginTop: 2 }}>
+                right: {carPos.right}, top: {carPos.top}
+              </div>
+              <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
+                <button type="button" onClick={() => setCarPos(defaultCarPos)}
+                  style={{ flex: 1, fontSize: 10, padding: '4px 6px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 4, cursor: 'pointer' }}>
+                  Reset
+                </button>
+                <button type="button" onClick={() => {
+                  const txt = JSON.stringify(carPos);
+                  try { navigator.clipboard?.writeText(txt); } catch {}
+                  console.log('[car position]', txt);
+                }}
+                  style={{ flex: 1, fontSize: 10, padding: '4px 6px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 4, cursor: 'pointer' }}>
+                  Copy
+                </button>
+              </div>
+            </div>
+          )}
           <div
-            onClick={() => upcoming && setHeroExpanded((v) => !v)}
-            style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+            onClick={() => !carEditMode && upcoming && setHeroExpanded((v) => !v)}
+            style={{ textAlign: 'left', padding: 16, cursor: upcoming && !carEditMode ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
           >
             {/* Car image - fills the tile and fades behind content/buttons via mask */}
             <img
