@@ -359,7 +359,7 @@ function HomePage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name")
+        .select("name, profile_image_url")
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
@@ -374,6 +374,7 @@ function HomePage() {
         "there";
       const first = fullName.trim().split(/\s+/)[0] || "there";
       setFirstName(capitalize(first));
+      setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
     })();
   }, []);
 
