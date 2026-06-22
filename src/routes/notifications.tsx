@@ -185,6 +185,8 @@ function NotificationsPage() {
                           navigate({ to: "/enquiries" });
                         } else if (n.type === "message") {
                           navigate({ to: "/messages" });
+                        } else if (n.type === "tracking") {
+                          navigate({ to: "/live" });
                         }
                       }}
                       className="w-full text-left rounded-xl overflow-hidden"
