@@ -773,13 +773,13 @@ function HomePage() {
     );
   };
 
-  // Timeline renderer for today's lessons (compact)
   const renderTimelineLesson = (
     l: LessonRow,
     idx: number,
     arr: LessonRow[],
     currentId: string | null,
     nextId: string | null,
+    showTimeline: boolean = true,
   ) => {
     const start = lessonDateTime(l);
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
