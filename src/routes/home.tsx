@@ -360,7 +360,11 @@ function HomePage() {
 
 
 
-  const now = useMemo(() => new Date(), []);
+  const [now, setNow] = useState<Date>(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
