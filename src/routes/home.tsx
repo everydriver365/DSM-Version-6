@@ -541,9 +541,13 @@ function HomePage() {
     };
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
-  const todayLessons = lessons.filter((l) => {
+  const allTodayLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= todayStart && d < tomorrowStart;
+  });
+  const todayLessons = allTodayLessons.filter((l) => {
+    const end = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+    return end.getTime() > now.getTime();
   });
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
