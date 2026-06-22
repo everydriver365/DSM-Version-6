@@ -733,8 +733,7 @@ function LivePage() {
         </div>
       )}
 
-        )}
-      </div>
+
 
       {/* BOTTOM PANEL */}
       <div
