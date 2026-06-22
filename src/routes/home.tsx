@@ -957,7 +957,13 @@ function HomePage() {
           {/* Car edit toggle */}
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); setCarEditMode((v) => !v); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCarEditMode((v) => {
+                if (v) toast.success("Car position saved");
+                return !v;
+              });
+            }}
             style={{
               position: 'absolute', top: 6, right: 6, zIndex: 10,
               fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
