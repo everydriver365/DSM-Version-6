@@ -81,7 +81,7 @@ export default function InstructorTopBar({
       {isSubpage ? (
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <IconBtn ariaLabel="Back" onClick={onBack!}>
-            <ChevronLeft size={17} color="#ffffff" />
+            <ChevronLeft size={17} strokeWidth={1.8} color="#ffffff" />
           </IconBtn>
           <span style={{ color: "#ffffff", fontSize: 16, fontWeight: 600 }}>
             {pageTitle ?? ""}
@@ -127,7 +127,7 @@ export default function InstructorTopBar({
             </div>
           )}
           <span style={{ color: "#ffffff", fontSize: 15 }}>{firstName}</span>
-          <ChevronRight size={16} color="rgba(255,255,255,0.7)" />
+          <ChevronRight size={16} strokeWidth={1.8} color="rgba(255,255,255,0.7)" />
           {statusDot}
         </button>
       )}
@@ -135,13 +135,13 @@ export default function InstructorTopBar({
       {/* RIGHT */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
-          <Phone size={17} color="#ffffff" />
+          <Phone size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-          <Car size={17} color="#ffffff" />
+          <Car size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Notifications" onClick={onBell}>
-          <Bell size={17} color="#ffffff" />
+          <Bell size={17} strokeWidth={1.8} color="#ffffff" />
           {unreadCount > 0 && (
             <span
               style={{
@@ -159,7 +159,7 @@ export default function InstructorTopBar({
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "0 3px",
-                border: "1.5px solid #072b47",
+                border: "2px solid #072b47",
                 lineHeight: 1,
               }}
             >
@@ -168,7 +168,7 @@ export default function InstructorTopBar({
           )}
         </IconBtn>
         <IconBtn ariaLabel="Menu" onClick={onMenu}>
-          <Menu size={17} color="#ffffff" />
+          <Menu size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
       </div>
     </div>
