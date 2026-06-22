@@ -260,7 +260,7 @@ function SearchPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 flex items-center px-3"
-        style={{ height: 56, backgroundColor: "#0F2044", gap: 10 }}
+        style={{ height: 56, backgroundColor: "#072b47", gap: 10 }}
       >
         <button
           type="button"
