@@ -576,7 +576,7 @@ function LivePage() {
             whiteSpace: "nowrap",
           }}
         >
-          OVER SPEED LIMIT · {currentSpeed}mph in a {speedLimit} zone
+          OVER SPEED LIMIT · {currentSpeed}mph in a {speedLimit}mph zone{roadName ? ` · ${roadName}` : ""}
         </div>
       )}
 
