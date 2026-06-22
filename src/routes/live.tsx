@@ -662,7 +662,10 @@ function LivePage() {
             }}
           >
             {roadName}
+          </div>
+        )}
       </div>
+
 
       {/* MANUAL START OVERLAY — shown when no active lesson and not yet tracking */}
       {lessonsLoaded && !tracking && !activeLessonId && !geoError && (
