@@ -218,7 +218,7 @@ function BriefingPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
-        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0F2044",
+        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <button onClick={() => navigate({ to: "/home" })}

@@ -262,7 +262,7 @@ function CourseDetailPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#0F2044",
+          backgroundColor: "#072b47",
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",

@@ -93,7 +93,7 @@ function SatNavPage() {
       {/* TOP BAR */}
       <div
         className="shrink-0 h-[52px] px-4 flex items-center justify-between relative z-50"
-        style={{ backgroundColor: "#0F2044" }}
+        style={{ backgroundColor: "#072b47" }}
       >
         <div className="w-10" />
         <span className="text-white text-[15px] font-semibold">Sat Nav</span>
