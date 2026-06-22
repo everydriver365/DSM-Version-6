@@ -984,6 +984,7 @@ function HomePage() {
               src={carAsset.url}
               alt=""
               aria-hidden
+              draggable={false}
               onPointerDown={(e) => {
                 if (!carEditMode) return;
                 e.stopPropagation();
