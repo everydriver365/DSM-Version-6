@@ -1603,7 +1603,7 @@ function HomePage() {
         jobs={0}
         tests={0}
         calls={0}
-        enqs={0}
+        enqs={enqCount}
         onNavigate={(to) => navigate({ to })}
       />
 
