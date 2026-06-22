@@ -797,7 +797,7 @@ function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(52px + env(safe-area-inset-top, 0px))' }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
