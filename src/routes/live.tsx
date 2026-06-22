@@ -455,7 +455,9 @@ function LivePage() {
 
     ensureSpeedLimit(lat, lng);
 
-    if (speedLimit != null && mph > speedLimit + 2) {
+    const currentLimit = speedLimitRef.current;
+    const currentRoad = roadNameRef.current;
+    if (currentLimit != null && mph > currentLimit + 2) {
       const now = Date.now();
       if (overspeedSinceRef.current == null) {
         overspeedSinceRef.current = now;
@@ -465,7 +467,7 @@ function LivePage() {
       ) {
         lastOverspeedInsertRef.current = now;
         setIsOverSpeeding(true);
-        recordOverspeed(mph, speedLimit, lat, lng);
+        recordOverspeed(mph, currentLimit, lat, lng, currentRoad);
       } else if (now - overspeedSinceRef.current > 2000) {
         setIsOverSpeeding(true);
       }
@@ -473,6 +475,7 @@ function LivePage() {
       overspeedSinceRef.current = null;
       setIsOverSpeeding(false);
     }
+
 
     const now = Date.now();
     if (
