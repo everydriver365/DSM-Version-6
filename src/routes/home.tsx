@@ -99,6 +99,8 @@ interface LessonRow {
   pupil_id: string;
   notes?: string | null;
   lesson_type?: string | null;
+  payment_status?: string | null;
+  eol_completed?: boolean | null;
   pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
