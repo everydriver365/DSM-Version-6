@@ -252,6 +252,25 @@ function HomePage() {
   const [lateOpen, setLateOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // ----- Car image position (drag-to-reposition, persisted in localStorage) -----
+  type CarPos = { right: number; top: number; width: number; heightPct: number; objectPositionY: number };
+  const CAR_POS_KEY = "home.nextLessonCar.pos.v1";
+  const defaultCarPos: CarPos = { right: -30, top: 0, width: 60, heightPct: 100, objectPositionY: 25 };
+  const [carPos, setCarPos] = useState<CarPos>(() => {
+    if (typeof window === "undefined") return defaultCarPos;
+    try {
+      const raw = window.localStorage.getItem(CAR_POS_KEY);
+      if (!raw) return defaultCarPos;
+      return { ...defaultCarPos, ...JSON.parse(raw) };
+    } catch { return defaultCarPos; }
+  });
+  const [carEditMode, setCarEditMode] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
+  }, [carPos]);
+
+
   // AT A GLANCE state
   const [glancePupilCount, setGlancePupilCount] = useState(0);
   const [glanceCompletedLessons, setGlanceCompletedLessons] = useState(0);
@@ -934,33 +953,123 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative' }}>
+          {/* Car edit toggle */}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setCarEditMode((v) => !v); }}
+            style={{
+              position: 'absolute', top: 6, right: 6, zIndex: 10,
+              fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+              padding: '4px 8px', borderRadius: 6, border: 'none',
+              background: carEditMode ? '#1A52A0' : 'rgba(15,32,68,0.08)',
+              color: carEditMode ? '#FFFFFF' : '#0F2044', cursor: 'pointer',
+            }}
+            title="Drag the car to reposition. Values are saved automatically."
+          >
+            {carEditMode ? '✓ Done' : '✎ Car'}
+          </button>
+          {carEditMode && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                position: 'absolute', top: 32, right: 6, zIndex: 10,
+                background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
+                padding: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                fontSize: 10, fontFamily: 'Poppins, sans-serif', color: '#0F2044',
+                display: 'flex', flexDirection: 'column', gap: 4, minWidth: 160,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: 2 }}>Drag image to move</div>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                W {carPos.width}%
+                <input type="range" min={20} max={120} value={carPos.width}
+                  onChange={(e) => setCarPos((p) => ({ ...p, width: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                H {carPos.heightPct}%
+                <input type="range" min={40} max={160} value={carPos.heightPct}
+                  onChange={(e) => setCarPos((p) => ({ ...p, heightPct: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
+                Y-focus {carPos.objectPositionY}%
+                <input type="range" min={0} max={100} value={carPos.objectPositionY}
+                  onChange={(e) => setCarPos((p) => ({ ...p, objectPositionY: Number(e.target.value) }))}
+                  style={{ flex: 1 }} />
+              </label>
+              <div style={{ fontSize: 9, color: '#6B7280', marginTop: 2 }}>
+                right: {carPos.right}, top: {carPos.top}
+              </div>
+              <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
+                <button type="button" onClick={() => setCarPos(defaultCarPos)}
+                  style={{ flex: 1, fontSize: 10, padding: '4px 6px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 4, cursor: 'pointer' }}>
+                  Reset
+                </button>
+                <button type="button" onClick={() => {
+                  const txt = JSON.stringify(carPos);
+                  try { navigator.clipboard?.writeText(txt); } catch {}
+                  console.log('[car position]', txt);
+                }}
+                  style={{ flex: 1, fontSize: 10, padding: '4px 6px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 4, cursor: 'pointer' }}>
+                  Copy
+                </button>
+              </div>
+            </div>
+          )}
           <div
-            onClick={() => upcoming && setHeroExpanded((v) => !v)}
-            style={{ textAlign: 'left', padding: 16, cursor: upcoming ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+            onClick={() => !carEditMode && upcoming && setHeroExpanded((v) => !v)}
+            style={{ textAlign: 'left', padding: 16, cursor: upcoming && !carEditMode ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
           >
             {/* Car image - fills the tile and fades behind content/buttons via mask */}
             <img
               src={carAsset.url}
               alt=""
               aria-hidden
+              onPointerDown={(e) => {
+                if (!carEditMode) return;
+                e.stopPropagation();
+                e.preventDefault();
+                const target = e.currentTarget;
+                target.setPointerCapture(e.pointerId);
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startRight = carPos.right;
+                const startTop = carPos.top;
+                const onMove = (ev: PointerEvent) => {
+                  const dx = ev.clientX - startX;
+                  const dy = ev.clientY - startY;
+                  setCarPos((p) => ({ ...p, right: Math.round(startRight - dx), top: Math.round(startTop + dy) }));
+                };
+                const onUp = (ev: PointerEvent) => {
+                  try { target.releasePointerCapture(ev.pointerId); } catch {}
+                  window.removeEventListener("pointermove", onMove);
+                  window.removeEventListener("pointerup", onUp);
+                };
+                window.addEventListener("pointermove", onMove);
+                window.addEventListener("pointerup", onUp);
+              }}
               style={{
                 position: 'absolute',
-                zIndex: 0,
-                right: -30,
-                top: 0,
-                height: '100%',
-                width: '60%',
+                zIndex: carEditMode ? 5 : 0,
+                right: carPos.right,
+                top: carPos.top,
+                height: `${carPos.heightPct}%`,
+                width: `${carPos.width}%`,
                 objectFit: 'cover',
-                objectPosition: 'center 25%',
+                objectPosition: `center ${carPos.objectPositionY}%`,
                 opacity: 1,
-                pointerEvents: 'none',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
+                pointerEvents: carEditMode ? 'auto' : 'none',
+                cursor: carEditMode ? 'move' : 'default',
+                outline: carEditMode ? '2px dashed #1A52A0' : 'none',
+                WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
+                maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 maskComposite: 'intersect',
               }}
             />
+
             {/* Label */}
             <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
               Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
