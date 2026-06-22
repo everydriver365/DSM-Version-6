@@ -951,9 +951,9 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#0F2044', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#072b47', paddingTop: 0, paddingBottom: 24, borderRadius: '0 0 20px 20px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative' }}>
+        <div style={{ backgroundColor: '#072b47', borderRadius: heroExpanded ? 0 : '0 0 20px 20px', boxShadow: 'none', border: 'none', overflow: heroExpanded ? 'visible' : 'hidden', margin: 0, position: 'relative' }}>
           {/* Car edit toggle */}
           <button
             type="button"
@@ -1021,27 +1021,25 @@ function HomePage() {
                 pointerEvents: carEditMode ? 'auto' : 'none',
                 cursor: carEditMode ? 'move' : 'default',
                 outline: carEditMode ? '2px dashed #1A52A0' : 'none',
-                WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
-                WebkitMaskComposite: 'source-in',
-                maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
-                maskComposite: 'intersect',
+                WebkitMaskImage: 'none',
+                maskImage: 'none',
               }}
             />
 
             {/* Label */}
-            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.8)', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
               Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
             </div>
             {/* Content */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#FFFFFF', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif' }}>
                   {upcoming ? formatTime(upcoming) : '—'}
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#FFFFFF', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
                   {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginTop: 2, fontFamily: 'Poppins, sans-serif' }}>
                   {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
                 </div>
               </div>
@@ -1064,12 +1062,12 @@ function HomePage() {
                     </button>
                   )}
                   {phone ? (
-                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E' }}>
-                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: 'rgba(255,255,255,0.15)', color: '#FFFFFF' }}>
+                      <MessageSquare size={16} color="#ffffff" /> Text
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E', border: 'none', opacity: 0.6 }}>
-                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: 'rgba(255,255,255,0.15)', color: '#FFFFFF', border: 'none', opacity: 0.6 }}>
+                      <MessageSquare size={16} color="#ffffff" /> Text
                     </button>
                   )}
                   {postcode ? (
@@ -1175,13 +1173,13 @@ function HomePage() {
                 justifyContent: 'center',
                 gap: 6,
                 padding: '8px 12px',
-                borderTop: '1px solid #EEF1F5',
-                background: '#FAFBFC',
+                borderTop: 'none',
+                background: 'transparent',
                 cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
                 fontSize: 11,
                 fontWeight: 700,
-                color: '#1A52A0',
+                color: '#FFFFFF',
                 textTransform: 'uppercase',
                 letterSpacing: 0.6,
               }}
@@ -1189,7 +1187,7 @@ function HomePage() {
               {heroExpanded ? 'Hide details' : 'Tap for details'}
               <ChevronDown
                 size={16}
-                color="#1A52A0"
+                color="#FFFFFF"
                 style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
               />
             </div>
