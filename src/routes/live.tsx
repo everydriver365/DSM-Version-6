@@ -504,6 +504,7 @@ function LivePage() {
   const speedColor = isOverSpeeding ? "#EF4444" : "#ffffff";
   const elapsedMin = Math.floor(elapsedSec / 60);
   const elapsedSecRem = elapsedSec % 60;
+  const distanceMiles = distanceKm * 0.621371;
 
   return (
     <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#0A1628" }}>
