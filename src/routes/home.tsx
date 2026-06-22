@@ -1125,7 +1125,7 @@ function HomePage() {
               </div>
               <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
                 <button type="button" onClick={() => { setCarPos(defaultCarPos); toast("Car position reset"); }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 8px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Reset
                 </button>
                 <button type="button" onClick={() => {
@@ -1133,8 +1133,23 @@ function HomePage() {
                   try { navigator.clipboard?.writeText(txt); toast.success("Car position copied to clipboard"); } catch {}
                   console.log('[car position]', txt);
                 }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 8px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Copy
+                </button>
+                <button type="button" onClick={() => {
+                  const blob = new Blob([JSON.stringify(carPos, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'car-position.json';
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                  toast.success('Car position exported');
+                }}
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#16A34A', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  Export
                 </button>
               </div>
             </div>
