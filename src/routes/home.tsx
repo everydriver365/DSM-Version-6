@@ -984,6 +984,7 @@ function HomePage() {
               src={carAsset.url}
               alt=""
               aria-hidden
+              draggable={false}
               onPointerDown={(e) => {
                 if (!carEditMode) return;
                 e.stopPropagation();
@@ -1152,6 +1153,16 @@ function HomePage() {
                   Export
                 </button>
               </div>
+              <button type="button" onClick={() => {
+                if (typeof window !== 'undefined') {
+                  try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
+                }
+                setCarEditMode(false);
+                toast.success('Car position saved');
+              }}
+                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                Save position
+              </button>
             </div>
           )}
           {/* Expand affordance footer */}
