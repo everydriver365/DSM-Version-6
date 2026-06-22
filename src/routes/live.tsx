@@ -404,7 +404,7 @@ function LivePage() {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
-    const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.237) : 0;
+    const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now() };
 
