@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Map as MapIcon } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/live")({
