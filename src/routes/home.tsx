@@ -1487,7 +1487,7 @@ function HomePage() {
                 {todayLessons.length} today
               </div>
               <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#1A52A0' }} />
+                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#8FF0C2' }} />
               </div>
             </div>
           </div>
