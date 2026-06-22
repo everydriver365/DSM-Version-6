@@ -83,6 +83,8 @@ function LessonDetailPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [route, setRoute] = useState<RouteRow | null>(null);
+  const [overspeedEvents, setOverspeedEvents] = useState<OverspeedEvent[]>([]);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -101,6 +103,31 @@ function LessonDetailPage() {
         setLesson((data as unknown as Lesson) ?? null);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (!lesson) return;
+    (async () => {
+      const { data: routeData, error: routeError } = await supabase
+        .from("lesson_routes")
+        .select("id, distance_miles, duration_minutes, max_speed_mph, avg_speed_mph")
+        .eq("lesson_id", lesson.id)
+        .maybeSingle();
+      if (routeError) {
+        console.error("[lesson] route fetch error", routeError);
+        return;
+      }
+      if (!routeData) return;
+      setRoute(routeData as unknown as RouteRow);
+
+      const { data: events, error: eventsError } = await supabase
+        .from("overspeed_events")
+        .select("id, recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .eq("lesson_route_id", routeData.id)
+        .order("recorded_at", { ascending: true });
+      if (eventsError) console.error("[lesson] overspeed fetch error", eventsError);
+      setOverspeedEvents((events as unknown as OverspeedEvent[]) ?? []);
+    })();
+  }, [lesson]);
 
   async function updateStatus(status: string) {
     if (!lesson || updating) return;
