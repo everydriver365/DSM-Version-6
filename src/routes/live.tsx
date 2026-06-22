@@ -308,7 +308,7 @@ function LivePage() {
       coordinates: coordsRef.current,
       max_speed_mph: maxSpeed,
       avg_speed_mph: avgSpeed,
-      distance_km: Number(distanceKm.toFixed(3)),
+      distance_miles: Number((distanceKm * 0.621371).toFixed(3)),
       ...extras,
     };
     if (final) {
