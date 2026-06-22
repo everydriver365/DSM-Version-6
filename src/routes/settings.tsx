@@ -152,12 +152,21 @@ function SettingsPage() {
       <div className="mx-4 mt-3">
         <Card>
           <div className="flex items-center gap-3">
-            <div
-              className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-              style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
-            >
-              {initials(displayedName)}
-            </div>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                className="rounded-full shrink-0"
+                style={{ width: 56, height: 56, objectFit: "cover" }}
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
+                style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
+              >
+                {initials(displayedName)}
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <div className="text-[18px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
                 {displayedName}
