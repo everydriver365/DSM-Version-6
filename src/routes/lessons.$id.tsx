@@ -36,6 +36,23 @@ interface Lesson {
   pupils: { id: string; name: string; phone: string | null } | null;
 }
 
+interface RouteRow {
+  id: string;
+  distance_miles: number | null;
+  duration_minutes: number | null;
+  max_speed_mph: number | null;
+  avg_speed_mph: number | null;
+}
+
+interface OverspeedEvent {
+  id: string;
+  recorded_at: string;
+  speed_mph: number;
+  speed_limit_mph: number;
+  excess_mph: number;
+  road_name: string | null;
+}
+
 function formatTime(t: string) {
   return (t ?? "").slice(0, 5);
 }
