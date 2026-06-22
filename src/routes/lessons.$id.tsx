@@ -32,6 +32,7 @@ interface Lesson {
   duration_minutes: number | null;
   status: string;
   notes: string | null;
+  pickup_address: string | null;
   pupil_id: string;
   pupils: { id: string; name: string; phone: string | null } | null;
 }
