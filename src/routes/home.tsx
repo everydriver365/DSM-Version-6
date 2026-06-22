@@ -208,6 +208,7 @@ type TabKey = "today" | "tomorrow" | "next";
 function HomePage() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("there");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
@@ -358,7 +359,7 @@ function HomePage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name")
+        .select("name, profile_image_url")
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
@@ -373,6 +374,7 @@ function HomePage() {
         "there";
       const first = fullName.trim().split(/\s+/)[0] || "there";
       setFirstName(capitalize(first));
+      setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
     })();
   }, []);
 
@@ -807,6 +809,21 @@ function HomePage() {
             style={{ height: 28, width: 'auto', objectFit: 'contain' }}
           />
           <span className="text-white text-[15px]">{firstName}</span>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={`${firstName} profile`}
+              className="rounded-full"
+              style={{ width: 32, height: 32, objectFit: 'cover' }}
+            />
+          ) : (
+            <div
+              className="rounded-full flex items-center justify-center text-white text-[13px] font-bold"
+              style={{ width: 32, height: 32, backgroundColor: '#1A52A0' }}
+            >
+              {firstName.charAt(0).toUpperCase()}
+            </div>
+          )}
           <span
             className="rounded-full"
             style={{ width: 8, height: 8, backgroundColor: "#16A34A" }}
