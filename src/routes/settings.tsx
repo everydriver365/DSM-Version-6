@@ -64,6 +64,7 @@ function SettingsPage() {
   const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
@@ -79,11 +80,12 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name")
+        .select("name, profile_image_url")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
       if (instructor?.name) setInstructorName(instructor.name);
+      if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -150,12 +152,21 @@ function SettingsPage() {
       <div className="mx-4 mt-3">
         <Card>
           <div className="flex items-center gap-3">
-            <div
-              className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-              style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
-            >
-              {initials(displayedName)}
-            </div>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                className="rounded-full shrink-0"
+                style={{ width: 56, height: 56, objectFit: "cover" }}
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
+                style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
+              >
+                {initials(displayedName)}
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <div className="text-[18px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
                 {displayedName}
