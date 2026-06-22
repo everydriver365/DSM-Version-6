@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Map as MapIcon } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/live")({
@@ -109,6 +109,7 @@ function LivePage() {
   const [geoError, setGeoError] = useState<string | null>(null);
 
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [lessonsLoaded, setLessonsLoaded] = useState(false);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
   const activeLesson = useMemo(
@@ -170,7 +171,10 @@ function LivePage() {
   useEffect(() => {
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) return;
+      if (!auth.user) {
+        setLessonsLoaded(true);
+        return;
+      }
       userIdRef.current = auth.user.id;
 
       const today = ymd(new Date());
@@ -185,6 +189,7 @@ function LivePage() {
       if (error) console.error("[live] lessons fetch", error);
       const rows = (data ?? []) as unknown as LessonRow[];
       setLessons(rows);
+      setLessonsLoaded(true);
 
       const now = new Date();
       const nowMin = now.getHours() * 60 + now.getMinutes();
@@ -661,6 +666,75 @@ function LivePage() {
         )}
       </div>
 
+
+      {/* MANUAL START OVERLAY — shown when no active lesson and not yet tracking */}
+      {lessonsLoaded && !tracking && !activeLessonId && !geoError && (
+        <div
+          className="absolute z-[1050]"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "calc(100% - 40px)",
+            maxWidth: 340,
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 16,
+            padding: 24,
+            textAlign: "center",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+          }}
+        >
+          <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
+            <MapIcon size={44} color="#1A52A0" strokeWidth={1.8} />
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", marginBottom: 6 }}>
+            No active lesson
+          </div>
+          <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
+            You can still track this journey manually
+          </div>
+          <button
+            type="button"
+            onClick={() => startTracking(null, null)}
+            style={{
+              width: "100%",
+              height: 46,
+              borderRadius: 10,
+              background: "#1A52A0",
+              border: "none",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              marginBottom: 8,
+              boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
+            }}
+          >
+            Start manual tracking
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/home" })}
+            style={{
+              width: "100%",
+              height: 42,
+              borderRadius: 10,
+              background: "transparent",
+              border: "none",
+              color: "#6B7280",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Back
+          </button>
+        </div>
+      )}
+
+
+
       {/* BOTTOM PANEL */}
       <div
         className="absolute left-0 right-0 bottom-0 z-[1000] bg-white"
@@ -694,6 +768,23 @@ function LivePage() {
               <div style={{ fontSize: 13, color: "#6B7280", fontWeight: 600 }}>
                 {(activeLesson.lesson_time ?? "").slice(0, 5)}
               </div>
+            </div>
+          </div>
+        ) : tracking ? (
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.08em",
+                color: "#6B7280",
+                textTransform: "uppercase",
+                fontWeight: 600,
+              }}
+            >
+              Tracking
+            </div>
+            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0F2044" }}>
+              Manual journey
             </div>
           </div>
         ) : (
