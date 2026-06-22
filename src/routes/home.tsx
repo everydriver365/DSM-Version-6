@@ -101,6 +101,7 @@ interface LessonRow {
   lesson_type?: string | null;
   payment_status?: string | null;
   eol_completed?: boolean | null;
+  amount_due?: number | null;
   pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
@@ -411,7 +412,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -430,7 +431,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -848,8 +849,22 @@ function HomePage() {
     type Badge = { label: string; bg: string; color: string };
     const badges: Badge[] = [];
     if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#FEF3C7", color: "#92400E" });
-    if (endPassed && paymentStatus === "unpaid") badges.push({ label: "£", bg: "#FFECEC", color: "#D33B3B" });
-    if (paymentStatus === "paid") badges.push({ label: "✓", bg: "#E8F8ED", color: "#1A7A3C" });
+
+    const fmtAmt = (n: number) => {
+      const v = Math.abs(n);
+      return Number.isInteger(v) ? `£${v}` : `£${v.toFixed(2)}`;
+    };
+    const amountDue = typeof l.amount_due === "number" ? l.amount_due : 0;
+    const balance = typeof l.pupils?.balance_owed === "number" ? l.pupils!.balance_owed! : 0;
+    if (paymentStatus === "paid" && amountDue > 0) {
+      badges.push({ label: `${fmtAmt(amountDue)} ✓`, bg: "#E8F8ED", color: "#1A7A3C" });
+    } else if (paymentStatus === "unpaid" && amountDue > 0) {
+      badges.push({ label: fmtAmt(amountDue), bg: "#FFECEC", color: "#D33B3B" });
+    } else if (balance < 0) {
+      badges.push({ label: fmtAmt(balance), bg: "#FFECEC", color: "#D33B3B" });
+    } else if (balance > 0) {
+      badges.push({ label: `+${fmtAmt(balance)}`, bg: "#E8F8ED", color: "#1A7A3C" });
+    }
 
     const rowInner = (
       <div style={cardStyle}>
