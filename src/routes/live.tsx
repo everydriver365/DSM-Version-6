@@ -171,7 +171,10 @@ function LivePage() {
   useEffect(() => {
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) return;
+      if (!auth.user) {
+        setLessonsLoaded(true);
+        return;
+      }
       userIdRef.current = auth.user.id;
 
       const today = ymd(new Date());
