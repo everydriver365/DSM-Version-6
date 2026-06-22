@@ -40,6 +40,7 @@ import {
   LayoutGrid,
   FileSignature,
   MapPin,
+  Map,
   Upload,
   Award,
   ToggleLeft,
