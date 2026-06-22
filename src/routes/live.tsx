@@ -800,6 +800,84 @@ function LivePage() {
           </button>
         )}
       </div>
+
+      {/* OVERSPEED LIST MODAL */}
+      {showOverspeedList && (
+        <div
+          className="absolute inset-0 z-[1100] flex items-end"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+          onClick={() => setShowOverspeedList(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "16px 16px 0 0",
+              padding: "16px 20px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+              maxHeight: "70%",
+              overflowY: "auto",
+            }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+                Overspeed events ({overspeedEvents.length})
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowOverspeedList(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#6B7280",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+            {overspeedEvents.length === 0 ? (
+              <div style={{ fontSize: 13, color: "#6B7280" }}>No events yet.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {overspeedEvents.map((ev, i) => {
+                  const t = new Date(ev.at);
+                  const hh = String(t.getHours()).padStart(2, "0");
+                  const mm = String(t.getMinutes()).padStart(2, "0");
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        background: "#F3F4F6",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+                          {ev.road_name ?? "Unknown road"}
+                        </div>
+                        <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>
+                          {hh}:{mm}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#374151", marginTop: 4 }}>
+                        {ev.speed_mph}mph in a {ev.speed_limit_mph}mph zone{" "}
+                        <span style={{ color: "#EF4444", fontWeight: 700 }}>
+                          (excess: +{ev.excess_mph}mph)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
