@@ -274,6 +274,124 @@ function LessonDetailPage() {
               <DetailRow label="Notes" value={lesson.notes || "—"} multiline />
             </Card>
 
+            {route && (
+              <>
+                <SectionHeader>ROUTE & TRACKING</SectionHeader>
+                <div
+                  className="bg-white"
+                  style={{
+                    border: "0.5px solid #E2E6ED",
+                    borderRadius: 12,
+                    padding: 16,
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Map size={18} color="#1A52A0" />
+                    <span
+                      className="text-[11px] font-semibold tracking-wider"
+                      style={{ color: "#1A52A0", ...POPPINS }}
+                    >
+                      Route & tracking
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {(route.distance_miles ?? 0).toFixed(1)} mi
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Distance
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {route.duration_minutes ?? 0} mins
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Duration
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div
+                        className="text-[16px] font-bold"
+                        style={{ color: "#0F2044", ...POPPINS }}
+                      >
+                        {(route.max_speed_mph ?? 0).toFixed(0)} mph
+                      </div>
+                      <div
+                        className="text-[10px] text-[#6B7280] mt-0.5"
+                        style={POPPINS}
+                      >
+                        Max speed
+                      </div>
+                    </div>
+                  </div>
+
+                  {overspeedEvents.length > 0 && (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle size={16} color="#F59E0B" />
+                        <span
+                          className="text-[12px] font-semibold"
+                          style={{ color: "#F59E0B", ...POPPINS }}
+                        >
+                          Overspeed events
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {overspeedEvents.map((ev) => {
+                          const t = new Date(ev.recorded_at);
+                          const time = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+                          return (
+                            <div
+                              key={ev.id}
+                              className="text-[12px]"
+                              style={{ color: "#374151", ...POPPINS }}
+                            >
+                              {time} · {ev.road_name ?? "Unknown road"} ·{" "}
+                              {ev.speed_mph}mph in {ev.speed_limit_mph}mph zone{" "}
+                              <span style={{ color: "#EF4444", fontWeight: 700 }}>
+                                (+{ev.excess_mph}mph)
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => toast("Map replay coming soon")}
+                    className="w-full text-center text-[13px] font-semibold"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#1A52A0",
+                      padding: "10px 0",
+                      cursor: "pointer",
+                      ...POPPINS,
+                    }}
+                  >
+                    View on map
+                  </button>
+                </div>
+              </>
+            )}
+
             <SectionHeader>ACTIONS</SectionHeader>
             <Card className="!p-0">
               <ActionRow
