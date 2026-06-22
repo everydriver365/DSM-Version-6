@@ -422,6 +422,9 @@ function HomePage() {
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
+      if (lessonRows && lessonRows.length > 0) {
+        console.log("[home] first lesson row sample:", lessonRows[0]);
+      }
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
 
