@@ -186,6 +186,7 @@ function LivePage() {
       if (error) console.error("[live] lessons fetch", error);
       const rows = (data ?? []) as unknown as LessonRow[];
       setLessons(rows);
+      setLessonsLoaded(true);
 
       const now = new Date();
       const nowMin = now.getHours() * 60 + now.getMinutes();
