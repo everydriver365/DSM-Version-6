@@ -384,7 +384,7 @@ function TakePaymentPage() {
         </div>
 
         {/* For + Description — single compact row */}
-        <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, flexShrink: 0 }}>
           <select
             value={pupilId}
             onChange={(e) => setPupilId(e.target.value)}
