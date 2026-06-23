@@ -408,7 +408,6 @@ function LivePage() {
   }
 
   function handlePosition(pos: GeolocationPosition) {
-  function handlePosition(pos: GeolocationPosition) {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
