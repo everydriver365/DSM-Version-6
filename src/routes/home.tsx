@@ -238,13 +238,26 @@ function HomePage() {
         .eq("read", false);
       setNotifCount(count || 0);
 
-      const { count: eCount } = await supabase
+      // Pending enquiries = enquiry rows linked to this instructor's notifications
+      // whose status is still 'new' or 'accepted'. Declined enquiries are not pending.
+      const { data: refRows } = await supabase
         .from("instructor_notifications")
-        .select("id", { count: "exact", head: true })
+        .select("reference_id")
         .eq("instructor_id", user.id)
-        .eq("type", "enquiry")
-        .eq("read", false);
-      setEnqCount(eCount || 0);
+        .eq("type", "enquiry");
+      const refIds = (refRows ?? [])
+        .map((r) => r.reference_id as string | null)
+        .filter((x): x is string => !!x);
+      if (refIds.length === 0) {
+        setEnqCount(0);
+      } else {
+        const { count: eCount } = await supabase
+          .from("enquiries")
+          .select("id", { count: "exact", head: true })
+          .in("id", refIds)
+          .in("status", ["new", "accepted"]);
+        setEnqCount(eCount || 0);
+      }
     }
     loadCount();
   }, []);
