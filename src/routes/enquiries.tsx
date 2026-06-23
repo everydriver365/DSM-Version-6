@@ -422,7 +422,7 @@ function EnquiryCard({
                   className="text-[13px] mt-0.5 truncate"
                   style={{ color: "#6B7280" }}
                 >
-                  {n.body}
+                  {stripPhone(n.body)}
                 </div>
               )}
             </div>
@@ -540,7 +540,7 @@ function DetailGrid({ enquiry, receivedAt }: { enquiry: EnquiryRow; receivedAt: 
     <div className="flex flex-col" style={{ gap: 6 }}>
       <DetailRow label="Name" value={enquiry.name} />
       <DetailRow label="Email" value={enquiry.email} />
-      <DetailRow label="Phone" value={enquiry.phone} />
+      
       <DetailRow label="Course" value={enquiry.course_interest} />
       <DetailRow label="Transmission" value={enquiry.transmission} />
       <DetailRow
