@@ -385,11 +385,9 @@ function TakePaymentPage() {
 
         {/* For + Description — single compact row */}
         <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-          <input
-            type="text"
-            value={pupilName}
-            onChange={(e) => setPupilName(e.target.value)}
-            placeholder="For (pupil)"
+          <select
+            value={pupilId}
+            onChange={(e) => setPupilId(e.target.value)}
             style={{
               flex: 1,
               minWidth: 0,
@@ -398,8 +396,16 @@ function TakePaymentPage() {
               border: "0.5px solid #E2E6ED",
               fontSize: 13,
               color: NAVY,
+              background: "#fff",
             }}
-          />
+          >
+            <option value="">For (optional) — select pupil</option>
+            {pupils.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value={description}
