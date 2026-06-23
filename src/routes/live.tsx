@@ -169,6 +169,7 @@ function LivePage() {
 
   // Auth + load lessons + detect in-progress + auto start
   useEffect(() => {
+    console.log("[live] mounted, checking for active lesson");
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) {
