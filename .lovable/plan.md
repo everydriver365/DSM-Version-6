@@ -1,33 +1,55 @@
 ## Goal
+Make the Step 3 (Pupil progress) 1–5 scores from the End-Lesson wizard appear on the pupil's Progress page and leave a clear trail in the lesson history note.
 
-Replace the current 3-level competency scale on the Pupil Progress screen with the standard DVSA/ADI 5-level scale.
+## What changes
 
-## Proposed 5-level scale
+### 1. Map wizard skills → syllabus item keys
+The wizard uses generic labels ("Cockpit checks", "Roundabouts"). The Progress page reads specific syllabus keys (`safety_cockpit_drill`, `junc_roundabouts`, …). Add a single `SKILL_MAP` in `src/components/dsm/EndLessonWizard.tsx` that maps each wizard label to one or more syllabus keys:
 
-| Level | Key | Label | Color |
-|---|---|---|---|
-| 1 | `introduced` | Introduced | grey |
-| 2 | `talk_through` | Under full talk-through | red |
-| 3 | `prompted` | Prompted | amber |
-| 4 | `seldom_prompted` | Seldom prompted | light green |
-| 5 | `independent` | Independent | green |
+| Wizard label | Syllabus key(s) |
+|---|---|
+| Cockpit checks | `safety_cockpit_drill` |
+| Moving off | `move_off_level`, `move_off_hill`, `move_off_angle` |
+| Steering | `safety_controls` |
+| Clutch control | `safety_controls` |
+| Gear changing | `safety_controls` |
+| Braking | `stopping_normal` |
+| Junctions | `junc_t_emerge`, `junc_t_approach`, `junc_crossroads`, `junc_traffic_lights` |
+| Roundabouts | `junc_roundabouts`, `junc_mini_roundabouts` |
+| Dual carriageways | `dual_joining`, `dual_leaving`, `dual_lane_discipline`, `dual_overtaking` |
+| Hazard perception | `aware_observation`, `aware_anticipation` |
+| Manoeuvres | `man_pull_up_right` |
+| Emergency stop | `man_emergency_stop`, `em_stop_technique`, `em_stop_control` |
+| Independent driving | `ind_sat_nav`, `ind_road_signs`, `ind_route_planning` |
+| Bay parking | `man_bay_park_reverse`, `man_bay_park_forward` |
+| Parallel parking | `man_parallel_park` |
+| Motorway / Town driving / Theory | no syllabus match — store under `eol_<slug>` fallback so nothing is lost |
 
-Plus the existing `not_started` baseline (no pill) so untouched items still read as "not started".
+Rule: when a wizard skill maps to multiple syllabus items, the chosen 1–5 level is written to **all** of them, but only if the new level is **greater than or equal to** what's already on file (so a quick wizard tap can't downgrade a deliberate score set on the Progress page). For unmapped labels, keep the existing `eol_<slug>` write so it isn't silently discarded.
 
-## Changes — `src/routes/pupils.progress.$id.tsx` only
+### 2. Append a "Skills updated" line to lesson history note
+In `completeEol`, build a one-line summary of what was scored, e.g.:
 
-1. Replace the `Status` union with the six values above.
-2. Replace the tap-cycle (`nextStatus`) with a small pill selector: tapping an item opens an inline row of 5 chips (1–5) and the chosen level becomes the item's status. Long-press / a "Reset" chip clears back to `not_started`.
-3. Update progress maths: "competent" is no longer a single state. Display two numbers per section and overall:
-   - **Independent** count (level 5) — drives the % progress bar.
-   - **In progress** count (levels 1–4) — shown as a secondary stat.
-4. Update colour swatches and the "done" check icon to reflect the 5-level palette.
-5. Persist via the existing `pupil_progress` upsert — the DB column is free-form `text`, so no migration needed. Old values (`competent`, `in_progress`) are migrated on read: `competent` → `independent`, `in_progress` → `prompted`, `not_started` → unchanged.
+```
+Skills updated: Roundabouts (4), Bay parking (5), Steering (3)
+```
 
-## Out of scope
+Append it to `combinedNotes` before the `lesson_history.insert`, so the note saved against the lesson reads:
 
-- No schema change. No edits to other routes. The EOL wizard's skill checklist (which writes `practised_at` only) is unaffected.
+```
+<lesson notes>
 
-## Open question
+Progress: <progress comments>
+Skills updated: Roundabouts (4), Bay parking (5)
+```
 
-Are the level names above what you want, or would you prefer the alternative DVSA wording ("Introduced / Talk-through / Prompted / Rare prompts / Independent")? I'll go with the table above unless you say otherwise.
+### 3. Persistence details
+- Replace the current single `upsert` block with: read existing rows for the mapped keys, compute `max(existing, new)` per key, then `upsert` the merged set with `onConflict: "pupil_id,item_key"`.
+- Continue to write `instructor_id`, `updated_at`, `status` (one of the 5 level keys).
+- No schema change — `pupil_progress` already supports this.
+
+## Result
+- Pupil's Progress page shows the scores immediately and the % independent stat reflects them.
+- Lesson history row carries a human-readable "Skills updated: …" line.
+- Existing Progress page entries are never downgraded by a wizard tap.
+- "Motorway", "Town driving", "Theory" are still recorded under `eol_*` keys for future use without breaking the Progress page.
