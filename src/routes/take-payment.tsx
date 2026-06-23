@@ -19,9 +19,37 @@ type CashMethod = "cash" | "bank";
 function TakePaymentPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState<string>("0");
-  const [pupilName, setPupilName] = useState("");
+  const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
+  const [pupilId, setPupilId] = useState<string>("");
   const [description, setDescription] = useState("");
   const [tab, setTab] = useState<Tab>("qr");
+  const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+
+  // Load instructor's current pupils
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .not("status", "in", "(inactive,archived,cancelled)")
+        .order("name");
+      if (cancelled) return;
+      if (error) {
+        console.warn("[take-payment] load pupils", error);
+        return;
+      }
+      setPupils((data ?? []) as { id: string; name: string }[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // QR
   const [qrUrl, setQrUrl] = useState<string | null>(null);
@@ -62,6 +90,7 @@ function TakePaymentPage() {
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountNum,
+          pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
@@ -151,6 +180,7 @@ function TakePaymentPage() {
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountNum,
+          pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
@@ -210,6 +240,7 @@ function TakePaymentPage() {
       const instructorId = u?.user?.id ?? null;
       await supabase.from("lesson_history").insert({
         instructor_id: instructorId,
+        pupil_id: pupilId || null,
         lesson_date: new Date().toISOString().slice(0, 10),
         payment_status: "paid",
         payment_method: cashMethod,
@@ -354,11 +385,9 @@ function TakePaymentPage() {
 
         {/* For + Description — single compact row */}
         <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-          <input
-            type="text"
-            value={pupilName}
-            onChange={(e) => setPupilName(e.target.value)}
-            placeholder="For (pupil)"
+          <select
+            value={pupilId}
+            onChange={(e) => setPupilId(e.target.value)}
             style={{
               flex: 1,
               minWidth: 0,
@@ -367,8 +396,16 @@ function TakePaymentPage() {
               border: "0.5px solid #E2E6ED",
               fontSize: 13,
               color: NAVY,
+              background: "#fff",
             }}
-          />
+          >
+            <option value="">For (optional) — select pupil</option>
+            {pupils.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value={description}

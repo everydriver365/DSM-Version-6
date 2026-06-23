@@ -1,10 +1,17 @@
-## Goal
-On the New Lesson screen, the pupil selector currently filters out `inactive` and soft-deleted pupils only. Also exclude `archived` and `cancelled` pupils so they don't appear in the dropdown.
+# Pupil dropdown on Take payment
 
-## Change
-Single edit in `src/routes/lessons.new.tsx` (the `.from("pupils")` query around line 66-72): replace `.neq("status", "inactive")` with `.not("status", "in", "(inactive,archived,cancelled)")`.
+Replace the free-text "For (pupil)" input on `/take-payment` with a select that lists the instructor's current (non-archived, non-cancelled, non-inactive) pupils.
 
-## Result
-- New Lesson dropdown only lists current pupils (active / passed).
-- Archived, cancelled, inactive, and soft-deleted pupils are hidden.
-- No other screens affected (Pupils index, edit, etc. keep their own filters).
+## Changes (only `src/routes/take-payment.tsx`)
+
+1. Add state: `pupils: { id: string; name: string }[]` and replace `pupilName: string` with `pupilId: string`. Derive `pupilName` from the selected row when sending to Ryft / inserting `lesson_history`.
+2. On mount, fetch pupils for the signed-in instructor:
+   - `supabase.auth.getUser()` → `instructor_id`
+   - `supabase.from("pupils").select("id, name").eq("instructor_id", uid).is("deleted_at", null).not("status", "in", "(inactive,archived,cancelled)").order("name")`
+3. Render a `<select>` styled to match the compact "For/Description" row (same height, border, font). First option: `"For (optional) — select pupil"` with empty value. Keep the Description text input next to it as today.
+4. Pass `pupil_id` and the resolved `pupil_name` into both `create-ryft-payment` and the `lesson_history` insert. If no pupil selected, send neither and `lesson_history.pupil_id` is `null` (today it's already null on the cash path).
+5. Full-screen QR overlay shows the resolved pupil name (unchanged behaviour, just sourced from the selected pupil).
+
+## Out of scope
+- No edits to `EndLessonWizard`, `InstructorTopBar`, or any other file.
+- No schema changes — uses existing `pupils` columns (`id`, `name`, `instructor_id`, `status`, `deleted_at`).
