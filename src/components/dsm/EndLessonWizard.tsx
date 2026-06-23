@@ -597,7 +597,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 [
                   { k: "cash", label: "Cash", icon: <Banknote size={20} /> },
                   { k: "bank", label: "Bank transfer", icon: <ArrowLeftRight size={20} /> },
-                  { k: "already_paid", label: "Already paid", icon: <CheckCircle size={20} /> },
+                  { k: "already_paid", label: "Already paid", icon: <CheckCircle2 size={20} /> },
                   { k: "waived", label: "Waived", icon: <Gift size={20} /> },
                 ] as { k: PaymentMethod; label: string; icon: React.ReactNode }[]
               ).map((m) => {
