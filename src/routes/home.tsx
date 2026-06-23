@@ -2484,7 +2484,7 @@ function NeedsAttention({
     { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
     { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
     { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
-    { key: 'enqs', label: "Enq's", count: enqs, bg: 'transparent', countColor: '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
+    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#16A34A' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
   ];
   const [expanded, setExpanded] = useState<string | null>(null);
 
