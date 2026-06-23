@@ -220,6 +220,12 @@ function LivePage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (lessonsLoaded && !tracking && !activeLessonId && !geoError) {
+      console.log("[live] no active lesson — showing manual start");
+    }
+  }, [lessonsLoaded, tracking, activeLessonId, geoError]);
+
   async function ensureSpeedLimit(lat: number, lng: number) {
     const key = `${lat.toFixed(3)},${lng.toFixed(3)}`;
     const now = Date.now();
