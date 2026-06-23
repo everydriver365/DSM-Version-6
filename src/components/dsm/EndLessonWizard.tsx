@@ -2,12 +2,39 @@ import { useEffect, useState } from "react";
 import {
   Banknote,
   ArrowLeftRight,
-  CheckCircle,
   Gift,
   CheckCircle2,
   PartyPopper,
   X,
 } from "lucide-react";
+
+type ProgressLevel =
+  | "not_started"
+  | "introduced"
+  | "talk_through"
+  | "prompted"
+  | "seldom_prompted"
+  | "independent";
+
+const LEVELS: {
+  key: Exclude<ProgressLevel, "not_started">;
+  n: 1 | 2 | 3 | 4 | 5;
+  label: string;
+  color: string;
+}[] = [
+  { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
+  { key: "talk_through", n: 2, label: "Talk-through", color: "#DC2626" },
+  { key: "prompted", n: 3, label: "Prompted", color: "#F59E0B" },
+  { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
+  { key: "independent", n: 5, label: "Independent", color: "#16A34A" },
+];
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 
