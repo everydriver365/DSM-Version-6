@@ -65,19 +65,33 @@ function EnquiriesPage() {
   const [active, setActive] = useState<Enquiry | null>(null);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) setUserId(data.user.id);
-    })();
+    let mounted = true;
+    supabase.auth.getSession().then(({ data, error }) => {
+      console.log("[enquiries] getSession", { user: data.session?.user?.id ?? null, error });
+      if (mounted) setUserId(data.session?.user?.id ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("[enquiries] onAuthStateChange", event, session?.user?.id ?? null);
+      if (mounted) setUserId(session?.user?.id ?? null);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   async function load(uid: string) {
+    console.log("[enquiries] fetching for instructor_id", uid);
     const { data, error } = await supabase
       .from("enquiries")
       .select("id, name, phone, email, course_interest, notes, status, created_at")
       .eq("instructor_id", uid)
       .order("created_at", { ascending: false });
-    if (error) console.error("[enquiries] fetch error", error);
+    console.log("[enquiries] fetch result", { count: data?.length ?? 0, data, error });
+    if (error) {
+      console.error("[enquiries] fetch error", error);
+      toast.error(`Couldn't load enquiries: ${error.message}`);
+    }
     setEnquiries((data ?? []) as Enquiry[]);
   }
 
