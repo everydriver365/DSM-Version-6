@@ -911,23 +911,48 @@ function HomePage() {
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
-          {badges.map((b, i) => (
-            <span
-              key={i}
-              style={{
-                fontSize: 10,
-                padding: "2px 6px",
-                borderRadius: 999,
-                backgroundColor: b.bg,
-                color: b.color,
-                fontWeight: 700,
-                fontFamily: "Poppins, sans-serif",
-                lineHeight: 1.4,
-              }}
-            >
-              {b.label}
-            </span>
-          ))}
+          {badges.map((b, i) =>
+            b.label === "EOL" ? (
+              <button
+                key={i}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEolLesson(l);
+                }}
+                style={{
+                  fontSize: 10,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  backgroundColor: b.bg,
+                  color: b.color,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  lineHeight: 1.4,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {b.label}
+              </button>
+            ) : (
+              <span
+                key={i}
+                style={{
+                  fontSize: 10,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  backgroundColor: b.bg,
+                  color: b.color,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  lineHeight: 1.4,
+                }}
+              >
+                {b.label}
+              </span>
+            ),
+          )}
         </div>
       </div>
     );
