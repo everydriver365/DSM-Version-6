@@ -224,9 +224,10 @@ function NotificationsPage() {
                 {g.items.map((n) => {
                   const ic = typeIcon(n.type);
                   return (
-                    <button
+                    <div
                       key={n.id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         markRead(n.id);
                         if (n.type === "booking") {
@@ -243,7 +244,7 @@ function NotificationsPage() {
                           navigate({ to: "/live" });
                         }
                       }}
-                      className="w-full text-left rounded-xl overflow-hidden"
+                      className="w-full text-left rounded-xl overflow-hidden cursor-pointer"
                       style={{
                         backgroundColor: n.read ? "#F8F9FB" : "#EEF4FB",
                         borderWidth: "0.5px",
@@ -276,14 +277,27 @@ function NotificationsPage() {
                             </div>
                           )}
                         </div>
-                        <div
-                          className="text-[11px] text-[#6B7280] shrink-0"
-                          style={POPPINS}
-                        >
-                          {formatTime(n.created_at)}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <div
+                            className="text-[11px] text-[#6B7280]"
+                            style={POPPINS}
+                          >
+                            {formatTime(n.created_at)}
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Remove notification"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteOne(n.id);
+                            }}
+                            className="flex items-center justify-center -mr-1 -mb-1 p-1 rounded hover:bg-black/5"
+                          >
+                            <X size={16} color="#9CA3AF" />
+                          </button>
                         </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
