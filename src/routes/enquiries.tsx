@@ -1,6 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Inbox, Phone, Mail, Check, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Inbox,
+  Phone,
+  Mail,
+  Check,
+  X,
+  CheckCircle,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
@@ -24,8 +33,33 @@ interface EnquiryNotification {
   reference_id: string | null;
 }
 
+interface EnquiryRow {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  course_interest: string | null;
+  transmission: string | null;
+  requested_hours: number | string | null;
+  preferred_timing: string | null;
+  preferred_start_date: string | null;
+  postcode: string | null;
+  notes: string | null;
+  status: string | null;
+  created_at: string | null;
+}
+
 function formatShortDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function formatLongDate(iso: string | null) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function EnquiriesPage() {
@@ -33,17 +67,8 @@ function EnquiriesPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<EnquiryNotification[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  function extractPhone(text: string | null): string | null {
-    if (!text) return null;
-    const m = text.match(/\+44\d{10}|07\d{9}/);
-    return m ? m[0] : null;
-  }
-  function extractEmail(text: string | null): string | null {
-    if (!text) return null;
-    const m = text.match(/[\w.-]+@[\w.-]+\.\w+/);
-    return m ? m[0] : null;
-  }
+  const [enquiryById, setEnquiryById] = useState<Record<string, EnquiryRow | null>>({});
+  const [loadingEnquiryId, setLoadingEnquiryId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -95,6 +120,54 @@ function EnquiriesPage() {
     }
   }
 
+  async function fetchEnquiry(refId: string) {
+    if (enquiryById[refId] !== undefined) return;
+    setLoadingEnquiryId(refId);
+    const { data, error } = await supabase
+      .from("enquiries")
+      .select("*")
+      .eq("id", refId)
+      .maybeSingle();
+    console.log("[enquiries] fetched enquiry", { refId, data, error });
+    if (error) {
+      console.error("[enquiries] enquiry fetch error", error);
+      toast.error("Couldn't load enquiry details");
+    }
+    setEnquiryById((prev) => ({ ...prev, [refId]: (data as EnquiryRow | null) ?? null }));
+    setLoadingEnquiryId(null);
+  }
+
+  async function toggleExpand(n: EnquiryNotification) {
+    const willExpand = expandedId !== n.id;
+    setExpandedId(willExpand ? n.id : null);
+    if (willExpand && n.reference_id) {
+      void fetchEnquiry(n.reference_id);
+    }
+    if (willExpand && !n.read) {
+      void markRead(n);
+    }
+  }
+
+  async function updateStatus(enquiryId: string, status: "accepted" | "declined") {
+    const { error } = await supabase
+      .from("enquiries")
+      .update({ status })
+      .eq("id", enquiryId);
+    if (error) {
+      console.error("[enquiries] status update error", error);
+      toast.error(`Couldn't ${status === "accepted" ? "accept" : "decline"} enquiry`);
+      return;
+    }
+    setEnquiryById((prev) => {
+      const cur = prev[enquiryId];
+      if (!cur) return prev;
+      return { ...prev, [enquiryId]: { ...cur, status } };
+    });
+    toast.success(status === "accepted" ? "Enquiry accepted" : "Enquiry declined");
+  }
+
+
+
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
@@ -127,14 +200,15 @@ function EnquiriesPage() {
           <div className="flex flex-col" style={{ gap: 8 }}>
             {items.map((n) => {
               const isExpanded = expandedId === n.id;
-              const phone = extractPhone(`${n.title ?? ""}\n${n.body ?? ""}`);
-              const email = extractEmail(`${n.title ?? ""}\n${n.body ?? ""}`);
-              const lines = (n.body ?? "").split("\n").filter((l) => l.trim().length > 0);
+              const enquiry = n.reference_id ? enquiryById[n.reference_id] : undefined;
+              const isLoadingEnquiry = loadingEnquiryId === n.reference_id;
+              const phone = enquiry?.phone ?? null;
+              const email = enquiry?.email ?? null;
               return (
                 <div key={n.id}>
                   <button
                     type="button"
-                    onClick={() => setExpandedId(isExpanded ? null : n.id)}
+                    onClick={() => toggleExpand(n)}
                     className="text-left w-full"
                   >
                     <Card>
@@ -173,77 +247,138 @@ function EnquiriesPage() {
 
                       {isExpanded && (
                         <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
-                          <div className="flex flex-col" style={{ gap: 4 }}>
-                            {lines.length === 0 ? (
-                              <div className="text-[13px]" style={{ color: "#6B7280" }}>
-                                No details
-                              </div>
-                            ) : (
-                              lines.map((line, i) => (
-                                <div key={i} className="text-[13px]" style={{ color: "#1A1A2E" }}>
-                                  {line}
-                                </div>
-                              ))
-                            )}
-                          </div>
+                          {isLoadingEnquiry && enquiry === undefined ? (
+                            <div className="text-[13px]" style={{ color: "#6B7280" }}>
+                              Loading…
+                            </div>
+                          ) : enquiry == null ? (
+                            <div className="text-[13px]" style={{ color: "#6B7280" }}>
+                              Enquiry details unavailable.
+                            </div>
+                          ) : (
+                            <DetailGrid enquiry={enquiry} receivedAt={n.created_at} />
+                          )}
 
-                          <div className="mt-3 flex" style={{ gap: 8 }}>
-                            {phone && (
-                              <a
-                                href={`tel:${phone}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white flex-1"
-                                style={{ height: 38, borderRadius: 8, backgroundColor: "#16A34A", ...POPPINS }}
-                              >
-                                <Phone size={14} color="#FFFFFF" /> Call
-                              </a>
-                            )}
-                            {email && (
-                              <a
-                                href={`mailto:${email}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white flex-1"
-                                style={{ height: 38, borderRadius: 8, backgroundColor: "#1A52A0", ...POPPINS }}
-                              >
-                                <Mail size={14} color="#FFFFFF" /> Email
-                              </a>
-                            )}
-                            {!n.read && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  markRead(n);
-                                }}
-                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium flex-1"
-                                style={{
-                                  height: 38,
-                                  borderRadius: 8,
-                                  backgroundColor: "#F3F4F6",
-                                  color: "#0F2044",
-                                  ...POPPINS,
-                                }}
-                              >
-                                <Check size={14} color="#0F2044" /> Mark read
-                              </button>
-                            )}
+                          <div
+                            className="mt-3 grid"
+                            style={{ gridTemplateColumns: "1fr 1fr", gap: 8 }}
+                          >
+                            <button
+                              type="button"
+                              disabled={!enquiry}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (enquiry) void updateStatus(enquiry.id, "accepted");
+                              }}
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
+                              style={{
+                                height: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#16A34A",
+                                opacity: enquiry ? 1 : 0.5,
+                                ...POPPINS,
+                              }}
+                            >
+                              <CheckCircle size={14} color="#FFFFFF" /> Accept
+                            </button>
+                            <button
+                              type="button"
+                              disabled={!enquiry}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (enquiry) void updateStatus(enquiry.id, "declined");
+                              }}
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
+                              style={{
+                                height: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#DC2626",
+                                opacity: enquiry ? 1 : 0.5,
+                                ...POPPINS,
+                              }}
+                            >
+                              <X size={14} color="#FFFFFF" /> Decline
+                            </button>
+                            <button
+                              type="button"
+                              disabled={!enquiry}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!enquiry) return;
+                                navigate({
+                                  to: "/pupils/new",
+                                  search: {
+                                    name: enquiry.name ?? "",
+                                    email: enquiry.email ?? "",
+                                    phone: enquiry.phone ?? "",
+                                  } as never,
+                                });
+                              }}
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
+                              style={{
+                                height: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#0F2044",
+                                gridColumn: "span 2",
+                                opacity: enquiry ? 1 : 0.5,
+                                ...POPPINS,
+                              }}
+                            >
+                              <Calendar size={14} color="#FFFFFF" /> Book pupil
+                            </button>
+                            <a
+                              href={phone ? `tel:${phone}` : undefined}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!phone) e.preventDefault();
+                              }}
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium"
+                              style={{
+                                height: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#F3F4F6",
+                                color: "#0F2044",
+                                opacity: phone ? 1 : 0.5,
+                                ...POPPINS,
+                              }}
+                            >
+                              <Phone size={14} color="#0F2044" /> Call
+                            </a>
+                            <a
+                              href={email ? `mailto:${email}` : undefined}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!email) e.preventDefault();
+                              }}
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium"
+                              style={{
+                                height: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#F3F4F6",
+                                color: "#0F2044",
+                                opacity: email ? 1 : 0.5,
+                                ...POPPINS,
+                              }}
+                            >
+                              <Mail size={14} color="#0F2044" /> Email
+                            </a>
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setExpandedId(null);
                               }}
-                              aria-label="Close"
-                              className="inline-flex items-center justify-center"
+                              className="inline-flex items-center justify-center gap-1 text-[13px] font-medium"
                               style={{
                                 height: 38,
-                                width: 38,
                                 borderRadius: 8,
                                 backgroundColor: "#F3F4F6",
                                 color: "#0F2044",
+                                gridColumn: "span 2",
+                                ...POPPINS,
                               }}
                             >
-                              <X size={16} color="#0F2044" />
+                              <X size={14} color="#0F2044" /> Close
                             </button>
                           </div>
                         </div>
@@ -259,3 +394,46 @@ function EnquiriesPage() {
     </div>
   );
 }
+
+function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
+  const shown = value && String(value).trim().length > 0 ? String(value) : "—";
+  return (
+    <div className="flex items-start" style={{ gap: 8 }}>
+      <div
+        className="text-[12px] font-medium"
+        style={{ color: "#6B7280", width: 116, flexShrink: 0 }}
+      >
+        {label}
+      </div>
+      <div className="text-[13px] flex-1" style={{ color: "#1A1A2E", wordBreak: "break-word" }}>
+        {shown}
+      </div>
+    </div>
+  );
+}
+
+function DetailGrid({ enquiry, receivedAt }: { enquiry: EnquiryRow; receivedAt: string }) {
+  return (
+    <div className="flex flex-col" style={{ gap: 6 }}>
+      <DetailRow label="Name" value={enquiry.name} />
+      <DetailRow label="Email" value={enquiry.email} />
+      <DetailRow label="Phone" value={enquiry.phone} />
+      <DetailRow label="Course" value={enquiry.course_interest} />
+      <DetailRow label="Transmission" value={enquiry.transmission} />
+      <DetailRow
+        label="Hours requested"
+        value={enquiry.requested_hours != null ? String(enquiry.requested_hours) : null}
+      />
+      <DetailRow label="Preferred timing" value={enquiry.preferred_timing} />
+      <DetailRow
+        label="Preferred start"
+        value={enquiry.preferred_start_date ? formatLongDate(enquiry.preferred_start_date) : null}
+      />
+      <DetailRow label="Postcode" value={enquiry.postcode} />
+      <DetailRow label="Notes" value={enquiry.notes} />
+      <DetailRow label="Received" value={formatLongDate(receivedAt)} />
+      {enquiry.status && <DetailRow label="Status" value={enquiry.status} />}
+    </div>
+  );
+}
+
