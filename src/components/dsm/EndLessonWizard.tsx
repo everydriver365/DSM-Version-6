@@ -121,7 +121,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
 
-  const [practised, setPractised] = useState<Record<string, boolean>>({});
+  const [levels, setLevels] = useState<Record<string, ProgressLevel>>({});
   const [progressComments, setProgressComments] = useState("");
 
   const [completing, setCompleting] = useState(false);
