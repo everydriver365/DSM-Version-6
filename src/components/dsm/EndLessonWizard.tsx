@@ -685,45 +685,101 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-1.5">
+            <div className="mt-3 flex flex-col gap-2">
               {COMPETENCIES.map((c) => {
-                const checked = !!practised[c];
+                const current = levels[c] ?? "not_started";
                 return (
-                  <button
+                  <div
                     key={c}
-                    type="button"
-                    onClick={() => setPractised((p) => ({ ...p, [c]: !p[c] }))}
-                    className="flex items-center gap-2 p-2 text-left"
+                    className="p-2"
                     style={{
-                      borderRadius: 8,
-                      backgroundColor: checked ? "#F0FDF4" : "#F8F9FB",
-                      border: `0.5px solid ${checked ? "#16A34A" : "#E2E6ED"}`,
+                      borderRadius: 10,
+                      backgroundColor: "#F8F9FB",
+                      border: "0.5px solid #E2E6ED",
                     }}
                   >
                     <div
-                      style={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: 4,
-                        border: `1.5px solid ${checked ? "#16A34A" : "#9CA3AF"}`,
-                        backgroundColor: checked ? "#16A34A" : "transparent",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {checked && <CheckCircle size={12} color="#FFFFFF" />}
-                    </div>
-                    <span
-                      className="text-[12px]"
-                      style={{ color: "#1A1A2E", fontWeight: 500 }}
+                      className="text-[13px] mb-2"
+                      style={{ color: "#1A1A2E", fontWeight: 600 }}
                     >
                       {c}
-                    </span>
-                  </button>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {LEVELS.map((l) => {
+                        const active = current === l.key;
+                        return (
+                          <button
+                            key={l.key}
+                            type="button"
+                            aria-label={`${c}: ${l.label}`}
+                            title={l.label}
+                            onClick={() =>
+                              setLevels((prev) => ({ ...prev, [c]: l.key }))
+                            }
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 999,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: active ? "#FFFFFF" : l.color,
+                              backgroundColor: active ? l.color : "#FFFFFF",
+                              border: `1.5px solid ${l.color}`,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {l.n}
+                          </button>
+                        );
+                      })}
+                      {current !== "not_started" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setLevels((prev) => {
+                              const next = { ...prev };
+                              delete next[c];
+                              return next;
+                            })
+                          }
+                          className="text-[11px] ml-1"
+                          style={{
+                            color: "#6B7280",
+                            background: "transparent",
+                            border: "none",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 );
               })}
+            </div>
+
+            <div
+              className="mt-3 p-2 text-[11px] flex flex-wrap gap-x-3 gap-y-1"
+              style={{ color: "#6B7280" }}
+            >
+              {LEVELS.map((l) => (
+                <span key={l.key} className="flex items-center gap-1">
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 999,
+                      backgroundColor: l.color,
+                      display: "inline-block",
+                    }}
+                  />
+                  {l.n} {l.label}
+                </span>
+              ))}
             </div>
 
             <label
