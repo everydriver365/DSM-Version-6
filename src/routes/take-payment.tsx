@@ -240,6 +240,7 @@ function TakePaymentPage() {
       const instructorId = u?.user?.id ?? null;
       await supabase.from("lesson_history").insert({
         instructor_id: instructorId,
+        pupil_id: pupilId || null,
         lesson_date: new Date().toISOString().slice(0, 10),
         payment_status: "paid",
         payment_method: cashMethod,
