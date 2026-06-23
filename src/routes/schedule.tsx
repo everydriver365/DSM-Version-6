@@ -535,10 +535,17 @@ function SchedulePage() {
         </div>
 
         <div className="flex-1" style={{ paddingBottom: 12 }}>
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={0}
             onClick={() => setExpandedId(isExpanded ? null : l.id)}
-            className="block w-full text-left"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setExpandedId(isExpanded ? null : l.id);
+              }
+            }}
+            className="block w-full text-left cursor-pointer"
           >
             <div style={cardStyle}>
               <div className="flex items-center justify-between gap-3">
