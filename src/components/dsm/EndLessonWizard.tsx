@@ -896,6 +896,50 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             </button>
             <button
               type="button"
+              onClick={generateQrPayment}
+              disabled={qrGenerating || paymentSaving || !!qrUrl}
+              className="mt-2 w-full h-11 rounded-lg text-[14px] font-semibold flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: "#0F2044",
+                color: "#fff",
+                border: "none",
+                opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
+              }}
+            >
+              <QrCode size={16} />
+              {qrGenerating ? "Generating…" : qrUrl ? "QR code ready" : "Show QR code"}
+            </button>
+
+            {qrUrl && (
+              <div
+                className="mt-3 p-4 flex flex-col items-center"
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#F8F9FB",
+                  border: "0.5px solid #E2E6ED",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    padding: 12,
+                    borderRadius: 8,
+                    border: "1px solid #E2E6ED",
+                  }}
+                >
+                  <QRCodeSVG value={qrUrl} size={180} />
+                </div>
+                <div className="text-[13px] mt-3" style={{ color: "#0F2044", fontWeight: 600 }}>
+                  Pupil scans to pay £{(Number(amount) || lessonCost).toFixed(2)}
+                </div>
+                <div className="text-[11px] mt-1" style={{ color: "#6B7280" }}>
+                  Waiting for payment…
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
               onClick={skipPayment}
               disabled={paymentSaving}
               className="mt-2 w-full h-10 text-[13px]"
@@ -905,6 +949,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             </button>
           </div>
         )}
+
 
         {/* STEP 3 — SKILLS */}
         {!done && step === 3 && (
