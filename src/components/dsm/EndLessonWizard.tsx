@@ -389,21 +389,23 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     // Update pupil progress rows (best-effort) — upsert by (pupil_id, item_key).
     // Map wizard labels to syllabus keys so they show on the Progress page.
     // Never downgrade an existing higher level.
+    const appliedLabels: { label: string; level: number }[] = [];
+    const blockedLabels: { label: string; tried: number; existing: number }[] = [];
+
     if (updatedEntries.length > 0) {
       try {
         // Resolve target item_keys per wizard label.
-        const targets: { itemKey: string; status: ProgressLevel }[] = [];
-        for (const [label, status] of updatedEntries) {
+        const perLabelTargets = updatedEntries.map(([label, status]) => {
           const mapped = SKILL_MAP[label];
-          if (mapped && mapped.length > 0) {
-            for (const k of mapped) targets.push({ itemKey: k, status });
-          } else {
-            targets.push({ itemKey: `eol_${slugify(label)}`, status });
-          }
-        }
+          const keys =
+            mapped && mapped.length > 0 ? mapped : [`eol_${slugify(label)}`];
+          return { label, status, keys };
+        });
 
-        // Read existing statuses for those keys to enforce no-downgrade.
-        const itemKeys = Array.from(new Set(targets.map((t) => t.itemKey)));
+        // Read existing statuses for all referenced keys.
+        const itemKeys = Array.from(
+          new Set(perLabelTargets.flatMap((t) => t.keys)),
+        );
         const existing: Record<string, ProgressLevel> = {};
         const { data: existingRows } = await supabase
           .from("pupil_progress")
@@ -418,12 +420,31 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           if (s && s in LEVEL_RANK) existing[r.item_key] = s;
         }
 
-        // For each target, keep the higher-ranked status.
+        // Per-label outcome + final upsert set with no-downgrade.
         const finalByKey: Record<string, ProgressLevel> = {};
-        for (const { itemKey, status } of targets) {
-          const prior = finalByKey[itemKey] ?? existing[itemKey] ?? "not_started";
-          finalByKey[itemKey] =
-            LEVEL_RANK[status] >= LEVEL_RANK[prior] ? status : prior;
+        for (const { label, status, keys } of perLabelTargets) {
+          const newRank = LEVEL_RANK[status];
+          let anyApplied = false;
+          let maxBlockingExisting = 0;
+          for (const k of keys) {
+            const prior = finalByKey[k] ?? existing[k] ?? "not_started";
+            const priorRank = LEVEL_RANK[prior];
+            if (newRank >= priorRank) {
+              finalByKey[k] = status;
+              anyApplied = true;
+            } else {
+              if (priorRank > maxBlockingExisting) maxBlockingExisting = priorRank;
+            }
+          }
+          if (anyApplied) {
+            appliedLabels.push({ label, level: newRank });
+          } else {
+            blockedLabels.push({
+              label,
+              tried: newRank,
+              existing: maxBlockingExisting,
+            });
+          }
         }
 
         const rows = Object.entries(finalByKey).map(([item_key, status]) => ({
@@ -443,6 +464,31 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         console.warn("[eol-wizard] pupil_progress upsert failed", e);
       }
     }
+
+    // Summary toast for skill saves.
+    if (appliedLabels.length > 0 || blockedLabels.length > 0) {
+      const appliedSummary = appliedLabels
+        .map((a) => `${a.label} (${a.level})`)
+        .join(", ");
+      const blockedSummary = blockedLabels
+        .map((b) => `${b.label} (tried ${b.tried}, kept ${b.existing})`)
+        .join(", ");
+
+      if (appliedLabels.length > 0 && blockedLabels.length === 0) {
+        toast.success(`Saved ${appliedLabels.length} skill score${appliedLabels.length === 1 ? "" : "s"}`, {
+          description: appliedSummary,
+        });
+      } else if (appliedLabels.length > 0 && blockedLabels.length > 0) {
+        toast.success(`Saved ${appliedLabels.length} skill score${appliedLabels.length === 1 ? "" : "s"}`, {
+          description: `${appliedSummary}\nNot downgraded: ${blockedSummary}`,
+        });
+      } else {
+        toast.warning("No skill scores saved — existing levels are higher", {
+          description: blockedSummary,
+        });
+      }
+    }
+
 
     // Check course completion
     try {
