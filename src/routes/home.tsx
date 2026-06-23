@@ -238,13 +238,26 @@ function HomePage() {
         .eq("read", false);
       setNotifCount(count || 0);
 
-      const { count: eCount } = await supabase
+      // Pending enquiries = enquiry rows linked to this instructor's notifications
+      // whose status is still 'new' or 'accepted'. Declined enquiries are not pending.
+      const { data: refRows } = await supabase
         .from("instructor_notifications")
-        .select("id", { count: "exact", head: true })
+        .select("reference_id")
         .eq("instructor_id", user.id)
-        .eq("type", "enquiry")
-        .eq("read", false);
-      setEnqCount(eCount || 0);
+        .eq("type", "enquiry");
+      const refIds = (refRows ?? [])
+        .map((r) => r.reference_id as string | null)
+        .filter((x): x is string => !!x);
+      if (refIds.length === 0) {
+        setEnqCount(0);
+      } else {
+        const { count: eCount } = await supabase
+          .from("enquiries")
+          .select("id", { count: "exact", head: true })
+          .in("id", refIds)
+          .in("status", ["new", "accepted"]);
+        setEnqCount(eCount || 0);
+      }
     }
     loadCount();
   }, []);
@@ -2471,7 +2484,7 @@ function NeedsAttention({
     { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
     { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
     { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
-    { key: 'enqs', label: "Enq's", count: enqs, bg: 'transparent', countColor: '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
+    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#16A34A' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
   ];
   const [expanded, setExpanded] = useState<string | null>(null);
 
