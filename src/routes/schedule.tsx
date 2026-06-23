@@ -832,140 +832,22 @@ function SchedulePage() {
         </div>
       </div>
 
-      {/* EOL Bottom Sheet */}
+      {/* End-of-Lesson Wizard */}
       {eolLesson && (
-        <div
-          className="fixed inset-0 z-[90] flex items-end"
-          style={{ backgroundColor: "rgba(15,32,68,0.4)", ...POPPINS }}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="absolute inset-0"
-            aria-hidden
-            onClick={() => !eolSubmitting && setEolLesson(null)}
-          />
-          <div
-            className="relative w-full bg-white"
-            style={{
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              padding: 20,
-              boxShadow: "0 -10px 30px rgba(15,32,68,0.18)",
-              paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
-            }}
-          >
-            <div
-              style={{
-                width: 36,
-                height: 4,
-                borderRadius: 999,
-                backgroundColor: "#E2E6ED",
-                margin: "0 auto 12px",
-              }}
-            />
-            <div className="text-[16px] font-semibold" style={{ color: "#0F2044" }}>
-              End of lesson — {pupilDisplayName(eolLesson.pupil)}
-            </div>
-            <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
-              Complete each step to close out the lesson.
-            </div>
-
-            <div className="mt-4 flex flex-col gap-2">
-              {[
-                {
-                  key: "theory" as const,
-                  icon: <BookOpen size={18} color="#1D4ED8" />,
-                  label: "Theory and hazard perception reviewed",
-                },
-                {
-                  key: "payment" as const,
-                  icon: <PoundSterling size={18} color="#16A34A" />,
-                  label: "Payment received or confirmed",
-                },
-                {
-                  key: "notes" as const,
-                  icon: <FileText size={18} color="#0F2044" />,
-                  label: "Lesson notes updated",
-                },
-              ].map((row) => {
-                const checked = eolChecks[row.key];
-                return (
-                  <button
-                    key={row.key}
-                    type="button"
-                    onClick={() =>
-                      setEolChecks((c) => ({ ...c, [row.key]: !c[row.key] }))
-                    }
-                    className="flex items-center gap-3 p-3 rounded-lg text-left"
-                    style={{
-                      backgroundColor: checked ? "#F0FDF4" : "#F8F9FB",
-                      border: `0.5px solid ${checked ? "#16A34A" : "#E2E6ED"}`,
-                    }}
-                  >
-                    {row.icon}
-                    <span
-                      className="text-[13px] flex-1"
-                      style={{ color: "#1A1A2E", fontWeight: 500 }}
-                    >
-                      {row.label}
-                    </span>
-                    <div
-                      style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 999,
-                        border: `1.5px solid ${checked ? "#16A34A" : "#9CA3AF"}`,
-                        backgroundColor: checked ? "#16A34A" : "transparent",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {checked && <CheckCircle size={14} color="#FFFFFF" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-5 flex gap-2">
-              <button
-                type="button"
-                onClick={() => setEolLesson(null)}
-                disabled={eolSubmitting}
-                className="flex-1 h-11 rounded-lg text-[14px] font-medium"
-                style={{
-                  backgroundColor: "transparent",
-                  color: "#0F2044",
-                  border: "0.5px solid #E2E6ED",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={completeEol}
-                disabled={
-                  eolSubmitting ||
-                  !(eolChecks.theory && eolChecks.payment && eolChecks.notes)
-                }
-                className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
-                style={{
-                  backgroundColor:
-                    eolChecks.theory && eolChecks.payment && eolChecks.notes
-                      ? "#16A34A"
-                      : "#9CA3AF",
-                  border: "none",
-                  opacity: eolSubmitting ? 0.7 : 1,
-                }}
-              >
-                {eolSubmitting ? "Saving…" : "Complete EOL"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => setEolLesson(null)}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id ?? ""}
+          pupilName={pupilDisplayName(eolLesson.pupil)}
+          instructorId={eolLesson.instructor_id ?? ""}
+          durationMinutes={eolLesson.duration_minutes ?? 60}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={onEolCompleted}
+        />
       )}
+
 
       <ConfirmDialog
         open={!!cancelLesson}
