@@ -90,6 +90,7 @@ function TakePaymentPage() {
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountNum,
+          pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
