@@ -125,46 +125,134 @@ function EnquiriesPage() {
           </div>
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
-            {items.map((n) => (
-              <button
-                key={n.id}
-                type="button"
-                onClick={() => markRead(n)}
-                className="text-left"
-              >
-                <Card>
-                  <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044" }}>
-                        {n.title ?? "Enquiry"}
+            {items.map((n) => {
+              const isExpanded = expandedId === n.id;
+              const phone = extractPhone(`${n.title ?? ""}\n${n.body ?? ""}`);
+              const email = extractEmail(`${n.title ?? ""}\n${n.body ?? ""}`);
+              const lines = (n.body ?? "").split("\n").filter((l) => l.trim().length > 0);
+              return (
+                <div key={n.id}>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isExpanded ? null : n.id)}
+                    className="text-left w-full"
+                  >
+                    <Card>
+                      <div className="flex items-start justify-between" style={{ gap: 8 }}>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044" }}>
+                            {n.title ?? "Enquiry"}
+                          </div>
+                          {n.body && !isExpanded && (
+                            <div className="text-[13px] mt-0.5 truncate" style={{ color: "#6B7280" }}>
+                              {n.body}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end" style={{ gap: 4 }}>
+                          <span className="text-[11px]" style={{ color: "#6B7280" }}>
+                            {formatShortDate(n.created_at)}
+                          </span>
+                          {!n.read ? (
+                            <span
+                              className="text-[11px] font-semibold text-white"
+                              style={{ backgroundColor: "#F59E0B", padding: "2px 8px", borderRadius: 999 }}
+                            >
+                              New
+                            </span>
+                          ) : (
+                            <span
+                              className="text-[11px] font-semibold"
+                              style={{ color: "#6B7280", backgroundColor: "#F3F4F6", padding: "2px 8px", borderRadius: 999 }}
+                            >
+                              Read
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      {n.body && (
-                        <div className="text-[13px] mt-0.5" style={{ color: "#6B7280" }}>
-                          {n.body}
+
+                      {isExpanded && (
+                        <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                          <div className="flex flex-col" style={{ gap: 4 }}>
+                            {lines.length === 0 ? (
+                              <div className="text-[13px]" style={{ color: "#6B7280" }}>
+                                No details
+                              </div>
+                            ) : (
+                              lines.map((line, i) => (
+                                <div key={i} className="text-[13px]" style={{ color: "#1A1A2E" }}>
+                                  {line}
+                                </div>
+                              ))
+                            )}
+                          </div>
+
+                          <div className="mt-3 flex" style={{ gap: 8 }}>
+                            {phone && (
+                              <a
+                                href={`tel:${phone}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white flex-1"
+                                style={{ height: 38, borderRadius: 8, backgroundColor: "#16A34A", ...POPPINS }}
+                              >
+                                <Phone size={14} color="#FFFFFF" /> Call
+                              </a>
+                            )}
+                            {email && (
+                              <a
+                                href={`mailto:${email}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white flex-1"
+                                style={{ height: 38, borderRadius: 8, backgroundColor: "#1A52A0", ...POPPINS }}
+                              >
+                                <Mail size={14} color="#FFFFFF" /> Email
+                              </a>
+                            )}
+                            {!n.read && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markRead(n);
+                                }}
+                                className="inline-flex items-center justify-center gap-1 text-[13px] font-medium flex-1"
+                                style={{
+                                  height: 38,
+                                  borderRadius: 8,
+                                  backgroundColor: "#F3F4F6",
+                                  color: "#0F2044",
+                                  ...POPPINS,
+                                }}
+                              >
+                                <Check size={14} color="#0F2044" /> Mark read
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedId(null);
+                              }}
+                              aria-label="Close"
+                              className="inline-flex items-center justify-center"
+                              style={{
+                                height: 38,
+                                width: 38,
+                                borderRadius: 8,
+                                backgroundColor: "#F3F4F6",
+                                color: "#0F2044",
+                              }}
+                            >
+                              <X size={16} color="#0F2044" />
+                            </button>
+                          </div>
                         </div>
                       )}
-                    </div>
-                    <div className="flex flex-col items-end" style={{ gap: 4 }}>
-                      <span className="text-[11px]" style={{ color: "#6B7280" }}>
-                        {formatShortDate(n.created_at)}
-                      </span>
-                      {!n.read && (
-                        <span
-                          className="text-[11px] font-semibold text-white"
-                          style={{
-                            backgroundColor: "#F59E0B",
-                            padding: "2px 8px",
-                            borderRadius: 999,
-                          }}
-                        >
-                          New
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              </button>
-            ))}
+                    </Card>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
