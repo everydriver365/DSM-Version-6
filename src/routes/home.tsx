@@ -959,15 +959,22 @@ function HomePage() {
 
     if (!showTimeline) {
       return (
-        <button
+        <div
           key={l.id}
-          type="button"
+          role="button"
+          tabIndex={0}
           onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-          className="text-left w-full"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/lessons/$id", params: { id: l.id } });
+            }
+          }}
+          className="text-left w-full cursor-pointer"
           style={{ paddingBottom: 6 }}
         >
           {rowInner}
-        </button>
+        </div>
       );
     }
 
@@ -1005,14 +1012,21 @@ function HomePage() {
           </div>
         </div>
 
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-          className="flex-1 text-left"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/lessons/$id", params: { id: l.id } });
+            }
+          }}
+          className="flex-1 text-left cursor-pointer"
           style={{ paddingBottom: 8 }}
         >
           {rowInner}
-        </button>
+        </div>
       </div>
     );
   };
