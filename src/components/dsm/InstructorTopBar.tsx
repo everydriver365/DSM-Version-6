@@ -140,6 +140,9 @@ export default function InstructorTopBar({
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
           <Car size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
+        <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
+          <PoundSterling size={17} strokeWidth={1.8} color="#ffffff" />
+        </IconBtn>
         <IconBtn ariaLabel="Notifications" onClick={onBell}>
           <Bell size={17} strokeWidth={1.8} color="#ffffff" />
           {unreadCount > 0 && (
