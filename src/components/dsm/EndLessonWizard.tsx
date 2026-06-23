@@ -6,7 +6,9 @@ import {
   CheckCircle2,
   PartyPopper,
   X,
+  QrCode,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type ProgressLevel =
   | "not_started"
