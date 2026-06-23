@@ -107,7 +107,42 @@ function NotificationsPage() {
       .update({ read: true })
       .eq("instructor_id", userId)
       .eq("read", false);
-    if (error) console.error("[notifications] mark all read error", error);
+    if (error) {
+      console.error("[notifications] mark all read error", error);
+      toast.error("Failed to mark all as read");
+    } else {
+      toast.success("All marked as read");
+    }
+  }
+
+  async function deleteOne(id: string) {
+    setItems((prev) => (prev ?? []).filter((n) => n.id !== id));
+    const { error } = await supabase
+      .from("instructor_notifications")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      console.error("[notifications] delete error", error);
+      toast.error("Failed to remove notification");
+    } else {
+      toast("Notification removed");
+    }
+  }
+
+  async function clearAllRead() {
+    if (!userId) return;
+    setItems((prev) => (prev ?? []).filter((n) => !n.read));
+    const { error } = await supabase
+      .from("instructor_notifications")
+      .delete()
+      .eq("instructor_id", userId)
+      .eq("read", true);
+    if (error) {
+      console.error("[notifications] clear read error", error);
+      toast.error("Failed to clear read notifications");
+    } else {
+      toast.success("Read notifications cleared");
+    }
   }
 
   const today = startOfDay(new Date());
