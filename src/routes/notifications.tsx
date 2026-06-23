@@ -182,15 +182,30 @@ function NotificationsPage() {
         >
           Notifications
         </div>
-        <button
-          type="button"
-          onClick={markAllRead}
-          disabled={!hasAnyUnread}
-          className="text-[12px] font-medium px-2 disabled:opacity-50"
-          style={{ color: "#FFFFFF", ...POPPINS, minWidth: 80 }}
-        >
-          Mark all read
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={clearAllRead}
+            disabled={!(items ?? []).some((n) => n.read)}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
+            style={{ color: "#FFFFFF", ...POPPINS }}
+            aria-label="Clear read notifications"
+          >
+            <Trash2 size={14} color="#FFFFFF" />
+            Clear read
+          </button>
+          <button
+            type="button"
+            onClick={markAllRead}
+            disabled={!hasAnyUnread}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
+            style={{ color: "#FFFFFF", ...POPPINS }}
+            aria-label="Mark all as read"
+          >
+            <CheckCheck size={14} color="#FFFFFF" />
+            Mark all read
+          </button>
+        </div>
       </div>
 
       <div className="px-4">
