@@ -6,7 +6,9 @@ import {
   CheckCircle2,
   PartyPopper,
   X,
+  QrCode,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type ProgressLevel =
   | "not_started"
@@ -162,6 +164,9 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [amount, setAmount] = useState<string>("");
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
+  const [qrGenerating, setQrGenerating] = useState(false);
 
   const [levels, setLevels] = useState<Record<string, ProgressLevel>>({});
   const [progressComments, setProgressComments] = useState("");
@@ -182,6 +187,9 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentMethod("cash");
     setPaymentRecorded(false);
     setPaymentSaving(false);
+    setQrUrl(null);
+    setQrPaymentId(null);
+    setQrGenerating(false);
     setLevels({});
     setProgressComments("");
     setCompleting(false);
@@ -327,6 +335,92 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setFinalPaymentLabel("Skipped");
     setStep(3);
   };
+
+  const generateQrPayment = async () => {
+    setQrGenerating(true);
+    try {
+      const amt = Number(amount) || lessonCost;
+      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+        body: {
+          amount: amt,
+          pupil_id: pupilId,
+          pupil_name: pupilName,
+          lesson_id: lessonId,
+          instructor_id: instructorId,
+          description: `Lesson payment · ${pupilName}`,
+          commission: 1,
+        },
+      });
+      if (error) throw error;
+      const url = (data as { paymentUrl?: string; url?: string })?.paymentUrl
+        ?? (data as { url?: string })?.url
+        ?? null;
+      const pid = (data as { paymentId?: string; id?: string })?.paymentId
+        ?? (data as { id?: string })?.id
+        ?? null;
+      if (!url) throw new Error("No payment URL returned");
+      setQrUrl(url);
+      setQrPaymentId(pid);
+      toast.success("Payment link ready — pupil can scan");
+    } catch (e) {
+      console.error("[eol-wizard] create-ryft-payment failed", e);
+      toast.error("Couldn't generate payment link");
+    } finally {
+      setQrGenerating(false);
+    }
+  };
+
+  // Poll Ryft payment status every 5s while QR is shown
+  useEffect(() => {
+    if (!qrPaymentId || paymentRecorded) return;
+    const t = setInterval(async () => {
+      try {
+        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
+          body: { paymentId: qrPaymentId },
+        });
+        const status = (data as { status?: string })?.status;
+        if (status === "succeeded" || status === "completed" || status === "paid") {
+          clearInterval(t);
+          const amt = Number(amount) || lessonCost;
+          const newBalance = balance + (amt - lessonCost);
+          await supabase
+            .from("lessons")
+            .update({ payment_status: "paid", amount_due: lessonCost })
+            .eq("id", lessonId);
+          await supabase
+            .from("pupils")
+            .update({ balance_owed: -newBalance })
+            .eq("id", pupilId);
+          try {
+            await supabase.from("lesson_history").insert({
+              lesson_id: lessonId,
+              instructor_id: instructorId,
+              pupil_id: pupilId,
+              lesson_date: lessonDate,
+              lesson_time: startTime,
+              duration_minutes: durationMinutes,
+              payment_status: "paid",
+              payment_method: "card_qr",
+              amount: amt,
+              payment_link: qrUrl,
+              qr_payment_id: qrPaymentId,
+            });
+          } catch (e) {
+            console.warn("[eol-wizard] qr history insert failed", e);
+          }
+          setBalance(newBalance);
+          setPaymentRecorded(true);
+          setFinalPaymentLabel("Paid · Card (QR)");
+          toast.success("Payment received");
+          setStep(3);
+        }
+      } catch (e) {
+        console.warn("[eol-wizard] qr poll failed", e);
+      }
+    }, 5000);
+    return () => clearInterval(t);
+  }, [qrPaymentId, paymentRecorded, qrUrl, amount, lessonCost, balance, lessonId, pupilId, instructorId, lessonDate, startTime, durationMinutes]);
+
 
   const completeEol = async () => {
     setCompleting(true);
@@ -802,6 +896,50 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             </button>
             <button
               type="button"
+              onClick={generateQrPayment}
+              disabled={qrGenerating || paymentSaving || !!qrUrl}
+              className="mt-2 w-full h-11 rounded-lg text-[14px] font-semibold flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: "#0F2044",
+                color: "#fff",
+                border: "none",
+                opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
+              }}
+            >
+              <QrCode size={16} />
+              {qrGenerating ? "Generating…" : qrUrl ? "QR code ready" : "Show QR code"}
+            </button>
+
+            {qrUrl && (
+              <div
+                className="mt-3 p-4 flex flex-col items-center"
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#F8F9FB",
+                  border: "0.5px solid #E2E6ED",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    padding: 12,
+                    borderRadius: 8,
+                    border: "1px solid #E2E6ED",
+                  }}
+                >
+                  <QRCodeSVG value={qrUrl} size={180} />
+                </div>
+                <div className="text-[13px] mt-3" style={{ color: "#0F2044", fontWeight: 600 }}>
+                  Pupil scans to pay £{(Number(amount) || lessonCost).toFixed(2)}
+                </div>
+                <div className="text-[11px] mt-1" style={{ color: "#6B7280" }}>
+                  Waiting for payment…
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
               onClick={skipPayment}
               disabled={paymentSaving}
               className="mt-2 w-full h-10 text-[13px]"
@@ -811,6 +949,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             </button>
           </div>
         )}
+
 
         {/* STEP 3 — SKILLS */}
         {!done && step === 3 && (

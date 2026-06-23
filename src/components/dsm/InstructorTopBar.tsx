@@ -1,5 +1,6 @@
 import React from "react";
-import { Phone, Car, Bell, Menu, ChevronRight, ChevronLeft } from "lucide-react";
+import { Phone, Car, Bell, Menu, ChevronRight, ChevronLeft, PoundSterling } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 export type InstructorTopBarProps = {
   firstName: string;
@@ -59,6 +60,7 @@ export default function InstructorTopBar({
   statusDot,
 }: InstructorTopBarProps) {
   const isSubpage = typeof onBack === "function";
+  const navigate = useNavigate();
 
   return (
     <div
@@ -137,6 +139,9 @@ export default function InstructorTopBar({
         </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
           <Car size={17} strokeWidth={1.8} color="#ffffff" />
+        </IconBtn>
+        <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
+          <PoundSterling size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Notifications" onClick={onBell}>
           <Bell size={17} strokeWidth={1.8} color="#ffffff" />
