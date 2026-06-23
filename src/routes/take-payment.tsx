@@ -97,15 +97,21 @@ function TakePaymentPage() {
         },
       });
       if (error) throw error;
-      const url =
-        (data as { paymentUrl?: string; url?: string })?.paymentUrl ??
-        (data as { url?: string })?.url ??
+      const clientSecret =
+        (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
+        (data as { client_secret?: string })?.client_secret ??
         null;
       const pid =
         (data as { paymentId?: string; id?: string })?.paymentId ??
         (data as { id?: string })?.id ??
         null;
-      if (!url) throw new Error("No payment URL returned");
+      if (!clientSecret) throw new Error("No client secret returned");
+      const params = new URLSearchParams({
+        cs: clientSecret,
+        amount: amountNum.toFixed(2),
+        desc: description || "Payment",
+      });
+      const url = `https://everydriver.co.uk/pay?${params.toString()}`;
       setQrUrl(url);
       setQrPaymentId(pid);
       toast.success("Payment link ready");
@@ -597,47 +603,25 @@ function TakePaymentPage() {
             zIndex: 50,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "calc(env(safe-area-inset-top, 0px) + 28px) 24px calc(env(safe-area-inset-bottom, 0px) + 24px)",
+            height: "100vh",
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          {/* Top: heading + amount */}
-          <div style={{ textAlign: "center", color: "#fff" }}>
+          {/* Top section (flex 0) */}
+          <div
+            style={{
+              flex: "0 0 auto",
+              padding: "calc(env(safe-area-inset-top, 0px) + 24px) 24px 24px",
+              textAlign: "center",
+              color: "#fff",
+            }}
+          >
             <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
             <div style={{ fontSize: 44, fontWeight: 700, marginTop: 6, lineHeight: 1.1 }}>
               £{amountNum.toFixed(2)}
             </div>
-          </div>
-
-          {/* Centre: QR card */}
-          <div
-            style={{
-              background: "#fff",
-              padding: 24,
-              borderRadius: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <QRCodeSVG value={qrUrl} size={260} />
-          </div>
-
-          {/* Pupil + description + share */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 12,
-              width: "100%",
-              color: "#fff",
-            }}
-          >
             {(pupilName || description) && (
-              <div style={{ textAlign: "center" }}>
+              <div style={{ marginTop: 10 }}>
                 {pupilName && (
                   <div style={{ fontSize: 15, fontWeight: 600 }}>{pupilName}</div>
                 )}
@@ -646,19 +630,58 @@ function TakePaymentPage() {
                 )}
               </div>
             )}
-            <div style={{ fontSize: 12, opacity: 0.7 }}>Waiting for payment…</div>
+          </div>
 
+          {/* Middle section (flex 1, centred) */}
+          <div
+            style={{
+              flex: 1,
+              minHeight: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 24px",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                padding: 24,
+                borderRadius: 16,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <QRCodeSVG value={qrUrl} size={240} />
+            </div>
+            <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
+              Waiting for payment…
+            </div>
+          </div>
+
+          {/* Bottom section (flex 0) */}
+          <div
+            style={{
+              flex: "0 0 auto",
+              padding: "24px 24px calc(env(safe-area-inset-bottom, 0px) + 24px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
             <button
               type="button"
               onClick={shareLink}
               style={{
                 width: "100%",
-                maxWidth: 320,
                 height: 46,
                 borderRadius: 12,
-                background: "transparent",
-                color: "#fff",
-                border: "1px solid rgba(255,255,255,0.4)",
+                background: "#fff",
+                color: NAVY,
+                border: "none",
                 fontSize: 14,
                 fontWeight: 600,
                 display: "inline-flex",
@@ -676,12 +699,11 @@ function TakePaymentPage() {
               onClick={closeQrOverlay}
               style={{
                 width: "100%",
-                maxWidth: 320,
                 height: 46,
                 borderRadius: 12,
                 background: "transparent",
                 color: "#fff",
-                border: "1px solid rgba(255,255,255,0.25)",
+                border: "1px solid rgba(255,255,255,0.4)",
                 fontSize: 14,
                 fontWeight: 500,
                 display: "inline-flex",
