@@ -396,10 +396,11 @@ function LivePage() {
     }
 
     setTracking(true);
+    console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
       (err) => {
-        console.warn("[live] geo err", err);
+        console.error("[live] geolocation error:", err.code, err.message);
         setGeoError("GPS access required — please enable location in your browser settings");
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
