@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -12,7 +12,53 @@ export const Route = createFileRoute("/pupils/progress/$id")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
-type Status = "not_started" | "in_progress" | "competent";
+type Status =
+  | "not_started"
+  | "introduced"
+  | "talk_through"
+  | "prompted"
+  | "seldom_prompted"
+  | "independent";
+
+const LEVELS: {
+  key: Exclude<Status, "not_started">;
+  n: 1 | 2 | 3 | 4 | 5;
+  label: string;
+  color: string;
+}[] = [
+  { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
+  { key: "talk_through", n: 2, label: "Under full talk-through", color: "#DC2626" },
+  { key: "prompted", n: 3, label: "Prompted", color: "#F59E0B" },
+  { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
+  { key: "independent", n: 5, label: "Independent", color: "#16A34A" },
+];
+
+const LEVEL_BY_KEY: Record<Exclude<Status, "not_started">, (typeof LEVELS)[number]> =
+  LEVELS.reduce(
+    (acc, l) => {
+      acc[l.key] = l;
+      return acc;
+    },
+    {} as Record<Exclude<Status, "not_started">, (typeof LEVELS)[number]>,
+  );
+
+// Migrate legacy values from the old 3-state model.
+function normalizeStatus(raw: string | null | undefined): Status {
+  if (!raw) return "not_started";
+  if (raw === "competent") return "independent";
+  if (raw === "in_progress") return "prompted";
+  if (
+    raw === "not_started" ||
+    raw === "introduced" ||
+    raw === "talk_through" ||
+    raw === "prompted" ||
+    raw === "seldom_prompted" ||
+    raw === "independent"
+  ) {
+    return raw;
+  }
+  return "not_started";
+}
 
 const SYLLABUS: { title: string; items: { key: string; label: string }[] }[] = [
   {
@@ -92,12 +138,6 @@ const SYLLABUS: { title: string; items: { key: string; label: string }[] }[] = [
 
 const ALL_ITEMS = SYLLABUS.flatMap((s) => s.items);
 
-function nextStatus(s: Status): Status {
-  if (s === "not_started") return "in_progress";
-  if (s === "in_progress") return "competent";
-  return "not_started";
-}
-
 function PupilProgressPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
@@ -106,6 +146,7 @@ function PupilProgressPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [openItem, setOpenItem] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -127,8 +168,8 @@ function PupilProgressPage() {
           return;
         }
         const map: Record<string, Status> = {};
-        for (const r of (data ?? []) as { item_key: string; status: Status }[]) {
-          map[r.item_key] = r.status;
+        for (const r of (data ?? []) as { item_key: string; status: string | null }[]) {
+          map[r.item_key] = normalizeStatus(r.status);
         }
         setStatuses(map);
       });
@@ -138,13 +179,17 @@ function PupilProgressPage() {
     return statuses[key] ?? "not_started";
   }
 
-  function cycle(key: string) {
-    setStatuses((prev) => ({ ...prev, [key]: nextStatus(statusOf(key)) }));
+  function setLevel(key: string, value: Status) {
+    setStatuses((prev) => ({ ...prev, [key]: value }));
   }
 
-  const competentCount = ALL_ITEMS.filter((i) => statusOf(i.key) === "competent").length;
+  const independentCount = ALL_ITEMS.filter((i) => statusOf(i.key) === "independent").length;
+  const inProgressCount = ALL_ITEMS.filter((i) => {
+    const s = statusOf(i.key);
+    return s !== "not_started" && s !== "independent";
+  }).length;
   const totalCount = ALL_ITEMS.length;
-  const pct = totalCount > 0 ? Math.round((competentCount / totalCount) * 100) : 0;
+  const pct = totalCount > 0 ? Math.round((independentCount / totalCount) * 100) : 0;
 
   async function save() {
     if (!userId) return;
@@ -237,15 +282,47 @@ function PupilProgressPage() {
               {pct}%
             </div>
             <div className="text-[12px] text-[#6B7280] mt-1">
-              {competentCount} of {totalCount} items
+              {independentCount} independent
+            </div>
+            <div className="text-[11px] text-[#9CA3AF]">
+              {inProgressCount} in progress
             </div>
           </div>
         </div>
       </div>
 
-      <div className="px-4">
+      {/* Legend */}
+      <div className="px-4 mt-4 flex flex-wrap gap-1.5 justify-center">
+        {LEVELS.map((l) => (
+          <span
+            key={l.key}
+            className="inline-flex items-center gap-1 text-[10px]"
+            style={{ ...POPPINS, color: "#6B7280" }}
+          >
+            <span
+              style={{
+                width: 16,
+                height: 16,
+                borderRadius: 999,
+                backgroundColor: l.color,
+                color: "#FFFFFF",
+                fontSize: 10,
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {l.n}
+            </span>
+            {l.label}
+          </span>
+        ))}
+      </div>
+
+      <div className="px-4 mt-4">
         {SYLLABUS.map((section) => {
-          const done = section.items.filter((i) => statusOf(i.key) === "competent").length;
+          const done = section.items.filter((i) => statusOf(i.key) === "independent").length;
           return (
             <div key={section.title}>
               <SectionHeader>
@@ -261,26 +338,89 @@ function PupilProgressPage() {
               >
                 {section.items.map((it, idx) => {
                   const s = statusOf(it.key);
+                  const isOpen = openItem === it.key;
                   return (
-                    <button
+                    <div
                       key={it.key}
-                      type="button"
-                      onClick={() => cycle(it.key)}
-                      className="w-full flex items-center justify-between px-3 py-3 text-left"
                       style={{
                         borderTopWidth: idx === 0 ? 0 : "0.5px",
                         borderTopStyle: "solid",
                         borderTopColor: "#E2E6ED",
                       }}
                     >
-                      <span
-                        className="text-[14px] text-[#0F2044]"
-                        style={POPPINS}
+                      <button
+                        type="button"
+                        onClick={() => setOpenItem(isOpen ? null : it.key)}
+                        className="w-full flex items-center justify-between px-3 py-3 text-left"
                       >
-                        {it.label}
-                      </span>
-                      <StatusCircle status={s} />
-                    </button>
+                        <span
+                          className="text-[14px] text-[#0F2044]"
+                          style={POPPINS}
+                        >
+                          {it.label}
+                        </span>
+                        <StatusBadge status={s} />
+                      </button>
+                      {isOpen && (
+                        <div
+                          className="px-3 pb-3 flex items-center gap-1.5 flex-wrap"
+                          style={POPPINS}
+                        >
+                          {LEVELS.map((l) => {
+                            const active = s === l.key;
+                            return (
+                              <button
+                                key={l.key}
+                                type="button"
+                                onClick={() => setLevel(it.key, l.key)}
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded-full"
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 600,
+                                  backgroundColor: active ? l.color : "#F3F4F6",
+                                  color: active ? "#FFFFFF" : "#374151",
+                                  border: active
+                                    ? `1px solid ${l.color}`
+                                    : "1px solid #E5E7EB",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: 999,
+                                    backgroundColor: active ? "rgba(255,255,255,0.25)" : l.color,
+                                    color: "#FFFFFF",
+                                    fontSize: 9,
+                                    fontWeight: 700,
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  {l.n}
+                                </span>
+                                {l.label}
+                              </button>
+                            );
+                          })}
+                          <button
+                            type="button"
+                            onClick={() => setLevel(it.key, "not_started")}
+                            className="inline-flex items-center px-2 py-1 rounded-full"
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 600,
+                              backgroundColor: "#FFFFFF",
+                              color: "#6B7280",
+                              border: "1px solid #E5E7EB",
+                            }}
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -309,42 +449,36 @@ function PupilProgressPage() {
   );
 }
 
-function StatusCircle({ status }: { status: Status }) {
-  if (status === "competent") {
-    return (
-      <span
-        className="flex items-center justify-center rounded-full shrink-0"
-        style={{ width: 24, height: 24, backgroundColor: "#16A34A" }}
-      >
-        <Check size={14} color="#FFFFFF" strokeWidth={3} />
-      </span>
-    );
-  }
-  if (status === "in_progress") {
+function StatusBadge({ status }: { status: Status }) {
+  if (status === "not_started") {
     return (
       <span
         className="rounded-full shrink-0"
         style={{
           width: 24,
           height: 24,
-          background: "linear-gradient(90deg, #F59E0B 50%, #FFFFFF 50%)",
           borderWidth: 2,
           borderStyle: "solid",
-          borderColor: "#F59E0B",
+          borderColor: "#D1D5DB",
         }}
       />
     );
   }
+  const l = LEVEL_BY_KEY[status];
   return (
     <span
-      className="rounded-full shrink-0"
+      className="flex items-center justify-center rounded-full shrink-0"
       style={{
         width: 24,
         height: 24,
-        borderWidth: 2,
-        borderStyle: "solid",
-        borderColor: "#D1D5DB",
+        backgroundColor: l.color,
+        color: "#FFFFFF",
+        fontSize: 12,
+        fontWeight: 700,
+        ...POPPINS,
       }}
-    />
+    >
+      {l.n}
+    </span>
   );
 }

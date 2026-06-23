@@ -1,23 +1,33 @@
-## Problem
+## Goal
 
-`/pupils/new` (and `/pupils/edit/:id`) write/read a `pupils.address` column that doesn't exist in the live Supabase schema, causing PostgREST error: *Could not find the 'address' column of 'pupils' in the schema cache*.
+Replace the current 3-level competency scale on the Pupil Progress screen with the standard DVSA/ADI 5-level scale.
 
-The SQL exists in `db/037_pupil_address_lesson_pickup.sql` but was never applied — that folder is a manual SQL-editor changelog, not a migration runner. The same file also adds `lessons.pickup_location`, which is referenced elsewhere in the app.
+## Proposed 5-level scale
 
-## Fix
+| Level | Key | Label | Color |
+|---|---|---|---|
+| 1 | `introduced` | Introduced | grey |
+| 2 | `talk_through` | Under full talk-through | red |
+| 3 | `prompted` | Prompted | amber |
+| 4 | `seldom_prompted` | Seldom prompted | light green |
+| 5 | `independent` | Independent | green |
 
-Run a single migration that mirrors `db/037`:
+Plus the existing `not_started` baseline (no pill) so untouched items still read as "not started".
 
-```sql
-alter table public.pupils
-  add column if not exists address text;
+## Changes — `src/routes/pupils.progress.$id.tsx` only
 
-alter table public.lessons
-  add column if not exists pickup_location text;
-```
+1. Replace the `Status` union with the six values above.
+2. Replace the tap-cycle (`nextStatus`) with a small pill selector: tapping an item opens an inline row of 5 chips (1–5) and the chosen level becomes the item's status. Long-press / a "Reset" chip clears back to `not_started`.
+3. Update progress maths: "competent" is no longer a single state. Display two numbers per section and overall:
+   - **Independent** count (level 5) — drives the % progress bar.
+   - **In progress** count (levels 1–4) — shown as a secondary stat.
+4. Update colour swatches and the "done" check icon to reflect the 5-level palette.
+5. Persist via the existing `pupil_progress` upsert — the DB column is free-form `text`, so no migration needed. Old values (`competent`, `in_progress`) are migrated on read: `competent` → `independent`, `in_progress` → `prompted`, `not_started` → unchanged.
 
-No code changes — `pupils.new.tsx` / `pupils.edit.$id.tsx` already handle the column correctly. No RLS/grant changes needed (existing table policies cover new columns).
+## Out of scope
 
-## Verification
+- No schema change. No edits to other routes. The EOL wizard's skill checklist (which writes `practised_at` only) is unaffected.
 
-After migration, reload `/pupils/new`, submit a pupil with an address, and confirm the insert succeeds and the row shows the address in `/pupils/edit/:id`.
+## Open question
+
+Are the level names above what you want, or would you prefer the alternative DVSA wording ("Introduced / Talk-through / Prompted / Rare prompts / Independent")? I'll go with the table above unless you say otherwise.
