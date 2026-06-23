@@ -408,9 +408,11 @@ function LivePage() {
   }
 
   function handlePosition(pos: GeolocationPosition) {
+  function handlePosition(pos: GeolocationPosition) {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
+    console.log("[live] position update:", pos.coords.latitude, pos.coords.longitude, "speed:", pos.coords.speed);
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now() };
