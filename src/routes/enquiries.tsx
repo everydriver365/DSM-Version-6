@@ -120,6 +120,54 @@ function EnquiriesPage() {
     }
   }
 
+  async function fetchEnquiry(refId: string) {
+    if (enquiryById[refId] !== undefined) return;
+    setLoadingEnquiryId(refId);
+    const { data, error } = await supabase
+      .from("enquiries")
+      .select("*")
+      .eq("id", refId)
+      .maybeSingle();
+    console.log("[enquiries] fetched enquiry", { refId, data, error });
+    if (error) {
+      console.error("[enquiries] enquiry fetch error", error);
+      toast.error("Couldn't load enquiry details");
+    }
+    setEnquiryById((prev) => ({ ...prev, [refId]: (data as EnquiryRow | null) ?? null }));
+    setLoadingEnquiryId(null);
+  }
+
+  async function toggleExpand(n: EnquiryNotification) {
+    const willExpand = expandedId !== n.id;
+    setExpandedId(willExpand ? n.id : null);
+    if (willExpand && n.reference_id) {
+      void fetchEnquiry(n.reference_id);
+    }
+    if (willExpand && !n.read) {
+      void markRead(n);
+    }
+  }
+
+  async function updateStatus(enquiryId: string, status: "accepted" | "declined") {
+    const { error } = await supabase
+      .from("enquiries")
+      .update({ status })
+      .eq("id", enquiryId);
+    if (error) {
+      console.error("[enquiries] status update error", error);
+      toast.error(`Couldn't ${status === "accepted" ? "accept" : "decline"} enquiry`);
+      return;
+    }
+    setEnquiryById((prev) => {
+      const cur = prev[enquiryId];
+      if (!cur) return prev;
+      return { ...prev, [enquiryId]: { ...cur, status } };
+    });
+    toast.success(status === "accepted" ? "Enquiry accepted" : "Enquiry declined");
+  }
+
+
+
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
