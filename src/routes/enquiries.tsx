@@ -40,9 +40,18 @@ interface EnquiryRow {
   created_at: string | null;
 }
 
+function stripPhone(s: string) {
+  return s
+    .replace(/(?:phone|tel|mobile|mob)\s*[:\-]?\s*\+?[\d\s().-]{7,}/gi, "")
+    .replace(/\+?\d[\d\s().-]{8,}\d/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function formatShortDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
+
 
 function formatLongDate(iso: string | null) {
   if (!iso) return "—";
@@ -422,7 +431,7 @@ function EnquiryCard({
                   className="text-[13px] mt-0.5 truncate"
                   style={{ color: "#6B7280" }}
                 >
-                  {n.body}
+                  {stripPhone(n.body)}
                 </div>
               )}
             </div>
@@ -540,7 +549,7 @@ function DetailGrid({ enquiry, receivedAt }: { enquiry: EnquiryRow; receivedAt: 
     <div className="flex flex-col" style={{ gap: 6 }}>
       <DetailRow label="Name" value={enquiry.name} />
       <DetailRow label="Email" value={enquiry.email} />
-      <DetailRow label="Phone" value={enquiry.phone} />
+      
       <DetailRow label="Course" value={enquiry.course_interest} />
       <DetailRow label="Transmission" value={enquiry.transmission} />
       <DetailRow
