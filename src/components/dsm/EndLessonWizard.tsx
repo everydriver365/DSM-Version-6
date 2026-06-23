@@ -187,6 +187,9 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentMethod("cash");
     setPaymentRecorded(false);
     setPaymentSaving(false);
+    setQrUrl(null);
+    setQrPaymentId(null);
+    setQrGenerating(false);
     setLevels({});
     setProgressComments("");
     setCompleting(false);
