@@ -911,38 +911,70 @@ function HomePage() {
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
-          {badges.map((b, i) => (
-            <span
-              key={i}
-              style={{
-                fontSize: 10,
-                padding: "2px 6px",
-                borderRadius: 999,
-                backgroundColor: b.bg,
-                color: b.color,
-                fontWeight: 700,
-                fontFamily: "Poppins, sans-serif",
-                lineHeight: 1.4,
-              }}
-            >
-              {b.label}
-            </span>
-          ))}
+          {badges.map((b, i) =>
+            b.label === "EOL" ? (
+              <button
+                key={i}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEolLesson(l);
+                }}
+                style={{
+                  fontSize: 10,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  backgroundColor: b.bg,
+                  color: b.color,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  lineHeight: 1.4,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {b.label}
+              </button>
+            ) : (
+              <span
+                key={i}
+                style={{
+                  fontSize: 10,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  backgroundColor: b.bg,
+                  color: b.color,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  lineHeight: 1.4,
+                }}
+              >
+                {b.label}
+              </span>
+            ),
+          )}
         </div>
       </div>
     );
 
     if (!showTimeline) {
       return (
-        <button
+        <div
           key={l.id}
-          type="button"
+          role="button"
+          tabIndex={0}
           onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-          className="text-left w-full"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/lessons/$id", params: { id: l.id } });
+            }
+          }}
+          className="text-left w-full cursor-pointer"
           style={{ paddingBottom: 6 }}
         >
           {rowInner}
-        </button>
+        </div>
       );
     }
 
@@ -980,14 +1012,21 @@ function HomePage() {
           </div>
         </div>
 
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-          className="flex-1 text-left"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/lessons/$id", params: { id: l.id } });
+            }
+          }}
+          className="flex-1 text-left cursor-pointer"
           style={{ paddingBottom: 8 }}
         >
           {rowInner}
-        </button>
+        </div>
       </div>
     );
   };
