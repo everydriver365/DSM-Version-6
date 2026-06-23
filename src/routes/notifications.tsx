@@ -4,9 +4,13 @@ import {
   ArrowLeft,
   Bell,
   Calendar as CalendarIcon,
+  CheckCheck,
   PoundSterling,
+  Trash2,
   Users,
+  X,
 } from "lucide-react";
+import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
@@ -103,7 +107,42 @@ function NotificationsPage() {
       .update({ read: true })
       .eq("instructor_id", userId)
       .eq("read", false);
-    if (error) console.error("[notifications] mark all read error", error);
+    if (error) {
+      console.error("[notifications] mark all read error", error);
+      toast.error("Failed to mark all as read");
+    } else {
+      toast.success("All marked as read");
+    }
+  }
+
+  async function deleteOne(id: string) {
+    setItems((prev) => (prev ?? []).filter((n) => n.id !== id));
+    const { error } = await supabase
+      .from("instructor_notifications")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      console.error("[notifications] delete error", error);
+      toast.error("Failed to remove notification");
+    } else {
+      toast("Notification removed");
+    }
+  }
+
+  async function clearAllRead() {
+    if (!userId) return;
+    setItems((prev) => (prev ?? []).filter((n) => !n.read));
+    const { error } = await supabase
+      .from("instructor_notifications")
+      .delete()
+      .eq("instructor_id", userId)
+      .eq("read", true);
+    if (error) {
+      console.error("[notifications] clear read error", error);
+      toast.error("Failed to clear read notifications");
+    } else {
+      toast.success("Read notifications cleared");
+    }
   }
 
   const today = startOfDay(new Date());
@@ -143,15 +182,30 @@ function NotificationsPage() {
         >
           Notifications
         </div>
-        <button
-          type="button"
-          onClick={markAllRead}
-          disabled={!hasAnyUnread}
-          className="text-[12px] font-medium px-2 disabled:opacity-50"
-          style={{ color: "#FFFFFF", ...POPPINS, minWidth: 80 }}
-        >
-          Mark all read
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={clearAllRead}
+            disabled={!(items ?? []).some((n) => n.read)}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
+            style={{ color: "#FFFFFF", ...POPPINS }}
+            aria-label="Clear read notifications"
+          >
+            <Trash2 size={14} color="#FFFFFF" />
+            Clear read
+          </button>
+          <button
+            type="button"
+            onClick={markAllRead}
+            disabled={!hasAnyUnread}
+            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
+            style={{ color: "#FFFFFF", ...POPPINS }}
+            aria-label="Mark all as read"
+          >
+            <CheckCheck size={14} color="#FFFFFF" />
+            Mark all read
+          </button>
+        </div>
       </div>
 
       <div className="px-4">
@@ -170,9 +224,10 @@ function NotificationsPage() {
                 {g.items.map((n) => {
                   const ic = typeIcon(n.type);
                   return (
-                    <button
+                    <div
                       key={n.id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         markRead(n.id);
                         if (n.type === "booking") {
@@ -189,7 +244,7 @@ function NotificationsPage() {
                           navigate({ to: "/live" });
                         }
                       }}
-                      className="w-full text-left rounded-xl overflow-hidden"
+                      className="w-full text-left rounded-xl overflow-hidden cursor-pointer"
                       style={{
                         backgroundColor: n.read ? "#F8F9FB" : "#EEF4FB",
                         borderWidth: "0.5px",
@@ -222,14 +277,27 @@ function NotificationsPage() {
                             </div>
                           )}
                         </div>
-                        <div
-                          className="text-[11px] text-[#6B7280] shrink-0"
-                          style={POPPINS}
-                        >
-                          {formatTime(n.created_at)}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <div
+                            className="text-[11px] text-[#6B7280]"
+                            style={POPPINS}
+                          >
+                            {formatTime(n.created_at)}
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Remove notification"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteOne(n.id);
+                            }}
+                            className="flex items-center justify-center -mr-1 -mb-1 p-1 rounded hover:bg-black/5"
+                          >
+                            <X size={16} color="#9CA3AF" />
+                          </button>
                         </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
