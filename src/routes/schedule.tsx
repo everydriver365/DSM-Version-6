@@ -236,51 +236,23 @@ function SchedulePage() {
 
   const openEol = (l: Lesson) => {
     setEolLesson(l);
-    setEolChecks({ theory: false, payment: false, notes: false });
   };
 
-  const completeEol = async () => {
+  const onEolCompleted = () => {
     if (!eolLesson) return;
-    setEolSubmitting(true);
     const nowIso = new Date().toISOString();
-    const { error } = await supabase
-      .from("lessons")
-      .update({ eol_completed: true, eol_completed_at: nowIso })
-      .eq("id", eolLesson.id);
-    if (error) {
-      console.error("[schedule] eol update error", error);
-      toast.error("Couldn't complete EOL");
-      setEolSubmitting(false);
-      return;
-    }
-    try {
-      await supabase.from("lesson_history").insert({
-        lesson_id: eolLesson.id,
-        instructor_id: eolLesson.instructor_id,
-        pupil_id: eolLesson.pupil_id,
-        lesson_date: eolLesson.lesson_date,
-        lesson_time: eolLesson.lesson_time,
-        duration_minutes: eolLesson.duration_minutes,
-        payment_status: eolLesson.payment_status,
-        notes: eolLesson.notes,
-        eol_theory_checked: true,
-        eol_payment_done: true,
-        eol_notes_done: true,
-      });
-    } catch (e) {
-      console.warn("[schedule] lesson_history insert failed (non-fatal)", e);
-    }
     setLessons((cur) =>
       cur
         ? cur.map((x) =>
-            x.id === eolLesson.id ? { ...x, eol_completed: true, eol_completed_at: nowIso } : x,
+            x.id === eolLesson.id
+              ? { ...x, status: "completed", eol_completed: true, eol_completed_at: nowIso }
+              : x,
           )
         : cur,
     );
     toast.success(`EOL completed for ${pupilDisplayName(eolLesson.pupil)}`);
-    setEolLesson(null);
-    setEolSubmitting(false);
   };
+
 
   const cancelLessonNow = async () => {
     if (!cancelLesson) return;
