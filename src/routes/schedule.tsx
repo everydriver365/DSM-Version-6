@@ -11,13 +11,12 @@ import {
   Phone,
   Calendar as CalendarAction,
   X,
-  BookOpen,
-  FileText,
 } from "lucide-react";
 import type React from "react";
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/schedule")({
