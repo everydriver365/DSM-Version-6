@@ -2,12 +2,39 @@ import { useEffect, useState } from "react";
 import {
   Banknote,
   ArrowLeftRight,
-  CheckCircle,
   Gift,
   CheckCircle2,
   PartyPopper,
   X,
 } from "lucide-react";
+
+type ProgressLevel =
+  | "not_started"
+  | "introduced"
+  | "talk_through"
+  | "prompted"
+  | "seldom_prompted"
+  | "independent";
+
+const LEVELS: {
+  key: Exclude<ProgressLevel, "not_started">;
+  n: 1 | 2 | 3 | 4 | 5;
+  label: string;
+  color: string;
+}[] = [
+  { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
+  { key: "talk_through", n: 2, label: "Talk-through", color: "#DC2626" },
+  { key: "prompted", n: 3, label: "Prompted", color: "#F59E0B" },
+  { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
+  { key: "independent", n: 5, label: "Independent", color: "#16A34A" },
+];
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 
@@ -94,7 +121,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
 
-  const [practised, setPractised] = useState<Record<string, boolean>>({});
+  const [levels, setLevels] = useState<Record<string, ProgressLevel>>({});
   const [progressComments, setProgressComments] = useState("");
 
   const [completing, setCompleting] = useState(false);
@@ -113,7 +140,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentMethod("cash");
     setPaymentRecorded(false);
     setPaymentSaving(false);
-    setPractised({});
+    setLevels({});
     setProgressComments("");
     setCompleting(false);
     setDone(false);
@@ -280,7 +307,10 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       return;
     }
 
-    const practisedList = Object.keys(practised).filter((k) => practised[k]);
+    const updatedEntries = Object.entries(levels).filter(
+      ([, v]) => v && v !== "not_started",
+    );
+    const practisedList = updatedEntries.map(([label]) => label);
     const combinedNotes = progressComments
       ? `${notes}\n\nProgress: ${progressComments}`
       : notes;
@@ -305,20 +335,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       console.warn("[eol-wizard] history insert failed (non-fatal)", e);
     }
 
-    // Update pupil progress rows (best-effort)
-    if (practisedList.length > 0) {
+    // Update pupil progress rows (best-effort) — upsert by (pupil_id, item_key)
+    if (updatedEntries.length > 0) {
       try {
-        await supabase.from("pupil_progress").insert(
-          practisedList.map((skill) => ({
+        await supabase.from("pupil_progress").upsert(
+          updatedEntries.map(([label, status]) => ({
             pupil_id: pupilId,
             instructor_id: instructorId,
-            lesson_id: lessonId,
-            skill,
-            practised_at: nowIso,
+            item_key: `eol_${slugify(label)}`,
+            status,
+            updated_at: nowIso,
           })),
+          { onConflict: "pupil_id,item_key" },
         );
       } catch (e) {
-        console.warn("[eol-wizard] pupil_progress insert failed", e);
+        console.warn("[eol-wizard] pupil_progress upsert failed", e);
       }
     }
 
@@ -570,7 +601,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 [
                   { k: "cash", label: "Cash", icon: <Banknote size={20} /> },
                   { k: "bank", label: "Bank transfer", icon: <ArrowLeftRight size={20} /> },
-                  { k: "already_paid", label: "Already paid", icon: <CheckCircle size={20} /> },
+                  { k: "already_paid", label: "Already paid", icon: <CheckCircle2 size={20} /> },
                   { k: "waived", label: "Waived", icon: <Gift size={20} /> },
                 ] as { k: PaymentMethod; label: string; icon: React.ReactNode }[]
               ).map((m) => {
@@ -654,45 +685,101 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-1.5">
+            <div className="mt-3 flex flex-col gap-2">
               {COMPETENCIES.map((c) => {
-                const checked = !!practised[c];
+                const current = levels[c] ?? "not_started";
                 return (
-                  <button
+                  <div
                     key={c}
-                    type="button"
-                    onClick={() => setPractised((p) => ({ ...p, [c]: !p[c] }))}
-                    className="flex items-center gap-2 p-2 text-left"
+                    className="p-2"
                     style={{
-                      borderRadius: 8,
-                      backgroundColor: checked ? "#F0FDF4" : "#F8F9FB",
-                      border: `0.5px solid ${checked ? "#16A34A" : "#E2E6ED"}`,
+                      borderRadius: 10,
+                      backgroundColor: "#F8F9FB",
+                      border: "0.5px solid #E2E6ED",
                     }}
                   >
                     <div
-                      style={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: 4,
-                        border: `1.5px solid ${checked ? "#16A34A" : "#9CA3AF"}`,
-                        backgroundColor: checked ? "#16A34A" : "transparent",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {checked && <CheckCircle size={12} color="#FFFFFF" />}
-                    </div>
-                    <span
-                      className="text-[12px]"
-                      style={{ color: "#1A1A2E", fontWeight: 500 }}
+                      className="text-[13px] mb-2"
+                      style={{ color: "#1A1A2E", fontWeight: 600 }}
                     >
                       {c}
-                    </span>
-                  </button>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {LEVELS.map((l) => {
+                        const active = current === l.key;
+                        return (
+                          <button
+                            key={l.key}
+                            type="button"
+                            aria-label={`${c}: ${l.label}`}
+                            title={l.label}
+                            onClick={() =>
+                              setLevels((prev) => ({ ...prev, [c]: l.key }))
+                            }
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 999,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: active ? "#FFFFFF" : l.color,
+                              backgroundColor: active ? l.color : "#FFFFFF",
+                              border: `1.5px solid ${l.color}`,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {l.n}
+                          </button>
+                        );
+                      })}
+                      {current !== "not_started" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setLevels((prev) => {
+                              const next = { ...prev };
+                              delete next[c];
+                              return next;
+                            })
+                          }
+                          className="text-[11px] ml-1"
+                          style={{
+                            color: "#6B7280",
+                            background: "transparent",
+                            border: "none",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 );
               })}
+            </div>
+
+            <div
+              className="mt-3 p-2 text-[11px] flex flex-wrap gap-x-3 gap-y-1"
+              style={{ color: "#6B7280" }}
+            >
+              {LEVELS.map((l) => (
+                <span key={l.key} className="flex items-center gap-1">
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 999,
+                      backgroundColor: l.color,
+                      display: "inline-block",
+                    }}
+                  />
+                  {l.n} {l.label}
+                </span>
+              ))}
             </div>
 
             <label
