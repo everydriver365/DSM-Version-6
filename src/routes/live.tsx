@@ -169,6 +169,7 @@ function LivePage() {
 
   // Auth + load lessons + detect in-progress + auto start
   useEffect(() => {
+    console.log("[live] mounted, checking for active lesson");
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) {
@@ -218,6 +219,12 @@ function LivePage() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (lessonsLoaded && !tracking && !activeLessonId && !geoError) {
+      console.log("[live] no active lesson — showing manual start");
+    }
+  }, [lessonsLoaded, tracking, activeLessonId, geoError]);
 
   async function ensureSpeedLimit(lat: number, lng: number) {
     const key = `${lat.toFixed(3)},${lng.toFixed(3)}`;
@@ -395,10 +402,11 @@ function LivePage() {
     }
 
     setTracking(true);
+    console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
       (err) => {
-        console.warn("[live] geo err", err);
+        console.error("[live] geolocation error:", err.code, err.message);
         setGeoError("GPS access required — please enable location in your browser settings");
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
@@ -409,6 +417,7 @@ function LivePage() {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
+    console.log("[live] position update:", pos.coords.latitude, pos.coords.longitude, "speed:", pos.coords.speed);
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now() };
