@@ -456,6 +456,7 @@ function EnquiryCard({
   onClose,
   onAccept,
   onDecline,
+  subtitleOverride,
 }: {
   n: EnquiryNotification;
   enquiry: EnquiryRow | null;
@@ -466,9 +467,11 @@ function EnquiryCard({
   onClose: () => void;
   onAccept: (e: EnquiryRow) => void;
   onDecline: (e: EnquiryRow) => void;
+  subtitleOverride?: string;
 }) {
   const status = (enquiry?.status ?? "new").toLowerCase();
   const isDeclined = status === "declined";
+  const subtitle = subtitleOverride ?? (n.body ? stripPhone(n.body) : "");
   return (
     <div>
       <button type="button" onClick={onToggle} className="text-left w-full">
@@ -481,12 +484,12 @@ function EnquiryCard({
               >
                 {n.title ?? "Enquiry"}
               </div>
-              {n.body && !expanded && (
+              {subtitle && !expanded && (
                 <div
                   className="text-[13px] mt-0.5 truncate"
                   style={{ color: "#6B7280" }}
                 >
-                  {stripPhone(n.body)}
+                  {subtitle}
                 </div>
               )}
             </div>
