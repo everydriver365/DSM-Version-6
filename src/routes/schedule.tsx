@@ -152,8 +152,6 @@ function SchedulePage() {
   const [now, setNow] = useState<Date>(() => new Date());
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
-  const [eolChecks, setEolChecks] = useState({ theory: false, payment: false, notes: false });
-  const [eolSubmitting, setEolSubmitting] = useState(false);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
