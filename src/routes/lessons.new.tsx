@@ -68,7 +68,7 @@ function NewLessonPage() {
         .select("id, name, address")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
-        .neq("status", "inactive")
+        .not("status", "in", "(inactive,archived,cancelled)")
         .order("name", { ascending: true });
       setPupils((data as Pupil[]) ?? []);
     })();
