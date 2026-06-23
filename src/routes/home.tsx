@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import {
   Phone,
   Car,
@@ -226,6 +227,7 @@ function HomePage() {
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
   const [enqCount, setEnqCount] = useState(0);
+  const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
   useEffect(() => {
     async function loadCount() {
@@ -740,7 +742,7 @@ function HomePage() {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate({ to: "/lessons/feedback/$id", params: { id: l.id } });
+                setEolLesson(l);
               }}
               style={{
                 backgroundColor: "#EEF4FB",
@@ -2120,6 +2122,30 @@ function HomePage() {
         </div>
       </div>
 
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => setEolLesson(null)}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id ?? ""}
+          pupilName={eolLesson.pupils?.name ?? "Pupil"}
+          instructorId={userId ?? ""}
+          durationMinutes={eolLesson.duration_minutes ?? 60}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            const id = eolLesson.id;
+            setLessons((cur) =>
+              cur.map((x) =>
+                x.id === id
+                  ? { ...x, status: "completed", eol_completed: true }
+                  : x,
+              ),
+            );
+            toast.success(`EOL completed for ${eolLesson.pupils?.name ?? "pupil"}`);
+          }}
+        />
+      )}
     </div>
 
   );
