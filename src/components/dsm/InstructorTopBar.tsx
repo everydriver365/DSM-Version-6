@@ -60,6 +60,7 @@ export default function InstructorTopBar({
   statusDot,
 }: InstructorTopBarProps) {
   const isSubpage = typeof onBack === "function";
+  const navigate = useNavigate();
 
   return (
     <div
