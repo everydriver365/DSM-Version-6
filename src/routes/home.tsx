@@ -2122,6 +2122,30 @@ function HomePage() {
         </div>
       </div>
 
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => setEolLesson(null)}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id ?? ""}
+          pupilName={eolLesson.pupils?.name ?? "Pupil"}
+          instructorId={userId ?? ""}
+          durationMinutes={eolLesson.duration_minutes ?? 60}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            const id = eolLesson.id;
+            setLessons((cur) =>
+              cur.map((x) =>
+                x.id === id
+                  ? { ...x, status: "completed", eol_completed: true }
+                  : x,
+              ),
+            );
+            toast.success(`EOL completed for ${eolLesson.pupils?.name ?? "pupil"}`);
+          }}
+        />
+      )}
     </div>
 
   );
