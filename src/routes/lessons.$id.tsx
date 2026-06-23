@@ -81,6 +81,7 @@ function statusColor(s: string) {
 
 function LessonDetailPage() {
   const { id } = Route.useParams();
+  console.log("[lessons.$id] mounted, id:", id);
   const navigate = useNavigate();
   const router = useRouter();
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -100,10 +101,12 @@ function LessonDetailPage() {
       .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
+        console.log("[lessons.$id] fetch result:", data, error);
         if (error) console.error("[lesson] fetch error", error);
         setLesson((data as unknown as Lesson) ?? null);
       });
   }, [id]);
+
 
   useEffect(() => {
     if (!lesson) return;
