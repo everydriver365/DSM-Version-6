@@ -19,9 +19,37 @@ type CashMethod = "cash" | "bank";
 function TakePaymentPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState<string>("0");
-  const [pupilName, setPupilName] = useState("");
+  const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
+  const [pupilId, setPupilId] = useState<string>("");
   const [description, setDescription] = useState("");
   const [tab, setTab] = useState<Tab>("qr");
+  const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+
+  // Load instructor's current pupils
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .not("status", "in", "(inactive,archived,cancelled)")
+        .order("name");
+      if (cancelled) return;
+      if (error) {
+        console.warn("[take-payment] load pupils", error);
+        return;
+      }
+      setPupils((data ?? []) as { id: string; name: string }[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // QR
   const [qrUrl, setQrUrl] = useState<string | null>(null);
