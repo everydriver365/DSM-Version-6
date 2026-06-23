@@ -162,11 +162,13 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
       const { data: p } = await supabase
         .from("pupils")
-        .select("account_balance")
+        .select("balance_owed")
         .eq("id", pupilId)
         .maybeSingle();
       if (!cancelled && p) {
-        setBalance(Number((p as { account_balance: number | null }).account_balance ?? 0));
+        // DB stores amount owed (positive = pupil owes). Internal `balance` uses
+        // account-balance semantics (positive = credit, negative = owes).
+        setBalance(-Number((p as { balance_owed: number | null }).balance_owed ?? 0));
       }
     })();
 
@@ -202,7 +204,6 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       .update({
         payment_status: paymentStatus,
         amount_due: lessonCost,
-        payment_method: paymentMethod,
       })
       .eq("id", lessonId);
 
@@ -216,7 +217,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     if (paymentMethod !== "waived") {
       const { error: pErr } = await supabase
         .from("pupils")
-        .update({ account_balance: newBalance })
+        .update({ balance_owed: -newBalance })
         .eq("id", pupilId);
       if (pErr) console.warn("[eol-wizard] balance update failed", pErr);
       else setBalance(newBalance);
