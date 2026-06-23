@@ -662,7 +662,7 @@ function SchedulePage() {
                 </div>
               )}
             </div>
-          </button>
+          </div>
         </div>
       </div>
     );
