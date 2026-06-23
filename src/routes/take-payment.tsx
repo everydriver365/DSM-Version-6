@@ -97,15 +97,21 @@ function TakePaymentPage() {
         },
       });
       if (error) throw error;
-      const url =
-        (data as { paymentUrl?: string; url?: string })?.paymentUrl ??
-        (data as { url?: string })?.url ??
+      const clientSecret =
+        (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
+        (data as { client_secret?: string })?.client_secret ??
         null;
       const pid =
         (data as { paymentId?: string; id?: string })?.paymentId ??
         (data as { id?: string })?.id ??
         null;
-      if (!url) throw new Error("No payment URL returned");
+      if (!clientSecret) throw new Error("No client secret returned");
+      const params = new URLSearchParams({
+        cs: clientSecret,
+        amount: amountNum.toFixed(2),
+        desc: description || "Payment",
+      });
+      const url = `https://everydriver.co.uk/pay?${params.toString()}`;
       setQrUrl(url);
       setQrPaymentId(pid);
       toast.success("Payment link ready");
