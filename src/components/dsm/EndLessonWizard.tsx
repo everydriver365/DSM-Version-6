@@ -76,6 +76,48 @@ const COMPETENCIES = [
   "Theory",
 ];
 
+// Map wizard label -> syllabus item_keys used by the Progress page.
+// Empty array means no syllabus match; we fall back to an `eol_<slug>` key.
+const SKILL_MAP: Record<string, string[]> = {
+  "Cockpit checks": ["safety_cockpit_drill"],
+  "Moving off": ["move_off_level", "move_off_hill", "move_off_angle"],
+  Steering: ["safety_controls"],
+  "Clutch control": ["safety_controls"],
+  "Gear changing": ["safety_controls"],
+  Braking: ["stopping_normal"],
+  Junctions: [
+    "junc_t_emerge",
+    "junc_t_approach",
+    "junc_crossroads",
+    "junc_traffic_lights",
+  ],
+  Roundabouts: ["junc_roundabouts", "junc_mini_roundabouts"],
+  "Dual carriageways": [
+    "dual_joining",
+    "dual_leaving",
+    "dual_lane_discipline",
+    "dual_overtaking",
+  ],
+  "Hazard perception": ["aware_observation", "aware_anticipation"],
+  Manoeuvres: ["man_pull_up_right"],
+  "Emergency stop": ["man_emergency_stop", "em_stop_technique", "em_stop_control"],
+  "Independent driving": ["ind_sat_nav", "ind_road_signs", "ind_route_planning"],
+  "Bay parking": ["man_bay_park_reverse", "man_bay_park_forward"],
+  "Parallel parking": ["man_parallel_park"],
+  Motorway: [],
+  "Town driving": [],
+  Theory: [],
+};
+
+const LEVEL_RANK: Record<ProgressLevel, number> = {
+  not_started: 0,
+  introduced: 1,
+  talk_through: 2,
+  prompted: 3,
+  seldom_prompted: 4,
+  independent: 5,
+};
+
 interface RouteSummary {
   distance_miles: number | null;
   duration_minutes: number | null;
