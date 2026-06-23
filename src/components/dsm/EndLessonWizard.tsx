@@ -140,7 +140,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentMethod("cash");
     setPaymentRecorded(false);
     setPaymentSaving(false);
-    setPractised({});
+    setLevels({});
     setProgressComments("");
     setCompleting(false);
     setDone(false);
@@ -307,7 +307,10 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       return;
     }
 
-    const practisedList = Object.keys(practised).filter((k) => practised[k]);
+    const updatedEntries = Object.entries(levels).filter(
+      ([, v]) => v && v !== "not_started",
+    );
+    const practisedList = updatedEntries.map(([label]) => label);
     const combinedNotes = progressComments
       ? `${notes}\n\nProgress: ${progressComments}`
       : notes;
@@ -332,20 +335,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       console.warn("[eol-wizard] history insert failed (non-fatal)", e);
     }
 
-    // Update pupil progress rows (best-effort)
-    if (practisedList.length > 0) {
+    // Update pupil progress rows (best-effort) — upsert by (pupil_id, item_key)
+    if (updatedEntries.length > 0) {
       try {
-        await supabase.from("pupil_progress").insert(
-          practisedList.map((skill) => ({
+        await supabase.from("pupil_progress").upsert(
+          updatedEntries.map(([label, status]) => ({
             pupil_id: pupilId,
             instructor_id: instructorId,
-            lesson_id: lessonId,
-            skill,
-            practised_at: nowIso,
+            item_key: `eol_${slugify(label)}`,
+            status,
+            updated_at: nowIso,
           })),
+          { onConflict: "pupil_id,item_key" },
         );
       } catch (e) {
-        console.warn("[eol-wizard] pupil_progress insert failed", e);
+        console.warn("[eol-wizard] pupil_progress upsert failed", e);
       }
     }
 
