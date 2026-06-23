@@ -1,6 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Inbox, Phone, Mail, Check, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Inbox,
+  Phone,
+  Mail,
+  Check,
+  X,
+  CheckCircle,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
@@ -24,8 +33,33 @@ interface EnquiryNotification {
   reference_id: string | null;
 }
 
+interface EnquiryRow {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  course_interest: string | null;
+  transmission: string | null;
+  requested_hours: number | string | null;
+  preferred_timing: string | null;
+  preferred_start_date: string | null;
+  postcode: string | null;
+  notes: string | null;
+  status: string | null;
+  created_at: string | null;
+}
+
 function formatShortDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function formatLongDate(iso: string | null) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function EnquiriesPage() {
@@ -33,17 +67,8 @@ function EnquiriesPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<EnquiryNotification[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  function extractPhone(text: string | null): string | null {
-    if (!text) return null;
-    const m = text.match(/\+44\d{10}|07\d{9}/);
-    return m ? m[0] : null;
-  }
-  function extractEmail(text: string | null): string | null {
-    if (!text) return null;
-    const m = text.match(/[\w.-]+@[\w.-]+\.\w+/);
-    return m ? m[0] : null;
-  }
+  const [enquiryById, setEnquiryById] = useState<Record<string, EnquiryRow | null>>({});
+  const [loadingEnquiryId, setLoadingEnquiryId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
