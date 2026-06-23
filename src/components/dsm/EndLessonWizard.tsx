@@ -164,6 +164,9 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [amount, setAmount] = useState<string>("");
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
+  const [qrGenerating, setQrGenerating] = useState(false);
 
   const [levels, setLevels] = useState<Record<string, ProgressLevel>>({});
   const [progressComments, setProgressComments] = useState("");
