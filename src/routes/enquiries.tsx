@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Inbox, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Inbox, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
@@ -71,6 +71,7 @@ function EnquiriesPage() {
   const [loadingEnquiryId, setLoadingEnquiryId] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [showDeclined, setShowDeclined] = useState(false);
+  const [showAccepted, setShowAccepted] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -250,7 +251,8 @@ function EnquiriesPage() {
     return (e?.status ?? "new").toLowerCase();
   }
 
-  const activeItems = items.filter((n) => statusOf(n) !== "declined");
+  const newItems = items.filter((n) => statusOf(n) === "new");
+  const acceptedItems = items.filter((n) => statusOf(n) === "accepted");
   const declinedItems = items.filter((n) => statusOf(n) === "declined");
 
   return (
@@ -273,7 +275,7 @@ function EnquiriesPage() {
       </div>
 
       <div className="px-4 mt-3">
-        {activeItems.length === 0 && declinedItems.length === 0 ? (
+        {newItems.length === 0 && acceptedItems.length === 0 && declinedItems.length === 0 ? (
           <div
             className="flex flex-col items-center justify-center text-[13px]"
             style={{ color: "#6B7280", padding: "32px 0" }}
@@ -283,13 +285,19 @@ function EnquiriesPage() {
           </div>
         ) : (
           <>
+            <div
+              className="text-[11px] font-semibold tracking-wider"
+              style={{ color: "#6B7280", marginBottom: 8 }}
+            >
+              NEW ENQUIRIES
+            </div>
             <div className="flex flex-col" style={{ gap: 8 }}>
-              {activeItems.length === 0 ? (
-                <div className="text-[13px]" style={{ color: "#6B7280", padding: "12px 0" }}>
-                  No active enquiries.
+              {newItems.length === 0 ? (
+                <div className="text-[13px]" style={{ color: "#6B7280", padding: "4px 0" }}>
+                  No new enquiries.
                 </div>
               ) : (
-                activeItems.map((n) => (
+                newItems.map((n) => (
                   <EnquiryCard
                     key={n.id}
                     n={n}
@@ -305,6 +313,53 @@ function EnquiriesPage() {
                 ))
               )}
             </div>
+
+            {acceptedItems.length > 0 && (
+              <div className="mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowAccepted((v) => !v)}
+                  className="flex items-center justify-between w-full"
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    backgroundColor: "#16A34A",
+                    color: "#FFFFFF",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  <span className="flex items-center" style={{ gap: 6 }}>
+                    <CheckCircle size={16} color="#FFFFFF" />
+                    Accepted ({acceptedItems.length})
+                  </span>
+                  {showAccepted ? (
+                    <ChevronUp size={16} color="#FFFFFF" />
+                  ) : (
+                    <ChevronDown size={16} color="#FFFFFF" />
+                  )}
+                </button>
+                {showAccepted && (
+                  <div className="flex flex-col mt-2" style={{ gap: 8 }}>
+                    {acceptedItems.map((n) => (
+                      <EnquiryCard
+                        key={n.id}
+                        n={n}
+                        enquiry={n.reference_id ? enquiryById[n.reference_id] ?? null : null}
+                        loading={loadingEnquiryId === n.reference_id}
+                        expanded={expandedId === n.id}
+                        busy={false}
+                        subtitleOverride="Waiting for admin to book"
+                        onToggle={() => toggleExpand(n)}
+                        onClose={() => setExpandedId(null)}
+                        onAccept={(e) => acceptEnquiry(e)}
+                        onDecline={(e) => declineEnquiry(e, n.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {declinedItems.length > 0 && (
               <div className="mt-6">
@@ -401,6 +456,7 @@ function EnquiryCard({
   onClose,
   onAccept,
   onDecline,
+  subtitleOverride,
 }: {
   n: EnquiryNotification;
   enquiry: EnquiryRow | null;
@@ -411,9 +467,11 @@ function EnquiryCard({
   onClose: () => void;
   onAccept: (e: EnquiryRow) => void;
   onDecline: (e: EnquiryRow) => void;
+  subtitleOverride?: string;
 }) {
   const status = (enquiry?.status ?? "new").toLowerCase();
   const isDeclined = status === "declined";
+  const subtitle = subtitleOverride ?? (n.body ? stripPhone(n.body) : "");
   return (
     <div>
       <button type="button" onClick={onToggle} className="text-left w-full">
@@ -426,12 +484,12 @@ function EnquiryCard({
               >
                 {n.title ?? "Enquiry"}
               </div>
-              {n.body && !expanded && (
+              {subtitle && !expanded && (
                 <div
                   className="text-[13px] mt-0.5 truncate"
                   style={{ color: "#6B7280" }}
                 >
-                  {stripPhone(n.body)}
+                  {subtitle}
                 </div>
               )}
             </div>
