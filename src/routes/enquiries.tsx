@@ -32,6 +32,18 @@ function EnquiriesPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<EnquiryNotification[]>([]);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  function extractPhone(text: string | null): string | null {
+    if (!text) return null;
+    const m = text.match(/\+44\d{10}|07\d{9}/);
+    return m ? m[0] : null;
+  }
+  function extractEmail(text: string | null): string | null {
+    if (!text) return null;
+    const m = text.match(/[\w.-]+@[\w.-]+\.\w+/);
+    return m ? m[0] : null;
+  }
 
   useEffect(() => {
     let mounted = true;
