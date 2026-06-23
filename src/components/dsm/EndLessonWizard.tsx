@@ -351,11 +351,20 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
     const updatedEntries = Object.entries(levels).filter(
       ([, v]) => v && v !== "not_started",
-    );
+    ) as [string, ProgressLevel][];
     const practisedList = updatedEntries.map(([label]) => label);
-    const combinedNotes = progressComments
+
+    // Build "Skills updated: Roundabouts (4), Steering (3)" summary line.
+    const skillsSummary = updatedEntries
+      .map(([label, status]) => `${label} (${LEVEL_RANK[status]})`)
+      .join(", ");
+
+    let combinedNotes = progressComments
       ? `${notes}\n\nProgress: ${progressComments}`
       : notes;
+    if (skillsSummary) {
+      combinedNotes = `${combinedNotes}${combinedNotes ? "\n" : ""}Skills updated: ${skillsSummary}`;
+    }
 
     try {
       await supabase.from("lesson_history").insert({
@@ -377,19 +386,59 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       console.warn("[eol-wizard] history insert failed (non-fatal)", e);
     }
 
-    // Update pupil progress rows (best-effort) — upsert by (pupil_id, item_key)
+    // Update pupil progress rows (best-effort) — upsert by (pupil_id, item_key).
+    // Map wizard labels to syllabus keys so they show on the Progress page.
+    // Never downgrade an existing higher level.
     if (updatedEntries.length > 0) {
       try {
-        await supabase.from("pupil_progress").upsert(
-          updatedEntries.map(([label, status]) => ({
-            pupil_id: pupilId,
-            instructor_id: instructorId,
-            item_key: `eol_${slugify(label)}`,
-            status,
-            updated_at: nowIso,
-          })),
-          { onConflict: "pupil_id,item_key" },
-        );
+        // Resolve target item_keys per wizard label.
+        const targets: { itemKey: string; status: ProgressLevel }[] = [];
+        for (const [label, status] of updatedEntries) {
+          const mapped = SKILL_MAP[label];
+          if (mapped && mapped.length > 0) {
+            for (const k of mapped) targets.push({ itemKey: k, status });
+          } else {
+            targets.push({ itemKey: `eol_${slugify(label)}`, status });
+          }
+        }
+
+        // Read existing statuses for those keys to enforce no-downgrade.
+        const itemKeys = Array.from(new Set(targets.map((t) => t.itemKey)));
+        const existing: Record<string, ProgressLevel> = {};
+        const { data: existingRows } = await supabase
+          .from("pupil_progress")
+          .select("item_key, status")
+          .eq("pupil_id", pupilId)
+          .in("item_key", itemKeys);
+        for (const r of (existingRows ?? []) as {
+          item_key: string;
+          status: string | null;
+        }[]) {
+          const s = r.status as ProgressLevel | null;
+          if (s && s in LEVEL_RANK) existing[r.item_key] = s;
+        }
+
+        // For each target, keep the higher-ranked status.
+        const finalByKey: Record<string, ProgressLevel> = {};
+        for (const { itemKey, status } of targets) {
+          const prior = finalByKey[itemKey] ?? existing[itemKey] ?? "not_started";
+          finalByKey[itemKey] =
+            LEVEL_RANK[status] >= LEVEL_RANK[prior] ? status : prior;
+        }
+
+        const rows = Object.entries(finalByKey).map(([item_key, status]) => ({
+          pupil_id: pupilId,
+          instructor_id: instructorId,
+          item_key,
+          status,
+          updated_at: nowIso,
+        }));
+
+        if (rows.length > 0) {
+          await supabase
+            .from("pupil_progress")
+            .upsert(rows, { onConflict: "pupil_id,item_key" });
+        }
       } catch (e) {
         console.warn("[eol-wizard] pupil_progress upsert failed", e);
       }
