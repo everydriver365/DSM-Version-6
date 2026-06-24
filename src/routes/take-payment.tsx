@@ -106,12 +106,8 @@ function TakePaymentPage() {
         (data as { id?: string })?.id ??
         null;
       if (!clientSecret) throw new Error("No client secret returned");
-      const params = new URLSearchParams({
-        cs: clientSecret,
-        amount: amountNum.toFixed(2),
-        desc: description || "Payment",
-      });
-      const url = `https://everydriver.co.uk/pay?${params.toString()}`;
+      const amountPence = Math.round(amountNum * 100);
+      const url = `https://everydriver.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(description || "Payment")}`;
       setQrUrl(url);
       setQrPaymentId(pid);
       toast.success("Payment link ready");
