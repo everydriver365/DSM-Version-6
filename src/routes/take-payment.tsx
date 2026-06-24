@@ -769,13 +769,13 @@ function TakePaymentPage() {
           <div
             style={{
               flex: "0 0 auto",
-              padding: "calc(env(safe-area-inset-top, 0px) + 24px) 24px 24px",
+              padding: "calc(env(safe-area-inset-top, 0px) + 16px) 24px 12px",
               textAlign: "center",
               color: "#fff",
             }}
           >
             <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
-            <div style={{ fontSize: 44, fontWeight: 700, marginTop: 6, lineHeight: 1.1 }}>
+            <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
               £{amountNum.toFixed(2)}
             </div>
             {(pupilName || description) && (
@@ -800,20 +800,20 @@ function TakePaymentPage() {
               alignItems: "center",
               justifyContent: "center",
               padding: "0 24px",
-              gap: 12,
+              gap: 8,
             }}
           >
             <div
               style={{
                 background: "#fff",
-                padding: 24,
-                borderRadius: 16,
+                padding: 14,
+                borderRadius: 14,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <QRCodeSVG value={qrUrl} size={240} />
+              <QRCodeSVG value={qrUrl} size={210} />
             </div>
             <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
               Waiting for payment…
@@ -824,10 +824,10 @@ function TakePaymentPage() {
           <div
             style={{
               flex: "0 0 auto",
-              padding: "24px 24px calc(env(safe-area-inset-bottom, 0px) + 24px)",
+              padding: "10px 24px calc(env(safe-area-inset-bottom, 0px) + 12px)",
               display: "flex",
               flexDirection: "column",
-              gap: 12,
+              gap: 8,
             }}
           >
             <button
@@ -835,7 +835,7 @@ function TakePaymentPage() {
               onClick={shareLink}
               style={{
                 width: "100%",
-                height: 46,
+                height: 42,
                 borderRadius: 12,
                 background: "#fff",
                 color: NAVY,
@@ -857,7 +857,7 @@ function TakePaymentPage() {
               onClick={closeQrOverlay}
               style={{
                 width: "100%",
-                height: 46,
+                height: 42,
                 borderRadius: 12,
                 background: "transparent",
                 color: "#fff",
