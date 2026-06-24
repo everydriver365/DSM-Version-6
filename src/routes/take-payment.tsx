@@ -304,6 +304,12 @@ function TakePaymentPage() {
 
   const NAVY = "#0F2044";
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
+  const numpadRows = [
+    numpadKeys.slice(0, 3),
+    numpadKeys.slice(3, 6),
+    numpadKeys.slice(6, 9),
+    numpadKeys.slice(9, 12),
+  ];
 
   // QR overlay visibility — auto-opens when QR generated, Close hides it
   const qrOverlayOpen = tab === "qr" && !!qrUrl;
@@ -316,8 +322,6 @@ function TakePaymentPage() {
     <div
       style={{
         height: "100dvh",
-        background: "#fff",
-        fontFamily: "Poppins, sans-serif",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -328,11 +332,11 @@ function TakePaymentPage() {
         style={{
           background: NAVY,
           color: "#fff",
-          padding: "calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px",
+          padding: "0 16px",
           display: "flex",
           alignItems: "center",
           flexShrink: 0,
-          height: "calc(52px + env(safe-area-inset-top, 0px))",
+          height: 52,
         }}
       >
         <button
@@ -380,17 +384,18 @@ function TakePaymentPage() {
         }}
       >
         {/* Amount */}
-        <div style={{ textAlign: "center", flexShrink: 0, padding: "8px 16px" }}>
-          <div
-            style={{
-              fontSize: 40,
-              fontWeight: 700,
-              color: NAVY,
-              lineHeight: 1.05,
-            }}
-          >
-            £{amount}
-          </div>
+        <div
+          style={{
+            textAlign: "center",
+            flexShrink: 0,
+            padding: "6px 16px",
+            fontSize: 36,
+            fontWeight: 700,
+            color: NAVY,
+            lineHeight: 1.05,
+          }}
+        >
+          £{amount}
         </div>
 
         {/* Pupil + Description — compact single row */}
@@ -399,7 +404,7 @@ function TakePaymentPage() {
             display: "flex",
             gap: 6,
             flexShrink: 0,
-            padding: "4px 16px",
+            padding: "0 16px 4px",
             alignItems: "center",
           }}
         >
