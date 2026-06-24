@@ -68,6 +68,7 @@ function SettingsPage() {
   const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
+  const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
