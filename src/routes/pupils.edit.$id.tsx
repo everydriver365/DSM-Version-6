@@ -23,6 +23,17 @@ const STATUSES: { label: string; value: string }[] = [
   { label: "Cancelled", value: "cancelled" },
 ];
 
+const LEAD_SOURCES = [
+  "Referral",
+  "EveryDriver",
+  "Online",
+  "Walk-in / Local",
+  "Social media",
+  "Driving school",
+  "Returning pupil",
+  "Other",
+];
+
 const fieldBorder: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
