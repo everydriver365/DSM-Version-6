@@ -523,7 +523,7 @@ function PupilDetailPage() {
               const showGap = gapDays > 7;
 
               return (
-                <React.Fragment key={l.id}>
+                <Fragment key={l.id}>
                   {showGap && (
                     <div className="flex items-center justify-center py-3">
                       <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
