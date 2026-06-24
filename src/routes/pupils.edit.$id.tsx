@@ -74,6 +74,9 @@ function EditPupilPage() {
   const [blockToggle, setBlockToggle] = useState(false);
   const [prepaidAmount, setPrepaidAmount] = useState("");
   const [prepaidHours, setPrepaidHours] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [topUpNotes, setTopUpNotes] = useState("");
+  const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
@@ -132,6 +135,7 @@ function EditPupilPage() {
         setBlockToggle(hasBlock);
         setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
         setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
+        originalPrepaidAmount.current = p.prepaid_amount_paid ?? 0;
       }
       setLoading(false);
     })();
@@ -190,6 +194,23 @@ function EditPupilPage() {
       setSaving(false);
       return;
     }
+
+    if (hasBlock && aNum > originalPrepaidAmount.current) {
+      const delta = aNum - originalPrepaidAmount.current;
+      const { data: userData } = await supabase.auth.getUser();
+      const { error: phErr } = await supabase.from("lesson_history").insert({
+        instructor_id: userData.user?.id ?? null,
+        pupil_id: id,
+        lesson_date: new Date().toISOString().slice(0, 10),
+        payment_status: "paid",
+        payment_method: paymentMethod,
+        amount: delta,
+        notes: topUpNotes.trim() || `Block booking top-up: +£${delta.toFixed(2)}`,
+      });
+      if (phErr) console.error("[edit-pupil] top-up payment insert error", phErr);
+      originalPrepaidAmount.current = aNum;
+    }
+
     toast.success("Pupil updated");
     navigate({ to: "/pupils/$id", params: { id } });
   }
@@ -346,6 +367,45 @@ function EditPupilPage() {
                   <p className="text-[12px] text-[#6B7280]" style={POPPINS}>
                     Effective rate: £{(a / h).toFixed(2)}/hr
                   </p>
+                );
+              })()}
+              {(() => {
+                const a = parseFloat(prepaidAmount);
+                if (!Number.isFinite(a) || a <= originalPrepaidAmount.current) return null;
+                const delta = a - originalPrepaidAmount.current;
+                return (
+                  <>
+                    <p className="text-[12px] font-medium" style={{ color: "#16A34A", ...POPPINS }}>
+                      New top-up: +£{delta.toFixed(2)} will be recorded
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      <FieldLabel htmlFor="payment_method">Payment method</FieldLabel>
+                      <select
+                        id="payment_method"
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        style={fieldBorder}
+                      >
+                        <option value="cash">Cash</option>
+                        <option value="bank_transfer">Bank transfer</option>
+                        <option value="card">Card</option>
+                        <option value="agency">Already paid (via agency)</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <FieldLabel htmlFor="top_up_notes">Notes (optional)</FieldLabel>
+                      <textarea
+                        id="top_up_notes"
+                        rows={2}
+                        value={topUpNotes}
+                        onChange={(e) => setTopUpNotes(e.target.value)}
+                        placeholder="e.g. Top-up paid by bank transfer, ref: xxx"
+                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        style={{ ...fieldBorder, resize: "vertical" }}
+                      />
+                    </div>
+                  </>
                 );
               })()}
             </div>
