@@ -247,6 +247,38 @@ function EditPupilPage() {
             onChange={(e) => setAddress(e.target.value)}
           />
 
+          <div>
+            <FieldLabel htmlFor="lead_source">How did they find you?</FieldLabel>
+            <select
+              id="lead_source"
+              value={leadSource}
+              onChange={(e) => {
+                setLeadSource(e.target.value);
+                setLeadSourceDetail("");
+              }}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              style={fieldBorder}
+            >
+              <option value="">Select…</option>
+              {LEAD_SOURCES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {(leadSource === "Referral" || leadSource === "Other") && (
+            <Input
+              label={leadSource === "Referral" ? "Who referred them?" : "Please specify"}
+              type="text"
+              value={leadSourceDetail}
+              onChange={(e) => setLeadSourceDetail(e.target.value.slice(0, 255))}
+            />
+          )}
+
+
+
 
           <div>
             <FieldLabel htmlFor="status">Status</FieldLabel>
