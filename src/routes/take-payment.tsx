@@ -332,6 +332,7 @@ function TakePaymentPage() {
           display: "flex",
           alignItems: "center",
           flexShrink: 0,
+          height: "calc(52px + env(safe-area-inset-top, 0px))",
         }}
       >
         <button
@@ -370,17 +371,16 @@ function TakePaymentPage() {
         style={{
           flex: 1,
           minHeight: 0,
-          padding: "10px 14px 12px",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
           maxWidth: 480,
           width: "100%",
           margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 10,
         }}
       >
         {/* Amount */}
-        <div style={{ textAlign: "center", flexShrink: 0 }}>
+        <div style={{ textAlign: "center", flexShrink: 0, padding: "8px 16px" }}>
           <div
             style={{
               fontSize: 40,
@@ -393,51 +393,23 @@ function TakePaymentPage() {
           </div>
         </div>
 
-        {/* Numpad — flex grows to fill */}
+        {/* Pupil + Description — compact single row */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 8,
-            flex: 1,
-            minHeight: 0,
-            padding: "4px 0",
+            display: "flex",
+            gap: 6,
+            flexShrink: 0,
+            padding: "4px 16px",
+            alignItems: "center",
           }}
         >
-          {numpadKeys.map((k) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => press(k)}
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                color: NAVY,
-                background: "#fff",
-                border: "1px solid #E2E6ED",
-                borderRadius: 12,
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 64,
-                width: "100%",
-              }}
-            >
-              {k === "back" ? <Delete size={22} /> : k}
-            </button>
-          ))}
-        </div>
-
-        {/* For + Description — single compact row */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, flexShrink: 0 }}>
           <select
             value={pupilId}
             onChange={(e) => setPupilId(e.target.value)}
             style={{
               flex: 1,
               minWidth: 0,
-              padding: "8px 10px",
+              padding: "6px 8px",
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               fontSize: 13,
@@ -445,7 +417,7 @@ function TakePaymentPage() {
               background: "#fff",
             }}
           >
-            <option value="">For (optional) — select pupil</option>
+            <option value="">For (optional)</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -458,9 +430,9 @@ function TakePaymentPage() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
             style={{
-              flex: 1,
+              flex: 1.5,
               minWidth: 0,
-              padding: "8px 10px",
+              padding: "6px 8px",
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               fontSize: 13,
@@ -479,6 +451,8 @@ function TakePaymentPage() {
             padding: 3,
             borderRadius: 10,
             flexShrink: 0,
+            margin: "8px 16px 0",
+            height: 40,
           }}
         >
           {(
@@ -517,32 +491,74 @@ function TakePaymentPage() {
           })}
         </div>
 
-        {/* Tab content — compact action area */}
-        <div style={{ flexShrink: 0 }}>
-          {tab === "qr" && !qrUrl && (
-            <button
-              type="button"
-              onClick={generateQr}
-              disabled={qrGenerating}
-              style={{
-                width: "100%",
-                height: 44,
-                borderRadius: 10,
-                background: NAVY,
-                color: "#fff",
-                border: "none",
-                fontSize: 14,
-                fontWeight: 600,
-                opacity: qrGenerating ? 0.7 : 1,
-                cursor: "pointer",
-              }}
-            >
-              {qrGenerating ? "Generating…" : "Generate payment link"}
-            </button>
+        {/* Main area — numpad or tab-specific content */}
+        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {tab === "qr" && (
+            <>
+              {/* Numpad */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 6,
+                  flex: 1,
+                  minHeight: 0,
+                  padding: "8px 16px",
+                  gridAutoRows: "1fr",
+                }}
+              >
+                {numpadKeys.map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => press(k)}
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 600,
+                      color: NAVY,
+                      background: "#F4F6FA",
+                      border: "0.5px solid #E2E6ED",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    {k === "back" ? <Delete size={20} /> : k}
+                  </button>
+                ))}
+              </div>
+              {/* Generate QR button */}
+              <div style={{ padding: "0 16px 8px", flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={generateQr}
+                  disabled={qrGenerating}
+                  style={{
+                    width: "100%",
+                    height: 44,
+                    borderRadius: 10,
+                    background: NAVY,
+                    color: "#fff",
+                    border: "none",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    opacity: qrGenerating ? 0.7 : 1,
+                    cursor: "pointer",
+                  }}
+                >
+                  {qrGenerating ? "Generating…" : "Generate QR code"}
+                </button>
+              </div>
+            </>
           )}
 
           {tab === "card" && (
-            <div>
+            <div style={{ flex: 1, minHeight: 0, padding: "8px 16px", display: "flex", flexDirection: "column", overflow: "auto" }}>
               {!cardSessionId && (
                 <button
                   type="button"
@@ -597,51 +613,91 @@ function TakePaymentPage() {
           )}
 
           {tab === "cash" && (
-            <div style={{ display: "flex", gap: 6 }}>
-              <select
-                value={cashMethod}
-                onChange={(e) => setCashMethod(e.target.value as CashMethod)}
+            <>
+              {/* Numpad */}
+              <div
                 style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 6,
                   flex: 1,
-                  padding: "0 10px",
-                  height: 44,
-                  borderRadius: 10,
-                  border: "0.5px solid #E2E6ED",
-                  fontSize: 13,
-                  color: NAVY,
-                  background: "#fff",
+                  minHeight: 0,
+                  padding: "8px 16px",
+                  gridAutoRows: "1fr",
                 }}
               >
-                <option value="cash">Cash</option>
-                <option value="bank">Bank transfer</option>
-              </select>
-              <button
-                type="button"
-                onClick={recordCash}
-                disabled={cashSaving}
-                style={{
-                  flex: 1.2,
-                  height: 44,
-                  borderRadius: 10,
-                  background: "#16A34A",
-                  color: "#fff",
-                  border: "none",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  opacity: cashSaving ? 0.7 : 1,
-                  cursor: "pointer",
-                }}
-              >
-                {cashSaving ? "Saving…" : "Record"}
-              </button>
-            </div>
+                {numpadKeys.map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => press(k)}
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 600,
+                      color: NAVY,
+                      background: "#F4F6FA",
+                      border: "0.5px solid #E2E6ED",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    {k === "back" ? <Delete size={20} /> : k}
+                  </button>
+                ))}
+              </div>
+              {/* Cash controls */}
+              <div style={{ padding: "0 16px 8px", flexShrink: 0, display: "flex", gap: 6 }}>
+                <select
+                  value={cashMethod}
+                  onChange={(e) => setCashMethod(e.target.value as CashMethod)}
+                  style={{
+                    flex: 1,
+                    padding: "0 10px",
+                    height: 44,
+                    borderRadius: 10,
+                    border: "0.5px solid #E2E6ED",
+                    fontSize: 13,
+                    color: NAVY,
+                    background: "#fff",
+                  }}
+                >
+                  <option value="cash">Cash</option>
+                  <option value="bank">Bank transfer</option>
+                </select>
+                <button
+                  type="button"
+                  onClick={recordCash}
+                  disabled={cashSaving}
+                  style={{
+                    flex: 1.2,
+                    height: 44,
+                    borderRadius: 10,
+                    background: "#16A34A",
+                    color: "#fff",
+                    border: "none",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    opacity: cashSaving ? 0.7 : 1,
+                    cursor: "pointer",
+                  }}
+                >
+                  {cashSaving ? "Saving…" : "Record"}
+                </button>
+              </div>
+            </>
           )}
         </div>
 
         {recorded && (
           <div
             style={{
-              padding: 10,
+              padding: "6px 16px",
               borderRadius: 10,
               background: "#F0FDF4",
               border: "1px solid #16A34A",
@@ -650,6 +706,7 @@ function TakePaymentPage() {
               fontWeight: 600,
               textAlign: "center",
               flexShrink: 0,
+              margin: "0 16px 8px",
             }}
           >
             {recorded}
