@@ -222,7 +222,7 @@ function TakePaymentPage() {
       }
     }, 5000);
     return () => clearInterval(t);
-  }, [qrPaymentId, amountNum]);
+  }, [qrPaymentId, totalNum]);
 
   // --- Card (Ryft embedded) ---
   useEffect(() => {
