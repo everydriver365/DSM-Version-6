@@ -73,7 +73,7 @@ function SettingsPage() {
   const [hourlyRate, setHourlyRate] = useState<number>(35);
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
-  const [savingField, setSavingField] = useState<string | null>(null);
+  const [savingRates, setSavingRates] = useState(false);
 
   useEffect(() => {
     (async () => {
