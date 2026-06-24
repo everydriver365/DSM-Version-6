@@ -125,6 +125,8 @@ function TakePaymentPage() {
   }, [recorded, navigate]);
 
   const amountNum = Number(amount) || 0;
+  const BOOKING_FEE = 1;
+  const totalNum = amountNum + (passBookingFee ? BOOKING_FEE : 0);
 
   const press = (key: string) => {
     setAmount((prev) => {
