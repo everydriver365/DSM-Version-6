@@ -514,8 +514,8 @@ function TakePaymentPage() {
                   <div
                     key={rowIndex}
                     style={{
-                      display: "inline-flex",
-                      alignItems: "stretch",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(3, 1fr)",
                       gap: 4,
                     }}
                   >
@@ -525,7 +525,6 @@ function TakePaymentPage() {
                         type="button"
                         onClick={() => press(k)}
                         style={{
-                          flex: 1,
                           fontSize: 18,
                           fontWeight: 600,
                           border: "0.5px solid #E2E6ED",
@@ -636,8 +635,8 @@ function TakePaymentPage() {
                   <div
                     key={rowIndex}
                     style={{
-                      display: "inline-flex",
-                      alignItems: "stretch",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(3, 1fr)",
                       gap: 4,
                     }}
                   >
@@ -647,7 +646,6 @@ function TakePaymentPage() {
                         type="button"
                         onClick={() => press(k)}
                         style={{
-                          flex: 1,
                           fontSize: 18,
                           fontWeight: 600,
                           border: "0.5px solid #E2E6ED",
