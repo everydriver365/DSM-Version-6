@@ -453,15 +453,28 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: "6px 16px",
+            padding: passBookingFee ? "6px 16px 0" : "6px 16px",
             fontSize: 36,
             fontWeight: 700,
             color: NAVY,
             lineHeight: 1.05,
           }}
         >
-          £{amount}
+          £{totalNum.toFixed(2)}
         </div>
+        {passBookingFee && (
+          <div
+            style={{
+              textAlign: "center",
+              flexShrink: 0,
+              padding: "2px 16px 4px",
+              fontSize: 11,
+              color: "#6B7280",
+            }}
+          >
+            £{amountNum.toFixed(2)} + £1.00 booking fee
+          </div>
+        )}
 
         {/* Pupil + Description — compact single row */}
         <div
