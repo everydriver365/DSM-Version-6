@@ -2249,10 +2249,10 @@ function HomePage() {
               ) : (
                 <>
                   {tomorrowShown.map((l, i) => (
-                    <React.Fragment key={l.id}>
+                    <Fragment key={l.id}>
                       {renderRow(l)}
                       {i < tomorrowShown.length - 1 && hairline(`hr-tm-${l.id}`)}
-                    </React.Fragment>
+                    </Fragment>
                   ))}
                   {tomorrowLessons.length > 4 && (
                     <button
@@ -2314,10 +2314,10 @@ function HomePage() {
                         {dayLabel(d)}
                       </div>
                       {shown.map((l, i) => (
-                        <React.Fragment key={l.id}>
+                        <Fragment key={l.id}>
                           {renderRow(l)}
                           {i < shown.length - 1 && hairline(`hr-cu-${l.id}`)}
-                        </React.Fragment>
+                        </Fragment>
                       ))}
                     </div>
                   );
