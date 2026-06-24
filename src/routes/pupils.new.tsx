@@ -64,6 +64,11 @@ function NewPupilPage() {
   const [postcode, setPostcode] = useState("");
   const [leadSource, setLeadSource] = useState("");
   const [leadSourceDetail, setLeadSourceDetail] = useState("");
+  const [blockToggle, setBlockToggle] = useState(false);
+  const [prepaidAmount, setPrepaidAmount] = useState("");
+  const [prepaidHours, setPrepaidHours] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [blockNotes, setBlockNotes] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
