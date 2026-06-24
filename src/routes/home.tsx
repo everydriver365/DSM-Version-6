@@ -2026,7 +2026,7 @@ function HomePage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  View all {todayLessons.length} lessons →
+                  View all {tabLessons.length} lessons →
                 </button>,
               );
             }
