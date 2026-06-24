@@ -506,8 +506,9 @@ function TakePaymentPage() {
                   minHeight: 0,
                   padding: "4px 12px 8px",
                   display: "grid",
-                  gridTemplateRows: "repeat(4, 1fr)",
+                  gridTemplateRows: "repeat(4, auto)",
                   alignItems: "start",
+                  justifyContent: "start",
                   gap: 4,
                 }}
               >
@@ -630,8 +631,9 @@ function TakePaymentPage() {
                   minHeight: 0,
                   padding: "4px 12px 8px",
                   display: "grid",
-                  gridTemplateRows: "repeat(4, 1fr)",
+                  gridTemplateRows: "repeat(4, auto)",
                   alignItems: "start",
+                  justifyContent: "start",
                   gap: 4,
                 }}
               >
