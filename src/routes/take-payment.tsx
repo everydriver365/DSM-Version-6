@@ -882,8 +882,13 @@ function TakePaymentPage() {
           >
             <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
             <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
-              £{amountNum.toFixed(2)}
+              £{totalNum.toFixed(2)}
             </div>
+            {passBookingFee && (
+              <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
+                £{amountNum.toFixed(2)} + £1.00 booking fee = £{totalNum.toFixed(2)}
+              </div>
+            )}
             {(pupilName || description) && (
               <div style={{ marginTop: 10 }}>
                 {pupilName && (
