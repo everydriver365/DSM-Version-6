@@ -36,6 +36,11 @@ interface Lesson {
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
+  price: number | null;
+  is_paid: boolean | null;
+  lesson_type: string | null;
+  notes: string | null;
+  end_of_lesson_completed: boolean | null;
 }
 
 function initials(name: string) {
