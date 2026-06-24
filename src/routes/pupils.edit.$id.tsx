@@ -26,6 +26,7 @@ const STATUSES: { label: string; value: string }[] = [
 const LEAD_SOURCES = [
   "Referral",
   "EveryDriver",
+  "National Intensive",
   "Online",
   "Walk-in / Local",
   "Social media",
@@ -70,6 +71,9 @@ function EditPupilPage() {
   const [address, setAddress] = useState("");
   const [leadSource, setLeadSource] = useState("");
   const [leadSourceDetail, setLeadSourceDetail] = useState("");
+  const [blockToggle, setBlockToggle] = useState(false);
+  const [prepaidAmount, setPrepaidAmount] = useState("");
+  const [prepaidHours, setPrepaidHours] = useState("");
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
@@ -88,7 +92,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail, prepaid_hours, prepaid_amount_paid, account_balance")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
@@ -108,6 +112,9 @@ function EditPupilPage() {
           address: string | null;
           lead_source: string | null;
           lead_source_detail: string | null;
+          prepaid_hours: number | null;
+          prepaid_amount_paid: number | null;
+          account_balance: number | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -120,6 +127,11 @@ function EditPupilPage() {
         setAddress(p.address ?? "");
         setLeadSource(p.lead_source ?? "");
         setLeadSourceDetail(p.lead_source_detail ?? "");
+        const hasBlock =
+          (p.prepaid_hours ?? 0) > 0 || (p.prepaid_amount_paid ?? 0) > 0;
+        setBlockToggle(hasBlock);
+        setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
+        setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
       }
       setLoading(false);
     })();
@@ -141,24 +153,35 @@ function EditPupilPage() {
 
     const name = `${firstName.trim()} ${lastName.trim()}`.trim();
 
+    const blockOn = blockToggle || leadSource === "National Intensive";
+    const aNum = parseFloat(prepaidAmount);
+    const hNum = parseFloat(prepaidHours);
+    const hasBlock =
+      blockOn && Number.isFinite(aNum) && aNum > 0 && Number.isFinite(hNum) && hNum > 0;
+
+    const updatePayload: Record<string, unknown> = {
+      first_name: firstName.trim() || null,
+      last_name: lastName.trim() || null,
+      name: name || null,
+      phone: phone.trim() || null,
+      email: email.trim() || null,
+      status: status || "active",
+      test_date: testDate || null,
+      notes: notes.trim() || null,
+      address: address.trim() || null,
+      lead_source: leadSource || null,
+      lead_source_detail:
+        (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
+          ? leadSourceDetail.trim()
+          : null,
+      prepaid_hours: hasBlock ? hNum : null,
+      prepaid_amount_paid: hasBlock ? aNum : null,
+      account_balance: hasBlock ? aNum : null,
+    };
+
     const { error: updErr } = await supabase
       .from("pupils")
-      .update({
-        first_name: firstName.trim() || null,
-        last_name: lastName.trim() || null,
-        name: name || null,
-        phone: phone.trim() || null,
-        email: email.trim() || null,
-        status: status || "active",
-        test_date: testDate || null,
-        notes: notes.trim() || null,
-        address: address.trim() || null,
-        lead_source: leadSource || null,
-        lead_source_detail:
-          (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
-            ? leadSourceDetail.trim()
-            : null,
-      })
+      .update(updatePayload)
       .eq("id", id);
 
     if (updErr) {
@@ -277,7 +300,56 @@ function EditPupilPage() {
             />
           )}
 
+          {leadSource !== "National Intensive" && (
+            <label className="flex items-center justify-between gap-3" style={POPPINS}>
+              <span className="text-[13px] font-medium text-[#1A1A2E]">
+                Block booking / prepaid hours
+              </span>
+              <input
+                type="checkbox"
+                checked={blockToggle}
+                onChange={(e) => setBlockToggle(e.target.checked)}
+                style={{ width: 20, height: 20 }}
+              />
+            </label>
+          )}
 
+          {(blockToggle || leadSource === "National Intensive") && (
+            <div
+              className="flex flex-col gap-3 p-3 rounded-lg"
+              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+            >
+              <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
+                BLOCK BOOKING
+              </p>
+              <Input
+                label="Total amount paid (£)"
+                type="number"
+                inputMode="decimal"
+                value={prepaidAmount}
+                onChange={(e) => setPrepaidAmount(e.target.value)}
+                placeholder="500.00"
+              />
+              <Input
+                label="Hours included"
+                type="number"
+                inputMode="decimal"
+                value={prepaidHours}
+                onChange={(e) => setPrepaidHours(e.target.value)}
+                placeholder="20"
+              />
+              {(() => {
+                const a = parseFloat(prepaidAmount);
+                const h = parseFloat(prepaidHours);
+                if (!Number.isFinite(a) || !Number.isFinite(h) || h <= 0) return null;
+                return (
+                  <p className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                    Effective rate: £{(a / h).toFixed(2)}/hr
+                  </p>
+                );
+              })()}
+            </div>
+          )}
 
 
           <div>

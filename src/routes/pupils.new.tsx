@@ -64,6 +64,11 @@ function NewPupilPage() {
   const [postcode, setPostcode] = useState("");
   const [leadSource, setLeadSource] = useState("");
   const [leadSourceDetail, setLeadSourceDetail] = useState("");
+  const [blockToggle, setBlockToggle] = useState(false);
+  const [prepaidAmount, setPrepaidAmount] = useState("");
+  const [prepaidHours, setPrepaidHours] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [blockNotes, setBlockNotes] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
@@ -163,11 +168,37 @@ function NewPupilPage() {
       insert.lead_source = leadSource;
       if (leadSourceDetail.trim()) insert.lead_source_detail = leadSourceDetail.trim();
     }
-    const { error } = await supabase.from("pupils").insert(insert);
+    const blockOn = blockToggle || leadSource === "National Intensive";
+    const amountNum = parseFloat(prepaidAmount);
+    const hoursNum = parseFloat(prepaidHours);
+    const hasBlock =
+      blockOn && Number.isFinite(amountNum) && amountNum > 0 && Number.isFinite(hoursNum) && hoursNum > 0;
+    if (hasBlock) {
+      insert.prepaid_amount_paid = amountNum;
+      insert.prepaid_hours = hoursNum;
+      insert.account_balance = amountNum;
+    }
+    const { data: inserted, error } = await supabase
+      .from("pupils")
+      .insert(insert)
+      .select("id")
+      .single();
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
       return;
+    }
+    if (hasBlock && inserted?.id) {
+      const { error: phErr } = await supabase.from("lesson_history").insert({
+        instructor_id: user.id,
+        pupil_id: inserted.id,
+        lesson_date: new Date().toISOString().slice(0, 10),
+        payment_status: "paid",
+        payment_method: paymentMethod,
+        amount: amountNum,
+        notes: blockNotes.trim() || `Block booking: ${hoursNum} hrs prepaid`,
+      });
+      if (phErr) console.error("[new-pupil] block payment insert error", phErr);
     }
     navigate({ to: "/pupils" });
   }
@@ -286,6 +317,7 @@ function NewPupilPage() {
               <option value="">Select source</option>
               <option value="Referral">Referral</option>
               <option value="EveryDriver">EveryDriver</option>
+              <option value="National Intensive">National Intensive</option>
               <option value="Online">Online</option>
               <option value="Walk-in / Local">Walk-in / Local</option>
               <option value="Social media">Social media</option>
@@ -302,6 +334,114 @@ function NewPupilPage() {
               maxLength={255}
             />
           )}
+          {leadSource !== "National Intensive" && (
+            <label
+              className="flex items-center justify-between gap-3 mt-1"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              <span className="text-[13px] font-medium text-[#0F2044]">
+                Block booking / prepaid hours
+              </span>
+              <input
+                type="checkbox"
+                checked={blockToggle}
+                onChange={(e) => setBlockToggle(e.target.checked)}
+                style={{ width: 20, height: 20 }}
+              />
+            </label>
+          )}
+
+          {(blockToggle || leadSource === "National Intensive") && (
+            <div
+              className="flex flex-col gap-3 p-3 rounded-lg"
+              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+            >
+              <p
+                className="text-[12px] font-semibold tracking-wide"
+                style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
+              >
+                BLOCK BOOKING
+              </p>
+              <Input
+                label="Total amount paid (£)"
+                type="number"
+                inputMode="decimal"
+                value={prepaidAmount}
+                onChange={(e) => setPrepaidAmount(e.target.value)}
+                placeholder="500.00"
+              />
+              <Input
+                label="Hours included"
+                type="number"
+                inputMode="decimal"
+                value={prepaidHours}
+                onChange={(e) => setPrepaidHours(e.target.value)}
+                placeholder="20"
+              />
+              {(() => {
+                const a = parseFloat(prepaidAmount);
+                const h = parseFloat(prepaidHours);
+                if (!Number.isFinite(a) || !Number.isFinite(h) || h <= 0) return null;
+                return (
+                  <p
+                    className="text-[12px]"
+                    style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
+                  >
+                    Effective rate: £{(a / h).toFixed(2)}/hr
+                  </p>
+                );
+              })()}
+              <div className="flex flex-col gap-1">
+                <label
+                  className="text-[13px] font-medium text-[#0F2044]"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  Payment method
+                </label>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="text-[14px] text-[#0F2044]"
+                  style={{
+                    height: 44,
+                    borderRadius: 8,
+                    border: "1px solid #E2E6ED",
+                    padding: "0 12px",
+                    backgroundColor: "#fff",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  <option value="cash">Cash</option>
+                  <option value="bank_transfer">Bank transfer</option>
+                  <option value="card">Card</option>
+                  <option value="agency">Already paid (via agency)</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label
+                  className="text-[13px] font-medium text-[#0F2044]"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  Notes (optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={blockNotes}
+                  onChange={(e) => setBlockNotes(e.target.value)}
+                  placeholder="e.g. Paid via National Intensive, transfer ref: xxx"
+                  className="text-[14px] text-[#0F2044] p-2"
+                  style={{
+                    borderRadius: 8,
+                    border: "1px solid #E2E6ED",
+                    backgroundColor: "#fff",
+                    fontFamily: "Poppins, sans-serif",
+                    resize: "vertical",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}
