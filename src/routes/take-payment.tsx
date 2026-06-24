@@ -321,7 +321,7 @@ function TakePaymentPage() {
   return (
     <div
       style={{
-        height: "100dvh",
+        height: "calc(100dvh - 80px)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
