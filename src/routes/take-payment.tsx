@@ -147,7 +147,7 @@ function TakePaymentPage() {
     }
     setQrGenerating(true);
     try {
-      const amountPence = Math.round(amountNum * 100);
+      const amountPence = Math.round(totalNum * 100);
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountPence,
@@ -155,6 +155,9 @@ function TakePaymentPage() {
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
+          booking_fee_pence: 100,
+          instructor_payout_pence: amountPence - 100,
+          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
