@@ -24,6 +24,33 @@ function TakePaymentPage() {
   const [description, setDescription] = useState("");
   const [tab, setTab] = useState<Tab>("qr");
   const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+  const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
+
+  // Load instructor's booking-fee preference
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("pass_booking_fee")
+        .eq("id", uid)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.warn("[take-payment] load pass_booking_fee", error);
+        return;
+      }
+      if (data && typeof (data as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
+        setPassBookingFee((data as { pass_booking_fee: boolean }).pass_booking_fee);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load instructor's current pupils
   useEffect(() => {
