@@ -87,9 +87,10 @@ function TakePaymentPage() {
     }
     setQrGenerating(true);
     try {
+      const amountPence = Math.round(amountNum * 100);
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
-          amount: amountNum,
+          amount: amountPence,
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
@@ -106,7 +107,6 @@ function TakePaymentPage() {
         (data as { id?: string })?.id ??
         null;
       if (!clientSecret) throw new Error("No client secret returned");
-      const amountPence = Math.round(amountNum * 100);
       const url = `https://everydriver.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(description || "Payment")}`;
       setQrUrl(url);
       setQrPaymentId(pid);
@@ -181,7 +181,7 @@ function TakePaymentPage() {
     try {
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
-          amount: amountNum,
+          amount: Math.round(amountNum * 100),
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
