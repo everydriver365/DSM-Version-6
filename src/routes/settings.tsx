@@ -158,6 +158,19 @@ function SettingsPage() {
     }
   }
 
+  async function saveInstructorField(field: string, value: unknown) {
+    if (!userId) return;
+    setSavingField(field);
+    const { error } = await supabase
+      .from("instructors")
+      .update({ [field]: value })
+      .eq("id", userId);
+    setSavingField(null);
+    if (error) {
+      console.error(`[settings] update ${field} error`, error);
+    }
+  }
+
   async function signOut() {
     setSignOutOpen(false);
     await supabase.auth.signOut();
