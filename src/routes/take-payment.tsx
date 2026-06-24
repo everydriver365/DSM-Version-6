@@ -507,6 +507,7 @@ function TakePaymentPage() {
                   padding: "4px 12px 8px",
                   display: "grid",
                   gridTemplateRows: "repeat(4, 1fr)",
+                  alignItems: "start",
                   gap: 4,
                 }}
               >
@@ -531,6 +532,8 @@ function TakePaymentPage() {
                           borderRadius: 8,
                           background: "white",
                           cursor: "pointer",
+                          maxHeight: 56,
+                          padding: "8px 0",
                         }}
                       >
                         {k === "back" ? <Delete size={20} /> : k}
@@ -628,6 +631,7 @@ function TakePaymentPage() {
                   padding: "4px 12px 8px",
                   display: "grid",
                   gridTemplateRows: "repeat(4, 1fr)",
+                  alignItems: "start",
                   gap: 4,
                 }}
               >
@@ -652,6 +656,8 @@ function TakePaymentPage() {
                           borderRadius: 8,
                           background: "white",
                           cursor: "pointer",
+                          maxHeight: 56,
+                          padding: "8px 0",
                         }}
                       >
                         {k === "back" ? <Delete size={20} /> : k}
