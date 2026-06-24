@@ -1680,7 +1680,7 @@ function HomePage() {
           style={{ padding: "0 16px 8px 16px" }}
         >
           <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-            Today's schedule
+            Schedule
           </div>
           <button
             type="button"
@@ -1698,7 +1698,30 @@ function HomePage() {
           </button>
         </div>
 
-        {todayLessons.length === 0 ? (
+        {/* Tab switcher */}
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            margin: "0 16px 8px 16px",
+            padding: 3,
+            backgroundColor: "#F3F4F6",
+            borderRadius: 10,
+          }}
+        >
+          <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
+            Today
+          </TabBtn>
+          <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
+            Tomorrow
+          </TabBtn>
+          <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
+            Next
+          </TabBtn>
+        </div>
+
+
+        {tabLessons.length === 0 ? (
           <div
             style={{
               padding: "20px 16px",
@@ -1708,12 +1731,17 @@ function HomePage() {
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            No lessons today
+            {tab === "today"
+              ? "No lessons today"
+              : tab === "tomorrow"
+                ? "No lessons tomorrow"
+                : "No upcoming lessons"}
           </div>
         ) : (
           (() => {
-            const shown = todayLessons.slice(0, 6);
-            const hiddenCount = todayLessons.length - shown.length;
+            const shown = tabLessons.slice(0, 6);
+            const hiddenCount = tabLessons.length - shown.length;
+
             const tNow = now.getTime();
             const lStart = (l: LessonRow) => lessonDateTime(l).getTime();
             const lEnd = (l: LessonRow) =>
@@ -1998,7 +2026,7 @@ function HomePage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  View all {todayLessons.length} lessons →
+                  View all {tabLessons.length} lessons →
                 </button>,
               );
             }
@@ -2007,346 +2035,6 @@ function HomePage() {
           })()
         )}
       </div>
-
-      {/* TOMORROW + COMING UP (Google Calendar style) */}
-      {(() => {
-        const fmtT = (d: Date) =>
-          `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-        const durShort = (m: number | null) => {
-          const x = m ?? 60;
-          if (x % 60 === 0) return `${x / 60}h`;
-          if (x < 60) return `${x}m`;
-          return `${Math.floor(x / 60)}h ${x % 60}m`;
-        };
-        const dayLabel = (d: Date) =>
-          d.toLocaleDateString("en-GB", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-          });
-
-        const renderRow = (l: LessonRow) => {
-          const startD = lessonDateTime(l);
-          const endMs = startD.getTime() + (l.duration_minutes ?? 60) * 60000;
-          const pastEnd = endMs < now.getTime();
-          const isCancelled = l.status === "cancelled";
-          const isCompleted = l.status === "completed" || l.eol_completed === true;
-          let accent = "#1A52A0";
-          if (isCancelled) accent = "#9CA3AF";
-          else if (isCompleted) accent = "#16A34A";
-          const nameColor = isCancelled ? "#9CA3AF" : "#0F2044";
-          const timeColor = isCancelled ? "#9CA3AF" : "#0F2044";
-
-          const badges: React.ReactNode[] = [];
-          if (l.payment_status === "paid") {
-            badges.push(
-              <span
-                key="paid"
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  padding: "1px 6px",
-                  borderRadius: 999,
-                  backgroundColor: "#DCFCE7",
-                  color: "#15803D",
-                }}
-              >
-                Paid
-              </span>,
-            );
-          } else if (
-            pastEnd &&
-            (l.payment_status === "unpaid" || !l.payment_status) &&
-            (l.amount_due ?? 0) > 0
-          ) {
-            badges.push(
-              <span
-                key="due"
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "1px 6px",
-                  borderRadius: 999,
-                  backgroundColor: "#FEE2E2",
-                  color: "#CC2229",
-                }}
-              >
-                £{Number(l.amount_due).toFixed(2)}
-              </span>,
-            );
-          }
-
-          return (
-            <div
-              key={l.id}
-              role="button"
-              tabIndex={0}
-              onClick={() =>
-                navigate({
-                  to: "/lessons/$id" as never,
-                  params: { id: l.id } as never,
-                })
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter")
-                  navigate({
-                    to: "/lessons/$id" as never,
-                    params: { id: l.id } as never,
-                  });
-              }}
-              style={{
-                display: "flex",
-                gap: 10,
-                padding: "10px 16px",
-                alignItems: "stretch",
-                cursor: "pointer",
-              }}
-            >
-              <div style={{ width: 40, flexShrink: 0, textAlign: "right" }}>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: timeColor,
-                    textDecoration: isCancelled ? "line-through" : "none",
-                  }}
-                >
-                  {fmtT(startD)}
-                </div>
-                <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>
-                  {durShort(l.duration_minutes)}
-                </div>
-              </div>
-              <div
-                style={{
-                  width: 3,
-                  borderRadius: 2,
-                  backgroundColor: accent,
-                  flexShrink: 0,
-                  alignSelf: "stretch",
-                }}
-              />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  className="truncate"
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: nameColor,
-                    textDecoration: isCancelled ? "line-through" : "none",
-                  }}
-                >
-                  {l.pupils?.name ?? "Pupil"}
-                </div>
-                {l.pickup_location && (
-                  <div
-                    className="truncate"
-                    style={{
-                      fontSize: 11,
-                      color: "#6B7280",
-                      marginTop: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 3,
-                    }}
-                  >
-                    <MapPin size={10} color="#6B7280" />
-                    <span className="truncate">{l.pickup_location}</span>
-                  </div>
-                )}
-                {badges.length > 0 && (
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 6,
-                      marginTop: 4,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    {badges}
-                  </div>
-                )}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <ChevronRight size={14} color="#D1D5DB" />
-              </div>
-            </div>
-          );
-        };
-
-        const hairline = (key: string) => (
-          <div
-            key={key}
-            style={{ borderTop: "0.5px solid #F3F4F6", margin: "0 16px" }}
-          />
-        );
-
-        const tomorrowDate = new Date(now);
-        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-        const tomorrowShown = tomorrowLessons.slice(0, 4);
-
-        // Coming up: group nextTabLessons by date, skip today + tomorrow
-        const todayKey = now.toDateString();
-        const tomorrowKey = tomorrowDate.toDateString();
-        const groupedKeys: string[] = [];
-        const grouped: Record<string, LessonRow[]> = {};
-        for (const l of nextTabLessons) {
-          const k = lessonDateTime(l).toDateString();
-          if (k === todayKey || k === tomorrowKey) continue;
-          if (!grouped[k]) {
-            grouped[k] = [];
-            groupedKeys.push(k);
-          }
-          grouped[k].push(l);
-        }
-        const comingDays: Array<[string, LessonRow[]]> = groupedKeys
-          .slice(0, 3)
-          .map((k) => [k, grouped[k]]);
-
-
-        return (
-          <>
-            {/* TOMORROW */}
-            <div
-              className="mx-4 mt-3"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                padding: "12px 0",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              <div
-                className="flex items-center justify-between"
-                style={{ padding: "0 16px 8px 16px" }}
-              >
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-                  Tomorrow
-                </div>
-                <div style={{ fontSize: 12, color: "#6B7280" }}>
-                  {dayLabel(tomorrowDate)}
-                </div>
-              </div>
-
-              {tomorrowShown.length === 0 ? (
-                <div
-                  style={{
-                    padding: "16px 16px",
-                    fontSize: 13,
-                    color: "#9CA3AF",
-                    textAlign: "center",
-                  }}
-                >
-                  No lessons tomorrow
-                </div>
-              ) : (
-                <>
-                  {tomorrowShown.map((l, i) => (
-                    <Fragment key={l.id}>
-                      {renderRow(l)}
-                      {i < tomorrowShown.length - 1 && hairline(`hr-tm-${l.id}`)}
-                    </Fragment>
-                  ))}
-                  {tomorrowLessons.length > 4 && (
-                    <button
-                      type="button"
-                      onClick={() => navigate({ to: "/schedule" })}
-                      style={{
-                        margin: "8px 16px 0 16px",
-                        padding: "6px 0",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: "#1A52A0",
-                        background: "transparent",
-                        cursor: "pointer",
-                        textAlign: "left",
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      View all →
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* COMING UP */}
-            {comingDays.length > 0 && (
-              <div
-                className="mx-4 mt-3"
-                style={{
-                  backgroundColor: "#FFFFFF",
-                  border: "0.5px solid #E2E6ED",
-                  borderRadius: 16,
-                  padding: "12px 0",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                <div style={{ padding: "0 16px 8px 16px" }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-                    Coming up
-                  </div>
-                </div>
-
-                {comingDays.map(([key, items], di) => {
-                  const d = new Date(key);
-                  const shown = items.slice(0, 3);
-                  return (
-                    <div key={key} style={{ marginTop: di === 0 ? 0 : 4 }}>
-                      <div
-                        style={{
-                          padding: "6px 16px",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          color: "#6B7280",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.4,
-                          backgroundColor: "#F8F9FB",
-                        }}
-                      >
-                        {dayLabel(d)}
-                      </div>
-                      {shown.map((l, i) => (
-                        <Fragment key={l.id}>
-                          {renderRow(l)}
-                          {i < shown.length - 1 && hairline(`hr-cu-${l.id}`)}
-                        </Fragment>
-                      ))}
-                    </div>
-                  );
-                })}
-
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/schedule" })}
-                  style={{
-                    margin: "8px 16px 0 16px",
-                    padding: "6px 0",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "#1A52A0",
-                    background: "transparent",
-                    cursor: "pointer",
-                    textAlign: "left",
-                    fontFamily: "Poppins, sans-serif",
-                  }}
-                >
-                  View full schedule →
-                </button>
-              </div>
-            )}
-          </>
-        );
-      })()}
-
-
 
 
       {/* QUICK ACCESS */}
