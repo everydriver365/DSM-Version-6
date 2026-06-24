@@ -834,7 +834,7 @@ function TakePaymentPage() {
                 justifyContent: "center",
               }}
             >
-              <QRCodeSVG value={qrUrl} size={210} />
+              <QRCodeSVG value={qrUrl} size={qrSize} />
             </div>
             <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
               Waiting for payment…
