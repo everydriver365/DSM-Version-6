@@ -300,7 +300,56 @@ function EditPupilPage() {
             />
           )}
 
+          {leadSource !== "National Intensive" && (
+            <label className="flex items-center justify-between gap-3" style={POPPINS}>
+              <span className="text-[13px] font-medium text-[#1A1A2E]">
+                Block booking / prepaid hours
+              </span>
+              <input
+                type="checkbox"
+                checked={blockToggle}
+                onChange={(e) => setBlockToggle(e.target.checked)}
+                style={{ width: 20, height: 20 }}
+              />
+            </label>
+          )}
 
+          {(blockToggle || leadSource === "National Intensive") && (
+            <div
+              className="flex flex-col gap-3 p-3 rounded-lg"
+              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+            >
+              <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
+                BLOCK BOOKING
+              </p>
+              <Input
+                label="Total amount paid (£)"
+                type="number"
+                inputMode="decimal"
+                value={prepaidAmount}
+                onChange={(e) => setPrepaidAmount(e.target.value)}
+                placeholder="500.00"
+              />
+              <Input
+                label="Hours included"
+                type="number"
+                inputMode="decimal"
+                value={prepaidHours}
+                onChange={(e) => setPrepaidHours(e.target.value)}
+                placeholder="20"
+              />
+              {(() => {
+                const a = parseFloat(prepaidAmount);
+                const h = parseFloat(prepaidHours);
+                if (!Number.isFinite(a) || !Number.isFinite(h) || h <= 0) return null;
+                return (
+                  <p className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                    Effective rate: £{(a / h).toFixed(2)}/hr
+                  </p>
+                );
+              })()}
+            </div>
+          )}
 
 
           <div>
