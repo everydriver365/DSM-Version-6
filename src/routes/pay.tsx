@@ -169,23 +169,9 @@ function PayPage() {
                 </div>
               )}
 
-              <div id="google-pay-container" style={{ marginBottom: 10 }} />
-              <div id="apple-pay-container" style={{ marginBottom: 10 }} />
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  margin: "16px 0",
-                  color: "#94a3b8",
-                  fontSize: 12,
-                }}
-              >
-                <div style={{ flex: 1, height: 1, background: "#e2e8f0" }} />
-                <span>or pay by card</span>
-                <div style={{ flex: 1, height: 1, background: "#e2e8f0" }} />
-              </div>
+              <div id="google-pay-container" style={{ marginBottom: 12 }} />
+              <div id="apple-pay-container" style={{ marginBottom: 12 }} />
+              <div style={{ textAlign: 'center', color: '#9CA3AF', fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
 
               <div className="Ryft--paysection">
                 <form id="ryft-pay-form" className="Ryft--payform">
