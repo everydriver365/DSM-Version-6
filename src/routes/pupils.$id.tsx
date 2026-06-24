@@ -616,7 +616,7 @@ function PupilDetailPage() {
                   </div>
                   {/* Hairline divider */}
                   <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
-                </React.Fragment>
+                </Fragment>
               );
             })}
           </div>
