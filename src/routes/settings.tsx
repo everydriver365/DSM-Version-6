@@ -81,12 +81,15 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url")
+        .select("name, profile_image_url, pass_booking_fee")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
       if (instructor?.name) setInstructorName(instructor.name);
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
+      if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
+        setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
+      }
 
       const { data: profile } = await supabase
         .from("profiles")
