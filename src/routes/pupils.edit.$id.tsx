@@ -112,6 +112,9 @@ function EditPupilPage() {
           address: string | null;
           lead_source: string | null;
           lead_source_detail: string | null;
+          prepaid_hours: number | null;
+          prepaid_amount_paid: number | null;
+          account_balance: number | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -124,6 +127,11 @@ function EditPupilPage() {
         setAddress(p.address ?? "");
         setLeadSource(p.lead_source ?? "");
         setLeadSourceDetail(p.lead_source_detail ?? "");
+        const hasBlock =
+          (p.prepaid_hours ?? 0) > 0 || (p.prepaid_amount_paid ?? 0) > 0;
+        setBlockToggle(hasBlock);
+        setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
+        setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
       }
       setLoading(false);
     })();
