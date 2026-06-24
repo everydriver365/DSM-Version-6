@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, X } from "lucide-react";
-import { Card } from "../components/dsm/Card";
+import { ChevronRight, Plus, Search, X } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/")({
