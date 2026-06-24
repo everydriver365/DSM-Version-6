@@ -62,6 +62,8 @@ function NewPupilPage() {
   const [phone, setPhone] = useState(search.phone ?? "");
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [leadSource, setLeadSource] = useState("");
+  const [leadSourceDetail, setLeadSourceDetail] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
@@ -157,6 +159,10 @@ function NewPupilPage() {
     if (phone.trim()) insert.phone = phone.trim();
     if (address.trim()) insert.address = address.trim();
     if (postcode.trim()) insert.postcode = postcode.trim().toUpperCase();
+    if (leadSource) {
+      insert.lead_source = leadSource;
+      if (leadSourceDetail.trim()) insert.lead_source_detail = leadSourceDetail.trim();
+    }
     const { error } = await supabase.from("pupils").insert(insert);
     if (error) {
       setErrors({ form: error.message });
@@ -254,6 +260,48 @@ function NewPupilPage() {
               </p>
             )}
           </div>
+          <div className="flex flex-col gap-1">
+            <label
+              className="text-[13px] font-medium text-[#0F2044]"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              How did they find you?
+            </label>
+            <select
+              value={leadSource}
+              onChange={(e) => {
+                setLeadSource(e.target.value);
+                setLeadSourceDetail("");
+              }}
+              className="text-[14px] text-[#0F2044]"
+              style={{
+                height: 44,
+                borderRadius: 8,
+                border: "1px solid #E2E6ED",
+                padding: "0 12px",
+                backgroundColor: "#fff",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <option value="">Select source</option>
+              <option value="Referral">Referral</option>
+              <option value="EveryDriver">EveryDriver</option>
+              <option value="Online">Online</option>
+              <option value="Walk-in / Local">Walk-in / Local</option>
+              <option value="Social media">Social media</option>
+              <option value="Driving school">Driving school</option>
+              <option value="Returning pupil">Returning pupil</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          {(leadSource === "Referral" || leadSource === "Other") && (
+            <Input
+              label={leadSource === "Referral" ? "Who referred them?" : "Please specify"}
+              value={leadSourceDetail}
+              onChange={(e) => setLeadSourceDetail(e.target.value)}
+              maxLength={255}
+            />
+          )}
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#CC2229" }}>
               {errors.form}
