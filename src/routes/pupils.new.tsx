@@ -62,6 +62,8 @@ function NewPupilPage() {
   const [phone, setPhone] = useState(search.phone ?? "");
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [leadSource, setLeadSource] = useState("");
+  const [leadSourceDetail, setLeadSourceDetail] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
