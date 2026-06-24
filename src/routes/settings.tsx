@@ -159,16 +159,23 @@ function SettingsPage() {
     }
   }
 
-  async function saveInstructorField(field: string, value: unknown) {
+  async function saveRates() {
     if (!userId) return;
-    setSavingField(field);
+    setSavingRates(true);
     const { error } = await supabase
       .from("instructors")
-      .update({ [field]: value })
+      .update({
+        hourly_rate: hourlyRate,
+        default_lesson_duration_minutes: defaultDuration,
+        lesson_buffer_minutes: bufferMinutes,
+      })
       .eq("id", userId);
-    setSavingField(null);
+    setSavingRates(false);
     if (error) {
-      console.error(`[settings] update ${field} error`, error);
+      console.error("[settings] save rates error", error);
+      toast.error("Failed to save rates");
+    } else {
+      toast.success("Saved ✓");
     }
   }
 
