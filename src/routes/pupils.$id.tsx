@@ -624,6 +624,24 @@ function PupilDetailPage() {
           </div>
         )}
 
+        {pupil?.lead_source && (
+          <>
+            <SectionHeader>LEAD SOURCE</SectionHeader>
+            <div
+              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#1A1A2E]"
+              style={{
+                ...POPPINS,
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#E2E6ED",
+              }}
+            >
+              {pupil.lead_source}
+              {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
+            </div>
+          </>
+        )}
+
         <SectionHeader>NOTES</SectionHeader>
         <textarea
           rows={3}
