@@ -135,6 +135,7 @@ function EditPupilPage() {
         setBlockToggle(hasBlock);
         setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
         setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
+        originalPrepaidAmount.current = p.prepaid_amount_paid ?? 0;
       }
       setLoading(false);
     })();
