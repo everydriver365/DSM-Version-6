@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Camera, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, Fragment } from "react";
+import { ArrowLeft, Camera, ChevronRight, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -36,6 +36,11 @@ interface Lesson {
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
+  price: number | null;
+  is_paid: boolean | null;
+  lesson_type: string | null;
+  notes: string | null;
+  end_of_lesson_completed: boolean | null;
 }
 
 function initials(name: string) {
@@ -79,6 +84,30 @@ function lessonStatusColor(s: string) {
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
 }
+function isLessonLive(l: Lesson) {
+  const now = new Date();
+  const start = new Date(`${l.lesson_date}T${l.lesson_time}`);
+  const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+  return now >= start && now <= end;
+}
+function isLessonPast(l: Lesson) {
+  const now = new Date();
+  const end = new Date(`${l.lesson_date}T${l.lesson_time}`);
+  end.setMinutes(end.getMinutes() + (l.duration_minutes ?? 60));
+  return now > end;
+}
+function accentColor(l: Lesson) {
+  if (isLessonLive(l)) return "#CC2229";
+  if (l.status === "completed") return "#16A34A";
+  if (l.status === "cancelled") return "#9CA3AF";
+  return "#1A52A0";
+}
+function daysBetween(a: string, b: string) {
+  const d1 = new Date(`${a}T00:00:00`);
+  const d2 = new Date(`${b}T00:00:00`);
+  const ms = d2.getTime() - d1.getTime();
+  return Math.round(ms / (1000 * 60 * 60 * 24));
+}
 
 function PupilDetailPage() {
   const { id } = Route.useParams();
@@ -109,7 +138,7 @@ function PupilDetailPage() {
 
     supabase
       .from("lessons")
-      .select("id, lesson_date, lesson_time, duration_minutes, status")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, price, is_paid, lesson_type, notes, end_of_lesson_completed")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
@@ -481,31 +510,113 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {lessons.map((l) => {
+          <div className="flex flex-col">
+            {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
+              const prev = idx > 0 ? lessons[idx - 1] : null;
+              const gapDays = prev ? daysBetween(prev.lesson_date, l.lesson_date) : 0;
+              const live = isLessonLive(l);
+              const past = isLessonPast(l);
+              const accent = accentColor(l);
+              const price = Number(l.price ?? 0);
+              const unpaid = !l.is_paid && price > 0;
+              const showGap = gapDays > 7;
+
               return (
-                <Card key={l.id}>
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                <Fragment key={l.id}>
+                  {showGap && (
+                    <div className="flex items-center justify-center py-3">
+                      <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                        {gapDays} day{gapDays > 1 ? "s" : ""} gap
+                      </span>
+                    </div>
+                  )}
+                  <div
+                    className="flex items-stretch cursor-pointer"
+                    style={{ minHeight: 56 }}
+                    onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                  >
+                    {/* Left time column */}
+                    <div
+                      className="flex flex-col items-center justify-center shrink-0"
+                      style={{ width: 40, padding: "8px 0" }}
+                    >
+                      <span className="text-[12px] font-bold" style={{ color: "#0F2044", ...POPPINS }}>
+                        {formatTime(l.lesson_time)}
+                      </span>
+                      <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                        {l.duration_minutes ?? 60}m
+                      </span>
+                    </div>
+
+                    {/* Accent bar */}
+                    <div className="shrink-0" style={{ width: 3, backgroundColor: accent, borderRadius: 2 }} />
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
+                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0F2044", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
-                      <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
-                        {formatTime(l.lesson_time)}
-                      </div>
-                      <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                        {l.duration_minutes ?? 60} min
+                      {l.lesson_type && (
+                        <div className="text-[11px] truncate" style={{ color: "#6B7280", ...POPPINS }}>
+                          {l.lesson_type}
+                        </div>
+                      )}
+                      {l.notes && (
+                        <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
+                          {l.notes}
+                        </div>
+                      )}
+
+                      {/* Badges */}
+                      <div className="flex flex-wrap items-center gap-1 mt-1">
+                        {live && (
+                          <span
+                            className="inline-flex items-center gap-1 text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: "#CC2229", ...POPPINS }}
+                          >
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
+                            </span>
+                            Live
+                          </span>
+                        )}
+                        {past && l.status !== "cancelled" && !l.end_of_lesson_completed && (
+                          <span
+                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: "#F59E0B", ...POPPINS }}
+                          >
+                            EOL pending
+                          </span>
+                        )}
+                        {l.is_paid && (
+                          <span
+                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: "#16A34A", ...POPPINS }}
+                          >
+                            Paid
+                          </span>
+                        )}
+                        {unpaid && past && (
+                          <span
+                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: "#CC2229", ...POPPINS }}
+                          >
+                            £{price.toFixed(2)} due
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <span
-                      className="text-[11px] text-white px-2 py-1 rounded-full shrink-0 capitalize"
-                      style={{ backgroundColor: lessonStatusColor(l.status), ...POPPINS }}
-                    >
-                      {l.status}
-                    </span>
+
+                    {/* Chevron */}
+                    <div className="flex items-center justify-center shrink-0 px-2">
+                      <ChevronRight size={14} color="#9CA3AF" />
+                    </div>
                   </div>
-                </Card>
+                  {/* Hairline divider */}
+                  <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
+                </Fragment>
               );
             })}
           </div>
