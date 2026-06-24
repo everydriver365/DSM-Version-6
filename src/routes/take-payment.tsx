@@ -333,7 +333,7 @@ function TakePaymentPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [cardSessionId, cardClientSecret, amountNum]);
+  }, [cardSessionId, cardClientSecret, totalNum]);
 
 
   // --- Cash / transfer ---
