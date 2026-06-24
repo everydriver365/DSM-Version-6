@@ -727,22 +727,57 @@ function TakePaymentPage() {
           )}
         </div>
 
+        {/* Success overlay */}
         {recorded && (
           <div
             style={{
-              padding: "6px 16px",
-              borderRadius: 10,
-              background: "#F0FDF4",
-              border: "1px solid #16A34A",
-              color: "#15803D",
-              fontSize: 12,
-              fontWeight: 600,
-              textAlign: "center",
-              flexShrink: 0,
-              margin: "0 16px 8px",
+              position: "absolute",
+              inset: 0,
+              zIndex: 40,
+              background: "rgba(255,255,255,0.92)",
+              backdropFilter: "blur(4px)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 16,
+              padding: 24,
             }}
           >
-            {recorded}
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: "50%",
+                background: "#16A34A",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+              }}
+            >
+              <CircleCheck size={36} />
+            </div>
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: NAVY,
+                textAlign: "center",
+              }}
+            >
+              Payment Successful
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#16A34A",
+                textAlign: "center",
+              }}
+            >
+              {recorded}
+            </div>
           </div>
         )}
       </div>
