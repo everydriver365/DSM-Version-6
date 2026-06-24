@@ -2194,14 +2194,21 @@ function HomePage() {
         // Coming up: group nextTabLessons by date, skip today + tomorrow
         const todayKey = now.toDateString();
         const tomorrowKey = tomorrowDate.toDateString();
-        const grouped = new Map<string, LessonRow[]>();
+        const groupedKeys: string[] = [];
+        const grouped: Record<string, LessonRow[]> = {};
         for (const l of nextTabLessons) {
           const k = lessonDateTime(l).toDateString();
           if (k === todayKey || k === tomorrowKey) continue;
-          if (!grouped.has(k)) grouped.set(k, []);
-          grouped.get(k)!.push(l);
+          if (!grouped[k]) {
+            grouped[k] = [];
+            groupedKeys.push(k);
+          }
+          grouped[k].push(l);
         }
-        const comingDays = Array.from(grouped.entries()).slice(0, 3);
+        const comingDays: Array<[string, LessonRow[]]> = groupedKeys
+          .slice(0, 3)
+          .map((k) => [k, grouped[k]]);
+
 
         return (
           <>
