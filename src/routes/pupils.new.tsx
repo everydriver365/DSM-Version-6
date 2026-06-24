@@ -317,6 +317,7 @@ function NewPupilPage() {
               <option value="">Select source</option>
               <option value="Referral">Referral</option>
               <option value="EveryDriver">EveryDriver</option>
+              <option value="National Intensive">National Intensive</option>
               <option value="Online">Online</option>
               <option value="Walk-in / Local">Walk-in / Local</option>
               <option value="Social media">Social media</option>
