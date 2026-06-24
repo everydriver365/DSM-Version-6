@@ -28,6 +28,8 @@ interface Pupil {
   notes: string | null;
   photo_url: string | null;
   photo_consent: boolean | null;
+  lead_source: string | null;
+  lead_source_detail: string | null;
 }
 
 interface Lesson {
@@ -125,7 +127,7 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -620,6 +622,24 @@ function PupilDetailPage() {
               );
             })}
           </div>
+        )}
+
+        {pupil?.lead_source && (
+          <>
+            <SectionHeader>LEAD SOURCE</SectionHeader>
+            <div
+              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#1A1A2E]"
+              style={{
+                ...POPPINS,
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#E2E6ED",
+              }}
+            >
+              {pupil.lead_source}
+              {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
+            </div>
+          </>
         )}
 
         <SectionHeader>NOTES</SectionHeader>

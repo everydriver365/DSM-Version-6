@@ -23,6 +23,17 @@ const STATUSES: { label: string; value: string }[] = [
   { label: "Cancelled", value: "cancelled" },
 ];
 
+const LEAD_SOURCES = [
+  "Referral",
+  "EveryDriver",
+  "Online",
+  "Walk-in / Local",
+  "Social media",
+  "Driving school",
+  "Returning pupil",
+  "Other",
+];
+
 const fieldBorder: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
@@ -57,6 +68,8 @@ function EditPupilPage() {
   const [testDate, setTestDate] = useState("");
   const [notes, setNotes] = useState("");
   const [address, setAddress] = useState("");
+  const [leadSource, setLeadSource] = useState("");
+  const [leadSourceDetail, setLeadSourceDetail] = useState("");
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
@@ -75,7 +88,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes, address")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
@@ -93,6 +106,8 @@ function EditPupilPage() {
           test_date: string | null;
           notes: string | null;
           address: string | null;
+          lead_source: string | null;
+          lead_source_detail: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -103,6 +118,8 @@ function EditPupilPage() {
         setTestDate(p.test_date ?? "");
         setNotes(p.notes ?? "");
         setAddress(p.address ?? "");
+        setLeadSource(p.lead_source ?? "");
+        setLeadSourceDetail(p.lead_source_detail ?? "");
       }
       setLoading(false);
     })();
@@ -136,6 +153,11 @@ function EditPupilPage() {
         test_date: testDate || null,
         notes: notes.trim() || null,
         address: address.trim() || null,
+        lead_source: leadSource || null,
+        lead_source_detail:
+          (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
+            ? leadSourceDetail.trim()
+            : null,
       })
       .eq("id", id);
 
@@ -224,6 +246,38 @@ function EditPupilPage() {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
+
+          <div>
+            <FieldLabel htmlFor="lead_source">How did they find you?</FieldLabel>
+            <select
+              id="lead_source"
+              value={leadSource}
+              onChange={(e) => {
+                setLeadSource(e.target.value);
+                setLeadSourceDetail("");
+              }}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              style={fieldBorder}
+            >
+              <option value="">Select…</option>
+              {LEAD_SOURCES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {(leadSource === "Referral" || leadSource === "Other") && (
+            <Input
+              label={leadSource === "Referral" ? "Who referred them?" : "Please specify"}
+              type="text"
+              value={leadSourceDetail}
+              onChange={(e) => setLeadSourceDetail(e.target.value.slice(0, 255))}
+            />
+          )}
+
+
 
 
           <div>
