@@ -637,6 +637,31 @@ function TakePaymentPage() {
             fontFamily: "Poppins, sans-serif",
           }}
         >
+          {/* Close button */}
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={closeQrOverlay}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.15)",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              cursor: "pointer",
+              zIndex: 1,
+            }}
+          >
+            <X size={18} />
+          </button>
+
           {/* Top section (flex 0) */}
           <div
             style={{
