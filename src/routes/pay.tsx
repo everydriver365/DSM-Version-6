@@ -61,6 +61,16 @@ function PayPage() {
           googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
           applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
         });
+        try {
+          if (window.Ryft && window.Ryft.googlePay) {
+            window.Ryft.googlePay.mount("#google-pay-container");
+          }
+        } catch(e) { console.warn("Google Pay not available:", e); }
+        try {
+          if (window.Ryft && window.Ryft.applePay) {
+            window.Ryft.applePay.mount("#apple-pay-container");
+          }
+        } catch(e) { console.warn("Apple Pay not available:", e); }
         window.Ryft.addEventHandler("paymentSuccess", () => setStatus("success"));
         window.Ryft.addEventHandler("paymentError", (e: any) => {
           setErrorMsg(e?.error?.message || "Payment failed. Please try again.");
