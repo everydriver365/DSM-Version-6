@@ -243,14 +243,18 @@ function TakePaymentPage() {
     }
     setCardLoading(true);
     try {
+      const amountPence = Math.round(totalNum * 100);
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
-          amount: Math.round(amountNum * 100),
+          amount: amountPence,
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
           mode: "embedded",
+          booking_fee_pence: 100,
+          instructor_payout_pence: amountPence - 100,
+          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
