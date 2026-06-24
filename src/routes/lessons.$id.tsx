@@ -213,6 +213,59 @@ function LessonDetailPage() {
         </button>
       </div>
 
+      {loading && (
+        <div className="px-4 mt-3 space-y-3">
+          <div
+            className="animate-pulse"
+            style={{ height: 120, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 40, borderRadius: 8, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 280, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 180, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+        </div>
+      )}
+
+      {!loading && !lesson && (
+        <div className="flex flex-col items-center justify-center mt-20 px-6">
+          <div
+            className="text-[16px] font-semibold"
+            style={{ color: "#0F2044", ...POPPINS }}
+          >
+            Lesson not found
+          </div>
+          <div
+            className="text-[13px] text-center mt-2"
+            style={{ color: "#6B7280", ...POPPINS }}
+          >
+            {fetchError || "This lesson may have been deleted or the link is incorrect."}
+          </div>
+          <button
+            type="button"
+            onClick={() => router.history.back()}
+            className="mt-6 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#1A52A0",
+              padding: "0 24px",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            Go back
+          </button>
+        </div>
+      )}
+
       {lesson && dateObj && (
         <>
           {/* Header card */}
