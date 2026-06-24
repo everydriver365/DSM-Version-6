@@ -138,7 +138,7 @@ function PupilDetailPage() {
 
     supabase
       .from("lessons")
-      .select("id, lesson_date, lesson_time, duration_minutes, status")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, price, is_paid, lesson_type, notes, end_of_lesson_completed")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
