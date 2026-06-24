@@ -85,7 +85,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -93,6 +93,15 @@ function SettingsPage() {
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
       if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
         setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
+      }
+      if (instructor && typeof (instructor as { hourly_rate?: number }).hourly_rate === "number") {
+        setHourlyRate((instructor as { hourly_rate: number }).hourly_rate);
+      }
+      if (instructor && typeof (instructor as { default_lesson_duration_minutes?: number }).default_lesson_duration_minutes === "number") {
+        setDefaultDuration((instructor as { default_lesson_duration_minutes: number }).default_lesson_duration_minutes);
+      }
+      if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
+        setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
       }
 
       const { data: profile } = await supabase
