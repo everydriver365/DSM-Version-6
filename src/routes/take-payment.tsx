@@ -660,7 +660,7 @@ function TakePaymentPage() {
                     cursor: "pointer",
                   }}
                 >
-                  {cardLoading ? "Loading…" : `Charge card · £${amountNum.toFixed(2)}`}
+                  {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
                 </button>
               )}
               {cardSessionId && (
