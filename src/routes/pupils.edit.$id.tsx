@@ -153,6 +153,11 @@ function EditPupilPage() {
         test_date: testDate || null,
         notes: notes.trim() || null,
         address: address.trim() || null,
+        lead_source: leadSource || null,
+        lead_source_detail:
+          (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
+            ? leadSourceDetail.trim()
+            : null,
       })
       .eq("id", id);
 
