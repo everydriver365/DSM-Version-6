@@ -87,6 +87,8 @@ function LessonDetailPage() {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [route, setRoute] = useState<RouteRow | null>(null);
   const [overspeedEvents, setOverspeedEvents] = useState<OverspeedEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
