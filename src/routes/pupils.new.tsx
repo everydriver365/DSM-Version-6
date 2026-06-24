@@ -168,11 +168,37 @@ function NewPupilPage() {
       insert.lead_source = leadSource;
       if (leadSourceDetail.trim()) insert.lead_source_detail = leadSourceDetail.trim();
     }
-    const { error } = await supabase.from("pupils").insert(insert);
+    const blockOn = blockToggle || leadSource === "National Intensive";
+    const amountNum = parseFloat(prepaidAmount);
+    const hoursNum = parseFloat(prepaidHours);
+    const hasBlock =
+      blockOn && Number.isFinite(amountNum) && amountNum > 0 && Number.isFinite(hoursNum) && hoursNum > 0;
+    if (hasBlock) {
+      insert.prepaid_amount_paid = amountNum;
+      insert.prepaid_hours = hoursNum;
+      insert.account_balance = amountNum;
+    }
+    const { data: inserted, error } = await supabase
+      .from("pupils")
+      .insert(insert)
+      .select("id")
+      .single();
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
       return;
+    }
+    if (hasBlock && inserted?.id) {
+      const { error: phErr } = await supabase.from("lesson_history").insert({
+        instructor_id: user.id,
+        pupil_id: inserted.id,
+        lesson_date: new Date().toISOString().slice(0, 10),
+        payment_status: "paid",
+        payment_method: paymentMethod,
+        amount: amountNum,
+        notes: blockNotes.trim() || `Block booking: ${hoursNum} hrs prepaid`,
+      });
+      if (phErr) console.error("[new-pupil] block payment insert error", phErr);
     }
     navigate({ to: "/pupils" });
   }
