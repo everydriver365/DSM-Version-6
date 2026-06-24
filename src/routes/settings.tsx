@@ -12,6 +12,7 @@ import {
   PoundSterling,
   Crown,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
@@ -72,7 +73,7 @@ function SettingsPage() {
   const [hourlyRate, setHourlyRate] = useState<number>(35);
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
-  const [savingField, setSavingField] = useState<string | null>(null);
+  const [savingRates, setSavingRates] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -158,16 +159,23 @@ function SettingsPage() {
     }
   }
 
-  async function saveInstructorField(field: string, value: unknown) {
+  async function saveRates() {
     if (!userId) return;
-    setSavingField(field);
+    setSavingRates(true);
     const { error } = await supabase
       .from("instructors")
-      .update({ [field]: value })
+      .update({
+        hourly_rate: hourlyRate,
+        default_lesson_duration_minutes: defaultDuration,
+        lesson_buffer_minutes: bufferMinutes,
+      })
       .eq("id", userId);
-    setSavingField(null);
+    setSavingRates(false);
     if (error) {
-      console.error(`[settings] update ${field} error`, error);
+      console.error("[settings] save rates error", error);
+      toast.error("Failed to save rates");
+    } else {
+      toast.success("Saved ✓");
     }
   }
 
@@ -346,7 +354,6 @@ function SettingsPage() {
                   const val = parseFloat(e.target.value);
                   if (!isNaN(val) && val >= 0) {
                     setHourlyRate(val);
-                    saveInstructorField("hourly_rate", val);
                   }
                 }}
                 className="text-[14px] font-medium text-[#0F2044] text-right"
@@ -374,11 +381,7 @@ function SettingsPage() {
             </div>
             <select
               value={defaultDuration}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                setDefaultDuration(val);
-                saveInstructorField("default_lesson_duration_minutes", val);
-              }}
+              onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
               className="text-[13px] text-[#0F2044]"
               style={{
                 height: 36,
@@ -389,10 +392,14 @@ function SettingsPage() {
                 ...POPPINS,
               }}
             >
-              <option value={45}>45 mins</option>
               <option value={60}>1 hour</option>
-              <option value={90}>1.5 hours</option>
               <option value={120}>2 hours</option>
+              <option value={180}>3 hours</option>
+              <option value={240}>4 hours</option>
+              <option value={300}>5 hours</option>
+              <option value={360}>6 hours</option>
+              <option value={420}>7 hours</option>
+              <option value={480}>8 hours</option>
             </select>
           </div>
 
@@ -411,11 +418,7 @@ function SettingsPage() {
             </div>
             <select
               value={bufferMinutes}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                setBufferMinutes(val);
-                saveInstructorField("lesson_buffer_minutes", val);
-              }}
+              onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
               className="text-[13px] text-[#0F2044]"
               style={{
                 height: 36,
@@ -427,18 +430,33 @@ function SettingsPage() {
               }}
             >
               <option value={0}>None</option>
-              <option value={10}>10 mins</option>
               <option value={15}>15 mins</option>
-              <option value={20}>20 mins</option>
               <option value={30}>30 mins</option>
+              <option value={45}>45 mins</option>
+              <option value={60}>1 hour</option>
+              <option value={90}>1.5 hours</option>
+              <option value={120}>2 hours</option>
             </select>
           </div>
 
-          {savingField && (
-            <div className="text-[11px] text-[#6B7280] mt-3 text-right" style={POPPINS}>
-              Saving…
-            </div>
-          )}
+          {/* Save button */}
+          <button
+            type="button"
+            onClick={saveRates}
+            disabled={savingRates}
+            className="w-full text-[14px] font-semibold text-white mt-5"
+            style={{
+              height: 48,
+              borderRadius: 10,
+              backgroundColor: "#0F2044",
+              border: "none",
+              opacity: savingRates ? 0.7 : 1,
+              cursor: savingRates ? "not-allowed" : "pointer",
+              ...POPPINS,
+            }}
+          >
+            {savingRates ? "Saving…" : "Save rates"}
+          </button>
         </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
