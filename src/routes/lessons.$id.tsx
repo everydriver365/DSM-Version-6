@@ -87,11 +87,15 @@ function LessonDetailPage() {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [route, setRoute] = useState<RouteRow | null>(null);
   const [overspeedEvents, setOverspeedEvents] = useState<OverspeedEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+    setFetchError(null);
     supabase
       .from("lessons")
       .select(
@@ -101,9 +105,15 @@ function LessonDetailPage() {
       .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
-        console.log("[lessons.$id] fetch result:", data, error);
-        if (error) console.error("[lesson] fetch error", error);
-        setLesson((data as unknown as Lesson) ?? null);
+        console.log("[lessons.$id] id:", id, "lesson:", data, "error:", error);
+        if (error) {
+          console.error("[lesson] fetch error", error);
+          setFetchError(error.message);
+          setLesson(null);
+        } else {
+          setLesson((data as unknown as Lesson) ?? null);
+        }
+        setLoading(false);
       });
   }, [id]);
 
@@ -202,6 +212,59 @@ function LessonDetailPage() {
           <Pencil size={18} color="#FFFFFF" />
         </button>
       </div>
+
+      {loading && (
+        <div className="px-4 mt-3 space-y-3">
+          <div
+            className="animate-pulse"
+            style={{ height: 120, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 40, borderRadius: 8, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 280, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+          <div
+            className="animate-pulse"
+            style={{ height: 180, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+          />
+        </div>
+      )}
+
+      {!loading && !lesson && (
+        <div className="flex flex-col items-center justify-center mt-20 px-6">
+          <div
+            className="text-[16px] font-semibold"
+            style={{ color: "#0F2044", ...POPPINS }}
+          >
+            Lesson not found
+          </div>
+          <div
+            className="text-[13px] text-center mt-2"
+            style={{ color: "#6B7280", ...POPPINS }}
+          >
+            {fetchError || "This lesson may have been deleted or the link is incorrect."}
+          </div>
+          <button
+            type="button"
+            onClick={() => router.history.back()}
+            className="mt-6 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#1A52A0",
+              padding: "0 24px",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            Go back
+          </button>
+        </div>
+      )}
 
       {lesson && dateObj && (
         <>
