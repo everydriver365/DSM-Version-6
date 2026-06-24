@@ -12,6 +12,7 @@ import {
   PoundSterling,
   Crown,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
