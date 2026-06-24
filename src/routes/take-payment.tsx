@@ -69,6 +69,13 @@ function TakePaymentPage() {
   const [cashSaving, setCashSaving] = useState(false);
   const [recorded, setRecorded] = useState<string | null>(null);
 
+  // Auto-close after successful payment
+  useEffect(() => {
+    if (!recorded) return;
+    const t = setTimeout(() => navigate({ to: "/home" }), 2500);
+    return () => clearTimeout(t);
+  }, [recorded, navigate]);
+
   const amountNum = Number(amount) || 0;
 
   const press = (key: string) => {
