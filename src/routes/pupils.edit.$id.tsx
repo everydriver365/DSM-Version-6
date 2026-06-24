@@ -71,6 +71,9 @@ function EditPupilPage() {
   const [address, setAddress] = useState("");
   const [leadSource, setLeadSource] = useState("");
   const [leadSourceDetail, setLeadSourceDetail] = useState("");
+  const [blockToggle, setBlockToggle] = useState(false);
+  const [prepaidAmount, setPrepaidAmount] = useState("");
+  const [prepaidHours, setPrepaidHours] = useState("");
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
