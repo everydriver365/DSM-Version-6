@@ -500,41 +500,44 @@ function TakePaymentPage() {
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
           {tab === "qr" && (
             <>
-              {/* Numpad */}
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 6,
                   flex: 1,
                   minHeight: 0,
-                  padding: "8px 16px",
-                  gridAutoRows: "1fr",
+                  padding: "4px 12px 8px",
+                  display: "grid",
+                  gridTemplateRows: "repeat(4, 1fr)",
+                  gap: 4,
                 }}
               >
-                {numpadKeys.map((k) => (
-                  <button
-                    key={k}
-                    type="button"
-                    onClick={() => press(k)}
+                {numpadRows.map((row, rowIndex) => (
+                  <div
+                    key={rowIndex}
                     style={{
-                      fontSize: 20,
-                      fontWeight: 600,
-                      color: NAVY,
-                      background: "#F4F6FA",
-                      border: "0.5px solid #E2E6ED",
-                      borderRadius: 10,
-                      cursor: "pointer",
                       display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minHeight: 0,
-                      width: "100%",
-                      height: "100%",
+                      alignItems: "stretch",
+                      gap: 4,
                     }}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
-                  </button>
+                    {row.map((k) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => press(k)}
+                        style={{
+                          flex: 1,
+                          fontSize: 18,
+                          fontWeight: 600,
+                          border: "0.5px solid #E2E6ED",
+                          borderRadius: 8,
+                          background: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {k === "back" ? <Delete size={20} /> : k}
+                      </button>
+                    ))}
+                  </div>
                 ))}
               </div>
               {/* Generate QR button */}
@@ -619,41 +622,44 @@ function TakePaymentPage() {
 
           {tab === "cash" && (
             <>
-              {/* Numpad */}
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 6,
                   flex: 1,
                   minHeight: 0,
-                  padding: "8px 16px",
-                  gridAutoRows: "1fr",
+                  padding: "4px 12px 8px",
+                  display: "grid",
+                  gridTemplateRows: "repeat(4, 1fr)",
+                  gap: 4,
                 }}
               >
-                {numpadKeys.map((k) => (
-                  <button
-                    key={k}
-                    type="button"
-                    onClick={() => press(k)}
+                {numpadRows.map((row, rowIndex) => (
+                  <div
+                    key={rowIndex}
                     style={{
-                      fontSize: 20,
-                      fontWeight: 600,
-                      color: NAVY,
-                      background: "#F4F6FA",
-                      border: "0.5px solid #E2E6ED",
-                      borderRadius: 10,
-                      cursor: "pointer",
                       display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minHeight: 0,
-                      width: "100%",
-                      height: "100%",
+                      alignItems: "stretch",
+                      gap: 4,
                     }}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
-                  </button>
+                    {row.map((k) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => press(k)}
+                        style={{
+                          flex: 1,
+                          fontSize: 18,
+                          fontWeight: 600,
+                          border: "0.5px solid #E2E6ED",
+                          borderRadius: 8,
+                          background: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {k === "back" ? <Delete size={20} /> : k}
+                      </button>
+                    ))}
+                  </div>
                 ))}
               </div>
               {/* Cash controls */}
