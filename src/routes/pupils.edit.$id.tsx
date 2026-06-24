@@ -68,6 +68,8 @@ function EditPupilPage() {
   const [testDate, setTestDate] = useState("");
   const [notes, setNotes] = useState("");
   const [address, setAddress] = useState("");
+  const [leadSource, setLeadSource] = useState("");
+  const [leadSourceDetail, setLeadSourceDetail] = useState("");
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
