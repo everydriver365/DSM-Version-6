@@ -41,6 +41,13 @@ function statusBadgeColor(status: StatusKey) {
   return "#6B7280";
 }
 
+function accentColor(status: StatusKey) {
+  if (status === "active") return "#1A52A0";
+  if (status === "passed") return "#16A34A";
+  if (status === "archived") return "#9CA3AF";
+  return "#9CA3AF";
+}
+
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [tab, setTab] = useState<StatusKey>("active");
