@@ -181,7 +181,7 @@ function TakePaymentPage() {
     try {
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
-          amount: amountNum,
+          amount: Math.round(amountNum * 100),
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
