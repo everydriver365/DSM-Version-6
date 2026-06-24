@@ -502,13 +502,13 @@ function TakePaymentPage() {
             <>
               <div
                 style={{
-                  flex: 1,
+                  flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "8px 12px 12px",
+                  padding: "6px 12px 8px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridAutoRows: "1fr",
-                  gap: 8,
+                  gridTemplateRows: "repeat(4, 52px)",
+                  gap: 6,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -517,10 +517,13 @@ function TakePaymentPage() {
                     type="button"
                     onClick={() => press(k)}
                     style={{
-                      fontSize: 22,
+                      height: 52,
+                      maxHeight: 52,
+                      padding: "4px 0",
+                      fontSize: 20,
                       fontWeight: 600,
                       border: "0.5px solid #E2E6ED",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       background: "white",
                       cursor: "pointer",
                       display: "inline-flex",
@@ -618,13 +621,13 @@ function TakePaymentPage() {
             <>
               <div
                 style={{
-                  flex: 1,
+                  flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "8px 12px 12px",
+                  padding: "6px 12px 8px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridAutoRows: "1fr",
-                  gap: 8,
+                  gridTemplateRows: "repeat(4, 52px)",
+                  gap: 6,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -633,10 +636,13 @@ function TakePaymentPage() {
                     type="button"
                     onClick={() => press(k)}
                     style={{
-                      fontSize: 22,
+                      height: 52,
+                      maxHeight: 52,
+                      padding: "4px 0",
+                      fontSize: 20,
                       fontWeight: 600,
                       border: "0.5px solid #E2E6ED",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       background: "white",
                       cursor: "pointer",
                       display: "inline-flex",
