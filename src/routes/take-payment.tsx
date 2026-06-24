@@ -321,7 +321,7 @@ function TakePaymentPage() {
         } catch (e) { console.warn("Apple Pay not available:", e); }
         w.Ryft.addEventHandler("paymentSuccess", () => {
           toast.success("Payment received");
-          setRecorded(`£${amountNum.toFixed(2)} received via card`);
+          setRecorded(`£${totalNum.toFixed(2)} received via card`);
         });
         w.Ryft.addEventHandler("paymentError", (err: any) => {
           console.error("[take-payment] ryft error", err);
