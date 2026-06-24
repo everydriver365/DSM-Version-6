@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, X } from "lucide-react";
-import { Card } from "../components/dsm/Card";
+import { ChevronRight, Plus, Search, X } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/")({
@@ -40,6 +39,13 @@ function statusBadgeColor(status: StatusKey) {
   if (status === "passed") return "#1A52A0";
   if (status === "archived") return "#9CA3AF";
   return "#6B7280";
+}
+
+function accentColor(status: StatusKey) {
+  if (status === "active") return "#1A52A0";
+  if (status === "passed") return "#16A34A";
+  if (status === "archived") return "#9CA3AF";
+  return "#9CA3AF";
 }
 
 function PupilsIndexPage() {
@@ -199,43 +205,31 @@ function PupilsIndexPage() {
       </div>
 
       {/* List */}
-      <div className="px-4 pt-4">
+      <div className="pt-2">
         {filtered === null ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="bg-white flex items-center gap-3"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                }}
+                className="bg-white flex items-stretch"
+                style={{ gap: 12, padding: "12px 16px", minHeight: 64 }}
               >
                 <div
                   className="skeleton-pulse rounded-full shrink-0"
                   style={{ width: 40, height: 40, backgroundColor: "#E2E6ED" }}
                 />
-                <div className="min-w-0 flex-1 flex flex-col gap-2">
+                <div
+                  className="shrink-0"
+                  style={{ width: 3, borderRadius: 2, backgroundColor: "#E2E6ED" }}
+                />
+                <div className="min-w-0 flex-1 flex flex-col justify-center gap-2">
                   <div
                     className="skeleton-pulse"
-                    style={{
-                      height: 14,
-                      width: "60%",
-                      backgroundColor: "#E2E6ED",
-                      borderRadius: 4,
-                    }}
+                    style={{ height: 14, width: "60%", backgroundColor: "#E2E6ED", borderRadius: 4 }}
                   />
                   <div
                     className="skeleton-pulse"
-                    style={{
-                      height: 12,
-                      width: "40%",
-                      backgroundColor: "#E2E6ED",
-                      borderRadius: 4,
-                    }}
+                    style={{ height: 12, width: "40%", backgroundColor: "#E2E6ED", borderRadius: 4 }}
                   />
                 </div>
               </div>
@@ -248,22 +242,25 @@ function PupilsIndexPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {filtered.map((p) => {
+          <div className="flex flex-col">
+            {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const balance = Number(p.balance_owed ?? 0);
               const lessons = Number(p.lesson_count ?? 0);
+              const accent = accentColor(status);
               return (
-                <Link
-                  key={p.id}
-                  to="/pupils/$id"
-                  params={{ id: p.id }}
-                  className="block"
-                >
-                  <Card>
-                    <div className="flex items-center gap-3">
+                <div key={p.id}>
+                  <Link
+                    to="/pupils/$id"
+                    params={{ id: p.id }}
+                    className="block bg-white"
+                  >
+                    <div
+                      className="flex items-stretch"
+                      style={{ gap: 12, padding: "12px 16px", minHeight: 64 }}
+                    >
                       <div
-                        className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold"
+                        className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold self-center"
                         style={{
                           width: 40,
                           height: 40,
@@ -274,7 +271,11 @@ function PupilsIndexPage() {
                       >
                         {initials(p.name)}
                       </div>
-                      <div className="min-w-0 flex-1">
+                      <div
+                        className="shrink-0"
+                        style={{ width: 3, borderRadius: 2, backgroundColor: accent, alignSelf: "stretch" }}
+                      />
+                      <div className="min-w-0 flex-1 flex flex-col justify-center">
                         <div
                           className="text-[14px] font-semibold text-[#0F2044] truncate"
                           style={POPPINS}
@@ -298,20 +299,27 @@ function PupilsIndexPage() {
                           )}
                         </div>
                       </div>
-                      <div
-                        className="text-[12px] text-[#6B7280] shrink-0 text-right"
-                        style={POPPINS}
-                      >
-                        {lessons} {lessons === 1 ? "lesson" : "lessons"}
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span
+                          className="text-[12px] text-[#6B7280]"
+                          style={POPPINS}
+                        >
+                          {lessons} {lessons === 1 ? "lesson" : "lessons"}
+                        </span>
+                        <ChevronRight size={14} color="#9CA3AF" />
                       </div>
                     </div>
-                  </Card>
-                </Link>
+                  </Link>
+                  {idx < filtered.length - 1 && (
+                    <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 68 }} />
+                  )}
+                </div>
               );
             })}
           </div>
         )}
       </div>
+
 
       <style>{`
         @keyframes skeleton-pulse {
