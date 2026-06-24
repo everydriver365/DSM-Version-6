@@ -106,6 +106,8 @@ function EditPupilPage() {
           test_date: string | null;
           notes: string | null;
           address: string | null;
+          lead_source: string | null;
+          lead_source_detail: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -116,6 +118,8 @@ function EditPupilPage() {
         setTestDate(p.test_date ?? "");
         setNotes(p.notes ?? "");
         setAddress(p.address ?? "");
+        setLeadSource(p.lead_source ?? "");
+        setLeadSourceDetail(p.lead_source_detail ?? "");
       }
       setLoading(false);
     })();
