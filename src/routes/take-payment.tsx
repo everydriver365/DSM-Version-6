@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X } from "lucide-react";
+import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, CircleCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
