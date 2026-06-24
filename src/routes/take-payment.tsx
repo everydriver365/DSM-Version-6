@@ -69,6 +69,27 @@ function TakePaymentPage() {
   const [cashSaving, setCashSaving] = useState(false);
   const [recorded, setRecorded] = useState<string | null>(null);
 
+  // Responsive QR size — fits within viewport so layout never looks squashed
+  const [qrSize, setQrSize] = useState<number>(220);
+  useEffect(() => {
+    const compute = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Reserve room for top text (~140) + bottom buttons (~140) + padding
+      const reserved = 280;
+      const maxByHeight = Math.max(120, vh - reserved);
+      const maxByWidth = Math.max(120, vw - 96); // 24px padding + 14px qr padding each side, buffer
+      setQrSize(Math.min(280, Math.floor(Math.min(maxByHeight, maxByWidth))));
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    window.addEventListener("orientationchange", compute);
+    return () => {
+      window.removeEventListener("resize", compute);
+      window.removeEventListener("orientationchange", compute);
+    };
+  }, []);
+
   // Auto-close after successful payment
   useEffect(() => {
     if (!recorded) return;
@@ -813,7 +834,7 @@ function TakePaymentPage() {
                 justifyContent: "center",
               }}
             >
-              <QRCodeSVG value={qrUrl} size={210} />
+              <QRCodeSVG value={qrUrl} size={qrSize} />
             </div>
             <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
               Waiting for payment…
