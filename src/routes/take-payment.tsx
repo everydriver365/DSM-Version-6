@@ -398,9 +398,10 @@ function TakePaymentPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 6,
+            gap: 8,
             flex: 1,
             minHeight: 0,
+            padding: "4px 0",
           }}
         >
           {numpadKeys.map((k) => (
@@ -409,20 +410,21 @@ function TakePaymentPage() {
               type="button"
               onClick={() => press(k)}
               style={{
-                fontSize: 20,
-                fontWeight: 600,
+                fontSize: 24,
+                fontWeight: 700,
                 color: NAVY,
-                background: "#F4F6FA",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 10,
+                background: "#fff",
+                border: "1px solid #E2E6ED",
+                borderRadius: 12,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 0,
+                minHeight: 64,
+                width: "100%",
               }}
             >
-              {k === "back" ? <Delete size={20} /> : k}
+              {k === "back" ? <Delete size={22} /> : k}
             </button>
           ))}
         </div>
