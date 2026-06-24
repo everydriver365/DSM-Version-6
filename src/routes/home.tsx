@@ -1721,7 +1721,7 @@ function HomePage() {
         </div>
 
 
-        {todayLessons.length === 0 ? (
+        {tabLessons.length === 0 ? (
           <div
             style={{
               padding: "20px 16px",
@@ -1731,12 +1731,17 @@ function HomePage() {
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            No lessons today
+            {tab === "today"
+              ? "No lessons today"
+              : tab === "tomorrow"
+                ? "No lessons tomorrow"
+                : "No upcoming lessons"}
           </div>
         ) : (
           (() => {
-            const shown = todayLessons.slice(0, 6);
-            const hiddenCount = todayLessons.length - shown.length;
+            const shown = tabLessons.slice(0, 6);
+            const hiddenCount = tabLessons.length - shown.length;
+
             const tNow = now.getTime();
             const lStart = (l: LessonRow) => lessonDateTime(l).getTime();
             const lEnd = (l: LessonRow) =>
