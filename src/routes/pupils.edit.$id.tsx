@@ -74,6 +74,9 @@ function EditPupilPage() {
   const [blockToggle, setBlockToggle] = useState(false);
   const [prepaidAmount, setPrepaidAmount] = useState("");
   const [prepaidHours, setPrepaidHours] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [topUpNotes, setTopUpNotes] = useState("");
+  const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
 
