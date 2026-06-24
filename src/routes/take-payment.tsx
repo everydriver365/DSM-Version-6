@@ -686,7 +686,7 @@ function TakePaymentPage() {
                           cursor: "pointer",
                         }}
                       >
-                        Pay £{amountNum.toFixed(2)}
+                        Pay £{totalNum.toFixed(2)}
                       </button>
                     </form>
                   </div>
