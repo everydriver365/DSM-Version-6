@@ -94,6 +94,8 @@ function LessonDetailPage() {
   const [cancelOpen, setCancelOpen] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+    setFetchError(null);
     supabase
       .from("lessons")
       .select(
@@ -103,9 +105,15 @@ function LessonDetailPage() {
       .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
-        console.log("[lessons.$id] fetch result:", data, error);
-        if (error) console.error("[lesson] fetch error", error);
-        setLesson((data as unknown as Lesson) ?? null);
+        console.log("[lessons.$id] id:", id, "lesson:", data, "error:", error);
+        if (error) {
+          console.error("[lesson] fetch error", error);
+          setFetchError(error.message);
+          setLesson(null);
+        } else {
+          setLesson((data as unknown as Lesson) ?? null);
+        }
+        setLoading(false);
       });
   }, [id]);
 
