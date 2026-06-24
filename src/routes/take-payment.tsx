@@ -202,43 +202,10 @@ function TakePaymentPage() {
         (data as { id?: string })?.id ??
         null;
       if (!clientSecret) throw new Error("No client secret returned");
-      setCardSessionId(pid);
-
-      // Wait for Ryft SDK to load
-      const w = window as unknown as { Ryft?: any };
-      let waited = 0;
-      while (!w.Ryft && waited < 5000) {
-        await new Promise((r) => setTimeout(r, 100));
-        waited += 100;
-      }
-      console.log("[take-payment] Ryft available:", !!w.Ryft);
-      console.log("[take-payment] clientSecret:", clientSecret);
-      if (!w.Ryft) throw new Error("Ryft SDK didn't load");
-      const initResult = w.Ryft.init({
-        publicKey: RYFT_PUBLIC_KEY,
-        clientSecret,
-        googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-        applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-      });
-      console.log("[take-payment] Ryft init result:", initResult);
-      try {
-        if (w.Ryft && w.Ryft.googlePay) {
-          w.Ryft.googlePay.mount("#google-pay-container");
-        }
-      } catch(e) { console.warn("Google Pay not available:", e); }
-      try {
-        if (w.Ryft && w.Ryft.applePay) {
-          w.Ryft.applePay.mount("#apple-pay-container");
-        }
-      } catch(e) { console.warn("Apple Pay not available:", e); }
-      w.Ryft.addEventHandler("paymentSuccess", () => {
-        toast.success("Payment received");
-        setRecorded(`£${amountNum.toFixed(2)} received via card`);
-      });
-      w.Ryft.addEventHandler("paymentError", (err: any) => {
-        console.error("[take-payment] ryft error", err);
-        toast.error("Card payment failed");
-      });
+      // Set both state values — the useEffect below will run Ryft.init()
+      // AFTER React has rendered the form HTML into the DOM.
+      setCardClientSecret(clientSecret);
+      setCardSessionId(pid ?? clientSecret);
     } catch (e) {
       console.error("[take-payment] startCard", e);
       toast.error("Couldn't start card payment");
@@ -246,6 +213,64 @@ function TakePaymentPage() {
       setCardLoading(false);
     }
   };
+
+  // Initialise Ryft AFTER the form HTML is in the DOM
+  useEffect(() => {
+    if (!cardSessionId || !cardClientSecret) return;
+    let cancelled = false;
+    (async () => {
+      // Wait for Ryft SDK to load
+      const w = window as unknown as { Ryft?: any };
+      let waited = 0;
+      while (!w.Ryft && waited < 5000) {
+        await new Promise((r) => setTimeout(r, 100));
+        waited += 100;
+      }
+      if (cancelled) return;
+      console.log("[take-payment] Ryft available:", !!w.Ryft);
+      console.log("[take-payment] clientSecret:", cardClientSecret);
+      if (!w.Ryft) {
+        toast.error("Ryft SDK didn't load");
+        return;
+      }
+      // Wait one more frame to guarantee the form HTML is committed
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+      if (cancelled) return;
+      // Confirm the form element exists before init
+      if (!document.getElementById("ryft-pay-form")) {
+        console.warn("[take-payment] ryft-pay-form not in DOM yet");
+        return;
+      }
+      try {
+        const initResult = w.Ryft.init({
+          publicKey: RYFT_PUBLIC_KEY,
+          clientSecret: cardClientSecret,
+          googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+          applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+        });
+        console.log("[take-payment] Ryft init result:", initResult);
+        try {
+          if (w.Ryft.googlePay) w.Ryft.googlePay.mount("#google-pay-container");
+        } catch (e) { console.warn("Google Pay not available:", e); }
+        try {
+          if (w.Ryft.applePay) w.Ryft.applePay.mount("#apple-pay-container");
+        } catch (e) { console.warn("Apple Pay not available:", e); }
+        w.Ryft.addEventHandler("paymentSuccess", () => {
+          toast.success("Payment received");
+          setRecorded(`£${amountNum.toFixed(2)} received via card`);
+        });
+        w.Ryft.addEventHandler("paymentError", (err: any) => {
+          console.error("[take-payment] ryft error", err);
+          toast.error("Card payment failed");
+        });
+      } catch (e) {
+        console.error("[take-payment] Ryft.init failed", e);
+        toast.error("Couldn't initialise card form");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [cardSessionId, cardClientSecret, amountNum]);
+
 
   // --- Cash / transfer ---
   const recordCash = async () => {
