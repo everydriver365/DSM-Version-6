@@ -164,6 +164,7 @@ function RootComponent() {
     "/forgotpassword",
     "/resetpassword",
     "/search",
+    "/take-payment",
   ]);
   const hideNav =
     hideNavExact.has(pathname) ||

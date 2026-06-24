@@ -69,6 +69,13 @@ function TakePaymentPage() {
   const [cashSaving, setCashSaving] = useState(false);
   const [recorded, setRecorded] = useState<string | null>(null);
 
+  // Auto-close after successful payment
+  useEffect(() => {
+    if (!recorded) return;
+    const t = setTimeout(() => navigate({ to: "/home" }), 2500);
+    return () => clearTimeout(t);
+  }, [recorded, navigate]);
+
   const amountNum = Number(amount) || 0;
 
   const press = (key: string) => {
@@ -321,7 +328,7 @@ function TakePaymentPage() {
   return (
     <div
       style={{
-        height: "calc(100dvh - 80px)",
+        height: "100dvh",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -339,9 +346,20 @@ function TakePaymentPage() {
           height: 52,
         }}
       >
+        <div style={{ width: 32 }} />
+        <div
+          style={{
+            flex: 1,
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: 600,
+          }}
+        >
+          Take payment
+        </div>
         <button
           type="button"
-          aria-label="Back"
+          aria-label="Close"
           onClick={() => navigate({ to: "/home" })}
           style={{
             background: "rgba(255,255,255,0.10)",
@@ -356,19 +374,8 @@ function TakePaymentPage() {
             cursor: "pointer",
           }}
         >
-          <ChevronLeft size={18} />
+          <X size={18} />
         </button>
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: 600,
-            marginRight: 32,
-          }}
-        >
-          Take payment
-        </div>
       </div>
 
       <div
