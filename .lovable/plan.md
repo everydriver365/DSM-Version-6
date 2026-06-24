@@ -1,17 +1,49 @@
-# Pupil dropdown on Take payment
+## Goal
+Restructure `src/routes/take-payment.tsx` so the entire screen fits within 100dvh with no scrolling, with the numpad expanding to fill remaining vertical space.
 
-Replace the free-text "For (pupil)" input on `/take-payment` with a select that lists the instructor's current (non-archived, non-cancelled, non-inactive) pupils.
+## Current layout (lines 315–658)
 
-## Changes (only `src/routes/take-payment.tsx`)
+```text
+Root (100dvh, flex col, overflow hidden)
+├── Top bar (flexShrink: 0) — back + title
+└── Content (flex: 1, gap: 10, padding 10/14/12)
+    ├── Amount (flexShrink: 0)
+    ├── Numpad (flex: 1)            ← currently above pupil/desc
+    ├── Pupil + Description (col, flexShrink: 0)
+    ├── Tabs (flexShrink: 0)
+    ├── Tab action button (flexShrink: 0)
+    └── Recorded message (flexShrink: 0)
+```
 
-1. Add state: `pupils: { id: string; name: string }[]` and replace `pupilName: string` with `pupilId: string`. Derive `pupilName` from the selected row when sending to Ryft / inserting `lesson_history`.
-2. On mount, fetch pupils for the signed-in instructor:
-   - `supabase.auth.getUser()` → `instructor_id`
-   - `supabase.from("pupils").select("id, name").eq("instructor_id", uid).is("deleted_at", null).not("status", "in", "(inactive,archived,cancelled)").order("name")`
-3. Render a `<select>` styled to match the compact "For/Description" row (same height, border, font). First option: `"For (optional) — select pupil"` with empty value. Keep the Description text input next to it as today.
-4. Pass `pupil_id` and the resolved `pupil_name` into both `create-ryft-payment` and the `lesson_history` insert. If no pupil selected, send neither and `lesson_history.pupil_id` is `null` (today it's already null on the cash path).
-5. Full-screen QR overlay shows the resolved pupil name (unchanged behaviour, just sourced from the selected pupil).
+Issues: numpad sits between amount and inputs; tab action button is separate from numpad area; on small viewports the stack can overflow.
 
-## Out of scope
-- No edits to `EndLessonWizard`, `InstructorTopBar`, or any other file.
-- No schema changes — uses existing `pupils` columns (`id`, `name`, `instructor_id`, `status`, `deleted_at`).
+## New layout
+
+```text
+Root (100dvh, flex col, overflow hidden)
+├── Top bar (flex 0, height 52px + safe-area)
+└── Content (flex 1, min-h 0, flex col, overflow hidden, max-w 480)
+    ├── Amount (flex 0, padding 8/16, fontSize 40)
+    ├── Pupil + Description row (flex 0, padding 4/16, fontSize 13)
+    ├── Tabs (flex 0, height 40, margin 8/16/0)
+    ├── Main area (flex 1, min-h 0, flex col, overflow hidden)
+    │     QR tab  → Numpad (flex 1) + "Generate QR" button (flex 0)
+    │     Card tab → Charge-card button OR Ryft form (compact, no scroll)
+    │     Cash tab → Numpad (flex 1) + method selector + Record (flex 0)
+    └── Recorded banner (flex 0, conditional)
+```
+
+## Numpad spec
+
+- 3-column grid, `gridAutoRows: 1fr`, gap 6, padding 8/16
+- Buttons: `height: 100%`, `minHeight: 0`, fontSize 20, fontWeight 600, borderRadius 10, border 0.5px #E2E6ED, background #F4F6FA
+
+## Card tab
+
+- Pre-session: "Charge card · £x.xx" button
+- After session: Google Pay / Apple Pay containers + Ryft form (`#ryft-pay-form`) + Pay button. Container uses `overflow: auto` as a safety net since Ryft form height is content-driven.
+
+## Scope
+
+- Single file: `src/routes/take-payment.tsx`
+- No changes to Ryft init logic, server function calls, QR overlay, or any other file
