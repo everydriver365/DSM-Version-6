@@ -173,6 +173,7 @@ function TakePaymentPage() {
   }, [tab]);
 
   const startCard = async () => {
+    console.log("[take-payment] Charge card clicked");
     if (amountNum <= 0) {
       toast.error("Enter an amount first");
       return;
@@ -207,13 +208,16 @@ function TakePaymentPage() {
         await new Promise((r) => setTimeout(r, 100));
         waited += 100;
       }
+      console.log("[take-payment] Ryft available:", !!w.Ryft);
+      console.log("[take-payment] clientSecret:", clientSecret);
       if (!w.Ryft) throw new Error("Ryft SDK didn't load");
-      w.Ryft.init({
+      const initResult = w.Ryft.init({
         publicKey: RYFT_PUBLIC_KEY,
         clientSecret,
         googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
         applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
       });
+      console.log("[take-payment] Ryft init result:", initResult);
       try {
         if (w.Ryft && w.Ryft.googlePay) {
           w.Ryft.googlePay.mount("#google-pay-container");
