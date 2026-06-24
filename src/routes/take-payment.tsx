@@ -24,6 +24,33 @@ function TakePaymentPage() {
   const [description, setDescription] = useState("");
   const [tab, setTab] = useState<Tab>("qr");
   const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+  const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
+
+  // Load instructor's booking-fee preference
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("pass_booking_fee")
+        .eq("id", uid)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.warn("[take-payment] load pass_booking_fee", error);
+        return;
+      }
+      if (data && typeof (data as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
+        setPassBookingFee((data as { pass_booking_fee: boolean }).pass_booking_fee);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load instructor's current pupils
   useEffect(() => {
@@ -98,6 +125,8 @@ function TakePaymentPage() {
   }, [recorded, navigate]);
 
   const amountNum = Number(amount) || 0;
+  const BOOKING_FEE = 1;
+  const totalNum = amountNum + (passBookingFee ? BOOKING_FEE : 0);
 
   const press = (key: string) => {
     setAmount((prev) => {
@@ -118,7 +147,7 @@ function TakePaymentPage() {
     }
     setQrGenerating(true);
     try {
-      const amountPence = Math.round(amountNum * 100);
+      const amountPence = Math.round(totalNum * 100);
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountPence,
@@ -126,6 +155,9 @@ function TakePaymentPage() {
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
+          booking_fee_pence: 100,
+          instructor_payout_pence: amountPence - 100,
+          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
@@ -182,7 +214,7 @@ function TakePaymentPage() {
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
           toast.success("Payment received");
-          setRecorded(`£${amountNum.toFixed(2)} received via card (QR)`);
+          setRecorded(`£${totalNum.toFixed(2)} received via card (QR)`);
           setQrPaymentId(null);
         }
       } catch (e) {
@@ -190,7 +222,7 @@ function TakePaymentPage() {
       }
     }, 5000);
     return () => clearInterval(t);
-  }, [qrPaymentId, amountNum]);
+  }, [qrPaymentId, totalNum]);
 
   // --- Card (Ryft embedded) ---
   useEffect(() => {
@@ -211,14 +243,18 @@ function TakePaymentPage() {
     }
     setCardLoading(true);
     try {
+      const amountPence = Math.round(totalNum * 100);
       const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
-          amount: Math.round(amountNum * 100),
+          amount: amountPence,
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           commission: 1,
           mode: "embedded",
+          booking_fee_pence: 100,
+          instructor_payout_pence: amountPence - 100,
+          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
@@ -285,7 +321,7 @@ function TakePaymentPage() {
         } catch (e) { console.warn("Apple Pay not available:", e); }
         w.Ryft.addEventHandler("paymentSuccess", () => {
           toast.success("Payment received");
-          setRecorded(`£${amountNum.toFixed(2)} received via card`);
+          setRecorded(`£${totalNum.toFixed(2)} received via card`);
         });
         w.Ryft.addEventHandler("paymentError", (err: any) => {
           console.error("[take-payment] ryft error", err);
@@ -297,7 +333,7 @@ function TakePaymentPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [cardSessionId, cardClientSecret, amountNum]);
+  }, [cardSessionId, cardClientSecret, totalNum]);
 
 
   // --- Cash / transfer ---
@@ -417,15 +453,28 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: "6px 16px",
+            padding: passBookingFee ? "6px 16px 0" : "6px 16px",
             fontSize: 36,
             fontWeight: 700,
             color: NAVY,
             lineHeight: 1.05,
           }}
         >
-          £{amount}
+          £{totalNum.toFixed(2)}
         </div>
+        {passBookingFee && (
+          <div
+            style={{
+              textAlign: "center",
+              flexShrink: 0,
+              padding: "2px 16px 4px",
+              fontSize: 11,
+              color: "#6B7280",
+            }}
+          >
+            £{amountNum.toFixed(2)} + £1.00 booking fee
+          </div>
+        )}
 
         {/* Pupil + Description — compact single row */}
         <div
@@ -611,7 +660,7 @@ function TakePaymentPage() {
                     cursor: "pointer",
                   }}
                 >
-                  {cardLoading ? "Loading…" : `Charge card · £${amountNum.toFixed(2)}`}
+                  {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
                 </button>
               )}
               {cardSessionId && (
@@ -637,7 +686,7 @@ function TakePaymentPage() {
                           cursor: "pointer",
                         }}
                       >
-                        Pay £{amountNum.toFixed(2)}
+                        Pay £{totalNum.toFixed(2)}
                       </button>
                     </form>
                   </div>
@@ -833,8 +882,13 @@ function TakePaymentPage() {
           >
             <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
             <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
-              £{amountNum.toFixed(2)}
+              £{totalNum.toFixed(2)}
             </div>
+            {passBookingFee && (
+              <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
+                £{amountNum.toFixed(2)} + £1.00 booking fee = £{totalNum.toFixed(2)}
+              </div>
+            )}
             {(pupilName || description) && (
               <div style={{ marginTop: 10 }}>
                 {pupilName && (
