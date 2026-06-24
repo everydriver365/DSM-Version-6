@@ -173,6 +173,7 @@ function TakePaymentPage() {
   }, [tab]);
 
   const startCard = async () => {
+    console.log("[take-payment] Charge card clicked");
     if (amountNum <= 0) {
       toast.error("Enter an amount first");
       return;
