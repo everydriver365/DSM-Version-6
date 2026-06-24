@@ -159,6 +159,10 @@ function NewPupilPage() {
     if (phone.trim()) insert.phone = phone.trim();
     if (address.trim()) insert.address = address.trim();
     if (postcode.trim()) insert.postcode = postcode.trim().toUpperCase();
+    if (leadSource) {
+      insert.lead_source = leadSource;
+      if (leadSourceDetail.trim()) insert.lead_source_detail = leadSourceDetail.trim();
+    }
     const { error } = await supabase.from("pupils").insert(insert);
     if (error) {
       setErrors({ form: error.message });
