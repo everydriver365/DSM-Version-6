@@ -28,6 +28,8 @@ interface Pupil {
   notes: string | null;
   photo_url: string | null;
   photo_consent: boolean | null;
+  lead_source: string | null;
+  lead_source_detail: string | null;
 }
 
 interface Lesson {
