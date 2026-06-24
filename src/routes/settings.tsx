@@ -131,6 +131,20 @@ function SettingsPage() {
     if (error) console.error("[settings] toggle day error", error);
   }
 
+  async function togglePassBookingFee() {
+    const next = !passBookingFee;
+    setPassBookingFee(next);
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructors")
+      .update({ pass_booking_fee: next })
+      .eq("id", userId);
+    if (error) {
+      console.error("[settings] toggle pass_booking_fee error", error);
+      setPassBookingFee(!next);
+    }
+  }
+
   async function signOut() {
     setSignOutOpen(false);
     await supabase.auth.signOut();
