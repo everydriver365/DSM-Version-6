@@ -214,7 +214,7 @@ function TakePaymentPage() {
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
           toast.success("Payment received");
-          setRecorded(`£${amountNum.toFixed(2)} received via card (QR)`);
+          setRecorded(`£${totalNum.toFixed(2)} received via card (QR)`);
           setQrPaymentId(null);
         }
       } catch (e) {
