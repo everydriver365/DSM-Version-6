@@ -323,6 +323,123 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <SectionHeader>RATES & SCHEDULING</SectionHeader>
+        <Card>
+          {/* Hourly rate */}
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Hourly rate
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Used to calculate lesson costs in the EOL wizard
+              </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
+              <input
+                type="number"
+                min={0}
+                step={0.5}
+                value={hourlyRate}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val) && val >= 0) {
+                    setHourlyRate(val);
+                    saveInstructorField("hourly_rate", val);
+                  }
+                }}
+                className="text-[14px] font-medium text-[#0F2044] text-right"
+                style={{
+                  width: 72,
+                  height: 36,
+                  borderRadius: 8,
+                  border: "1px solid #E2E6ED",
+                  padding: "0 8px",
+                  ...POPPINS,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Default lesson duration */}
+          <div
+            className="flex items-center gap-3 pt-4 mt-4"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Default lesson duration
+              </div>
+            </div>
+            <select
+              value={defaultDuration}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setDefaultDuration(val);
+                saveInstructorField("default_lesson_duration_minutes", val);
+              }}
+              className="text-[13px] text-[#0F2044]"
+              style={{
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #E2E6ED",
+                padding: "0 8px",
+                backgroundColor: "#fff",
+                ...POPPINS,
+              }}
+            >
+              <option value={45}>45 mins</option>
+              <option value={60}>1 hour</option>
+              <option value={90}>1.5 hours</option>
+              <option value={120}>2 hours</option>
+            </select>
+          </div>
+
+          {/* Buffer between lessons */}
+          <div
+            className="flex items-center gap-3 pt-4 mt-4"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Buffer between lessons
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Travel time added between lessons
+              </div>
+            </div>
+            <select
+              value={bufferMinutes}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setBufferMinutes(val);
+                saveInstructorField("lesson_buffer_minutes", val);
+              }}
+              className="text-[13px] text-[#0F2044]"
+              style={{
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #E2E6ED",
+                padding: "0 8px",
+                backgroundColor: "#fff",
+                ...POPPINS,
+              }}
+            >
+              <option value={0}>None</option>
+              <option value={10}>10 mins</option>
+              <option value={15}>15 mins</option>
+              <option value={20}>20 mins</option>
+              <option value={30}>30 mins</option>
+            </select>
+          </div>
+
+          {savingField && (
+            <div className="text-[11px] text-[#6B7280] mt-3 text-right" style={POPPINS}>
+              Saving…
+            </div>
+          )}
+        </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
         <Card className="!p-0">
