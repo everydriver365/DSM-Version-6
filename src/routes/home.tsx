@@ -103,6 +103,7 @@ interface LessonRow {
   payment_status?: string | null;
   eol_completed?: boolean | null;
   amount_due?: number | null;
+  pickup_location?: string | null;
   pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null } | null;
 }
 
