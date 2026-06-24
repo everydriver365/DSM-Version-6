@@ -153,24 +153,35 @@ function EditPupilPage() {
 
     const name = `${firstName.trim()} ${lastName.trim()}`.trim();
 
+    const blockOn = blockToggle || leadSource === "National Intensive";
+    const aNum = parseFloat(prepaidAmount);
+    const hNum = parseFloat(prepaidHours);
+    const hasBlock =
+      blockOn && Number.isFinite(aNum) && aNum > 0 && Number.isFinite(hNum) && hNum > 0;
+
+    const updatePayload: Record<string, unknown> = {
+      first_name: firstName.trim() || null,
+      last_name: lastName.trim() || null,
+      name: name || null,
+      phone: phone.trim() || null,
+      email: email.trim() || null,
+      status: status || "active",
+      test_date: testDate || null,
+      notes: notes.trim() || null,
+      address: address.trim() || null,
+      lead_source: leadSource || null,
+      lead_source_detail:
+        (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
+          ? leadSourceDetail.trim()
+          : null,
+      prepaid_hours: hasBlock ? hNum : null,
+      prepaid_amount_paid: hasBlock ? aNum : null,
+      account_balance: hasBlock ? aNum : null,
+    };
+
     const { error: updErr } = await supabase
       .from("pupils")
-      .update({
-        first_name: firstName.trim() || null,
-        last_name: lastName.trim() || null,
-        name: name || null,
-        phone: phone.trim() || null,
-        email: email.trim() || null,
-        status: status || "active",
-        test_date: testDate || null,
-        notes: notes.trim() || null,
-        address: address.trim() || null,
-        lead_source: leadSource || null,
-        lead_source_detail:
-          (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
-            ? leadSourceDetail.trim()
-            : null,
-      })
+      .update(updatePayload)
       .eq("id", id);
 
     if (updErr) {
