@@ -59,6 +59,9 @@ function TakePaymentPage() {
   // Card
   const [cardLoading, setCardLoading] = useState(false);
   const [cardSessionId, setCardSessionId] = useState<string | null>(null);
+  const [cardClientSecret, setCardClientSecret] = useState<string | null>(null);
+  
+
   
 
   // Cash/transfer
