@@ -69,6 +69,10 @@ function SettingsPage() {
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
+  const [hourlyRate, setHourlyRate] = useState<number>(35);
+  const [defaultDuration, setDefaultDuration] = useState<number>(60);
+  const [bufferMinutes, setBufferMinutes] = useState<number>(15);
+  const [savingField, setSavingField] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -81,7 +85,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -89,6 +93,15 @@ function SettingsPage() {
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
       if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
         setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
+      }
+      if (instructor && typeof (instructor as { hourly_rate?: number }).hourly_rate === "number") {
+        setHourlyRate((instructor as { hourly_rate: number }).hourly_rate);
+      }
+      if (instructor && typeof (instructor as { default_lesson_duration_minutes?: number }).default_lesson_duration_minutes === "number") {
+        setDefaultDuration((instructor as { default_lesson_duration_minutes: number }).default_lesson_duration_minutes);
+      }
+      if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
+        setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
       }
 
       const { data: profile } = await supabase
@@ -142,6 +155,19 @@ function SettingsPage() {
     if (error) {
       console.error("[settings] toggle pass_booking_fee error", error);
       setPassBookingFee(!next);
+    }
+  }
+
+  async function saveInstructorField(field: string, value: unknown) {
+    if (!userId) return;
+    setSavingField(field);
+    const { error } = await supabase
+      .from("instructors")
+      .update({ [field]: value })
+      .eq("id", userId);
+    setSavingField(null);
+    if (error) {
+      console.error(`[settings] update ${field} error`, error);
     }
   }
 
@@ -297,6 +323,123 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <SectionHeader>RATES & SCHEDULING</SectionHeader>
+        <Card>
+          {/* Hourly rate */}
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Hourly rate
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Used to calculate lesson costs in the EOL wizard
+              </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
+              <input
+                type="number"
+                min={0}
+                step={0.5}
+                value={hourlyRate}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val) && val >= 0) {
+                    setHourlyRate(val);
+                    saveInstructorField("hourly_rate", val);
+                  }
+                }}
+                className="text-[14px] font-medium text-[#0F2044] text-right"
+                style={{
+                  width: 72,
+                  height: 36,
+                  borderRadius: 8,
+                  border: "1px solid #E2E6ED",
+                  padding: "0 8px",
+                  ...POPPINS,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Default lesson duration */}
+          <div
+            className="flex items-center gap-3 pt-4 mt-4"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Default lesson duration
+              </div>
+            </div>
+            <select
+              value={defaultDuration}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setDefaultDuration(val);
+                saveInstructorField("default_lesson_duration_minutes", val);
+              }}
+              className="text-[13px] text-[#0F2044]"
+              style={{
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #E2E6ED",
+                padding: "0 8px",
+                backgroundColor: "#fff",
+                ...POPPINS,
+              }}
+            >
+              <option value={45}>45 mins</option>
+              <option value={60}>1 hour</option>
+              <option value={90}>1.5 hours</option>
+              <option value={120}>2 hours</option>
+            </select>
+          </div>
+
+          {/* Buffer between lessons */}
+          <div
+            className="flex items-center gap-3 pt-4 mt-4"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Buffer between lessons
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Travel time added between lessons
+              </div>
+            </div>
+            <select
+              value={bufferMinutes}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setBufferMinutes(val);
+                saveInstructorField("lesson_buffer_minutes", val);
+              }}
+              className="text-[13px] text-[#0F2044]"
+              style={{
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #E2E6ED",
+                padding: "0 8px",
+                backgroundColor: "#fff",
+                ...POPPINS,
+              }}
+            >
+              <option value={0}>None</option>
+              <option value={10}>10 mins</option>
+              <option value={15}>15 mins</option>
+              <option value={20}>20 mins</option>
+              <option value={30}>30 mins</option>
+            </select>
+          </div>
+
+          {savingField && (
+            <div className="text-[11px] text-[#6B7280] mt-3 text-right" style={POPPINS}>
+              Saving…
+            </div>
+          )}
+        </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
         <Card className="!p-0">
