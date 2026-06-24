@@ -84,6 +84,30 @@ function lessonStatusColor(s: string) {
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
 }
+function isLessonLive(l: Lesson) {
+  const now = new Date();
+  const start = new Date(`${l.lesson_date}T${l.lesson_time}`);
+  const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+  return now >= start && now <= end;
+}
+function isLessonPast(l: Lesson) {
+  const now = new Date();
+  const end = new Date(`${l.lesson_date}T${l.lesson_time}`);
+  end.setMinutes(end.getMinutes() + (l.duration_minutes ?? 60));
+  return now > end;
+}
+function accentColor(l: Lesson) {
+  if (isLessonLive(l)) return "#CC2229";
+  if (l.status === "completed") return "#16A34A";
+  if (l.status === "cancelled") return "#9CA3AF";
+  return "#1A52A0";
+}
+function daysBetween(a: string, b: string) {
+  const d1 = new Date(`${a}T00:00:00`);
+  const d2 = new Date(`${b}T00:00:00`);
+  const ms = d2.getTime() - d1.getTime();
+  return Math.round(ms / (1000 * 60 * 60 * 24));
+}
 
 function PupilDetailPage() {
   const { id } = Route.useParams();
