@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
@@ -59,7 +59,7 @@ function TakePaymentPage() {
   // Card
   const [cardLoading, setCardLoading] = useState(false);
   const [cardSessionId, setCardSessionId] = useState<string | null>(null);
-  const cardMountRef = useRef<HTMLDivElement | null>(null);
+  
 
   // Cash/transfer
   const [cashMethod, setCashMethod] = useState<CashMethod>("cash");
@@ -201,26 +201,36 @@ function TakePaymentPage() {
       setCardSessionId(pid);
 
       // Wait for Ryft SDK to load
-      const w = window as unknown as { Ryft?: { mount: (opts: unknown) => void } };
+      const w = window as unknown as { Ryft?: any };
       let waited = 0;
       while (!w.Ryft && waited < 5000) {
         await new Promise((r) => setTimeout(r, 100));
         waited += 100;
       }
       if (!w.Ryft) throw new Error("Ryft SDK didn't load");
-      if (cardMountRef.current) cardMountRef.current.innerHTML = "";
-      w.Ryft.mount({
+      w.Ryft.init({
         publicKey: RYFT_PUBLIC_KEY,
         clientSecret,
-        selector: "#ryft-card-mount",
-        onSuccess: () => {
-          toast.success("Payment received");
-          setRecorded(`£${amountNum.toFixed(2)} received via card`);
-        },
-        onError: (err: unknown) => {
-          console.error("[take-payment] ryft error", err);
-          toast.error("Card payment failed");
-        },
+        googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+        applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+      });
+      try {
+        if (w.Ryft && w.Ryft.googlePay) {
+          w.Ryft.googlePay.mount("#google-pay-container");
+        }
+      } catch(e) { console.warn("Google Pay not available:", e); }
+      try {
+        if (w.Ryft && w.Ryft.applePay) {
+          w.Ryft.applePay.mount("#apple-pay-container");
+        }
+      } catch(e) { console.warn("Apple Pay not available:", e); }
+      w.Ryft.addEventHandler("paymentSuccess", () => {
+        toast.success("Payment received");
+        setRecorded(`£${amountNum.toFixed(2)} received via card`);
+      });
+      w.Ryft.addEventHandler("paymentError", (err: any) => {
+        console.error("[take-payment] ryft error", err);
+        toast.error("Card payment failed");
       });
     } catch (e) {
       console.error("[take-payment] startCard", e);
@@ -520,11 +530,35 @@ function TakePaymentPage() {
                   {cardLoading ? "Loading…" : `Charge card · £${amountNum.toFixed(2)}`}
                 </button>
               )}
-              <div
-                id="ryft-card-mount"
-                ref={cardMountRef}
-                style={{ marginTop: 8, minHeight: cardSessionId ? 0 : 0 }}
-              />
+              {cardSessionId && (
+                <>
+                  <div id="google-pay-container" style={{ marginBottom: 12 }} />
+                  <div id="apple-pay-container" style={{ marginBottom: 12 }} />
+                  <div style={{ textAlign: 'center', color: '#9CA3AF', fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
+                  <div className="Ryft--paysection">
+                    <form id="ryft-pay-form" className="Ryft--payform">
+                      <button
+                        id="pay-btn"
+                        type="submit"
+                        style={{
+                          width: "100%",
+                          marginTop: 12,
+                          background: "#0F2044",
+                          color: "#fff",
+                          border: 0,
+                          borderRadius: 10,
+                          padding: "14px 16px",
+                          fontSize: 16,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Pay £{amountNum.toFixed(2)}
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
