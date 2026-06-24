@@ -194,6 +194,23 @@ function EditPupilPage() {
       setSaving(false);
       return;
     }
+
+    if (hasBlock && aNum > originalPrepaidAmount.current) {
+      const delta = aNum - originalPrepaidAmount.current;
+      const { data: userData } = await supabase.auth.getUser();
+      const { error: phErr } = await supabase.from("lesson_history").insert({
+        instructor_id: userData.user?.id ?? null,
+        pupil_id: id,
+        lesson_date: new Date().toISOString().slice(0, 10),
+        payment_status: "paid",
+        payment_method: paymentMethod,
+        amount: delta,
+        notes: topUpNotes.trim() || `Block booking top-up: +£${delta.toFixed(2)}`,
+      });
+      if (phErr) console.error("[edit-pupil] top-up payment insert error", phErr);
+      originalPrepaidAmount.current = aNum;
+    }
+
     toast.success("Pupil updated");
     navigate({ to: "/pupils/$id", params: { id } });
   }
