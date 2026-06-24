@@ -88,7 +88,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes, address")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
