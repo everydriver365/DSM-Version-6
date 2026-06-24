@@ -1680,7 +1680,7 @@ function HomePage() {
           style={{ padding: "0 16px 8px 16px" }}
         >
           <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-            Today's schedule
+            Schedule
           </div>
           <button
             type="button"
@@ -1697,6 +1697,29 @@ function HomePage() {
             View all →
           </button>
         </div>
+
+        {/* Tab switcher */}
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            margin: "0 16px 8px 16px",
+            padding: 3,
+            backgroundColor: "#F3F4F6",
+            borderRadius: 10,
+          }}
+        >
+          <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
+            Today
+          </TabBtn>
+          <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
+            Tomorrow
+          </TabBtn>
+          <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
+            Next
+          </TabBtn>
+        </div>
+
 
         {todayLessons.length === 0 ? (
           <div
