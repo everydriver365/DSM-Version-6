@@ -588,7 +588,7 @@ function HomePage() {
     const d = lessonDateTime(l);
     return d >= tomorrowStart && d < dayAfter;
   });
-  const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
+  const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now);
   const nextTabLessons = nextLessons.slice(0, 5);
 
   const weekLessons = lessons.filter((l) => {
