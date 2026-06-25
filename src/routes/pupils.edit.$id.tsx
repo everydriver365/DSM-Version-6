@@ -123,6 +123,11 @@ function EditPupilPage() {
           prepaid_hours: number | null;
           prepaid_amount_paid: number | null;
           account_balance: number | null;
+          ni_amount_total: number | null;
+          ni_payer: string | null;
+          ni_amount_paid: number | null;
+          ni_payment_date: string | null;
+          ni_reference: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -141,6 +146,11 @@ function EditPupilPage() {
         setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
         setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
         originalPrepaidAmount.current = p.prepaid_amount_paid ?? 0;
+        setNiAmountTotal(p.ni_amount_total != null ? String(p.ni_amount_total) : "");
+        setNiPayer(p.ni_payer ?? "pupil");
+        setNiAmountPaid(p.ni_amount_paid != null ? String(p.ni_amount_paid) : "");
+        setNiPaymentDate(p.ni_payment_date ?? "");
+        setNiReference(p.ni_reference ?? "");
       }
       setLoading(false);
     })();
