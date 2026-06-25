@@ -594,15 +594,15 @@ function SettingsPage() {
           <button
             type="button"
             onClick={saveCoverage}
-            disabled={savingCoverage}
+            disabled={savingCoverage || !postcodeValid}
             className="w-full text-[14px] font-semibold text-white mt-5"
             style={{
               height: 48,
               borderRadius: 10,
               backgroundColor: "#0F2044",
               border: "none",
-              opacity: savingCoverage ? 0.7 : 1,
-              cursor: savingCoverage ? "not-allowed" : "pointer",
+              opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
+              cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
               ...POPPINS,
             }}
           >
