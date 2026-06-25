@@ -350,20 +350,12 @@ function PupilsIndexPage() {
                           >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </span>
-                          {balance < 0 && (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#CC2229", ...POPPINS }}
-                            >
-                              £{Math.abs(balance).toFixed(2)}
-                            </span>
-                          )}
-                          {balance > 0 && (
+                          {paid > 0 && (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#16A34A", ...POPPINS }}
                             >
-                              +£{balance.toFixed(2)}
+                              £{paid.toFixed(2)} paid
                             </span>
                           )}
                         </div>
