@@ -488,18 +488,17 @@ function HomePage() {
       setOutstanding((pupilRows ?? []).reduce((s, p) => s + Number(p.balance_owed ?? 0), 0));
 
       const { data: payRows } = await supabase
-        .from("payments")
-        .select("amount, paid_at")
+        .from("lesson_history")
+        .select("lesson_cost, payment_status, created_at")
         .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .gte("paid_at", weekStart.toISOString())
-        .lt("paid_at", weekEnd.toISOString());
+        .eq("payment_status", "paid")
+        .gte("created_at", weekStart.toISOString());
       let wk = 0;
       let td = 0;
       (payRows ?? []).forEach((p) => {
-        const amt = Number(p.amount ?? 0);
+        const amt = Number(p.lesson_cost ?? 0);
         wk += amt;
-        if (new Date(p.paid_at) >= todayStart) td += amt;
+        if (new Date(p.created_at) >= todayStart) td += amt;
       });
       setWeekEarnings(wk);
       setTodayEarnings(td);
