@@ -189,8 +189,6 @@ function PupilSyllabusPage() {
     }
   }
 
-  const activeCategory = DVSA_SYLLABUS.find((c) => c.key === activeCat)!;
-
   return (
     <div className="min-h-screen bg-white pb-28" style={POPPINS}>
       {/* Top bar */}
