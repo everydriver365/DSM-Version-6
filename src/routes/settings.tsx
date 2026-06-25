@@ -12,6 +12,7 @@ import {
   PoundSterling,
   Crown,
   MapPin,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 
