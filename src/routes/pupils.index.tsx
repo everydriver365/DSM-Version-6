@@ -105,6 +105,7 @@ function PupilsIndexPage() {
       if (pupilIds.length === 0) {
         setLessonCountMap({});
         setBalanceMap({});
+        setHoursMap({});
         return;
       }
 
