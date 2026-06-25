@@ -164,19 +164,27 @@ function PupilSyllabusPage() {
         setSaving(false);
         return;
       }
-      const changed = Object.keys(levels).filter(
-        (k) => (levels[k] ?? 0) !== (initial[k] ?? 0),
-      );
-      const rows = changed.map((competency_id) => ({
+      const allKeys = new Set([...Object.keys(levels), ...Object.keys(initial)]);
+      const changedLevels: Record<string, { from: number; to: number }> = {};
+      for (const k of allKeys) {
+        const from = initial[k] ?? 0;
+        const to = levels[k] ?? 0;
+        if (from !== to) changedLevels[k] = { from, to };
+      }
+      console.log("[syllabus] save triggered, changes:", changedLevels);
+      const payload = Object.keys(changedLevels).map((competency_id) => ({
         pupil_id: id,
         instructor_id: instructorId,
         competency_id,
         level: levels[competency_id] ?? 0,
       }));
-      if (rows.length) {
-        const { error } = await supabase
+      console.log("[syllabus] upsert payload:", payload);
+      if (payload.length) {
+        const { data, error } = await supabase
           .from("pupil_syllabus_progress")
-          .upsert(rows, { onConflict: "pupil_id,competency_id" });
+          .upsert(payload, { onConflict: "pupil_id,competency_id" })
+          .select();
+        console.log("[syllabus] upsert result:", data, error);
         if (error) throw error;
       }
       setInitial({ ...levels });
