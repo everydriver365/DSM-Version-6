@@ -23,6 +23,8 @@ interface Pupil {
   lesson_count: number | null;
   balance_owed: number | null;
   prepaid_hours: number | null;
+  ni_amount_total: number | null;
+  lead_source: string | null;
   status: string | null;
 }
 
