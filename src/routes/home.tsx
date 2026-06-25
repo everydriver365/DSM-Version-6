@@ -1053,7 +1053,7 @@ function HomePage() {
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
     { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Enquiries", route: "/enquiries" },
-    { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitinglist" },
+    { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
     { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "CPD", route: "/cpd" },
