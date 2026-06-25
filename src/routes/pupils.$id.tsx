@@ -147,7 +147,16 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap, theory_pass")
+      .select(`
+        id, name, first_name, last_name, phone, email, status,
+        lesson_count, balance_owed, account_balance,
+        test_date, test_time, test_centre,
+        prepaid_hours, prepaid_amount_paid,
+        notes, profile_image_url, photo_url, photo_consent,
+        address, postcode, lead_source, lead_source_detail,
+        theory_pass, wants_swap,
+        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference
+      `)
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -156,7 +165,19 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
-        console.log("[pupils.$id] pupil data:", p, "lessons:", p?.lesson_count, "balance:", p?.balance_owed);
+        console.log("[pupils.$id] pupil data:", p, "lesson_count:", p?.lesson_count, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+      });
+
+    supabase
+      .from("lessons")
+      .select("id", { count: "exact", head: true })
+      .eq("pupil_id", id)
+      .eq("status", "completed")
+      .is("deleted_at", null)
+      .then(({ count, error }) => {
+        if (error) console.error("[pupil] lesson count error", error);
+        setActualLessonCount(count ?? 0);
+        console.log("[pupils.$id] actual completed lesson count:", count);
       });
 
     supabase
