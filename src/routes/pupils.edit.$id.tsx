@@ -289,6 +289,31 @@ function EditPupilPage() {
       originalPrepaidAmount.current = aNum;
     }
 
+    if (leadSource === "National Intensive" && wantsSwap) {
+      const altCentres = [swapCentre1, swapCentre2, swapCentre3]
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(", ") || "—";
+      const swapPayload = {
+        pupil_id: id,
+        name: `${firstName.trim()} ${lastName.trim()}`.trim() || null,
+        email: email.trim() || null,
+        phone: phone.trim() || null,
+        test_centre: testCentre.trim() || null,
+        current_test_date: testDate || null,
+        current_test_time: testTime || null,
+        preferred_earliest: swapEarliestDate || null,
+        preferred_latest: swapLatestDate || null,
+        notes: `Preferred time: ${swapPreferredTime}. Alt centres: ${altCentres}`,
+        status: "pending",
+      };
+      const { error: swapErr } = await supabase
+        .from("test_swap_requests")
+        .upsert(swapPayload, { onConflict: "pupil_id" });
+      if (swapErr) console.error("[edit-pupil] swap upsert error", swapErr);
+    }
+
+
     toast.success("Pupil updated");
     navigate({ to: "/pupils/$id", params: { id } });
   }
