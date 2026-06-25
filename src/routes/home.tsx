@@ -481,13 +481,30 @@ function HomePage() {
       setNextLesson((validNext ?? null) as unknown as LessonRow | null);
 
 
-      const { data: pupilRows } = await supabase
-        .from("pupils")
-        .select("balance_owed")
+      const { data: unpaidLessons } = await supabase
+        .from("lessons")
+        .select("pupil_id, amount_due")
         .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .gt("balance_owed", 0);
-      setOutstanding((pupilRows ?? []).reduce((s, p) => s + Number(p.balance_owed ?? 0), 0));
+        .eq("payment_status", "unpaid")
+        .gt("amount_due", 0)
+        .is("deleted_at", null);
+
+      const { data: pupilsData } = await supabase
+        .from("pupils")
+        .select("id, prepaid_hours")
+        .eq("instructor_id", userId);
+
+      const prepaidPupilIds = new Set(
+        (pupilsData || [])
+          .filter((p: any) => Number(p.prepaid_hours || 0) > 0)
+          .map((p: any) => p.id)
+      );
+
+      const outstandingAmt = (unpaidLessons || [])
+        .filter((l: any) => !prepaidPupilIds.has(l.pupil_id))
+        .reduce((sum: number, l: any) => sum + Number(l.amount_due || 0), 0);
+
+      setOutstanding(outstandingAmt);
 
       // Source 1: EOL payments recorded in lesson_history
       const { data: historyRows } = await supabase
