@@ -420,15 +420,18 @@ function PupilDetailPage() {
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
 
-            {/* Test Readiness */}
             {(() => {
-              const total = progressData?.total ?? 0;
-              const competent = progressData?.competent ?? 0;
-              const pct = total > 0 ? Math.round((competent / total) * 100) : 0;
+              const lessonCount = Number(pupil?.lesson_count ?? 0);
+              const theoryPass = !!pupil?.theory_pass;
+              const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
+              const lessonPoints = Math.min((lessonCount / 40) * 30, 30);
+              const theoryPoints = theoryPass ? 10 : 0;
+              const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
+              console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
               let barColor = "#CC2229";
-              if (pct >= 100) barColor = "#16A34A";
-              else if (pct >= 71) barColor = "#1A52A0";
-              else if (pct >= 41) barColor = "#F59E0B";
+              if (score >= 100) barColor = "#16A34A";
+              else if (score >= 71) barColor = "#1A52A0";
+              else if (score >= 41) barColor = "#F59E0B";
               return (
                 <div className="mt-4">
                   <div
@@ -444,25 +447,25 @@ function PupilDetailPage() {
                     >
                       <div
                         className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, backgroundColor: barColor }}
+                        style={{ width: `${score}%`, backgroundColor: barColor }}
                       />
                     </div>
                     <div
                       className="text-[14px] font-bold"
                       style={{ color: "#0F2044", ...POPPINS }}
                     >
-                      {pct}%
+                      {score}%
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center justify-between mt-2 gap-2">
                     <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                      {competent} of {total} syllabus items competent
+                      Syllabus {Math.round(syllabusPoints)}/60 · Lessons {Math.round(lessonPoints)}/30 · Theory {theoryPoints}/10
                     </div>
                     <Button
                       variant="ghost"
-                      onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
+                      onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
                     >
-                      View progress
+                      View
                     </Button>
                   </div>
                 </div>
