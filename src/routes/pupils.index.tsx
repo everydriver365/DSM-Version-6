@@ -22,6 +22,7 @@ interface Pupil {
   email: string | null;
   lesson_count: number | null;
   balance_owed: number | null;
+  prepaid_hours: number | null;
   status: string | null;
 }
 
@@ -52,6 +53,7 @@ function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
   const [balanceMap, setBalanceMap] = useState<Record<string, { owed: number; paid: number }>>({});
+  const [hoursMap, setHoursMap] = useState<Record<string, number>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -69,7 +71,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, status, deleted_at")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, status, deleted_at")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -103,6 +105,7 @@ function PupilsIndexPage() {
       if (pupilIds.length === 0) {
         setLessonCountMap({});
         setBalanceMap({});
+        setHoursMap({});
         return;
       }
 
@@ -131,12 +134,12 @@ function PupilsIndexPage() {
       try {
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due, payment_status")
+          .select("pupil_id, amount_due, payment_status, duration_minutes")
           .eq("instructor_id", uid)
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
         console.log("[pupils] lesson balances:", lessonBalances);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null }[]).reduce(
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null; duration_minutes: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
             if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
@@ -151,9 +154,20 @@ function PupilsIndexPage() {
           {} as Record<string, { owed: number; paid: number }>,
         );
         setBalanceMap(bMap);
+
+        const hMap = ((lessonBalances ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
+          (acc, row) => {
+            if (!row.pupil_id) return acc;
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.duration_minutes) || 0) / 60;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+        setHoursMap(hMap);
       } catch (e) {
         console.error("[pupils] balance fetch crashed", e);
         setBalanceMap({});
+        setHoursMap({});
       }
     })();
   }, [tab]);
@@ -310,6 +324,9 @@ function PupilsIndexPage() {
               const b = balanceMap[p.id];
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
+              const prepaid = Number(p.prepaid_hours) || 0;
+              const hoursUsed = hoursMap[p.id] || 0;
+              const hoursRemaining = prepaid - hoursUsed;
               return (
                 <div key={p.id}>
                   <Link
@@ -360,6 +377,22 @@ function PupilsIndexPage() {
                               All paid ✓
                             </span>
                           ) : null}
+                          {prepaid > 0 && hoursRemaining > 0 && (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#1A52A0", ...POPPINS }}
+                            >
+                              {hoursRemaining.toFixed(1)}h remaining
+                            </span>
+                          )}
+                          {prepaid > 0 && hoursRemaining <= 0 && (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#B45309", ...POPPINS }}
+                            >
+                              Hours used
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
