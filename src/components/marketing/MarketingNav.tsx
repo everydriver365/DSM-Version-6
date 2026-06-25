@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabaseClient";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
+
+const NAVY = "#0F2044";
+const FONT = "Poppins, system-ui, sans-serif";
 
 const links = [
   { to: "/features", label: "Features" },
@@ -11,22 +13,8 @@ const links = [
 ] as const;
 
 export function MarketingNav() {
-  const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) setSignedIn(!!data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setSignedIn(!!session);
-    });
-    return () => {
-      cancelled = true;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <header
@@ -34,152 +22,201 @@ export function MarketingNav() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: "rgba(255,255,255,0.92)",
-        backdropFilter: "saturate(180%) blur(12px)",
-        borderBottom: "1px solid #E6E8EE",
+        background: NAVY,
+        width: "100%",
+        fontFamily: FONT,
       }}
     >
       <div
         style={{
-          maxWidth: 1120,
+          maxWidth: 1280,
           margin: "0 auto",
-          padding: "14px 20px",
+          height: 64,
+          padding: "0 16px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 16,
         }}
       >
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "linear-gradient(135deg,#0F2044,#1E40AF)",
-              color: "#fff",
-              display: "grid",
-              placeItems: "center",
-              fontWeight: 800,
-              fontSize: 14,
-              letterSpacing: 0.5,
-            }}
-          >
-            D
-          </div>
-          <span style={{ fontWeight: 700, color: "#0F172A", fontSize: 17 }}>DSM</span>
-          <span style={{ color: "#64748B", fontSize: 12, marginLeft: 2 }}>by EveryDriver</span>
+        {/* Left: wordmark */}
+        <Link
+          to="/"
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: 8,
+            textDecoration: "none",
+          }}
+        >
+          <span style={{ color: "#fff", fontSize: 20, fontWeight: 700, letterSpacing: 0.2 }}>
+            DSM
+          </span>
+          <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 14 }}>
+            by EveryDriver
+          </span>
         </Link>
 
-        <nav style={{ display: "flex", gap: 22, alignItems: "center" }} className="dsm-mkt-nav">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              style={{ color: "#334155", textDecoration: "none", fontSize: 14, fontWeight: 500 }}
-              activeProps={{ style: { color: "#0F2044", fontWeight: 700 } }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {signedIn ? (
-            <Link
-              to="/home"
-              style={{
-                padding: "9px 16px",
-                borderRadius: 10,
-                background: "#0F2044",
-                color: "#fff",
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              Back to DSM →
-            </Link>
-          ) : (
-            <>
+        {/* Centre: desktop nav */}
+        <nav
+          className="dsm-mkt-nav"
+          style={{ display: "flex", alignItems: "center", gap: 24 }}
+        >
+          {links.map((l) => {
+            const active = pathname === l.to;
+            return (
               <Link
-                to="/login"
-                style={{ color: "#0F2044", fontSize: 14, fontWeight: 600, textDecoration: "none" }}
-              >
-                Log in
-              </Link>
-              <Link
-                to="/register"
+                key={l.to}
+                to={l.to}
                 style={{
-                  padding: "9px 16px",
-                  borderRadius: 10,
-                  background: "#0F2044",
-                  color: "#fff",
-                  fontSize: 14,
-                  fontWeight: 600,
+                  color: active ? "#fff" : "rgba(255,255,255,0.8)",
                   textDecoration: "none",
+                  fontSize: 14,
+                  fontWeight: active ? 600 : 500,
+                  fontFamily: FONT,
                 }}
               >
-                Start free trial
+                {l.label}
               </Link>
-            </>
-          )}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
-            className="dsm-mkt-burger"
+            );
+          })}
+        </nav>
+
+        {/* Right: CTAs */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="dsm-mkt-cta">
+          <Link
+            to="/login"
             style={{
-              display: "none",
-              width: 36,
-              height: 36,
+              padding: "8px 14px",
+              border: "1px solid rgba(255,255,255,0.4)",
               borderRadius: 8,
-              border: "1px solid #E2E8F0",
-              background: "#fff",
-              fontSize: 18,
-              cursor: "pointer",
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: "none",
+              fontFamily: FONT,
             }}
           >
-            ☰
-          </button>
+            Log in
+          </Link>
+          <Link
+            to="/register"
+            style={{
+              padding: "8px 14px",
+              borderRadius: 8,
+              background: "#fff",
+              color: NAVY,
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              fontFamily: FONT,
+            }}
+          >
+            Get started free
+          </Link>
         </div>
+
+        {/* Hamburger */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label="Menu"
+          className="dsm-mkt-burger"
+          style={{
+            display: "none",
+            width: 40,
+            height: 40,
+            borderRadius: 8,
+            border: "1px solid rgba(255,255,255,0.3)",
+            background: "transparent",
+            color: "#fff",
+            fontSize: 20,
+            cursor: "pointer",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          ☰
+        </button>
       </div>
 
+      {/* Mobile dropdown */}
       {open && (
         <div
           className="dsm-mkt-mobile"
           style={{
-            borderTop: "1px solid #E6E8EE",
-            padding: "8px 16px 14px",
+            background: NAVY,
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            padding: "12px 16px 20px",
             display: "flex",
             flexDirection: "column",
             gap: 4,
-            background: "#fff",
+            fontFamily: FONT,
           }}
         >
-          {links.map((l) => (
+          {links.map((l) => {
+            const active = pathname === l.to;
+            return (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setOpen(false)}
+                style={{
+                  padding: "12px 8px",
+                  color: active ? "#fff" : "rgba(255,255,255,0.8)",
+                  fontSize: 15,
+                  fontWeight: active ? 600 : 500,
+                  textDecoration: "none",
+                  borderRadius: 8,
+                }}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
             <Link
-              key={l.to}
-              to={l.to}
+              to="/login"
               onClick={() => setOpen(false)}
               style={{
-                padding: "10px 8px",
-                color: "#0F172A",
-                textDecoration: "none",
+                width: "100%",
+                padding: "12px 16px",
+                border: "1px solid rgba(255,255,255,0.4)",
+                borderRadius: 8,
+                color: "#fff",
                 fontSize: 15,
                 fontWeight: 500,
-                borderRadius: 8,
+                textDecoration: "none",
+                textAlign: "center",
               }}
             >
-              {l.label}
+              Log in
             </Link>
-          ))}
+            <Link
+              to="/register"
+              onClick={() => setOpen(false)}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                background: "#fff",
+                color: NAVY,
+                borderRadius: 8,
+                fontSize: 15,
+                fontWeight: 600,
+                textDecoration: "none",
+                textAlign: "center",
+              }}
+            >
+              Get started free
+            </Link>
+          </div>
         </div>
       )}
 
       <style>{`
-        @media (max-width: 820px) {
+        @media (max-width: 880px) {
           .dsm-mkt-nav { display: none !important; }
-          .dsm-mkt-burger { display: inline-flex !important; align-items:center; justify-content:center; }
+          .dsm-mkt-cta { display: none !important; }
+          .dsm-mkt-burger { display: inline-flex !important; }
         }
       `}</style>
     </header>
