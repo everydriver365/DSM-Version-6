@@ -1020,12 +1020,12 @@ function SettingsPage() {
             <button
               type="button"
               onClick={addPricingRule}
-              disabled={savingRule}
+              disabled={savingRule || hasInvalidPostcodes}
               className="w-full text-[14px] font-semibold text-white mt-4"
               style={{
                 height: 48, borderRadius: 10, backgroundColor: "#0F2044", border: "none",
-                opacity: savingRule ? 0.6 : 1,
-                cursor: savingRule ? "not-allowed" : "pointer",
+                opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
+                cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                 ...POPPINS,
               }}
