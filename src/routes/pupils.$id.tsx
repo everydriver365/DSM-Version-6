@@ -30,6 +30,11 @@ interface Pupil {
   photo_consent: boolean | null;
   lead_source: string | null;
   lead_source_detail: string | null;
+  ni_amount_total: number | null;
+  ni_payer: string | null;
+  ni_amount_paid: number | null;
+  ni_payment_date: string | null;
+  ni_reference: string | null;
 }
 
 interface Lesson {
@@ -127,7 +132,7 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -642,6 +647,75 @@ function PupilDetailPage() {
           </>
         )}
 
+        {pupil?.lead_source === "National Intensive" && (() => {
+          const total = Number(pupil.ni_amount_total ?? 0);
+          const paid = Number(pupil.ni_amount_paid ?? 0);
+          const outstanding = total - paid;
+          let paidColor = "#CC2229";
+          if (total > 0 && paid >= total) paidColor = "#16A34A";
+          else if (paid > 0) paidColor = "#F59E0B";
+          const payerLabel =
+            pupil.ni_payer === "national_intensives"
+              ? "National Intensives (agency)"
+              : pupil.ni_payer === "pupil"
+              ? "Pupil direct"
+              : "—";
+          return (
+            <div
+              className="bg-white"
+              style={{
+                marginTop: 12,
+                padding: 16,
+                borderRadius: 12,
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#E2E6ED",
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: "#EEF4FB", color: "#1A52A0", ...POPPINS }}
+                >
+                  National Intensive
+                </span>
+                <span
+                  className="text-[13px] font-semibold"
+                  style={{ color: "#0F2044", ...POPPINS }}
+                >
+                  Payment details
+                </span>
+              </div>
+              <NIRow label="Total course fee" value={pupil.ni_amount_total != null ? `£${total.toFixed(2)}` : "—"} />
+              <NIRow label="Paying party" value={payerLabel} />
+              <NIRow
+                label="Amount paid"
+                value={`£${paid.toFixed(2)}`}
+                valueColor={paidColor}
+              />
+              <NIRow
+                label="Payment date"
+                value={pupil.ni_payment_date ? new Date(`${pupil.ni_payment_date}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Not recorded"}
+              />
+              <NIRow label="Reference" value={pupil.ni_reference || "—"} />
+              <NIRow
+                label="Outstanding"
+                value={outstanding <= 0 && total > 0 ? "Settled" : `£${outstanding.toFixed(2)}`}
+                valueColor={outstanding > 0 ? "#CC2229" : "#16A34A"}
+              />
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                className="mt-3 text-[13px] font-medium"
+                style={{ color: "#1A52A0", ...POPPINS }}
+              >
+                Edit payment details
+              </button>
+            </div>
+          );
+        })()}
+
+
         <SectionHeader>NOTES</SectionHeader>
         <textarea
           rows={3}
@@ -712,6 +786,30 @@ function StatChip({
       >
         {label}
       </div>
+    </div>
+  );
+}
+
+function NIRow({
+  label,
+  value,
+  valueColor = "#0F2044",
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
+  return (
+    <div
+      className="flex items-center justify-between py-1.5"
+      style={{ borderTop: "0.5px solid #F3F4F6" }}
+    >
+      <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        {label}
+      </span>
+      <span className="text-[13px] font-semibold" style={{ color: valueColor, ...POPPINS }}>
+        {value}
+      </span>
     </div>
   );
 }

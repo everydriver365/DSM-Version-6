@@ -76,6 +76,11 @@ function EditPupilPage() {
   const [prepaidHours, setPrepaidHours] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [topUpNotes, setTopUpNotes] = useState("");
+  const [niAmountTotal, setNiAmountTotal] = useState("");
+  const [niPayer, setNiPayer] = useState("pupil");
+  const [niAmountPaid, setNiAmountPaid] = useState("");
+  const [niPaymentDate, setNiPaymentDate] = useState("");
+  const [niReference, setNiReference] = useState("");
   const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
@@ -95,7 +100,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail, prepaid_hours, prepaid_amount_paid, account_balance")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail, prepaid_hours, prepaid_amount_paid, account_balance, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
@@ -118,6 +123,11 @@ function EditPupilPage() {
           prepaid_hours: number | null;
           prepaid_amount_paid: number | null;
           account_balance: number | null;
+          ni_amount_total: number | null;
+          ni_payer: string | null;
+          ni_amount_paid: number | null;
+          ni_payment_date: string | null;
+          ni_reference: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
@@ -136,6 +146,11 @@ function EditPupilPage() {
         setPrepaidHours(p.prepaid_hours != null ? String(p.prepaid_hours) : "");
         setPrepaidAmount(p.prepaid_amount_paid != null ? String(p.prepaid_amount_paid) : "");
         originalPrepaidAmount.current = p.prepaid_amount_paid ?? 0;
+        setNiAmountTotal(p.ni_amount_total != null ? String(p.ni_amount_total) : "");
+        setNiPayer(p.ni_payer ?? "pupil");
+        setNiAmountPaid(p.ni_amount_paid != null ? String(p.ni_amount_paid) : "");
+        setNiPaymentDate(p.ni_payment_date ?? "");
+        setNiReference(p.ni_reference ?? "");
       }
       setLoading(false);
     })();
@@ -181,6 +196,21 @@ function EditPupilPage() {
       prepaid_hours: hasBlock ? hNum : null,
       prepaid_amount_paid: hasBlock ? aNum : null,
       account_balance: hasBlock ? aNum : null,
+      ni_amount_total:
+        leadSource === "National Intensive" && niAmountTotal.trim() !== ""
+          ? parseFloat(niAmountTotal)
+          : null,
+      ni_payer: leadSource === "National Intensive" ? niPayer : null,
+      ni_amount_paid:
+        leadSource === "National Intensive" && niAmountPaid.trim() !== ""
+          ? parseFloat(niAmountPaid)
+          : null,
+      ni_payment_date:
+        leadSource === "National Intensive" && niPaymentDate ? niPaymentDate : null,
+      ni_reference:
+        leadSource === "National Intensive" && niReference.trim()
+          ? niReference.trim()
+          : null,
     };
 
     const { error: updErr } = await supabase
@@ -410,6 +440,61 @@ function EditPupilPage() {
               })()}
             </div>
           )}
+
+          {leadSource === "National Intensive" && (
+            <div
+              className="flex flex-col gap-3 p-3 rounded-lg"
+              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+            >
+              <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
+                NATIONAL INTENSIVE PAYMENT
+              </p>
+              <Input
+                label="Total course fee (£)"
+                type="number"
+                inputMode="decimal"
+                value={niAmountTotal}
+                onChange={(e) => setNiAmountTotal(e.target.value)}
+                placeholder="1500.00"
+              />
+              <div>
+                <FieldLabel htmlFor="ni_payer">Who pays?</FieldLabel>
+                <select
+                  id="ni_payer"
+                  value={niPayer}
+                  onChange={(e) => setNiPayer(e.target.value)}
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  style={fieldBorder}
+                >
+                  <option value="pupil">Pupil pays directly</option>
+                  <option value="national_intensives">National Intensives (agency pays)</option>
+                </select>
+              </div>
+              <Input
+                label="Amount paid so far (£)"
+                type="number"
+                inputMode="decimal"
+                value={niAmountPaid}
+                onChange={(e) => setNiAmountPaid(e.target.value)}
+                placeholder="0.00"
+              />
+              <Input
+                label="Payment date"
+                type="date"
+                value={niPaymentDate}
+                onChange={(e) => setNiPaymentDate(e.target.value)}
+              />
+              <Input
+                label="Payment reference"
+                type="text"
+                value={niReference}
+                onChange={(e) => setNiReference(e.target.value)}
+                placeholder="Bank transfer ref / NI booking ref"
+              />
+            </div>
+          )}
+
+
 
 
           <div>
