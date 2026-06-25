@@ -831,11 +831,41 @@ function PupilDetailPage() {
                 value={pupil.ni_payment_date ? new Date(`${pupil.ni_payment_date}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Not recorded"}
               />
               <NIRow label="Reference" value={pupil.ni_reference || "—"} />
-              <NIRow
-                label="Outstanding"
-                value={outstanding <= 0 && total > 0 ? "Settled" : `£${outstanding.toFixed(2)}`}
-                valueColor={outstanding > 0 ? "#CC2229" : "#16A34A"}
-              />
+              {total > 0 && (
+                outstanding > 0 ? (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      backgroundColor: "#FEF2F2",
+                      border: "1px solid #FECACA",
+                      color: "#CC2229",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      ...POPPINS,
+                    }}
+                  >
+                    £{outstanding.toFixed(2)} outstanding from National Intensives
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      backgroundColor: "#F0FDF4",
+                      border: "1px solid #BBF7D0",
+                      color: "#16A34A",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      ...POPPINS,
+                    }}
+                  >
+                    Fully paid ✓
+                  </div>
+                )
+              )}
 
               {(() => {
                 const prepaid = Number(pupil.prepaid_hours ?? 0);
