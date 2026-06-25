@@ -372,7 +372,8 @@ function PupilsIndexPage() {
                         >
                           {p.name}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5">
+                        <div className="flex flex-col gap-0.5 mt-0.5">
+                        <div className="flex items-center gap-2">
                           {isPrepaidPupil ? (
                             prepaid > 0 ? (
                               hoursRemaining <= 0 ? (
