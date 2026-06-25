@@ -249,13 +249,33 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
       const { data: p } = await supabase
         .from("pupils")
-        .select("balance_owed")
+        .select("balance_owed, postcode")
         .eq("id", pupilId)
         .maybeSingle();
       if (!cancelled && p) {
         // DB stores amount owed (positive = pupil owes). Internal `balance` uses
         // account-balance semantics (positive = credit, negative = owes).
         setBalance(-Number((p as { balance_owed: number | null }).balance_owed ?? 0));
+        const pc = (p as { postcode?: string | null }).postcode;
+        if (pc) setPupilPostcode(pc);
+      }
+
+      const { data: rulesData } = await supabase
+        .from("pricing_rules")
+        .select("id, rule_name, rule_type, conditions, adjustment_type, adjustment_value, is_active")
+        .eq("instructor_id", instructorId);
+      if (!cancelled && Array.isArray(rulesData)) {
+        setPricingRules(
+          (rulesData as Array<Record<string, unknown>>).map((r) => ({
+            id: String(r.id),
+            rule_name: String(r.rule_name ?? ""),
+            rule_type: r.rule_type as PricingRule["rule_type"],
+            condition: (r.conditions as Record<string, unknown>) ?? {},
+            adjustment_type: r.adjustment_type as PricingRule["adjustment_type"],
+            adjustment_value: Number(r.adjustment_value ?? 0),
+            is_active: Boolean(r.is_active),
+          }))
+        );
       }
     })();
 
