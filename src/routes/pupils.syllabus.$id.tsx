@@ -102,7 +102,9 @@ function PupilSyllabusPage() {
   const [pupilName, setPupilName] = useState("");
   const [levels, setLevels] = useState<Record<string, number>>({});
   const [initial, setInitial] = useState<Record<string, number>>({});
-  const [activeCat, setActiveCat] = useState<string>(DVSA_SYLLABUS[0].key);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    [DVSA_SYLLABUS[0].key]: true,
+  });
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
