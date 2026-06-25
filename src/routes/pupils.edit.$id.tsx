@@ -93,6 +93,37 @@ function EditPupilPage() {
   const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
+  const [hoursCompleted, setHoursCompleted] = useState<number>(0);
+  const [instructorRate, setInstructorRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("lessons")
+      .select("duration_minutes")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .in("status", ["confirmed", "completed"])
+      .then(({ data }) => {
+        const mins = (data ?? []).reduce(
+          (s: number, r: { duration_minutes: number | null }) =>
+            s + Number(r.duration_minutes ?? 0),
+          0,
+        );
+        setHoursCompleted(mins / 60);
+      });
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u?.user?.id;
+      if (!uid) return;
+      supabase
+        .from("instructors")
+        .select("hourly_rate")
+        .eq("id", uid)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+        });
+    });
+  }, [id]);
 
   useEffect(() => {
     (async () => {
