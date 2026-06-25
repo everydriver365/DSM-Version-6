@@ -51,7 +51,7 @@ function accentColor(status: StatusKey) {
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
-  const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
+  const [balanceMap, setBalanceMap] = useState<Record<string, { owed: number; paid: number }>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -129,25 +129,26 @@ function PupilsIndexPage() {
       }
 
       try {
-        const { data: bookingPayments, error: bpErr } = await supabase
-          .from("course_bookings")
-          .select("pupil_email, amount_paid, status")
+        const { data: lessonBalances, error: lbErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, amount_due, payment_status")
           .eq("instructor_id", uid)
-          .in("status", ["confirmed", "completed"]);
-        if (bpErr) console.error("[pupils] booking payments error", bpErr);
-        console.log("[pupils] booking payments:", bookingPayments);
-        const bMap = ((bookingPayments ?? []) as { pupil_email: string | null; amount_paid: number | null }[]).reduce(
+          .is("deleted_at", null);
+        if (lbErr) console.error("[pupils] lesson balances error", lbErr);
+        console.log("[pupils] lesson balances:", lessonBalances);
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null }[]).reduce(
           (acc, row) => {
-            if (!row.pupil_email) return acc;
-            const match = normalized.find(
-              (pu) => pu.email?.toLowerCase() === row.pupil_email?.toLowerCase(),
-            );
-            if (match) {
-              acc[match.id] = (acc[match.id] || 0) + (Number(row.amount_paid) || 0);
+            if (!row.pupil_id) return acc;
+            if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
+            const amount = Number(row.amount_due) || 0;
+            if (row.payment_status === "paid") {
+              acc[row.pupil_id].paid += amount;
+            } else {
+              acc[row.pupil_id].owed += amount;
             }
             return acc;
           },
-          {} as Record<string, number>,
+          {} as Record<string, { owed: number; paid: number }>,
         );
         setBalanceMap(bMap);
       } catch (e) {
@@ -306,7 +307,7 @@ function PupilsIndexPage() {
           <div className="flex flex-col">
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
-              const paid = balanceMap[p.id] || 0;
+              const b = balanceMap[p.id];
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               return (
@@ -350,14 +351,21 @@ function PupilsIndexPage() {
                           >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </span>
-                          {paid > 0 && (
+                          {b && b.owed > 0 ? (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#CC2229", ...POPPINS }}
+                            >
+                              £{b.owed.toFixed(2)} owed
+                            </span>
+                          ) : b && b.paid > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#16A34A", ...POPPINS }}
                             >
-                              £{paid.toFixed(2)} paid
+                              All paid ✓
                             </span>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
