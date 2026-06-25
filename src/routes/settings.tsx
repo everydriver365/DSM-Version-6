@@ -530,27 +530,42 @@ function SettingsPage() {
           </div>
 
           <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
-          <input
-            type="text"
-            value={homePostcode}
-            onChange={(e) => setHomePostcode(e.target.value)}
-            placeholder="e.g. SO23 9AX"
-            autoCapitalize="characters"
-            maxLength={10}
-            style={{
-              width: "100%",
-              height: 44,
-              padding: "0 12px",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 10,
-              fontSize: 14,
-              marginTop: 6,
-              marginBottom: 14,
-              background: "#fff",
-              color: "#1A1A2E",
-              ...POPPINS,
-            }}
-          />
+          <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
+            <input
+              type="text"
+              value={homePostcode}
+              onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
+              onBlur={() => setPostcodeBlurred(true)}
+              placeholder="e.g. SO23 9AX"
+              autoCapitalize="characters"
+              maxLength={10}
+              style={{
+                width: "100%",
+                height: 44,
+                padding: "0 36px 0 12px",
+                border: `0.5px solid ${postcodeShowError ? "#CC2229" : "#E2E6ED"}`,
+                borderRadius: 10,
+                fontSize: 14,
+                background: "#fff",
+                color: "#1A1A2E",
+                textTransform: "uppercase",
+                ...POPPINS,
+              }}
+            />
+            {postcodeValid && (
+              <Check
+                size={18}
+                color="#16A34A"
+                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
+              />
+            )}
+          </div>
+          {postcodeShowError && (
+            <div style={{ fontSize: 12, color: "#CC2229", marginBottom: 14, ...POPPINS }}>
+              Please enter a valid UK postcode
+            </div>
+          )}
+
 
           <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
           <select
