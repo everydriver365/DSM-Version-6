@@ -452,10 +452,10 @@ function PupilDetailPage() {
             </div>
 
             {(() => {
-              const lessonCount = Number(pupil?.lesson_count ?? 0);
+              const lc = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
               const theoryPass = !!pupil?.theory_pass;
               const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
-              const lessonPoints = Math.min((lessonCount / 40) * 30, 30);
+              const lessonPoints = Math.min((lc / 40) * 30, 30);
               const theoryPoints = theoryPass ? 10 : 0;
               const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
