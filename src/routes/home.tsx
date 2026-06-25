@@ -1908,7 +1908,7 @@ function HomePage() {
                       color: "#CC2229",
                     }}
                   >
-                    £{Number(l.amount_due).toFixed(2)}
+                    £{Number(l.amount_due).toFixed(2)} unpaid
                   </span>,
                 );
               }
