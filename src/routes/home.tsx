@@ -1582,6 +1582,11 @@ function HomePage() {
               </div>
               <div style={{ fontSize: 19, fontWeight: 800, color: '#FFD27A', marginTop: 2, lineHeight: 1.1 }}>
                 £{weekEarnings.toFixed(0)}
+                {earningsEstimated && (
+                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginLeft: 4 }}>
+                    (est.)
+                  </span>
+                )}
               </div>
               {weekEarnings === 0 ? (
                 <button
@@ -1590,6 +1595,14 @@ function HomePage() {
                   style={{ fontSize: 10, color: '#FFD27A', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
                 >
                   Record payments via EOL →
+                </button>
+              ) : earningsEstimated ? (
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: '/schedule' })}
+                  style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
+                >
+                  Complete EOL for accurate total →
                 </button>
               ) : (
                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
