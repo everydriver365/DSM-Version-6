@@ -224,7 +224,7 @@ function HomePage() {
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
-  const [earningsEstimated, setEarningsEstimated] = useState(false);
+  
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
@@ -517,37 +517,9 @@ function HomePage() {
         wk += amt;
         if (new Date(p.booked_at) >= todayStart) td += amt;
       });
-
-      // Source 3 (fallback): Lessons taught this week — estimated earnings if no payments recorded
-      if (wk === 0) {
-        const { data: lessonRows } = await supabase
-          .from("lessons")
-          .select("amount_due, lesson_date")
-          .eq("instructor_id", userId)
-          .in("status", ["confirmed", "completed"])
-          .is("deleted_at", null)
-          .gte("lesson_date", ymd(weekStart));
-        let lessonEarnings = 0;
-        let lessonToday = 0;
-        const todayYmd = ymd(todayStart);
-        (lessonRows ?? []).forEach((l) => {
-          const amt = Number(l.amount_due ?? 0);
-          lessonEarnings += amt;
-          if (l.lesson_date && l.lesson_date >= todayYmd) lessonToday += amt;
-        });
-        if (lessonEarnings > 0) {
-          wk = lessonEarnings;
-          td = lessonToday;
-          setEarningsEstimated(true);
-        } else {
-          setEarningsEstimated(false);
-        }
-      } else {
-        setEarningsEstimated(false);
-      }
-
       setWeekEarnings(wk);
       setTodayEarnings(td);
+
 
       const { count: wkLessonCount } = await supabase
         .from("lessons")
@@ -1580,15 +1552,20 @@ function HomePage() {
               </div>
               <div style={{ fontSize: 19, fontWeight: 800, color: '#FFD27A', marginTop: 2, lineHeight: 1.1 }}>
                 £{weekEarnings.toFixed(0)}
-                {earningsEstimated && (
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginLeft: 4 }}>
-                    (est.)
-                  </span>
-                )}
               </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
-                {earningsEstimated ? `Based on lessons taught` : `£${todayEarnings.toFixed(0)} today`}
-              </div>
+              {weekEarnings === 0 ? (
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: '/schedule' })}
+                  style={{ fontSize: 10, color: '#FFD27A', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
+                >
+                  Record payments via EOL →
+                </button>
+              ) : (
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+                  £{todayEarnings.toFixed(0)} today
+                </div>
+              )}
               <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
               </div>
