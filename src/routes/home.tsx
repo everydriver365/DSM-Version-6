@@ -589,7 +589,7 @@ function HomePage() {
     return d >= tomorrowStart && d < dayAfter;
   });
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
-  const nextTabLessons = nextLessons.slice(0, 10);
+  const nextTabLessons = nextLessons.slice(0, 5);
 
   const weekLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
@@ -1763,6 +1763,7 @@ function HomePage() {
             };
 
             const rows: React.ReactNode[] = [];
+            let lastDateKey: string | null = null;
             shown.forEach((l, i) => {
               const startD = lessonDateTime(l);
               const endD = new Date(lEnd(l));
@@ -1770,6 +1771,28 @@ function HomePage() {
               const isCurrent = l.id === currentId;
               const isCancelled = l.status === "cancelled";
               const isCompleted = l.status === "completed" || l.eol_completed === true;
+
+              if (tab === "next") {
+                const dKey = ymd(startD);
+                if (dKey !== lastDateKey) {
+                  rows.push(
+                    <div
+                      key={`hdr-${dKey}`}
+                      style={{
+                        padding: "10px 16px 4px",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: 0.4,
+                        color: "#6B7280",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {formatDayLabel(startD)}
+                    </div>,
+                  );
+                  lastDateKey = dKey;
+                }
+              }
 
               let accent = "#1A52A0";
               if (isCancelled) accent = "#9CA3AF";
@@ -1974,7 +1997,7 @@ function HomePage() {
               );
 
               const next = shown[i + 1];
-              if (next) {
+              if (next && (tab !== "next" || ymd(lessonDateTime(next)) === ymd(startD))) {
                 const gapMins = Math.round(
                   (lStart(next) - lEnd(l)) / 60000,
                 );
