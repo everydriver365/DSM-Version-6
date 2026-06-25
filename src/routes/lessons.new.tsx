@@ -4,6 +4,14 @@ import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
+
+const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
+function extractPostcode(addr: string | null | undefined): string | undefined {
+  if (!addr) return undefined;
+  const m = addr.match(UK_POSTCODE_RE);
+  return m ? m[1].toUpperCase() : undefined;
+}
 
 export const Route = createFileRoute("/lessons/new")({
   head: () => ({
