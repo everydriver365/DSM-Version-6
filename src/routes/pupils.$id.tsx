@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Camera, ChevronRight, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Camera, ChevronRight, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -129,6 +129,7 @@ function PupilDetailPage() {
   const [noteSaved, setNoteSaved] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
+  const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
 
@@ -175,6 +176,21 @@ function PupilDetailPage() {
         setProgressData({ total, competent });
       });
 
+    supabase
+      .from("pupil_syllabus_progress")
+      .select("level")
+      .eq("pupil_id", id)
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[pupil] syllabus error", error);
+          setSyllabusPct(0);
+          return;
+        }
+        const rows = (data as { level: number }[]) ?? [];
+        const total = rows.reduce((s, r) => s + (Number(r.level) || 0), 0);
+        // 27 competencies × 5 max
+        setSyllabusPct(Math.round((total / (27 * 5)) * 100));
+      });
   }, [id]);
 
   async function removePupil() {
@@ -508,6 +524,29 @@ function PupilDetailPage() {
           >
             Progress
           </Button>
+        </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
+            className="w-full inline-flex items-center justify-between px-3"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#F3F4F6",
+              color: "#0F2044",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <span className="inline-flex items-center gap-2 text-[13px] font-medium">
+              <BookOpen size={16} color="#0F2044" />
+              Syllabus
+            </span>
+            <span className="text-[12px] font-semibold" style={{ color: "#1A52A0" }}>
+              {syllabusPct == null ? "—" : `${syllabusPct}%`}
+            </span>
+          </button>
         </div>
 
 
