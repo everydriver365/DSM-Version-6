@@ -561,6 +561,15 @@ function EditPupilPage() {
                 onChange={(e) => setNiAmountTotal(e.target.value)}
                 placeholder="1500.00"
               />
+              <Input
+                label="Hours purchased"
+                type="number"
+                inputMode="decimal"
+                value={prepaidHours}
+                onChange={(e) => setPrepaidHours(e.target.value)}
+                placeholder="40"
+              />
+
               <div>
                 <FieldLabel htmlFor="ni_payer">Who pays?</FieldLabel>
                 <select
