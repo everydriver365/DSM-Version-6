@@ -461,8 +461,14 @@ function PupilDetailPage() {
               <StatChip label="Lessons" value={String(lessonCount)} />
               <StatChip
                 label="Balance"
-                value={`£${balance.toFixed(2)}`}
-                valueColor={balance > 0 ? "#CC2229" : "#0F2044"}
+                value={
+                  balance === 0
+                    ? "All paid"
+                    : balance < 0
+                      ? `Owes £${Math.abs(balance).toFixed(2)}`
+                      : `In credit £${balance.toFixed(2)}`
+                }
+                valueColor={balance < 0 ? "#CC2229" : "#16A34A"}
               />
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
