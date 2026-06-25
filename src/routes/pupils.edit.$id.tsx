@@ -251,7 +251,12 @@ function EditPupilPage() {
         (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
           ? leadSourceDetail.trim()
           : null,
-      prepaid_hours: hasBlock ? hNum : null,
+      prepaid_hours:
+        hasBlock
+          ? hNum
+          : leadSource === "National Intensive" && Number.isFinite(hNum) && hNum > 0
+            ? hNum
+            : null,
       prepaid_amount_paid: hasBlock ? aNum : null,
       account_balance: hasBlock ? aNum : null,
       ni_amount_total:
@@ -291,6 +296,8 @@ function EditPupilPage() {
       swap_centre_3:
         leadSource === "National Intensive" && wantsSwap && swapCentre3.trim() ? swapCentre3.trim() : null,
     };
+
+    console.log("[pupils.edit] save payload:", updatePayload);
 
     const { error: updErr } = await supabase
       .from("pupils")
