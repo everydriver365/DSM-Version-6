@@ -24,6 +24,7 @@ interface Pupil {
   balance_owed: number | null;
   prepaid_hours: number | null;
   ni_amount_total: number | null;
+  ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
 }
@@ -73,7 +74,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, lead_source, status, deleted_at")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
