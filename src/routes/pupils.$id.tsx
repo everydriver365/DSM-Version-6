@@ -147,6 +147,7 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
+        console.log("[pupils.$id] pupil data:", p, "lessons:", p?.lesson_count, "balance:", p?.balance_owed);
       });
 
     supabase
