@@ -130,6 +130,7 @@ function PupilDetailPage() {
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
+  const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
 
