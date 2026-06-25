@@ -474,7 +474,7 @@ function PupilDetailPage() {
             </div>
 
             {(() => {
-              const lc = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
+              const lc = actualLessonCount ?? 0;
               const theoryPass = !!pupil?.theory_pass;
               const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
               const lessonPoints = Math.min((lc / 40) * 30, 30);
