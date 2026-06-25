@@ -4,6 +4,14 @@ import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
+
+const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
+function extractPostcode(addr: string | null | undefined): string | undefined {
+  if (!addr) return undefined;
+  const m = addr.match(UK_POSTCODE_RE);
+  return m ? m[1].toUpperCase() : undefined;
+}
 
 export const Route = createFileRoute("/lessons/new")({
   head: () => ({
@@ -109,6 +117,40 @@ function NewLessonPage() {
         ? `${baseNotes}\n\nPickup: ${pickupValue}`
         : `Pickup: ${pickupValue}`
       : baseNotes;
+    // Fetch instructor hourly rate
+    const { data: instructor } = await supabase
+      .from("instructors")
+      .select("hourly_rate, default_lesson_duration_minutes")
+      .eq("id", user.id)
+      .single();
+
+    const hourlyRate = (instructor as any)?.hourly_rate ?? 0;
+    const baseCost = hourlyRate
+      ? Math.round(((hourlyRate / 60) * duration) * 100) / 100
+      : 0;
+
+    // Apply pricing rules
+    let amountDue = baseCost;
+    try {
+      const { data: rules } = await supabase
+        .from("pricing_rules")
+        .select("*")
+        .eq("instructor_id", user.id)
+        .eq("is_active", true);
+      if (rules && rules.length && baseCost > 0) {
+        const postcode = extractPostcode(pickupValue) ?? extractPostcode(selected?.address);
+        const result = applyPricingRules(baseCost, rules as PricingRule[], {
+          lessonDate: date,
+          lessonTime: time,
+          postcode,
+          bookedAt: new Date().toISOString(),
+        });
+        amountDue = result.total;
+      }
+    } catch (e) {
+      console.warn("[lessons.new] pricing rules failed", e);
+    }
+
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -117,6 +159,7 @@ function NewLessonPage() {
       duration_minutes: duration,
       status: "confirmed",
       notes: fullNotes,
+      amount_due: amountDue,
     });
     if (error) {
       setErrors({ form: error.message });
