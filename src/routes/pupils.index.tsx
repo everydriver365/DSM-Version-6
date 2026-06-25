@@ -268,7 +268,7 @@ function PupilsIndexPage() {
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const balance = Number(p.balance_owed ?? 0);
-              const lessons = Number(p.lesson_count ?? 0);
+              const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               return (
                 <div key={p.id}>
