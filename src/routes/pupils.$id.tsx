@@ -214,6 +214,36 @@ function PupilDetailPage() {
         setLessons((data as Lesson[]) ?? []);
       });
 
+    // Hours completed: sum duration_minutes for confirmed/completed lessons
+    supabase
+      .from("lessons")
+      .select("duration_minutes")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .in("status", ["confirmed", "completed"])
+      .then(({ data }) => {
+        const mins = (data ?? []).reduce(
+          (s: number, r: { duration_minutes: number | null }) =>
+            s + Number(r.duration_minutes ?? 0),
+          0,
+        );
+        setHoursCompleted(mins / 60);
+      });
+
+    // Instructor hourly rate fallback
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u?.user?.id;
+      if (!uid) return;
+      supabase
+        .from("instructors")
+        .select("hourly_rate")
+        .eq("id", uid)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+        });
+    });
+
     supabase
       .from("pupil_progress")
       .select("status")
