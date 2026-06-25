@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeeklyreportRouteImport } from './routes/weeklyreport'
 import { Route as WaiversRouteImport } from './routes/waivers'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
@@ -112,6 +113,11 @@ const WeeklyreportRoute = WeeklyreportRouteImport.update({
 const WaiversRoute = WaiversRouteImport.update({
   id: '/waivers',
   path: '/waivers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WaitinglistRoute = WaitinglistRouteImport.update({
@@ -640,6 +646,7 @@ export interface FileRoutesByFullPath {
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
+  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/about': typeof MarketingAboutRoute
@@ -735,6 +742,7 @@ export interface FileRoutesByTo {
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
+  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/about': typeof MarketingAboutRoute
@@ -832,6 +840,7 @@ export interface FileRoutesById {
   '/todos': typeof TodosRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
+  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/_marketing/about': typeof MarketingAboutRoute
@@ -929,6 +938,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/vehicle'
     | '/waitinglist'
+    | '/waitlist'
     | '/waivers'
     | '/weeklyreport'
     | '/about'
@@ -1024,6 +1034,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/vehicle'
     | '/waitinglist'
+    | '/waitlist'
     | '/waivers'
     | '/weeklyreport'
     | '/about'
@@ -1120,6 +1131,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/vehicle'
     | '/waitinglist'
+    | '/waitlist'
     | '/waivers'
     | '/weeklyreport'
     | '/_marketing/about'
@@ -1217,6 +1229,7 @@ export interface RootRouteChildren {
   TodosRoute: typeof TodosRoute
   VehicleRoute: typeof VehicleRoute
   WaitinglistRoute: typeof WaitinglistRoute
+  WaitlistRoute: typeof WaitlistRoute
   WaiversRoute: typeof WaiversRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
   CoursesIdRoute: typeof CoursesIdRoute
@@ -1255,6 +1268,13 @@ declare module '@tanstack/react-router' {
       path: '/waivers'
       fullPath: '/waivers'
       preLoaderRoute: typeof WaiversRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/waitinglist': {
@@ -2003,6 +2023,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodosRoute: TodosRoute,
   VehicleRoute: VehicleRoute,
   WaitinglistRoute: WaitinglistRoute,
+  WaitlistRoute: WaitlistRoute,
   WaiversRoute: WaiversRoute,
   WeeklyreportRoute: WeeklyreportRoute,
   CoursesIdRoute: CoursesIdRoute,
