@@ -329,6 +329,10 @@ function PupilsIndexPage() {
               const prepaid = Number(p.prepaid_hours) || 0;
               const hoursUsed = hoursMap[p.id] || 0;
               const hoursRemaining = prepaid - hoursUsed;
+              const isPrepaidPupil =
+                prepaid > 0 ||
+                Number(p.ni_amount_total) > 0 ||
+                (p.lead_source ?? "").toLowerCase() === "national intensive";
               return (
                 <div key={p.id}>
                   <Link
