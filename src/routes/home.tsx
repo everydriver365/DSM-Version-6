@@ -1832,22 +1832,48 @@ function HomePage() {
                   </span>,
                 );
               }
-              if (pastEnd && !l.eol_completed && !isCancelled) {
-                badges.push(
-                  <span
-                    key="eol"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#FEF3C7",
-                      color: "#92400E",
-                    }}
-                  >
-                    EOL pending
-                  </span>,
-                );
+              if (pastEnd && !isCancelled) {
+                if (!l.eol_completed) {
+                  badges.push(
+                    <button
+                      key="eol"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEolLesson(l);
+                      }}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEF3C7",
+                        color: "#92400E",
+                        border: 0,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Complete EOL
+                    </button>,
+                  );
+                } else {
+                  badges.push(
+                    <span
+                      key="eol-done"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#15803D",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      ✓ EOL
+                    </span>,
+                  );
+                }
               }
               if (l.payment_status === "paid") {
                 badges.push(
@@ -1856,13 +1882,13 @@ function HomePage() {
                     style={{
                       fontSize: 10,
                       fontWeight: 600,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#DCFCE7",
                       color: "#15803D",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
                     }}
                   >
-                    Paid
+                    ✓ Paid
                   </span>,
                 );
               } else if (
@@ -1882,7 +1908,7 @@ function HomePage() {
                       color: "#CC2229",
                     }}
                   >
-                    £{Number(l.amount_due).toFixed(2)}
+                    £{Number(l.amount_due).toFixed(2)} unpaid
                   </span>,
                 );
               }
@@ -1913,13 +1939,36 @@ function HomePage() {
                     cursor: "pointer",
                   }}
                 >
-                  <div
-                    style={{
-                      width: 40,
-                      flexShrink: 0,
-                      textAlign: "right",
-                    }}
-                  >
+                  {(() => {
+                    const needsAttention =
+                      pastEnd &&
+                      !isCancelled &&
+                      (!l.eol_completed ||
+                        ((l.payment_status === "unpaid" || !l.payment_status) &&
+                          (l.amount_due ?? 0) > 0));
+                    return (
+                      <div
+                        style={{
+                          width: 40,
+                          flexShrink: 0,
+                          textAlign: "right",
+                          position: "relative",
+                        }}
+                      >
+                        {needsAttention && (
+                          <span
+                            aria-label="Needs attention"
+                            style={{
+                              position: "absolute",
+                              top: -2,
+                              left: -2,
+                              width: 8,
+                              height: 8,
+                              borderRadius: 999,
+                              backgroundColor: "#F59E0B",
+                            }}
+                          />
+                        )}
                     <div
                       style={{
                         fontSize: 12,
@@ -1934,6 +1983,8 @@ function HomePage() {
                       {durShort(l.duration_minutes)}
                     </div>
                   </div>
+                    );
+                  })()}
                   <div
                     style={{
                       width: 3,
