@@ -77,8 +77,13 @@ function SettingsPage() {
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
+  const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
   const [savingCoverage, setSavingCoverage] = useState(false);
+
+  const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+  const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
+  const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
 
   useEffect(() => {
     (async () => {
