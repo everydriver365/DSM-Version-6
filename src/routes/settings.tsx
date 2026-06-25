@@ -11,6 +11,7 @@ import {
   ChevronDown,
   PoundSterling,
   Crown,
+  MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -74,6 +75,9 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [savingRates, setSavingRates] = useState(false);
+  const [homePostcode, setHomePostcode] = useState<string>("");
+  const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [savingCoverage, setSavingCoverage] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -86,7 +90,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -103,6 +107,12 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
+      }
+      if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
+        setHomePostcode((instructor as { home_postcode: string }).home_postcode);
+      }
+      if (instructor && typeof (instructor as { radius_miles?: number }).radius_miles === "number") {
+        setCoverageRadius((instructor as { radius_miles: number }).radius_miles);
       }
 
       const { data: profile } = await supabase
@@ -176,6 +186,44 @@ function SettingsPage() {
       toast.error("Failed to save rates");
     } else {
       toast.success("Saved ✓");
+    }
+  }
+
+  async function saveCoverage() {
+    if (!userId) return;
+    const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+    const pc = homePostcode.trim().toUpperCase();
+    if (!UK_POSTCODE_RE.test(pc)) {
+      toast.error("Enter a valid UK postcode");
+      return;
+    }
+    setSavingCoverage(true);
+    try {
+      const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
+      if (!res.ok) {
+        toast.error("Postcode not found");
+        setSavingCoverage(false);
+        return;
+      }
+      const json = await res.json();
+      const lat = json?.result?.latitude ?? null;
+      const lng = json?.result?.longitude ?? null;
+      const { error } = await supabase
+        .from("instructors")
+        .update({ home_postcode: pc, lat, lng, radius_miles: coverageRadius })
+        .eq("id", userId);
+      if (error) {
+        console.error("[settings] save coverage error", error);
+        toast.error("Failed to save coverage");
+      } else {
+        setHomePostcode(pc);
+        toast.success("Coverage saved ✓");
+      }
+    } catch (e) {
+      console.error("[settings] geocode error", e);
+      toast.error("Could not look up postcode");
+    } finally {
+      setSavingCoverage(false);
     }
   }
 
@@ -456,6 +504,88 @@ function SettingsPage() {
             }}
           >
             {savingRates ? "Saving…" : "Save rates"}
+          </button>
+        </Card>
+
+        <SectionHeader>COVERAGE AREA</SectionHeader>
+        <Card
+          style={{
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <MapPin size={18} color="#1A52A0" />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
+              Coverage area
+            </span>
+          </div>
+
+          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
+          <input
+            type="text"
+            value={homePostcode}
+            onChange={(e) => setHomePostcode(e.target.value)}
+            placeholder="e.g. SO23 9AX"
+            autoCapitalize="characters"
+            maxLength={10}
+            style={{
+              width: "100%",
+              height: 44,
+              padding: "0 12px",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+              fontSize: 14,
+              marginTop: 6,
+              marginBottom: 14,
+              background: "#fff",
+              color: "#1A1A2E",
+              ...POPPINS,
+            }}
+          />
+
+          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
+          <select
+            value={coverageRadius}
+            onChange={(e) => setCoverageRadius(Number(e.target.value))}
+            style={{
+              width: "100%",
+              height: 44,
+              padding: "0 12px",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+              fontSize: 14,
+              marginTop: 6,
+              background: "#fff",
+              color: "#1A1A2E",
+              ...POPPINS,
+            }}
+          >
+            {[5, 10, 15, 20, 25, 30].map((m) => (
+              <option key={m} value={m}>
+                {m} miles
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={saveCoverage}
+            disabled={savingCoverage}
+            className="w-full text-[14px] font-semibold text-white mt-5"
+            style={{
+              height: 48,
+              borderRadius: 10,
+              backgroundColor: "#0F2044",
+              border: "none",
+              opacity: savingCoverage ? 0.7 : 1,
+              cursor: savingCoverage ? "not-allowed" : "pointer",
+              ...POPPINS,
+            }}
+          >
+            {savingCoverage ? "Saving…" : "Save coverage"}
           </button>
         </Card>
 
