@@ -173,12 +173,28 @@ function PupilDetailPage() {
       .from("lessons")
       .select("id", { count: "exact", head: true })
       .eq("pupil_id", id)
-      .eq("status", "completed")
+      .in("status", ["confirmed", "completed"])
       .is("deleted_at", null)
       .then(({ count, error }) => {
         if (error) console.error("[pupil] lesson count error", error);
         setActualLessonCount(count ?? 0);
-        console.log("[pupils.$id] actual completed lesson count:", count);
+        console.log("[pupils.$id] lesson count (confirmed+completed):", count);
+      });
+
+    supabase
+      .from("lesson_history")
+      .select("lesson_cost, payment_status")
+      .eq("pupil_id", id)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] lesson_history error", error);
+        const rows = (data as { lesson_cost: number | null; payment_status: string | null }[]) ?? [];
+        const totalCost = rows.reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
+        const totalPaid = rows
+          .filter((r) => r.payment_status === "paid")
+          .reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
+        const bal = totalPaid - totalCost;
+        setBalance(bal);
+        console.log("[pupils.$id] balance:", bal, "totalCost:", totalCost, "totalPaid:", totalPaid);
       });
 
     supabase
