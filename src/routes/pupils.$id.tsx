@@ -143,6 +143,8 @@ function PupilDetailPage() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
+  const [hoursCompleted, setHoursCompleted] = useState<number>(0);
+  const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -211,6 +213,36 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] lessons error", error);
         setLessons((data as Lesson[]) ?? []);
       });
+
+    // Hours completed: sum duration_minutes for confirmed/completed lessons
+    supabase
+      .from("lessons")
+      .select("duration_minutes")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .in("status", ["confirmed", "completed"])
+      .then(({ data }) => {
+        const mins = (data ?? []).reduce(
+          (s: number, r: { duration_minutes: number | null }) =>
+            s + Number(r.duration_minutes ?? 0),
+          0,
+        );
+        setHoursCompleted(mins / 60);
+      });
+
+    // Instructor hourly rate fallback
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u?.user?.id;
+      if (!uid) return;
+      supabase
+        .from("instructors")
+        .select("hourly_rate")
+        .eq("id", uid)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+        });
+    });
 
     supabase
       .from("pupil_progress")
@@ -804,6 +836,71 @@ function PupilDetailPage() {
                 value={outstanding <= 0 && total > 0 ? "Settled" : `£${outstanding.toFixed(2)}`}
                 valueColor={outstanding > 0 ? "#CC2229" : "#16A34A"}
               />
+
+              {(() => {
+                const prepaid = Number(pupil.prepaid_hours ?? 0);
+                if (!(total > 0 || prepaid > 0)) return null;
+                const effectiveRate =
+                  total > 0 && prepaid > 0
+                    ? total / prepaid
+                    : instructorRate ?? 0;
+                const hoursPurchased =
+                  prepaid > 0
+                    ? prepaid
+                    : effectiveRate > 0
+                    ? total / effectiveRate
+                    : 0;
+                const hoursRemaining = hoursPurchased - hoursCompleted;
+                let remainColor = "#CC2229";
+                if (hoursRemaining > 5) remainColor = "#16A34A";
+                else if (hoursRemaining >= 1) remainColor = "#F59E0B";
+                const pct =
+                  hoursPurchased > 0
+                    ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
+                    : 0;
+                return (
+                  <>
+                    <div
+                      className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                      style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
+                    >
+                      Hours
+                    </div>
+                    <NIRow label="Hours purchased" value={`${hoursPurchased.toFixed(1)} hrs`} />
+                    <NIRow label="Hours completed" value={`${hoursCompleted.toFixed(1)} hrs`} />
+                    <NIRow
+                      label="Hours remaining"
+                      value={`${hoursRemaining.toFixed(1)} hrs`}
+                      valueColor={remainColor}
+                    />
+                    {total > 0 && prepaid > 0 && (
+                      <NIRow
+                        label="Rate per hour"
+                        value={`£${(total / prepaid).toFixed(2)}/hr`}
+                      />
+                    )}
+                    <div
+                      style={{
+                        marginTop: 10,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: "#F2F4F8",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${pct}%`,
+                          height: "100%",
+                          backgroundColor: "#1A52A0",
+                          borderRadius: 4,
+                        }}
+                      />
+                    </div>
+                  </>
+                );
+              })()}
+
 
               <div
                 className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
