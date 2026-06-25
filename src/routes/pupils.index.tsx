@@ -24,6 +24,7 @@ interface Pupil {
   balance_owed: number | null;
   prepaid_hours: number | null;
   ni_amount_total: number | null;
+  ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
 }
@@ -73,7 +74,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, lead_source, status, deleted_at")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -371,7 +372,8 @@ function PupilsIndexPage() {
                         >
                           {p.name}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5">
+                        <div className="flex flex-col gap-0.5 mt-0.5">
+                        <div className="flex items-center gap-2">
                           {isPrepaidPupil ? (
                             prepaid > 0 ? (
                               hoursRemaining <= 0 ? (
@@ -415,6 +417,19 @@ function PupilsIndexPage() {
                               All paid ✓
                             </span>
                           ) : null}
+                        </div>
+                        {prepaid > 0 && Number(p.ni_amount_total) > 0 && (() => {
+                          const niOwed = Number(p.ni_amount_total ?? 0) - Number(p.ni_amount_paid ?? 0);
+                          if (niOwed <= 0) return null;
+                          return (
+                            <span
+                              className="text-[11px] font-medium"
+                              style={{ color: "#CC2229", ...POPPINS }}
+                            >
+                              £{niOwed.toFixed(2)} NI owed
+                            </span>
+                          );
+                        })()}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
