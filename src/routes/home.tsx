@@ -1942,11 +1942,11 @@ function HomePage() {
                 >
                   {(() => {
                     const needsAttention =
-                      pastEnd &&
                       !isCancelled &&
-                      (!l.eol_completed ||
+                      ((pastEnd && !l.eol_completed) ||
                         ((l.payment_status === "unpaid" || !l.payment_status) &&
                           (l.amount_due ?? 0) > 0));
+
                     return (
                       <div
                         style={{
