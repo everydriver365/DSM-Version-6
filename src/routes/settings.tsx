@@ -219,7 +219,7 @@ function SettingsPage() {
     return "";
   }
 
-
+  useEffect(() => {
     (async () => {
       const { data, error: authErr } = await supabase.auth.getUser();
       if (authErr) console.error("[settings] auth error", authErr);
