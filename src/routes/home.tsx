@@ -2025,7 +2025,7 @@ function HomePage() {
           >
             {tab === "today" ? "No lessons today" : "No lessons tomorrow"}
           </div>
-        ) : tab !== "next" && false ? null : (
+        ) : (
           (() => {
             const shown = tabLessons.slice(0, 6);
             const hiddenCount = tabLessons.length - shown.length;
