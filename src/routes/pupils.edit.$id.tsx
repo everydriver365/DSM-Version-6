@@ -297,6 +297,8 @@ function EditPupilPage() {
         leadSource === "National Intensive" && wantsSwap && swapCentre3.trim() ? swapCentre3.trim() : null,
     };
 
+    console.log("[pupils.edit] save payload:", updatePayload);
+
     const { error: updErr } = await supabase
       .from("pupils")
       .update(updatePayload)
