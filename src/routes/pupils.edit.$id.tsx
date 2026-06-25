@@ -238,6 +238,27 @@ function EditPupilPage() {
         leadSource === "National Intensive" && niReference.trim()
           ? niReference.trim()
           : null,
+      test_time:
+        leadSource === "National Intensive" && testTime ? testTime : null,
+      test_centre:
+        leadSource === "National Intensive" && testCentre.trim() ? testCentre.trim() : null,
+      wants_swap: leadSource === "National Intensive" ? wantsSwap : false,
+      swap_earliest_date:
+        leadSource === "National Intensive" && wantsSwap && swapEarliestDate
+          ? swapEarliestDate
+          : null,
+      swap_latest_date:
+        leadSource === "National Intensive" && wantsSwap && swapLatestDate
+          ? swapLatestDate
+          : null,
+      swap_preferred_time:
+        leadSource === "National Intensive" && wantsSwap ? swapPreferredTime : null,
+      swap_centre_1:
+        leadSource === "National Intensive" && wantsSwap && swapCentre1.trim() ? swapCentre1.trim() : null,
+      swap_centre_2:
+        leadSource === "National Intensive" && wantsSwap && swapCentre2.trim() ? swapCentre2.trim() : null,
+      swap_centre_3:
+        leadSource === "National Intensive" && wantsSwap && swapCentre3.trim() ? swapCentre3.trim() : null,
     };
 
     const { error: updErr } = await supabase
