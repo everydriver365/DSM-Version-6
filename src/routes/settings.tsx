@@ -119,6 +119,10 @@ function SettingsPage() {
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
   const [savingRule, setSavingRule] = useState(false);
 
+  const POSTCODE_ENTRY_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+  const postcodeEntries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
+  const hasInvalidPostcodes = ruleType === "postcode_zone" && postcodeEntries.some((e) => !POSTCODE_ENTRY_RE.test(e));
+
   async function loadPricingRules(uid: string) {
     const { data, error } = await supabase
       .from("pricing_rules")
@@ -148,9 +152,14 @@ function SettingsPage() {
       }
       conditions = { days };
     } else if (ruleType === "postcode_zone") {
-      const codes = rulePostcodes.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+      const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+      const codes = rulePostcodes.split(",").map((s) => s.trim().replace(/\s+/g, " ").toUpperCase()).filter(Boolean);
       if (codes.length === 0) {
         toast.error("Enter at least one postcode");
+        return;
+      }
+      if (codes.some((c) => !POSTCODE_RE.test(c))) {
+        toast.error("Fix invalid postcodes");
         return;
       }
       conditions = { postcodes: codes };
@@ -914,25 +923,50 @@ function SettingsPage() {
               </div>
             )}
 
-            {ruleType === "postcode_zone" && (
-              <>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                  Postcodes (comma separated)
-                </label>
-                <input
-                  type="text"
-                  value={rulePostcodes}
-                  onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
-                  placeholder="SO22, SO23"
-                  style={{
-                    width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E",
-                    textTransform: "uppercase", ...POPPINS,
-                  }}
-                />
-              </>
-            )}
+            {ruleType === "postcode_zone" && (() => {
+              const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+              const entries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
+              const invalid = entries.filter((e) => !POSTCODE_RE.test(e));
+              return (
+                <>
+                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
+                    Postcodes (comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={rulePostcodes}
+                    onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
+                    placeholder="SO22, SO23 9AX"
+                    style={{
+                      width: "100%", height: 44, padding: "0 12px",
+                      border: `0.5px solid ${invalid.length ? "#CC2229" : "#E2E6ED"}`,
+                      borderRadius: 10, fontSize: 14,
+                      marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
+                      background: "#fff", color: "#1A1A2E",
+                      textTransform: "uppercase", ...POPPINS,
+                    }}
+                  />
+                  {invalid.length > 0 && (
+                    <div style={{ color: "#CC2229", fontSize: 12, marginBottom: 8, ...POPPINS }}>
+                      {invalid.map((v) => `Invalid postcode: ${v}`).join(" · ")}
+                    </div>
+                  )}
+                  {entries.length > 0 && invalid.length === 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
+                      {entries.map((v) => (
+                        <span key={v} style={{
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          fontSize: 12, color: "#0F7B3F", background: "#E8F5EC",
+                          padding: "2px 8px", borderRadius: 999, ...POPPINS,
+                        }}>
+                          <Check size={12} /> {v}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             {ruleType === "advance_notice" && (
               <>
@@ -986,12 +1020,12 @@ function SettingsPage() {
             <button
               type="button"
               onClick={addPricingRule}
-              disabled={savingRule}
+              disabled={savingRule || hasInvalidPostcodes}
               className="w-full text-[14px] font-semibold text-white mt-4"
               style={{
                 height: 48, borderRadius: 10, backgroundColor: "#0F2044", border: "none",
-                opacity: savingRule ? 0.6 : 1,
-                cursor: savingRule ? "not-allowed" : "pointer",
+                opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
+                cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                 ...POPPINS,
               }}
