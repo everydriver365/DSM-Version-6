@@ -24,6 +24,7 @@ import {
   Receipt,
   Clock,
   BarChart2,
+  BarChart3,
   CheckSquare,
   FileText,
   GraduationCap,
@@ -1034,6 +1035,7 @@ function HomePage() {
 
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "MTD", route: "/month-to-date" },
     { icon: <Map size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Start tracking", route: "/live" },
     { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Month end", route: "/monthend" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
