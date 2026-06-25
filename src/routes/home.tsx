@@ -441,7 +441,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -460,7 +460,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -1976,42 +1976,47 @@ function HomePage() {
                   );
                 }
               }
-              if (l.payment_status === "paid") {
-                badges.push(
-                  <span
-                    key="paid"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      color: "#15803D",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 3,
-                    }}
-                  >
-                    ✓ Paid
-                  </span>,
-                );
-              } else if (
-                !isCancelled &&
-                (l.payment_status === "unpaid" || !l.payment_status)
-              ) {
-                const amt = Number(l.amount_due ?? 0);
-                badges.push(
-                  <span
-                    key="due"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: pastEnd ? "#FEE2E2" : "#FEF3C7",
-                      color: pastEnd ? "#CC2229" : "#92400E",
-                    }}
-                  >
-                    {amt > 0 ? `£${amt.toFixed(2)} unpaid` : "Unpaid"}
-                  </span>,
-                );
+              const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
+              if (!isPrepaidPupil) {
+                if (l.payment_status === "paid") {
+                  badges.push(
+                    <span
+                      key="paid"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#15803D",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      ✓ Paid
+                    </span>,
+                  );
+                } else if (
+                  !isCancelled &&
+                  pastEnd &&
+                  (l.payment_status === "unpaid" || !l.payment_status) &&
+                  Number(l.amount_due ?? 0) > 0
+                ) {
+                  const amt = Number(l.amount_due ?? 0);
+                  badges.push(
+                    <span
+                      key="due"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "1px 6px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEE2E2",
+                        color: "#CC2229",
+                      }}
+                    >
+                      £{amt.toFixed(2)} unpaid
+                    </span>,
+                  );
+                }
               }
 
 
