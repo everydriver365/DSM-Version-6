@@ -11,6 +11,7 @@ import {
   ChevronDown,
   PoundSterling,
   Crown,
+  MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -74,6 +75,9 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [savingRates, setSavingRates] = useState(false);
+  const [homePostcode, setHomePostcode] = useState<string>("");
+  const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [savingCoverage, setSavingCoverage] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -86,7 +90,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -103,6 +107,12 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
+      }
+      if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
+        setHomePostcode((instructor as { home_postcode: string }).home_postcode);
+      }
+      if (instructor && typeof (instructor as { radius_miles?: number }).radius_miles === "number") {
+        setCoverageRadius((instructor as { radius_miles: number }).radius_miles);
       }
 
       const { data: profile } = await supabase
@@ -176,6 +186,44 @@ function SettingsPage() {
       toast.error("Failed to save rates");
     } else {
       toast.success("Saved ✓");
+    }
+  }
+
+  async function saveCoverage() {
+    if (!userId) return;
+    const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+    const pc = homePostcode.trim().toUpperCase();
+    if (!UK_POSTCODE_RE.test(pc)) {
+      toast.error("Enter a valid UK postcode");
+      return;
+    }
+    setSavingCoverage(true);
+    try {
+      const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
+      if (!res.ok) {
+        toast.error("Postcode not found");
+        setSavingCoverage(false);
+        return;
+      }
+      const json = await res.json();
+      const lat = json?.result?.latitude ?? null;
+      const lng = json?.result?.longitude ?? null;
+      const { error } = await supabase
+        .from("instructors")
+        .update({ home_postcode: pc, lat, lng, radius_miles: coverageRadius })
+        .eq("id", userId);
+      if (error) {
+        console.error("[settings] save coverage error", error);
+        toast.error("Failed to save coverage");
+      } else {
+        setHomePostcode(pc);
+        toast.success("Coverage saved ✓");
+      }
+    } catch (e) {
+      console.error("[settings] geocode error", e);
+      toast.error("Could not look up postcode");
+    } finally {
+      setSavingCoverage(false);
     }
   }
 
