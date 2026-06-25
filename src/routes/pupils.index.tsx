@@ -324,6 +324,9 @@ function PupilsIndexPage() {
               const b = balanceMap[p.id];
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
+              const prepaid = Number(p.prepaid_hours) || 0;
+              const hoursUsed = hoursMap[p.id] || 0;
+              const hoursRemaining = prepaid - hoursUsed;
               return (
                 <div key={p.id}>
                   <Link
