@@ -74,6 +74,7 @@ import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as BriefingRouteImport } from './routes/briefing'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
+import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
@@ -89,6 +90,11 @@ import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
+import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
+import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
+import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as MarketingContactRouteImport } from './routes/_marketing.contact'
+import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
@@ -421,6 +427,10 @@ const AutomationsRoute = AutomationsRouteImport.update({
   path: '/automations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/_marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -495,6 +505,31 @@ const CoursesIdRoute = CoursesIdRouteImport.update({
   id: '/courses/$id',
   path: '/courses/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingPricingRoute = MarketingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingHowItWorksRoute = MarketingHowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingContactRoute = MarketingContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingAboutRoute = MarketingAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => MarketingRoute,
 } as any)
 const PupilsProgressIdRoute = PupilsProgressIdRouteImport.update({
   id: '/pupils/progress/$id',
@@ -594,6 +629,11 @@ export interface FileRoutesByFullPath {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/about': typeof MarketingAboutRoute
+  '/contact': typeof MarketingContactRoute
+  '/features': typeof MarketingFeaturesRoute
+  '/how-it-works': typeof MarketingHowItWorksRoute
+  '/pricing': typeof MarketingPricingRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -682,6 +722,11 @@ export interface FileRoutesByTo {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/about': typeof MarketingAboutRoute
+  '/contact': typeof MarketingContactRoute
+  '/features': typeof MarketingFeaturesRoute
+  '/how-it-works': typeof MarketingHowItWorksRoute
+  '/pricing': typeof MarketingPricingRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -706,6 +751,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_marketing': typeof MarketingRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -771,6 +817,11 @@ export interface FileRoutesById {
   '/waitinglist': typeof WaitinglistRoute
   '/waivers': typeof WaiversRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/_marketing/about': typeof MarketingAboutRoute
+  '/_marketing/contact': typeof MarketingContactRoute
+  '/_marketing/features': typeof MarketingFeaturesRoute
+  '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
+  '/_marketing/pricing': typeof MarketingPricingRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -861,6 +912,11 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/about'
+    | '/contact'
+    | '/features'
+    | '/how-it-works'
+    | '/pricing'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -949,6 +1005,11 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/about'
+    | '/contact'
+    | '/features'
+    | '/how-it-works'
+    | '/pricing'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -972,6 +1033,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_marketing'
     | '/automations'
     | '/availability'
     | '/briefing'
@@ -1037,6 +1099,11 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waivers'
     | '/weeklyreport'
+    | '/_marketing/about'
+    | '/_marketing/contact'
+    | '/_marketing/features'
+    | '/_marketing/how-it-works'
+    | '/_marketing/pricing'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -1061,6 +1128,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MarketingRoute: typeof MarketingRouteWithChildren
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
   BriefingRoute: typeof BriefingRoute
@@ -1604,6 +1672,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -1709,6 +1784,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_marketing/pricing': {
+      id: '/_marketing/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/how-it-works': {
+      id: '/_marketing/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof MarketingHowItWorksRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/features': {
+      id: '/_marketing/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof MarketingFeaturesRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/contact': {
+      id: '/_marketing/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof MarketingContactRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/about': {
+      id: '/_marketing/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof MarketingAboutRouteImport
+      parentRoute: typeof MarketingRoute
+    }
     '/pupils/progress/$id': {
       id: '/pupils/progress/$id'
       path: '/pupils/progress/$id'
@@ -1754,6 +1864,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface MarketingRouteChildren {
+  MarketingAboutRoute: typeof MarketingAboutRoute
+  MarketingContactRoute: typeof MarketingContactRoute
+  MarketingFeaturesRoute: typeof MarketingFeaturesRoute
+  MarketingHowItWorksRoute: typeof MarketingHowItWorksRoute
+  MarketingPricingRoute: typeof MarketingPricingRoute
+}
+
+const MarketingRouteChildren: MarketingRouteChildren = {
+  MarketingAboutRoute: MarketingAboutRoute,
+  MarketingContactRoute: MarketingContactRoute,
+  MarketingFeaturesRoute: MarketingFeaturesRoute,
+  MarketingHowItWorksRoute: MarketingHowItWorksRoute,
+  MarketingPricingRoute: MarketingPricingRoute,
+}
+
+const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
+  MarketingRouteChildren,
+)
+
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -1768,6 +1898,7 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MarketingRoute: MarketingRouteWithChildren,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
   BriefingRoute: BriefingRoute,
