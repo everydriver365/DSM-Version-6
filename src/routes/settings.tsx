@@ -13,6 +13,8 @@ import {
   Crown,
   MapPin,
   Check,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
