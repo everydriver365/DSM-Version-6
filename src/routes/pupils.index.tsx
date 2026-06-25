@@ -51,6 +51,7 @@ function accentColor(status: StatusKey) {
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
+  const [balanceMap, setBalanceMap] = useState<Record<string, { cost: number; paid: number }>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -100,6 +101,7 @@ function PupilsIndexPage() {
       const pupilIds = normalized.map((p) => p.id);
       if (pupilIds.length === 0) {
         setLessonCountMap({});
+        setBalanceMap({});
         return;
       }
       const { data: lessonRows, error: lcErr } = await supabase
@@ -117,6 +119,22 @@ function PupilsIndexPage() {
         {} as Record<string, number>,
       );
       setLessonCountMap(map);
+
+      const { data: paymentHistory, error: phErr } = await supabase
+        .from("lesson_history")
+        .select("pupil_id, lesson_cost, payment_status")
+        .in("pupil_id", pupilIds);
+      if (phErr) console.error("[pupils] balance fetch error", phErr);
+      const bMap = ((paymentHistory ?? []) as { pupil_id: string; lesson_cost: number | null; payment_status: string | null }[]).reduce(
+        (acc, row) => {
+          if (!acc[row.pupil_id]) acc[row.pupil_id] = { cost: 0, paid: 0 };
+          acc[row.pupil_id].cost += Number(row.lesson_cost) || 0;
+          if (row.payment_status === "paid") acc[row.pupil_id].paid += Number(row.lesson_cost) || 0;
+          return acc;
+        },
+        {} as Record<string, { cost: number; paid: number }>,
+      );
+      setBalanceMap(bMap);
     })();
   }, [tab]);
 
@@ -267,7 +285,8 @@ function PupilsIndexPage() {
           <div className="flex flex-col">
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
-              const balance = Number(p.balance_owed ?? 0);
+              const b = balanceMap[p.id];
+              const balance = b ? b.paid - b.cost : 0;
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               return (
@@ -311,12 +330,20 @@ function PupilsIndexPage() {
                           >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </span>
-                          {balance > 0 && (
+                          {balance < 0 && (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#CC2229", ...POPPINS }}
                             >
-                              £{balance.toFixed(2)}
+                              £{Math.abs(balance).toFixed(2)}
+                            </span>
+                          )}
+                          {balance > 0 && (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#16A34A", ...POPPINS }}
+                            >
+                              +£{balance.toFixed(2)}
                             </span>
                           )}
                         </div>
