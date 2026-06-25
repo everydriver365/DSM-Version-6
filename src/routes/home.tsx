@@ -1997,7 +1997,7 @@ function HomePage() {
               );
 
               const next = shown[i + 1];
-              if (next) {
+              if (next && (tab !== "next" || ymd(lessonDateTime(next)) === ymd(startD))) {
                 const gapMins = Math.round(
                   (lStart(next) - lEnd(l)) / 60000,
                 );
