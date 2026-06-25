@@ -351,14 +351,21 @@ function PupilsIndexPage() {
                           >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </span>
-                          {paid > 0 && (
+                          {b && b.owed > 0 ? (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#CC2229", ...POPPINS }}
+                            >
+                              £{b.owed.toFixed(2)} owed
+                            </span>
+                          ) : b && b.paid > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#16A34A", ...POPPINS }}
                             >
-                              £{paid.toFixed(2)} paid
+                              All paid ✓
                             </span>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
