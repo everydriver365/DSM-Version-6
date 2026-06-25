@@ -152,8 +152,7 @@ function PupilsIndexPage() {
     })();
   }, [tab]);
 
-    })();
-  }, [tab]);
+
 
 
   const filtered = useMemo(() => {
