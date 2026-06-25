@@ -119,6 +119,10 @@ function SettingsPage() {
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
   const [savingRule, setSavingRule] = useState(false);
 
+  const POSTCODE_ENTRY_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+  const postcodeEntries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
+  const hasInvalidPostcodes = ruleType === "postcode_zone" && postcodeEntries.some((e) => !POSTCODE_ENTRY_RE.test(e));
+
   async function loadPricingRules(uid: string) {
     const { data, error } = await supabase
       .from("pricing_rules")
