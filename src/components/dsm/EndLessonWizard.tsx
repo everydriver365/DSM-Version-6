@@ -178,7 +178,16 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [finalDistance, setFinalDistance] = useState<number | null>(null);
   const [finalPaymentLabel, setFinalPaymentLabel] = useState<string>("Skipped");
 
-  const lessonCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [pupilPostcode, setPupilPostcode] = useState<string | undefined>(undefined);
+
+  const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
+  const pricing = applyPricingRules(baseCost, pricingRules, {
+    lessonDate,
+    lessonTime: startTime,
+    postcode: pupilPostcode,
+  });
+  const lessonCost = pricing.total;
 
   // Reset when opening
   useEffect(() => {
