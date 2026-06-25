@@ -35,6 +35,9 @@ interface Pupil {
   ni_amount_paid: number | null;
   ni_payment_date: string | null;
   ni_reference: string | null;
+  test_time: string | null;
+  test_centre: string | null;
+  wants_swap: boolean | null;
 }
 
 interface Lesson {
