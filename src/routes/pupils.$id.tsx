@@ -35,6 +35,9 @@ interface Pupil {
   ni_amount_paid: number | null;
   ni_payment_date: string | null;
   ni_reference: string | null;
+  test_time: string | null;
+  test_centre: string | null;
+  wants_swap: boolean | null;
 }
 
 interface Lesson {
@@ -132,7 +135,7 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -703,14 +706,70 @@ function PupilDetailPage() {
                 value={outstanding <= 0 && total > 0 ? "Settled" : `£${outstanding.toFixed(2)}`}
                 valueColor={outstanding > 0 ? "#CC2229" : "#16A34A"}
               />
-              <button
-                type="button"
-                onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
-                className="mt-3 text-[13px] font-medium"
-                style={{ color: "#1A52A0", ...POPPINS }}
+
+              <div
+                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
               >
-                Edit payment details
-              </button>
+                Test details
+              </div>
+              <NIRow
+                label="Test date"
+                value={pupil.test_date ? new Date(`${pupil.test_date}T00:00:00`).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—"}
+              />
+              <NIRow label="Test time" value={pupil.test_time ? pupil.test_time.slice(0, 5) : "—"} />
+              <NIRow label="Test centre" value={pupil.test_centre || "—"} />
+
+              <div
+                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
+              >
+                EverySwap
+              </div>
+              <div
+                className="flex items-center justify-between py-1.5"
+                style={{ borderTop: "0.5px solid #F3F4F6" }}
+              >
+                <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  Swap status
+                </span>
+                {pupil.wants_swap ? (
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#16A34A", ...POPPINS }}
+                    >
+                      On EverySwap list
+                    </span>
+                    <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                      Seeking swap
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    Not on swap list
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1A52A0", ...POPPINS }}
+                >
+                  Edit payment details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1A52A0", ...POPPINS }}
+                >
+                  Manage swap
+                </button>
+              </div>
             </div>
           );
         })()}
