@@ -22,6 +22,7 @@ interface Pupil {
   email: string | null;
   lesson_count: number | null;
   balance_owed: number | null;
+  prepaid_hours: number | null;
   status: string | null;
 }
 
