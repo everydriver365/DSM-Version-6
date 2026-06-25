@@ -1832,8 +1832,8 @@ function HomePage() {
                   </span>,
                 );
               }
-              if (pastEnd && !isCancelled) {
-                if (!l.eol_completed) {
+              if (!isCancelled) {
+                if (pastEnd && !l.eol_completed) {
                   badges.push(
                     <button
                       key="eol"
@@ -1857,7 +1857,7 @@ function HomePage() {
                       Complete EOL
                     </button>,
                   );
-                } else {
+                } else if (pastEnd && l.eol_completed) {
                   badges.push(
                     <span
                       key="eol-done"
@@ -1892,7 +1892,7 @@ function HomePage() {
                   </span>,
                 );
               } else if (
-                pastEnd &&
+                !isCancelled &&
                 (l.payment_status === "unpaid" || !l.payment_status) &&
                 (l.amount_due ?? 0) > 0
               ) {
@@ -1904,14 +1904,15 @@ function HomePage() {
                       fontWeight: 700,
                       padding: "1px 6px",
                       borderRadius: 999,
-                      backgroundColor: "#FEE2E2",
-                      color: "#CC2229",
+                      backgroundColor: pastEnd ? "#FEE2E2" : "#FEF3C7",
+                      color: pastEnd ? "#CC2229" : "#92400E",
                     }}
                   >
                     £{Number(l.amount_due).toFixed(2)} unpaid
                   </span>,
                 );
               }
+
 
               rows.push(
                 <div
