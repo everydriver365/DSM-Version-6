@@ -427,8 +427,9 @@ function PupilSyllabusPage() {
 
       {/* Sticky save */}
       <div
-        className="fixed bottom-0 left-0 right-0 px-4 py-3"
+        className="fixed left-0 right-0 px-4 py-3"
         style={{
+          bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
           backgroundColor: "#FFFFFF",
           borderTop: "0.5px solid #E2E6ED",
         }}
