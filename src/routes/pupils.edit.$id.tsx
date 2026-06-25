@@ -109,7 +109,7 @@ function EditPupilPage() {
 
       const { data, error: fetchErr } = await supabase
         .from("pupils")
-        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail, prepaid_hours, prepaid_amount_paid, account_balance, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference")
+        .select("first_name, last_name, phone, email, status, test_date, notes, address, lead_source, lead_source_detail, prepaid_hours, prepaid_amount_paid, account_balance, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap, swap_earliest_date, swap_latest_date, swap_preferred_time, swap_centre_1, swap_centre_2, swap_centre_3")
         .eq("id", id)
         .is("deleted_at", null)
         .maybeSingle();
