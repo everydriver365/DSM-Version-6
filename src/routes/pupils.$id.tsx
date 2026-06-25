@@ -789,3 +789,27 @@ function StatChip({
     </div>
   );
 }
+
+function NIRow({
+  label,
+  value,
+  valueColor = "#0F2044",
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
+  return (
+    <div
+      className="flex items-center justify-between py-1.5"
+      style={{ borderTop: "0.5px solid #F3F4F6" }}
+    >
+      <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        {label}
+      </span>
+      <span className="text-[13px] font-semibold" style={{ color: valueColor, ...POPPINS }}>
+        {value}
+      </span>
+    </div>
+  );
+}
