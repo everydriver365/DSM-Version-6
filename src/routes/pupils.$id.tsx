@@ -143,6 +143,8 @@ function PupilDetailPage() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
+  const [hoursCompleted, setHoursCompleted] = useState<number>(0);
+  const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
