@@ -564,8 +564,102 @@ function EditPupilPage() {
                 onChange={(e) => setNiReference(e.target.value)}
                 placeholder="Bank transfer ref / NI booking ref"
               />
+
+              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                <p
+                  className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
+                  style={POPPINS}
+                >
+                  TEST DETAILS
+                </p>
+                <div className="flex flex-col gap-3">
+                  <Input
+                    label="Test date"
+                    type="date"
+                    value={testDate}
+                    onChange={(e) => setTestDate(e.target.value)}
+                  />
+                  <Input
+                    label="Test time"
+                    type="time"
+                    value={testTime}
+                    onChange={(e) => setTestTime(e.target.value)}
+                  />
+                  <CentreSearch
+                    label="Test centre"
+                    value={testCentre}
+                    onChange={setTestCentre}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                <p
+                  className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
+                  style={POPPINS}
+                >
+                  EVERYSWAP
+                </p>
+                <label className="flex items-center justify-between gap-3" style={POPPINS}>
+                  <span className="text-[13px] font-medium text-[#1A1A2E]">
+                    Add to EverySwap swap list
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={wantsSwap}
+                    onChange={(e) => setWantsSwap(e.target.checked)}
+                    style={{ width: 20, height: 20 }}
+                  />
+                </label>
+                {wantsSwap && (
+                  <div className="mt-3 flex flex-col gap-3">
+                    <Input
+                      label="Preferred earliest date"
+                      type="date"
+                      value={swapEarliestDate}
+                      onChange={(e) => setSwapEarliestDate(e.target.value)}
+                    />
+                    <Input
+                      label="Preferred latest date"
+                      type="date"
+                      value={swapLatestDate}
+                      onChange={(e) => setSwapLatestDate(e.target.value)}
+                    />
+                    <div>
+                      <FieldLabel htmlFor="swap_preferred_time">Preferred time</FieldLabel>
+                      <select
+                        id="swap_preferred_time"
+                        value={swapPreferredTime}
+                        onChange={(e) => setSwapPreferredTime(e.target.value)}
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        style={fieldBorder}
+                      >
+                        <option value="any">Any</option>
+                        <option value="morning">Morning</option>
+                        <option value="afternoon">Afternoon</option>
+                      </select>
+                    </div>
+                    <CentreSearch
+                      label="Alternative centre 1"
+                      value={swapCentre1}
+                      onChange={setSwapCentre1}
+                    />
+                    <CentreSearch
+                      label="Alternative centre 2"
+                      value={swapCentre2}
+                      onChange={setSwapCentre2}
+                    />
+                    <CentreSearch
+                      label="Alternative centre 3"
+                      value={swapCentre3}
+                      onChange={setSwapCentre3}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           )}
+
 
 
 
