@@ -142,6 +142,7 @@ function PupilDetailPage() {
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
+  const [balance, setBalance] = useState<number>(0);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -172,12 +173,28 @@ function PupilDetailPage() {
       .from("lessons")
       .select("id", { count: "exact", head: true })
       .eq("pupil_id", id)
-      .eq("status", "completed")
+      .in("status", ["confirmed", "completed"])
       .is("deleted_at", null)
       .then(({ count, error }) => {
         if (error) console.error("[pupil] lesson count error", error);
         setActualLessonCount(count ?? 0);
-        console.log("[pupils.$id] actual completed lesson count:", count);
+        console.log("[pupils.$id] lesson count (confirmed+completed):", count);
+      });
+
+    supabase
+      .from("lesson_history")
+      .select("lesson_cost, payment_status")
+      .eq("pupil_id", id)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] lesson_history error", error);
+        const rows = (data as { lesson_cost: number | null; payment_status: string | null }[]) ?? [];
+        const totalCost = rows.reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
+        const totalPaid = rows
+          .filter((r) => r.payment_status === "paid")
+          .reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
+        const bal = totalPaid - totalCost;
+        setBalance(bal);
+        console.log("[pupils.$id] balance:", bal, "totalCost:", totalCost, "totalPaid:", totalPaid);
       });
 
     supabase
@@ -298,8 +315,7 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const balance = Number(pupil?.account_balance ?? pupil?.balance_owed ?? 0);
-  const lessonCount = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
+  const lessonCount = actualLessonCount ?? 0;
 
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
@@ -445,14 +461,20 @@ function PupilDetailPage() {
               <StatChip label="Lessons" value={String(lessonCount)} />
               <StatChip
                 label="Balance"
-                value={`£${balance.toFixed(2)}`}
-                valueColor={balance > 0 ? "#CC2229" : "#0F2044"}
+                value={
+                  balance === 0
+                    ? "All paid"
+                    : balance < 0
+                      ? `Owes £${Math.abs(balance).toFixed(2)}`
+                      : `In credit £${balance.toFixed(2)}`
+                }
+                valueColor={balance < 0 ? "#CC2229" : "#16A34A"}
               />
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
 
             {(() => {
-              const lc = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
+              const lc = actualLessonCount ?? 0;
               const theoryPass = !!pupil?.theory_pass;
               const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
               const lessonPoints = Math.min((lc / 40) * 30, 30);
