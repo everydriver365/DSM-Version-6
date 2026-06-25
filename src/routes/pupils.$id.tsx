@@ -141,6 +141,7 @@ function PupilDetailPage() {
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
