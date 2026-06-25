@@ -1,104 +1,142 @@
 import { Link } from "@tanstack/react-router";
 
+const NAVY = "#0F2044";
+const FONT = "Poppins, system-ui, sans-serif";
+
+const productLinks = [
+  { to: "/features", label: "Features" },
+  { to: "/pricing", label: "Pricing" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/features", label: "Roadmap" },
+];
+
+const companyLinks = [
+  { to: "/about", label: "About", external: false },
+  { to: "/contact", label: "Contact", external: false },
+  { to: "https://everydriver.co.uk", label: "EveryDriver.co.uk", external: true },
+  { to: "https://everydriver.co.uk/blog", label: "Blog", external: true },
+];
+
+const legalLinks = [
+  { to: "https://everydriver.co.uk/privacy", label: "Privacy Policy" },
+  { to: "https://everydriver.co.uk/terms", label: "Terms of Service" },
+  { to: "https://everydriver.co.uk/returns", label: "Returns Policy" },
+];
+
+const linkStyle: React.CSSProperties = {
+  color: "rgba(255,255,255,0.7)",
+  textDecoration: "none",
+  fontSize: 14,
+  fontFamily: FONT,
+};
+
+const headingStyle: React.CSSProperties = {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: 700,
+  margin: "0 0 16px",
+  fontFamily: FONT,
+  letterSpacing: 0.3,
+};
+
 export function MarketingFooter() {
   return (
-    <footer style={{ background: "#0B1530", color: "#CBD5E1", marginTop: 80 }}>
-      <div
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "56px 20px 28px",
-          display: "grid",
-          gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-          gap: 32,
-        }}
-        className="dsm-mkt-footer-grid"
-      >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-            <div
+    <footer style={{ background: NAVY, color: "#fff", padding: "60px 0 32px", fontFamily: FONT }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px" }}>
+        <div
+          className="dsm-footer-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
+            gap: 40,
+          }}
+        >
+          {/* Column 1: Brand */}
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
+              DSM by EveryDriver
+            </div>
+            <p
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                background: "linear-gradient(135deg,#3B82F6,#1E40AF)",
-                color: "#fff",
-                display: "grid",
-                placeItems: "center",
-                fontWeight: 800,
+                marginTop: 12,
+                color: "rgba(255,255,255,0.6)",
+                fontSize: 14,
+                lineHeight: 1.6,
+                maxWidth: 320,
               }}
             >
-              D
-            </div>
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 17 }}>DSM</span>
+              The driving instructor app that works as hard as you do.
+            </p>
+            <p style={{ marginTop: 20, color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
+              © 2026 EveryDriver Ltd
+            </p>
           </div>
-          <p style={{ fontSize: 13, lineHeight: 1.6, color: "#94A3B8", maxWidth: 320 }}>
-            The all-in-one app for UK driving instructors — built by EveryDriver in Winchester, Hampshire.
-          </p>
+
+          {/* Column 2: Product */}
+          <div>
+            <h4 style={headingStyle}>Product</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {productLinks.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.to} style={linkStyle}>{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Company */}
+          <div>
+            <h4 style={headingStyle}>Company</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {companyLinks.map((l) =>
+                l.external ? (
+                  <li key={l.label}>
+                    <a href={l.to} target="_blank" rel="noreferrer" style={linkStyle}>{l.label}</a>
+                  </li>
+                ) : (
+                  <li key={l.label}>
+                    <Link to={l.to} style={linkStyle}>{l.label}</Link>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+
+          {/* Column 4: Legal */}
+          <div>
+            <h4 style={headingStyle}>Legal</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {legalLinks.map((l) => (
+                <li key={l.label}>
+                  <a href={l.to} target="_blank" rel="noreferrer" style={linkStyle}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <FooterCol title="Product">
-          <Link to="/features" style={fLink}>Features</Link>
-          <Link to="/pricing" style={fLink}>Pricing</Link>
-          <Link to="/how-it-works" style={fLink}>How it works</Link>
-        </FooterCol>
-
-        <FooterCol title="Company">
-          <Link to="/about" style={fLink}>About</Link>
-          <Link to="/contact" style={fLink}>Contact</Link>
-          <a href="https://everydriver.co.uk" target="_blank" rel="noreferrer" style={fLink}>EveryDriver.co.uk</a>
-        </FooterCol>
-
-        <FooterCol title="Legal">
-          <a href="https://everydriver.co.uk/privacy" target="_blank" rel="noreferrer" style={fLink}>Privacy Policy</a>
-          <a href="https://everydriver.co.uk/terms" target="_blank" rel="noreferrer" style={fLink}>Terms</a>
-        </FooterCol>
-      </div>
-
-      <div
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "18px 20px",
-          borderTop: "1px solid #1E293B",
-          fontSize: 12,
-          color: "#64748B",
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 8,
-        }}
-      >
-        <span>© {new Date().getFullYear()} EveryDriver Ltd. All rights reserved.</span>
-        <span>Made in Winchester, Hampshire 🇬🇧</span>
+        <div
+          style={{
+            marginTop: 48,
+            paddingTop: 24,
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            textAlign: "center",
+            color: "rgba(255,255,255,0.55)",
+            fontSize: 13,
+          }}
+        >
+          Made with ❤️ for driving instructors across the UK
+        </div>
       </div>
 
       <style>{`
-        @media (max-width: 760px) {
-          .dsm-mkt-footer-grid { grid-template-columns: 1fr 1fr !important; }
+        @media (max-width: 960px) {
+          .dsm-footer-grid { grid-template-columns: 1fr 1fr !important; }
         }
-        @media (max-width: 440px) {
-          .dsm-mkt-footer-grid { grid-template-columns: 1fr !important; }
+        @media (max-width: 560px) {
+          .dsm-footer-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </footer>
-  );
-}
-
-const fLink: React.CSSProperties = {
-  color: "#CBD5E1",
-  textDecoration: "none",
-  fontSize: 13,
-  padding: "4px 0",
-};
-
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <div style={{ color: "#fff", fontWeight: 600, fontSize: 13, marginBottom: 12, letterSpacing: 0.4 }}>
-        {title.toUpperCase()}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>{children}</div>
-    </div>
   );
 }
