@@ -2017,6 +2017,22 @@ function HomePage() {
                     </span>,
                   );
                 }
+              } else {
+                badges.push(
+                  <span
+                    key="prepaid"
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "1px 6px",
+                      borderRadius: 999,
+                      backgroundColor: "#EEF4FB",
+                      color: "#1A52A0",
+                    }}
+                  >
+                    Prepaid
+                  </span>,
+                );
               }
 
 
