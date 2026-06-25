@@ -169,6 +169,15 @@ function EditPupilPage() {
         setNiAmountPaid(p.ni_amount_paid != null ? String(p.ni_amount_paid) : "");
         setNiPaymentDate(p.ni_payment_date ?? "");
         setNiReference(p.ni_reference ?? "");
+        setTestTime(p.test_time ? p.test_time.slice(0, 5) : "");
+        setTestCentre(p.test_centre ?? "");
+        setWantsSwap(Boolean(p.wants_swap));
+        setSwapEarliestDate(p.swap_earliest_date ?? "");
+        setSwapLatestDate(p.swap_latest_date ?? "");
+        setSwapPreferredTime(p.swap_preferred_time ?? "any");
+        setSwapCentre1(p.swap_centre_1 ?? "");
+        setSwapCentre2(p.swap_centre_2 ?? "");
+        setSwapCentre3(p.swap_centre_3 ?? "");
       }
       setLoading(false);
     })();
