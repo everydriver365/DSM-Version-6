@@ -251,7 +251,12 @@ function EditPupilPage() {
         (leadSource === "Referral" || leadSource === "Other") && leadSourceDetail.trim()
           ? leadSourceDetail.trim()
           : null,
-      prepaid_hours: hasBlock ? hNum : null,
+      prepaid_hours:
+        hasBlock
+          ? hNum
+          : leadSource === "National Intensive" && Number.isFinite(hNum) && hNum > 0
+            ? hNum
+            : null,
       prepaid_amount_paid: hasBlock ? aNum : null,
       account_balance: hasBlock ? aNum : null,
       ni_amount_total:
