@@ -96,6 +96,7 @@ import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as MarketingContactRouteImport } from './routes/_marketing.contact'
 import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
+import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
@@ -537,6 +538,11 @@ const MarketingAboutRoute = MarketingAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => MarketingRoute,
 } as any)
+const PupilsSyllabusIdRoute = PupilsSyllabusIdRouteImport.update({
+  id: '/pupils/syllabus/$id',
+  path: '/pupils/syllabus/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PupilsProgressIdRoute = PupilsProgressIdRouteImport.update({
   id: '/pupils/progress/$id',
   path: '/pupils/progress/$id',
@@ -661,6 +667,7 @@ export interface FileRoutesByFullPath {
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
+  '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -755,6 +762,7 @@ export interface FileRoutesByTo {
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
+  '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -851,6 +859,7 @@ export interface FileRoutesById {
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
+  '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -947,6 +956,7 @@ export interface FileRouteTypes {
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/progress/$id'
+    | '/pupils/syllabus/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1041,6 +1051,7 @@ export interface FileRouteTypes {
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/progress/$id'
+    | '/pupils/syllabus/$id'
   id:
     | '__root__'
     | '/'
@@ -1136,6 +1147,7 @@ export interface FileRouteTypes {
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/progress/$id'
+    | '/pupils/syllabus/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1226,6 +1238,7 @@ export interface RootRouteChildren {
   PupilsEditIdRoute: typeof PupilsEditIdRoute
   PupilsHistoryIdRoute: typeof PupilsHistoryIdRoute
   PupilsProgressIdRoute: typeof PupilsProgressIdRoute
+  PupilsSyllabusIdRoute: typeof PupilsSyllabusIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1839,6 +1852,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingAboutRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/pupils/syllabus/$id': {
+      id: '/pupils/syllabus/$id'
+      path: '/pupils/syllabus/$id'
+      fullPath: '/pupils/syllabus/$id'
+      preLoaderRoute: typeof PupilsSyllabusIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pupils/progress/$id': {
       id: '/pupils/progress/$id'
       path: '/pupils/progress/$id'
@@ -2004,6 +2024,7 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsEditIdRoute: PupilsEditIdRoute,
   PupilsHistoryIdRoute: PupilsHistoryIdRoute,
   PupilsProgressIdRoute: PupilsProgressIdRoute,
+  PupilsSyllabusIdRoute: PupilsSyllabusIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
