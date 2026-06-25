@@ -507,6 +507,88 @@ function SettingsPage() {
           </button>
         </Card>
 
+        <SectionHeader>COVERAGE AREA</SectionHeader>
+        <Card
+          style={{
+            background: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <MapPin size={18} color="#1A52A0" />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
+              Coverage area
+            </span>
+          </div>
+
+          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
+          <input
+            type="text"
+            value={homePostcode}
+            onChange={(e) => setHomePostcode(e.target.value)}
+            placeholder="e.g. SO23 9AX"
+            autoCapitalize="characters"
+            maxLength={10}
+            style={{
+              width: "100%",
+              height: 44,
+              padding: "0 12px",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+              fontSize: 14,
+              marginTop: 6,
+              marginBottom: 14,
+              background: "#fff",
+              color: "#1A1A2E",
+              ...POPPINS,
+            }}
+          />
+
+          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
+          <select
+            value={coverageRadius}
+            onChange={(e) => setCoverageRadius(Number(e.target.value))}
+            style={{
+              width: "100%",
+              height: 44,
+              padding: "0 12px",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+              fontSize: 14,
+              marginTop: 6,
+              background: "#fff",
+              color: "#1A1A2E",
+              ...POPPINS,
+            }}
+          >
+            {[5, 10, 15, 20, 25, 30].map((m) => (
+              <option key={m} value={m}>
+                {m} miles
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={saveCoverage}
+            disabled={savingCoverage}
+            className="w-full text-[14px] font-semibold text-white mt-5"
+            style={{
+              height: 48,
+              borderRadius: 10,
+              backgroundColor: "#0F2044",
+              border: "none",
+              opacity: savingCoverage ? 0.7 : 1,
+              cursor: savingCoverage ? "not-allowed" : "pointer",
+              ...POPPINS,
+            }}
+          >
+            {savingCoverage ? "Saving…" : "Save coverage"}
+          </button>
+        </Card>
+
         <SectionHeader>SUPPORT</SectionHeader>
         <Card className="!p-0">
           <MenuRow
