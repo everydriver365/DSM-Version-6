@@ -148,9 +148,14 @@ function SettingsPage() {
       }
       conditions = { days };
     } else if (ruleType === "postcode_zone") {
-      const codes = rulePostcodes.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+      const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+      const codes = rulePostcodes.split(",").map((s) => s.trim().replace(/\s+/g, " ").toUpperCase()).filter(Boolean);
       if (codes.length === 0) {
         toast.error("Enter at least one postcode");
+        return;
+      }
+      if (codes.some((c) => !POSTCODE_RE.test(c))) {
+        toast.error("Fix invalid postcodes");
         return;
       }
       conditions = { postcodes: codes };
