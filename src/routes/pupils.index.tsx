@@ -418,6 +418,19 @@ function PupilsIndexPage() {
                             </span>
                           ) : null}
                         </div>
+                        {prepaid > 0 && Number(p.ni_amount_total) > 0 && (() => {
+                          const niOwed = Number(p.ni_amount_total ?? 0) - Number(p.ni_amount_paid ?? 0);
+                          if (niOwed <= 0) return null;
+                          return (
+                            <span
+                              className="text-[11px] font-medium"
+                              style={{ color: "#CC2229", ...POPPINS }}
+                            >
+                              £{niOwed.toFixed(2)} NI owed
+                            </span>
+                          );
+                        })()}
+                        </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <span
