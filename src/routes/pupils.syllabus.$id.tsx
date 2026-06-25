@@ -133,15 +133,14 @@ function PupilSyllabusPage() {
     })();
   }, [id]);
 
-  const totalPoints = useMemo(
-    () =>
-      DVSA_SYLLABUS.reduce(
-        (sum, cat) => sum + cat.items.reduce((s, it) => s + (levels[it.id] ?? 0), 0),
-        0,
-      ),
-    [levels],
+  // Derived directly from levels state — recalculates on every render
+  const earnedPoints = Object.values(levels).reduce(
+    (sum, level) => sum + (level || 0),
+    0,
   );
-  const pct = Math.round((totalPoints / MAX_POINTS) * 100);
+  const totalPoints = earnedPoints;
+  const pct = Math.round((earnedPoints / MAX_POINTS) * 100);
+
   let pctColor = "#CC2229";
   if (pct >= 80) pctColor = "#16A34A";
   else if (pct >= 60) pctColor = "#1A52A0";
