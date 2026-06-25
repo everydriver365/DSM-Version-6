@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -102,7 +102,9 @@ function PupilSyllabusPage() {
   const [pupilName, setPupilName] = useState("");
   const [levels, setLevels] = useState<Record<string, number>>({});
   const [initial, setInitial] = useState<Record<string, number>>({});
-  const [activeCat, setActiveCat] = useState<string>(DVSA_SYLLABUS[0].key);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    [DVSA_SYLLABUS[0].key]: true,
+  });
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -187,8 +189,6 @@ function PupilSyllabusPage() {
     }
   }
 
-  const activeCategory = DVSA_SYLLABUS.find((c) => c.key === activeCat)!;
-
   return (
     <div className="min-h-screen bg-white pb-28" style={POPPINS}>
       {/* Top bar */}
@@ -252,94 +252,129 @@ function PupilSyllabusPage() {
         </div>
       </div>
 
-      {/* Category tab pills */}
-      <div className="mt-3 px-4 overflow-x-auto">
-        <div className="flex gap-2" style={{ width: "max-content" }}>
-          {DVSA_SYLLABUS.map((cat) => {
-            const isActive = cat.key === activeCat;
-            return (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => setActiveCat(cat.key)}
-                className="text-[12px] font-medium whitespace-nowrap"
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: 999,
-                  backgroundColor: isActive ? "#0F2044" : "#F3F4F6",
-                  color: isActive ? "#FFFFFF" : "#0F2044",
-                  border: "none",
-                  ...POPPINS,
-                }}
-              >
-                {cat.title}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Competencies */}
+      {/* Category accordions */}
       <div className="mx-4 mt-3 flex flex-col gap-2">
         {loading ? (
           <div className="text-[13px] py-6 text-center" style={{ color: "#9CA3AF" }}>
             Loading…
           </div>
         ) : (
-          activeCategory.items.map((item) => {
-            const current = levels[item.id] ?? 0;
+          DVSA_SYLLABUS.map((cat) => {
+            const isOpen = !!expanded[cat.key];
+            const completed = cat.items.filter((it) => (levels[it.id] ?? 0) >= 5).length;
+            const total = cat.items.length;
+            const catPct = total === 0 ? 0 : Math.round((completed / total) * 100);
             return (
               <div
-                key={item.id}
+                key={cat.key}
                 className="bg-white"
                 style={{
-                  padding: 12,
                   borderRadius: 10,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
                   borderColor: "#E2E6ED",
+                  overflow: "hidden",
                 }}
               >
-                <div className="text-[14px] font-bold" style={{ color: "#0F2044" }}>
-                  {item.name}
-                </div>
-                <div className="text-[11px] mt-0.5" style={{ color: "#6B7280" }}>
-                  {item.description}
-                </div>
-                <div className="flex gap-1 mt-2">
-                  {LEVEL_META.map((lv) => {
-                    const isSel = current === lv.n;
-                    return (
-                      <button
-                        key={lv.n}
-                        type="button"
-                        onClick={() =>
-                          setLevels((prev) => ({ ...prev, [item.id]: lv.n }))
-                        }
-                        aria-label={`${lv.label} (${lv.n})`}
-                        title={lv.label}
-                        className="flex-1 text-[12px] font-semibold"
-                        style={{
-                          padding: "6px 0",
-                          borderRadius: 8,
-                          backgroundColor: isSel ? lv.color : "#F3F4F6",
-                          color: isSel ? "#FFFFFF" : "#0F2044",
-                          border: isSel
-                            ? `1px solid ${lv.color}`
-                            : "1px solid transparent",
-                        }}
-                      >
-                        {lv.n}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div
-                  className="text-[10px] mt-1 text-right"
-                  style={{ color: levelColor(current) }}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpanded((prev) => ({ ...prev, [cat.key]: !prev[cat.key] }))
+                  }
+                  className="w-full text-left"
+                  style={{ padding: 12, background: "transparent", border: "none", ...POPPINS }}
+                  aria-expanded={isOpen}
                 >
-                  {LEVEL_META[current]?.label}
-                </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-[14px] font-bold" style={{ color: "#0F2044" }}>
+                      {cat.title}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px]" style={{ color: "#6B7280" }}>
+                        {completed}/{total} complete
+                      </span>
+                      <ChevronDown
+                        size={18}
+                        color="#0F2044"
+                        style={{
+                          transition: "transform 150ms ease",
+                          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="rounded-full overflow-hidden mt-2"
+                    style={{ height: 4, backgroundColor: "#E2E6ED" }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${catPct}%`, backgroundColor: "#1A52A0" }}
+                    />
+                  </div>
+                </button>
+
+                {isOpen && (
+                  <div className="flex flex-col gap-2" style={{ padding: 12, paddingTop: 0 }}>
+                    {cat.items.map((item) => {
+                      const current = levels[item.id] ?? 0;
+                      return (
+                        <div
+                          key={item.id}
+                          className="bg-white"
+                          style={{
+                            padding: 12,
+                            borderRadius: 10,
+                            borderWidth: "0.5px",
+                            borderStyle: "solid",
+                            borderColor: "#E2E6ED",
+                          }}
+                        >
+                          <div className="text-[14px] font-bold" style={{ color: "#0F2044" }}>
+                            {item.name}
+                          </div>
+                          <div className="text-[11px] mt-0.5" style={{ color: "#6B7280" }}>
+                            {item.description}
+                          </div>
+                          <div className="flex gap-1 mt-2">
+                            {LEVEL_META.map((lv) => {
+                              const isSel = current === lv.n;
+                              return (
+                                <button
+                                  key={lv.n}
+                                  type="button"
+                                  onClick={() =>
+                                    setLevels((prev) => ({ ...prev, [item.id]: lv.n }))
+                                  }
+                                  aria-label={`${lv.label} (${lv.n})`}
+                                  title={lv.label}
+                                  className="flex-1 text-[12px] font-semibold"
+                                  style={{
+                                    padding: "6px 0",
+                                    borderRadius: 8,
+                                    backgroundColor: isSel ? lv.color : "#F3F4F6",
+                                    color: isSel ? "#FFFFFF" : "#0F2044",
+                                    border: isSel
+                                      ? `1px solid ${lv.color}`
+                                      : "1px solid transparent",
+                                  }}
+                                >
+                                  {lv.n}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div
+                            className="text-[10px] mt-1 text-right"
+                            style={{ color: levelColor(current) }}
+                          >
+                            {LEVEL_META[current]?.label}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })
