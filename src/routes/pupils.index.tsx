@@ -345,12 +345,6 @@ function PupilsIndexPage() {
                           {p.name}
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span
-                            className="text-[11px] text-white px-2 py-0.5 rounded-full"
-                            style={{ backgroundColor: statusBadgeColor(status), ...POPPINS }}
-                          >
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                          </span>
                           {b && b.owed > 0 ? (
                             <span
                               className="text-[12px] font-medium"
