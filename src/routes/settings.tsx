@@ -87,7 +87,139 @@ function SettingsPage() {
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
   const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
 
-  useEffect(() => {
+  // Pricing rules
+  type RuleType = "time_of_day" | "day_of_week" | "postcode_zone" | "advance_notice";
+  type AdjType = "flat" | "percent";
+  type PricingRule = {
+    id: string;
+    instructor_id: string;
+    rule_name: string;
+    rule_type: RuleType;
+    conditions: Record<string, unknown>;
+    adjustment_type: AdjType;
+    adjustment_value: number;
+    is_active: boolean;
+  };
+  const RULE_TYPE_LABEL: Record<RuleType, string> = {
+    time_of_day: "Time of Day",
+    day_of_week: "Day of Week",
+    postcode_zone: "Postcode Zone",
+    advance_notice: "Advance Notice",
+  };
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [ruleName, setRuleName] = useState("");
+  const [ruleType, setRuleType] = useState<RuleType>("time_of_day");
+  const [ruleTime, setRuleTime] = useState("17:00");
+  const [ruleDays, setRuleDays] = useState<Record<DayKey, boolean>>({
+    mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
+  });
+  const [rulePostcodes, setRulePostcodes] = useState("");
+  const [ruleHours, setRuleHours] = useState<number>(24);
+  const [ruleAdjType, setRuleAdjType] = useState<AdjType>("flat");
+  const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
+  const [savingRule, setSavingRule] = useState(false);
+
+  async function loadPricingRules(uid: string) {
+    const { data, error } = await supabase
+      .from("pricing_rules")
+      .select("*")
+      .eq("instructor_id", uid)
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("[settings] pricing_rules fetch error", error);
+      return;
+    }
+    setPricingRules((data ?? []) as PricingRule[]);
+  }
+
+  async function addPricingRule() {
+    if (!userId) return;
+    if (!ruleName.trim()) {
+      toast.error("Rule name required");
+      return;
+    }
+    let conditions: Record<string, unknown> = {};
+    if (ruleType === "time_of_day") conditions = { after: ruleTime };
+    else if (ruleType === "day_of_week") {
+      const days = (Object.keys(ruleDays) as DayKey[]).filter((d) => ruleDays[d]);
+      if (days.length === 0) {
+        toast.error("Select at least one day");
+        return;
+      }
+      conditions = { days };
+    } else if (ruleType === "postcode_zone") {
+      const codes = rulePostcodes.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+      if (codes.length === 0) {
+        toast.error("Enter at least one postcode");
+        return;
+      }
+      conditions = { postcodes: codes };
+    } else if (ruleType === "advance_notice") {
+      conditions = { within_hours: ruleHours };
+    }
+    setSavingRule(true);
+    const { error } = await supabase.from("pricing_rules").insert({
+      instructor_id: userId,
+      rule_name: ruleName.trim(),
+      rule_type: ruleType,
+      conditions,
+      adjustment_type: ruleAdjType,
+      adjustment_value: ruleAdjValue,
+      is_active: true,
+    });
+    setSavingRule(false);
+    if (error) {
+      console.error("[settings] add rule error", error);
+      toast.error("Could not add rule");
+      return;
+    }
+    toast.success("Rule added");
+    setRuleName("");
+    setRuleAdjValue(5);
+    await loadPricingRules(userId);
+  }
+
+  async function toggleRule(id: string, next: boolean) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("pricing_rules")
+      .update({ is_active: next })
+      .eq("id", id)
+      .eq("instructor_id", userId);
+    if (error) {
+      toast.error("Could not update rule");
+      return;
+    }
+    setPricingRules((prev) => prev.map((r) => (r.id === id ? { ...r, is_active: next } : r)));
+  }
+
+  async function deleteRule(id: string) {
+    if (!userId) return;
+    const { error } = await supabase.from("pricing_rules").delete().eq("id", id).eq("instructor_id", userId);
+    if (error) {
+      toast.error("Could not delete rule");
+      return;
+    }
+    setPricingRules((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  function describeRule(r: PricingRule): string {
+    const c = r.conditions ?? {};
+    if (r.rule_type === "time_of_day") return `After ${(c as { after?: string }).after ?? "—"}`;
+    if (r.rule_type === "day_of_week") {
+      const days = ((c as { days?: string[] }).days ?? []).join(", ");
+      return days || "—";
+    }
+    if (r.rule_type === "postcode_zone") {
+      return ((c as { postcodes?: string[] }).postcodes ?? []).join(", ") || "—";
+    }
+    if (r.rule_type === "advance_notice") {
+      return `Within ${(c as { within_hours?: number }).within_hours ?? "—"}h`;
+    }
+    return "";
+  }
+
+
     (async () => {
       const { data, error: authErr } = await supabase.auth.getUser();
       if (authErr) console.error("[settings] auth error", authErr);
