@@ -1939,13 +1939,36 @@ function HomePage() {
                     cursor: "pointer",
                   }}
                 >
-                  <div
-                    style={{
-                      width: 40,
-                      flexShrink: 0,
-                      textAlign: "right",
-                    }}
-                  >
+                  {(() => {
+                    const needsAttention =
+                      pastEnd &&
+                      !isCancelled &&
+                      (!l.eol_completed ||
+                        ((l.payment_status === "unpaid" || !l.payment_status) &&
+                          (l.amount_due ?? 0) > 0));
+                    return (
+                      <div
+                        style={{
+                          width: 40,
+                          flexShrink: 0,
+                          textAlign: "right",
+                          position: "relative",
+                        }}
+                      >
+                        {needsAttention && (
+                          <span
+                            aria-label="Needs attention"
+                            style={{
+                              position: "absolute",
+                              top: -2,
+                              left: -2,
+                              width: 8,
+                              height: 8,
+                              borderRadius: 999,
+                              backgroundColor: "#F59E0B",
+                            }}
+                          />
+                        )}
                     <div
                       style={{
                         fontSize: 12,
