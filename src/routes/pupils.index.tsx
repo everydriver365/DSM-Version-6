@@ -96,6 +96,27 @@ function PupilsIndexPage() {
             : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
       }));
       setPupils(normalized);
+
+      const pupilIds = normalized.map((p) => p.id);
+      if (pupilIds.length === 0) {
+        setLessonCountMap({});
+        return;
+      }
+      const { data: lessonRows, error: lcErr } = await supabase
+        .from("lessons")
+        .select("pupil_id")
+        .in("pupil_id", pupilIds)
+        .in("status", ["confirmed", "completed"])
+        .is("deleted_at", null);
+      if (lcErr) console.error("[pupils] lesson count error", lcErr);
+      const map = ((lessonRows ?? []) as { pupil_id: string }[]).reduce(
+        (acc, r) => {
+          acc[r.pupil_id] = (acc[r.pupil_id] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+      setLessonCountMap(map);
     })();
   }, [tab]);
 
