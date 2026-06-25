@@ -101,6 +101,7 @@ function PupilsIndexPage() {
       const pupilIds = normalized.map((p) => p.id);
       if (pupilIds.length === 0) {
         setLessonCountMap({});
+        setBalanceMap({});
         return;
       }
       const { data: lessonRows, error: lcErr } = await supabase
@@ -118,6 +119,22 @@ function PupilsIndexPage() {
         {} as Record<string, number>,
       );
       setLessonCountMap(map);
+
+      const { data: paymentHistory, error: phErr } = await supabase
+        .from("lesson_history")
+        .select("pupil_id, lesson_cost, payment_status")
+        .in("pupil_id", pupilIds);
+      if (phErr) console.error("[pupils] balance fetch error", phErr);
+      const bMap = ((paymentHistory ?? []) as { pupil_id: string; lesson_cost: number | null; payment_status: string | null }[]).reduce(
+        (acc, row) => {
+          if (!acc[row.pupil_id]) acc[row.pupil_id] = { cost: 0, paid: 0 };
+          acc[row.pupil_id].cost += Number(row.lesson_cost) || 0;
+          if (row.payment_status === "paid") acc[row.pupil_id].paid += Number(row.lesson_cost) || 0;
+          return acc;
+        },
+        {} as Record<string, { cost: number; paid: number }>,
+      );
+      setBalanceMap(bMap);
     })();
   }, [tab]);
 
