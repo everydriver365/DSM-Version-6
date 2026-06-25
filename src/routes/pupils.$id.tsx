@@ -19,10 +19,18 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 interface Pupil {
   id: string;
   name: string;
+  first_name: string | null;
+  last_name: string | null;
   phone: string | null;
   email: string | null;
   lesson_count: number | null;
   balance_owed: number | null;
+  account_balance: number | null;
+  prepaid_hours: number | null;
+  prepaid_amount_paid: number | null;
+  address: string | null;
+  postcode: string | null;
+  profile_image_url: string | null;
   status: string | null;
   test_date: string | null;
   notes: string | null;
@@ -133,12 +141,22 @@ function PupilDetailPage() {
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap, theory_pass")
+      .select(`
+        id, name, first_name, last_name, phone, email, status,
+        lesson_count, balance_owed, account_balance,
+        test_date, test_time, test_centre,
+        prepaid_hours, prepaid_amount_paid,
+        notes, profile_image_url, photo_url, photo_consent,
+        address, postcode, lead_source, lead_source_detail,
+        theory_pass, wants_swap,
+        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference
+      `)
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -147,7 +165,19 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
-        console.log("[pupils.$id] pupil data:", p, "lessons:", p?.lesson_count, "balance:", p?.balance_owed);
+        console.log("[pupils.$id] pupil data:", p, "lesson_count:", p?.lesson_count, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+      });
+
+    supabase
+      .from("lessons")
+      .select("id", { count: "exact", head: true })
+      .eq("pupil_id", id)
+      .eq("status", "completed")
+      .is("deleted_at", null)
+      .then(({ count, error }) => {
+        if (error) console.error("[pupil] lesson count error", error);
+        setActualLessonCount(count ?? 0);
+        console.log("[pupils.$id] actual completed lesson count:", count);
       });
 
     supabase
@@ -268,8 +298,8 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const balance = Number(pupil?.balance_owed ?? 0);
-  const lessonCount = Number(pupil?.lesson_count ?? 0);
+  const balance = Number(pupil?.account_balance ?? pupil?.balance_owed ?? 0);
+  const lessonCount = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
 
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
@@ -422,10 +452,10 @@ function PupilDetailPage() {
             </div>
 
             {(() => {
-              const lessonCount = Number(pupil?.lesson_count ?? 0);
+              const lc = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
               const theoryPass = !!pupil?.theory_pass;
               const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
-              const lessonPoints = Math.min((lessonCount / 40) * 30, 30);
+              const lessonPoints = Math.min((lc / 40) * 30, 30);
               const theoryPoints = theoryPass ? 10 : 0;
               const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
