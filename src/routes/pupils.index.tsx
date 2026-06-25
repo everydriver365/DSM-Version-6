@@ -102,6 +102,10 @@ function PupilsIndexPage() {
             : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
       }));
       setPupils(normalized);
+      console.log("[pupils] first pupil prepaid_hours:", normalized[0]?.prepaid_hours, normalized[0]?.name);
+      const joseph = normalized.find((p) => /joseph/i.test(p.name) && /thorne/i.test(p.name));
+      console.log("[pupils] Joseph Thorne row:", joseph);
+
 
       const pupilIds = normalized.map((p) => p.id);
       if (pupilIds.length === 0) {
