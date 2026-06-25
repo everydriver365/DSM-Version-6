@@ -1580,9 +1580,14 @@ function HomePage() {
               </div>
               <div style={{ fontSize: 19, fontWeight: 800, color: '#FFD27A', marginTop: 2, lineHeight: 1.1 }}>
                 £{weekEarnings.toFixed(0)}
+                {earningsEstimated && (
+                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginLeft: 4 }}>
+                    (est.)
+                  </span>
+                )}
               </div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
-                £{todayEarnings.toFixed(0)} today
+                {earningsEstimated ? `Based on lessons taught` : `£${todayEarnings.toFixed(0)} today`}
               </div>
               <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
