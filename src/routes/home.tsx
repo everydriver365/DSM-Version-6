@@ -589,7 +589,7 @@ function HomePage() {
     return d >= tomorrowStart && d < dayAfter;
   });
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= dayAfter);
-  const nextTabLessons = nextLessons.slice(0, 10);
+  const nextTabLessons = nextLessons.slice(0, 5);
 
   const weekLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
