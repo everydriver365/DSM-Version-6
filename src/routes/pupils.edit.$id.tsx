@@ -137,6 +137,15 @@ function EditPupilPage() {
           ni_amount_paid: number | null;
           ni_payment_date: string | null;
           ni_reference: string | null;
+          test_time: string | null;
+          test_centre: string | null;
+          wants_swap: boolean | null;
+          swap_earliest_date: string | null;
+          swap_latest_date: string | null;
+          swap_preferred_time: string | null;
+          swap_centre_1: string | null;
+          swap_centre_2: string | null;
+          swap_centre_3: string | null;
         };
         setFirstName(p.first_name ?? "");
         setLastName(p.last_name ?? "");
