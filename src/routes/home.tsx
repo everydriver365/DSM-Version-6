@@ -54,6 +54,7 @@ import {
   PlayCircle,
   ChevronDown,
   ChevronRight,
+  CheckCircle,
   Send,
   CheckCheck,
   FileSpreadsheet,
