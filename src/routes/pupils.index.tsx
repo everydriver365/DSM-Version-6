@@ -88,6 +88,7 @@ function PupilsIndexPage() {
 
       const { data, error } = await q;
       if (error) console.error("[pupils] fetch error", error);
+      console.log("[pupils] fetch result:", data, error);
       const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null }>;
       const normalized: Pupil[] = rows.map((p) => ({
         ...p,
@@ -104,39 +105,54 @@ function PupilsIndexPage() {
         setBalanceMap({});
         return;
       }
-      const { data: lessonRows, error: lcErr } = await supabase
-        .from("lessons")
-        .select("pupil_id")
-        .in("pupil_id", pupilIds)
-        .in("status", ["confirmed", "completed"])
-        .is("deleted_at", null);
-      if (lcErr) console.error("[pupils] lesson count error", lcErr);
-      const map = ((lessonRows ?? []) as { pupil_id: string }[]).reduce(
-        (acc, r) => {
-          acc[r.pupil_id] = (acc[r.pupil_id] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>,
-      );
-      setLessonCountMap(map);
 
-      const { data: paymentHistory, error: phErr } = await supabase
-        .from("lesson_history")
-        .select("pupil_id, lesson_cost, payment_status")
-        .in("pupil_id", pupilIds);
-      if (phErr) console.error("[pupils] balance fetch error", phErr);
-      const bMap = ((paymentHistory ?? []) as { pupil_id: string; lesson_cost: number | null; payment_status: string | null }[]).reduce(
-        (acc, row) => {
-          if (!acc[row.pupil_id]) acc[row.pupil_id] = { cost: 0, paid: 0 };
-          acc[row.pupil_id].cost += Number(row.lesson_cost) || 0;
-          if (row.payment_status === "paid") acc[row.pupil_id].paid += Number(row.lesson_cost) || 0;
-          return acc;
-        },
-        {} as Record<string, { cost: number; paid: number }>,
-      );
-      setBalanceMap(bMap);
+      try {
+        const { data: lessonRows, error: lcErr } = await supabase
+          .from("lessons")
+          .select("pupil_id")
+          .in("pupil_id", pupilIds)
+          .in("status", ["confirmed", "completed"])
+          .is("deleted_at", null);
+        if (lcErr) console.error("[pupils] lesson count error", lcErr);
+        const map = ((lessonRows ?? []) as { pupil_id: string }[]).reduce(
+          (acc, r) => {
+            acc[r.pupil_id] = (acc[r.pupil_id] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+        console.log("[pupils] lesson count map:", map);
+        setLessonCountMap(map);
+      } catch (e) {
+        console.error("[pupils] lesson count crashed", e);
+        setLessonCountMap({});
+      }
+
+      try {
+        const { data: paymentHistory, error: phErr } = await supabase
+          .from("lesson_history")
+          .select("pupil_id, lesson_cost, payment_status")
+          .in("pupil_id", pupilIds);
+        if (phErr) console.error("[pupils] balance fetch error", phErr);
+        console.log("[pupils] payment history:", paymentHistory);
+        const bMap = ((paymentHistory ?? []) as { pupil_id: string; lesson_cost: number | null; payment_status: string | null }[]).reduce(
+          (acc, row) => {
+            if (!acc[row.pupil_id]) acc[row.pupil_id] = { cost: 0, paid: 0 };
+            acc[row.pupil_id].cost += Number(row.lesson_cost) || 0;
+            if (row.payment_status === "paid") acc[row.pupil_id].paid += Number(row.lesson_cost) || 0;
+            return acc;
+          },
+          {} as Record<string, { cost: number; paid: number }>,
+        );
+        setBalanceMap(bMap);
+      } catch (e) {
+        console.error("[pupils] balance fetch crashed", e);
+        setBalanceMap({});
+      }
     })();
   }, [tab]);
+
+
 
 
   const filtered = useMemo(() => {
