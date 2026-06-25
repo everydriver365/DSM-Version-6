@@ -38,6 +38,7 @@ interface Pupil {
   test_time: string | null;
   test_centre: string | null;
   wants_swap: boolean | null;
+  theory_pass: boolean | null;
 }
 
 interface Lesson {
