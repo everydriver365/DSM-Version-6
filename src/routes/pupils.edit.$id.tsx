@@ -196,6 +196,21 @@ function EditPupilPage() {
       prepaid_hours: hasBlock ? hNum : null,
       prepaid_amount_paid: hasBlock ? aNum : null,
       account_balance: hasBlock ? aNum : null,
+      ni_amount_total:
+        leadSource === "National Intensive" && niAmountTotal.trim() !== ""
+          ? parseFloat(niAmountTotal)
+          : null,
+      ni_payer: leadSource === "National Intensive" ? niPayer : null,
+      ni_amount_paid:
+        leadSource === "National Intensive" && niAmountPaid.trim() !== ""
+          ? parseFloat(niAmountPaid)
+          : null,
+      ni_payment_date:
+        leadSource === "National Intensive" && niPaymentDate ? niPaymentDate : null,
+      ni_reference:
+        leadSource === "National Intensive" && niReference.trim()
+          ? niReference.trim()
+          : null,
     };
 
     const { error: updErr } = await supabase
