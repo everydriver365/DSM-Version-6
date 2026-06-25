@@ -720,3 +720,93 @@ function EditPupilPage() {
     </div>
   );
 }
+
+function CentreSearch({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [results, setResults] = useState<{ id: string; name: string; town: string | null }[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const q = value.trim();
+    if (!open || q.length < 2) {
+      setResults([]);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    const t = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("test_centres")
+        .select("id, name, town")
+        .ilike("name", `%${q}%`)
+        .order("name")
+        .limit(10);
+      if (cancelled) return;
+      if (error) console.error("[centre-search]", error);
+      setResults((data as { id: string; name: string; town: string | null }[]) ?? []);
+      setLoading(false);
+    }, 200);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [value, open]);
+
+  return (
+    <div className="relative">
+      <FieldLabel htmlFor={`centre_${label}`}>{label}</FieldLabel>
+      <input
+        id={`centre_${label}`}
+        type="text"
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        placeholder="Search test centres…"
+        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+        style={fieldBorder}
+      />
+      {open && (results.length > 0 || loading) && (
+        <div
+          className="absolute z-20 left-0 right-0 mt-1 rounded-lg bg-white shadow-lg overflow-hidden"
+          style={{ border: "0.5px solid #E2E6ED", maxHeight: 240, overflowY: "auto" }}
+        >
+          {loading && (
+            <div className="px-3 py-2 text-[12px] text-[#6B7280]" style={POPPINS}>
+              Searching…
+            </div>
+          )}
+          {results.map((r) => (
+            <button
+              key={r.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onChange(r.name);
+                setOpen(false);
+              }}
+              className="block w-full text-left px-3 py-2 text-[13px] text-[#1A1A2E] hover:bg-[#F3F4F6]"
+              style={POPPINS}
+            >
+              <span className="font-medium">{r.name}</span>
+              {r.town && (
+                <span className="text-[11px] text-[#6B7280] ml-2">{r.town}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
