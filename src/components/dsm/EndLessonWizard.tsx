@@ -341,6 +341,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         duration_minutes: durationMinutes,
         payment_status: paymentStatus,
         payment_method: paymentMethod,
+        lesson_cost: amt,
         amount: amt,
       });
     } catch (e) {
@@ -432,6 +433,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               duration_minutes: durationMinutes,
               payment_status: "paid",
               payment_method: "card_qr",
+              lesson_cost: amt,
               amount: amt,
               payment_link: qrUrl,
               qr_payment_id: qrPaymentId,
@@ -501,6 +503,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         duration_minutes: durationMinutes,
         payment_status: paymentRecorded ? "paid" : "unpaid",
         payment_method: paymentRecorded ? paymentMethod : null,
+        lesson_cost: lessonCost,
         notes: combinedNotes,
         skills_practised: practisedList,
         eol_theory_checked: true,
