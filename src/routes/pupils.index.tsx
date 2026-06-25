@@ -71,7 +71,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, status, deleted_at")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, status, deleted_at")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
