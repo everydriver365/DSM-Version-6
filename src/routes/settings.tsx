@@ -12,6 +12,7 @@ import {
   PoundSterling,
   Crown,
   MapPin,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -76,8 +77,13 @@ function SettingsPage() {
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
+  const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
   const [savingCoverage, setSavingCoverage] = useState(false);
+
+  const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+  const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
+  const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
 
   useEffect(() => {
     (async () => {
@@ -524,27 +530,42 @@ function SettingsPage() {
           </div>
 
           <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
-          <input
-            type="text"
-            value={homePostcode}
-            onChange={(e) => setHomePostcode(e.target.value)}
-            placeholder="e.g. SO23 9AX"
-            autoCapitalize="characters"
-            maxLength={10}
-            style={{
-              width: "100%",
-              height: 44,
-              padding: "0 12px",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 10,
-              fontSize: 14,
-              marginTop: 6,
-              marginBottom: 14,
-              background: "#fff",
-              color: "#1A1A2E",
-              ...POPPINS,
-            }}
-          />
+          <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
+            <input
+              type="text"
+              value={homePostcode}
+              onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
+              onBlur={() => setPostcodeBlurred(true)}
+              placeholder="e.g. SO23 9AX"
+              autoCapitalize="characters"
+              maxLength={10}
+              style={{
+                width: "100%",
+                height: 44,
+                padding: "0 36px 0 12px",
+                border: `0.5px solid ${postcodeShowError ? "#CC2229" : "#E2E6ED"}`,
+                borderRadius: 10,
+                fontSize: 14,
+                background: "#fff",
+                color: "#1A1A2E",
+                textTransform: "uppercase",
+                ...POPPINS,
+              }}
+            />
+            {postcodeValid && (
+              <Check
+                size={18}
+                color="#16A34A"
+                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
+              />
+            )}
+          </div>
+          {postcodeShowError && (
+            <div style={{ fontSize: 12, color: "#CC2229", marginBottom: 14, ...POPPINS }}>
+              Please enter a valid UK postcode
+            </div>
+          )}
+
 
           <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
           <select
@@ -573,15 +594,15 @@ function SettingsPage() {
           <button
             type="button"
             onClick={saveCoverage}
-            disabled={savingCoverage}
+            disabled={savingCoverage || !postcodeValid}
             className="w-full text-[14px] font-semibold text-white mt-5"
             style={{
               height: 48,
               borderRadius: 10,
               backgroundColor: "#0F2044",
               border: "none",
-              opacity: savingCoverage ? 0.7 : 1,
-              cursor: savingCoverage ? "not-allowed" : "pointer",
+              opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
+              cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
               ...POPPINS,
             }}
           >
