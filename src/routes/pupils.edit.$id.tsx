@@ -93,6 +93,37 @@ function EditPupilPage() {
   const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
+  const [hoursCompleted, setHoursCompleted] = useState<number>(0);
+  const [instructorRate, setInstructorRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("lessons")
+      .select("duration_minutes")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .in("status", ["confirmed", "completed"])
+      .then(({ data }) => {
+        const mins = (data ?? []).reduce(
+          (s: number, r: { duration_minutes: number | null }) =>
+            s + Number(r.duration_minutes ?? 0),
+          0,
+        );
+        setHoursCompleted(mins / 60);
+      });
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u?.user?.id;
+      if (!uid) return;
+      supabase
+        .from("instructors")
+        .select("hourly_rate")
+        .eq("id", uid)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+        });
+    });
+  }, [id]);
 
   useEffect(() => {
     (async () => {
@@ -564,6 +595,75 @@ function EditPupilPage() {
                 onChange={(e) => setNiReference(e.target.value)}
                 placeholder="Bank transfer ref / NI booking ref"
               />
+
+              {(() => {
+                const total = Number(niAmountTotal || 0);
+                const prepaid = Number(prepaidHours || 0);
+                if (!(total > 0 || prepaid > 0)) return null;
+                const effectiveRate =
+                  total > 0 && prepaid > 0 ? total / prepaid : instructorRate ?? 0;
+                const hoursPurchased =
+                  prepaid > 0 ? prepaid : effectiveRate > 0 ? total / effectiveRate : 0;
+                const hoursRemaining = hoursPurchased - hoursCompleted;
+                let remainColor = "#CC2229";
+                if (hoursRemaining > 5) remainColor = "#16A34A";
+                else if (hoursRemaining >= 1) remainColor = "#F59E0B";
+                const pct =
+                  hoursPurchased > 0
+                    ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
+                    : 0;
+                const row = (label: string, value: string, color?: string) => (
+                  <div
+                    className="flex items-center justify-between py-1.5"
+                    style={{ borderTop: "0.5px solid #F3F4F6" }}
+                  >
+                    <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                      {label}
+                    </span>
+                    <span
+                      className="text-[13px] font-semibold"
+                      style={{ color: color ?? "#0F2044", ...POPPINS }}
+                    >
+                      {value}
+                    </span>
+                  </div>
+                );
+                return (
+                  <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                    <p
+                      className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
+                      style={POPPINS}
+                    >
+                      HOURS
+                    </p>
+                    {row("Hours purchased", `${hoursPurchased.toFixed(1)} hrs`)}
+                    {row("Hours completed", `${hoursCompleted.toFixed(1)} hrs`)}
+                    {row("Hours remaining", `${hoursRemaining.toFixed(1)} hrs`, remainColor)}
+                    {total > 0 && prepaid > 0 &&
+                      row("Rate per hour", `£${(total / prepaid).toFixed(2)}/hr`)}
+                    <div
+                      style={{
+                        marginTop: 10,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: "#F2F4F8",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${pct}%`,
+                          height: "100%",
+                          backgroundColor: "#1A52A0",
+                          borderRadius: 4,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+
 
               <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
                 <p
