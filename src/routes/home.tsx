@@ -224,6 +224,7 @@ function HomePage() {
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
+  const [earningsEstimated, setEarningsEstimated] = useState(false);
   
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
