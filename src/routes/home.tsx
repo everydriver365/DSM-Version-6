@@ -1893,9 +1893,9 @@ function HomePage() {
                 );
               } else if (
                 !isCancelled &&
-                (l.payment_status === "unpaid" || !l.payment_status) &&
-                (l.amount_due ?? 0) > 0
+                (l.payment_status === "unpaid" || !l.payment_status)
               ) {
+                const amt = Number(l.amount_due ?? 0);
                 badges.push(
                   <span
                     key="due"
@@ -1908,10 +1908,11 @@ function HomePage() {
                       color: pastEnd ? "#CC2229" : "#92400E",
                     }}
                   >
-                    £{Number(l.amount_due).toFixed(2)} unpaid
+                    {amt > 0 ? `£${amt.toFixed(2)} unpaid` : "Unpaid"}
                   </span>,
                 );
               }
+
 
 
               rows.push(
@@ -1944,8 +1945,8 @@ function HomePage() {
                     const needsAttention =
                       !isCancelled &&
                       ((pastEnd && !l.eol_completed) ||
-                        ((l.payment_status === "unpaid" || !l.payment_status) &&
-                          (l.amount_due ?? 0) > 0));
+                        (l.payment_status === "unpaid" || !l.payment_status));
+
 
                     return (
                       <div
