@@ -39,6 +39,7 @@ function slugify(s: string) {
 }
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
+import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -177,7 +178,16 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [finalDistance, setFinalDistance] = useState<number | null>(null);
   const [finalPaymentLabel, setFinalPaymentLabel] = useState<string>("Skipped");
 
-  const lessonCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [pupilPostcode, setPupilPostcode] = useState<string | undefined>(undefined);
+
+  const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
+  const pricing = applyPricingRules(baseCost, pricingRules, {
+    lessonDate,
+    lessonTime: startTime,
+    postcode: pupilPostcode,
+  });
+  const lessonCost = pricing.total;
 
   // Reset when opening
   useEffect(() => {
@@ -239,13 +249,33 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
       const { data: p } = await supabase
         .from("pupils")
-        .select("balance_owed")
+        .select("balance_owed, postcode")
         .eq("id", pupilId)
         .maybeSingle();
       if (!cancelled && p) {
         // DB stores amount owed (positive = pupil owes). Internal `balance` uses
         // account-balance semantics (positive = credit, negative = owes).
         setBalance(-Number((p as { balance_owed: number | null }).balance_owed ?? 0));
+        const pc = (p as { postcode?: string | null }).postcode;
+        if (pc) setPupilPostcode(pc);
+      }
+
+      const { data: rulesData } = await supabase
+        .from("pricing_rules")
+        .select("id, rule_name, rule_type, conditions, adjustment_type, adjustment_value, is_active")
+        .eq("instructor_id", instructorId);
+      if (!cancelled && Array.isArray(rulesData)) {
+        setPricingRules(
+          (rulesData as Array<Record<string, unknown>>).map((r) => ({
+            id: String(r.id),
+            rule_name: String(r.rule_name ?? ""),
+            rule_type: r.rule_type as PricingRule["rule_type"],
+            condition: (r.conditions as Record<string, unknown>) ?? {},
+            adjustment_type: r.adjustment_type as PricingRule["adjustment_type"],
+            adjustment_value: Number(r.adjustment_value ?? 0),
+            is_active: Boolean(r.is_active),
+          }))
+        );
       }
     })();
 
@@ -802,11 +832,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             >
               <div>
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
-                  Lesson cost
+                  {pricing.adjustments.length > 0 ? "Total" : "Lesson cost"}
                 </div>
                 <div className="text-[18px]" style={{ color: "#0F2044", fontWeight: 700 }}>
                   £{lessonCost.toFixed(2)}
                 </div>
+                {pricing.adjustments.length > 0 && (
+                  <div className="mt-1" style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
+                    <div>Base: £{baseCost.toFixed(2)}</div>
+                    {pricing.adjustments.map((a, i) => (
+                      <div key={i}>
+                        + £{a.amount.toFixed(2)} ({a.rule_name})
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="text-right">
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
