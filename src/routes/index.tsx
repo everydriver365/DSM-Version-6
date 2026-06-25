@@ -8,15 +8,12 @@ import {
   BarChart3,
   Globe,
   Star,
-  Check,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { MarketingNav } from "../components/marketing/MarketingNav";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
 
-const NAVY = "#0F2044";
-const BLUE = "#1A52A0";
-const FONT = "Poppins, system-ui, sans-serif";
+const FONT = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,10 +54,10 @@ function HomePage() {
     };
   }, [navigate]);
 
-  if (!checked) return <div style={{ minHeight: "100vh", background: "#fff" }} />;
+  if (!checked) return <div className="min-h-screen bg-white" />;
 
   return (
-    <div style={{ background: "#fff", color: NAVY, fontFamily: FONT, minHeight: "100vh" }}>
+    <div className="bg-white min-h-screen" style={FONT}>
       <MarketingNav />
       <Hero />
       <FeaturesStrip />
@@ -69,16 +66,6 @@ function HomePage() {
       <PricingTeaser />
       <BottomCTA />
       <MarketingFooter />
-
-      <style>{`
-        .dsm-h1 { font-size: 52px; }
-        .dsm-h2 { font-size: 36px; }
-        @media (max-width: 720px) {
-          .dsm-h1 { font-size: 32px !important; }
-          .dsm-h2 { font-size: 28px !important; }
-          .dsm-phone-mock { display: none !important; }
-        }
-      `}</style>
     </div>
   );
 }
@@ -87,131 +74,40 @@ function HomePage() {
 function Hero() {
   return (
     <section
-      style={{
-        minHeight: "100vh",
-        background: `linear-gradient(180deg, ${NAVY} 0%, ${BLUE} 100%)`,
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "80px 16px 40px",
-        textAlign: "center",
-        fontFamily: FONT,
-      }}
+      className="min-h-screen bg-gradient-to-br from-[#0F2044] to-[#1A52A0] flex flex-col items-center justify-center text-white text-center px-4 py-24"
+      style={FONT}
     >
-      <div
-        style={{
-          display: "inline-block",
-          border: "1px solid rgba(255,255,255,0.3)",
-          borderRadius: 999,
-          padding: "4px 12px",
-          fontSize: 12,
-          color: "rgba(255,255,255,0.8)",
-          marginBottom: 16,
-        }}
-      >
+      <div className="inline-flex items-center border border-white/30 rounded-full px-3 py-1 text-xs text-white/80 mb-6">
         DSM by EveryDriver
       </div>
 
-      <h1
-        className="dsm-h1"
-        style={{
-          fontWeight: 800,
-          lineHeight: 1.1,
-          maxWidth: 700,
-          margin: "0 0 24px",
-          letterSpacing: -0.5,
-        }}
-      >
+      <h1 className="text-4xl md:text-6xl font-extrabold max-w-3xl mx-auto leading-tight mb-6">
         The driving instructor app that works as hard as you do
       </h1>
 
-      <p
-        style={{
-          fontSize: 18,
-          lineHeight: 1.55,
-          color: "rgba(255,255,255,0.8)",
-          maxWidth: 560,
-          margin: "0 0 40px",
-        }}
-      >
-        Schedule lessons, track payments, manage pupils and grow your business — all from your
-        phone. Join 1,200+ instructors who've made the switch.
+      <p className="text-lg md:text-xl text-white/80 max-w-xl mx-auto mb-10">
+        Schedule lessons, track payments, manage pupils and grow your business — all from your phone.
       </p>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
         <Link
           to="/register"
-          style={{
-            height: 48,
-            padding: "0 32px",
-            background: "#fff",
-            color: NAVY,
-            borderRadius: 10,
-            fontWeight: 700,
-            fontSize: 16,
-            textDecoration: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="bg-white text-[#0F2044] hover:bg-white/90 font-bold px-8 py-4 rounded-xl text-base no-underline transition-colors"
         >
           Start free today →
         </Link>
         <Link
           to="/features"
-          style={{
-            height: 48,
-            padding: "0 24px",
-            border: "1.5px solid rgba(255,255,255,0.4)",
-            color: "#fff",
-            borderRadius: 10,
-            fontSize: 16,
-            textDecoration: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="border-2 border-white/40 text-white hover:bg-white/10 px-8 py-4 rounded-xl text-base no-underline transition-colors"
         >
           See features
         </Link>
       </div>
 
-      <div
-        style={{
-          marginTop: 32,
-          display: "flex",
-          gap: 24,
-          flexWrap: "wrap",
-          justifyContent: "center",
-          color: "rgba(255,255,255,0.6)",
-          fontSize: 13,
-        }}
-      >
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-white/60 text-sm">
         <span>✓ Free forever on basic plan</span>
         <span>✓ No card required</span>
         <span>✓ Used by 1,200+ instructors</span>
-      </div>
-
-      {/* Phone mockup placeholder */}
-      <div
-        className="dsm-phone-mock"
-        style={{
-          marginTop: 60,
-          width: 280,
-          height: 560,
-          background: "rgba(255,255,255,0.1)",
-          border: "1.5px solid rgba(255,255,255,0.2)",
-          borderRadius: 32,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "rgba(255,255,255,0.4)",
-          fontSize: 14,
-        }}
-      >
-        App preview
       </div>
     </section>
   );
@@ -229,73 +125,31 @@ function FeaturesStrip() {
   ];
 
   return (
-    <section style={{ background: "#fff", padding: "80px 16px", textAlign: "center", fontFamily: FONT }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <h2 className="dsm-h2" style={{ fontWeight: 700, color: NAVY, margin: "0 0 12px" }}>
-          Everything you need to run your driving school
-        </h2>
-        <p style={{ color: "#6B7280", fontSize: 16, margin: "0 0 48px" }}>
-          Built by a driving instructor, for driving instructors.
-        </p>
+    <section className="bg-white py-20 px-4" style={FONT}>
+      <h2 className="text-3xl md:text-4xl font-bold text-[#0F2044] text-center mb-4">
+        Everything you need to run your driving school
+      </h2>
+      <p className="text-[#6B7280] text-center mb-16 text-lg">
+        Built by a driving instructor, for driving instructors.
+      </p>
 
-        <div
-          className="dsm-fstrip"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
-            gap: 24,
-          }}
-        >
-          {features.map((f) => {
-            const Icon = f.icon;
-            return (
-              <div
-                key={f.title}
-                className="dsm-fcard"
-                style={{
-                  border: "0.5px solid #E2E6ED",
-                  borderRadius: 16,
-                  padding: 24,
-                  background: "#fff",
-                  textAlign: "center",
-                  transition: "box-shadow 0.2s ease",
-                }}
-              >
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 999,
-                    background: "#EEF4FB",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto",
-                  }}
-                >
-                  <Icon size={24} color={BLUE} strokeWidth={2} />
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, marginTop: 12 }}>
-                  {f.title}
-                </div>
-                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 6, lineHeight: 1.5 }}>
-                  {f.desc}
-                </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+        {features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div
+              key={f.title}
+              className="border border-[#E2E6ED] rounded-2xl p-6 text-center hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 bg-[#EEF4FB] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon className="text-[#1A52A0] w-6 h-6" />
               </div>
-            );
-          })}
-        </div>
+              <div className="font-bold text-[#0F2044] text-sm mb-1">{f.title}</div>
+              <div className="text-[#6B7280] text-xs">{f.desc}</div>
+            </div>
+          );
+        })}
       </div>
-
-      <style>{`
-        .dsm-fcard:hover { box-shadow: 0 8px 24px -8px rgba(15,32,68,0.15); }
-        @media (max-width: 880px) {
-          .dsm-fstrip { grid-template-columns: repeat(3, 1fr) !important; }
-        }
-        @media (max-width: 480px) {
-          .dsm-fstrip { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-      `}</style>
     </section>
   );
 }
@@ -309,87 +163,26 @@ function HowItWorks() {
   ];
 
   return (
-    <section style={{ background: "#F8F9FB", padding: "80px 16px", fontFamily: FONT }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <h2
-          className="dsm-h2"
-          style={{ fontWeight: 700, color: NAVY, textAlign: "center", margin: "0 0 48px" }}
-        >
-          Up and running in minutes
-        </h2>
+    <section className="bg-[#F8F9FB] py-20 px-4" style={FONT}>
+      <h2 className="text-3xl md:text-4xl font-bold text-[#0F2044] text-center mb-16">
+        Up and running in minutes
+      </h2>
 
-        <div
-          className="dsm-steps"
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 32,
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            position: "relative",
-          }}
-        >
-          {/* dashed connector */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-8 md:gap-0 max-w-4xl mx-auto relative">
+        <div className="hidden md:block absolute top-10 left-[16%] right-[16%] border-t-2 border-dashed border-[#E2E6ED]" />
+        {steps.map((s) => (
           <div
-            className="dsm-steps-line"
-            style={{
-              position: "absolute",
-              top: 20,
-              left: "16.66%",
-              right: "16.66%",
-              height: 0,
-              borderTop: "2px dashed #E2E6ED",
-              zIndex: 0,
-            }}
-          />
-
-          {steps.map((s) => (
-            <div
-              key={s.n}
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  background: NAVY,
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  marginBottom: 16,
-                }}
-              >
-                {s.n}
-              </div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, marginBottom: 8 }}>
-                {s.title}
-              </div>
-              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 240, lineHeight: 1.55 }}>
-                {s.desc}
-              </div>
+            key={s.n}
+            className="flex flex-col items-center text-center md:w-1/3 relative z-10"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#0F2044] text-white font-bold flex items-center justify-center mb-4 mx-auto">
+              {s.n}
             </div>
-          ))}
-        </div>
+            <div className="font-bold text-[#0F2044] text-lg mb-2">{s.title}</div>
+            <div className="text-[#6B7280] text-sm max-w-[200px]">{s.desc}</div>
+          </div>
+        ))}
       </div>
-
-      <style>{`
-        @media (max-width: 720px) {
-          .dsm-steps { flex-direction: column !important; gap: 32px !important; }
-          .dsm-steps-line { display: none !important; }
-        }
-      `}</style>
     </section>
   );
 }
@@ -418,60 +211,24 @@ function Testimonials() {
   ];
 
   return (
-    <section style={{ background: "#fff", padding: "80px 16px", fontFamily: FONT }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <h2
-          className="dsm-h2"
-          style={{ fontWeight: 700, color: NAVY, textAlign: "center", margin: "0 0 8px" }}
-        >
-          Loved by instructors
-        </h2>
-        <p style={{ color: "#6B7280", textAlign: "center", margin: "0 0 48px", fontSize: 16 }}>
-          Real feedback from real ADIs
-        </p>
+    <section className="bg-white py-20 px-4" style={FONT}>
+      <h2 className="text-3xl font-bold text-[#0F2044] text-center mb-4">Loved by instructors</h2>
+      <p className="text-[#6B7280] text-center mb-16">Real feedback from real ADIs</p>
 
-        <div
-          className="dsm-test-grid"
-          style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
-        >
-          {items.map((t) => (
-            <div
-              key={t.name}
-              style={{
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                padding: 24,
-                background: "#fff",
-              }}
-            >
-              <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={16} fill="#F59E0B" color="#F59E0B" />
-                ))}
-              </div>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "#374151",
-                  fontStyle: "italic",
-                  margin: "0 0 16px",
-                  lineHeight: 1.6,
-                }}
-              >
-                "{t.quote}"
-              </p>
-              <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>{t.name}</div>
-              <div style={{ fontSize: 12, color: "#6B7280" }}>{t.role}</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {items.map((t) => (
+          <div key={t.name} className="border border-[#E2E6ED] rounded-2xl p-6">
+            <div className="flex gap-1 mb-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="text-amber-400 fill-amber-400 w-4 h-4" />
+              ))}
             </div>
-          ))}
-        </div>
+            <p className="text-[#374151] italic text-sm leading-relaxed mb-4">"{t.quote}"</p>
+            <div className="font-bold text-[#0F2044] text-sm">{t.name}</div>
+            <div className="text-[#6B7280] text-xs">{t.role}</div>
+          </div>
+        ))}
       </div>
-
-      <style>{`
-        @media (max-width: 880px) {
-          .dsm-test-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }
@@ -488,160 +245,50 @@ function PricingTeaser() {
   ];
 
   return (
-    <section style={{ background: NAVY, padding: "80px 16px", color: "#fff", fontFamily: FONT }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
-        <h2 className="dsm-h2" style={{ fontWeight: 700, margin: "0 0 12px" }}>
-          Simple, transparent pricing
-        </h2>
-        <p style={{ color: "rgba(255,255,255,0.7)", margin: "0 0 48px", fontSize: 16 }}>
-          No tie-in. No hidden fees. Cancel anytime.
-        </p>
+    <section className="bg-[#0F2044] py-20 px-4 text-white text-center" style={FONT}>
+      <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, transparent pricing</h2>
+      <p className="text-white/70 mb-16">No tie-in. No hidden fees. Cancel anytime.</p>
 
-        <div
-          className="dsm-pricing-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 16,
-            maxWidth: 680,
-            margin: "0 auto",
-            textAlign: "left",
-          }}
-        >
-          {/* FREE */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.1)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 16,
-              padding: 32,
-              display: "flex",
-              flexDirection: "column",
-            }}
+      <div className="flex flex-col md:flex-row gap-6 max-w-2xl mx-auto">
+        <div className="bg-white/10 border border-white/20 rounded-2xl p-8 flex-1 text-left">
+          <div className="text-3xl font-bold mb-1">Free</div>
+          <div className="text-white/70 text-sm mb-6">£0/month</div>
+          <ul className="flex flex-col gap-2 mb-6 text-sm text-white/80">
+            {freeFeatures.map((f) => (
+              <li key={f}>✓ {f}</li>
+            ))}
+          </ul>
+          <Link
+            to="/register"
+            className="block text-center bg-white text-[#0F2044] hover:bg-white/90 w-full py-3 rounded-xl font-semibold no-underline"
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-              <div style={{ fontSize: 32, fontWeight: 700, color: "#fff" }}>Free</div>
-              <span
-                style={{
-                  border: "1px solid rgba(255,255,255,0.3)",
-                  borderRadius: 999,
-                  padding: "3px 10px",
-                  fontSize: 11,
-                  color: "rgba(255,255,255,0.85)",
-                }}
-              >
-                forever
-              </span>
-            </div>
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", marginBottom: 20 }}>
-              £0 / month
-            </div>
-            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
-              {freeFeatures.map((f) => (
-                <li key={f} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "#fff" }}>
-                  <Check size={16} color="#fff" strokeWidth={2.5} />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/register"
-              style={{
-                width: "100%",
-                height: 44,
-                background: "#fff",
-                color: NAVY,
-                borderRadius: 10,
-                fontWeight: 700,
-                fontSize: 14,
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              Start free →
-            </Link>
-          </div>
-
-          {/* PRO */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              padding: 32,
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                top: 16,
-                right: 16,
-                background: "#F59E0B",
-                color: "#0B1530",
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "4px 10px",
-                borderRadius: 999,
-              }}
-            >
-              Most popular
-            </span>
-            <div style={{ fontSize: 32, fontWeight: 700, color: NAVY, marginBottom: 4 }}>Pro</div>
-            <div style={{ fontSize: 14, color: NAVY, opacity: 0.85, marginBottom: 20 }}>
-              £9.99 / month
-            </div>
-            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
-              {proFeatures.map((f) => (
-                <li key={f} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "#1F2937" }}>
-                  <Check size={16} color={BLUE} strokeWidth={2.5} />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/register"
-              style={{
-                width: "100%",
-                height: 44,
-                background: BLUE,
-                color: "#fff",
-                borderRadius: 10,
-                fontWeight: 700,
-                fontSize: 14,
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              Start Pro free for 30 days →
-            </Link>
-          </div>
+            Start free →
+          </Link>
         </div>
 
-        <div style={{ marginTop: 24 }}>
+        <div className="bg-white rounded-2xl p-8 flex-1 relative text-left">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-[#0F2044] text-xs font-bold px-4 py-1 rounded-full">
+            Most popular
+          </div>
+          <div className="text-3xl font-bold text-[#0F2044] mb-1">Pro</div>
+          <div className="text-[#6B7280] text-sm mb-6">£9.99/month</div>
+          <ul className="flex flex-col gap-2 mb-6 text-sm text-[#374151]">
+            {proFeatures.map((f) => (
+              <li key={f}>✓ {f}</li>
+            ))}
+          </ul>
           <Link
-            to="/pricing"
-            style={{
-              color: "rgba(255,255,255,0.7)",
-              fontSize: 14,
-              textDecoration: "none",
-            }}
+            to="/register"
+            className="block text-center bg-[#1A52A0] text-white hover:bg-[#0F2044] w-full py-3 rounded-xl font-semibold no-underline transition-colors"
           >
-            See full pricing breakdown →
+            Start free for 30 days →
           </Link>
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 640px) {
-          .dsm-pricing-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+      <Link to="/pricing" className="text-white/60 hover:text-white mt-8 inline-block no-underline">
+        See full pricing →
+      </Link>
     </section>
   );
 }
@@ -649,41 +296,17 @@ function PricingTeaser() {
 /* ---------- Bottom CTA ---------- */
 function BottomCTA() {
   return (
-    <section
-      style={{
-        background: BLUE,
-        padding: "80px 16px",
-        color: "#fff",
-        textAlign: "center",
-        fontFamily: FONT,
-      }}
-    >
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        <h2 className="dsm-h2" style={{ fontWeight: 700, margin: 0 }}>
-          Ready to take control of your business?
-        </h2>
-        <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 16, marginTop: 12, marginBottom: 32 }}>
-          Join 1,200+ driving instructors already using DSM.
-        </p>
-        <Link
-          to="/register"
-          style={{
-            height: 52,
-            padding: "0 40px",
-            background: "#fff",
-            color: NAVY,
-            borderRadius: 10,
-            fontWeight: 700,
-            fontSize: 18,
-            textDecoration: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Start free today →
-        </Link>
-      </div>
+    <section className="bg-[#1A52A0] py-20 px-4 text-white text-center" style={FONT}>
+      <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        Ready to take control of your business?
+      </h2>
+      <p className="text-white/80 mb-8">Join 1,200+ driving instructors already using DSM.</p>
+      <Link
+        to="/register"
+        className="inline-block bg-white text-[#0F2044] font-bold px-10 py-4 rounded-xl text-lg hover:bg-white/90 no-underline transition-colors"
+      >
+        Start free today →
+      </Link>
     </section>
   );
 }
