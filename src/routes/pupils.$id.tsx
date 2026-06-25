@@ -19,10 +19,18 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 interface Pupil {
   id: string;
   name: string;
+  first_name: string | null;
+  last_name: string | null;
   phone: string | null;
   email: string | null;
   lesson_count: number | null;
   balance_owed: number | null;
+  account_balance: number | null;
+  prepaid_hours: number | null;
+  prepaid_amount_paid: number | null;
+  address: string | null;
+  postcode: string | null;
+  profile_image_url: string | null;
   status: string | null;
   test_date: string | null;
   notes: string | null;
