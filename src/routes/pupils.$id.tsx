@@ -298,8 +298,8 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const balance = Number(pupil?.balance_owed ?? 0);
-  const lessonCount = Number(pupil?.lesson_count ?? 0);
+  const balance = Number(pupil?.account_balance ?? pupil?.balance_owed ?? 0);
+  const lessonCount = actualLessonCount ?? Number(pupil?.lesson_count ?? 0);
 
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
