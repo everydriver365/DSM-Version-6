@@ -106,6 +106,7 @@ function PupilSyllabusPage() {
     [DVSA_SYLLABUS[0].key]: true,
   });
   const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -157,13 +158,19 @@ function PupilSyllabusPage() {
   async function save() {
     setSaving(true);
     try {
-      const { data: auth } = await supabase.auth.getUser();
-      const instructorId = auth.user?.id;
-      if (!instructorId) {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      const instructorId = sess.session?.user?.id;
+      if (!token || !instructorId) {
         toast.error("Not signed in");
         setSaving(false);
         return;
       }
+
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
       const allKeys = new Set([...Object.keys(levels), ...Object.keys(initial)]);
       const changedLevels: Record<string, { from: number; to: number }> = {};
       for (const k of allKeys) {
@@ -172,30 +179,59 @@ function PupilSyllabusPage() {
         if (from !== to) changedLevels[k] = { from, to };
       }
       console.log("[syllabus] save triggered, changes:", changedLevels);
-      const payload = Object.keys(changedLevels).map((competency_id) => ({
-        pupil_id: id,
-        instructor_id: instructorId,
-        competency_id,
-        level: levels[competency_id] ?? 0,
-      }));
-      console.log("[syllabus] upsert payload:", payload);
-      if (payload.length) {
-        const { data, error } = await supabase
-          .from("pupil_syllabus_progress")
-          .upsert(payload, { onConflict: "pupil_id,competency_id" })
-          .select();
-        console.log("[syllabus] upsert result:", data, error);
-        if (error) throw error;
+
+      const competencyIds = Object.keys(changedLevels);
+      const nowIso = new Date().toISOString();
+      const results: { competency_id: string; status: number; ok: boolean }[] = [];
+
+      for (const competency_id of competencyIds) {
+        const body = {
+          pupil_id: id,
+          instructor_id: instructorId,
+          competency_id,
+          level: levels[competency_id] ?? 0,
+          updated_at: nowIso,
+        };
+        console.log("[syllabus] upsert payload:", body);
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/pupil_syllabus_progress`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Prefer: "resolution=merge-duplicates,return=minimal",
+          },
+          body: JSON.stringify(body),
+        });
+        let detail = "";
+        if (!res.ok) {
+          try {
+            detail = await res.text();
+          } catch {
+            /* ignore */
+          }
+        }
+        console.log("[syllabus] upsert result:", competency_id, res.status, detail);
+        results.push({ competency_id, status: res.status, ok: res.ok });
+        if (!res.ok) {
+          throw new Error(`Upsert failed (${res.status}) for ${competency_id}: ${detail}`);
+        }
       }
+
       setInitial({ ...levels });
-      toast.success("Progress saved");
+      toast.success("Progress saved ✓", { style: { background: "#16A34A", color: "#fff" } });
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
     } catch (e) {
       console.error("[syllabus] save", e);
-      toast.error("Failed to save");
+      toast.error("Failed to save — please try again", {
+        style: { background: "#CC2229", color: "#fff" },
+      });
     } finally {
       setSaving(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-white pb-28" style={POPPINS}>
@@ -400,18 +436,46 @@ function PupilSyllabusPage() {
         <button
           type="button"
           onClick={save}
-          disabled={!dirty || saving}
-          className="w-full text-[14px] font-semibold text-white"
+          disabled={!dirty || saving || justSaved}
+          className="w-full text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             height: 44,
             borderRadius: 10,
-            backgroundColor: !dirty || saving ? "#9CA3AF" : "#0F2044",
+            backgroundColor: justSaved
+              ? "#16A34A"
+              : !dirty || saving
+                ? "#9CA3AF"
+                : "#0F2044",
             border: "none",
+            transition: "background-color 150ms ease",
             ...POPPINS,
           }}
         >
-          {saving ? "Saving…" : dirty ? "Save changes" : "No changes"}
+          {saving ? (
+            <>
+              <span
+                aria-hidden
+                style={{
+                  width: 14,
+                  height: 14,
+                  border: "2px solid rgba(255,255,255,0.4)",
+                  borderTopColor: "#fff",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  animation: "syllabus-spin 0.7s linear infinite",
+                }}
+              />
+              Saving…
+            </>
+          ) : justSaved ? (
+            "Saved ✓"
+          ) : dirty ? (
+            "Save changes"
+          ) : (
+            "No changes"
+          )}
         </button>
+        <style>{`@keyframes syllabus-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
