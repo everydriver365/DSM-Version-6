@@ -23,6 +23,8 @@ interface Pupil {
   lesson_count: number | null;
   balance_owed: number | null;
   prepaid_hours: number | null;
+  ni_amount_total: number | null;
+  lead_source: string | null;
   status: string | null;
 }
 
@@ -71,7 +73,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, status, deleted_at")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, lead_source, status, deleted_at")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -327,6 +329,10 @@ function PupilsIndexPage() {
               const prepaid = Number(p.prepaid_hours) || 0;
               const hoursUsed = hoursMap[p.id] || 0;
               const hoursRemaining = prepaid - hoursUsed;
+              const isPrepaidPupil =
+                prepaid > 0 ||
+                Number(p.ni_amount_total) > 0 ||
+                (p.lead_source ?? "").toLowerCase() === "national intensive";
               return (
                 <div key={p.id}>
                   <Link
@@ -362,20 +368,29 @@ function PupilsIndexPage() {
                           {p.name}
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          {prepaid > 0 ? (
-                            hoursRemaining > 0 ? (
-                              <span
-                                className="text-[12px] font-medium"
-                                style={{ color: "#1A52A0", ...POPPINS }}
-                              >
-                                {hoursRemaining.toFixed(1)}h remaining
-                              </span>
+                          {isPrepaidPupil ? (
+                            prepaid > 0 ? (
+                              hoursRemaining > 0 ? (
+                                <span
+                                  className="text-[12px] font-medium"
+                                  style={{ color: "#1A52A0", ...POPPINS }}
+                                >
+                                  {hoursRemaining.toFixed(1)}h remaining
+                                </span>
+                              ) : (
+                                <span
+                                  className="text-[12px] font-medium"
+                                  style={{ color: "#16A34A", ...POPPINS }}
+                                >
+                                  Hours used ✓
+                                </span>
+                              )
                             ) : (
                               <span
                                 className="text-[12px] font-medium"
                                 style={{ color: "#16A34A", ...POPPINS }}
                               >
-                                Hours used ✓
+                                Prepaid ✓
                               </span>
                             )
                           ) : b && b.owed > 0 ? (
