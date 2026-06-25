@@ -280,6 +280,8 @@ function SettingsPage() {
           .from("working_hours")
           .insert({ instructor_id: user.id, ...DEFAULT_HOURS });
       }
+
+      await loadPricingRules(user.id);
     })();
   }, []);
 
