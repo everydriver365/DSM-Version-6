@@ -832,11 +832,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             >
               <div>
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
-                  Lesson cost
+                  {pricing.adjustments.length > 0 ? "Total" : "Lesson cost"}
                 </div>
                 <div className="text-[18px]" style={{ color: "#0F2044", fontWeight: 700 }}>
                   £{lessonCost.toFixed(2)}
                 </div>
+                {pricing.adjustments.length > 0 && (
+                  <div className="mt-1" style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
+                    <div>Base: £{baseCost.toFixed(2)}</div>
+                    {pricing.adjustments.map((a, i) => (
+                      <div key={i}>
+                        + £{a.amount.toFixed(2)} ({a.rule_name})
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="text-right">
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
