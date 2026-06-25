@@ -362,14 +362,30 @@ function PupilsIndexPage() {
                           {p.name}
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          {b && b.owed > 0 ? (
+                          {prepaid > 0 ? (
+                            hoursRemaining > 0 ? (
+                              <span
+                                className="text-[12px] font-medium"
+                                style={{ color: "#1A52A0", ...POPPINS }}
+                              >
+                                {hoursRemaining.toFixed(1)}h remaining
+                              </span>
+                            ) : (
+                              <span
+                                className="text-[12px] font-medium"
+                                style={{ color: "#16A34A", ...POPPINS }}
+                              >
+                                Hours used ✓
+                              </span>
+                            )
+                          ) : b && b.owed > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#CC2229", ...POPPINS }}
                             >
                               £{b.owed.toFixed(2)} owed
                             </span>
-                          ) : b && b.paid > 0 ? (
+                          ) : lessons > 0 && b && b.paid > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#16A34A", ...POPPINS }}
@@ -377,22 +393,6 @@ function PupilsIndexPage() {
                               All paid ✓
                             </span>
                           ) : null}
-                          {prepaid > 0 && hoursRemaining > 0 && (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#1A52A0", ...POPPINS }}
-                            >
-                              {hoursRemaining.toFixed(1)}h remaining
-                            </span>
-                          )}
-                          {prepaid > 0 && hoursRemaining <= 0 && (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#B45309", ...POPPINS }}
-                            >
-                              Hours used
-                            </span>
-                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
