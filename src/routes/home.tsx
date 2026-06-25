@@ -1945,8 +1945,8 @@ function HomePage() {
                     const needsAttention =
                       !isCancelled &&
                       ((pastEnd && !l.eol_completed) ||
-                        ((l.payment_status === "unpaid" || !l.payment_status) &&
-                          (l.amount_due ?? 0) > 0));
+                        (l.payment_status === "unpaid" || !l.payment_status));
+
 
                     return (
                       <div
