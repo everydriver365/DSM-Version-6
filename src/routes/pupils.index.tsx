@@ -377,6 +377,22 @@ function PupilsIndexPage() {
                               All paid ✓
                             </span>
                           ) : null}
+                          {prepaid > 0 && hoursRemaining > 0 && (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#1A52A0", ...POPPINS }}
+                            >
+                              {hoursRemaining.toFixed(1)}h remaining
+                            </span>
+                          )}
+                          {prepaid > 0 && hoursRemaining <= 0 && (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#B45309", ...POPPINS }}
+                            >
+                              Hours used
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
