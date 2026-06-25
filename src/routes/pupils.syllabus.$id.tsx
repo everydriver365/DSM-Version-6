@@ -106,6 +106,7 @@ function PupilSyllabusPage() {
     [DVSA_SYLLABUS[0].key]: true,
   });
   const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
