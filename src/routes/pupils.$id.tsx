@@ -137,7 +137,7 @@ function PupilDetailPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap, theory_pass")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
