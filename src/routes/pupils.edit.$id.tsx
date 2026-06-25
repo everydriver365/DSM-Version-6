@@ -76,6 +76,11 @@ function EditPupilPage() {
   const [prepaidHours, setPrepaidHours] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [topUpNotes, setTopUpNotes] = useState("");
+  const [niAmountTotal, setNiAmountTotal] = useState("");
+  const [niPayer, setNiPayer] = useState("pupil");
+  const [niAmountPaid, setNiAmountPaid] = useState("");
+  const [niPaymentDate, setNiPaymentDate] = useState("");
+  const [niReference, setNiReference] = useState("");
   const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
