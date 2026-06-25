@@ -263,7 +263,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       const { data: rulesData } = await supabase
         .from("pricing_rules")
         .select("id, rule_name, rule_type, conditions, adjustment_type, adjustment_value, is_active")
-        .eq("instructor_id", instructorId);
+        .eq("instructor_id", instructorId)
+        .eq("is_active", true);
       if (!cancelled && Array.isArray(rulesData)) {
         setPricingRules(
           (rulesData as Array<Record<string, unknown>>).map((r) => ({
@@ -841,7 +842,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   <div className="mt-1" style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
                     <div>Base: £{baseCost.toFixed(2)}</div>
                     {pricing.adjustments.map((a, i) => (
-                      <div key={i}>
+                      <div key={i} style={{ color: "#B45309" }}>
                         + £{a.amount.toFixed(2)} ({a.rule_name})
                       </div>
                     ))}
