@@ -441,6 +441,61 @@ function EditPupilPage() {
             </div>
           )}
 
+          {leadSource === "National Intensive" && (
+            <div
+              className="flex flex-col gap-3 p-3 rounded-lg"
+              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+            >
+              <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
+                NATIONAL INTENSIVE PAYMENT
+              </p>
+              <Input
+                label="Total course fee (£)"
+                type="number"
+                inputMode="decimal"
+                value={niAmountTotal}
+                onChange={(e) => setNiAmountTotal(e.target.value)}
+                placeholder="1500.00"
+              />
+              <div>
+                <FieldLabel htmlFor="ni_payer">Who pays?</FieldLabel>
+                <select
+                  id="ni_payer"
+                  value={niPayer}
+                  onChange={(e) => setNiPayer(e.target.value)}
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  style={fieldBorder}
+                >
+                  <option value="pupil">Pupil pays directly</option>
+                  <option value="national_intensives">National Intensives (agency pays)</option>
+                </select>
+              </div>
+              <Input
+                label="Amount paid so far (£)"
+                type="number"
+                inputMode="decimal"
+                value={niAmountPaid}
+                onChange={(e) => setNiAmountPaid(e.target.value)}
+                placeholder="0.00"
+              />
+              <Input
+                label="Payment date"
+                type="date"
+                value={niPaymentDate}
+                onChange={(e) => setNiPaymentDate(e.target.value)}
+              />
+              <Input
+                label="Payment reference"
+                type="text"
+                value={niReference}
+                onChange={(e) => setNiReference(e.target.value)}
+                placeholder="Bank transfer ref / NI booking ref"
+              />
+            </div>
+          )}
+
+
+
 
           <div>
             <FieldLabel htmlFor="status">Status</FieldLabel>
