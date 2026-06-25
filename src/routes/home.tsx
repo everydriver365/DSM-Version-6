@@ -1602,7 +1602,7 @@ function HomePage() {
                   onClick={() => navigate({ to: '/schedule' })}
                   style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
                 >
-                  Complete EOL for accurate total →
+                  Complete EOL
                 </button>
               ) : (
                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
