@@ -50,6 +50,7 @@ function accentColor(status: StatusKey) {
 
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
+  const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -95,6 +96,27 @@ function PupilsIndexPage() {
             : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
       }));
       setPupils(normalized);
+
+      const pupilIds = normalized.map((p) => p.id);
+      if (pupilIds.length === 0) {
+        setLessonCountMap({});
+        return;
+      }
+      const { data: lessonRows, error: lcErr } = await supabase
+        .from("lessons")
+        .select("pupil_id")
+        .in("pupil_id", pupilIds)
+        .in("status", ["confirmed", "completed"])
+        .is("deleted_at", null);
+      if (lcErr) console.error("[pupils] lesson count error", lcErr);
+      const map = ((lessonRows ?? []) as { pupil_id: string }[]).reduce(
+        (acc, r) => {
+          acc[r.pupil_id] = (acc[r.pupil_id] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+      setLessonCountMap(map);
     })();
   }, [tab]);
 
@@ -246,7 +268,7 @@ function PupilsIndexPage() {
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const balance = Number(p.balance_owed ?? 0);
-              const lessons = Number(p.lesson_count ?? 0);
+              const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               return (
                 <div key={p.id}>
