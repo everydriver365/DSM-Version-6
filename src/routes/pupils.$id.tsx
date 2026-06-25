@@ -189,6 +189,7 @@ function PupilDetailPage() {
         }
         const rows = (data as { level: number }[]) ?? [];
         const total = rows.reduce((s, r) => s + (Number(r.level) || 0), 0);
+        setSyllabusSum(total);
         // 27 competencies × 5 max
         setSyllabusPct(Math.round((total / (27 * 5)) * 100));
       });
