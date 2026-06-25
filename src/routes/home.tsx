@@ -1832,22 +1832,48 @@ function HomePage() {
                   </span>,
                 );
               }
-              if (pastEnd && !l.eol_completed && !isCancelled) {
-                badges.push(
-                  <span
-                    key="eol"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#FEF3C7",
-                      color: "#92400E",
-                    }}
-                  >
-                    EOL pending
-                  </span>,
-                );
+              if (pastEnd && !isCancelled) {
+                if (!l.eol_completed) {
+                  badges.push(
+                    <button
+                      key="eol"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEolLesson(l);
+                      }}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEF3C7",
+                        color: "#92400E",
+                        border: 0,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Complete EOL
+                    </button>,
+                  );
+                } else {
+                  badges.push(
+                    <span
+                      key="eol-done"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#15803D",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      ✓ EOL
+                    </span>,
+                  );
+                }
               }
               if (l.payment_status === "paid") {
                 badges.push(
@@ -1856,13 +1882,13 @@ function HomePage() {
                     style={{
                       fontSize: 10,
                       fontWeight: 600,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#DCFCE7",
                       color: "#15803D",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
                     }}
                   >
-                    Paid
+                    ✓ Paid
                   </span>,
                 );
               } else if (
