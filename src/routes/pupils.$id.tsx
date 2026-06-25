@@ -30,6 +30,11 @@ interface Pupil {
   photo_consent: boolean | null;
   lead_source: string | null;
   lead_source_detail: string | null;
+  ni_amount_total: number | null;
+  ni_payer: string | null;
+  ni_amount_paid: number | null;
+  ni_payment_date: string | null;
+  ni_reference: string | null;
 }
 
 interface Lesson {
