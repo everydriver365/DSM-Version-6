@@ -1983,6 +1983,8 @@ function HomePage() {
                       {durShort(l.duration_minutes)}
                     </div>
                   </div>
+                    );
+                  })()}
                   <div
                     style={{
                       width: 3,
