@@ -134,12 +134,12 @@ function PupilsIndexPage() {
       try {
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due, payment_status")
+          .select("pupil_id, amount_due, payment_status, duration_minutes")
           .eq("instructor_id", uid)
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
         console.log("[pupils] lesson balances:", lessonBalances);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null }[]).reduce(
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null; duration_minutes: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
             if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
@@ -154,9 +154,20 @@ function PupilsIndexPage() {
           {} as Record<string, { owed: number; paid: number }>,
         );
         setBalanceMap(bMap);
+
+        const hMap = ((lessonBalances ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
+          (acc, row) => {
+            if (!row.pupil_id) return acc;
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.duration_minutes) || 0) / 60;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+        setHoursMap(hMap);
       } catch (e) {
         console.error("[pupils] balance fetch crashed", e);
         setBalanceMap({});
+        setHoursMap({});
       }
     })();
   }, [tab]);
