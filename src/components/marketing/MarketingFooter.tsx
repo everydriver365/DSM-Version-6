@@ -1,142 +1,78 @@
 import { Link } from "@tanstack/react-router";
 
-const NAVY = "#0F2044";
-const FONT = "Poppins, system-ui, sans-serif";
-
-const productLinks = [
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/features", label: "Roadmap" },
-];
-
-const companyLinks = [
-  { to: "/about", label: "About", external: false },
-  { to: "/contact", label: "Contact", external: false },
-  { to: "https://everydriver.co.uk", label: "EveryDriver.co.uk", external: true },
-  { to: "https://everydriver.co.uk/blog", label: "Blog", external: true },
-];
-
-const legalLinks = [
-  { to: "https://everydriver.co.uk/privacy", label: "Privacy Policy" },
-  { to: "https://everydriver.co.uk/terms", label: "Terms of Service" },
-  { to: "https://everydriver.co.uk/returns", label: "Returns Policy" },
-];
-
-const linkStyle: React.CSSProperties = {
-  color: "rgba(255,255,255,0.7)",
-  textDecoration: "none",
-  fontSize: 14,
-  fontFamily: FONT,
-};
-
-const headingStyle: React.CSSProperties = {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: 700,
-  margin: "0 0 16px",
-  fontFamily: FONT,
-  letterSpacing: 0.3,
-};
-
 export function MarketingFooter() {
   return (
-    <footer style={{ background: NAVY, color: "#fff", padding: "60px 0 32px", fontFamily: FONT }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px" }}>
-        <div
-          className="dsm-footer-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-            gap: 40,
-          }}
-        >
-          {/* Column 1: Brand */}
+    <footer
+      className="bg-[#0F2044] text-white pt-16 pb-8"
+      style={{ fontFamily: "Poppins, system-ui, sans-serif" }}
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
-              DSM by EveryDriver
+            <div className="text-white font-bold text-lg mb-2">DSM by EveryDriver</div>
+            <p className="text-white/60 text-sm leading-relaxed">
+              The all-in-one driving instructor app — schedule lessons, take payments, manage pupils
+              and grow your business from your phone.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Product</h3>
+            <div className="flex flex-col gap-2">
+              <Link to="/features" className="text-white/60 hover:text-white text-sm no-underline">
+                Features
+              </Link>
+              <Link to="/pricing" className="text-white/60 hover:text-white text-sm no-underline">
+                Pricing
+              </Link>
+              <Link to="/how-it-works" className="text-white/60 hover:text-white text-sm no-underline">
+                How it works
+              </Link>
             </div>
-            <p
-              style={{
-                marginTop: 12,
-                color: "rgba(255,255,255,0.6)",
-                fontSize: 14,
-                lineHeight: 1.6,
-                maxWidth: 320,
-              }}
-            >
-              The driving instructor app that works as hard as you do.
-            </p>
-            <p style={{ marginTop: 20, color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
-              © 2026 EveryDriver Ltd
-            </p>
           </div>
 
-          {/* Column 2: Product */}
           <div>
-            <h4 style={headingStyle}>Product</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {productLinks.map((l) => (
-                <li key={l.label}>
-                  <Link to={l.to} style={linkStyle}>{l.label}</Link>
-                </li>
-              ))}
-            </ul>
+            <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Company</h3>
+            <div className="flex flex-col gap-2">
+              <Link to="/about" className="text-white/60 hover:text-white text-sm no-underline">
+                About
+              </Link>
+              <Link to="/contact" className="text-white/60 hover:text-white text-sm no-underline">
+                Contact
+              </Link>
+              <a
+                href="https://everydriver.co.uk"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white/60 hover:text-white text-sm no-underline"
+              >
+                EveryDriver.co.uk
+              </a>
+            </div>
           </div>
 
-          {/* Column 3: Company */}
           <div>
-            <h4 style={headingStyle}>Company</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {companyLinks.map((l) =>
-                l.external ? (
-                  <li key={l.label}>
-                    <a href={l.to} target="_blank" rel="noreferrer" style={linkStyle}>{l.label}</a>
-                  </li>
-                ) : (
-                  <li key={l.label}>
-                    <Link to={l.to} style={linkStyle}>{l.label}</Link>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
-
-          {/* Column 4: Legal */}
-          <div>
-            <h4 style={headingStyle}>Legal</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {legalLinks.map((l) => (
-                <li key={l.label}>
-                  <a href={l.to} target="_blank" rel="noreferrer" style={linkStyle}>{l.label}</a>
-                </li>
-              ))}
-            </ul>
+            <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Legal</h3>
+            <div className="flex flex-col gap-2">
+              <a href="/privacy" className="text-white/60 hover:text-white text-sm no-underline">
+                Privacy Policy
+              </a>
+              <a href="/terms" className="text-white/60 hover:text-white text-sm no-underline">
+                Terms
+              </a>
+              <a href="/returns" className="text-white/60 hover:text-white text-sm no-underline">
+                Returns Policy
+              </a>
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            marginTop: 48,
-            paddingTop: 24,
-            borderTop: "1px solid rgba(255,255,255,0.1)",
-            textAlign: "center",
-            color: "rgba(255,255,255,0.55)",
-            fontSize: 13,
-          }}
-        >
-          Made with ❤️ for driving instructors across the UK
+        <div className="border-t border-white/10 pt-8 text-center text-white/40 text-sm">
+          © 2026 EveryDriver Ltd. All rights reserved. Made with ❤️ for driving instructors across the UK.
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 960px) {
-          .dsm-footer-grid { grid-template-columns: 1fr 1fr !important; }
-        }
-        @media (max-width: 560px) {
-          .dsm-footer-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </footer>
   );
 }
+
+export default MarketingFooter;
