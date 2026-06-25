@@ -504,7 +504,19 @@ function HomePage() {
         .filter((l: any) => !prepaidPupilIds.has(l.pupil_id))
         .reduce((sum: number, l: any) => sum + Number(l.amount_due || 0), 0);
 
-      setOutstanding(outstandingAmt);
+      const { data: niPupils } = await supabase
+        .from("pupils")
+        .select("id, prepaid_hours, ni_amount_total, ni_amount_paid")
+        .eq("instructor_id", userId)
+        .gt("prepaid_hours", 0)
+        .not("ni_amount_total", "is", null);
+
+      const niOutstanding = (niPupils || []).reduce((sum: number, p: any) => {
+        const owed = Number(p.ni_amount_total || 0) - Number(p.ni_amount_paid || 0);
+        return owed > 0 ? sum + owed : sum;
+      }, 0);
+
+      setOutstanding(outstandingAmt + niOutstanding);
 
       // Source 1: EOL payments recorded in lesson_history
       const { data: historyRows } = await supabase
