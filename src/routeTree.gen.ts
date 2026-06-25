@@ -45,6 +45,7 @@ import { Route as NotificationsettingsRouteImport } from './routes/notifications
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MonthendRouteImport } from './routes/monthend'
+import { Route as MonthToDateRouteImport } from './routes/month-to-date'
 import { Route as MinisiteRouteImport } from './routes/minisite'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -280,6 +281,11 @@ const MtdRoute = MtdRouteImport.update({
 const MonthendRoute = MonthendRouteImport.update({
   id: '/monthend',
   path: '/monthend',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonthToDateRoute = MonthToDateRouteImport.update({
+  id: '/month-to-date',
+  path: '/month-to-date',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinisiteRoute = MinisiteRouteImport.update({
@@ -593,6 +599,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notifications': typeof NotificationsRoute
@@ -686,6 +693,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notifications': typeof NotificationsRoute
@@ -781,6 +789,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
   '/notifications': typeof NotificationsRoute
@@ -876,6 +885,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/mileage'
     | '/minisite'
+    | '/month-to-date'
     | '/monthend'
     | '/mtd'
     | '/notifications'
@@ -969,6 +979,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/mileage'
     | '/minisite'
+    | '/month-to-date'
     | '/monthend'
     | '/mtd'
     | '/notifications'
@@ -1063,6 +1074,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/mileage'
     | '/minisite'
+    | '/month-to-date'
     | '/monthend'
     | '/mtd'
     | '/notifications'
@@ -1158,6 +1170,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
+  MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
   MtdRoute: typeof MtdRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -1467,6 +1480,13 @@ declare module '@tanstack/react-router' {
       path: '/monthend'
       fullPath: '/monthend'
       preLoaderRoute: typeof MonthendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/month-to-date': {
+      id: '/month-to-date'
+      path: '/month-to-date'
+      fullPath: '/month-to-date'
+      preLoaderRoute: typeof MonthToDateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/minisite': {
@@ -1928,6 +1948,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
+  MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
   MtdRoute: MtdRoute,
   NotificationsRoute: NotificationsRoute,
