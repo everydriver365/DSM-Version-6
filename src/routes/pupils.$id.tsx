@@ -38,6 +38,7 @@ interface Pupil {
   test_time: string | null;
   test_centre: string | null;
   wants_swap: boolean | null;
+  theory_pass: boolean | null;
 }
 
 interface Lesson {
@@ -130,13 +131,14 @@ function PupilDetailPage() {
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
+  const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap")
+      .select("id, name, phone, email, lesson_count, balance_owed, status, test_date, notes, photo_url, photo_consent, lead_source, lead_source_detail, ni_amount_total, ni_payer, ni_amount_paid, ni_payment_date, ni_reference, test_time, test_centre, wants_swap, theory_pass")
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -188,6 +190,7 @@ function PupilDetailPage() {
         }
         const rows = (data as { level: number }[]) ?? [];
         const total = rows.reduce((s, r) => s + (Number(r.level) || 0), 0);
+        setSyllabusSum(total);
         // 27 competencies × 5 max
         setSyllabusPct(Math.round((total / (27 * 5)) * 100));
       });
@@ -417,15 +420,18 @@ function PupilDetailPage() {
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
 
-            {/* Test Readiness */}
             {(() => {
-              const total = progressData?.total ?? 0;
-              const competent = progressData?.competent ?? 0;
-              const pct = total > 0 ? Math.round((competent / total) * 100) : 0;
+              const lessonCount = Number(pupil?.lesson_count ?? 0);
+              const theoryPass = !!pupil?.theory_pass;
+              const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
+              const lessonPoints = Math.min((lessonCount / 40) * 30, 30);
+              const theoryPoints = theoryPass ? 10 : 0;
+              const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
+              console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
               let barColor = "#CC2229";
-              if (pct >= 100) barColor = "#16A34A";
-              else if (pct >= 71) barColor = "#1A52A0";
-              else if (pct >= 41) barColor = "#F59E0B";
+              if (score >= 100) barColor = "#16A34A";
+              else if (score >= 71) barColor = "#1A52A0";
+              else if (score >= 41) barColor = "#F59E0B";
               return (
                 <div className="mt-4">
                   <div
@@ -441,25 +447,25 @@ function PupilDetailPage() {
                     >
                       <div
                         className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, backgroundColor: barColor }}
+                        style={{ width: `${score}%`, backgroundColor: barColor }}
                       />
                     </div>
                     <div
                       className="text-[14px] font-bold"
                       style={{ color: "#0F2044", ...POPPINS }}
                     >
-                      {pct}%
+                      {score}%
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center justify-between mt-2 gap-2">
                     <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                      {competent} of {total} syllabus items competent
+                      Syllabus {Math.round(syllabusPoints)}/60 · Lessons {Math.round(lessonPoints)}/30 · Theory {theoryPoints}/10
                     </div>
                     <Button
                       variant="ghost"
-                      onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
+                      onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
                     >
-                      View progress
+                      View
                     </Button>
                   </div>
                 </div>
