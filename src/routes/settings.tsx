@@ -13,6 +13,8 @@ import {
   Crown,
   MapPin,
   Check,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -85,6 +87,138 @@ function SettingsPage() {
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
   const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
 
+  // Pricing rules
+  type RuleType = "time_of_day" | "day_of_week" | "postcode_zone" | "advance_notice";
+  type AdjType = "flat" | "percent";
+  type PricingRule = {
+    id: string;
+    instructor_id: string;
+    rule_name: string;
+    rule_type: RuleType;
+    conditions: Record<string, unknown>;
+    adjustment_type: AdjType;
+    adjustment_value: number;
+    is_active: boolean;
+  };
+  const RULE_TYPE_LABEL: Record<RuleType, string> = {
+    time_of_day: "Time of Day",
+    day_of_week: "Day of Week",
+    postcode_zone: "Postcode Zone",
+    advance_notice: "Advance Notice",
+  };
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [ruleName, setRuleName] = useState("");
+  const [ruleType, setRuleType] = useState<RuleType>("time_of_day");
+  const [ruleTime, setRuleTime] = useState("17:00");
+  const [ruleDays, setRuleDays] = useState<Record<DayKey, boolean>>({
+    mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
+  });
+  const [rulePostcodes, setRulePostcodes] = useState("");
+  const [ruleHours, setRuleHours] = useState<number>(24);
+  const [ruleAdjType, setRuleAdjType] = useState<AdjType>("flat");
+  const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
+  const [savingRule, setSavingRule] = useState(false);
+
+  async function loadPricingRules(uid: string) {
+    const { data, error } = await supabase
+      .from("pricing_rules")
+      .select("*")
+      .eq("instructor_id", uid)
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("[settings] pricing_rules fetch error", error);
+      return;
+    }
+    setPricingRules((data ?? []) as PricingRule[]);
+  }
+
+  async function addPricingRule() {
+    if (!userId) return;
+    if (!ruleName.trim()) {
+      toast.error("Rule name required");
+      return;
+    }
+    let conditions: Record<string, unknown> = {};
+    if (ruleType === "time_of_day") conditions = { after: ruleTime };
+    else if (ruleType === "day_of_week") {
+      const days = (Object.keys(ruleDays) as DayKey[]).filter((d) => ruleDays[d]);
+      if (days.length === 0) {
+        toast.error("Select at least one day");
+        return;
+      }
+      conditions = { days };
+    } else if (ruleType === "postcode_zone") {
+      const codes = rulePostcodes.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+      if (codes.length === 0) {
+        toast.error("Enter at least one postcode");
+        return;
+      }
+      conditions = { postcodes: codes };
+    } else if (ruleType === "advance_notice") {
+      conditions = { within_hours: ruleHours };
+    }
+    setSavingRule(true);
+    const { error } = await supabase.from("pricing_rules").insert({
+      instructor_id: userId,
+      rule_name: ruleName.trim(),
+      rule_type: ruleType,
+      conditions,
+      adjustment_type: ruleAdjType,
+      adjustment_value: ruleAdjValue,
+      is_active: true,
+    });
+    setSavingRule(false);
+    if (error) {
+      console.error("[settings] add rule error", error);
+      toast.error("Could not add rule");
+      return;
+    }
+    toast.success("Rule added");
+    setRuleName("");
+    setRuleAdjValue(5);
+    await loadPricingRules(userId);
+  }
+
+  async function toggleRule(id: string, next: boolean) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("pricing_rules")
+      .update({ is_active: next })
+      .eq("id", id)
+      .eq("instructor_id", userId);
+    if (error) {
+      toast.error("Could not update rule");
+      return;
+    }
+    setPricingRules((prev) => prev.map((r) => (r.id === id ? { ...r, is_active: next } : r)));
+  }
+
+  async function deleteRule(id: string) {
+    if (!userId) return;
+    const { error } = await supabase.from("pricing_rules").delete().eq("id", id).eq("instructor_id", userId);
+    if (error) {
+      toast.error("Could not delete rule");
+      return;
+    }
+    setPricingRules((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  function describeRule(r: PricingRule): string {
+    const c = r.conditions ?? {};
+    if (r.rule_type === "time_of_day") return `After ${(c as { after?: string }).after ?? "—"}`;
+    if (r.rule_type === "day_of_week") {
+      const days = ((c as { days?: string[] }).days ?? []).join(", ");
+      return days || "—";
+    }
+    if (r.rule_type === "postcode_zone") {
+      return ((c as { postcodes?: string[] }).postcodes ?? []).join(", ") || "—";
+    }
+    if (r.rule_type === "advance_notice") {
+      return `Within ${(c as { within_hours?: number }).within_hours ?? "—"}h`;
+    }
+    return "";
+  }
+
   useEffect(() => {
     (async () => {
       const { data, error: authErr } = await supabase.auth.getUser();
@@ -146,6 +280,8 @@ function SettingsPage() {
           .from("working_hours")
           .insert({ instructor_id: user.id, ...DEFAULT_HOURS });
       }
+
+      await loadPricingRules(user.id);
     })();
   }, []);
 
@@ -608,6 +744,261 @@ function SettingsPage() {
           >
             {savingCoverage ? "Saving…" : "Save coverage"}
           </button>
+        </Card>
+
+        <SectionHeader>PRICING RULES</SectionHeader>
+        <Card style={{ background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <PoundSterling size={18} color="#1A52A0" />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
+              Pricing rules
+            </span>
+          </div>
+          <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
+            Automatically adjust lesson prices based on time, day, location, or booking notice.
+          </p>
+
+          {pricingRules.length === 0 && (
+            <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
+              No pricing rules yet. Add one below.
+            </p>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+            {pricingRules.map((r) => (
+              <div
+                key={r.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  border: "0.5px solid #E2E6ED",
+                  borderRadius: 10,
+                  padding: 12,
+                  background: "#fff",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                    <span style={{ fontWeight: 600, fontSize: 14, color: "#1A1A2E", ...POPPINS }}>
+                      {r.rule_name}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        background: "#EEF2FF",
+                        color: "#1A52A0",
+                        ...POPPINS,
+                      }}
+                    >
+                      {RULE_TYPE_LABEL[r.rule_type]}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#16A34A",
+                        ...POPPINS,
+                      }}
+                    >
+                      {r.adjustment_type === "flat"
+                        ? `+£${Number(r.adjustment_value).toFixed(2)}`
+                        : `+${r.adjustment_value}%`}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, ...POPPINS }}>
+                    {describeRule(r)}
+                  </div>
+                </div>
+                <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={r.is_active}
+                    onChange={(e) => toggleRule(r.id, e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "#1A52A0" }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => deleteRule(r.id)}
+                  aria-label="Delete rule"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 4,
+                    color: "#CC2229",
+                  }}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ borderTop: "0.5px solid #E2E6ED", paddingTop: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1A2E", marginBottom: 10, ...POPPINS }}>
+              Add new rule
+            </div>
+
+            <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule name</label>
+            <input
+              type="text"
+              value={ruleName}
+              onChange={(e) => setRuleName(e.target.value)}
+              placeholder="e.g. Evening Surcharge"
+              style={{
+                width: "100%", height: 44, padding: "0 12px",
+                border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+              }}
+            />
+
+            <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule type</label>
+            <select
+              value={ruleType}
+              onChange={(e) => setRuleType(e.target.value as RuleType)}
+              style={{
+                width: "100%", height: 44, padding: "0 12px",
+                border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+              }}
+            >
+              <option value="time_of_day">Time of Day</option>
+              <option value="day_of_week">Day of Week</option>
+              <option value="postcode_zone">Postcode Zone</option>
+              <option value="advance_notice">Advance Notice</option>
+            </select>
+
+            {ruleType === "time_of_day" && (
+              <>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>After time</label>
+                <input
+                  type="time"
+                  value={ruleTime}
+                  onChange={(e) => setRuleTime(e.target.value)}
+                  style={{
+                    width: "100%", height: 44, padding: "0 12px",
+                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                  }}
+                />
+              </>
+            )}
+
+            {ruleType === "day_of_week" && (
+              <div style={{ marginTop: 6, marginBottom: 12 }}>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Days</label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
+                  {DAYS.map((d) => (
+                    <label
+                      key={d.key}
+                      style={{
+                        display: "inline-flex", alignItems: "center", gap: 6,
+                        padding: "6px 10px", border: "0.5px solid #E2E6ED",
+                        borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={ruleDays[d.key]}
+                        onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
+                        style={{ accentColor: "#1A52A0" }}
+                      />
+                      {d.label.slice(0, 3)}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {ruleType === "postcode_zone" && (
+              <>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
+                  Postcodes (comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={rulePostcodes}
+                  onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
+                  placeholder="SO22, SO23"
+                  style={{
+                    width: "100%", height: 44, padding: "0 12px",
+                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E",
+                    textTransform: "uppercase", ...POPPINS,
+                  }}
+                />
+              </>
+            )}
+
+            {ruleType === "advance_notice" && (
+              <>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Within X hours</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={ruleHours}
+                  onChange={(e) => setRuleHours(Number(e.target.value))}
+                  style={{
+                    width: "100%", height: 44, padding: "0 12px",
+                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                  }}
+                />
+              </>
+            )}
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment type</label>
+                <select
+                  value={ruleAdjType}
+                  onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
+                  style={{
+                    width: "100%", height: 44, padding: "0 12px",
+                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                  }}
+                >
+                  <option value="flat">Flat amount (£)</option>
+                  <option value="percent">Percentage (%)</option>
+                </select>
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment value</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={ruleAdjValue}
+                  onChange={(e) => setRuleAdjValue(Number(e.target.value))}
+                  style={{
+                    width: "100%", height: 44, padding: "0 12px",
+                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                  }}
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={addPricingRule}
+              disabled={savingRule}
+              className="w-full text-[14px] font-semibold text-white mt-4"
+              style={{
+                height: 48, borderRadius: 10, backgroundColor: "#0F2044", border: "none",
+                opacity: savingRule ? 0.6 : 1,
+                cursor: savingRule ? "not-allowed" : "pointer",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                ...POPPINS,
+              }}
+            >
+              <Plus size={16} /> {savingRule ? "Adding…" : "Add rule"}
+            </button>
+          </div>
         </Card>
 
         <SectionHeader>SUPPORT</SectionHeader>
