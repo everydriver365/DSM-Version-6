@@ -436,18 +436,46 @@ function PupilSyllabusPage() {
         <button
           type="button"
           onClick={save}
-          disabled={!dirty || saving}
-          className="w-full text-[14px] font-semibold text-white"
+          disabled={!dirty || saving || justSaved}
+          className="w-full text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             height: 44,
             borderRadius: 10,
-            backgroundColor: !dirty || saving ? "#9CA3AF" : "#0F2044",
+            backgroundColor: justSaved
+              ? "#16A34A"
+              : !dirty || saving
+                ? "#9CA3AF"
+                : "#0F2044",
             border: "none",
+            transition: "background-color 150ms ease",
             ...POPPINS,
           }}
         >
-          {saving ? "Saving…" : dirty ? "Save changes" : "No changes"}
+          {saving ? (
+            <>
+              <span
+                aria-hidden
+                style={{
+                  width: 14,
+                  height: 14,
+                  border: "2px solid rgba(255,255,255,0.4)",
+                  borderTopColor: "#fff",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  animation: "syllabus-spin 0.7s linear infinite",
+                }}
+              />
+              Saving…
+            </>
+          ) : justSaved ? (
+            "Saved ✓"
+          ) : dirty ? (
+            "Save changes"
+          ) : (
+            "No changes"
+          )}
         </button>
+        <style>{`@keyframes syllabus-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
