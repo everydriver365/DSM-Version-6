@@ -129,25 +129,26 @@ function PupilsIndexPage() {
       }
 
       try {
-        const { data: bookingPayments, error: bpErr } = await supabase
-          .from("course_bookings")
-          .select("pupil_email, amount_paid, status")
+        const { data: lessonBalances, error: lbErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, amount_due, payment_status")
           .eq("instructor_id", uid)
-          .in("status", ["confirmed", "completed"]);
-        if (bpErr) console.error("[pupils] booking payments error", bpErr);
-        console.log("[pupils] booking payments:", bookingPayments);
-        const bMap = ((bookingPayments ?? []) as { pupil_email: string | null; amount_paid: number | null }[]).reduce(
+          .is("deleted_at", null);
+        if (lbErr) console.error("[pupils] lesson balances error", lbErr);
+        console.log("[pupils] lesson balances:", lessonBalances);
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null }[]).reduce(
           (acc, row) => {
-            if (!row.pupil_email) return acc;
-            const match = normalized.find(
-              (pu) => pu.email?.toLowerCase() === row.pupil_email?.toLowerCase(),
-            );
-            if (match) {
-              acc[match.id] = (acc[match.id] || 0) + (Number(row.amount_paid) || 0);
+            if (!row.pupil_id) return acc;
+            if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
+            const amount = Number(row.amount_due) || 0;
+            if (row.payment_status === "paid") {
+              acc[row.pupil_id].paid += amount;
+            } else {
+              acc[row.pupil_id].owed += amount;
             }
             return acc;
           },
-          {} as Record<string, number>,
+          {} as Record<string, { owed: number; paid: number }>,
         );
         setBalanceMap(bMap);
       } catch (e) {
