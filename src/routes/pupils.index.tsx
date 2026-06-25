@@ -129,20 +129,25 @@ function PupilsIndexPage() {
       }
 
       try {
-        const { data: paymentHistory, error: phErr } = await supabase
-          .from("lesson_history")
-          .select("pupil_id, lesson_cost, payment_status")
-          .in("pupil_id", pupilIds);
-        if (phErr) console.error("[pupils] balance fetch error", phErr);
-        console.log("[pupils] payment history:", paymentHistory);
-        const bMap = ((paymentHistory ?? []) as { pupil_id: string; lesson_cost: number | null; payment_status: string | null }[]).reduce(
+        const { data: bookingPayments, error: bpErr } = await supabase
+          .from("course_bookings")
+          .select("pupil_email, amount_paid, status")
+          .eq("instructor_id", uid)
+          .in("status", ["confirmed", "completed"]);
+        if (bpErr) console.error("[pupils] booking payments error", bpErr);
+        console.log("[pupils] booking payments:", bookingPayments);
+        const bMap = ((bookingPayments ?? []) as { pupil_email: string | null; amount_paid: number | null }[]).reduce(
           (acc, row) => {
-            if (!acc[row.pupil_id]) acc[row.pupil_id] = { cost: 0, paid: 0 };
-            acc[row.pupil_id].cost += Number(row.lesson_cost) || 0;
-            if (row.payment_status === "paid") acc[row.pupil_id].paid += Number(row.lesson_cost) || 0;
+            if (!row.pupil_email) return acc;
+            const match = normalized.find(
+              (pu) => pu.email?.toLowerCase() === row.pupil_email?.toLowerCase(),
+            );
+            if (match) {
+              acc[match.id] = (acc[match.id] || 0) + (Number(row.amount_paid) || 0);
+            }
             return acc;
           },
-          {} as Record<string, { cost: number; paid: number }>,
+          {} as Record<string, number>,
         );
         setBalanceMap(bMap);
       } catch (e) {
