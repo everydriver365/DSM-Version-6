@@ -81,6 +81,15 @@ function EditPupilPage() {
   const [niAmountPaid, setNiAmountPaid] = useState("");
   const [niPaymentDate, setNiPaymentDate] = useState("");
   const [niReference, setNiReference] = useState("");
+  const [testTime, setTestTime] = useState("");
+  const [testCentre, setTestCentre] = useState("");
+  const [wantsSwap, setWantsSwap] = useState(false);
+  const [swapEarliestDate, setSwapEarliestDate] = useState("");
+  const [swapLatestDate, setSwapLatestDate] = useState("");
+  const [swapPreferredTime, setSwapPreferredTime] = useState("any");
+  const [swapCentre1, setSwapCentre1] = useState("");
+  const [swapCentre2, setSwapCentre2] = useState("");
+  const [swapCentre3, setSwapCentre3] = useState("");
   const originalPrepaidAmount = useRef<number>(0);
   const originalStatus = useRef<string>("active");
   const [inactiveConfirmOpen, setInactiveConfirmOpen] = useState(false);
