@@ -67,6 +67,7 @@ function gbpFromPounds(n: number): string {
 type Lesson = {
   id: string;
   lesson_date: string;
+  lesson_time: string | null;
   duration_minutes: number | null;
   status: string | null;
   payment_status: string | null;
