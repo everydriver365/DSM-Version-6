@@ -92,7 +92,6 @@ function NewQuotePage() {
         },
         body: JSON.stringify({
           instructor_id: userId,
-          quote_ref,
           recipient_name: pupilName.trim(),
           recipient_email: email.trim() || null,
           recipient_phone: phone.trim() || null,
