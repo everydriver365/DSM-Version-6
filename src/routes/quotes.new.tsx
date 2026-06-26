@@ -64,12 +64,6 @@ function NewQuotePage() {
     if (!depositTouched && !isNaN(p)) setDeposit((p * 0.2).toFixed(2));
   }, [price, depositTouched]);
 
-  async function generateRef(): Promise<string> {
-    const year = new Date().getFullYear();
-    const { count } = await supabase.from("quotes").select("*", { count: "exact", head: true }).eq("instructor_id", userId!);
-    const seq = String((count ?? 0) + 1).padStart(3, "0");
-    return `QT-${year}-${seq}`;
-  }
 
   async function save(status: "draft" | "sent") {
     const newErrors: { pupilName?: string; price?: string; postcode?: string } = {};
