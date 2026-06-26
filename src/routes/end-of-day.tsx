@@ -509,7 +509,7 @@ function Badge({ children, bg, color }: { children: React.ReactNode; bg: string;
   );
 }
 
-function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
+function Stat({ label, value, color, hint }: { label: string; value: string; color?: string; hint?: string }) {
   return (
     <div
       style={{
@@ -519,7 +519,10 @@ function Stat({ label, value, color }: { label: string; value: string; color?: s
         backgroundColor: "#FFFFFF",
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0F2044" }}>{value}</div>
+      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0F2044" }}>
+        {value}
+        {hint && <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginLeft: 4 }}>{hint}</span>}
+      </div>
       <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{label}</div>
     </div>
   );
