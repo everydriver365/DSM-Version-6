@@ -1,439 +1,435 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus, X, Fuel } from "lucide-react";
+import { ArrowLeft, Settings as SettingsIcon, Fuel as FuelIcon } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
-import { Card } from "../components/dsm/Card";
-import { Input } from "../components/dsm/Input";
-import { Button } from "../components/dsm/Button";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/fuel")({
-  head: () => ({
-    meta: [{ title: "Fuel log — DSM by EveryDriver" }],
-  }),
+  head: () => ({ meta: [{ title: "Fuel costs — DSM by EveryDriver" }] }),
   component: FuelPage,
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const NAVY = "#0F2044";
+const BORDER = "0.5px solid #E2E6ED";
+const LITRES_PER_GALLON = 4.546;
+const LESSON_AVG_SPEED_MPH = 20;
+const HMRC_RATE = 0.45;
 
-interface Entry {
+type FuelType = "petrol" | "diesel" | "electric" | "hybrid";
+
+type Settings = {
+  fuel_type: FuelType;
+  fuel_price: number;
+  vehicle_mpg: number;
+  vehicle_miles_per_kwh: number;
+};
+
+const DEFAULTS: Settings = {
+  fuel_type: "petrol",
+  fuel_price: 1.5,
+  vehicle_mpg: 40,
+  vehicle_miles_per_kwh: 3.5,
+};
+
+type Journey = {
   id: string;
-  fill_date: string;
-  litres: number;
-  pence_per_litre: number;
-  total_cost: number;
-  mileage_at_fill: number | null;
-}
+  trip_date: string | null;
+  distance_miles: number | null;
+  fuel_cost: number | null;
+  purpose: string | null;
+};
 
-function formatShortDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
+type Lesson = {
+  id: string;
+  lesson_date: string | null;
+  duration_minutes: number | null;
+  pupil_id: string | null;
+};
 
-const entrySchema = z.object({
-  fill_date: z.string().min(1, "Date required"),
-  litres: z.number().positive("Litres must be > 0").max(999),
-  pence_per_litre: z.number().positive("PPL must be > 0").max(999),
-  mileage_at_fill: z.number().int().nonnegative().max(9999999).optional(),
-});
+type Pupil = { id: string; first_name: string | null; last_name: string | null };
+
+function monthRange() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  return { start: fmt(start), end: fmt(end) };
+}
 
 function FuelPage() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [addOpen, setAddOpen] = useState(false);
+  const [instructorId, setInstructorId] = useState<string | null>(null);
+  const [settings, setSettings] = useState<Settings>(DEFAULTS);
+  const [saving, setSaving] = useState(false);
+  const [journeys, setJourneys] = useState<Journey[]>([]);
+  const [allJourneysMonth, setAllJourneysMonth] = useState<Journey[]>([]);
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [pupils, setPupils] = useState<Record<string, Pupil>>({});
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) setUserId(data.user.id);
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) return;
+      setInstructorId(uid);
+
+      const { data: instr } = await supabase
+        .from("instructors")
+        .select("fuel_type, fuel_price, vehicle_mpg, vehicle_miles_per_kwh")
+        .eq("id", uid)
+        .maybeSingle();
+      if (instr) {
+        setSettings({
+          fuel_type: (instr.fuel_type as FuelType) || DEFAULTS.fuel_type,
+          fuel_price: Number(instr.fuel_price ?? DEFAULTS.fuel_price),
+          vehicle_mpg: Number(instr.vehicle_mpg ?? DEFAULTS.vehicle_mpg),
+          vehicle_miles_per_kwh: Number(instr.vehicle_miles_per_kwh ?? DEFAULTS.vehicle_miles_per_kwh),
+        });
+      }
+
+      const { start, end } = monthRange();
+
+      const { data: monthLogs } = await supabase
+        .from("mileage_log")
+        .select("id, trip_date, distance_miles, fuel_cost, purpose")
+        .eq("instructor_id", uid)
+        .gte("trip_date", start)
+        .lt("trip_date", end);
+      setAllJourneysMonth(monthLogs || []);
+
+      const { data: recentLogs } = await supabase
+        .from("mileage_log")
+        .select("id, trip_date, distance_miles, fuel_cost, purpose")
+        .eq("instructor_id", uid)
+        .order("trip_date", { ascending: false })
+        .limit(5);
+      setJourneys(recentLogs || []);
+
+      const { data: monthLessons } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, duration_minutes, pupil_id")
+        .eq("instructor_id", uid)
+        .gte("lesson_date", start)
+        .lt("lesson_date", end)
+        .is("deleted_at", null);
+      setLessons(monthLessons || []);
+
+      const pupilIds = Array.from(new Set((monthLessons || []).map((l) => l.pupil_id).filter(Boolean) as string[]));
+      if (pupilIds.length) {
+        const { data: ps } = await supabase
+          .from("pupils")
+          .select("id, first_name, last_name")
+          .in("id", pupilIds);
+        const map: Record<string, Pupil> = {};
+        (ps || []).forEach((p) => { map[p.id] = p as Pupil; });
+        setPupils(map);
+      }
     })();
   }, []);
 
-  async function load(uid: string) {
-    const { data, error } = await supabase
-      .from("fuel_log")
-      .select("id, fill_date, litres, pence_per_litre, total_cost, mileage_at_fill")
-      .eq("instructor_id", uid)
-      .order("fill_date", { ascending: false });
-    if (error) console.error("[fuel] fetch error", error);
-    setEntries((data ?? []) as unknown as Entry[]);
+  const isElectric = settings.fuel_type === "electric";
+
+  async function saveSettings() {
+    if (!instructorId) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("instructors")
+      .update({
+        fuel_type: settings.fuel_type,
+        fuel_price: settings.fuel_price,
+        vehicle_mpg: settings.vehicle_mpg,
+        vehicle_miles_per_kwh: settings.vehicle_miles_per_kwh,
+      })
+      .eq("id", instructorId);
+    setSaving(false);
+    if (error) toast.error("Failed to save settings");
+    else toast.success("Settings saved");
   }
 
-  useEffect(() => {
-    if (userId) load(userId);
-  }, [userId]);
-
-  const stats = useMemo(() => {
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEntries = entries.filter((e) => new Date(e.fill_date) >= monthStart);
-    const monthLitres = monthEntries.reduce((s, e) => s + Number(e.litres), 0);
-    const monthCost = monthEntries.reduce((s, e) => s + Number(e.total_cost), 0);
-    const totalCost = entries.reduce((s, e) => s + Number(e.total_cost), 0);
-
-    // Avg MPG calculated between fills with mileage_at_fill
-    const sorted = [...entries]
-      .filter((e) => e.mileage_at_fill != null)
-      .sort(
-        (a, b) =>
-          new Date(a.fill_date).getTime() - new Date(b.fill_date).getTime(),
-      );
-    let totalMiles = 0;
-    let totalLitres = 0;
-    for (let i = 1; i < sorted.length; i++) {
-      const m = (sorted[i].mileage_at_fill ?? 0) - (sorted[i - 1].mileage_at_fill ?? 0);
-      if (m > 0) {
-        totalMiles += m;
-        totalLitres += Number(sorted[i].litres);
-      }
+  function costForMiles(miles: number) {
+    if (isElectric) {
+      const mpkwh = settings.vehicle_miles_per_kwh || 1;
+      return (miles / mpkwh) * settings.fuel_price;
     }
-    // MPG (UK gallon) = miles / (litres / 4.54609)
-    const avgMpg =
-      totalLitres > 0 ? totalMiles / (totalLitres / 4.54609) : 0;
+    const mpg = settings.vehicle_mpg || 1;
+    return (miles / mpg) * settings.fuel_price * LITRES_PER_GALLON;
+  }
 
-    return { monthLitres, monthCost, totalCost, avgMpg };
-  }, [entries]);
+  const totalMiles = useMemo(
+    () => allJourneysMonth.reduce((s, j) => s + Number(j.distance_miles || 0), 0),
+    [allJourneysMonth]
+  );
+  const totalFuelCost = useMemo(() => costForMiles(totalMiles), [totalMiles, settings]);
+  const lessonCount = lessons.length;
+  const costPerLesson = lessonCount > 0 ? totalFuelCost / lessonCount : 0;
+  const hmrcAllowance = Math.min(totalMiles, 10000) * HMRC_RATE;
+  const profitVsHmrc = hmrcAllowance - totalFuelCost;
+
+  const perLesson = useMemo(() => {
+    return lessons
+      .slice()
+      .sort((a, b) => (b.lesson_date || "").localeCompare(a.lesson_date || ""))
+      .map((l) => {
+        const miles = ((l.duration_minutes || 0) / 60) * LESSON_AVG_SPEED_MPH;
+        const cost = costForMiles(miles);
+        const p = l.pupil_id ? pupils[l.pupil_id] : null;
+        const name = p ? `${p.first_name || ""} ${p.last_name || ""}`.trim() : "Pupil";
+        return { id: l.id, date: l.lesson_date, name, miles, cost };
+      });
+  }, [lessons, pupils, settings]);
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", ...POPPINS, paddingBottom: 32 }}>
       {/* Top bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{
+          background: NAVY,
+          color: "#FFFFFF",
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
       >
         <button
-          type="button"
-          aria-label="Back"
           onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          aria-label="Back"
+          style={{ background: "transparent", border: "none", color: "#FFFFFF", padding: 4, cursor: "pointer" }}
         >
-          <ArrowLeft size={22} color="#FFFFFF" />
+          <ArrowLeft size={22} />
         </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-white"
-          style={POPPINS}
-        >
-          Fuel log
-        </div>
-        <button
-          type="button"
-          aria-label="Add entry"
-          onClick={() => setAddOpen(true)}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <Plus size={22} color="#FFFFFF" />
-        </button>
+        <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Fuel costs</h1>
       </div>
 
-      {/* Summary card */}
-      <div
-        className="mx-4 mt-3"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}
-      >
-        <div className="grid grid-cols-2" style={{ gap: 12 }}>
-          <div>
-            <div
-              className="text-[11px] tracking-wider font-semibold"
-              style={{ color: "#9CA3AF" }}
-            >
-              THIS MONTH
-            </div>
-            <div className="text-white font-bold mt-1" style={{ fontSize: 24 }}>
-              {stats.monthLitres.toFixed(1)}L
-            </div>
-          </div>
-          <div className="text-right">
-            <div
-              className="text-[11px] tracking-wider font-semibold"
-              style={{ color: "#9CA3AF" }}
-            >
-              THIS MONTH COST
-            </div>
-            <div className="font-bold mt-1" style={{ fontSize: 24, color: "#F59E0B" }}>
-              £{stats.monthCost.toFixed(2)}
-            </div>
-          </div>
-          <div>
-            <div
-              className="text-[11px] tracking-wider font-semibold"
-              style={{ color: "#9CA3AF" }}
-            >
-              AVG MPG
-            </div>
-            <div className="text-white mt-1" style={{ fontSize: 18, fontWeight: 600 }}>
-              {stats.avgMpg > 0 ? stats.avgMpg.toFixed(1) : "—"}
-            </div>
-          </div>
-          <div className="text-right">
-            <div
-              className="text-[11px] tracking-wider font-semibold"
-              style={{ color: "#9CA3AF" }}
-            >
-              TOTAL SPENT
-            </div>
-            <div className="mt-1" style={{ fontSize: 18, fontWeight: 600, color: "#F59E0B" }}>
-              £{stats.totalCost.toFixed(2)}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4">
-        <SectionHeader>FUEL LOG</SectionHeader>
-        {entries.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "32px 0" }}
+      {/* SECTION 1 — Settings */}
+      <section style={cardStyle({ mt: 16 })}>
+        <SectionHeading icon={<SettingsIcon size={16} color={NAVY} />} title="Fuel settings" />
+        <Field label="Fuel type">
+          <select
+            value={settings.fuel_type}
+            onChange={(e) => setSettings({ ...settings, fuel_type: e.target.value as FuelType })}
+            style={inputStyle}
           >
-            <Fuel size={28} color="#6B7280" />
-            <div className="mt-2">No fuel entries yet</div>
-          </div>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="electric">Electric</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </Field>
+
+        {!isElectric && (
+          <>
+            <Field label="Price per litre (£)">
+              <input
+                type="number"
+                step="0.01"
+                value={settings.fuel_price}
+                onChange={(e) => setSettings({ ...settings, fuel_price: Number(e.target.value) })}
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="MPG (miles per gallon)">
+              <input
+                type="number"
+                step="0.1"
+                value={settings.vehicle_mpg}
+                onChange={(e) => setSettings({ ...settings, vehicle_mpg: Number(e.target.value) })}
+                style={inputStyle}
+              />
+            </Field>
+          </>
+        )}
+
+        {isElectric && (
+          <>
+            <Field label="Price per kWh (£)">
+              <input
+                type="number"
+                step="0.01"
+                value={settings.fuel_price}
+                onChange={(e) => setSettings({ ...settings, fuel_price: Number(e.target.value) })}
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="Miles per kWh">
+              <input
+                type="number"
+                step="0.1"
+                value={settings.vehicle_miles_per_kwh}
+                onChange={(e) => setSettings({ ...settings, vehicle_miles_per_kwh: Number(e.target.value) })}
+                style={inputStyle}
+              />
+            </Field>
+          </>
+        )}
+
+        <button
+          onClick={saveSettings}
+          disabled={saving}
+          style={{
+            marginTop: 12,
+            width: "100%",
+            padding: "12px 14px",
+            background: NAVY,
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: "pointer",
+            opacity: saving ? 0.7 : 1,
+            ...POPPINS,
+          }}
+        >
+          {saving ? "Saving…" : "Save settings"}
+        </button>
+      </section>
+
+      {/* SECTION 2 — Cost summary */}
+      <section style={cardStyle({ mt: 12 })}>
+        <SectionHeading icon={<FuelIcon size={16} color={NAVY} />} title="This month" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 8 }}>
+          <Stat label="Total miles" value={`${totalMiles.toFixed(1)}`} />
+          <Stat label="Fuel cost" value={`£${totalFuelCost.toFixed(2)}`} />
+          <Stat label="HMRC allowance" value={`£${hmrcAllowance.toFixed(2)}`} />
+          <Stat
+            label="Profit vs HMRC"
+            value={`${profitVsHmrc >= 0 ? "+" : "−"}£${Math.abs(profitVsHmrc).toFixed(2)}`}
+            color={profitVsHmrc >= 0 ? "#16A34A" : "#DC2626"}
+          />
+        </div>
+        <div style={{ marginTop: 10, fontSize: 12, color: "#475569" }}>
+          Cost per lesson: <strong>£{costPerLesson.toFixed(2)}</strong> ({lessonCount} lessons)
+        </div>
+      </section>
+
+      {/* SECTION 3 — Per lesson */}
+      <section style={cardStyle({ mt: 12 })}>
+        <SectionHeading title="Per lesson cost" />
+        {perLesson.length === 0 ? (
+          <div style={{ fontSize: 13, color: "#6B7280", marginTop: 8 }}>No lessons this month.</div>
         ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {entries.map((e) => (
-              <Card key={e.id} className="bg-white">
-                <div className="flex items-start" style={{ gap: 12 }}>
-                  <div
-                    className="flex items-center justify-center shrink-0"
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 18,
-                      backgroundColor: "#1A52A014",
-                    }}
-                  >
-                    <Fuel size={18} color="#1A52A0" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                      <div>
-                        <div
-                          className="text-[14px] font-bold"
-                          style={{ color: "#0F2044" }}
-                        >
-                          {Number(e.litres).toFixed(2)}L
-                        </div>
-                        <div className="text-[12px]" style={{ color: "#6B7280" }}>
-                          {formatShortDate(e.fill_date)}
-                        </div>
-                      </div>
-                      <div
-                        className="text-[14px] font-bold shrink-0 text-right"
-                        style={{ color: "#CC2229" }}
-                      >
-                        £{Number(e.total_cost).toFixed(2)}
-                      </div>
-                    </div>
-                    <div className="mt-1 flex items-center justify-between">
-                      <span className="text-[13px]" style={{ color: "#6B7280" }}>
-                        {Number(e.pence_per_litre).toFixed(1)}p/L
-                      </span>
-                      {e.mileage_at_fill != null && (
-                        <span className="text-[12px]" style={{ color: "#6B7280" }}>
-                          {Number(e.mileage_at_fill).toLocaleString()} mi
-                        </span>
-                      )}
-                    </div>
+          <div style={{ marginTop: 6 }}>
+            {perLesson.map((l) => (
+              <div
+                key={l.id}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "8px 0",
+                  borderBottom: BORDER,
+                  fontSize: 13,
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 600, color: NAVY }}>{l.name}</div>
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    {l.date} · ~{l.miles.toFixed(1)} mi
                   </div>
                 </div>
-              </Card>
+                <div style={{ fontWeight: 600, color: NAVY }}>£{l.cost.toFixed(2)}</div>
+              </div>
             ))}
           </div>
         )}
-      </div>
+        <div style={{ marginTop: 8, fontSize: 11, color: "#94A3B8", fontStyle: "italic" }}>
+          Based on estimated lesson mileage ({LESSON_AVG_SPEED_MPH} mph avg).
+        </div>
+      </section>
 
-      {addOpen && userId && (
-        <AddEntrySheet
-          userId={userId}
-          onClose={() => setAddOpen(false)}
-          onAdded={() => {
-            setAddOpen(false);
-            load(userId);
-          }}
-        />
-      )}
+      {/* SECTION 4 — Journey log */}
+      <section style={cardStyle({ mt: 12 })}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <SectionHeading title="Journey log" />
+          <Link to="/vehicle" style={{ fontSize: 12, color: "#1A52A0", textDecoration: "none", fontWeight: 600 }}>
+            View all →
+          </Link>
+        </div>
+        {journeys.length === 0 ? (
+          <div style={{ fontSize: 13, color: "#6B7280", marginTop: 8 }}>No journeys logged yet.</div>
+        ) : (
+          <div style={{ marginTop: 6 }}>
+            {journeys.map((j) => (
+              <div
+                key={j.id}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "8px 0",
+                  borderBottom: BORDER,
+                  fontSize: 13,
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 600, color: NAVY }}>{j.trip_date || "—"}</div>
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>{j.purpose || "Journey"}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontWeight: 600, color: NAVY }}>{Number(j.distance_miles || 0).toFixed(1)} mi</div>
+                  {j.fuel_cost != null && (
+                    <div style={{ fontSize: 11, color: "#6B7280" }}>£{Number(j.fuel_cost).toFixed(2)}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
 
-function SheetShell({
-  title,
-  onClose,
-  children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
+function cardStyle({ mt }: { mt: number }): React.CSSProperties {
+  return {
+    background: "#FFFFFF",
+    border: BORDER,
+    borderRadius: 12,
+    padding: 16,
+    marginLeft: 16,
+    marginRight: 16,
+    marginTop: mt,
+  };
+}
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 12px",
+  border: BORDER,
+  borderRadius: 8,
+  fontSize: 14,
+  background: "#FFFFFF",
+  color: NAVY,
+  ...POPPINS,
+};
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={POPPINS}
-    >
-      <div
-        className="absolute inset-0"
-        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
-        onClick={onClose}
-        aria-hidden
-      />
-      <div
-        className="relative w-full bg-white"
-        style={{
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          maxHeight: "92vh",
-          overflowY: "auto",
-          paddingBottom: 24,
-        }}
-      >
-        <div className="flex items-center justify-between px-4 pt-4">
-          <span
-            className="text-[11px] font-semibold tracking-wider"
-            style={{ color: "#6B7280" }}
-          >
-            {title}
-          </span>
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-            className="flex items-center justify-center"
-            style={{ width: 32, height: 32 }}
-          >
-            <X size={18} color="#6B7280" />
-          </button>
-        </div>
-        <div className="px-4 pt-2">{children}</div>
-      </div>
+    <div style={{ marginTop: 10 }}>
+      <label style={{ display: "block", fontSize: 12, color: "#475569", marginBottom: 4, fontWeight: 500 }}>
+        {label}
+      </label>
+      {children}
     </div>
   );
 }
 
-function AddEntrySheet({
-  userId,
-  onClose,
-  onAdded,
-}: {
-  userId: string;
-  onClose: () => void;
-  onAdded: () => void;
-}) {
-  const today = new Date().toISOString().slice(0, 10);
-  const [fillDate, setFillDate] = useState(today);
-  const [litres, setLitres] = useState("");
-  const [ppl, setPpl] = useState("");
-  const [mileage, setMileage] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const totalCost =
-    Number(litres || 0) > 0 && Number(ppl || 0) > 0
-      ? (Number(litres) * Number(ppl)) / 100
-      : 0;
-
-  async function save() {
-    if (saving) return;
-    const parsed = entrySchema.safeParse({
-      fill_date: fillDate,
-      litres: Number(litres),
-      pence_per_litre: Number(ppl),
-      mileage_at_fill: mileage ? Number(mileage) : undefined,
-    });
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Invalid input");
-      return;
-    }
-    setSaving(true);
-    const v = parsed.data;
-    const { error } = await supabase.from("fuel_log").insert({
-      instructor_id: userId,
-      fill_date: v.fill_date,
-      litres: v.litres,
-      pence_per_litre: v.pence_per_litre,
-      total_cost: Number(((v.litres * v.pence_per_litre) / 100).toFixed(2)),
-      mileage_at_fill: v.mileage_at_fill ?? null,
-    });
-    setSaving(false);
-    if (error) {
-      console.error("[fuel] insert error", error);
-      toast.error("Couldn't save entry");
-      return;
-    }
-    toast.success("Fuel entry added");
-    onAdded();
-  }
-
+function SectionHeading({ icon, title }: { icon?: React.ReactNode; title: string }) {
   return (
-    <SheetShell title="ADD FUEL ENTRY" onClose={onClose}>
-      <div className="flex flex-col" style={{ gap: 12 }}>
-        <Input
-          label="Date"
-          type="date"
-          value={fillDate}
-          onChange={(e) => setFillDate(e.target.value)}
-        />
-        <Input
-          label="Litres"
-          type="number"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          value={litres}
-          onChange={(e) => setLitres(e.target.value)}
-          placeholder="e.g. 45.2"
-        />
-        <Input
-          label="Pence per litre"
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          min="0"
-          value={ppl}
-          onChange={(e) => setPpl(e.target.value)}
-          placeholder="e.g. 148.9"
-        />
-        <Input
-          label="Mileage at fill"
-          type="number"
-          inputMode="numeric"
-          step="1"
-          min="0"
-          value={mileage}
-          onChange={(e) => setMileage(e.target.value)}
-          placeholder="e.g. 48230"
-        />
-        <div
-          className="flex items-center justify-between"
-          style={{
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: "#F8F9FB",
-            border: "0.5px solid #E2E6ED",
-          }}
-        >
-          <span className="text-[13px]" style={{ color: "#6B7280" }}>
-            Total cost
-          </span>
-          <span className="text-[18px] font-bold" style={{ color: "#0F2044" }}>
-            £{totalCost.toFixed(2)}
-          </span>
-        </div>
-        <div className="mt-2 grid grid-cols-2" style={{ gap: 8 }}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Cancel
-          </Button>
-          <Button onClick={save} disabled={saving} type="button">
-            {saving ? "Saving…" : "Save"}
-          </Button>
-        </div>
-      </div>
-    </SheetShell>
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      {icon}
+      <h2 style={{ fontSize: 14, fontWeight: 600, color: NAVY, margin: 0 }}>{title}</h2>
+    </div>
+  );
+}
+
+function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
+  return (
+    <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: 10, padding: 10 }}>
+      <div style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color: color || NAVY, marginTop: 2 }}>{value}</div>
+    </div>
   );
 }
