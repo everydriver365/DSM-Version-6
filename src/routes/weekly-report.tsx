@@ -181,6 +181,28 @@ function WeeklyReportPage() {
     }).length;
     setTestsThisWeek(testsCount);
 
+    // Fetch all-time hours used for prepaid pupils (to compute remaining)
+    const prepaidIds = Object.values(pupilMap)
+      .filter((p) => (p.prepaid_hours ?? 0) > 0)
+      .map((p) => p.id);
+    if (prepaidIds.length > 0) {
+      const { data: usedRows } = await supabase
+        .from("lessons")
+        .select("pupil_id, duration_minutes")
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .in("status", ["confirmed", "completed"])
+        .in("pupil_id", prepaidIds);
+      const used: Record<string, number> = {};
+      (usedRows ?? []).forEach((r: any) => {
+        if (!r.pupil_id) return;
+        used[r.pupil_id] = (used[r.pupil_id] ?? 0) + (r.duration_minutes ?? 0) / 60;
+      });
+      setPupilUsedHours(used);
+    } else {
+      setPupilUsedHours({});
+    }
+
     setLoading(false);
   }
 
