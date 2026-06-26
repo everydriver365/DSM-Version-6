@@ -3734,16 +3734,14 @@ function TestsBreakdownModal({
   open,
   onClose,
   tests,
-  pendingSwapCount,
+  swapByPupil,
   onOpenPupil,
-  onViewSwaps,
 }: {
   open: boolean;
   onClose: () => void;
   tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null }>;
-  pendingSwapCount: number;
+  swapByPupil: Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }>;
   onOpenPupil: (id: string) => void;
-  onViewSwaps: () => void;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(`${d}T00:00:00`);
