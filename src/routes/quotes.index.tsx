@@ -64,13 +64,24 @@ function QuotesPage() {
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth.user?.id;
+      console.log("[quotes] userId:", uid);
       if (!uid) { setLoading(false); return; }
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from("quotes")
-        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, status, valid_until, sent_at")
+        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, deposit_amount, status, valid_until, sent_at, created_at")
         .eq("instructor_id", uid)
         .order("sent_at", { ascending: false });
-      if (error) console.error("[quotes] fetch error", error);
+      console.log("[quotes] fetch result:", { data, error });
+      if (error) {
+        console.error("[quotes] fetch error", error);
+        const fb = await supabase
+          .from("quotes")
+          .select("id, recipient_name, recipient_email, recipient_phone, course_type, hours, price, status, valid_until, sent_at")
+          .eq("instructor_id", uid)
+          .order("sent_at", { ascending: false });
+        console.log("[quotes] fallback result:", fb);
+        data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
+      }
       setQuotes((data ?? []) as QuoteRow[]);
       setLoading(false);
     })();
