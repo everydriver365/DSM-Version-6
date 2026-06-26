@@ -3769,7 +3769,7 @@ function TestsBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto" }}>
           <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Upcoming tests (next 30 days)
+            Upcoming tests
           </div>
           {tests.length === 0 && (
             <div style={{ padding: "12px 20px 18px", color: "#6B7280", fontSize: 13 }}>
