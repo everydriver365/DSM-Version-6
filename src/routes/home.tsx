@@ -2777,16 +2777,13 @@ function HomePage() {
         open={testsOpen}
         onClose={() => setTestsOpen(false)}
         tests={upcomingTests}
-        pendingSwapCount={pendingSwapCount}
+        swapByPupil={swapByPupil}
         onOpenPupil={(id: string) => {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
         }}
-        onViewSwaps={() => {
-          setTestsOpen(false);
-          navigate({ to: "/test-swaps" });
-        }}
       />
+
     </div>
 
   );
