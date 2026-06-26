@@ -1336,7 +1336,7 @@ function HomePage() {
     { icon: <Search size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Find gaps", route: "/gaps" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
     { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Sat Nav", route: "/satnav" },
-    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Weekly report", route: "/weeklyreport" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Weekly report", route: "/weekly-report" },
     { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
     { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
     { icon: <Award size={20} color="#FFFFFF" />, bg: "#D97706", label: "Certifications", route: "/certifications" },
