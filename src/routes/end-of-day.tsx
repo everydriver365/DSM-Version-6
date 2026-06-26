@@ -34,6 +34,13 @@ type HistoryRow = {
   created_at: string;
 };
 
+function pupilName(p?: { name?: string | null; first_name?: string | null; last_name?: string | null } | null): string {
+  if (!p) return "";
+  return (p.name || `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim()) ?? "";
+}
+
+
+
 function fmtDateLong(d: Date) {
   return d.toLocaleDateString("en-GB", {
     weekday: "long",
