@@ -1307,7 +1307,7 @@ function HomePage() {
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Earnings", route: "/earnings" },
     { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#D97706", label: "Expenses", route: "/expenses" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
-    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel", route: "/fuel" },
+    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel costs", route: "/fuel" },
     { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
