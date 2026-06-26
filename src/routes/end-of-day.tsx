@@ -25,7 +25,7 @@ type Lesson = {
   eol_completed: boolean | null;
   payment_status: string | null;
   amount_due: number | null;
-  pupils?: { id: string; full_name: string | null; phone: string | null } | null;
+  pupils?: { id: string; name: string | null; first_name: string | null; last_name: string | null; phone: string | null } | null;
 };
 
 type HistoryRow = {
