@@ -81,7 +81,13 @@ type HistoryRow = {
   lesson_date: string | null;
   pupil_id: string | null;
 };
-type Pupil = { id: string; name: string | null; test_date: string | null };
+type Pupil = {
+  id: string;
+  name: string | null;
+  test_date: string | null;
+  prepaid_hours: number | null;
+  account_balance: number | null;
+};
 
 function WeeklyReportPage() {
   const navigate = useNavigate();
