@@ -322,11 +322,20 @@ function HomePage() {
         .lte("test_date", in30Str);
 
       // Test swaps requested by instructor's pupils
-      const { count: swapCount } = await supabase
+      const { data: swapRows, count: swapCount } = await supabase
         .from("test_swap_requests")
-        .select("id", { count: "exact", head: true })
+        .select("pupil_id, current_test_date, preferred_earliest, preferred_latest", { count: "exact" })
         .eq("status", "pending");
       setPendingSwapCount(swapCount || 0);
+      const swapMap: Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }> = {};
+      (swapRows ?? []).forEach((s: any) => {
+        if (s.pupil_id) swapMap[s.pupil_id] = {
+          current_test_date: s.current_test_date ?? null,
+          preferred_earliest: s.preferred_earliest ?? null,
+          preferred_latest: s.preferred_latest ?? null,
+        };
+      });
+      setSwapByPupil(swapMap);
       setTestCount((tCount || 0) + (swapCount || 0));
 
       // Upcoming tests list for the bottom sheet
