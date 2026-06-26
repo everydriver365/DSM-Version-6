@@ -78,6 +78,7 @@ type HistoryRow = {
   lesson_cost: number | null;
   payment_status: string | null;
   created_at: string;
+  lesson_date: string | null;
   pupil_id: string | null;
 };
 type Pupil = { id: string; name: string | null; test_date: string | null };
@@ -131,7 +132,7 @@ function WeeklyReportPage() {
         .lte("lesson_date", endStr),
       supabase
         .from("lesson_history")
-        .select("id, lesson_cost, payment_status, created_at, pupil_id")
+        .select("id, lesson_cost, payment_status, created_at, lesson_date, pupil_id")
         .eq("instructor_id", userId)
         .gte("created_at", createdGte)
         .lte("created_at", createdLte),
@@ -196,15 +197,24 @@ function WeeklyReportPage() {
   );
 
   // Per-day breakdown
+  const dailyEarningsMap = useMemo(() => {
+    return history
+      .filter((h) => h.payment_status === "paid")
+      .reduce<Record<string, number>>((acc, h) => {
+        const dateKey = (h.lesson_date ?? h.created_at?.slice(0, 10)) || "";
+        if (!dateKey) return acc;
+        acc[dateKey] = (acc[dateKey] ?? 0) + Number(h.lesson_cost ?? 0);
+        return acc;
+      }, {});
+  }, [history]);
+
   const dayRows = useMemo(() => {
     return DAY_LABELS.map((label, i) => {
       const date = addDays(weekStart, i);
       const dateStr = ymd(date);
       const dayLessons = taughtLessons.filter((l) => l.lesson_date === dateStr);
       const hours = dayLessons.reduce((a, l) => a + (l.duration_minutes ?? 0) / 60, 0);
-      const dayEarningsPence = history
-        .filter((h) => h.payment_status === "paid" && h.created_at.slice(0, 10) === dateStr)
-        .reduce((a, h) => a + (h.lesson_cost ?? 0), 0);
+      const dayEarningsPence = dailyEarningsMap[dateStr] ?? 0;
       return {
         key: dateStr,
         label,
@@ -214,7 +224,7 @@ function WeeklyReportPage() {
         earningsPence: dayEarningsPence,
       };
     });
-  }, [taughtLessons, history, weekStart]);
+  }, [taughtLessons, dailyEarningsMap, weekStart]);
 
   // Pupils this week
   const pupilRows = useMemo(() => {
@@ -410,9 +420,14 @@ function WeeklyReportPage() {
                   </div>
                   <div
                     className="text-[12px] font-medium"
-                    style={{ ...POPPINS, color: "#0F2044", width: 60, textAlign: "right" }}
+                    style={{
+                      ...POPPINS,
+                      width: 60,
+                      textAlign: "right",
+                      color: d.earningsPence > 0 ? "#15803D" : hasLessons ? "#B45309" : "#9CA3AF",
+                    }}
                   >
-                    {gbp(d.earningsPence)}
+                    {d.earningsPence > 0 ? gbp(d.earningsPence) : hasLessons ? "Unpaid" : ""}
                   </div>
                 </div>
               );
