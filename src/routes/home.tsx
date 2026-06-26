@@ -2783,7 +2783,7 @@ function HomePage() {
         open={testsOpen}
         onClose={() => setTestsOpen(false)}
         tests={upcomingTests}
-        swapByPupil={swapByPupil}
+        swapRequests={swapRequests}
         onOpenPupil={(id: string) => {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
