@@ -525,18 +525,58 @@ function WeeklyReportPage() {
                       {p.lessons} lesson{p.lessons === 1 ? "" : "s"} · {p.hours.toFixed(1)}h
                     </div>
                   </div>
-                  <span
-                    className="text-[11px] font-semibold"
-                    style={{
-                      ...POPPINS,
-                      padding: "4px 8px",
-                      borderRadius: 999,
-                      background: p.allEol ? "#DCFCE7" : "#FEF3C7",
-                      color: p.allEol ? "#15803D" : "#B45309",
-                    }}
-                  >
-                    {p.allEol ? "EOL ✓" : "EOL pending"}
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    {(() => {
+                      const pupil = pupils[p.id];
+                      const prepaid = pupil?.prepaid_hours ?? 0;
+                      if (prepaid > 0) {
+                        const used = pupilUsedHours[p.id] ?? 0;
+                        const remaining = Math.max(0, prepaid - used);
+                        return (
+                          <span
+                            className="text-[11px] font-semibold"
+                            style={{
+                              ...POPPINS,
+                              padding: "4px 8px",
+                              borderRadius: 999,
+                              background: "#DBEAFE",
+                              color: "#1A52A0",
+                            }}
+                          >
+                            {remaining.toFixed(1)}h remaining
+                          </span>
+                        );
+                      }
+                      const owed = pupil?.account_balance ?? 0;
+                      const owes = owed > 0;
+                      return (
+                        <span
+                          className="text-[11px] font-semibold"
+                          style={{
+                            ...POPPINS,
+                            padding: "4px 8px",
+                            borderRadius: 999,
+                            background: owes ? "#FEE2E2" : "#DCFCE7",
+                            color: owes ? "#DC2626" : "#15803D",
+                          }}
+                        >
+                          {owes ? gbpFromPounds(owed) : "All paid ✓"}
+                        </span>
+                      );
+                    })()}
+                    <span
+                      className="text-[10px] font-semibold"
+                      style={{
+                        ...POPPINS,
+                        padding: "3px 7px",
+                        borderRadius: 999,
+                        background: p.allEol ? "#DCFCE7" : "#FEF3C7",
+                        color: p.allEol ? "#15803D" : "#B45309",
+                      }}
+                    >
+                      {p.allEol ? "EOL ✓" : "EOL pending"}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
