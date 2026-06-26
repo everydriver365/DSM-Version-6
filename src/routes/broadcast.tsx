@@ -95,6 +95,7 @@ function BroadcastPage() {
         .select("id, name, first_name, last_name, phone, email, status, prepaid_hours, deleted_at")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
+        .not("status", "in", '("inactive","cancelled","deleted")')
         .order("name", { ascending: true });
       const normalized: Pupil[] = ((rows ?? []) as any[]).map((p) => ({
         id: p.id,
@@ -147,7 +148,7 @@ function BroadcastPage() {
 
   const filteredPupils = useMemo(() => {
     return pupils.filter((p) => {
-      if (filter === "active") return (p.status ?? "active").toLowerCase() === "active";
+      if (filter === "active") return (p.status ?? "active").toLowerCase() !== "passed";
       if (filter === "passed") return (p.status ?? "").toLowerCase() === "passed";
       if (filter === "week") return weekIds.has(p.id);
       if (filter === "outstanding") return owedIds.has(p.id);
