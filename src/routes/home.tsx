@@ -268,6 +268,7 @@ function HomePage() {
   const [testCount, setTestCount] = useState(0);
   const [testsOpen, setTestsOpen] = useState(false);
   const [upcomingTests, setUpcomingTests] = useState<Array<{
+
     id: string;
     name: string;
     test_date: string;
@@ -275,7 +276,7 @@ function HomePage() {
     test_centre: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
-  const [swapByPupil, setSwapByPupil] = useState<Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }>>({});
+  const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
   useEffect(() => {
@@ -320,22 +321,28 @@ function HomePage() {
         .gte("test_date", todayStr);
 
 
-      // Test swaps requested by instructor's pupils
-      const { data: swapRows, count: swapCount } = await supabase
-        .from("test_swap_requests")
-        .select("pupil_id, current_test_date, preferred_earliest, preferred_latest", { count: "exact" })
-        .eq("status", "pending");
-      setPendingSwapCount(swapCount || 0);
-      const swapMap: Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }> = {};
-      (swapRows ?? []).forEach((s: any) => {
-        if (s.pupil_id) swapMap[s.pupil_id] = {
-          current_test_date: s.current_test_date ?? null,
-          preferred_earliest: s.preferred_earliest ?? null,
-          preferred_latest: s.preferred_latest ?? null,
-        };
-      });
-      setSwapByPupil(swapMap);
-      setTestCount((tCount || 0) + (swapCount || 0));
+      // EverySwap requests for ALL this instructor's pupils
+      const { data: allPupils } = await supabase
+        .from("pupils")
+        .select("name")
+        .eq("instructor_id", user.id);
+      const pupilNames = (allPupils ?? []).map((p: any) => p.name).filter(Boolean);
+      let swapRows: any[] = [];
+      let swapCount = 0;
+      if (pupilNames.length > 0) {
+        const { data, count } = await supabase
+          .from("test_swap_requests")
+          .select("id, name, test_centre, current_test_date, current_test_time, status, created_at", { count: "exact" })
+          .in("name", pupilNames)
+          .in("status", ["pending", "matched"])
+          .order("created_at", { ascending: false });
+        swapRows = data ?? [];
+        swapCount = count ?? 0;
+      }
+      setPendingSwapCount(swapCount);
+      setSwapRequests(swapRows);
+      setTestCount((tCount || 0) + swapCount);
+
 
       // Upcoming tests list for the bottom sheet
       const { data: testRows } = await supabase
@@ -2776,7 +2783,7 @@ function HomePage() {
         open={testsOpen}
         onClose={() => setTestsOpen(false)}
         tests={upcomingTests}
-        swapByPupil={swapByPupil}
+        swapRequests={swapRequests}
         onOpenPupil={(id: string) => {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
@@ -3733,24 +3740,34 @@ function TestsBreakdownModal({
   open,
   onClose,
   tests,
-  swapByPupil,
+  swapRequests,
   onOpenPupil,
 }: {
   open: boolean;
   onClose: () => void;
   tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null }>;
-  swapByPupil: Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }>;
+  swapRequests: Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>;
   onOpenPupil: (id: string) => void;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(`${d}T00:00:00`);
     return dt.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
   };
+  const fmtShort = (d: string | null) => {
+    if (!d) return "";
+    const dt = new Date(`${d}T00:00:00`);
+    return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  };
   const daysUntil = (d: string) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dt = new Date(`${d}T00:00:00`);
     return Math.round((dt.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  };
+  const daysSince = (iso: string) => {
+    const today = new Date();
+    const dt = new Date(iso);
+    return Math.max(0, Math.round((today.getTime() - dt.getTime()) / (1000 * 60 * 60 * 24)));
   };
   const badgeColors = (days: number) => {
     if (days < 7) return { bg: "#FEE2E2", fg: "#991B1B" };
@@ -3779,12 +3796,6 @@ function TestsBreakdownModal({
           {tests.map((t) => {
             const days = daysUntil(t.test_date);
             const colors = badgeColors(days);
-            const swap = swapByPupil[t.id];
-            const fmtShort = (d: string | null) => {
-              if (!d) return "";
-              const dt = new Date(`${d}T00:00:00`);
-              return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-            };
             return (
               <div key={t.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <button
@@ -3825,35 +3836,73 @@ function TestsBreakdownModal({
                     {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
                   </span>
                 </button>
-                {swap && (
-                  <div
-                    style={{
-                      margin: "0 16px 8px 28px",
-                      padding: "8px 12px",
-                      background: "#FEF9C3",
-                      borderLeft: "3px solid #F59E0B",
-                      borderRadius: "0 0 8px 8px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <ArrowLeftRight size={12} color="#B45309" />
-                    <span style={{ fontSize: 12, color: "#92400E", fontWeight: 600 }}>
-                      Seeking swap{swap.current_test_date ? ` · ${fmtShort(swap.current_test_date)}` : ""}
-                    </span>
-                    {(swap.preferred_earliest || swap.preferred_latest) && (
-                      <span style={{ fontSize: 12, color: "#92400E" }}>
-                        · prefers {fmtShort(swap.preferred_earliest)}
-                        {swap.preferred_latest ? ` – ${fmtShort(swap.preferred_latest)}` : ""}
-                      </span>
-                    )}
-                  </div>
-                )}
               </div>
             );
           })}
+
+          <div style={{ padding: "16px 16px 8px", display: "flex", alignItems: "center", gap: 6 }}>
+            <ArrowLeftRight size={14} color="#1A52A0" />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#1A52A0", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              EverySwap requests
+            </span>
+          </div>
+          {swapRequests.length === 0 ? (
+            <div style={{ padding: "8px 20px 18px", color: "#6B7280", fontSize: 12, textAlign: "center" }}>
+              No active swap requests
+            </div>
+          ) : (
+            <div style={{ padding: "0 16px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+              {swapRequests.map((s) => {
+                const matched = s.status === "matched";
+                return (
+                  <div
+                    key={s.id}
+                    style={{
+                      background: "#fff",
+                      border: "0.5px solid #E2E6ED",
+                      borderRadius: 10,
+                      padding: "10px 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {s.name}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                        {s.current_test_date ? fmtShort(s.current_test_date) : "No date"}
+                        {s.current_test_time ? ` · ${String(s.current_test_time).slice(0, 5)}` : ""}
+                        {s.test_centre ? ` · ${s.test_centre}` : ""}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                      <span
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 700,
+                          padding: "3px 8px",
+                          borderRadius: 999,
+                          backgroundColor: matched ? "#ECFDF5" : "#FEF3C7",
+                          color: matched ? "#047857" : "#92400E",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {matched ? "Matched ✓" : "Seeking swap"}
+                      </span>
+                      <span style={{ fontSize: 11, color: "#9CA3AF" }}>
+                        {(() => {
+                          const d = daysSince(s.created_at);
+                          return d === 0 ? "Today" : `${d} day${d === 1 ? "" : "s"} ago`;
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
 
@@ -3869,4 +3918,5 @@ function TestsBreakdownModal({
     </Dialog>
   );
 }
+
 
