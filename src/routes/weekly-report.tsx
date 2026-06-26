@@ -153,7 +153,7 @@ function WeeklyReportPage() {
         .lte("lesson_date", prevEnd),
       supabase
         .from("pupils")
-        .select("id, name, test_date")
+        .select("id, name, test_date, prepaid_hours, account_balance")
         .eq("instructor_id", userId),
     ]);
 
@@ -161,7 +161,13 @@ function WeeklyReportPage() {
     const hRows = (hRes.data ?? []) as HistoryRow[];
     const pupilMap: Record<string, Pupil> = {};
     (pRes.data ?? []).forEach((p: any) => {
-      pupilMap[p.id] = { id: p.id, name: p.name ?? "Unknown", test_date: p.test_date ?? null };
+      pupilMap[p.id] = {
+        id: p.id,
+        name: p.name ?? "Unknown",
+        test_date: p.test_date ?? null,
+        prepaid_hours: p.prepaid_hours ?? null,
+        account_balance: p.account_balance ?? null,
+      };
     });
 
     setLessons(lRows);
