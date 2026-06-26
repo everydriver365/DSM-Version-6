@@ -607,6 +607,21 @@ function PupilDetailPage() {
           >
             Add lesson
           </button>
+          <button
+            type="button"
+            onClick={() => setCertOpen(true)}
+            className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white col-span-3"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#F59E0B",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <Award size={16} color="#FFFFFF" />
+            Certificate
+          </button>
         </div>
         <div className="mt-2">
           <Button
