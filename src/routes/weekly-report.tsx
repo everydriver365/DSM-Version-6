@@ -567,18 +567,54 @@ function WeeklyReportPage() {
                         </span>
                       );
                     })()}
-                    <span
-                      className="text-[10px] font-semibold"
-                      style={{
-                        ...POPPINS,
-                        padding: "3px 7px",
-                        borderRadius: 999,
-                        background: p.allEol ? "#DCFCE7" : "#FEF3C7",
-                        color: p.allEol ? "#15803D" : "#B45309",
-                      }}
-                    >
-                      {p.allEol ? "EOL ✓" : "EOL pending"}
-                    </span>
+                    {p.allEol ? (
+                      <span
+                        className="text-[10px] font-semibold"
+                        style={{
+                          ...POPPINS,
+                          padding: "3px 7px",
+                          borderRadius: 999,
+                          background: "#DCFCE7",
+                          color: "#15803D",
+                        }}
+                      >
+                        EOL ✓
+                      </span>
+                    ) : (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          const pending = lessons
+                            .filter((l) => l.pupil_id === p.id && !l.eol_completed)
+                            .sort((a, b) => (a.lesson_date < b.lesson_date ? 1 : -1));
+                          const target = pending[0];
+                          if (!target) return;
+                          setEolLesson({
+                            id: target.id,
+                            pupil_id: p.id,
+                            pupilName: p.name,
+                            instructor_id: userId,
+                            duration_minutes: target.duration_minutes ?? 60,
+                            lesson_date: target.lesson_date,
+                            lesson_time: target.lesson_time ?? "09:00",
+                          });
+                        }}
+                        className="text-[10px] font-semibold"
+                        style={{
+                          ...POPPINS,
+                          padding: "3px 7px",
+                          borderRadius: 999,
+                          background: "#FEF3C7",
+                          color: "#B45309",
+                          cursor: "pointer",
+                        }}
+                      >
+                        EOL pending
+                      </span>
+                    )}
                   </div>
                 </button>
               ))}
