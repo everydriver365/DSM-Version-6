@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeeklyreportRouteImport } from './routes/weeklyreport'
+import { Route as WeeklyReportRouteImport } from './routes/weekly-report'
 import { Route as WaiversRouteImport } from './routes/waivers'
 import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as WaitinglistRouteImport } from './routes/waitinglist'
@@ -108,6 +109,11 @@ import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 const WeeklyreportRoute = WeeklyreportRouteImport.update({
   id: '/weeklyreport',
   path: '/weeklyreport',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeeklyReportRoute = WeeklyReportRouteImport.update({
+  id: '/weekly-report',
+  path: '/weekly-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WaiversRoute = WaiversRouteImport.update({
@@ -648,6 +654,7 @@ export interface FileRoutesByFullPath {
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
+  '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/about': typeof MarketingAboutRoute
   '/contact': typeof MarketingContactRoute
@@ -744,6 +751,7 @@ export interface FileRoutesByTo {
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
+  '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/about': typeof MarketingAboutRoute
   '/contact': typeof MarketingContactRoute
@@ -842,6 +850,7 @@ export interface FileRoutesById {
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
+  '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/_marketing/about': typeof MarketingAboutRoute
   '/_marketing/contact': typeof MarketingContactRoute
@@ -940,6 +949,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waitlist'
     | '/waivers'
+    | '/weekly-report'
     | '/weeklyreport'
     | '/about'
     | '/contact'
@@ -1036,6 +1046,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waitlist'
     | '/waivers'
+    | '/weekly-report'
     | '/weeklyreport'
     | '/about'
     | '/contact'
@@ -1133,6 +1144,7 @@ export interface FileRouteTypes {
     | '/waitinglist'
     | '/waitlist'
     | '/waivers'
+    | '/weekly-report'
     | '/weeklyreport'
     | '/_marketing/about'
     | '/_marketing/contact'
@@ -1231,6 +1243,7 @@ export interface RootRouteChildren {
   WaitinglistRoute: typeof WaitinglistRoute
   WaitlistRoute: typeof WaitlistRoute
   WaiversRoute: typeof WaiversRoute
+  WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
@@ -1261,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/weeklyreport'
       fullPath: '/weeklyreport'
       preLoaderRoute: typeof WeeklyreportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/weekly-report': {
+      id: '/weekly-report'
+      path: '/weekly-report'
+      fullPath: '/weekly-report'
+      preLoaderRoute: typeof WeeklyReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/waivers': {
@@ -2025,6 +2045,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaitinglistRoute: WaitinglistRoute,
   WaitlistRoute: WaitlistRoute,
   WaiversRoute: WaiversRoute,
+  WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
