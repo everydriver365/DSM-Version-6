@@ -147,6 +147,9 @@ function PupilDetailPage() {
   const [balance, setBalance] = useState<number>(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
+  const [instructorName, setInstructorName] = useState<string>("");
+  const [certOpen, setCertOpen] = useState(false);
+  const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
