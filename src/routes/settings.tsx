@@ -82,6 +82,8 @@ function SettingsPage() {
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
   const [savingCoverage, setSavingCoverage] = useState(false);
+  const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
+  const [reminderTiming, setReminderTiming] = useState<"evening" | "morning" | "both">("evening");
 
   const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
