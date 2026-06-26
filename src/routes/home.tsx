@@ -1726,7 +1726,12 @@ function HomePage() {
               display: 'flex',
             }}
           >
-            <div style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)' }}>
+            <div
+              onClick={() => setEarningsOpen(true)}
+              role="button"
+              tabIndex={0}
+              style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer' }}
+            >
               <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 EARNINGS · WEEK
               </div>
@@ -1741,7 +1746,7 @@ function HomePage() {
               {weekEarnings === 0 ? (
                 <button
                   type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
                   style={{ fontSize: 10, color: '#FFD27A', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
                 >
                   Record payments via EOL →
@@ -1749,7 +1754,7 @@ function HomePage() {
               ) : earningsEstimated ? (
                 <button
                   type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
                   style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
                 >
                   Complete EOL
@@ -1763,7 +1768,12 @@ function HomePage() {
                 <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
               </div>
             </div>
-            <div style={{ flex: 1, padding: '10px 12px' }}>
+            <div
+              onClick={() => setLessonsOpen(true)}
+              role="button"
+              tabIndex={0}
+              style={{ flex: 1, padding: '10px 12px', cursor: 'pointer' }}
+            >
               <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 LESSONS · WEEK
               </div>
