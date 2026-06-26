@@ -144,7 +144,13 @@ function NewQuotePage() {
         </div>
         <div>
           <label style={labelStyle}>Postcode</label>
-          <input style={inputStyle} value={postcode} onChange={(e) => setPostcode(e.target.value.toUpperCase())} />
+          <input
+            style={errors.postcode ? errorInputStyle : inputStyle}
+            value={postcode}
+            onChange={(e) => { setPostcode(e.target.value.toUpperCase()); if (errors.postcode) setErrors((p) => ({ ...p, postcode: undefined })); }}
+            aria-invalid={!!errors.postcode}
+          />
+          {errors.postcode && <div style={errorTextStyle}>{errors.postcode}</div>}
         </div>
         <div>
           <label style={labelStyle}>Course type</label>
