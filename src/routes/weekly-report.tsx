@@ -10,6 +10,7 @@ import {
   Download,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 export const Route = createFileRoute("/weekly-report")({
   head: () => ({
