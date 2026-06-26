@@ -573,7 +573,92 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <SectionHeader>LESSON REMINDERS</SectionHeader>
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+          }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Bell size={18} color="#1A52A0" />
+            <div className="text-[15px] font-semibold text-[#0F2044]" style={POPPINS}>
+              Lesson reminders
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                Send pupils lesson reminders
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Automatically email pupils the evening before their lesson
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={sendLessonReminders}
+              aria-label="Send pupils lesson reminders"
+              onClick={toggleSendLessonReminders}
+              style={{
+                width: 44,
+                height: 26,
+                borderRadius: 13,
+                background: sendLessonReminders ? "#1A52A0" : "#D1D5DB",
+                border: "none",
+                position: "relative",
+                cursor: "pointer",
+                flexShrink: 0,
+                transition: "background 0.2s",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  left: sendLessonReminders ? 21 : 3,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  transition: "left 0.2s",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                }}
+              />
+            </button>
+          </div>
+
+          {sendLessonReminders && (
+            <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+              <div className="text-[14px] font-medium text-[#0F2044] mb-2" style={POPPINS}>
+                Reminder timing
+              </div>
+              <select
+                value={reminderTiming}
+                onChange={(e) => updateReminderTiming(e.target.value as "evening" | "morning" | "both")}
+                className="w-full text-[14px] text-[#0F2044]"
+                style={{
+                  ...POPPINS,
+                  padding: "10px 12px",
+                  border: "0.5px solid #E2E6ED",
+                  borderRadius: 8,
+                  background: "#FFFFFF",
+                }}
+              >
+                <option value="evening">Evening before (6pm)</option>
+                <option value="morning">Morning of lesson (8am)</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+          )}
+        </div>
+
         <SectionHeader>RATES & SCHEDULING</SectionHeader>
+
         <Card>
           {/* Hourly rate */}
           <div className="flex items-start gap-3">
