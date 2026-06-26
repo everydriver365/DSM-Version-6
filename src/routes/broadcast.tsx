@@ -284,7 +284,17 @@ function BroadcastPage() {
           <h2 className="text-[14px] font-semibold" style={{ color: NAVY }}>Who to send to</h2>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "nowrap",
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            gap: 8,
+            paddingBottom: 4,
+            scrollbarWidth: "none",
+          }}
+        >
           {filters.map((f) => {
             const active = filter === f.k;
             return (
@@ -292,8 +302,14 @@ function BroadcastPage() {
                 key={f.k}
                 type="button"
                 onClick={() => setFilter(f.k)}
-                className="shrink-0 px-3 h-8 rounded-full text-[12px] font-medium"
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  flexShrink: 0,
+                  fontSize: 12,
+                  padding: "6px 12px",
+                  borderRadius: 20,
+                  fontWeight: 500,
                   backgroundColor: active ? NAVY : "#F8F9FB",
                   color: active ? "#FFFFFF" : "#6B7280",
                   borderWidth: "0.5px",
@@ -307,6 +323,7 @@ function BroadcastPage() {
             );
           })}
         </div>
+
 
         <div className="flex items-center justify-between mt-3 mb-2">
           <button
