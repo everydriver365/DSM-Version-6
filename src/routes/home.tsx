@@ -2767,7 +2767,7 @@ function HomePage() {
         onClose={() => setTestsOpen(false)}
         tests={upcomingTests}
         pendingSwapCount={pendingSwapCount}
-        onOpenPupil={(id) => {
+        onOpenPupil={(id: string) => {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
         }}
