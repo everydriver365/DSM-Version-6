@@ -84,7 +84,7 @@ function NewQuotePage() {
         course_type: courseType,
         total_hours: hours ? parseFloat(hours) : null,
         price: price ? parseFloat(price) : null,
-        deposit: deposit ? parseFloat(deposit) : null,
+        deposit_amount: deposit ? parseFloat(deposit) : null,
         notes: notes.trim() || null,
         valid_until: validUntil,
         status,
