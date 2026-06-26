@@ -77,7 +77,7 @@ function NewQuotePage() {
     if (!userId) { alert("Not signed in"); return; }
     setSaving(true);
     try {
-      const quote_ref = await generateRef();
+      
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
