@@ -27,7 +27,9 @@ export function PushPermissionCard() {
 
   useEffect(() => {
     setStatus(readStatus());
-    setDismissed(localStorage.getItem("dsm.push.cardDismissed") === "1");
+    const declined = localStorage.getItem("push-permission-declined") === "true";
+    const oldDismissed = localStorage.getItem("dsm.push.cardDismissed") === "1";
+    setDismissed(declined || oldDismissed);
   }, []);
 
   async function enable() {
@@ -40,6 +42,8 @@ export function PushPermissionCard() {
       const permission = await Notification.requestPermission();
       setStatus(permission as Status);
       if (permission !== "granted") {
+        localStorage.setItem("push-permission-declined", "true");
+        setDismissed(true);
         if (permission === "denied") {
           toast.error("Notifications blocked. Enable them in your browser settings.");
         }
@@ -83,57 +87,17 @@ export function PushPermissionCard() {
   }
 
   function dismiss() {
+    localStorage.setItem("push-permission-declined", "true");
     localStorage.setItem("dsm.push.cardDismissed", "1");
     setDismissed(true);
   }
 
-  if (status === "granted" || dismissed) {
-    // Compact status pill so user can always see state without blocking the UI.
-    return (
-      <div className="px-4 mt-3">
-        <div
-          className="flex items-center gap-2 rounded-lg px-3 py-2"
-          style={{
-            backgroundColor: status === "granted" ? "#ECFDF5" : "#F3F4F6",
-            border: `0.5px solid ${status === "granted" ? "#A7F3D0" : "#E5E7EB"}`,
-          }}
-        >
-          {status === "granted" ? (
-            <CheckCircle2 size={14} color="#16A34A" />
-          ) : status === "denied" ? (
-            <BellOff size={14} color="#9CA3AF" />
-          ) : (
-            <Bell size={14} color="#9CA3AF" />
-          )}
-          <span className="text-[12px]" style={{ ...POPPINS, color: "#4B5563" }}>
-            Notifications:{" "}
-            <strong style={{ color: "#0F2044" }}>
-              {status === "granted"
-                ? "On"
-                : status === "denied"
-                ? "Blocked"
-                : status === "unsupported"
-                ? "Not supported"
-                : "Off"}
-            </strong>
-          </span>
-          {status !== "granted" && status !== "unsupported" && (
-            <button
-              type="button"
-              onClick={() => setDismissed(false)}
-              className="ml-auto text-[12px] font-semibold"
-              style={{ ...POPPINS, color: "#1A52A0" }}
-            >
-              Manage
-            </button>
-          )}
-        </div>
-      </div>
-    );
+  if (dismissed || status === "granted" || status === "denied" || status === "unsupported") {
+    return null;
   }
 
-  const isDenied = status === "denied";
-  const isUnsupported = status === "unsupported";
+  const isDenied = false;
+  const isUnsupported = false;
 
   return (
     <div className="px-4 mt-3">
