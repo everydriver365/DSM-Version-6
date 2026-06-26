@@ -109,7 +109,7 @@ function NewQuotePage() {
       const data = Array.isArray(payload) ? payload[0] : payload;
       if (status === "sent" && data) {
         const link = `${window.location.origin}/quotes/${data.id}`;
-        const body = `Hi ${pupilName}, your quote ${quote_ref} for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
+        const body = `Hi ${pupilName}, your quote for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
         if (phone) window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
         else if (email) window.location.href = `mailto:${email}?subject=${encodeURIComponent("Your quote")}&body=${encodeURIComponent(body)}`;
       }
