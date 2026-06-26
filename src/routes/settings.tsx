@@ -331,6 +331,38 @@ function SettingsPage() {
     }
   }
 
+  async function toggleSendLessonReminders() {
+    const next = !sendLessonReminders;
+    setSendLessonReminders(next);
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructors")
+      .update({ send_lesson_reminders: next })
+      .eq("id", userId);
+    if (error) {
+      console.error("[settings] toggle send_lesson_reminders error", error);
+      setSendLessonReminders(!next);
+      toast.error("Could not save preference");
+    }
+  }
+
+  async function updateReminderTiming(value: "evening" | "morning" | "both") {
+    const prev = reminderTiming;
+    setReminderTiming(value);
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructors")
+      .update({ reminder_timing: value })
+      .eq("id", userId);
+    if (error) {
+      console.error("[settings] update reminder_timing error", error);
+      setReminderTiming(prev);
+      toast.error("Could not save reminder timing");
+    }
+  }
+
+
+
   async function saveRates() {
     if (!userId) return;
     setSavingRates(true);
