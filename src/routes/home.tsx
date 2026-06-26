@@ -3722,3 +3722,131 @@ function LessonsBreakdownModal({
 
 
 
+function TestsBreakdownModal({
+  open,
+  onClose,
+  tests,
+  pendingSwapCount,
+  onOpenPupil,
+  onViewSwaps,
+}: {
+  open: boolean;
+  onClose: () => void;
+  tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null }>;
+  pendingSwapCount: number;
+  onOpenPupil: (id: string) => void;
+  onViewSwaps: () => void;
+}) {
+  const fmtDate = (d: string) => {
+    const dt = new Date(`${d}T00:00:00`);
+    return dt.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  };
+  const daysUntil = (d: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dt = new Date(`${d}T00:00:00`);
+    return Math.round((dt.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  };
+  const badgeColors = (days: number) => {
+    if (days < 7) return { bg: "#FEE2E2", fg: "#991B1B" };
+    if (days <= 14) return { bg: "#FEF3C7", fg: "#92400E" };
+    return { bg: "#ECFDF5", fg: "#047857" };
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Tests</DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            Upcoming tests (next 30 days)
+          </div>
+          {tests.length === 0 && (
+            <div style={{ padding: "12px 20px 18px", color: "#6B7280", fontSize: 13 }}>
+              No upcoming tests scheduled.
+            </div>
+          )}
+          {tests.map((t) => {
+            const days = daysUntil(t.test_date);
+            const colors = badgeColors(days);
+            return (
+              <button
+                key={t.id}
+                onClick={() => onOpenPupil(t.id)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "10px 16px",
+                  borderBottom: "1px solid #f3f4f6",
+                  background: "none",
+                  border: "none",
+                  borderBottomColor: "#f3f4f6",
+                  borderBottomStyle: "solid",
+                  borderBottomWidth: 1,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {t.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
+                    {fmtDate(t.test_date)}
+                    {t.test_time ? ` · ${String(t.test_time).slice(0, 5)}` : ""}
+                    {t.test_centre ? ` · ${t.test_centre}` : ""}
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "3px 8px",
+                    borderRadius: 999,
+                    backgroundColor: colors.bg,
+                    color: colors.fg,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
+                </span>
+              </button>
+            );
+          })}
+
+          <div style={{ padding: "14px 16px 4px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            Swap requests
+          </div>
+          <div style={{ padding: "8px 16px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ fontSize: 13, color: "#111827", fontWeight: 600 }}>
+              {pendingSwapCount} pending swap{pendingSwapCount === 1 ? "" : "s"}
+            </div>
+            <button
+              onClick={onViewSwaps}
+              style={{ background: "none", border: "none", color: "#2952b3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+            >
+              View all swaps →
+            </button>
+          </div>
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
+          <button
+            onClick={onClose}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+          >
+            Close
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
