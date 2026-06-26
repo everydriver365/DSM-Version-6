@@ -67,6 +67,7 @@ import {
   User,
   Trash2,
   ArrowLeftRight,
+  Moon,
 } from "lucide-react";
 import {
   Dialog,
