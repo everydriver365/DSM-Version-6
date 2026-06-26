@@ -321,22 +321,28 @@ function HomePage() {
         .gte("test_date", todayStr);
 
 
-      // Test swaps requested by instructor's pupils
-      const { data: swapRows, count: swapCount } = await supabase
-        .from("test_swap_requests")
-        .select("pupil_id, current_test_date, preferred_earliest, preferred_latest", { count: "exact" })
-        .eq("status", "pending");
-      setPendingSwapCount(swapCount || 0);
-      const swapMap: Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }> = {};
-      (swapRows ?? []).forEach((s: any) => {
-        if (s.pupil_id) swapMap[s.pupil_id] = {
-          current_test_date: s.current_test_date ?? null,
-          preferred_earliest: s.preferred_earliest ?? null,
-          preferred_latest: s.preferred_latest ?? null,
-        };
-      });
-      setSwapByPupil(swapMap);
-      setTestCount((tCount || 0) + (swapCount || 0));
+      // EverySwap requests for ALL this instructor's pupils
+      const { data: allPupils } = await supabase
+        .from("pupils")
+        .select("name")
+        .eq("instructor_id", user.id);
+      const pupilNames = (allPupils ?? []).map((p: any) => p.name).filter(Boolean);
+      let swapRows: any[] = [];
+      let swapCount = 0;
+      if (pupilNames.length > 0) {
+        const { data, count } = await supabase
+          .from("test_swap_requests")
+          .select("id, name, test_centre, current_test_date, current_test_time, status, created_at", { count: "exact" })
+          .in("name", pupilNames)
+          .in("status", ["pending", "matched"])
+          .order("created_at", { ascending: false });
+        swapRows = data ?? [];
+        swapCount = count ?? 0;
+      }
+      setPendingSwapCount(swapCount);
+      setSwapRequests(swapRows);
+      setTestCount((tCount || 0) + swapCount);
+
 
       // Upcoming tests list for the bottom sheet
       const { data: testRows } = await supabase
