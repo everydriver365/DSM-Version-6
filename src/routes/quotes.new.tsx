@@ -126,7 +126,13 @@ function NewQuotePage() {
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
           <label style={labelStyle}>Pupil name *</label>
-          <input style={inputStyle} value={pupilName} onChange={(e) => setPupilName(e.target.value)} />
+          <input
+            style={errors.pupilName ? errorInputStyle : inputStyle}
+            value={pupilName}
+            onChange={(e) => { setPupilName(e.target.value); if (errors.pupilName) setErrors((p) => ({ ...p, pupilName: undefined })); }}
+            aria-invalid={!!errors.pupilName}
+          />
+          {errors.pupilName && <div style={errorTextStyle}>{errors.pupilName}</div>}
         </div>
         <div>
           <label style={labelStyle}>Email</label>
