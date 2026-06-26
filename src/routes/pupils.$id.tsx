@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, BookOpen, Camera, ChevronRight, Flag, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
+import { jsPDF } from "jspdf";
+import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -145,6 +147,9 @@ function PupilDetailPage() {
   const [balance, setBalance] = useState<number>(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
+  const [instructorName, setInstructorName] = useState<string>("");
+  const [certOpen, setCertOpen] = useState(false);
+  const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -236,11 +241,14 @@ function PupilDetailPage() {
       if (!uid) return;
       supabase
         .from("instructors")
-        .select("hourly_rate")
+        .select("hourly_rate, first_name, last_name, business_name")
         .eq("id", uid)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+          const d = data as { first_name?: string | null; last_name?: string | null; business_name?: string | null } | null;
+          const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
+          setInstructorName(nm);
         });
     });
 
@@ -598,6 +606,21 @@ function PupilDetailPage() {
             }}
           >
             Add lesson
+          </button>
+          <button
+            type="button"
+            onClick={() => setCertOpen(true)}
+            className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white col-span-3"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#F59E0B",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <Award size={16} color="#FFFFFF" />
+            Certificate
           </button>
         </div>
         <div className="mt-2">
@@ -1055,6 +1078,145 @@ function PupilDetailPage() {
         onConfirm={removePupil}
         onCancel={() => setRemoveOpen(false)}
       />
+
+      {certOpen && (
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setCertOpen(false)} />
+          <div
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Award size={20} color="#F59E0B" />
+                <div className="text-[16px] font-semibold text-[#0F2044]">Generate certificate</div>
+              </div>
+              <button type="button" onClick={() => setCertOpen(false)} aria-label="Close">
+                <X size={20} color="#6B7280" />
+              </button>
+            </div>
+
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Milestone</label>
+            <select
+              value={certMilestone}
+              onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none mb-4"
+              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+            >
+              <option value="first_lesson">First lesson complete</option>
+              <option value="10_lessons">10 lessons complete</option>
+              <option value="20_lessons">20 lessons complete</option>
+              <option value="theory_pass">Theory test passed</option>
+              <option value="test_pass">Driving test passed! 🎉</option>
+            </select>
+
+            <button
+              type="button"
+              onClick={() => {
+                const milestoneTitles: Record<typeof certMilestone, string> = {
+                  first_lesson: "First Lesson Complete",
+                  "10_lessons": "10 Lessons Complete",
+                  "20_lessons": "20 Lessons Complete",
+                  theory_pass: "Theory Test Passed",
+                  test_pass: "Driving Test Passed!",
+                };
+                const achievementText: Record<typeof certMilestone, string> = {
+                  test_pass: "has successfully passed their practical driving test",
+                  theory_pass: "has successfully passed their theory test",
+                  first_lesson: "has completed their first driving lesson",
+                  "10_lessons": "has completed 10 driving lessons",
+                  "20_lessons": "has completed 20 driving lessons",
+                };
+                const pupilName = pupil?.name ?? "Pupil";
+                const milestone = milestoneTitles[certMilestone];
+
+                const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+                const W = 297;
+                const H = 210;
+
+                // Double border
+                doc.setDrawColor(15, 32, 68);
+                doc.setLineWidth(1.0);
+                doc.rect(3, 3, W - 6, H - 6);
+                doc.setLineWidth(0.3);
+                doc.rect(7, 7, W - 14, H - 14);
+
+                // Title
+                doc.setTextColor(120, 120, 120);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(14);
+                doc.text("CERTIFICATE OF ACHIEVEMENT", W / 2, 40, { align: "center" });
+
+                // Milestone heading
+                doc.setTextColor(15, 32, 68);
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(28);
+                doc.text(milestone, W / 2, 60, { align: "center" });
+
+                // "This is to certify that"
+                doc.setTextColor(120, 120, 120);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.text("This is to certify that", W / 2, 78, { align: "center" });
+
+                // Pupil name
+                doc.setTextColor(30, 30, 30);
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(24);
+                doc.text(pupilName, W / 2, 92, { align: "center" });
+
+                // Underline
+                doc.setDrawColor(15, 32, 68);
+                doc.setLineWidth(0.5);
+                const nameWidth = doc.getTextWidth(pupilName);
+                doc.line(W / 2 - nameWidth / 2 - 4, 96, W / 2 + nameWidth / 2 + 4, 96);
+
+                // Achievement
+                doc.setTextColor(120, 120, 120);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.text(achievementText[certMilestone], W / 2, 112, { align: "center" });
+
+                // Date + Instructor
+                const today = new Date();
+                const dd = String(today.getDate()).padStart(2, "0");
+                const mm = String(today.getMonth() + 1).padStart(2, "0");
+                const yy = String(today.getFullYear()).slice(-2);
+                doc.setFontSize(10);
+                doc.setTextColor(60, 60, 60);
+                doc.text(`Date: ${dd}/${mm}/${yy}`, 40, 132);
+                doc.text(`Instructor: ${instructorName || "—"}`, W - 40, 132, { align: "right" });
+
+                // Signature line
+                doc.setDrawColor(150, 150, 150);
+                doc.setLineWidth(0.3);
+                doc.line(W / 2 - 40, 148, W / 2 + 40, 148);
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                doc.text("Signature", W / 2, 154, { align: "center" });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text("Issued by EveryDriver · everydriver.co.uk · DVSA Approved", W / 2, 165, {
+                  align: "center",
+                });
+
+                doc.save(`${pupilName} - ${milestone} - Certificate.pdf`);
+                setCertOpen(false);
+                toast.success("Certificate downloaded. Send to pupil manually.");
+              }}
+              className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
+              style={{ height: 44, borderRadius: 8, backgroundColor: "#F59E0B", ...POPPINS }}
+            >
+              <Award size={16} color="#FFFFFF" />
+              Generate & download
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
     </div>
   );
 }
