@@ -310,16 +310,15 @@ function HomePage() {
         setEnqCount(eCount || 0);
       }
 
-      // Upcoming tests in next 30 days
+      // Upcoming tests (any future date)
       const todayStr = new Date().toISOString().split("T")[0];
-      const in30Str = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
       const { count: tCount } = await supabase
         .from("pupils")
         .select("id", { count: "exact", head: true })
         .eq("instructor_id", user.id)
         .not("test_date", "is", null)
-        .gte("test_date", todayStr)
-        .lte("test_date", in30Str);
+        .gte("test_date", todayStr);
+
 
       // Test swaps requested by instructor's pupils
       const { data: swapRows, count: swapCount } = await supabase
