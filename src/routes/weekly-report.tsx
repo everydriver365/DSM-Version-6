@@ -134,7 +134,7 @@ function WeeklyReportPage() {
     const [lRes, hRes, prevRes, pRes] = await Promise.all([
       supabase
         .from("lessons")
-        .select("id, lesson_date, duration_minutes, status, payment_status, amount_due, eol_completed, pupil_id")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, eol_completed, pupil_id")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .gte("lesson_date", startStr)
