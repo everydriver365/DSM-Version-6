@@ -160,7 +160,7 @@ function NewQuotePage() {
         </div>
       </div>
 
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #E2E6ED", padding: "12px 16px", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))", display: "flex", gap: 8 }}>
+      <div style={{ position: "fixed", bottom: "calc(64px + env(safe-area-inset-bottom, 0px))", left: 0, right: 0, background: "#fff", borderTop: "0.5px solid #E2E6ED", padding: "16px", display: "flex", gap: 8, zIndex: 50 }}>
         <button disabled={saving} onClick={() => save("draft")} style={{
           flex: 1, padding: "12px", borderRadius: 10, border: "1px solid #0F2044",
           background: "#fff", color: "#0F2044", fontWeight: 600, fontSize: 14,
