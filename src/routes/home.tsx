@@ -63,6 +63,8 @@ import {
   LogOut,
   LogIn,
   Globe,
+  Mail,
+  User,
 } from "lucide-react";
 import {
   Dialog,
