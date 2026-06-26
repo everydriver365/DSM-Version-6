@@ -139,6 +139,23 @@ function EndOfDayPage() {
       setTomorrowLessons((tls ?? []) as any);
       setHistory((hs ?? []) as any);
       if (noteRow?.notes) setNotes(noteRow.notes);
+
+      const pupilIds = Array.from(
+        new Set(((ls as any[]) ?? []).map((l) => l.pupil_id).filter(Boolean)),
+      );
+      if (pupilIds.length) {
+        const { data: pupilsData } = await supabase
+          .from("pupils")
+          .select("id, prepaid_hours")
+          .in("id", pupilIds);
+        setPrepaidPupilIds(
+          new Set(
+            (pupilsData ?? [])
+              .filter((p: any) => (p.prepaid_hours || 0) > 0)
+              .map((p: any) => p.id),
+          ),
+        );
+      }
     })();
   }, [todayIso, tomorrowIso]);
 
