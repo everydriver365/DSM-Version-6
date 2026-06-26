@@ -400,26 +400,39 @@ function BroadcastPage() {
           <h2 className="text-[14px] font-semibold" style={{ color: NAVY }}>Message</h2>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-3" style={{ scrollbarWidth: "none" }}>
+        <select
+          onChange={(e) => {
+            const t = TEMPLATES.find((x) => x.key === e.target.value);
+            if (t) setMessage(t.text);
+            e.target.selectedIndex = 0;
+          }}
+          defaultValue=""
+          style={{
+            width: "100%",
+            fontSize: 13,
+            padding: "10px 12px",
+            borderRadius: 10,
+            backgroundColor: "#F8F9FB",
+            color: NAVY,
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: BORDER,
+            appearance: "none",
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 12px center",
+            paddingRight: 32,
+            marginBottom: 12,
+            ...POPPINS,
+          }}
+        >
+          <option value="" disabled>Choose a template…</option>
           {TEMPLATES.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => setMessage(t.text)}
-              className="shrink-0 px-3 h-8 rounded-full text-[12px] font-medium"
-              style={{
-                backgroundColor: "#F8F9FB",
-                color: NAVY,
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: BORDER,
-                ...POPPINS,
-              }}
-            >
-              {t.label}
-            </button>
+            <option key={t.key} value={t.key}>{t.label}</option>
           ))}
-        </div>
+        </select>
+
 
         <textarea
           value={message}
