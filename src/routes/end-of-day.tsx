@@ -318,11 +318,13 @@ function EndOfDayPage() {
               {!l.eol_completed && (
                 <Badge bg="#FEF3C7" color="#92400E">EOL</Badge>
               )}
-              {l.payment_status === "unpaid" ? (
-                <Badge bg="#FEE2E2" color="#991B1B">Unpaid</Badge>
-              ) : (
-                <Badge bg="#DCFCE7" color="#166534">Paid</Badge>
-              )}
+              {prepaidPupilIds.has(l.pupil_id) ? (
+                <Badge bg="#DBEAFE" color="#1E3A8A">Prepaid</Badge>
+              ) : l.payment_status === "paid" ? (
+                <Badge bg="#DCFCE7" color="#166534">Paid ✓</Badge>
+              ) : l.payment_status === "unpaid" && (l.amount_due ?? 0) > 0 ? (
+                <Badge bg="#FEE2E2" color="#991B1B">£{(l.amount_due ?? 0).toFixed(0)} unpaid</Badge>
+              ) : null}
             </button>
           ))
         )}
