@@ -3780,68 +3780,83 @@ function TestsBreakdownModal({
           {tests.map((t) => {
             const days = daysUntil(t.test_date);
             const colors = badgeColors(days);
+            const swap = swapByPupil[t.id];
+            const fmtShort = (d: string | null) => {
+              if (!d) return "";
+              const dt = new Date(`${d}T00:00:00`);
+              return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+            };
             return (
-              <button
-                key={t.id}
-                onClick={() => onOpenPupil(t.id)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 16px",
-                  borderBottom: "1px solid #f3f4f6",
-                  background: "none",
-                  border: "none",
-                  borderBottomColor: "#f3f4f6",
-                  borderBottomStyle: "solid",
-                  borderBottomWidth: 1,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {t.name}
-                  </div>
-                  <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
-                    {fmtDate(t.test_date)}
-                    {t.test_time ? ` · ${String(t.test_time).slice(0, 5)}` : ""}
-                    {t.test_centre ? ` · ${t.test_centre}` : ""}
-                  </div>
-                </div>
-                <span
+              <div key={t.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                <button
+                  onClick={() => onOpenPupil(t.id)}
                   style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                    backgroundColor: colors.bg,
-                    color: colors.fg,
-                    whiteSpace: "nowrap",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 16px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
-                  {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
-                </span>
-              </button>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {t.name}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
+                      {fmtDate(t.test_date)}
+                      {t.test_time ? ` · ${String(t.test_time).slice(0, 5)}` : ""}
+                      {t.test_centre ? ` · ${t.test_centre}` : ""}
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "3px 8px",
+                      borderRadius: 999,
+                      backgroundColor: colors.bg,
+                      color: colors.fg,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
+                  </span>
+                </button>
+                {swap && (
+                  <div
+                    style={{
+                      margin: "0 16px 8px 28px",
+                      padding: "8px 12px",
+                      background: "#FEF9C3",
+                      borderLeft: "3px solid #F59E0B",
+                      borderRadius: "0 0 8px 8px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <ArrowLeftRight size={12} color="#B45309" />
+                    <span style={{ fontSize: 12, color: "#92400E", fontWeight: 600 }}>
+                      Seeking swap{swap.current_test_date ? ` · ${fmtShort(swap.current_test_date)}` : ""}
+                    </span>
+                    {(swap.preferred_earliest || swap.preferred_latest) && (
+                      <span style={{ fontSize: 12, color: "#92400E" }}>
+                        · prefers {fmtShort(swap.preferred_earliest)}
+                        {swap.preferred_latest ? ` – ${fmtShort(swap.preferred_latest)}` : ""}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             );
           })}
-
-          <div style={{ padding: "14px 16px 4px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Swap requests
-          </div>
-          <div style={{ padding: "8px 16px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontSize: 13, color: "#111827", fontWeight: 600 }}>
-              {pendingSwapCount} pending swap{pendingSwapCount === 1 ? "" : "s"}
-            </div>
-            <button
-              onClick={onViewSwaps}
-              style={{ background: "none", border: "none", color: "#2952b3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-            >
-              View all swaps →
-            </button>
-          </div>
         </div>
+
 
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
