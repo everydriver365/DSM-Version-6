@@ -72,8 +72,14 @@ function NewQuotePage() {
   }
 
   async function save(status: "draft" | "sent") {
-    if (!pupilName.trim()) { alert("Pupil name is required"); return; }
-    if (postcode && !POSTCODE_RE.test(postcode.trim())) { alert("Invalid UK postcode"); return; }
+    const newErrors: { pupilName?: string; price?: string; postcode?: string } = {};
+    if (!pupilName.trim()) newErrors.pupilName = "Pupil name is required";
+    const priceNum = parseFloat(price);
+    if (!price.trim() || isNaN(priceNum)) newErrors.price = "Price is required";
+    else if (priceNum <= 0) newErrors.price = "Price must be greater than 0";
+    if (postcode && !POSTCODE_RE.test(postcode.trim())) newErrors.postcode = "Invalid UK postcode";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
     if (!userId) { alert("Not signed in"); return; }
     setSaving(true);
     try {
