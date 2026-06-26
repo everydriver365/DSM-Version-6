@@ -639,6 +639,26 @@ function PupilDetailPage() {
             </span>
           </button>
         </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } })}
+            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#CC2229",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <Flag size={16} color="#FFFFFF" />
+            Test day
+          </button>
+        </div>
+
+
+
 
 
 
