@@ -275,6 +275,7 @@ function HomePage() {
     test_centre: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
+  const [swapByPupil, setSwapByPupil] = useState<Record<string, { current_test_date: string | null; preferred_earliest: string | null; preferred_latest: string | null }>>({});
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
   useEffect(() => {
