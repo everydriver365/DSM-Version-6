@@ -64,12 +64,6 @@ function NewQuotePage() {
     if (!depositTouched && !isNaN(p)) setDeposit((p * 0.2).toFixed(2));
   }, [price, depositTouched]);
 
-  async function generateRef(): Promise<string> {
-    const year = new Date().getFullYear();
-    const { count } = await supabase.from("quotes").select("*", { count: "exact", head: true }).eq("instructor_id", userId!);
-    const seq = String((count ?? 0) + 1).padStart(3, "0");
-    return `QT-${year}-${seq}`;
-  }
 
   async function save(status: "draft" | "sent") {
     const newErrors: { pupilName?: string; price?: string; postcode?: string } = {};
@@ -83,7 +77,7 @@ function NewQuotePage() {
     if (!userId) { alert("Not signed in"); return; }
     setSaving(true);
     try {
-      const quote_ref = await generateRef();
+      
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -98,7 +92,6 @@ function NewQuotePage() {
         },
         body: JSON.stringify({
           instructor_id: userId,
-          quote_ref,
           recipient_name: pupilName.trim(),
           recipient_email: email.trim() || null,
           recipient_phone: phone.trim() || null,
@@ -116,7 +109,7 @@ function NewQuotePage() {
       const data = Array.isArray(payload) ? payload[0] : payload;
       if (status === "sent" && data) {
         const link = `${window.location.origin}/quotes/${data.id}`;
-        const body = `Hi ${pupilName}, your quote ${quote_ref} for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
+        const body = `Hi ${pupilName}, your quote for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
         if (phone) window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
         else if (email) window.location.href = `mailto:${email}?subject=${encodeURIComponent("Your quote")}&body=${encodeURIComponent(body)}`;
       }
