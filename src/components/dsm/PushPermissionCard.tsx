@@ -96,8 +96,8 @@ export function PushPermissionCard() {
     return null;
   }
 
-
-
+  const isDenied = false;
+  const isUnsupported = false;
 
   return (
     <div className="px-4 mt-3">
