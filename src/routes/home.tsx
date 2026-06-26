@@ -3028,3 +3028,223 @@ function NeedsAttention({
     </div>
   );
 }
+
+function OutstandingBreakdownModal({
+  open,
+  onClose,
+  total,
+  rows,
+  instructorName,
+  onView,
+}: {
+  open: boolean;
+  onClose: () => void;
+  total: number;
+  rows: Array<{
+    pupilId: string;
+    name: string;
+    firstName: string;
+    phone: string | null;
+    email: string | null;
+    amount: number;
+    type: "Lessons" | "NI Course";
+  }>;
+  instructorName: string;
+  onView: (id: string) => void;
+}) {
+  const buildMessage = (firstName: string, amount: number) => {
+    const amountPence = Math.round(amount * 100);
+    return `Hi ${firstName}, just a reminder that £${amount.toFixed(2)} is outstanding for your driving lessons. You can pay here: https://drivingschoolmanager.co.uk/pay?amount=${amountPence}&desc=Lesson+payment. Thanks, ${instructorName}`;
+  };
+
+  const openSms = (phone: string | null, msg: string) => {
+    const num = (phone || "").replace(/\s+/g, "");
+    const href = `sms:${num}?body=${encodeURIComponent(msg)}`;
+    window.location.href = href;
+  };
+
+  const openMail = (email: string | null, msg: string) => {
+    const href = `mailto:${email || ""}?subject=${encodeURIComponent("Payment reminder")}&body=${encodeURIComponent(msg)}`;
+    window.location.href = href;
+  };
+
+  const sendAll = async () => {
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      if (!r.phone) continue;
+      openSms(r.phone, buildMessage(r.firstName, r.amount));
+      await new Promise((res) => setTimeout(res, 1000));
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{
+          maxWidth: 480,
+          padding: 0,
+          fontFamily: "Poppins, sans-serif",
+          maxHeight: "85vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Outstanding payments</span>
+            <span style={{ color: "#c9302c" }}>£{total.toFixed(2)}</span>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
+          {rows.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              No outstanding payments. 🎉
+            </div>
+          )}
+          {rows.map((r) => {
+            const msg = buildMessage(r.firstName, r.amount);
+            return (
+              <div
+                key={`${r.pupilId}-${r.type}`}
+                style={{
+                  padding: 12,
+                  borderBottom: "1px solid #f3f4f6",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {r.name}
+                    </span>
+                    <span
+                      style={{
+                        marginTop: 2,
+                        alignSelf: "flex-start",
+                        fontSize: 10,
+                        fontWeight: 600,
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        backgroundColor: r.type === "NI Course" ? "#FEF3C7" : "#DBEAFE",
+                        color: r.type === "NI Course" ? "#92400E" : "#1E40AF",
+                      }}
+                    >
+                      {r.type}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#c9302c" }}>
+                    £{r.amount.toFixed(2)}
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button
+                    onClick={() => openSms(r.phone, msg)}
+                    disabled={!r.phone}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                      padding: "6px 8px",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      backgroundColor: r.phone ? "#ECFDF5" : "#F3F4F6",
+                      color: r.phone ? "#047857" : "#9CA3AF",
+                      border: `1px solid ${r.phone ? "#A7F3D0" : "#E5E7EB"}`,
+                      borderRadius: 6,
+                      cursor: r.phone ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    <MessageSquare size={12} /> Text
+                  </button>
+                  <button
+                    onClick={() => openMail(r.email, msg)}
+                    disabled={!r.email}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                      padding: "6px 8px",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      backgroundColor: r.email ? "#EFF6FF" : "#F3F4F6",
+                      color: r.email ? "#1D4ED8" : "#9CA3AF",
+                      border: `1px solid ${r.email ? "#BFDBFE" : "#E5E7EB"}`,
+                      borderRadius: 6,
+                      cursor: r.email ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    <Mail size={12} /> Email
+                  </button>
+                  <button
+                    onClick={() => onView(r.pupilId)}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                      padding: "6px 8px",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      backgroundColor: "#F1F5F9",
+                      color: "#0F2044",
+                      border: "1px solid #CBD5E1",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <User size={12} /> View
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", gap: 8 }}>
+          <button
+            onClick={sendAll}
+            disabled={rows.length === 0}
+            style={{
+              flex: 1,
+              padding: "10px 12px",
+              fontSize: 13,
+              fontWeight: 700,
+              backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1A52A0",
+              color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
+              border: "none",
+              borderRadius: 8,
+              cursor: rows.length === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            Send all reminders
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              padding: "10px 16px",
+              fontSize: 13,
+              fontWeight: 600,
+              backgroundColor: "#F3F4F6",
+              color: "#374151",
+              border: "1px solid #D1D5DB",
+              borderRadius: 8,
+              cursor: "pointer",
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
