@@ -2688,7 +2688,7 @@ function HomePage() {
         onDelete={async (id: string, reason: string, notes: string) => {
           const prev = weekLessonRows;
           setWeekLessonRows((rs) => rs.filter((r) => r.id !== id));
-          setWkLessons((n) => Math.max(0, n - 1));
+          setWeekLessonCount((n: number) => Math.max(0, n - 1));
           try {
             const { error } = await supabase
               .from("lessons")
