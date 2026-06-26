@@ -2702,7 +2702,7 @@ function HomePage() {
             toast.success("Lesson removed");
           } catch (e: any) {
             setWeekLessonRows(prev);
-            setWkLessons((n) => n + 1);
+            setWeekLessonCount((n: number) => n + 1);
             toast.error(e?.message || "Failed to delete lesson");
           }
         }}
