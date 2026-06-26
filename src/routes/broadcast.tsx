@@ -284,43 +284,33 @@ function BroadcastPage() {
           <h2 className="text-[14px] font-semibold" style={{ color: NAVY }}>Who to send to</h2>
         </div>
 
-        <div
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value as FilterKey)}
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 8,
-            paddingBottom: 4,
+            width: "100%",
+            fontSize: 13,
+            padding: "10px 12px",
+            borderRadius: 10,
+            backgroundColor: "#F8F9FB",
+            color: NAVY,
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: BORDER,
+            appearance: "none",
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 12px center",
+            paddingRight: 32,
+            ...POPPINS,
           }}
         >
+          {filters.map((f) => (
+            <option key={f.k} value={f.k}>{f.label}</option>
+          ))}
+        </select>
 
-          {filters.map((f) => {
-            const active = filter === f.k;
-            return (
-              <button
-                key={f.k}
-                type="button"
-                onClick={() => setFilter(f.k)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  flexShrink: 0,
-                  fontSize: 12,
-                  padding: "6px 12px",
-                  borderRadius: 20,
-                  fontWeight: 500,
-                  backgroundColor: active ? NAVY : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#6B7280",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: active ? NAVY : BORDER,
-                  ...POPPINS,
-                }}
-              >
-                {f.label}
-              </button>
-            );
-          })}
-        </div>
 
 
         <div className="flex items-center justify-between mt-3 mb-2">
