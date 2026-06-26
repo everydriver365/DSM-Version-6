@@ -197,15 +197,24 @@ function WeeklyReportPage() {
   );
 
   // Per-day breakdown
+  const dailyEarningsMap = useMemo(() => {
+    return history
+      .filter((h) => h.payment_status === "paid")
+      .reduce<Record<string, number>>((acc, h) => {
+        const dateKey = (h.lesson_date ?? h.created_at?.slice(0, 10)) || "";
+        if (!dateKey) return acc;
+        acc[dateKey] = (acc[dateKey] ?? 0) + Number(h.lesson_cost ?? 0);
+        return acc;
+      }, {});
+  }, [history]);
+
   const dayRows = useMemo(() => {
     return DAY_LABELS.map((label, i) => {
       const date = addDays(weekStart, i);
       const dateStr = ymd(date);
       const dayLessons = taughtLessons.filter((l) => l.lesson_date === dateStr);
       const hours = dayLessons.reduce((a, l) => a + (l.duration_minutes ?? 0) / 60, 0);
-      const dayEarningsPence = history
-        .filter((h) => h.payment_status === "paid" && h.created_at.slice(0, 10) === dateStr)
-        .reduce((a, h) => a + (h.lesson_cost ?? 0), 0);
+      const dayEarningsPence = dailyEarningsMap[dateStr] ?? 0;
       return {
         key: dateStr,
         label,
@@ -215,7 +224,7 @@ function WeeklyReportPage() {
         earningsPence: dayEarningsPence,
       };
     });
-  }, [taughtLessons, history, weekStart]);
+  }, [taughtLessons, dailyEarningsMap, weekStart]);
 
   // Pupils this week
   const pupilRows = useMemo(() => {
