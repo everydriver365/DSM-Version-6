@@ -84,22 +84,36 @@ function NewQuotePage() {
     setSaving(true);
     try {
       const quote_ref = await generateRef();
-      const { data, error } = await supabase.from("quotes").insert({
-        instructor_id: userId,
-        quote_ref,
-        pupil_name: pupilName.trim(),
-        email: email.trim() || null,
-        phone: phone.trim() || null,
-        postcode: postcode.trim() || null,
-        course_type: courseType,
-        total_hours: hours ? parseFloat(hours) : null,
-        price: price ? parseFloat(price) : null,
-        deposit_amount: deposit ? parseFloat(deposit) : null,
-        notes: notes.trim() || null,
-        valid_until: validUntil,
-        status,
-      }).select().single();
-      if (error) throw error;
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/quotes`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          instructor_id: userId,
+          quote_ref,
+          recipient_name: pupilName.trim(),
+          recipient_email: email.trim() || null,
+          recipient_phone: phone.trim() || null,
+          course_type: courseType || null,
+          hours: hours ? parseFloat(hours) : null,
+          price: parseFloat(price),
+          deposit_amount: deposit ? parseFloat(deposit) : null,
+          valid_until: validUntil || null,
+          personal_message: notes.trim() || null,
+          status,
+        }),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.message || JSON.stringify(payload));
+      const data = Array.isArray(payload) ? payload[0] : payload;
       if (status === "sent" && data) {
         const link = `${window.location.origin}/quotes/${data.id}`;
         const body = `Hi ${pupilName}, your quote ${quote_ref} for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
