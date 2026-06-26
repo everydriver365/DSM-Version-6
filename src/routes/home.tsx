@@ -2584,6 +2584,18 @@ function HomePage() {
           }}
         />
       )}
+
+      <OutstandingBreakdownModal
+        open={outstandingOpen}
+        onClose={() => setOutstandingOpen(false)}
+        total={outstanding}
+        rows={outstandingBreakdown}
+        instructorName={instructorFullName || firstName}
+        onView={(id) => {
+          setOutstandingOpen(false);
+          navigate({ to: "/pupils/$id", params: { id } });
+        }}
+      />
     </div>
 
   );
