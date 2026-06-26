@@ -1944,10 +1944,16 @@ function HomePage() {
       {/* NEEDS ATTENTION */}
       <NeedsAttention
         jobs={0}
-        tests={0}
+        tests={testCount}
         calls={0}
         enqs={enqCount}
-        onNavigate={(to) => navigate({ to })}
+        onNavigate={(to) => {
+          if (to === "/tests") {
+            setTestsOpen(true);
+          } else {
+            navigate({ to });
+          }
+        }}
       />
 
 
