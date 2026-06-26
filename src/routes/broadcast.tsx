@@ -95,6 +95,7 @@ function BroadcastPage() {
         .select("id, name, first_name, last_name, phone, email, status, prepaid_hours, deleted_at")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
+        .not("status", "in", '("inactive","cancelled","deleted")')
         .order("name", { ascending: true });
       const normalized: Pupil[] = ((rows ?? []) as any[]).map((p) => ({
         id: p.id,
