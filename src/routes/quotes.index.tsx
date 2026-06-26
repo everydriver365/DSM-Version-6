@@ -197,7 +197,39 @@ function QuotesPage() {
                       {displayStatus}
                     </span>
                   </div>
+                  {q.token && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const url = `https://everydriver.co.uk/quote/${q.token}`;
+                          try {
+                            await navigator.clipboard.writeText(url);
+                            toast.success("Link copied");
+                          } catch {
+                            toast.error("Could not copy link");
+                          }
+                        }}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
+                          background: "#fff", border: "1px solid #1A52A0", color: "#1A52A0",
+                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        <Link2 size={14} /> Copy link
+                      </button>
+                    </div>
+                  )}
                 </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
               );
             })}
           </div>
