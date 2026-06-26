@@ -163,7 +163,7 @@ function EndOfDayPage() {
     const totalMin = lessons.reduce((s, l) => s + (l.duration_minutes ?? 0), 0);
     const earned = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
     const outstanding = lessons
-      .filter((l) => l.payment_status === "unpaid")
+      .filter((l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id))
       .reduce((s, l) => s + (l.amount_due ?? 0), 0);
     return {
       count: lessons.length,
@@ -171,12 +171,14 @@ function EndOfDayPage() {
       earned,
       outstanding,
     };
-  }, [lessons, history]);
+  }, [lessons, history, prepaidPupilIds]);
 
   const outstandingEols = lessons.filter(
     (l) => !l.eol_completed && lessonEndInPast(l, today),
   );
-  const unpaidLessons = lessons.filter((l) => l.payment_status === "unpaid");
+  const unpaidLessons = lessons.filter(
+    (l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id),
+  );
 
   async function saveNote(value: string) {
     if (!instructorId) return;
