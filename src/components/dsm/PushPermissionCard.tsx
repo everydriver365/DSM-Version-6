@@ -87,8 +87,13 @@ export function PushPermissionCard() {
   }
 
   function dismiss() {
+    localStorage.setItem("push-permission-declined", "true");
     localStorage.setItem("dsm.push.cardDismissed", "1");
     setDismissed(true);
+  }
+
+  if (dismissed || status === "granted" || status === "denied" || status === "unsupported") {
+    return null;
   }
 
   if (status === "granted" || dismissed) {
