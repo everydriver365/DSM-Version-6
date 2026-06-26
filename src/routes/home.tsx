@@ -2446,6 +2446,10 @@ function HomePage() {
         )}
       </div>
 
+      <EndOfDayBanner />
+
+
+
 
       {/* QUICK ACCESS */}
       <div className="mx-4 mt-4">
