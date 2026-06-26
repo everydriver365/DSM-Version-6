@@ -97,6 +97,7 @@ function WeeklyReportPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [pupils, setPupils] = useState<Record<string, Pupil>>({});
+  const [pupilUsedHours, setPupilUsedHours] = useState<Record<string, number>>({});
   const [prevLessonCount, setPrevLessonCount] = useState(0);
   const [testsThisWeek, setTestsThisWeek] = useState(0);
 
