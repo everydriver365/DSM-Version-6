@@ -27,7 +27,9 @@ export function PushPermissionCard() {
 
   useEffect(() => {
     setStatus(readStatus());
-    setDismissed(localStorage.getItem("dsm.push.cardDismissed") === "1");
+    const declined = localStorage.getItem("push-permission-declined") === "true";
+    const oldDismissed = localStorage.getItem("dsm.push.cardDismissed") === "1";
+    setDismissed(declined || oldDismissed);
   }, []);
 
   async function enable() {
