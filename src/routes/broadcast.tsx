@@ -287,14 +287,12 @@ function BroadcastPage() {
         <div
           style={{
             display: "flex",
-            flexWrap: "nowrap",
-            overflowX: "auto",
-            whiteSpace: "nowrap",
+            flexWrap: "wrap",
             gap: 8,
             paddingBottom: 4,
-            scrollbarWidth: "none",
           }}
         >
+
           {filters.map((f) => {
             const active = filter === f.k;
             return (
