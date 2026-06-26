@@ -1,101 +1,128 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, X, Shield, Wrench, Circle, Receipt, Car } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  X,
+  Shield,
+  FileText,
+  Receipt,
+  Wrench,
+  Calendar,
+  Circle,
+  Gauge,
+  Plus,
+  AlertTriangle,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Card } from "../components/dsm/Card";
-import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Input } from "../components/dsm/Input";
-import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/vehicle")({
-  head: () => ({
-    meta: [{ title: "Vehicle — DSM by EveryDriver" }],
-  }),
+  head: () => ({ meta: [{ title: "My vehicle — DSM by EveryDriver" }] }),
   component: VehiclePage,
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const NAVY = "#0F2044";
+const BORDER = "0.5px solid #E2E6ED";
 
-type ReminderType = "MOT" | "Service" | "Tyres" | "Insurance" | "Tax";
-
-const REMINDER_TYPES: ReminderType[] = ["MOT", "Service", "Tyres", "Insurance", "Tax"];
-
-interface Vehicle {
+type VehicleHealth = {
   id?: string;
-  make: string | null;
-  model: string | null;
-  year: number | null;
-  registration: string | null;
-  colour: string | null;
-  fuel_type: string | null;
-  transmission: string | null;
-  mileage: number | null;
-}
-
-interface Reminder {
-  id: string;
-  reminder_type: string;
-  due_date: string | null;
-  notes: string | null;
-}
-
-const EMPTY_VEHICLE: Vehicle = {
-  make: "",
-  model: "",
-  year: null,
-  registration: "",
-  colour: "",
-  fuel_type: "",
-  transmission: "",
-  mileage: null,
+  instructor_id?: string;
+  mot_expiry: string | null;
+  insurance_expiry: string | null;
+  tax_expiry: string | null;
+  last_service_date: string | null;
+  next_service_due_date: string | null;
+  next_service_due_miles: number | null;
+  tyre_pressure_checked: string | null;
+  current_odometer_miles: number | null;
 };
 
-function reminderStyle(type: string) {
-  switch (type) {
-    case "MOT":
-      return { color: "#CC2229", Icon: Shield };
-    case "Service":
-      return { color: "#F59E0B", Icon: Wrench };
-    case "Tyres":
-      return { color: "#1A52A0", Icon: Circle };
-    case "Insurance":
-      return { color: "#16A34A", Icon: Shield };
-    case "Tax":
-      return { color: "#6B7280", Icon: Receipt };
-    default:
-      return { color: "#6B7280", Icon: Receipt };
-  }
-}
+const EMPTY: VehicleHealth = {
+  mot_expiry: null,
+  insurance_expiry: null,
+  tax_expiry: null,
+  last_service_date: null,
+  next_service_due_date: null,
+  next_service_due_miles: null,
+  tyre_pressure_checked: null,
+  current_odometer_miles: null,
+};
+
+type Journey = {
+  id: string;
+  trip_date: string | null;
+  start_odometer: number | null;
+  end_odometer: number | null;
+  distance_miles: number | null;
+  fuel_litres: number | null;
+  fuel_cost: number | null;
+  purpose: string | null;
+};
+
+type EditableDateField =
+  | "mot_expiry"
+  | "insurance_expiry"
+  | "tax_expiry"
+  | "last_service_date"
+  | "next_service_due_date"
+  | "tyre_pressure_checked";
+
+const FIELD_LABEL: Record<EditableDateField, string> = {
+  mot_expiry: "MOT expiry",
+  insurance_expiry: "Insurance expiry",
+  tax_expiry: "Road tax expiry",
+  last_service_date: "Last service date",
+  next_service_due_date: "Next service due date",
+  tyre_pressure_checked: "Tyres last checked",
+};
 
 function daysUntil(ymd: string | null) {
   if (!ymd) return null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(`${ymd}T00:00:00`);
-  return Math.round((target.getTime() - today.getTime()) / 86400000);
+  const t = new Date();
+  t.setHours(0, 0, 0, 0);
+  const d = new Date(`${ymd}T00:00:00`);
+  return Math.round((d.getTime() - t.getTime()) / 86400000);
 }
 
-function dueColor(days: number | null) {
-  if (days == null) return "#6B7280";
-  if (days < 0) return "#CC2229";
-  if (days <= 30) return "#F59E0B";
-  return "#16A34A";
+function daysSince(ymd: string | null) {
+  const d = daysUntil(ymd);
+  return d == null ? null : -d;
 }
 
-function formatDate(ymd: string | null) {
+function fmtDate(ymd: string | null) {
   if (!ymd) return "—";
-  return new Date(`${ymd}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(`${ymd}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function expiryBadge(ymd: string | null) {
+  const d = daysUntil(ymd);
+  if (d == null) return { label: "Not set", bg: "#F3F4F6", fg: "#6B7280" };
+  if (d < 0) return { label: "EXPIRED", bg: "#FEE2E2", fg: "#CC2229" };
+  if (d <= 30) return { label: "Due soon", bg: "#FEF3C7", fg: "#B45309" };
+  return { label: "Valid", bg: "#DCFCE7", fg: "#15803D" };
+}
+
+function todayYmd() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function VehiclePage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
-  const [vehicle, setVehicle] = useState<Vehicle>(EMPTY_VEHICLE);
-  const [reminders, setReminders] = useState<Reminder[]>([]);
-  const [savingVehicle, setSavingVehicle] = useState(false);
+  const [vh, setVh] = useState<VehicleHealth>(EMPTY);
+  const [odo, setOdo] = useState<string>("");
+  const [journeys, setJourneys] = useState<Journey[]>([]);
+  const [editField, setEditField] = useState<EditableDateField | null>(null);
   const [addOpen, setAddOpen] = useState(false);
-  const [editing, setEditing] = useState<Reminder | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -105,60 +132,85 @@ function VehiclePage() {
   }, []);
 
   async function loadAll(uid: string) {
-    const [{ data: v, error: vErr }, { data: r, error: rErr }] = await Promise.all([
-      supabase
-        .from("vehicles")
-        .select("id, make, model, year, registration, colour, fuel_type, transmission, mileage")
-        .eq("instructor_id", uid)
-        .maybeSingle(),
-      supabase
-        .from("vehicle_reminders")
-        .select("id, reminder_type, due_date, notes")
-        .eq("instructor_id", uid)
-        .order("due_date", { ascending: true }),
-    ]);
-    if (vErr) console.error("[vehicle] fetch error", vErr);
-    if (rErr) console.error("[vehicle] reminders fetch error", rErr);
-    setVehicle((v as Vehicle | null) ?? EMPTY_VEHICLE);
-    setReminders((r ?? []) as Reminder[]);
+    const { data: row } = await supabase
+      .from("vehicle_health")
+      .select("*")
+      .eq("instructor_id", uid)
+      .maybeSingle();
+    if (!row) {
+      const { data: created } = await supabase
+        .from("vehicle_health")
+        .insert({ instructor_id: uid })
+        .select("*")
+        .maybeSingle();
+      const v = (created as VehicleHealth | null) ?? { ...EMPTY, instructor_id: uid };
+      setVh(v);
+      setOdo(v.current_odometer_miles != null ? String(v.current_odometer_miles) : "");
+    } else {
+      const v = row as VehicleHealth;
+      setVh(v);
+      setOdo(v.current_odometer_miles != null ? String(v.current_odometer_miles) : "");
+    }
+
+    const { data: j } = await supabase
+      .from("mileage_log")
+      .select("id, trip_date, start_odometer, end_odometer, distance_miles, fuel_litres, fuel_cost, purpose")
+      .eq("instructor_id", uid)
+      .order("trip_date", { ascending: false })
+      .limit(10);
+    setJourneys((j ?? []) as Journey[]);
   }
 
   useEffect(() => {
     if (userId) loadAll(userId);
   }, [userId]);
 
-  async function saveVehicle() {
-    if (!userId || savingVehicle) return;
-    setSavingVehicle(true);
-    const payload = {
-      instructor_id: userId,
-      make: vehicle.make || null,
-      model: vehicle.model || null,
-      year: vehicle.year ?? null,
-      registration: vehicle.registration || null,
-      colour: vehicle.colour || null,
-      fuel_type: vehicle.fuel_type || null,
-      transmission: vehicle.transmission || null,
-      mileage: vehicle.mileage ?? null,
-      updated_at: new Date().toISOString(),
+  const alerts = useMemo(() => {
+    const items: string[] = [];
+    const check = (label: string, ymd: string | null) => {
+      const d = daysUntil(ymd);
+      if (d != null && d <= 30) items.push(label);
     };
-    const { error } = await supabase.from("vehicles").upsert(payload, { onConflict: "instructor_id" });
-    setSavingVehicle(false);
+    check("MOT", vh.mot_expiry);
+    check("Insurance", vh.insurance_expiry);
+    check("Road tax", vh.tax_expiry);
+    check("Service", vh.next_service_due_date);
+    return items;
+  }, [vh]);
+
+  async function saveField(field: EditableDateField, value: string | null) {
+    if (!userId) return;
+    const patch = { [field]: value || null, updated_at: new Date().toISOString() };
+    const { error } = await supabase.from("vehicle_health").update(patch).eq("instructor_id", userId);
     if (error) {
-      console.error("[vehicle] upsert error", error);
-      toast.error("Couldn't save vehicle");
+      toast.error("Couldn't save");
       return;
     }
-    toast.success("Vehicle saved");
+    setVh({ ...vh, [field]: value || null });
+    toast.success("Saved");
   }
 
-  const titleMake = [vehicle.make, vehicle.model].filter(Boolean).join(" ") || "Add your vehicle";
+  async function saveOdo() {
+    if (!userId) return;
+    const n = odo ? parseInt(odo, 10) : null;
+    const { error } = await supabase
+      .from("vehicle_health")
+      .update({ current_odometer_miles: n, updated_at: new Date().toISOString() })
+      .eq("instructor_id", userId);
+    if (error) {
+      toast.error("Couldn't save mileage");
+      return;
+    }
+    setVh({ ...vh, current_odometer_miles: n });
+    toast.success("Mileage updated");
+  }
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div className="min-h-screen bg-white pb-24" style={POPPINS}>
+      {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: NAVY }}
       >
         <button
           type="button"
@@ -169,226 +221,227 @@ function VehiclePage() {
         >
           <ArrowLeft size={22} color="#FFFFFF" />
         </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white">Vehicle</div>
+        <div className="flex-1 text-center text-[15px] font-semibold text-white">My vehicle</div>
         <div style={{ width: 40, height: 40 }} />
       </div>
 
-      {/* Hero card */}
-      <div className="mx-4 mt-3" style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}>
-        <div className="flex items-start justify-between" style={{ gap: 8 }}>
-          <div className="text-white font-bold text-[18px] truncate">{titleMake}</div>
-          <div className="text-white text-[14px] shrink-0">{vehicle.registration || "—"}</div>
+      {/* Alerts */}
+      {alerts.length > 0 && (
+        <div
+          className="mx-4 mt-3 flex items-start"
+          style={{
+            gap: 8,
+            backgroundColor: "#FEE2E2",
+            border: "0.5px solid #FECACA",
+            borderRadius: 12,
+            padding: "10px 12px",
+          }}
+        >
+          <AlertTriangle size={16} color="#CC2229" />
+          <div className="text-[13px]" style={{ color: "#991B1B" }}>
+            <span className="font-semibold">{alerts.length} vehicle check{alerts.length === 1 ? "" : "s"} due soon</span>
+            <span className="ml-1">— {alerts.join(", ")}</span>
+          </div>
         </div>
-        <div className="text-[13px] mt-1" style={{ color: "#9CA3AF" }}>
-          {vehicle.mileage != null ? `${vehicle.mileage.toLocaleString("en-GB")} miles` : "Mileage not set"}
+      )}
+
+      {/* Status cards grid */}
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: "1fr 1fr", gap: 8, padding: 16 }}
+      >
+        <StatusCard
+          icon={<Shield size={16} color={NAVY} />}
+          label="MOT"
+          value={fmtDate(vh.mot_expiry)}
+          badge={expiryBadge(vh.mot_expiry)}
+          onClick={() => setEditField("mot_expiry")}
+        />
+        <StatusCard
+          icon={<FileText size={16} color={NAVY} />}
+          label="Insurance"
+          value={fmtDate(vh.insurance_expiry)}
+          badge={expiryBadge(vh.insurance_expiry)}
+          onClick={() => setEditField("insurance_expiry")}
+        />
+        <StatusCard
+          icon={<Receipt size={16} color={NAVY} />}
+          label="Road tax"
+          value={fmtDate(vh.tax_expiry)}
+          badge={expiryBadge(vh.tax_expiry)}
+          onClick={() => setEditField("tax_expiry")}
+        />
+        <StatusCard
+          icon={<Wrench size={16} color={NAVY} />}
+          label="Last service"
+          value={fmtDate(vh.last_service_date)}
+          subtle={(() => {
+            const d = daysSince(vh.last_service_date);
+            return d == null ? "—" : `${d} day${d === 1 ? "" : "s"} ago`;
+          })()}
+          onClick={() => setEditField("last_service_date")}
+        />
+        <StatusCard
+          icon={<Calendar size={16} color={NAVY} />}
+          label="Next service"
+          value={
+            vh.next_service_due_date
+              ? fmtDate(vh.next_service_due_date)
+              : vh.next_service_due_miles != null
+                ? `${vh.next_service_due_miles.toLocaleString("en-GB")} mi`
+                : "—"
+          }
+          badge={(() => {
+            const d = daysUntil(vh.next_service_due_date);
+            if (d != null && d <= 30)
+              return { label: d < 0 ? "Overdue" : "Due soon", bg: "#FEF3C7", fg: "#B45309" };
+            return undefined;
+          })()}
+          onClick={() => setEditField("next_service_due_date")}
+        />
+        <StatusCard
+          icon={<Circle size={16} color={NAVY} />}
+          label="Tyres"
+          value={fmtDate(vh.tyre_pressure_checked)}
+          subtle={(() => {
+            const d = daysSince(vh.tyre_pressure_checked);
+            return d == null ? "Not checked" : `Checked ${d} day${d === 1 ? "" : "s"} ago`;
+          })()}
+          onClick={() => setEditField("tyre_pressure_checked")}
+        />
+      </div>
+
+      {/* Odometer */}
+      <div
+        className="mx-4"
+        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 12, padding: 16 }}
+      >
+        <div className="flex items-center" style={{ gap: 8 }}>
+          <Gauge size={18} color={NAVY} />
+          <div className="text-[14px] font-semibold" style={{ color: NAVY }}>
+            Current mileage
+          </div>
+        </div>
+        <div className="flex items-center mt-3" style={{ gap: 8 }}>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={odo}
+            onChange={(e) => setOdo(e.target.value)}
+            placeholder="0"
+            className="flex-1 px-3 bg-white"
+            style={{
+              height: 48,
+              borderRadius: 10,
+              border: BORDER,
+              color: NAVY,
+              fontSize: 22,
+              fontWeight: 700,
+              ...POPPINS,
+            }}
+          />
+          <div className="text-[13px]" style={{ color: "#6B7280" }}>
+            miles
+          </div>
+        </div>
+        <div className="grid grid-cols-2 mt-3" style={{ gap: 8 }}>
+          <button
+            type="button"
+            onClick={saveOdo}
+            className="text-white text-[13px] font-semibold"
+            style={{ height: 40, borderRadius: 10, backgroundColor: NAVY }}
+          >
+            Update mileage
+          </button>
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="text-[13px] font-semibold"
+            style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+          >
+            Log journey
+          </button>
         </div>
       </div>
 
-      <div className="px-4">
-        <SectionHeader>SERVICE REMINDERS</SectionHeader>
-        {reminders.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "24px 0" }}
-          >
-            <Wrench size={24} color="#6B7280" />
-            <div className="mt-2">No reminders yet</div>
+      {/* Mileage log */}
+      <div
+        className="mx-4 mt-3"
+        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 12, padding: 16 }}
+      >
+        <div className="text-[14px] font-semibold mb-2" style={{ color: NAVY }}>
+          Recent journeys
+        </div>
+        {journeys.length === 0 ? (
+          <div className="text-[13px] text-center py-3" style={{ color: "#6B7280" }}>
+            No journeys logged yet
           </div>
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
-            {reminders.map((r) => {
-              const { color, Icon } = reminderStyle(r.reminder_type);
-              const days = daysUntil(r.due_date);
-              const dCol = dueColor(days);
-              const daysLabel =
-                days == null
-                  ? ""
-                  : days < 0
-                    ? `${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} overdue`
-                    : days === 0
-                      ? "Today"
-                      : `${days} day${days === 1 ? "" : "s"} away`;
-              return (
-                <button key={r.id} type="button" onClick={() => setEditing(r)} className="text-left">
-                  <Card>
-                    <div className="flex items-center" style={{ gap: 12 }}>
-                      <div
-                        className="flex items-center justify-center shrink-0"
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 999,
-                          backgroundColor: `${color}14`,
-                        }}
-                      >
-                        <Icon size={18} color={color} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
-                          {r.reminder_type}
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="text-[13px] font-semibold" style={{ color: dCol }}>
-                          {formatDate(r.due_date)}
-                        </div>
-                        <div className="text-[12px]" style={{ color: "#6B7280" }}>
-                          {daysLabel}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </button>
-              );
-            })}
+            {journeys.map((j) => (
+              <div
+                key={j.id}
+                className="flex items-center justify-between"
+                style={{ border: BORDER, borderRadius: 10, padding: "10px 12px" }}
+              >
+                <div className="min-w-0">
+                  <div className="text-[13px] font-semibold" style={{ color: NAVY }}>
+                    {fmtDate(j.trip_date)} · {j.distance_miles ?? 0} mi
+                  </div>
+                  <div className="text-[12px]" style={{ color: "#6B7280" }}>
+                    {j.purpose ?? "—"}
+                  </div>
+                </div>
+                {j.fuel_cost != null && (
+                  <div className="text-[12px] font-semibold" style={{ color: "#16A34A" }}>
+                    £{Number(j.fuel_cost).toFixed(2)}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
-
-        <div className="mt-3">
-          <Button variant="ghost" onClick={() => setAddOpen(true)} type="button">
-            Add reminder
-          </Button>
-        </div>
-
-        <SectionHeader>VEHICLE DETAILS</SectionHeader>
-        <div className="flex flex-col" style={{ gap: 10 }}>
-          <Input
-            label="Make"
-            value={vehicle.make ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, make: e.target.value })}
-            maxLength={40}
-          />
-          <Input
-            label="Model"
-            value={vehicle.model ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, model: e.target.value })}
-            maxLength={40}
-          />
-          <Input
-            label="Year"
-            type="number"
-            inputMode="numeric"
-            value={vehicle.year ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, year: e.target.value ? parseInt(e.target.value, 10) : null })}
-          />
-          <Input
-            label="Registration"
-            value={vehicle.registration ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, registration: e.target.value.toUpperCase() })}
-            maxLength={10}
-          />
-          <Input
-            label="Colour"
-            value={vehicle.colour ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, colour: e.target.value })}
-            maxLength={30}
-          />
-          <div>
-            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Fuel type</label>
-            <select
-              value={vehicle.fuel_type ?? ""}
-              onChange={(e) => setVehicle({ ...vehicle, fuel_type: e.target.value })}
-              className="w-full px-3 bg-white"
-              style={{ height: 44, borderRadius: 8, border: "0.5px solid #E2E6ED", color: "#1A1A2E", fontSize: 14, ...POPPINS }}
-            >
-              <option value="">Select…</option>
-              <option>Petrol</option>
-              <option>Diesel</option>
-              <option>Hybrid</option>
-              <option>Electric</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Transmission</label>
-            <select
-              value={vehicle.transmission ?? ""}
-              onChange={(e) => setVehicle({ ...vehicle, transmission: e.target.value })}
-              className="w-full px-3 bg-white"
-              style={{ height: 44, borderRadius: 8, border: "0.5px solid #E2E6ED", color: "#1A1A2E", fontSize: 14, ...POPPINS }}
-            >
-              <option value="">Select…</option>
-              <option>Manual</option>
-              <option>Automatic</option>
-            </select>
-          </div>
-          <Input
-            label="Mileage"
-            type="number"
-            inputMode="numeric"
-            value={vehicle.mileage ?? ""}
-            onChange={(e) => setVehicle({ ...vehicle, mileage: e.target.value ? parseInt(e.target.value, 10) : null })}
-          />
-        </div>
-
-        <div className="mt-4">
-          <Button onClick={saveVehicle} disabled={savingVehicle} type="button">
-            {savingVehicle ? "Saving…" : "Save vehicle"}
-          </Button>
-        </div>
       </div>
 
-      {addOpen && userId && (
-        <ReminderSheet
-          title="ADD REMINDER"
-          onClose={() => setAddOpen(false)}
-          onSaved={() => {
-            setAddOpen(false);
-            loadAll(userId);
-          }}
-          onSubmit={async ({ type, due, notes }) => {
-            const { error } = await supabase.from("vehicle_reminders").insert({
-              instructor_id: userId,
-              reminder_type: type,
-              due_date: due || null,
-              notes: notes || null,
-            });
-            if (error) {
-              console.error("[vehicle] reminder insert error", error);
-              toast.error("Couldn't add reminder");
-              return false;
-            }
-            toast.success("Reminder added");
-            return true;
+      {/* FAB */}
+      <button
+        type="button"
+        aria-label="Add journey"
+        onClick={() => setAddOpen(true)}
+        className="fixed flex items-center justify-center text-white"
+        style={{
+          right: 20,
+          bottom: 24,
+          width: 56,
+          height: 56,
+          borderRadius: 999,
+          backgroundColor: NAVY,
+          boxShadow: "0 6px 16px rgba(15,32,68,0.25)",
+        }}
+      >
+        <Plus size={24} color="#FFFFFF" />
+      </button>
+
+      {editField && (
+        <EditFieldModal
+          label={FIELD_LABEL[editField]}
+          value={vh[editField] as string | null}
+          onClose={() => setEditField(null)}
+          onSave={async (v) => {
+            await saveField(editField, v);
+            setEditField(null);
           }}
         />
       )}
 
-      {editing && userId && (
-        <ReminderSheet
-          title="EDIT REMINDER"
-          initial={{
-            type: editing.reminder_type as ReminderType,
-            due: editing.due_date ?? "",
-            notes: editing.notes ?? "",
-          }}
-          onClose={() => setEditing(null)}
-          onDelete={async () => {
-            const { error } = await supabase.from("vehicle_reminders").delete().eq("id", editing.id);
-            if (error) {
-              console.error("[vehicle] reminder delete error", error);
-              toast.error("Couldn't delete");
-              return;
-            }
-            toast.success("Reminder deleted");
-            setEditing(null);
-            loadAll(userId);
-          }}
+      {addOpen && userId && (
+        <AddJourneyModal
+          userId={userId}
+          currentOdo={vh.current_odometer_miles}
+          onClose={() => setAddOpen(false)}
           onSaved={() => {
-            setEditing(null);
+            setAddOpen(false);
             loadAll(userId);
-          }}
-          onSubmit={async ({ type, due, notes }) => {
-            const { error } = await supabase
-              .from("vehicle_reminders")
-              .update({ reminder_type: type, due_date: due || null, notes: notes || null })
-              .eq("id", editing.id);
-            if (error) {
-              console.error("[vehicle] reminder update error", error);
-              toast.error("Couldn't save");
-              return false;
-            }
-            toast.success("Reminder updated");
-            return true;
           }}
         />
       )}
@@ -396,32 +449,200 @@ function VehiclePage() {
   );
 }
 
-function ReminderSheet({
-  title,
-  initial,
+function StatusCard({
+  icon,
+  label,
+  value,
+  badge,
+  subtle,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  badge?: { label: string; bg: string; fg: string };
+  subtle?: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="text-left"
+      style={{
+        backgroundColor: "#FFFFFF",
+        border: BORDER,
+        borderRadius: 12,
+        padding: 12,
+      }}
+    >
+      <div className="flex items-center" style={{ gap: 6 }}>
+        {icon}
+        <div className="text-[12px] font-semibold" style={{ color: "#6B7280" }}>
+          {label}
+        </div>
+      </div>
+      <div className="text-[14px] font-semibold mt-1" style={{ color: NAVY }}>
+        {value}
+      </div>
+      {badge ? (
+        <div
+          className="inline-block mt-2 text-[10px] font-semibold"
+          style={{
+            backgroundColor: badge.bg,
+            color: badge.fg,
+            padding: "2px 8px",
+            borderRadius: 999,
+          }}
+        >
+          {badge.label}
+        </div>
+      ) : subtle ? (
+        <div className="text-[11px] mt-1" style={{ color: "#6B7280" }}>
+          {subtle}
+        </div>
+      ) : null}
+    </button>
+  );
+}
+
+function EditFieldModal({
+  label,
+  value,
+  onClose,
+  onSave,
+}: {
+  label: string;
+  value: string | null;
+  onClose: () => void;
+  onSave: (v: string | null) => Promise<void>;
+}) {
+  const [v, setV] = useState<string>(value ?? "");
+  const [saving, setSaving] = useState(false);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
+      <div
+        className="absolute inset-0"
+        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        onClick={onClose}
+        aria-hidden
+      />
+      <div
+        className="relative w-full bg-white"
+        style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 24 }}
+      >
+        <div className="flex items-center justify-between px-4 pt-4">
+          <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
+            EDIT {label.toUpperCase()}
+          </span>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            style={{ width: 32, height: 32 }}
+            className="flex items-center justify-center"
+          >
+            <X size={18} color="#6B7280" />
+          </button>
+        </div>
+        <div className="px-4 pt-2">
+          <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">{label}</label>
+          <input
+            type="date"
+            value={v}
+            onChange={(e) => setV(e.target.value)}
+            className="w-full px-3 bg-white"
+            style={{ height: 44, borderRadius: 8, border: BORDER, color: NAVY, fontSize: 14, ...POPPINS }}
+          />
+          <div className="grid grid-cols-2 mt-4" style={{ gap: 8 }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-[13px] font-semibold"
+              style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={saving}
+              onClick={async () => {
+                setSaving(true);
+                await onSave(v || null);
+                setSaving(false);
+              }}
+              className="text-white text-[13px] font-semibold"
+              style={{ height: 40, borderRadius: 10, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AddJourneyModal({
+  userId,
+  currentOdo,
   onClose,
   onSaved,
-  onSubmit,
-  onDelete,
 }: {
-  title: string;
-  initial?: { type: ReminderType; due: string; notes: string };
+  userId: string;
+  currentOdo: number | null;
   onClose: () => void;
   onSaved: () => void;
-  onSubmit: (v: { type: ReminderType; due: string; notes: string }) => Promise<boolean>;
-  onDelete?: () => void | Promise<void>;
 }) {
-  const [type, setType] = useState<ReminderType>(initial?.type ?? "MOT");
-  const [due, setDue] = useState(initial?.due ?? "");
-  const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [date, setDate] = useState(todayYmd());
+  const [start, setStart] = useState<string>(currentOdo != null ? String(currentOdo) : "");
+  const [end, setEnd] = useState<string>("");
+  const [fuelL, setFuelL] = useState<string>("");
+  const [fuelCost, setFuelCost] = useState<string>("");
+  const [purpose, setPurpose] = useState<string>("Lessons");
   const [saving, setSaving] = useState(false);
+
+  const distance = useMemo(() => {
+    const s = parseInt(start, 10);
+    const e = parseInt(end, 10);
+    if (Number.isFinite(s) && Number.isFinite(e) && e >= s) return e - s;
+    return 0;
+  }, [start, end]);
 
   async function save() {
     if (saving) return;
+    if (!distance) {
+      toast.error("Enter start and end odometer");
+      return;
+    }
     setSaving(true);
-    const ok = await onSubmit({ type, due, notes });
+    const endN = parseInt(end, 10);
+    const startN = parseInt(start, 10);
+    const { error } = await supabase.from("mileage_log").insert({
+      instructor_id: userId,
+      trip_date: date,
+      start_odometer: Number.isFinite(startN) ? startN : null,
+      end_odometer: Number.isFinite(endN) ? endN : null,
+      distance_miles: distance,
+      fuel_litres: fuelL ? parseFloat(fuelL) : null,
+      fuel_cost: fuelCost ? parseFloat(fuelCost) : null,
+      purpose,
+    });
+    if (error) {
+      setSaving(false);
+      toast.error("Couldn't save journey");
+      return;
+    }
+    if (Number.isFinite(endN)) {
+      await supabase
+        .from("vehicle_health")
+        .update({ current_odometer_miles: endN, updated_at: new Date().toISOString() })
+        .eq("instructor_id", userId);
+    }
     setSaving(false);
-    if (ok) onSaved();
+    toast.success("Journey logged");
+    onSaved();
   }
 
   return (
@@ -444,69 +665,133 @@ function ReminderSheet({
       >
         <div className="flex items-center justify-between px-4 pt-4">
           <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
-            {title}
+            ADD JOURNEY
           </span>
           <button
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
+            className="flex items-center justify-center"
           >
             <X size={18} color="#6B7280" />
           </button>
         </div>
-
         <div className="px-4 pt-2 flex flex-col" style={{ gap: 12 }}>
-          <div>
-            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Type</label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value as ReminderType)}
+          <Field label="Date">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
               className="w-full px-3 bg-white"
-              style={{ height: 44, borderRadius: 8, border: "0.5px solid #E2E6ED", color: "#1A1A2E", fontSize: 14, ...POPPINS }}
-            >
-              {REMINDER_TYPES.map((r) => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </div>
-
-          <Input label="Due date" type="date" value={due} onChange={(e) => setDue(e.target.value)} />
-
-          <div>
-            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Notes</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              maxLength={500}
-              className="w-full px-3 py-2 bg-white"
-              style={{
-                borderRadius: 8,
-                border: "0.5px solid #E2E6ED",
-                color: "#1A1A2E",
-                fontSize: 14,
-                resize: "none",
-                ...POPPINS,
-              }}
+              style={inputStyle}
             />
+          </Field>
+          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+            <Field label="Start (mi)">
+              <input
+                type="number"
+                inputMode="numeric"
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+                className="w-full px-3 bg-white"
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="End (mi)">
+              <input
+                type="number"
+                inputMode="numeric"
+                value={end}
+                onChange={(e) => setEnd(e.target.value)}
+                className="w-full px-3 bg-white"
+                style={inputStyle}
+              />
+            </Field>
           </div>
-
-          <div className="mt-2 grid grid-cols-2" style={{ gap: 8 }}>
-            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-            <Button onClick={save} disabled={saving} type="button">
-              {saving ? "Saving…" : "Save"}
-            </Button>
+          <Field label="Distance (auto)">
+            <input
+              readOnly
+              value={`${distance} mi`}
+              className="w-full px-3"
+              style={{ ...inputStyle, backgroundColor: "#F3F4F6" }}
+            />
+          </Field>
+          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+            <Field label="Fuel (L)">
+              <input
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                value={fuelL}
+                onChange={(e) => setFuelL(e.target.value)}
+                className="w-full px-3 bg-white"
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="Fuel cost (£)">
+              <input
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                value={fuelCost}
+                onChange={(e) => setFuelCost(e.target.value)}
+                className="w-full px-3 bg-white"
+                style={inputStyle}
+              />
+            </Field>
           </div>
-
-          {onDelete && (
-            <Button variant="destructive" onClick={onDelete} type="button">
-              Delete reminder
-            </Button>
-          )}
+          <Field label="Purpose">
+            <select
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+              className="w-full px-3 bg-white"
+              style={inputStyle}
+            >
+              <option>Lessons</option>
+              <option>Training</option>
+              <option>Other</option>
+            </select>
+          </Field>
+          <div className="grid grid-cols-2 mt-2" style={{ gap: 8 }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-[13px] font-semibold"
+              style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={saving}
+              onClick={save}
+              className="text-white text-[13px] font-semibold"
+              style={{ height: 40, borderRadius: 10, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
+            >
+              {saving ? "Saving…" : "Save journey"}
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+const inputStyle: React.CSSProperties = {
+  height: 44,
+  borderRadius: 8,
+  border: BORDER,
+  color: NAVY,
+  fontSize: 14,
+  ...POPPINS,
+};
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">{label}</label>
+      {children}
     </div>
   );
 }
