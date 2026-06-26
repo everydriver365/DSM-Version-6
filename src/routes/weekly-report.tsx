@@ -467,17 +467,31 @@ function WeeklyReportPage() {
                   <div className="text-[12px]" style={{ ...POPPINS, color: "#6B7280", width: 56, textAlign: "right" }}>
                     {d.count} · {d.hours.toFixed(1)}h
                   </div>
-                  <div
-                    className="text-[12px] font-medium"
-                    style={{
-                      ...POPPINS,
-                      width: 60,
-                      textAlign: "right",
-                      color: d.earningsPence > 0 ? "#15803D" : hasLessons ? "#B45309" : "#9CA3AF",
-                    }}
-                  >
-                    {d.earningsPence > 0 ? gbp(d.earningsPence) : hasLessons ? "Unpaid" : ""}
-                  </div>
+                  {(() => {
+                    let text = "";
+                    let color = "#9CA3AF";
+                    if (d.earningsPence > 0) {
+                      text = gbp(d.earningsPence);
+                      color = "#15803D";
+                    } else if (hasLessons && d.amountDuePounds > 0) {
+                      text = gbpFromPounds(d.amountDuePounds);
+                      color = "#0F2044";
+                    } else if (hasLessons && d.prepaidHours > 0) {
+                      text = `${d.prepaidHours.toFixed(1)}h prepaid`;
+                      color = "#1A52A0";
+                    } else if (hasLessons) {
+                      text = "—";
+                      color = "#9CA3AF";
+                    }
+                    return (
+                      <div
+                        className="text-[12px] font-medium"
+                        style={{ ...POPPINS, width: 72, textAlign: "right", color }}
+                      >
+                        {text}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}
