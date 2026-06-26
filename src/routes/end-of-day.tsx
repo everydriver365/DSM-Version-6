@@ -25,7 +25,7 @@ type Lesson = {
   eol_completed: boolean | null;
   payment_status: string | null;
   amount_due: number | null;
-  pupils?: { id: string; full_name: string | null; phone: string | null } | null;
+  pupils?: { id: string; name: string | null; first_name: string | null; last_name: string | null; phone: string | null } | null;
 };
 
 type HistoryRow = {
@@ -33,6 +33,13 @@ type HistoryRow = {
   lesson_cost: number | null;
   created_at: string;
 };
+
+function pupilName(p?: { name?: string | null; first_name?: string | null; last_name?: string | null } | null): string {
+  if (!p) return "";
+  return (p.name || `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim()) ?? "";
+}
+
+
 
 function fmtDateLong(d: Date) {
   return d.toLocaleDateString("en-GB", {
@@ -95,7 +102,7 @@ function EndOfDayPage() {
         supabase
           .from("lessons")
           .select(
-            "id,pupil_id,lesson_date,lesson_time,duration_minutes,eol_completed,payment_status,amount_due,pupils(id,full_name,phone)",
+            "id,pupil_id,lesson_date,lesson_time,duration_minutes,eol_completed,payment_status,amount_due,pupils(id,name,first_name,last_name,phone)",
           )
           .eq("instructor_id", id)
           .eq("lesson_date", todayIso)
@@ -104,7 +111,7 @@ function EndOfDayPage() {
         supabase
           .from("lessons")
           .select(
-            "id,pupil_id,lesson_date,lesson_time,duration_minutes,pupils(id,full_name,phone)",
+            "id,pupil_id,lesson_date,lesson_time,duration_minutes,pupils(id,name,first_name,last_name,phone)",
           )
           .eq("instructor_id", id)
           .eq("lesson_date", tomorrowIso)
@@ -114,6 +121,7 @@ function EndOfDayPage() {
           .from("lesson_history")
           .select("id,lesson_cost,created_at")
           .eq("instructor_id", id)
+          .eq("payment_status", "paid")
           .gte("created_at", `${todayIso}T00:00:00`),
         supabase
           .from("daily_notes")
@@ -204,7 +212,7 @@ function EndOfDayPage() {
 
   function chasePayment(l: Lesson) {
     const phone = l.pupils?.phone ?? "";
-    const name = l.pupils?.full_name ?? "there";
+    const name = pupilName(l.pupils) || "there";
     const body = encodeURIComponent(
       `Hi ${name}, just a quick reminder there's £${(l.amount_due ?? 0).toFixed(2)} outstanding for today's lesson. Thanks!`,
     );
@@ -240,13 +248,13 @@ function EndOfDayPage() {
           <Heading icon={<AlertTriangle size={16} color="#D97706" />} title="Actions needed" />
           {outstandingEols.map((l) => (
             <Row key={`eol-${l.id}`}>
-              <span>{l.pupils?.full_name ?? "Pupil"} — EOL pending</span>
+              <span>{pupilName(l.pupils) || "Pupil"} — EOL pending</span>
               <SmallBtn color="#1A52A0" onClick={() => setEolLesson(l)}>Complete EOL</SmallBtn>
             </Row>
           ))}
           {unpaidLessons.map((l) => (
             <Row key={`pay-${l.id}`}>
-              <span>{l.pupils?.full_name ?? "Pupil"} — £{(l.amount_due ?? 0).toFixed(2)} unpaid</span>
+              <span>{pupilName(l.pupils) || "Pupil"} — £{(l.amount_due ?? 0).toFixed(2)} unpaid</span>
               <SmallBtn color="#DC2626" onClick={() => chasePayment(l)}>Chase payment</SmallBtn>
             </Row>
           ))}
@@ -280,7 +288,7 @@ function EndOfDayPage() {
                 {l.lesson_time?.slice(0, 5) ?? "--:--"}
               </span>
               <span style={{ fontSize: 13, color: "#0F2044", flex: 1 }}>
-                {l.pupils?.full_name ?? "Pupil"}
+                {pupilName(l.pupils) || "Pupil"}
               </span>
               {!l.eol_completed && (
                 <Badge bg="#FEF3C7" color="#92400E">EOL</Badge>
@@ -309,7 +317,7 @@ function EndOfDayPage() {
             {tomorrowLessons.slice(0, 3).map((l) => (
               <div key={l.id} style={{ display: "flex", gap: 10, padding: "6px 0", fontSize: 13, color: "#0F2044" }}>
                 <span style={{ minWidth: 50, fontWeight: 600 }}>{l.lesson_time?.slice(0, 5) ?? "--:--"}</span>
-                <span>{l.pupils?.full_name ?? "Pupil"}</span>
+                <span>{pupilName(l.pupils) || "Pupil"}</span>
               </div>
             ))}
             <button
@@ -386,7 +394,7 @@ function EndOfDayPage() {
           onClose={() => setEolLesson(null)}
           lessonId={eolLesson.id}
           pupilId={eolLesson.pupil_id}
-          pupilName={eolLesson.pupils?.full_name ?? "Pupil"}
+          pupilName={pupilName(eolLesson.pupils) || "Pupil"}
           instructorId={instructorId}
           durationMinutes={eolLesson.duration_minutes ?? 60}
           lessonDate={eolLesson.lesson_date}
