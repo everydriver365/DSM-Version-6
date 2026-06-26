@@ -238,6 +238,25 @@ function HomePage() {
   const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [earningsEstimated, setEarningsEstimated] = useState(false);
+  const [earningsOpen, setEarningsOpen] = useState(false);
+  const [lessonsOpen, setLessonsOpen] = useState(false);
+  const [earningsRows, setEarningsRows] = useState<Array<{
+    id: string;
+    date: string;
+    pupilName: string;
+    amount: number;
+    method: string;
+    source: "lesson" | "booking";
+  }>>([]);
+  const [weekLessonRows, setWeekLessonRows] = useState<Array<{
+    id: string;
+    lesson_date: string;
+    lesson_time: string;
+    duration_minutes: number | null;
+    status: string;
+    pupil_id: string;
+    pupilName: string;
+  }>>([]);
   
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
