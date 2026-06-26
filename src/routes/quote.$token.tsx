@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/quote/$token")({
@@ -109,6 +110,33 @@ function PublicQuotePage() {
         .update({ status: "accepted", accepted_at: new Date().toISOString() })
         .eq("token", token);
       if (error) throw error;
+
+      // Notify instructor
+      try {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            instructor_id: quote.instructor_id,
+            title: "Quote accepted! 🎉",
+            body: `${quote.recipient_name} has accepted their quote for £${Number(quote.price).toFixed(2)}`,
+            type: "quote_accepted",
+            read: false,
+            reference_id: quote.id,
+            reference_type: "quote",
+          }),
+        });
+      } catch (notifyErr) {
+        console.error("[quote] notify instructor failed:", notifyErr);
+      }
+
       setAccepted(true);
     } catch (e: any) {
       alert("Failed to accept: " + (e?.message ?? "unknown"));
@@ -182,16 +210,26 @@ function PublicQuotePage() {
 
         <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {accepted ? (
-            <>
-              <div style={{ padding: 16, background: "#F0FDF4", border: "0.5px solid #BBF7D0", borderRadius: 12, color: "#15803D", textAlign: "center", fontSize: 14 }}>
-                Quote accepted! We'll be in touch to arrange your lessons.
+            <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
+              <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044" }}>Quote accepted! 🎉</div>
+              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 320 }}>
+                We'll be in touch shortly to arrange your lessons.
               </div>
-              <a href="https://everydriver.co.uk/bespoke" style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                height: 52, borderRadius: 12, background: "#0F2044", color: "#fff",
-                fontWeight: 600, fontSize: 15, textDecoration: "none",
-              }}>Book now →</a>
-            </>
+              <a
+                href="https://everydriver.co.uk/courses"
+                style={{
+                  marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
+                  height: 52, width: "100%", borderRadius: 12, background: "#16A34A", color: "#fff",
+                  fontWeight: 600, fontSize: 15, textDecoration: "none",
+                }}
+              >
+                Book your first lesson →
+              </a>
+              <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A52A0", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                Contact us
+              </a>
+            </div>
           ) : (
             <button
               disabled={accepting}
