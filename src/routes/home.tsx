@@ -310,16 +310,15 @@ function HomePage() {
         setEnqCount(eCount || 0);
       }
 
-      // Upcoming tests in next 30 days
+      // Upcoming tests (any future date)
       const todayStr = new Date().toISOString().split("T")[0];
-      const in30Str = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
       const { count: tCount } = await supabase
         .from("pupils")
         .select("id", { count: "exact", head: true })
         .eq("instructor_id", user.id)
         .not("test_date", "is", null)
-        .gte("test_date", todayStr)
-        .lte("test_date", in30Str);
+        .gte("test_date", todayStr);
+
 
       // Test swaps requested by instructor's pupils
       const { data: swapRows, count: swapCount } = await supabase
@@ -3770,7 +3769,7 @@ function TestsBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto" }}>
           <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Upcoming tests (next 30 days)
+            Upcoming tests
           </div>
           {tests.length === 0 && (
             <div style={{ padding: "12px 20px 18px", color: "#6B7280", fontSize: 13 }}>
