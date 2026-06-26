@@ -78,6 +78,7 @@ type HistoryRow = {
   lesson_cost: number | null;
   payment_status: string | null;
   created_at: string;
+  lesson_date: string | null;
   pupil_id: string | null;
 };
 type Pupil = { id: string; name: string | null; test_date: string | null };
