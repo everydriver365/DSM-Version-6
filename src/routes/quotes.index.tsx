@@ -22,6 +22,7 @@ type TabKey = "pending" | "accepted" | "declined" | "expired";
 
 interface QuoteRow {
   id: string;
+  token: string | null;
   recipient_name: string;
   recipient_email: string | null;
   course_type: string | null;
