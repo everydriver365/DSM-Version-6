@@ -3337,3 +3337,196 @@ function OutstandingBreakdownModal({
   );
 }
 
+function EarningsBreakdownModal({
+  open,
+  onClose,
+  total,
+  rows,
+  onRecord,
+  onViewMTD,
+}: {
+  open: boolean;
+  onClose: () => void;
+  total: number;
+  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }>;
+  onRecord: () => void;
+  onViewMTD: () => void;
+}) {
+  const fmtDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  };
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Earnings this week</span>
+            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
+          {rows.length === 0 ? (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              No payments recorded this week
+              <div style={{ marginTop: 8 }}>
+                <button
+                  onClick={onRecord}
+                  style={{ background: "none", border: "none", color: "#1A52A0", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
+                >
+                  Record payment →
+                </button>
+              </div>
+            </div>
+          ) : (
+            rows.map((r) => (
+              <div
+                key={`${r.source}-${r.id}`}
+                style={{ padding: 12, borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {r.pupilName}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                  {r.method}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#047857", minWidth: 60, textAlign: "right" }}>
+                  £{r.amount.toFixed(2)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700, color: "#111827" }}>
+            <span>Total</span>
+            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={onViewMTD}
+              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1A52A0", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+            >
+              View MTD →
+            </button>
+            <button
+              onClick={onClose}
+              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function LessonsBreakdownModal({
+  open,
+  onClose,
+  rows,
+  onOpenLesson,
+}: {
+  open: boolean;
+  onClose: () => void;
+  rows: Array<{ id: string; lesson_date: string; lesson_time: string; duration_minutes: number | null; status: string; pupil_id: string; pupilName: string }>;
+  onOpenLesson: (id: string) => void;
+}) {
+  const fmtDayTime = (date: string, time: string) => {
+    const d = new Date(`${date}T${(time || "00:00:00").slice(0, 8)}`);
+    const day = d.toLocaleDateString("en-GB", { weekday: "short" });
+    return `${day} ${(time || "").slice(0, 5)}`;
+  };
+  const statusColors: Record<string, { bg: string; fg: string }> = {
+    completed: { bg: "#ECFDF5", fg: "#047857" },
+    confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
+    cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
+  };
+  const completed = rows.filter((r) => r.status === "completed").length;
+  const upcoming = rows.filter((r) => r.status === "confirmed" || r.status === "scheduled").length;
+  const cancelled = rows.filter((r) => r.status === "cancelled").length;
+  const totalHours =
+    rows.filter((r) => r.status !== "cancelled").reduce((s, r) => s + (r.duration_minutes ?? 60), 0) / 60;
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Lessons this week</DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
+          {rows.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              No lessons this week.
+            </div>
+          )}
+          {rows.map((r) => {
+            const colors = statusColors[r.status] ?? { bg: "#F3F4F6", fg: "#374151" };
+            return (
+              <button
+                key={r.id}
+                onClick={() => onOpenLesson(r.id)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: 12,
+                  borderBottom: "1px solid #f3f4f6",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "none",
+                  border: "none",
+                  borderBottomColor: "#f3f4f6",
+                  borderBottomStyle: "solid",
+                  borderBottomWidth: 1,
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0F2044" }}>
+                  {fmtDayTime(r.lesson_date, r.lesson_time)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {r.pupilName}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0F2044" }}>
+                  {r.duration_minutes ?? 60}m
+                </span>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  {r.status}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontSize: 12, color: "#374151", fontWeight: 600 }}>
+            Completed: {completed} · Upcoming: {upcoming} · Cancelled: {cancelled}
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+            {totalHours.toFixed(1)}h taught this week
+          </div>
+          <button
+            onClick={onClose}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+          >
+            Close
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
