@@ -241,11 +241,14 @@ function PupilDetailPage() {
       if (!uid) return;
       supabase
         .from("instructors")
-        .select("hourly_rate")
+        .select("hourly_rate, first_name, last_name, business_name")
         .eq("id", uid)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+          const d = data as { first_name?: string | null; last_name?: string | null; business_name?: string | null } | null;
+          const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
+          setInstructorName(nm);
         });
     });
 
