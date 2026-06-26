@@ -65,6 +65,7 @@ import { Route as ForgotpasswordRouteImport } from './routes/forgotpassword'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
+import { Route as EndOfDayRouteImport } from './routes/end-of-day'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DiaryRouteImport } from './routes/diary'
@@ -387,6 +388,11 @@ const EnquiriesRoute = EnquiriesRouteImport.update({
   path: '/enquiries',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EndOfDayRoute = EndOfDayRouteImport.update({
+  id: '/end-of-day',
+  path: '/end-of-day',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EarningsRoute = EarningsRouteImport.update({
   id: '/earnings',
   path: '/earnings',
@@ -606,6 +612,7 @@ export interface FileRoutesByFullPath {
   '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
+  '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
@@ -704,6 +711,7 @@ export interface FileRoutesByTo {
   '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
+  '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
@@ -804,6 +812,7 @@ export interface FileRoutesById {
   '/diary': typeof DiaryRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
+  '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
@@ -904,6 +913,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/documents'
     | '/earnings'
+    | '/end-of-day'
     | '/enquiries'
     | '/eod'
     | '/expenses'
@@ -1002,6 +1012,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/documents'
     | '/earnings'
+    | '/end-of-day'
     | '/enquiries'
     | '/eod'
     | '/expenses'
@@ -1101,6 +1112,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/documents'
     | '/earnings'
+    | '/end-of-day'
     | '/enquiries'
     | '/eod'
     | '/expenses'
@@ -1201,6 +1213,7 @@ export interface RootRouteChildren {
   DiaryRoute: typeof DiaryRoute
   DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
+  EndOfDayRoute: typeof EndOfDayRoute
   EnquiriesRoute: typeof EnquiriesRoute
   EodRoute: typeof EodRoute
   ExpensesRoute: typeof ExpensesRoute
@@ -1674,6 +1687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnquiriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/end-of-day': {
+      id: '/end-of-day'
+      path: '/end-of-day'
+      fullPath: '/end-of-day'
+      preLoaderRoute: typeof EndOfDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/earnings': {
       id: '/earnings'
       path: '/earnings'
@@ -2011,6 +2031,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiaryRoute: DiaryRoute,
   DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,
+  EndOfDayRoute: EndOfDayRoute,
   EnquiriesRoute: EnquiriesRoute,
   EodRoute: EodRoute,
   ExpensesRoute: ExpensesRoute,
