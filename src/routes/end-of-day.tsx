@@ -263,7 +263,7 @@ function EndOfDayPage() {
       <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <Stat label="Lessons today" value={String(stats.count)} />
         <Stat label="Hours taught" value={stats.hours.toFixed(1)} />
-        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" />
+        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
         <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0F2044"} />
       </div>
 
