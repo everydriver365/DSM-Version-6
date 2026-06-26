@@ -102,6 +102,7 @@ function WeeklyReportPage() {
   const [pupilUsedHours, setPupilUsedHours] = useState<Record<string, number>>({});
   const [prevLessonCount, setPrevLessonCount] = useState(0);
   const [testsThisWeek, setTestsThisWeek] = useState(0);
+  const [eolLesson, setEolLesson] = useState<any>(null);
 
   const weekEnd = useMemo(() => addDays(weekStart, 6), [weekStart]);
   const thisWeekStart = useMemo(() => startOfWeek(new Date()), []);
