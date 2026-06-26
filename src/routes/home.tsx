@@ -221,6 +221,17 @@ function HomePage() {
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
+  const [outstandingOpen, setOutstandingOpen] = useState(false);
+  const [outstandingBreakdown, setOutstandingBreakdown] = useState<Array<{
+    pupilId: string;
+    name: string;
+    firstName: string;
+    phone: string | null;
+    email: string | null;
+    amount: number;
+    type: "Lessons" | "NI Course";
+  }>>([]);
+  const [instructorFullName, setInstructorFullName] = useState<string>("");
   const [weekEarnings, setWeekEarnings] = useState(0);
   const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
