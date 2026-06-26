@@ -3456,27 +3456,6 @@ function LessonsBreakdownModal({
   onClose,
   rows,
   onOpenLesson,
-}: {
-  open: boolean;
-  onClose: () => void;
-  rows: Array<{ id: string; lesson_date: string; lesson_time: string; duration_minutes: number | null; status: string; pupil_id: string; pupilName: string }>;
-  onOpenLesson: (id: string) => void;
-}) {
-  const fmtDayTime = (date: string, time: string) => {
-    const d = new Date(`${date}T${(time || "00:00:00").slice(0, 8)}`);
-    const day = d.toLocaleDateString("en-GB", { weekday: "short" });
-    return `${day} ${(time || "").slice(0, 5)}`;
-  };
-  const statusColors: Record<string, { bg: string; fg: string }> = {
-    completed: { bg: "#ECFDF5", fg: "#047857" },
-    confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
-    cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
-  };
-function LessonsBreakdownModal({
-  open,
-  onClose,
-  rows,
-  onOpenLesson,
   onDelete,
 }: {
   open: boolean;
