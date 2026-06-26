@@ -265,6 +265,15 @@ function SettingsPage() {
       if (instructor && typeof (instructor as { radius_miles?: number }).radius_miles === "number") {
         setCoverageRadius((instructor as { radius_miles: number }).radius_miles);
       }
+      if (instructor && typeof (instructor as { send_lesson_reminders?: boolean }).send_lesson_reminders === "boolean") {
+        setSendLessonReminders((instructor as { send_lesson_reminders: boolean }).send_lesson_reminders);
+      }
+      const rt = (instructor as { reminder_timing?: string } | null)?.reminder_timing;
+      if (rt === "evening" || rt === "morning" || rt === "both") {
+        setReminderTiming(rt);
+      }
+
+
 
       const { data: profile } = await supabase
         .from("profiles")
