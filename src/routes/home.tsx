@@ -503,32 +503,76 @@ function HomePage() {
 
       const { data: pupilsData } = await supabase
         .from("pupils")
-        .select("id, prepaid_hours")
+        .select("id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid")
         .eq("instructor_id", userId);
 
+      const pupilMap = new Map<string, any>((pupilsData || []).map((p: any) => [p.id, p]));
       const prepaidPupilIds = new Set(
         (pupilsData || [])
           .filter((p: any) => Number(p.prepaid_hours || 0) > 0)
           .map((p: any) => p.id)
       );
 
-      const outstandingAmt = (unpaidLessons || [])
-        .filter((l: any) => !prepaidPupilIds.has(l.pupil_id))
-        .reduce((sum: number, l: any) => sum + Number(l.amount_due || 0), 0);
+      // Group regular unpaid lessons by pupil
+      const lessonOwedByPupil = new Map<string, number>();
+      (unpaidLessons || []).forEach((l: any) => {
+        if (prepaidPupilIds.has(l.pupil_id)) return;
+        lessonOwedByPupil.set(
+          l.pupil_id,
+          (lessonOwedByPupil.get(l.pupil_id) || 0) + Number(l.amount_due || 0)
+        );
+      });
 
-      const { data: niPupils } = await supabase
-        .from("pupils")
-        .select("id, prepaid_hours, ni_amount_total, ni_amount_paid")
-        .eq("instructor_id", userId)
-        .gt("prepaid_hours", 0)
-        .not("ni_amount_total", "is", null);
+      const outstandingAmt = Array.from(lessonOwedByPupil.values())
+        .reduce((s, v) => s + v, 0);
 
-      const niOutstanding = (niPupils || []).reduce((sum: number, p: any) => {
+      const niPupils = (pupilsData || []).filter(
+        (p: any) => Number(p.prepaid_hours || 0) > 0 && p.ni_amount_total != null
+      );
+
+      const niOwedByPupil = new Map<string, number>();
+      niPupils.forEach((p: any) => {
         const owed = Number(p.ni_amount_total || 0) - Number(p.ni_amount_paid || 0);
-        return owed > 0 ? sum + owed : sum;
-      }, 0);
+        if (owed > 0) niOwedByPupil.set(p.id, owed);
+      });
 
+      const niOutstanding = Array.from(niOwedByPupil.values()).reduce((s, v) => s + v, 0);
+
+      // Build breakdown rows
+      const breakdown: Array<{
+        pupilId: string;
+        name: string;
+        firstName: string;
+        phone: string | null;
+        email: string | null;
+        amount: number;
+        type: "Lessons" | "NI Course";
+      }> = [];
+      const rowFor = (id: string, amount: number, type: "Lessons" | "NI Course") => {
+        const p = pupilMap.get(id);
+        if (!p) return;
+        const name =
+          (p.name as string) ||
+          [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+          "Pupil";
+        const firstName = (p.first_name as string) || name.split(/\s+/)[0] || "there";
+        breakdown.push({
+          pupilId: id,
+          name,
+          firstName,
+          phone: p.phone ?? null,
+          email: p.email ?? null,
+          amount,
+          type,
+        });
+      };
+      lessonOwedByPupil.forEach((amt, id) => rowFor(id, amt, "Lessons"));
+      niOwedByPupil.forEach((amt, id) => rowFor(id, amt, "NI Course"));
+      breakdown.sort((a, b) => b.amount - a.amount);
+
+      setOutstandingBreakdown(breakdown);
       setOutstanding(outstandingAmt + niOutstanding);
+
 
       // Source 1: EOL payments recorded in lesson_history
       const { data: historyRows } = await supabase
