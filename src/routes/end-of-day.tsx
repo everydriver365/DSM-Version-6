@@ -80,6 +80,7 @@ function EndOfDayPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [tomorrowLessons, setTomorrowLessons] = useState<Lesson[]>([]);
   const [history, setHistory] = useState<HistoryRow[]>([]);
+  const [prepaidPupilIds, setPrepaidPupilIds] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [listening, setListening] = useState(false);
@@ -138,6 +139,23 @@ function EndOfDayPage() {
       setTomorrowLessons((tls ?? []) as any);
       setHistory((hs ?? []) as any);
       if (noteRow?.notes) setNotes(noteRow.notes);
+
+      const pupilIds = Array.from(
+        new Set(((ls as any[]) ?? []).map((l) => l.pupil_id).filter(Boolean)),
+      );
+      if (pupilIds.length) {
+        const { data: pupilsData } = await supabase
+          .from("pupils")
+          .select("id, prepaid_hours")
+          .in("id", pupilIds);
+        setPrepaidPupilIds(
+          new Set(
+            (pupilsData ?? [])
+              .filter((p: any) => (p.prepaid_hours || 0) > 0)
+              .map((p: any) => p.id),
+          ),
+        );
+      }
     })();
   }, [todayIso, tomorrowIso]);
 
@@ -145,7 +163,7 @@ function EndOfDayPage() {
     const totalMin = lessons.reduce((s, l) => s + (l.duration_minutes ?? 0), 0);
     const earned = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
     const outstanding = lessons
-      .filter((l) => l.payment_status === "unpaid")
+      .filter((l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id))
       .reduce((s, l) => s + (l.amount_due ?? 0), 0);
     return {
       count: lessons.length,
@@ -153,12 +171,14 @@ function EndOfDayPage() {
       earned,
       outstanding,
     };
-  }, [lessons, history]);
+  }, [lessons, history, prepaidPupilIds]);
 
   const outstandingEols = lessons.filter(
     (l) => !l.eol_completed && lessonEndInPast(l, today),
   );
-  const unpaidLessons = lessons.filter((l) => l.payment_status === "unpaid");
+  const unpaidLessons = lessons.filter(
+    (l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id),
+  );
 
   async function saveNote(value: string) {
     if (!instructorId) return;
