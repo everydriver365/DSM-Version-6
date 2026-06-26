@@ -12,9 +12,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
-import { supabase } from "../lib/supabaseClient";
-
-const VAPID_PUBLIC_KEY = "BCPt7KU8Me_IlOTU1OlId15UTBFlWgTiZbW-IfQmA0M1NH0__IOfyhekALKRRPFSSCrKDPQ2y0qXK7wwftTBKWE";
 
 function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname === "/" || pathname === "/home") return "home";
