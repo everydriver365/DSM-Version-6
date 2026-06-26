@@ -93,8 +93,8 @@ function QuotesPage() {
       if (tab === "accepted") return s === "accepted";
       if (tab === "declined") return s === "declined";
       if (tab === "expired") return s !== "accepted" && s !== "declined" && isExpired(q);
-      // pending
-      return s === "pending" && !isExpired(q);
+      // pending: anything not accepted/declined (regardless of expiry)
+      return s !== "accepted" && s !== "declined";
     });
   }, [quotes, tab]);
 
