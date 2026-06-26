@@ -28,6 +28,7 @@ interface QuoteRow {
   token: string | null;
   recipient_name: string;
   recipient_email: string | null;
+  recipient_phone: string | null;
   course_type: string | null;
   hours: number | null;
   price: number;
