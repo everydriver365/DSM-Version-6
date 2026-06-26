@@ -37,6 +37,10 @@ function NewQuotePage() {
   const [validUntil, setValidUntil] = useState(defaultValid);
   const [priceTouched, setPriceTouched] = useState(false);
   const [depositTouched, setDepositTouched] = useState(false);
+  const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
+
+  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
+  const errorInputStyle: React.CSSProperties = { ...inputStyle, border: "1px solid #D92D20" };
 
   useEffect(() => {
     (async () => {
