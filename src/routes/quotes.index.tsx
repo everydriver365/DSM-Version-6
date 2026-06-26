@@ -83,6 +83,7 @@ function QuotesPage() {
         data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
       }
       setQuotes((data ?? []) as QuoteRow[]);
+      console.log("[quotes] all quotes statuses:", (data ?? []).map((q: any) => ({ id: q.id, status: q.status })));
       setLoading(false);
     })();
   }, []);
@@ -92,9 +93,9 @@ function QuotesPage() {
       const s = (q.status || "pending").toLowerCase();
       if (tab === "accepted") return s === "accepted";
       if (tab === "declined") return s === "declined";
-      if (tab === "expired") return s !== "accepted" && s !== "declined" && isExpired(q);
-      // pending: anything not accepted/declined (regardless of expiry)
-      return s !== "accepted" && s !== "declined";
+      if (tab === "expired") return s === "expired" || (s === "pending" && isExpired(q));
+      // pending: status pending (or empty) and not expired
+      return s === "pending" && !isExpired(q);
     });
   }, [quotes, tab]);
 
