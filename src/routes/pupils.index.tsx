@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronRight, Plus, Search, X } from "lucide-react";
+import { ChevronRight, Plus, Search, X, Megaphone } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/")({
@@ -206,25 +206,36 @@ function PupilsIndexPage() {
             Pupils
           </span>
         </div>
-        <button
-          type="button"
-          aria-label={searchOpen ? "Close search" : "Open search"}
-          onClick={() => {
-            setSearchOpen((v) => {
-              const next = !v;
-              if (!next) setQuery("");
-              return next;
-            });
-          }}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          {searchOpen ? (
-            <X size={20} color="#FFFFFF" />
-          ) : (
-            <Search size={20} color="#FFFFFF" />
-          )}
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            to="/broadcast"
+            aria-label="Message all pupils"
+            className="flex items-center gap-1 px-2 h-8 rounded-md"
+            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+          >
+            <Megaphone size={16} color="#FFFFFF" />
+            <span className="text-[12px] font-medium text-white" style={POPPINS}>Message all</span>
+          </Link>
+          <button
+            type="button"
+            aria-label={searchOpen ? "Close search" : "Open search"}
+            onClick={() => {
+              setSearchOpen((v) => {
+                const next = !v;
+                if (!next) setQuery("");
+                return next;
+              });
+            }}
+            className="flex items-center justify-center"
+            style={{ width: 32, height: 32 }}
+          >
+            {searchOpen ? (
+              <X size={20} color="#FFFFFF" />
+            ) : (
+              <Search size={20} color="#FFFFFF" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}

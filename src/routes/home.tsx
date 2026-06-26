@@ -68,6 +68,7 @@ import {
   Trash2,
   ArrowLeftRight,
   Moon,
+  Megaphone,
 } from "lucide-react";
 import {
   Dialog,
@@ -1344,6 +1345,7 @@ function HomePage() {
     { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Availability", route: "/availability" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#D97706", label: "EOD", route: "/eod" },
     { icon: <Moon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "End of day", route: "/end-of-day" },
+    { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
     { icon: <Zap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Automations", route: "/automations" },
     { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Diary", route: "/diary" },
     { icon: <Crown size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "My plan", route: "/subscription" },
