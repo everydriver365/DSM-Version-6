@@ -250,6 +250,18 @@ function WeeklyReportPage() {
       const dayLessons = taughtLessons.filter((l) => l.lesson_date === dateStr);
       const hours = dayLessons.reduce((a, l) => a + (l.duration_minutes ?? 0) / 60, 0);
       const dayEarningsPence = dailyEarningsMap[dateStr] ?? 0;
+      // Split lessons into prepaid vs regular (by pupil)
+      let prepaidHours = 0;
+      let amountDuePounds = 0;
+      dayLessons.forEach((l) => {
+        const p = l.pupil_id ? pupils[l.pupil_id] : null;
+        const isPrepaid = (p?.prepaid_hours ?? 0) > 0;
+        if (isPrepaid) {
+          prepaidHours += (l.duration_minutes ?? 0) / 60;
+        } else {
+          amountDuePounds += l.amount_due ?? 0;
+        }
+      });
       return {
         key: dateStr,
         label,
@@ -257,9 +269,11 @@ function WeeklyReportPage() {
         count: dayLessons.length,
         hours,
         earningsPence: dayEarningsPence,
+        prepaidHours,
+        amountDuePounds,
       };
     });
-  }, [taughtLessons, dailyEarningsMap, weekStart]);
+  }, [taughtLessons, dailyEarningsMap, weekStart, pupils]);
 
   // Pupils this week
   const pupilRows = useMemo(() => {
