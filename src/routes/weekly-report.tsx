@@ -131,7 +131,7 @@ function WeeklyReportPage() {
         .lte("lesson_date", endStr),
       supabase
         .from("lesson_history")
-        .select("id, lesson_cost, payment_status, created_at, pupil_id")
+        .select("id, lesson_cost, payment_status, created_at, lesson_date, pupil_id")
         .eq("instructor_id", userId)
         .gte("created_at", createdGte)
         .lte("created_at", createdLte),
