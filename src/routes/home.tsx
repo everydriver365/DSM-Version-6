@@ -68,6 +68,7 @@ import {
   Trash2,
   ArrowLeftRight,
   Moon,
+  Megaphone,
 } from "lucide-react";
 import {
   Dialog,
