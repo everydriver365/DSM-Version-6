@@ -2666,6 +2666,25 @@ function HomePage() {
           navigate({ to: "/pupils/$id", params: { id } });
         }}
       />
+
+      <EarningsBreakdownModal
+        open={earningsOpen}
+        onClose={() => setEarningsOpen(false)}
+        total={weekEarnings}
+        rows={earningsRows}
+        onRecord={() => { setEarningsOpen(false); navigate({ to: "/schedule" }); }}
+        onViewMTD={() => { setEarningsOpen(false); navigate({ to: "/month-to-date" }); }}
+      />
+
+      <LessonsBreakdownModal
+        open={lessonsOpen}
+        onClose={() => setLessonsOpen(false)}
+        rows={weekLessonRows}
+        onOpenLesson={(id: string) => {
+          setLessonsOpen(false);
+          navigate({ to: "/lessons/$id", params: { id } });
+        }}
+      />
     </div>
 
   );
