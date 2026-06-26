@@ -210,16 +210,26 @@ function PublicQuotePage() {
 
         <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {accepted ? (
-            <>
-              <div style={{ padding: 16, background: "#F0FDF4", border: "0.5px solid #BBF7D0", borderRadius: 12, color: "#15803D", textAlign: "center", fontSize: 14 }}>
-                Quote accepted! We'll be in touch to arrange your lessons.
+            <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
+              <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044" }}>Quote accepted! 🎉</div>
+              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 320 }}>
+                We'll be in touch shortly to arrange your lessons.
               </div>
-              <a href="https://everydriver.co.uk/bespoke" style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                height: 52, borderRadius: 12, background: "#0F2044", color: "#fff",
-                fontWeight: 600, fontSize: 15, textDecoration: "none",
-              }}>Book now →</a>
-            </>
+              <a
+                href="https://everydriver.co.uk/courses"
+                style={{
+                  marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
+                  height: 52, width: "100%", borderRadius: 12, background: "#16A34A", color: "#fff",
+                  fontWeight: 600, fontSize: 15, textDecoration: "none",
+                }}
+              >
+                Book your first lesson →
+              </a>
+              <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A52A0", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                Contact us
+              </a>
+            </div>
           ) : (
             <button
               disabled={accepting}
