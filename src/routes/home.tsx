@@ -307,6 +307,45 @@ function HomePage() {
           .in("status", ["new", "accepted"]);
         setEnqCount(eCount || 0);
       }
+
+      // Upcoming tests in next 30 days
+      const todayStr = new Date().toISOString().split("T")[0];
+      const in30Str = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+      const { count: tCount } = await supabase
+        .from("pupils")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .not("test_date", "is", null)
+        .gte("test_date", todayStr)
+        .lte("test_date", in30Str);
+
+      // Test swaps requested by instructor's pupils
+      const { count: swapCount } = await supabase
+        .from("test_swap_requests")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending");
+      setPendingSwapCount(swapCount || 0);
+      setTestCount((tCount || 0) + (swapCount || 0));
+
+      // Upcoming tests list for the bottom sheet
+      const { data: testRows } = await supabase
+        .from("pupils")
+        .select("id, name, first_name, test_date, test_time, test_centre")
+        .eq("instructor_id", user.id)
+        .not("test_date", "is", null)
+        .gte("test_date", todayStr)
+        .order("test_date", { ascending: true })
+        .limit(10);
+      setUpcomingTests(
+        (testRows ?? []).map((p: any) => ({
+          id: p.id,
+          name: p.name || p.first_name || "Pupil",
+          test_date: p.test_date,
+          test_time: p.test_time ?? null,
+          test_centre: p.test_centre ?? null,
+        })),
+      );
+      }
     }
     loadCount();
   }, []);
