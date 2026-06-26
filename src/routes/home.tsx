@@ -264,6 +264,16 @@ function HomePage() {
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
   const [enqCount, setEnqCount] = useState(0);
+  const [testCount, setTestCount] = useState(0);
+  const [testsOpen, setTestsOpen] = useState(false);
+  const [upcomingTests, setUpcomingTests] = useState<Array<{
+    id: string;
+    name: string;
+    test_date: string;
+    test_time: string | null;
+    test_centre: string | null;
+  }>>([]);
+  const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
   useEffect(() => {
