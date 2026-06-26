@@ -108,7 +108,7 @@ function NewQuotePage() {
       if (!res.ok) throw new Error(payload.message || JSON.stringify(payload));
       const data = Array.isArray(payload) ? payload[0] : payload;
       if (status === "sent" && data) {
-        const link = `${window.location.origin}/quotes/${data.id}`;
+        const link = `https://everydriver.co.uk/quote/${data.token}`;
         const body = `Hi ${pupilName}, your quote for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
         if (phone) window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
         else if (email) window.location.href = `mailto:${email}?subject=${encodeURIComponent("Your quote")}&body=${encodeURIComponent(body)}`;

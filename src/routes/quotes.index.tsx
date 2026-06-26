@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, FileText } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Link2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -21,6 +22,7 @@ type TabKey = "pending" | "accepted" | "declined" | "expired";
 
 interface QuoteRow {
   id: string;
+  token: string | null;
   recipient_name: string;
   recipient_email: string | null;
   course_type: string | null;
@@ -61,7 +63,7 @@ function QuotesPage() {
       if (!uid) { setLoading(false); return; }
       const { data, error } = await supabase
         .from("quotes")
-        .select("id, recipient_name, recipient_email, course_type, hours, price, status, valid_until, sent_at")
+        .select("id, token, recipient_name, recipient_email, course_type, hours, price, status, valid_until, sent_at")
         .eq("instructor_id", uid)
         .order("sent_at", { ascending: false });
       if (error) console.error("[quotes] fetch error", error);
@@ -195,6 +197,30 @@ function QuotesPage() {
                       {displayStatus}
                     </span>
                   </div>
+                  {q.token && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const url = `https://everydriver.co.uk/quote/${q.token}`;
+                          try {
+                            await navigator.clipboard.writeText(url);
+                            toast.success("Link copied");
+                          } catch {
+                            toast.error("Could not copy link");
+                          }
+                        }}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
+                          background: "#fff", border: "1px solid #1A52A0", color: "#1A52A0",
+                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        <Link2 size={14} /> Copy link
+                      </button>
+                    </div>
+                  )}
                 </Card>
               );
             })}
