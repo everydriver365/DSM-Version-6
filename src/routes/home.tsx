@@ -3472,13 +3472,48 @@ function LessonsBreakdownModal({
     confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
     cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
   };
+function LessonsBreakdownModal({
+  open,
+  onClose,
+  rows,
+  onOpenLesson,
+  onDelete,
+}: {
+  open: boolean;
+  onClose: () => void;
+  rows: Array<{ id: string; lesson_date: string; lesson_time: string; duration_minutes: number | null; status: string; pupil_id: string; pupilName: string }>;
+  onOpenLesson: (id: string) => void;
+  onDelete: (id: string, reason: string, notes: string) => Promise<void>;
+}) {
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [reason, setReason] = useState("Created in error");
+  const [notes, setNotes] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  const fmtDayTime = (date: string, time: string) => {
+    const d = new Date(`${date}T${(time || "00:00:00").slice(0, 8)}`);
+    const day = d.toLocaleDateString("en-GB", { weekday: "short" });
+    return `${day} ${(time || "").slice(0, 5)}`;
+  };
+  const statusColors: Record<string, { bg: string; fg: string }> = {
+    completed: { bg: "#ECFDF5", fg: "#047857" },
+    confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
+    cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
+  };
   const completed = rows.filter((r) => r.status === "completed").length;
   const upcoming = rows.filter((r) => r.status === "confirmed" || r.status === "scheduled").length;
   const cancelled = rows.filter((r) => r.status === "cancelled").length;
   const totalHours =
     rows.filter((r) => r.status !== "cancelled").reduce((s, r) => s + (r.duration_minutes ?? 60), 0) / 60;
 
+  const closeConfirm = () => {
+    setConfirmId(null);
+    setReason("Created in error");
+    setNotes("");
+  };
+
   return (
+    <>
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
         style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
@@ -3496,38 +3531,66 @@ function LessonsBreakdownModal({
           {rows.map((r) => {
             const colors = statusColors[r.status] ?? { bg: "#F3F4F6", fg: "#374151" };
             return (
-              <button
+              <div
                 key={r.id}
-                onClick={() => onOpenLesson(r.id)}
                 style={{
                   width: "100%",
-                  textAlign: "left",
                   padding: 12,
                   borderBottom: "1px solid #f3f4f6",
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  background: "none",
-                  border: "none",
-                  borderBottomColor: "#f3f4f6",
-                  borderBottomStyle: "solid",
-                  borderBottomWidth: 1,
-                  cursor: "pointer",
                 }}
               >
-                <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0F2044" }}>
-                  {fmtDayTime(r.lesson_date, r.lesson_time)}
-                </div>
-                <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {r.pupilName}
-                </div>
-                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0F2044" }}>
-                  {r.duration_minutes ?? 60}m
-                </span>
-                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
-                  {r.status}
-                </span>
-              </button>
+                <button
+                  onClick={() => onOpenLesson(r.id)}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0F2044" }}>
+                    {fmtDayTime(r.lesson_date, r.lesson_time)}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {r.pupilName}
+                  </div>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0F2044" }}>
+                    {r.duration_minutes ?? 60}m
+                  </span>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                    {r.status}
+                  </span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmId(r.id);
+                    setReason("Created in error");
+                    setNotes("");
+                  }}
+                  aria-label="Delete lesson"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 6,
+                    cursor: "pointer",
+                    color: "#DC2626",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             );
           })}
         </div>
@@ -3548,7 +3611,66 @@ function LessonsBreakdownModal({
         </div>
       </DialogContent>
     </Dialog>
+
+    <Dialog open={confirmId !== null} onOpenChange={(v) => !v && !deleting && closeConfirm()}>
+      <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Poppins, sans-serif" }}>
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Delete this lesson?</DialogTitle>
+        </DialogHeader>
+        <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
+            Reason
+            <select
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 6, background: "#fff" }}
+            >
+              <option>Created in error</option>
+              <option>Duplicate entry</option>
+              <option>Wrong date/time</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
+            Additional notes (optional)
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={3}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 6, resize: "vertical", fontFamily: "inherit" }}
+            />
+          </label>
+        </div>
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          <button
+            onClick={closeConfirm}
+            disabled={deleting}
+            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 600, background: "transparent", color: "#374151", border: "none", borderRadius: 8, cursor: "pointer" }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={async () => {
+              if (!confirmId) return;
+              setDeleting(true);
+              try {
+                await onDelete(confirmId, reason, notes);
+                closeConfirm();
+              } finally {
+                setDeleting(false);
+              }
+            }}
+            disabled={deleting}
+            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#DC2626", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+          >
+            {deleting ? "Deleting…" : "Delete lesson"}
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
+
 
 
