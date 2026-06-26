@@ -86,7 +86,12 @@ function EndOfDayPage() {
       if (!id) return;
       setInstructorId(id);
 
-      const [{ data: ls }, { data: tls }, { data: hs }, { data: noteRow }] = await Promise.all([
+      const [
+        { data: ls, error: lessonsError },
+        { data: tls, error: tlsError },
+        { data: hs, error: paymentsError },
+        { data: noteRow },
+      ] = await Promise.all([
         supabase
           .from("lessons")
           .select(
@@ -117,6 +122,10 @@ function EndOfDayPage() {
           .eq("note_date", todayIso)
           .maybeSingle(),
       ]);
+      console.log("[eod] today date:", todayIso, "instructor:", id);
+      console.log("[eod] today lessons:", ls, "error:", lessonsError);
+      console.log("[eod] tomorrow lessons:", tls, "error:", tlsError);
+      console.log("[eod] today payments:", hs, "error:", paymentsError);
       setLessons((ls ?? []) as any);
       setTomorrowLessons((tls ?? []) as any);
       setHistory((hs ?? []) as any);
