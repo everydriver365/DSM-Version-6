@@ -148,7 +148,7 @@ function BroadcastPage() {
 
   const filteredPupils = useMemo(() => {
     return pupils.filter((p) => {
-      if (filter === "active") return (p.status ?? "active").toLowerCase() === "active";
+      if (filter === "active") return (p.status ?? "active").toLowerCase() !== "passed";
       if (filter === "passed") return (p.status ?? "").toLowerCase() === "passed";
       if (filter === "week") return weekIds.has(p.id);
       if (filter === "outstanding") return owedIds.has(p.id);
