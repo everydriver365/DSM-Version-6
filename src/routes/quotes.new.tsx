@@ -108,10 +108,22 @@ function NewQuotePage() {
       if (!res.ok) throw new Error(payload.message || JSON.stringify(payload));
       const data = Array.isArray(payload) ? payload[0] : payload;
       if (status === "sent" && data) {
-        const link = `https://everydriver.co.uk/quote/${data.token}`;
-        const body = `Hi ${pupilName}, your quote for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
-        if (phone) window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-        else if (email) window.location.href = `mailto:${email}?subject=${encodeURIComponent("Your quote")}&body=${encodeURIComponent(body)}`;
+        if (email.trim()) {
+          await fetch(`${SUPABASE_URL}/functions/v1/send-quote`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+              apikey: SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ quoteId: data.id }),
+          });
+        } else if (phone.trim()) {
+          const link = `https://everydriver.co.uk/quote/${data.token}`;
+          const smsBody = `Hi ${pupilName}, your quote for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
+          window.location.href = `sms:${phone}?body=${encodeURIComponent(smsBody)}`;
+        }
+        toast.success(`Quote sent to ${pupilName}`);
       }
       navigate({ to: "/quotes" });
     } catch (e: any) {
