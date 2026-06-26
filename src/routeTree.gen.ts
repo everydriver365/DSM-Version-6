@@ -34,6 +34,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -232,6 +233,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotesRoute = QuotesRouteImport.update({
+  id: '/quotes',
+  path: '/quotes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuickavailabilityRoute = QuickavailabilityRouteImport.update({
@@ -469,9 +475,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesIndexRoute = QuotesIndexRouteImport.update({
-  id: '/quotes/',
-  path: '/quotes/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => QuotesRoute,
 } as any)
 const PupilsIndexRoute = PupilsIndexRouteImport.update({
   id: '/pupils/',
@@ -494,9 +500,9 @@ const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesNewRoute = QuotesNewRouteImport.update({
-  id: '/quotes/new',
-  path: '/quotes/new',
-  getParentRoute: () => rootRouteImport,
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => QuotesRoute,
 } as any)
 const PupilsNewRoute = PupilsNewRouteImport.update({
   id: '/pupils/new',
@@ -651,6 +657,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -853,6 +860,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -955,6 +963,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
+    | '/quotes'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -1156,6 +1165,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
+    | '/quotes'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -1258,6 +1268,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
+  QuotesRoute: typeof QuotesRouteWithChildren
   ReferralsRoute: typeof ReferralsRoute
   RegisterRoute: typeof RegisterRoute
   ReminderRoute: typeof ReminderRoute
@@ -1291,12 +1302,10 @@ export interface RootRouteChildren {
   NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
-  QuotesNewRoute: typeof QuotesNewRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
-  QuotesIndexRoute: typeof QuotesIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
   LessonsRescheduleIdRoute: typeof LessonsRescheduleIdRoute
@@ -1481,6 +1490,13 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotes': {
+      id: '/quotes'
+      path: '/quotes'
+      fullPath: '/quotes'
+      preLoaderRoute: typeof QuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quickavailability': {
@@ -1814,10 +1830,10 @@ declare module '@tanstack/react-router' {
     }
     '/quotes/': {
       id: '/quotes/'
-      path: '/quotes'
+      path: '/'
       fullPath: '/quotes/'
       preLoaderRoute: typeof QuotesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof QuotesRoute
     }
     '/pupils/': {
       id: '/pupils/'
@@ -1849,10 +1865,10 @@ declare module '@tanstack/react-router' {
     }
     '/quotes/new': {
       id: '/quotes/new'
-      path: '/quotes/new'
+      path: '/new'
       fullPath: '/quotes/new'
       preLoaderRoute: typeof QuotesNewRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof QuotesRoute
     }
     '/pupils/new': {
       id: '/pupils/new'
@@ -2036,6 +2052,19 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
+interface QuotesRouteChildren {
+  QuotesNewRoute: typeof QuotesNewRoute
+  QuotesIndexRoute: typeof QuotesIndexRoute
+}
+
+const QuotesRouteChildren: QuotesRouteChildren = {
+  QuotesNewRoute: QuotesNewRoute,
+  QuotesIndexRoute: QuotesIndexRoute,
+}
+
+const QuotesRouteWithChildren =
+  QuotesRoute._addFileChildren(QuotesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MarketingRoute: MarketingRouteWithChildren,
@@ -2084,6 +2113,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
+  QuotesRoute: QuotesRouteWithChildren,
   ReferralsRoute: ReferralsRoute,
   RegisterRoute: RegisterRoute,
   ReminderRoute: ReminderRoute,
@@ -2117,12 +2147,10 @@ const rootRouteChildren: RootRouteChildren = {
   NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
-  QuotesNewRoute: QuotesNewRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
-  QuotesIndexRoute: QuotesIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
   LessonsRescheduleIdRoute: LessonsRescheduleIdRoute,

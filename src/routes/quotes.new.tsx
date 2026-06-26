@@ -1,280 +1,176 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
-import { ChevronLeft, Loader2 } from "lucide-react";
-import { Input } from "../components/dsm/Input";
-import { Card } from "../components/dsm/Card";
-import { SectionHeader } from "../components/dsm/SectionHeader";
-import { supabase } from "../lib/supabaseClient";
+import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/quotes/new")({
-  head: () => ({
-    meta: [
-      { title: "New quote — DSM by EveryDriver" },
-      { name: "description", content: "Send a course quote to a prospective pupil." },
-    ],
-  }),
   component: NewQuotePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
+const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plus", "Motorway", "Other"];
+const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
-type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
-
-const COURSE_TYPES: { v: CourseType; label: string }[] = [
-  { v: "intensive", label: "Intensive" },
-  { v: "semi-intensive", label: "Semi-intensive" },
-  { v: "weekly", label: "Weekly" },
-  { v: "custom", label: "Custom" },
-];
-
-function ymd(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontSize: 12, fontWeight: 500, color: "#6B7280", marginBottom: 4,
-        fontFamily: "Poppins, sans-serif",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+const inputStyle: React.CSSProperties = {
+  width: "100%", padding: "10px 12px", border: "1px solid #E2E6ED",
+  borderRadius: 8, fontSize: 14, fontFamily: "Poppins, sans-serif",
+  background: "#fff", color: "#0F2044", boxSizing: "border-box",
+};
+const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 4, display: "block" };
 
 function NewQuotePage() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  const [recipientName, setRecipientName] = useState("");
-  const [recipientEmail, setRecipientEmail] = useState("");
-  const [recipientPhone, setRecipientPhone] = useState("");
-  const [courseType, setCourseType] = useState<CourseType>("intensive");
-  const [hours, setHours] = useState<string>("10");
+  const [pupilName, setPupilName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [courseType, setCourseType] = useState(COURSE_TYPES[0]);
+  const [hours, setHours] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [deposit, setDeposit] = useState<string>("");
-  const [includesTest, setIncludesTest] = useState(false);
-  const [personalMessage, setPersonalMessage] = useState("");
-  const [validUntil, setValidUntil] = useState<string>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 14);
-    return ymd(d);
-  });
+  const [notes, setNotes] = useState("");
+  const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
+  const [validUntil, setValidUntil] = useState(defaultValid);
+  const [priceTouched, setPriceTouched] = useState(false);
+  const [depositTouched, setDepositTouched] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      setUserId(data.user?.id ?? null);
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id ?? null;
+      setUserId(uid);
+      if (uid) {
+        const { data } = await supabase.from("instructors").select("hourly_rate").eq("id", uid).maybeSingle();
+        if (data?.hourly_rate) setHourlyRate(Number(data.hourly_rate) || 0);
+      }
     })();
   }, []);
 
-  const previewTitle = useMemo(() => {
-    const label = COURSE_TYPES.find((c) => c.v === courseType)?.label ?? "Course";
-    const h = hours ? `${hours}h ` : "";
-    return `${h}${label}${includesTest ? " + Test" : ""}`;
-  }, [courseType, hours, includesTest]);
+  useEffect(() => {
+    const h = parseFloat(hours);
+    if (!priceTouched && !isNaN(h) && hourlyRate > 0) setPrice((h * hourlyRate).toFixed(2));
+  }, [hours, hourlyRate, priceTouched]);
 
-  async function submit() {
+  useEffect(() => {
+    const p = parseFloat(price);
+    if (!depositTouched && !isNaN(p)) setDeposit((p * 0.2).toFixed(2));
+  }, [price, depositTouched]);
+
+  async function generateRef(): Promise<string> {
+    const year = new Date().getFullYear();
+    const { count } = await supabase.from("quotes").select("*", { count: "exact", head: true }).eq("instructor_id", userId!);
+    const seq = String((count ?? 0) + 1).padStart(3, "0");
+    return `QT-${year}-${seq}`;
+  }
+
+  async function save(status: "draft" | "sent") {
+    if (!pupilName.trim()) { alert("Pupil name is required"); return; }
+    if (postcode && !POSTCODE_RE.test(postcode.trim())) { alert("Invalid UK postcode"); return; }
+    if (!userId) { alert("Not signed in"); return; }
     setSaving(true);
-    setError(null);
-
-    let uid = userId;
-    if (!uid) {
-      const { data: authData } = await supabase.auth.getUser();
-      uid = authData.user?.id ?? null;
-      if (uid) setUserId(uid);
-    }
-    if (!uid) {
+    try {
+      const quote_ref = await generateRef();
+      const { data, error } = await supabase.from("quotes").insert({
+        instructor_id: userId,
+        quote_ref,
+        pupil_name: pupilName.trim(),
+        email: email.trim() || null,
+        phone: phone.trim() || null,
+        postcode: postcode.trim() || null,
+        course_type: courseType,
+        total_hours: hours ? parseFloat(hours) : null,
+        price: price ? parseFloat(price) : null,
+        deposit: deposit ? parseFloat(deposit) : null,
+        notes: notes.trim() || null,
+        valid_until: validUntil,
+        status,
+      }).select().single();
+      if (error) throw error;
+      if (status === "sent" && data) {
+        const link = `${window.location.origin}/quotes/${data.id}`;
+        const body = `Hi ${pupilName}, your quote ${quote_ref} for £${parseFloat(price || "0").toFixed(2)}: ${link}`;
+        if (phone) window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+        else if (email) window.location.href = `mailto:${email}?subject=${encodeURIComponent("Your quote")}&body=${encodeURIComponent(body)}`;
+      }
+      navigate({ to: "/quotes" });
+    } catch (e: any) {
+      alert("Failed to save: " + (e?.message ?? "unknown"));
+    } finally {
       setSaving(false);
-      setError("You must be signed in to send a quote");
-      toast.error("You must be signed in to send a quote");
-      return;
     }
-
-    const missing: string[] = [];
-    if (!recipientName.trim()) missing.push("recipient name");
-    if (!price || parseFloat(price) <= 0) missing.push("price");
-    if (missing.length > 0) {
-      setSaving(false);
-      const msg = `Missing required fields: ${missing.join(", ")}`;
-      setError(msg);
-      toast.error(msg);
-      return;
-    }
-
-    const payload = {
-      instructor_id: uid,
-      recipient_name: recipientName.trim(),
-      recipient_email: recipientEmail.trim() || null,
-      recipient_phone: recipientPhone.trim() || null,
-      course_type: courseType,
-      hours: hours ? parseFloat(hours) : null,
-      price: parseFloat(price),
-      deposit_amount: deposit ? parseFloat(deposit) : 0,
-      includes_test: includesTest,
-      personal_message: personalMessage.trim() || null,
-      valid_until: validUntil || null,
-      status: "pending",
-    };
-
-    const { error: insertError } = await supabase
-      .from("quotes")
-      .insert(payload)
-      .select()
-      .single();
-
-    setSaving(false);
-
-    if (insertError) {
-      setError(insertError.message || "Failed to send quote");
-      toast.error(insertError.message || "Failed to send quote");
-      return;
-    }
-
-    toast.success(`Quote sent to ${recipientName.trim()}`);
-    navigate({ to: "/quotes" });
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 24 }}>
-      <div
-        style={{
-          position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
-          padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}
-      >
-        <button onClick={() => navigate({ to: "/quotes" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-          aria-label="Back">
-          <ChevronLeft size={24} />
+    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#fff" }}>
+      <div style={{ background: "#0F2044", color: "#fff", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, paddingTop: "calc(14px + env(safe-area-inset-top, 0px))" }}>
+        <button onClick={() => navigate({ to: "/quotes" })} aria-label="Back" style={{ background: "none", border: "none", color: "#fff", display: "flex" }}>
+          <ArrowLeft size={22} />
         </button>
-        <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>New quote</h1>
-        <button onClick={submit} disabled={saving}
-          style={{
-            background: "none", border: "none",
-            cursor: saving ? "not-allowed" : "pointer",
-            color: "#fff", fontWeight: 700, fontSize: 14,
-            opacity: saving ? 0.5 : 1,
-          }}>
-          {saving ? "Sending…" : "Send"}
-        </button>
+        <div style={{ fontWeight: 700, fontSize: 16 }}>New quote</div>
       </div>
 
-      <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: 14 }}>
-        <SectionHeader>RECIPIENT</SectionHeader>
-        <Input label="Name" value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Pupil name" />
-        <Input label="Email" type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} placeholder="name@example.com" />
-        <Input label="Phone" type="tel" value={recipientPhone} onChange={(e) => setRecipientPhone(e.target.value)} placeholder="07…" />
-
-        <SectionHeader>COURSE</SectionHeader>
+      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
-          <FieldLabel>Course type</FieldLabel>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {COURSE_TYPES.map((t) => {
-              const active = courseType === t.v;
-              return (
-                <button key={t.v} onClick={() => setCourseType(t.v)}
-                  style={{
-                    padding: "10px 12px", borderRadius: 10,
-                    border: `1px solid ${active ? "#1A52A0" : "#e3e6ec"}`,
-                    background: active ? "#1A52A0" : "#fff",
-                    color: active ? "#fff" : "#1A1A2E",
-                    fontWeight: 600, fontSize: 13, cursor: "pointer",
-                    fontFamily: "Poppins, sans-serif",
-                  }}>
-                  {t.label}
-                </button>
-              );
-            })}
+          <label style={labelStyle}>Pupil name *</label>
+          <input style={inputStyle} value={pupilName} onChange={(e) => setPupilName(e.target.value)} />
+        </div>
+        <div>
+          <label style={labelStyle}>Email</label>
+          <input style={inputStyle} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div>
+          <label style={labelStyle}>Phone</label>
+          <input style={inputStyle} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        </div>
+        <div>
+          <label style={labelStyle}>Postcode</label>
+          <input style={inputStyle} value={postcode} onChange={(e) => setPostcode(e.target.value.toUpperCase())} />
+        </div>
+        <div>
+          <label style={labelStyle}>Course type</label>
+          <select style={inputStyle} value={courseType} onChange={(e) => setCourseType(e.target.value)}>
+            {COURSE_TYPES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div>
+            <label style={labelStyle}>Total hours</label>
+            <input style={inputStyle} type="number" step={0.5} value={hours} onChange={(e) => setHours(e.target.value)} />
+          </div>
+          <div>
+            <label style={labelStyle}>Price £</label>
+            <input style={inputStyle} type="number" step={0.5} value={price} onChange={(e) => { setPrice(e.target.value); setPriceTouched(true); }} />
           </div>
         </div>
+        <div>
+          <label style={labelStyle}>Deposit £</label>
+          <input style={inputStyle} type="number" step={0.5} value={deposit} onChange={(e) => { setDeposit(e.target.value); setDepositTouched(true); }} />
+        </div>
+        <div>
+          <label style={labelStyle}>Notes</label>
+          <textarea style={{ ...inputStyle, minHeight: 80, resize: "vertical" }} value={notes} onChange={(e) => setNotes(e.target.value)} />
+        </div>
+        <div>
+          <label style={labelStyle}>Valid until</label>
+          <input style={inputStyle} type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
+        </div>
+      </div>
 
-        <Input label="Hours" type="number" inputMode="numeric" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="10" />
-
-        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#1A1A2E" }}>
-          <input type="checkbox" checked={includesTest} onChange={(e) => setIncludesTest(e.target.checked)} />
-          Includes practical test
-        </label>
-
-        <SectionHeader>PRICING</SectionHeader>
-        <Input label="Price (£)" type="number" inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" />
-        <Input label="Deposit (£)" type="number" inputMode="decimal" value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="0.00" />
-        <Input label="Valid until" type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
-
-        <SectionHeader>PERSONAL MESSAGE</SectionHeader>
-        <textarea
-          value={personalMessage}
-          onChange={(e) => setPersonalMessage(e.target.value)}
-          placeholder="Hi! Here's the quote we discussed…"
-          rows={4}
-          style={{
-            width: "100%", borderRadius: 10, padding: 10,
-            borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED",
-            fontFamily: "Poppins, sans-serif", fontSize: 14, color: "#1A1A2E",
-            background: "#fff", resize: "vertical",
-          }}
-        />
-
-        <SectionHeader>PREVIEW</SectionHeader>
-        <Card style={{ padding: 14 }}>
-          <div style={{ fontSize: 12, color: "#6B7280" }}>Quote for</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044", marginTop: 2 }}>
-            {recipientName.trim() || "Recipient"}
-          </div>
-          <div style={{ marginTop: 10, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#1A1A2E" }}>{previewTitle}</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#0F2044" }}>
-              £{price ? Number(price).toFixed(0) : "0"}
-            </div>
-          </div>
-          {deposit && Number(deposit) > 0 && (
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
-              Deposit: £{Number(deposit).toFixed(0)}
-            </div>
-          )}
-          {includesTest && (
-            <div style={{ fontSize: 12, color: "#16A34A", marginTop: 4, fontWeight: 600 }}>
-              ✓ Includes practical test
-            </div>
-          )}
-          {personalMessage.trim() && (
-            <div style={{
-              marginTop: 10, padding: 10, background: "#F2F4F8", borderRadius: 8,
-              fontSize: 13, color: "#1A1A2E", whiteSpace: "pre-wrap",
-            }}>
-              {personalMessage.trim()}
-            </div>
-          )}
-          {validUntil && (
-            <div style={{ fontSize: 11, color: "#6B7280", marginTop: 10 }}>
-              Valid until {new Date(validUntil + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-            </div>
-          )}
-        </Card>
-
-        <button onClick={submit} disabled={saving}
-          style={{
-            height: 48, marginTop: 8, background: "#16A34A", color: "#fff",
-            border: "none", borderRadius: 10, fontWeight: 700, fontSize: 15,
-            cursor: saving ? "not-allowed" : "pointer",
-            fontFamily: "Poppins, sans-serif",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            opacity: saving ? 0.7 : 1,
-          }}>
-          {saving && <Loader2 size={16} className="animate-spin" />}
-          {saving ? "Sending…" : "Send quote"}
-        </button>
-
-        {error && (
-          <div style={{ color: "#CC2229", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
-            {error}
-          </div>
-        )}
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #E2E6ED", padding: "12px 16px", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))", display: "flex", gap: 8 }}>
+        <button disabled={saving} onClick={() => save("draft")} style={{
+          flex: 1, padding: "12px", borderRadius: 10, border: "1px solid #0F2044",
+          background: "#fff", color: "#0F2044", fontWeight: 600, fontSize: 14,
+          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+        }}>Save as draft</button>
+        <button disabled={saving} onClick={() => save("sent")} style={{
+          flex: 1, padding: "12px", borderRadius: 10, border: "none",
+          background: "#0F2044", color: "#fff", fontWeight: 600, fontSize: 14,
+          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+        }}>Save and send</button>
       </div>
     </div>
   );
