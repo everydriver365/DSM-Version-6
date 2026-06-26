@@ -161,7 +161,11 @@ function EndOfDayPage() {
 
   const stats = useMemo(() => {
     const totalMin = lessons.reduce((s, l) => s + (l.duration_minutes ?? 0), 0);
-    const earned = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
+    const paidEarnings = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
+    const prepaidEarnings = lessons
+      .filter((l) => prepaidPupilIds.has(l.pupil_id))
+      .reduce((s, l) => s + (l.amount_due ?? 0), 0);
+    const earned = paidEarnings + prepaidEarnings;
     const outstanding = lessons
       .filter((l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id))
       .reduce((s, l) => s + (l.amount_due ?? 0), 0);
@@ -169,6 +173,7 @@ function EndOfDayPage() {
       count: lessons.length,
       hours: totalMin / 60,
       earned,
+      prepaidEarnings,
       outstanding,
     };
   }, [lessons, history, prepaidPupilIds]);
@@ -258,7 +263,7 @@ function EndOfDayPage() {
       <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <Stat label="Lessons today" value={String(stats.count)} />
         <Stat label="Hours taught" value={stats.hours.toFixed(1)} />
-        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" />
+        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
         <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0F2044"} />
       </div>
 
@@ -504,7 +509,7 @@ function Badge({ children, bg, color }: { children: React.ReactNode; bg: string;
   );
 }
 
-function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
+function Stat({ label, value, color, hint }: { label: string; value: string; color?: string; hint?: string }) {
   return (
     <div
       style={{
@@ -514,7 +519,10 @@ function Stat({ label, value, color }: { label: string; value: string; color?: s
         backgroundColor: "#FFFFFF",
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0F2044" }}>{value}</div>
+      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0F2044" }}>
+        {value}
+        {hint && <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginLeft: 4 }}>{hint}</span>}
+      </div>
       <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{label}</div>
     </div>
   );
