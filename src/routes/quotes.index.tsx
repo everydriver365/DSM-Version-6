@@ -230,11 +230,3 @@ function QuotesPage() {
     </div>
   );
 }
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
