@@ -345,7 +345,6 @@ function HomePage() {
           test_centre: p.test_centre ?? null,
         })),
       );
-      }
     }
     loadCount();
   }, []);
