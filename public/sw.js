@@ -1,45 +1,31 @@
-// Minimal service worker for Web Push notifications.
-// Handles incoming push events and notification clicks.
+self.addEventListener('push', function(event) {
+  if (!event.data) return;
+  const data = event.data.json();
+  const options = {
+    body: data.body || '',
+    icon: '/icon-192.png',
+    badge: '/icon-72.png',
+    tag: data.tag || 'dsm-notification',
+    requireInteraction: false,
+    data: data.data || {}
+  };
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'DSM by EveryDriver', options)
+  );
+});
 
-self.addEventListener("install", (event) => {
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  const url = event.notification.data?.url || '/home';
+  event.waitUntil(
+    clients.openWindow(url)
+  );
+});
+
+self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener("push", (event) => {
-  let data = { title: "Notification", body: "", url: "/" };
-  try {
-    if (event.data) data = { ...data, ...event.data.json() };
-  } catch {
-    if (event.data) data.body = event.data.text();
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: "/icon-192.png",
-      badge: "/icon-192.png",
-      data: { url: data.url || "/" },
-    }),
-  );
-});
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  const targetUrl = (event.notification.data && event.notification.data.url) || "/";
-
-  event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      for (const client of clients) {
-        if ("focus" in client) {
-          client.navigate(targetUrl);
-          return client.focus();
-        }
-      }
-      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
-    }),
-  );
+self.addEventListener('activate', function(event) {
+  event.waitUntil(clients.claim());
 });
