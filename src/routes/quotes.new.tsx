@@ -164,8 +164,16 @@ function NewQuotePage() {
             <input style={inputStyle} type="number" step={0.5} value={hours} onChange={(e) => setHours(e.target.value)} />
           </div>
           <div>
-            <label style={labelStyle}>Price £</label>
-            <input style={inputStyle} type="number" step={0.5} value={price} onChange={(e) => { setPrice(e.target.value); setPriceTouched(true); }} />
+            <label style={labelStyle}>Price £ *</label>
+            <input
+              style={errors.price ? errorInputStyle : inputStyle}
+              type="number"
+              step={0.5}
+              value={price}
+              onChange={(e) => { setPrice(e.target.value); setPriceTouched(true); if (errors.price) setErrors((p) => ({ ...p, price: undefined })); }}
+              aria-invalid={!!errors.price}
+            />
+            {errors.price && <div style={errorTextStyle}>{errors.price}</div>}
           </div>
         </div>
         <div>
