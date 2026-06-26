@@ -238,6 +238,25 @@ function HomePage() {
   const [weekLessonCount, setWeekLessonCount] = useState(0);
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [earningsEstimated, setEarningsEstimated] = useState(false);
+  const [earningsOpen, setEarningsOpen] = useState(false);
+  const [lessonsOpen, setLessonsOpen] = useState(false);
+  const [earningsRows, setEarningsRows] = useState<Array<{
+    id: string;
+    date: string;
+    pupilName: string;
+    amount: number;
+    method: string;
+    source: "lesson" | "booking";
+  }>>([]);
+  const [weekLessonRows, setWeekLessonRows] = useState<Array<{
+    id: string;
+    lesson_date: string;
+    lesson_time: string;
+    duration_minutes: number | null;
+    status: string;
+    pupil_id: string;
+    pupilName: string;
+  }>>([]);
   
   const [tab, setTab] = useState<TabKey>("today");
   const [workingHours, setWorkingHours] = useState<any>(null);
@@ -582,7 +601,7 @@ function HomePage() {
       // Source 1: EOL payments recorded in lesson_history
       const { data: historyRows } = await supabase
         .from("lesson_history")
-        .select("lesson_cost, payment_status, created_at")
+        .select("id, lesson_cost, payment_status, payment_method, created_at, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .eq("payment_status", "paid")
         .gte("created_at", weekStart.toISOString());
@@ -590,7 +609,7 @@ function HomePage() {
       // Source 2: Course booking deposits from public site
       const { data: bookingRows } = await supabase
         .from("course_bookings")
-        .select("amount_paid, booked_at")
+        .select("id, amount_paid, booked_at, pupil_name, payment_method")
         .eq("instructor_id", userId)
         .eq("status", "confirmed")
         .gte("booked_at", weekStart.toISOString());
@@ -598,16 +617,35 @@ function HomePage() {
       // Combine all sources
       let wk = 0;
       let td = 0;
-      (historyRows ?? []).forEach((p) => {
+      const earningsList: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }> = [];
+      (historyRows ?? []).forEach((p: any) => {
         const amt = Number(p.lesson_cost ?? 0);
         wk += amt;
         if (new Date(p.created_at) >= todayStart) td += amt;
+        earningsList.push({
+          id: String(p.id),
+          date: p.created_at,
+          pupilName: p.pupils?.name ?? "Pupil",
+          amount: amt,
+          method: p.payment_method ?? "—",
+          source: "lesson",
+        });
       });
-      (bookingRows ?? []).forEach((p) => {
+      (bookingRows ?? []).forEach((p: any) => {
         const amt = Number(p.amount_paid ?? 0);
         wk += amt;
         if (new Date(p.booked_at) >= todayStart) td += amt;
+        earningsList.push({
+          id: String(p.id),
+          date: p.booked_at,
+          pupilName: p.pupil_name ?? "Course booking",
+          amount: amt,
+          method: p.payment_method ?? "Booking",
+          source: "booking",
+        });
       });
+      earningsList.sort((a, b) => (a.date < b.date ? 1 : -1));
+      setEarningsRows(earningsList);
 
       // Fallback: estimate from lessons taught when no formal payments recorded
       if (wk === 0) {
@@ -650,6 +688,28 @@ function HomePage() {
         .gte("lesson_date", ymd(weekStart))
         .lt("lesson_date", ymd(weekEnd));
       setWeekLessonCount(wkLessonCount ?? 0);
+
+      // Full week lesson list for the breakdown modal
+      const { data: weekLessonData } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name, first_name)")
+        .eq("instructor_id", userId)
+        .gte("lesson_date", ymd(weekStart))
+        .lt("lesson_date", ymd(weekEnd))
+        .is("deleted_at", null)
+        .order("lesson_date", { ascending: true })
+        .order("lesson_time", { ascending: true });
+      setWeekLessonRows(
+        (weekLessonData ?? []).map((l: any) => ({
+          id: l.id,
+          lesson_date: l.lesson_date,
+          lesson_time: l.lesson_time,
+          duration_minutes: l.duration_minutes,
+          status: l.status,
+          pupil_id: l.pupil_id,
+          pupilName: l.pupils?.first_name ?? l.pupils?.name ?? "Pupil",
+        })),
+      );
 
       const { data: wh } = await supabase
         .from("working_hours")
@@ -1666,7 +1726,12 @@ function HomePage() {
               display: 'flex',
             }}
           >
-            <div style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)' }}>
+            <div
+              onClick={() => setEarningsOpen(true)}
+              role="button"
+              tabIndex={0}
+              style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer' }}
+            >
               <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 EARNINGS · WEEK
               </div>
@@ -1681,7 +1746,7 @@ function HomePage() {
               {weekEarnings === 0 ? (
                 <button
                   type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
                   style={{ fontSize: 10, color: '#FFD27A', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
                 >
                   Record payments via EOL →
@@ -1689,7 +1754,7 @@ function HomePage() {
               ) : earningsEstimated ? (
                 <button
                   type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
+                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
                   style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
                 >
                   Complete EOL
@@ -1703,7 +1768,12 @@ function HomePage() {
                 <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
               </div>
             </div>
-            <div style={{ flex: 1, padding: '10px 12px' }}>
+            <div
+              onClick={() => setLessonsOpen(true)}
+              role="button"
+              tabIndex={0}
+              style={{ flex: 1, padding: '10px 12px', cursor: 'pointer' }}
+            >
               <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 LESSONS · WEEK
               </div>
@@ -2596,6 +2666,25 @@ function HomePage() {
           navigate({ to: "/pupils/$id", params: { id } });
         }}
       />
+
+      <EarningsBreakdownModal
+        open={earningsOpen}
+        onClose={() => setEarningsOpen(false)}
+        total={weekEarnings}
+        rows={earningsRows}
+        onRecord={() => { setEarningsOpen(false); navigate({ to: "/schedule" }); }}
+        onViewMTD={() => { setEarningsOpen(false); navigate({ to: "/month-to-date" }); }}
+      />
+
+      <LessonsBreakdownModal
+        open={lessonsOpen}
+        onClose={() => setLessonsOpen(false)}
+        rows={weekLessonRows}
+        onOpenLesson={(id: string) => {
+          setLessonsOpen(false);
+          navigate({ to: "/lessons/$id", params: { id } });
+        }}
+      />
     </div>
 
   );
@@ -3247,4 +3336,197 @@ function OutstandingBreakdownModal({
     </Dialog>
   );
 }
+
+function EarningsBreakdownModal({
+  open,
+  onClose,
+  total,
+  rows,
+  onRecord,
+  onViewMTD,
+}: {
+  open: boolean;
+  onClose: () => void;
+  total: number;
+  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }>;
+  onRecord: () => void;
+  onViewMTD: () => void;
+}) {
+  const fmtDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  };
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Earnings this week</span>
+            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
+          {rows.length === 0 ? (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              No payments recorded this week
+              <div style={{ marginTop: 8 }}>
+                <button
+                  onClick={onRecord}
+                  style={{ background: "none", border: "none", color: "#1A52A0", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
+                >
+                  Record payment →
+                </button>
+              </div>
+            </div>
+          ) : (
+            rows.map((r) => (
+              <div
+                key={`${r.source}-${r.id}`}
+                style={{ padding: 12, borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {r.pupilName}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                  {r.method}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#047857", minWidth: 60, textAlign: "right" }}>
+                  £{r.amount.toFixed(2)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700, color: "#111827" }}>
+            <span>Total</span>
+            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={onViewMTD}
+              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1A52A0", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+            >
+              View MTD →
+            </button>
+            <button
+              onClick={onClose}
+              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function LessonsBreakdownModal({
+  open,
+  onClose,
+  rows,
+  onOpenLesson,
+}: {
+  open: boolean;
+  onClose: () => void;
+  rows: Array<{ id: string; lesson_date: string; lesson_time: string; duration_minutes: number | null; status: string; pupil_id: string; pupilName: string }>;
+  onOpenLesson: (id: string) => void;
+}) {
+  const fmtDayTime = (date: string, time: string) => {
+    const d = new Date(`${date}T${(time || "00:00:00").slice(0, 8)}`);
+    const day = d.toLocaleDateString("en-GB", { weekday: "short" });
+    return `${day} ${(time || "").slice(0, 5)}`;
+  };
+  const statusColors: Record<string, { bg: string; fg: string }> = {
+    completed: { bg: "#ECFDF5", fg: "#047857" },
+    confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
+    cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
+  };
+  const completed = rows.filter((r) => r.status === "completed").length;
+  const upcoming = rows.filter((r) => r.status === "confirmed" || r.status === "scheduled").length;
+  const cancelled = rows.filter((r) => r.status === "cancelled").length;
+  const totalHours =
+    rows.filter((r) => r.status !== "cancelled").reduce((s, r) => s + (r.duration_minutes ?? 60), 0) / 60;
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+      >
+        <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
+          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Lessons this week</DialogTitle>
+        </DialogHeader>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
+          {rows.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              No lessons this week.
+            </div>
+          )}
+          {rows.map((r) => {
+            const colors = statusColors[r.status] ?? { bg: "#F3F4F6", fg: "#374151" };
+            return (
+              <button
+                key={r.id}
+                onClick={() => onOpenLesson(r.id)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: 12,
+                  borderBottom: "1px solid #f3f4f6",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "none",
+                  border: "none",
+                  borderBottomColor: "#f3f4f6",
+                  borderBottomStyle: "solid",
+                  borderBottomWidth: 1,
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0F2044" }}>
+                  {fmtDayTime(r.lesson_date, r.lesson_time)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {r.pupilName}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0F2044" }}>
+                  {r.duration_minutes ?? 60}m
+                </span>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  {r.status}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontSize: 12, color: "#374151", fontWeight: 600 }}>
+            Completed: {completed} · Upcoming: {upcoming} · Cancelled: {cancelled}
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+            {totalHours.toFixed(1)}h taught this week
+          </div>
+          <button
+            onClick={onClose}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+          >
+            Close
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
