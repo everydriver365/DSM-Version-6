@@ -420,9 +420,14 @@ function WeeklyReportPage() {
                   </div>
                   <div
                     className="text-[12px] font-medium"
-                    style={{ ...POPPINS, color: "#0F2044", width: 60, textAlign: "right" }}
+                    style={{
+                      ...POPPINS,
+                      width: 60,
+                      textAlign: "right",
+                      color: d.earningsPence > 0 ? "#15803D" : hasLessons ? "#B45309" : "#9CA3AF",
+                    }}
                   >
-                    {gbp(d.earningsPence)}
+                    {d.earningsPence > 0 ? gbp(d.earningsPence) : hasLessons ? "Unpaid" : ""}
                   </div>
                 </div>
               );
