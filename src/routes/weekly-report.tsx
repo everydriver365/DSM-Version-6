@@ -10,6 +10,7 @@ import {
   Download,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 export const Route = createFileRoute("/weekly-report")({
   head: () => ({
@@ -66,6 +67,7 @@ function gbpFromPounds(n: number): string {
 type Lesson = {
   id: string;
   lesson_date: string;
+  lesson_time: string | null;
   duration_minutes: number | null;
   status: string | null;
   payment_status: string | null;
@@ -100,6 +102,7 @@ function WeeklyReportPage() {
   const [pupilUsedHours, setPupilUsedHours] = useState<Record<string, number>>({});
   const [prevLessonCount, setPrevLessonCount] = useState(0);
   const [testsThisWeek, setTestsThisWeek] = useState(0);
+  const [eolLesson, setEolLesson] = useState<any>(null);
 
   const weekEnd = useMemo(() => addDays(weekStart, 6), [weekStart]);
   const thisWeekStart = useMemo(() => startOfWeek(new Date()), []);
@@ -132,7 +135,7 @@ function WeeklyReportPage() {
     const [lRes, hRes, prevRes, pRes] = await Promise.all([
       supabase
         .from("lessons")
-        .select("id, lesson_date, duration_minutes, status, payment_status, amount_due, eol_completed, pupil_id")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, eol_completed, pupil_id")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .gte("lesson_date", startStr)
@@ -564,18 +567,54 @@ function WeeklyReportPage() {
                         </span>
                       );
                     })()}
-                    <span
-                      className="text-[10px] font-semibold"
-                      style={{
-                        ...POPPINS,
-                        padding: "3px 7px",
-                        borderRadius: 999,
-                        background: p.allEol ? "#DCFCE7" : "#FEF3C7",
-                        color: p.allEol ? "#15803D" : "#B45309",
-                      }}
-                    >
-                      {p.allEol ? "EOL ✓" : "EOL pending"}
-                    </span>
+                    {p.allEol ? (
+                      <span
+                        className="text-[10px] font-semibold"
+                        style={{
+                          ...POPPINS,
+                          padding: "3px 7px",
+                          borderRadius: 999,
+                          background: "#DCFCE7",
+                          color: "#15803D",
+                        }}
+                      >
+                        EOL ✓
+                      </span>
+                    ) : (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          const pending = lessons
+                            .filter((l) => l.pupil_id === p.id && !l.eol_completed)
+                            .sort((a, b) => (a.lesson_date < b.lesson_date ? 1 : -1));
+                          const target = pending[0];
+                          if (!target) return;
+                          setEolLesson({
+                            id: target.id,
+                            pupil_id: p.id,
+                            pupilName: p.name,
+                            instructor_id: userId,
+                            duration_minutes: target.duration_minutes ?? 60,
+                            lesson_date: target.lesson_date,
+                            lesson_time: target.lesson_time ?? "09:00",
+                          });
+                        }}
+                        className="text-[10px] font-semibold"
+                        style={{
+                          ...POPPINS,
+                          padding: "3px 7px",
+                          borderRadius: 999,
+                          background: "#FEF3C7",
+                          color: "#B45309",
+                          cursor: "pointer",
+                        }}
+                      >
+                        EOL pending
+                      </span>
+                    )}
                   </div>
                 </button>
               ))}
@@ -626,6 +665,24 @@ function WeeklyReportPage() {
           Export week CSV
         </button>
       </div>
+
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => setEolLesson(null)}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id}
+          pupilName={eolLesson.pupilName}
+          instructorId={eolLesson.instructor_id}
+          durationMinutes={eolLesson.duration_minutes}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            setEolLesson(null);
+            void loadWeek();
+          }}
+        />
+      )}
     </div>
   );
 }
