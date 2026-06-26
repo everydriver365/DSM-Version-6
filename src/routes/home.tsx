@@ -2685,6 +2685,27 @@ function HomePage() {
           setLessonsOpen(false);
           navigate({ to: "/lessons/$id", params: { id } });
         }}
+        onDelete={async (id: string, reason: string, notes: string) => {
+          const prev = weekLessonRows;
+          setWeekLessonRows((rs) => rs.filter((r) => r.id !== id));
+          setWkLessons((n) => Math.max(0, n - 1));
+          try {
+            const { error } = await supabase
+              .from("lessons")
+              .update({
+                deleted_at: new Date().toISOString(),
+                cancellation_reason: reason,
+                cancellation_notes: notes || null,
+              })
+              .eq("id", id);
+            if (error) throw error;
+            toast.success("Lesson removed");
+          } catch (e: any) {
+            setWeekLessonRows(prev);
+            setWkLessons((n) => n + 1);
+            toast.error(e?.message || "Failed to delete lesson");
+          }
+        }}
       />
     </div>
 
