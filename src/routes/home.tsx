@@ -78,6 +78,7 @@ import {
 } from "../components/ui/dialog";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PushPermissionCard } from "../components/dsm/PushPermissionCard";
 import {
   getPermission,
   requestPermission,
@@ -1382,6 +1383,8 @@ function HomePage() {
           />
         }
       />
+
+      <PushPermissionCard />
 
       {/* SLIDE-IN MENU */}
       {menuOpen && (

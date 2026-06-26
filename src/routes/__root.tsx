@@ -195,52 +195,14 @@ function RootComponent() {
     import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
   }, [pathname]);
 
-  // Register service worker and subscribe to web push (once on mount).
+  // Register the service worker only. Permission is requested by the
+  // in-app PushPermissionCard so the user sees a clear prompt first.
   useEffect(() => {
-    async function registerPush() {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-      try {
-        const reg = await navigator.serviceWorker.register('/sw.js');
-        console.log("[push] service worker registered");
-
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return;
-
-        let sub = await reg.pushManager.getSubscription();
-        if (!sub) {
-          sub = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: VAPID_PUBLIC_KEY,
-          });
-        }
-
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return;
-
-        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-
-        await fetch(`${SUPABASE_URL}/rest/v1/push_subscriptions`, {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-            Prefer: "resolution=merge-duplicates,return=minimal",
-          },
-          body: JSON.stringify({
-            instructor_id: session.user.id,
-            subscription: JSON.stringify(sub),
-            user_agent: navigator.userAgent,
-          }),
-        });
-
-        console.log("[push] subscription saved");
-      } catch (err) {
-        console.warn("[push] setup failed:", err);
-      }
-    }
-    registerPush();
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then(() => console.log("[push] service worker registered"))
+      .catch((err) => console.warn("[push] sw register failed:", err));
   }, []);
 
   return (
