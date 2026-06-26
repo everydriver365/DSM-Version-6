@@ -601,7 +601,7 @@ function HomePage() {
       // Source 1: EOL payments recorded in lesson_history
       const { data: historyRows } = await supabase
         .from("lesson_history")
-        .select("lesson_cost, payment_status, created_at")
+        .select("id, lesson_cost, payment_status, payment_method, created_at, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .eq("payment_status", "paid")
         .gte("created_at", weekStart.toISOString());
@@ -609,7 +609,7 @@ function HomePage() {
       // Source 2: Course booking deposits from public site
       const { data: bookingRows } = await supabase
         .from("course_bookings")
-        .select("amount_paid, booked_at")
+        .select("id, amount_paid, booked_at, pupil_name, payment_method")
         .eq("instructor_id", userId)
         .eq("status", "confirmed")
         .gte("booked_at", weekStart.toISOString());
@@ -617,16 +617,35 @@ function HomePage() {
       // Combine all sources
       let wk = 0;
       let td = 0;
-      (historyRows ?? []).forEach((p) => {
+      const earningsList: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }> = [];
+      (historyRows ?? []).forEach((p: any) => {
         const amt = Number(p.lesson_cost ?? 0);
         wk += amt;
         if (new Date(p.created_at) >= todayStart) td += amt;
+        earningsList.push({
+          id: String(p.id),
+          date: p.created_at,
+          pupilName: p.pupils?.name ?? "Pupil",
+          amount: amt,
+          method: p.payment_method ?? "—",
+          source: "lesson",
+        });
       });
-      (bookingRows ?? []).forEach((p) => {
+      (bookingRows ?? []).forEach((p: any) => {
         const amt = Number(p.amount_paid ?? 0);
         wk += amt;
         if (new Date(p.booked_at) >= todayStart) td += amt;
+        earningsList.push({
+          id: String(p.id),
+          date: p.booked_at,
+          pupilName: p.pupil_name ?? "Course booking",
+          amount: amt,
+          method: p.payment_method ?? "Booking",
+          source: "booking",
+        });
       });
+      earningsList.sort((a, b) => (a.date < b.date ? 1 : -1));
+      setEarningsRows(earningsList);
 
       // Fallback: estimate from lessons taught when no formal payments recorded
       if (wk === 0) {
@@ -669,6 +688,28 @@ function HomePage() {
         .gte("lesson_date", ymd(weekStart))
         .lt("lesson_date", ymd(weekEnd));
       setWeekLessonCount(wkLessonCount ?? 0);
+
+      // Full week lesson list for the breakdown modal
+      const { data: weekLessonData } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name, first_name)")
+        .eq("instructor_id", userId)
+        .gte("lesson_date", ymd(weekStart))
+        .lt("lesson_date", ymd(weekEnd))
+        .is("deleted_at", null)
+        .order("lesson_date", { ascending: true })
+        .order("lesson_time", { ascending: true });
+      setWeekLessonRows(
+        (weekLessonData ?? []).map((l: any) => ({
+          id: l.id,
+          lesson_date: l.lesson_date,
+          lesson_time: l.lesson_time,
+          duration_minutes: l.duration_minutes,
+          status: l.status,
+          pupil_id: l.pupil_id,
+          pupilName: l.pupils?.first_name ?? l.pupils?.name ?? "Pupil",
+        })),
+      );
 
       const { data: wh } = await supabase
         .from("working_hours")
