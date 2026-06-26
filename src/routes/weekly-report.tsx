@@ -81,7 +81,13 @@ type HistoryRow = {
   lesson_date: string | null;
   pupil_id: string | null;
 };
-type Pupil = { id: string; name: string | null; test_date: string | null };
+type Pupil = {
+  id: string;
+  name: string | null;
+  test_date: string | null;
+  prepaid_hours: number | null;
+  account_balance: number | null;
+};
 
 function WeeklyReportPage() {
   const navigate = useNavigate();
@@ -91,6 +97,7 @@ function WeeklyReportPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [pupils, setPupils] = useState<Record<string, Pupil>>({});
+  const [pupilUsedHours, setPupilUsedHours] = useState<Record<string, number>>({});
   const [prevLessonCount, setPrevLessonCount] = useState(0);
   const [testsThisWeek, setTestsThisWeek] = useState(0);
 
@@ -146,7 +153,7 @@ function WeeklyReportPage() {
         .lte("lesson_date", prevEnd),
       supabase
         .from("pupils")
-        .select("id, name, test_date")
+        .select("id, name, test_date, prepaid_hours, account_balance")
         .eq("instructor_id", userId),
     ]);
 
@@ -154,7 +161,13 @@ function WeeklyReportPage() {
     const hRows = (hRes.data ?? []) as HistoryRow[];
     const pupilMap: Record<string, Pupil> = {};
     (pRes.data ?? []).forEach((p: any) => {
-      pupilMap[p.id] = { id: p.id, name: p.name ?? "Unknown", test_date: p.test_date ?? null };
+      pupilMap[p.id] = {
+        id: p.id,
+        name: p.name ?? "Unknown",
+        test_date: p.test_date ?? null,
+        prepaid_hours: p.prepaid_hours ?? null,
+        account_balance: p.account_balance ?? null,
+      };
     });
 
     setLessons(lRows);
@@ -167,6 +180,28 @@ function WeeklyReportPage() {
       return p.test_date >= startStr && p.test_date <= endStr;
     }).length;
     setTestsThisWeek(testsCount);
+
+    // Fetch all-time hours used for prepaid pupils (to compute remaining)
+    const prepaidIds = Object.values(pupilMap)
+      .filter((p) => (p.prepaid_hours ?? 0) > 0)
+      .map((p) => p.id);
+    if (prepaidIds.length > 0) {
+      const { data: usedRows } = await supabase
+        .from("lessons")
+        .select("pupil_id, duration_minutes")
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .in("status", ["confirmed", "completed"])
+        .in("pupil_id", prepaidIds);
+      const used: Record<string, number> = {};
+      (usedRows ?? []).forEach((r: any) => {
+        if (!r.pupil_id) return;
+        used[r.pupil_id] = (used[r.pupil_id] ?? 0) + (r.duration_minutes ?? 0) / 60;
+      });
+      setPupilUsedHours(used);
+    } else {
+      setPupilUsedHours({});
+    }
 
     setLoading(false);
   }
@@ -215,6 +250,18 @@ function WeeklyReportPage() {
       const dayLessons = taughtLessons.filter((l) => l.lesson_date === dateStr);
       const hours = dayLessons.reduce((a, l) => a + (l.duration_minutes ?? 0) / 60, 0);
       const dayEarningsPence = dailyEarningsMap[dateStr] ?? 0;
+      // Split lessons into prepaid vs regular (by pupil)
+      let prepaidHours = 0;
+      let amountDuePounds = 0;
+      dayLessons.forEach((l) => {
+        const p = l.pupil_id ? pupils[l.pupil_id] : null;
+        const isPrepaid = (p?.prepaid_hours ?? 0) > 0;
+        if (isPrepaid) {
+          prepaidHours += (l.duration_minutes ?? 0) / 60;
+        } else {
+          amountDuePounds += l.amount_due ?? 0;
+        }
+      });
       return {
         key: dateStr,
         label,
@@ -222,9 +269,11 @@ function WeeklyReportPage() {
         count: dayLessons.length,
         hours,
         earningsPence: dayEarningsPence,
+        prepaidHours,
+        amountDuePounds,
       };
     });
-  }, [taughtLessons, dailyEarningsMap, weekStart]);
+  }, [taughtLessons, dailyEarningsMap, weekStart, pupils]);
 
   // Pupils this week
   const pupilRows = useMemo(() => {
@@ -418,17 +467,31 @@ function WeeklyReportPage() {
                   <div className="text-[12px]" style={{ ...POPPINS, color: "#6B7280", width: 56, textAlign: "right" }}>
                     {d.count} · {d.hours.toFixed(1)}h
                   </div>
-                  <div
-                    className="text-[12px] font-medium"
-                    style={{
-                      ...POPPINS,
-                      width: 60,
-                      textAlign: "right",
-                      color: d.earningsPence > 0 ? "#15803D" : hasLessons ? "#B45309" : "#9CA3AF",
-                    }}
-                  >
-                    {d.earningsPence > 0 ? gbp(d.earningsPence) : hasLessons ? "Unpaid" : ""}
-                  </div>
+                  {(() => {
+                    let text = "";
+                    let color = "#9CA3AF";
+                    if (d.earningsPence > 0) {
+                      text = gbp(d.earningsPence);
+                      color = "#15803D";
+                    } else if (hasLessons && d.amountDuePounds > 0) {
+                      text = gbpFromPounds(d.amountDuePounds);
+                      color = "#0F2044";
+                    } else if (hasLessons && d.prepaidHours > 0) {
+                      text = `${d.prepaidHours.toFixed(1)}h prepaid`;
+                      color = "#1A52A0";
+                    } else if (hasLessons) {
+                      text = "—";
+                      color = "#9CA3AF";
+                    }
+                    return (
+                      <div
+                        className="text-[12px] font-medium"
+                        style={{ ...POPPINS, width: 72, textAlign: "right", color }}
+                      >
+                        {text}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}
@@ -462,18 +525,58 @@ function WeeklyReportPage() {
                       {p.lessons} lesson{p.lessons === 1 ? "" : "s"} · {p.hours.toFixed(1)}h
                     </div>
                   </div>
-                  <span
-                    className="text-[11px] font-semibold"
-                    style={{
-                      ...POPPINS,
-                      padding: "4px 8px",
-                      borderRadius: 999,
-                      background: p.allEol ? "#DCFCE7" : "#FEF3C7",
-                      color: p.allEol ? "#15803D" : "#B45309",
-                    }}
-                  >
-                    {p.allEol ? "EOL ✓" : "EOL pending"}
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    {(() => {
+                      const pupil = pupils[p.id];
+                      const prepaid = pupil?.prepaid_hours ?? 0;
+                      if (prepaid > 0) {
+                        const used = pupilUsedHours[p.id] ?? 0;
+                        const remaining = Math.max(0, prepaid - used);
+                        return (
+                          <span
+                            className="text-[11px] font-semibold"
+                            style={{
+                              ...POPPINS,
+                              padding: "4px 8px",
+                              borderRadius: 999,
+                              background: "#DBEAFE",
+                              color: "#1A52A0",
+                            }}
+                          >
+                            {remaining.toFixed(1)}h remaining
+                          </span>
+                        );
+                      }
+                      const owed = pupil?.account_balance ?? 0;
+                      const owes = owed > 0;
+                      return (
+                        <span
+                          className="text-[11px] font-semibold"
+                          style={{
+                            ...POPPINS,
+                            padding: "4px 8px",
+                            borderRadius: 999,
+                            background: owes ? "#FEE2E2" : "#DCFCE7",
+                            color: owes ? "#DC2626" : "#15803D",
+                          }}
+                        >
+                          {owes ? gbpFromPounds(owed) : "All paid ✓"}
+                        </span>
+                      );
+                    })()}
+                    <span
+                      className="text-[10px] font-semibold"
+                      style={{
+                        ...POPPINS,
+                        padding: "3px 7px",
+                        borderRadius: 999,
+                        background: p.allEol ? "#DCFCE7" : "#FEF3C7",
+                        color: p.allEol ? "#15803D" : "#B45309",
+                      }}
+                    >
+                      {p.allEol ? "EOL ✓" : "EOL pending"}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
