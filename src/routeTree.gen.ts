@@ -83,6 +83,7 @@ import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
@@ -475,6 +476,11 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
+  id: '/test-day/$pupilId',
+  path: '/test-day/$pupilId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuotesNewRoute = QuotesNewRouteImport.update({
   id: '/quotes/new',
   path: '/quotes/new',
@@ -671,6 +677,7 @@ export interface FileRoutesByFullPath {
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quotes/new': typeof QuotesNewRoute
+  '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -768,6 +775,7 @@ export interface FileRoutesByTo {
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quotes/new': typeof QuotesNewRoute
+  '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
@@ -867,6 +875,7 @@ export interface FileRoutesById {
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quotes/new': typeof QuotesNewRoute
+  '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
@@ -966,6 +975,7 @@ export interface FileRouteTypes {
     | '/pupils/$id'
     | '/pupils/new'
     | '/quotes/new'
+    | '/test-day/$pupilId'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
@@ -1063,6 +1073,7 @@ export interface FileRouteTypes {
     | '/pupils/$id'
     | '/pupils/new'
     | '/quotes/new'
+    | '/test-day/$pupilId'
     | '/courses'
     | '/notes'
     | '/pupils'
@@ -1161,6 +1172,7 @@ export interface FileRouteTypes {
     | '/pupils/$id'
     | '/pupils/new'
     | '/quotes/new'
+    | '/test-day/$pupilId'
     | '/courses/'
     | '/notes/'
     | '/pupils/'
@@ -1254,6 +1266,7 @@ export interface RootRouteChildren {
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuotesNewRoute: typeof QuotesNewRoute
+  TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
@@ -1787,6 +1800,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/test-day/$pupilId': {
+      id: '/test-day/$pupilId'
+      path: '/test-day/$pupilId'
+      fullPath: '/test-day/$pupilId'
+      preLoaderRoute: typeof TestDayPupilIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quotes/new': {
       id: '/quotes/new'
       path: '/quotes/new'
@@ -2056,6 +2076,7 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuotesNewRoute: QuotesNewRoute,
+  TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,

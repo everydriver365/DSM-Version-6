@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, BookOpen, Camera, ChevronRight, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Camera, ChevronRight, Flag, Loader2, Pencil, Phone, Trash2 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -639,6 +639,26 @@ function PupilDetailPage() {
             </span>
           </button>
         </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } })}
+            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#CC2229",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <Flag size={16} color="#FFFFFF" />
+            Test day
+          </button>
+        </div>
+
+
+
 
 
 
