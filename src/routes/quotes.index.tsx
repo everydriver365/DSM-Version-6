@@ -89,13 +89,14 @@ function QuotesPage() {
   }, []);
 
   const filtered = useMemo(() => {
+    const PENDING_STATUSES = new Set(["pending", "sent", "viewed", "draft"]);
     return quotes.filter((q) => {
       const s = (q.status || "pending").toLowerCase();
       if (tab === "accepted") return s === "accepted";
       if (tab === "declined") return s === "declined";
-      if (tab === "expired") return s === "expired" || (s === "pending" && isExpired(q));
-      // pending: status pending (or empty) and not expired
-      return s === "pending" && !isExpired(q);
+      if (tab === "expired") return s === "expired" || (s !== "accepted" && s !== "declined" && isExpired(q));
+      // pending: any non-terminal status, and not expired
+      return PENDING_STATUSES.has(s) && !isExpired(q);
     });
   }, [quotes, tab]);
 
