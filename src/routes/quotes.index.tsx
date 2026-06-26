@@ -1,10 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, FileText, Link2 } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Link2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzaXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
 export const Route = createFileRoute("/quotes/")({
   head: () => ({
