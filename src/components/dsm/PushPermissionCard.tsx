@@ -42,6 +42,8 @@ export function PushPermissionCard() {
       const permission = await Notification.requestPermission();
       setStatus(permission as Status);
       if (permission !== "granted") {
+        localStorage.setItem("push-permission-declined", "true");
+        setDismissed(true);
         if (permission === "denied") {
           toast.error("Notifications blocked. Enable them in your browser settings.");
         }
