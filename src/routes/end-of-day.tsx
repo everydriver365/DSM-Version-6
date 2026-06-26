@@ -95,7 +95,7 @@ function EndOfDayPage() {
         supabase
           .from("lessons")
           .select(
-            "id,pupil_id,lesson_date,lesson_time,duration_minutes,eol_completed,payment_status,amount_due,pupils(id,full_name,phone)",
+            "id,pupil_id,lesson_date,lesson_time,duration_minutes,eol_completed,payment_status,amount_due,pupils(id,name,first_name,last_name,phone)",
           )
           .eq("instructor_id", id)
           .eq("lesson_date", todayIso)
@@ -104,7 +104,7 @@ function EndOfDayPage() {
         supabase
           .from("lessons")
           .select(
-            "id,pupil_id,lesson_date,lesson_time,duration_minutes,pupils(id,full_name,phone)",
+            "id,pupil_id,lesson_date,lesson_time,duration_minutes,pupils(id,name,first_name,last_name,phone)",
           )
           .eq("instructor_id", id)
           .eq("lesson_date", tomorrowIso)
@@ -114,6 +114,7 @@ function EndOfDayPage() {
           .from("lesson_history")
           .select("id,lesson_cost,created_at")
           .eq("instructor_id", id)
+          .eq("payment_status", "paid")
           .gte("created_at", `${todayIso}T00:00:00`),
         supabase
           .from("daily_notes")
