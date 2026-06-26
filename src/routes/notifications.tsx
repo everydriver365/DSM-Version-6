@@ -242,6 +242,8 @@ function NotificationsPage() {
                           navigate({ to: "/messages" });
                         } else if (n.type === "tracking") {
                           navigate({ to: "/live" });
+                        } else if (n.type === "quote_accepted") {
+                          navigate({ to: "/quotes" });
                         }
                       }}
                       className="w-full text-left rounded-xl overflow-hidden cursor-pointer"
