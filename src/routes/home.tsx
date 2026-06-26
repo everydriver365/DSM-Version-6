@@ -2591,7 +2591,7 @@ function HomePage() {
         total={outstanding}
         rows={outstandingBreakdown}
         instructorName={instructorFullName || firstName}
-        onView={(id) => {
+        onView={(id: string) => {
           setOutstandingOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
         }}
