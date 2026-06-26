@@ -2761,6 +2761,21 @@ function HomePage() {
           }
         }}
       />
+
+      <TestsBreakdownModal
+        open={testsOpen}
+        onClose={() => setTestsOpen(false)}
+        tests={upcomingTests}
+        pendingSwapCount={pendingSwapCount}
+        onOpenPupil={(id) => {
+          setTestsOpen(false);
+          navigate({ to: "/pupils/$id", params: { id } });
+        }}
+        onViewSwaps={() => {
+          setTestsOpen(false);
+          navigate({ to: "/test-swaps" });
+        }}
+      />
     </div>
 
   );
