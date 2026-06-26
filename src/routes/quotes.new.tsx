@@ -37,6 +37,10 @@ function NewQuotePage() {
   const [validUntil, setValidUntil] = useState(defaultValid);
   const [priceTouched, setPriceTouched] = useState(false);
   const [depositTouched, setDepositTouched] = useState(false);
+  const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
+
+  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
+  const errorInputStyle: React.CSSProperties = { ...inputStyle, border: "1px solid #D92D20" };
 
   useEffect(() => {
     (async () => {
@@ -68,8 +72,14 @@ function NewQuotePage() {
   }
 
   async function save(status: "draft" | "sent") {
-    if (!pupilName.trim()) { alert("Pupil name is required"); return; }
-    if (postcode && !POSTCODE_RE.test(postcode.trim())) { alert("Invalid UK postcode"); return; }
+    const newErrors: { pupilName?: string; price?: string; postcode?: string } = {};
+    if (!pupilName.trim()) newErrors.pupilName = "Pupil name is required";
+    const priceNum = parseFloat(price);
+    if (!price.trim() || isNaN(priceNum)) newErrors.price = "Price is required";
+    else if (priceNum <= 0) newErrors.price = "Price must be greater than 0";
+    if (postcode && !POSTCODE_RE.test(postcode.trim())) newErrors.postcode = "Invalid UK postcode";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
     if (!userId) { alert("Not signed in"); return; }
     setSaving(true);
     try {
@@ -116,7 +126,13 @@ function NewQuotePage() {
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
           <label style={labelStyle}>Pupil name *</label>
-          <input style={inputStyle} value={pupilName} onChange={(e) => setPupilName(e.target.value)} />
+          <input
+            style={errors.pupilName ? errorInputStyle : inputStyle}
+            value={pupilName}
+            onChange={(e) => { setPupilName(e.target.value); if (errors.pupilName) setErrors((p) => ({ ...p, pupilName: undefined })); }}
+            aria-invalid={!!errors.pupilName}
+          />
+          {errors.pupilName && <div style={errorTextStyle}>{errors.pupilName}</div>}
         </div>
         <div>
           <label style={labelStyle}>Email</label>
@@ -128,7 +144,13 @@ function NewQuotePage() {
         </div>
         <div>
           <label style={labelStyle}>Postcode</label>
-          <input style={inputStyle} value={postcode} onChange={(e) => setPostcode(e.target.value.toUpperCase())} />
+          <input
+            style={errors.postcode ? errorInputStyle : inputStyle}
+            value={postcode}
+            onChange={(e) => { setPostcode(e.target.value.toUpperCase()); if (errors.postcode) setErrors((p) => ({ ...p, postcode: undefined })); }}
+            aria-invalid={!!errors.postcode}
+          />
+          {errors.postcode && <div style={errorTextStyle}>{errors.postcode}</div>}
         </div>
         <div>
           <label style={labelStyle}>Course type</label>
@@ -142,8 +164,16 @@ function NewQuotePage() {
             <input style={inputStyle} type="number" step={0.5} value={hours} onChange={(e) => setHours(e.target.value)} />
           </div>
           <div>
-            <label style={labelStyle}>Price £</label>
-            <input style={inputStyle} type="number" step={0.5} value={price} onChange={(e) => { setPrice(e.target.value); setPriceTouched(true); }} />
+            <label style={labelStyle}>Price £ *</label>
+            <input
+              style={errors.price ? errorInputStyle : inputStyle}
+              type="number"
+              step={0.5}
+              value={price}
+              onChange={(e) => { setPrice(e.target.value); setPriceTouched(true); if (errors.price) setErrors((p) => ({ ...p, price: undefined })); }}
+              aria-invalid={!!errors.price}
+            />
+            {errors.price && <div style={errorTextStyle}>{errors.price}</div>}
           </div>
         </div>
         <div>
