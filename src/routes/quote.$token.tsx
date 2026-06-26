@@ -109,6 +109,33 @@ function PublicQuotePage() {
         .update({ status: "accepted", accepted_at: new Date().toISOString() })
         .eq("token", token);
       if (error) throw error;
+
+      // Notify instructor
+      try {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            instructor_id: quote.instructor_id,
+            title: "Quote accepted! 🎉",
+            body: `${quote.recipient_name} has accepted their quote for £${Number(quote.price).toFixed(2)}`,
+            type: "quote_accepted",
+            read: false,
+            reference_id: quote.id,
+            reference_type: "quote",
+          }),
+        });
+      } catch (notifyErr) {
+        console.error("[quote] notify instructor failed:", notifyErr);
+      }
+
       setAccepted(true);
     } catch (e: any) {
       alert("Failed to accept: " + (e?.message ?? "unknown"));
