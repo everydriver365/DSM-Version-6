@@ -202,7 +202,7 @@ function QuotesPage() {
                     </span>
                   </div>
                   {q.token && (
-                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end", gap: 8 }}>
                       <button
                         onClick={async (e) => {
                           e.stopPropagation();
@@ -223,6 +223,44 @@ function QuotesPage() {
                       >
                         <Link2 size={14} /> Copy link
                       </button>
+                      {(q.recipient_email || q.recipient_phone) && (
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (q.recipient_email) {
+                              try {
+                                const { data: { session } } = await supabase.auth.getSession();
+                                const token = session?.access_token;
+                                const res = await fetch(`${SUPABASE_URL}/functions/v1/send-quote`, {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                                    apikey: SUPABASE_ANON_KEY,
+                                  },
+                                  body: JSON.stringify({ quoteId: q.id }),
+                                });
+                                if (!res.ok) throw new Error(await res.text());
+                                toast.success(`Quote sent to ${q.recipient_name}`);
+                              } catch (err: any) {
+                                toast.error("Failed to send: " + (err?.message ?? "unknown"));
+                              }
+                            } else if (q.recipient_phone) {
+                              const url = `https://everydriver.co.uk/quote/${q.token}`;
+                              const body = `Hi ${q.recipient_name}, your quote for £${Number(q.price).toFixed(2)}: ${url}`;
+                              window.location.href = `sms:${q.recipient_phone}?body=${encodeURIComponent(body)}`;
+                            }
+                          }}
+                          style={{
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            background: "#0F2044", border: "1px solid #0F2044", color: "#fff",
+                            fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                            cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          <Send size={14} /> Send
+                        </button>
+                      )}
                     </div>
                   )}
                 </Card>
