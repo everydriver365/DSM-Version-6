@@ -442,6 +442,7 @@ function HomePage() {
         "there";
       const first = fullName.trim().split(/\s+/)[0] || "there";
       setFirstName(capitalize(first));
+      setInstructorFullName(fullName);
       setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
     })();
   }, []);
