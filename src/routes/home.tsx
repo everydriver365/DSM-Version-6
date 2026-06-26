@@ -3090,6 +3090,75 @@ function AccessTile({
   );
 }
 
+function EndOfDayBanner() {
+  const navigate = useNavigate();
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const storageKey = `eod-banner-dismissed-${todayKey}`;
+  const [dismissed, setDismissed] = useState(false);
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(storageKey) === "1") setDismissed(true);
+    } catch {}
+    const t = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(t);
+  }, [storageKey]);
+
+  const hour = now.getHours();
+  if (dismissed || hour < 17 || hour >= 23) return null;
+
+  return (
+    <div
+      className="mx-4 mt-3 flex items-center gap-2"
+      style={{
+        backgroundColor: "#F0F4FF",
+        border: "1px solid #BFDBFE",
+        padding: "10px 16px",
+        borderRadius: 10,
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <Moon size={16} color="#1A52A0" />
+      <div style={{ fontSize: 13, color: "#0F2044", fontWeight: 600 }}>
+        Ready to wrap up?
+      </div>
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/end-of-day" })}
+        style={{
+          marginLeft: "auto",
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#1A52A0",
+          background: "transparent",
+          cursor: "pointer",
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        View summary →
+      </button>
+      <button
+        type="button"
+        aria-label="Dismiss"
+        onClick={() => {
+          try { localStorage.setItem(storageKey, "1"); } catch {}
+          setDismissed(true);
+        }}
+        style={{
+          background: "transparent",
+          cursor: "pointer",
+          padding: 2,
+          marginLeft: 4,
+        }}
+      >
+        <X size={14} color="#6B7280" />
+      </button>
+    </div>
+  );
+}
+
+
 function TodayTile({
   value,
   label,
