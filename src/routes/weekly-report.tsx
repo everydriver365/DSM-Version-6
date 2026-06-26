@@ -665,6 +665,24 @@ function WeeklyReportPage() {
           Export week CSV
         </button>
       </div>
+
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => setEolLesson(null)}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id}
+          pupilName={eolLesson.pupilName}
+          instructorId={eolLesson.instructor_id}
+          durationMinutes={eolLesson.duration_minutes}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            setEolLesson(null);
+            void loadWeek();
+          }}
+        />
+      )}
     </div>
   );
 }
