@@ -161,7 +161,11 @@ function EndOfDayPage() {
 
   const stats = useMemo(() => {
     const totalMin = lessons.reduce((s, l) => s + (l.duration_minutes ?? 0), 0);
-    const earned = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
+    const paidEarnings = history.reduce((s, h) => s + (h.lesson_cost ?? 0), 0);
+    const prepaidEarnings = lessons
+      .filter((l) => prepaidPupilIds.has(l.pupil_id))
+      .reduce((s, l) => s + (l.amount_due ?? 0), 0);
+    const earned = paidEarnings + prepaidEarnings;
     const outstanding = lessons
       .filter((l) => l.payment_status === "unpaid" && !prepaidPupilIds.has(l.pupil_id))
       .reduce((s, l) => s + (l.amount_due ?? 0), 0);
@@ -169,6 +173,7 @@ function EndOfDayPage() {
       count: lessons.length,
       hours: totalMin / 60,
       earned,
+      prepaidEarnings,
       outstanding,
     };
   }, [lessons, history, prepaidPupilIds]);
