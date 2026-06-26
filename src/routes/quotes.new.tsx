@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/quotes/new")({
   component: NewQuotePage,
