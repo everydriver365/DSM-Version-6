@@ -80,6 +80,7 @@ function EndOfDayPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [tomorrowLessons, setTomorrowLessons] = useState<Lesson[]>([]);
   const [history, setHistory] = useState<HistoryRow[]>([]);
+  const [prepaidPupilIds, setPrepaidPupilIds] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [listening, setListening] = useState(false);
