@@ -25,7 +25,9 @@ const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 import testCentreCelebrationAsset from "../assets/test-centre-celebration.jpg.asset.json";
 import richardWithCarAsset from "../assets/richard-with-car.jpg.asset.json";
+import aiReceptionistAsset from "../assets/ai-receptionist.png.asset.json";
 const richardWithCarImg = richardWithCarAsset.url;
+const aiReceptionistImg = aiReceptionistAsset.url;
 const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testCentreCelebrationAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
@@ -299,7 +301,7 @@ const features = [
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
   },
   {
-    img: richardWithCarImg,
+    img: aiReceptionistImg,
     title: "Free Health Insurance",
     body: "On our paid plans get FREE healthcover with Bennenden Health or Vitality to look after you when you ill.\u00a0",
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
