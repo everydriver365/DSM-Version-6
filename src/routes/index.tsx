@@ -24,6 +24,8 @@ import websiteAsset from "../assets/driving-school-site.png.asset.json";
 const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 import testCentreCelebrationAsset from "../assets/test-centre-celebration.jpg.asset.json";
+import richardWithCarAsset from "../assets/richard-with-car.jpg.asset.json";
+const richardWithCarImg = richardWithCarAsset.url;
 const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testCentreCelebrationAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
