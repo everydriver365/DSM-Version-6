@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_marketing")({
 
 function MarketingLayout() {
   return (
-    <div style={{ background: "rgb(227, 229, 232)", color: "#0F172A", minHeight: "100vh", fontFamily: "Poppins, system-ui, sans-serif" }}>
+    <div style={{ background: "#F7FAFC", color: "#0F172A", minHeight: "100vh", fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       <MarketingNav />
       <Outlet />
       <MarketingFooter />
