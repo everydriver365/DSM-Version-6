@@ -294,8 +294,8 @@ const features = [
   },
   {
     img: richardWithCarImg,
-    title: "Free Healthcare",
-    body: "Dedicated apps for pupils, parents and instructors — free on every plan. Track progress, stay informed, and manage your business from anywhere.",
+    title: "Free Health Insurance",
+    body: "On our paid plans get FREE healthcover with Bennenden Health or Vitality to look after you when you ill.\u00a0",
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
   },
   {
