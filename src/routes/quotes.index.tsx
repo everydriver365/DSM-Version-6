@@ -245,8 +245,12 @@ function QuotesPage() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map((q) => {
-              const displayStatus: TabKey = isExpired(q) && q.status === "pending" ? "expired" : (q.status as TabKey);
-              const isDeclined = (q.status || "").toLowerCase() === "declined";
+              const sLower = (q.status || "").toLowerCase();
+              const displayStatus: string = isExpired(q) && q.status === "pending" ? "expired" : sLower;
+              const isDeclined = sLower === "declined";
+              const isResent = sLower === "resent";
+              const isRev = isRevision(q);
+              const revision = isResent ? revisionByOriginalRecipient[q.id] : undefined;
               const info = declineMap[q.id];
               const counter = info?.counterOffer ?? null;
               const reason = info?.reason ?? null;
@@ -257,9 +261,28 @@ function QuotesPage() {
                       <div style={{
                         fontSize: 14, fontWeight: 600, color: "#0F2044",
                         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        display: "flex", alignItems: "center", gap: 6,
                       }}>
-                        {q.recipient_name}
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{q.recipient_name}</span>
+                        {isRev && (
+                          <span style={{
+                            background: "#1A52A0", color: "#fff", fontSize: 10, fontWeight: 700,
+                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                          }}>REVISION</span>
+                        )}
+                        {isResent && (
+                          <span style={{
+                            background: "#16A34A", color: "#fff", fontSize: 10, fontWeight: 700,
+                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                          }}>FOLLOWED UP ✓</span>
+                        )}
                       </div>
+                      {isRev && (
+                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2, fontStyle: "italic" }}>
+                          Revised from declined quote
+                        </div>
+                      )}
+
                       <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
                         {q.hours ? `${q.hours}h` : ""}{q.course_type ? ` · ${q.course_type}` : ""}
                       </div>
