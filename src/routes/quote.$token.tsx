@@ -258,11 +258,20 @@ function PublicQuotePage() {
         try { window.Ryft?.googlePay?.mount?.("#google-pay-container"); } catch (e) { console.warn("Google Pay unavailable:", e); }
         try { window.Ryft?.applePay?.mount?.("#apple-pay-container"); } catch (e) { console.warn("Apple Pay unavailable:", e); }
         window.Ryft.addEventHandler("paymentSuccess", (evt: any) => {
+          console.log("[quote] Ryft paymentSuccess:", evt);
           const status = evt?.paymentSession?.status;
           if (!status || status === "Approved" || status === "Captured") onApproved();
         });
         window.Ryft.addEventHandler("paymentError", (e: any) => {
-          setPayError(e?.error?.message || "Payment failed. Please try again.");
+          console.error("[quote] Ryft paymentError:", e);
+          const msg =
+            e?.error?.message ||
+            e?.errors?.[0]?.message ||
+            e?.message ||
+            (typeof e === "string" ? e : "") ||
+            "Payment failed. Please try again.";
+          setPayStatus("error");
+          setPayError(msg);
         });
         setPayStatus("ready");
       } catch (e: any) {
