@@ -1,10 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, FileText, Link2, Send } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Link2, Send, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+
+type DeclineInfo = { reason?: string | null; counterOffer?: number | null };
+
+function parseCounterOffer(body: string | null | undefined): number | null {
+  if (!body) return null;
+  const m = body.match(/£\s*(\d+(?:\.\d{1,2})?)/);
+  return m ? Number(m[1]) : null;
+}
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -57,6 +65,7 @@ function isExpired(q: QuoteRow) {
 function QuotesPage() {
   const navigate = useNavigate();
   const [quotes, setQuotes] = useState<QuoteRow[]>([]);
+  const [declineMap, setDeclineMap] = useState<Record<string, DeclineInfo>>({});
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<TabKey>("pending");
 
@@ -82,8 +91,34 @@ function QuotesPage() {
         console.log("[quotes] fallback result:", fb);
         data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
       }
-      setQuotes((data ?? []) as QuoteRow[]);
-      console.log("[quotes] all quotes statuses:", (data ?? []).map((q: any) => ({ id: q.id, status: q.status })));
+      const rows = (data ?? []) as QuoteRow[];
+      setQuotes(rows);
+      console.log("[quotes] all quotes statuses:", rows.map((q: any) => ({ id: q.id, status: q.status })));
+
+      // Fetch decline / counter-offer notifications for this instructor
+      try {
+        const { data: notifs } = await supabase
+          .from("instructor_notifications")
+          .select("type, body, data, created_at")
+          .eq("instructor_id", uid)
+          .in("type", ["quote_declined", "quote_counter"])
+          .order("created_at", { ascending: false });
+        console.log("[quotes] decline/counter notifs:", notifs);
+        const map: Record<string, DeclineInfo> = {};
+        for (const n of (notifs ?? []) as any[]) {
+          const qid: string | undefined = n?.data?.quote_id ?? n?.data?.quoteId;
+          if (!qid) continue;
+          const entry = map[qid] ?? {};
+          const offer = parseCounterOffer(n.body) ?? (typeof n?.data?.counter_offer === "number" ? n.data.counter_offer : null);
+          if (offer != null && entry.counterOffer == null) entry.counterOffer = offer;
+          if (n.type === "quote_declined" && !entry.reason) entry.reason = n?.data?.reason ?? n.body ?? null;
+          map[qid] = entry;
+        }
+        setDeclineMap(map);
+      } catch (e) {
+        console.warn("[quotes] notifications fetch failed (non-fatal):", e);
+      }
+
       setLoading(false);
     })();
   }, []);
@@ -182,6 +217,10 @@ function QuotesPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map((q) => {
               const displayStatus: TabKey = isExpired(q) && q.status === "pending" ? "expired" : (q.status as TabKey);
+              const isDeclined = (q.status || "").toLowerCase() === "declined";
+              const info = declineMap[q.id];
+              const counter = info?.counterOffer ?? null;
+              const reason = info?.reason ?? null;
               return (
                 <Card key={q.id} style={{ padding: 12 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -214,6 +253,54 @@ function QuotesPage() {
                       {displayStatus}
                     </span>
                   </div>
+                  {isDeclined && (counter != null || reason) && (
+                    <div style={{
+                      marginTop: 10, padding: 10, borderRadius: 8,
+                      background: "#FEF2F2", border: "1px solid #FECACA",
+                      display: "flex", flexDirection: "column", gap: 6,
+                    }}>
+                      {counter != null && (
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+                          Pupil suggested: <span style={{ color: "#CC2229" }}>£{counter.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {reason && (
+                        <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.4 }}>
+                          “{reason}”
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {isDeclined && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newPrice = counter != null ? counter : Number(q.price);
+                          navigate({
+                            to: "/quotes/new",
+                            search: {
+                              name: q.recipient_name ?? "",
+                              email: q.recipient_email ?? "",
+                              phone: q.recipient_phone ?? "",
+                              course: q.course_type ?? "",
+                              hours: q.hours != null ? String(q.hours) : "",
+                              price: String(newPrice),
+                              message: "Thank you for your feedback. Here is my revised quote:",
+                            } as any,
+                          });
+                        }}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
+                          background: "#1A52A0", border: "1px solid #1A52A0", color: "#fff",
+                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        <RefreshCw size={14} /> Revise & resend
+                      </button>
+                    </div>
+                  )}
                   {q.token && (
                     <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end", gap: 8 }}>
                       <button
