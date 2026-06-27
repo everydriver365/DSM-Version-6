@@ -41,6 +41,8 @@ const marketingWebsiteImg = marketingWebsiteAsset.url;
 import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asset.json";
 const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
+const INTER_FONT = "'Inter', sans-serif";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -55,6 +57,14 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content:
           "The all-in-one diary, payments and pupil management app for UK driving instructors. Free forever.",
+      },
+    ],
+    links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap",
       },
     ],
   }),
@@ -77,11 +87,10 @@ function HomePage() {
     };
   }, [navigate]);
 
-  if (!checked) return <div className="min-h-screen" style={{ background: "rgb(227, 229, 232)" }} />;
+  if (!checked) return <div className="min-h-screen bg-[#F7FAFC]" style={{ fontFamily: INTER_FONT }} />;
 
   return (
-    <div className="min-h-screen font-sans text-[#0B1530] antialiased" style={{ background: "rgb(227, 229, 232)" }}>
-
+    <div className="min-h-screen text-[#2D3748] antialiased bg-[#F7FAFC]" style={{ fontFamily: INTER_FONT }}>
       <MarketingNav />
       <Hero />
       <DiarySection />
@@ -97,7 +106,7 @@ function HomePage() {
   );
 }
 
-/* ---------- Stats bar (between dark Diary and Features) ---------- */
+/* ---------- Stats bar ---------- */
 function StatsBar() {
   const stats = [
     { n: "500+", l: "Active Instructors" },
@@ -106,12 +115,12 @@ function StatsBar() {
     { n: "£0", l: "To Get Started" },
   ];
   return (
-    <section className="bg-[#E3E5E8] py-7 px-6 border-y border-[#d0d4dc]">
+    <section className="bg-white py-7 px-6 border-y border-gray-100">
       <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {stats.map((s) => (
           <div key={s.l}>
-            <div className="text-3xl md:text-4xl font-black text-[#0B1530] leading-none mb-1">{s.n}</div>
-            <div className="text-[#475569] text-sm">{s.l}</div>
+            <div className="text-3xl md:text-4xl font-black text-[#1B2B4B] leading-none mb-1">{s.n}</div>
+            <div className="text-[#718096] text-sm">{s.l}</div>
           </div>
         ))}
       </div>
@@ -122,34 +131,27 @@ function StatsBar() {
 /* ---------- Hero ---------- */
 function Hero() {
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle, #d8dce5 1px, transparent 1px)",
-        backgroundSize: "22px 22px",
-      }}
-    >
+    <section className="relative overflow-hidden bg-[#F7FAFC]">
       <div className="max-w-[1240px] mx-auto px-6 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-[#e1e4eb] rounded-full px-3.5 py-1.5 text-[13px] text-[#0B1530] mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-100 rounded-full px-3.5 py-1.5 text-[13px] text-[#1B2B4B] mb-6 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#00B5A5]" />
             Free for every instructor forever..
           </div>
 
-          <h1 className="text-[44px] md:text-[64px] leading-[1.02] font-black tracking-tight text-[#0B1530] mb-5">
+          <h1 className="text-[44px] md:text-[64px] leading-[1.02] font-black tracking-tight text-[#1B2B4B] mb-5">
             Driving School{" "}
             <span className="block md:inline">Management</span>
           </h1>
 
-          <div className="text-[22px] md:text-[26px] font-bold text-[#0B1530] mb-5">
+          <div className="text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-5">
             Free forever for{" "}
-            <span className="text-[#1A73E8] underline decoration-[3px] underline-offset-[6px] decoration-[#1A73E8]/30">
+            <span className="text-[#00B5A5] underline decoration-[3px] underline-offset-[6px] decoration-[#00B5A5]/30">
               ADIs &amp; PDIs
             </span>
           </div>
 
-          <p className="text-[17px] text-[#475569] leading-relaxed mb-7 max-w-md">
+          <p className="text-[17px] text-gray-600 leading-relaxed mb-7 max-w-md">
             Manage your lessons, track payments, and grow your business — all from one app.
             No credit card required.
           </p>
@@ -158,9 +160,9 @@ function Hero() {
             {["Free", "Multi-instructor", "White-label", "GDPR"].map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1.5 bg-white border border-[#e1e4eb] rounded-full px-3 py-1.5 text-[13px] text-[#475569] shadow-sm"
+                className="inline-flex items-center gap-1.5 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[13px] text-gray-600 shadow-sm"
               >
-                <Check className="w-3.5 h-3.5 text-[#16A34A]" /> {t}
+                <Check className="w-3.5 h-3.5 text-[#00B5A5]" /> {t}
               </span>
             ))}
           </div>
@@ -168,13 +170,13 @@ function Hero() {
           <div className="flex flex-wrap gap-3">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-7 py-4 rounded-full text-[15px] no-underline transition-colors shadow-[0_8px_24px_rgba(26,115,232,0.35)]"
+              className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-7 py-4 rounded-lg text-[15px] no-underline transition-colors"
             >
               Start Free Today <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center gap-2 bg-white hover:bg-[#F8F9FB] text-[#0B1530] font-semibold px-7 py-4 rounded-full text-[15px] no-underline border border-[#e1e4eb] transition-colors"
+              className="inline-flex items-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-7 py-4 rounded-lg text-[15px] no-underline transition-colors"
             >
               <Play className="w-4 h-4 fill-current" /> Watch Demo
             </Link>
@@ -187,24 +189,24 @@ function Hero() {
             alt="Driving instructor with car, diary calendar app and vehicle tracking dashboard"
             width={1280}
             height={1024}
-            className="w-full h-auto rounded-2xl"
+            className="w-full h-auto rounded-2xl bg-[#1B2B4B]/10 border border-[#1B2B4B]/20"
           />
-          <div className="absolute top-4 right-4 md:-top-4 md:-right-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(15,32,68,0.15)] px-4 py-3 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] grid place-items-center">
-              <Calendar className="w-5 h-5 text-[#1A73E8]" />
+          <div className="absolute top-4 right-4 md:-top-4 md:-right-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(27,43,75,0.15)] px-4 py-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#E6F7F6] grid place-items-center">
+              <Calendar className="w-5 h-5 text-[#00B5A5]" />
             </div>
             <div>
-              <div className="font-black text-[#0B1530] text-lg leading-none">98%</div>
-              <div className="text-[#64748B] text-xs">Fill rate</div>
+              <div className="font-black text-[#1B2B4B] text-lg leading-none">98%</div>
+              <div className="text-[#718096] text-xs">Fill rate</div>
             </div>
           </div>
-          <div className="absolute bottom-4 left-4 md:-bottom-4 md:-left-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(15,32,68,0.15)] px-4 py-3 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] grid place-items-center">
-              <Smartphone className="w-5 h-5 text-[#16A34A]" />
+          <div className="absolute bottom-4 left-4 md:-bottom-4 md:-left-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(27,43,75,0.15)] px-4 py-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#E6F7F6] grid place-items-center">
+              <Smartphone className="w-5 h-5 text-[#00B5A5]" />
             </div>
             <div>
-              <div className="font-black text-[#0B1530] text-lg leading-none">500+</div>
-              <div className="text-[#64748B] text-xs">Active instructors</div>
+              <div className="font-black text-[#1B2B4B] text-lg leading-none">500+</div>
+              <div className="text-[#718096] text-xs">Active instructors</div>
             </div>
           </div>
         </div>
@@ -213,44 +215,44 @@ function Hero() {
   );
 }
 
-/* ---------- Diary section (dark) ---------- */
+/* ---------- Diary section ---------- */
 function DiarySection() {
   return (
-    <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
+    <section className="bg-[#1B2B4B] py-20 md:py-28 px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
-            <div className="inline-block border border-[#1A73E8]/40 text-[#5EA8FF] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
+            <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
               No contracts · No tie-in · Leave any time
             </div>
             <h2 className="text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
               Your Diary, Your Way
               <br />
-              — <span className="text-[#1A73E8]">Free for Life</span>
+              — <span className="text-[#00B5A5]">Free for Life</span>
             </h2>
-            <p className="text-white/70 text-[17px] leading-relaxed mb-5 max-w-lg">
+            <p className="text-white/75 text-[17px] leading-relaxed mb-5 max-w-lg">
               DSM gives every driving instructor a powerful diary and business management app — completely free,
               forever. Manage your schedule, track pupil progress, handle payments and communicate with learners
               all in one place.
             </p>
-            <p className="text-white/55 text-[15px] leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/60 text-[15px] leading-relaxed mb-8 max-w-lg">
               Want even more? Optional paid extras like telematics, dashcam integration and a branded website are
               available when you're ready — the core app is yours to keep at absolutely no cost.
             </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80 mb-2">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85 mb-2">
               {["Free forever", "No credit card", "No hidden fees", "Cancel any time"].map((t) => (
                 <span key={t} className="inline-flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#16A34A]" /> {t}
+                  <Check className="w-4 h-4 text-[#00B5A5]" /> {t}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0F1A36] to-[#0A1024] grid place-items-center relative overflow-hidden group cursor-pointer">
+          <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-[#152038] grid place-items-center relative overflow-hidden group cursor-pointer">
             <img src={explainerPlaceholderImg} alt="Explainer video preview" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/35" />
             <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
-              <span className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 grid place-items-center group-hover:bg-white/30 transition-colors">
+              <span className="w-16 h-16 rounded-full bg-[#00B5A5] grid place-items-center group-hover:bg-[#009E8F] transition-colors">
                 <Play className="w-6 h-6 fill-white text-white ml-1" />
               </span>
               <span className="text-sm font-medium">Explainer Video</span>
@@ -331,13 +333,13 @@ function FeaturesShowcase() {
     <section className="bg-white py-20 md:py-28 px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block text-[#1A73E8] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
             Product Tour
           </div>
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-4">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-4">
             See It in Action
           </h2>
-          <p className="text-[#64748B] text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             From diary management to live telematics — everything you need in one platform.
           </p>
         </div>
@@ -350,16 +352,19 @@ function FeaturesShowcase() {
                 key={`${f.title}-${i}`}
                 className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
-                <div>
-                  <h3 className="text-[28px] md:text-[34px] font-black text-[#0B1530] mb-4 leading-tight tracking-tight">
+                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-6 md:p-8">
+                  <div className="w-12 h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-5">
+                    <Check className="w-5 h-5 text-[#00B5A5]" />
+                  </div>
+                  <h3 className="text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-4 leading-tight tracking-tight">
                     {f.title}
                   </h3>
-                  <p className="text-[#475569] text-[16px] leading-relaxed mb-6">{f.body}</p>
+                  <p className="text-gray-500 text-[16px] leading-relaxed mb-6">{f.body}</p>
                   <ul className="grid grid-cols-2 gap-x-4 gap-y-3 mb-7">
                     {f.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2 text-[#0B1530] text-sm font-medium">
-                        <span className="w-5 h-5 rounded-full bg-[#EFF6FF] grid place-items-center">
-                          <Check className="w-3 h-3 text-[#1A73E8]" />
+                      <li key={b} className="flex items-center gap-2 text-[#1B2B4B] text-sm font-medium">
+                        <span className="w-5 h-5 rounded-full bg-[#E6F7F6] grid place-items-center">
+                          <Check className="w-3 h-3 text-[#00B5A5]" />
                         </span>
                         {b}
                       </li>
@@ -367,7 +372,7 @@ function FeaturesShowcase() {
                   </ul>
                   <Link
                     to="/features"
-                    className="inline-flex items-center gap-1.5 text-[#1A73E8] hover:text-[#1565C7] font-semibold text-sm no-underline"
+                    className="inline-flex items-center gap-1.5 text-[#00B5A5] hover:text-[#009E8F] font-semibold text-sm no-underline"
                   >
                     Learn more <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -380,7 +385,7 @@ function FeaturesShowcase() {
                       width={1024}
                       height={1024}
                       loading="lazy"
-                      className="w-full h-auto rounded-xl shadow-[0_20px_60px_-20px_rgba(15,32,68,0.3)]"
+                      className="w-full h-auto rounded-xl shadow-[0_20px_60px_-20px_rgba(27,43,75,0.25)]"
                     />
                   </div>
                 </div>
@@ -396,36 +401,36 @@ function FeaturesShowcase() {
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed.", Icon: Activity, bg: "bg-[#FFEDD5]", fg: "text-[#F97316]", badge: "bg-[#F97316]" },
-    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences.", Icon: Calendar, bg: "bg-[#DBEAFE]", fg: "text-[#1A73E8]", badge: "bg-[#1A73E8]" },
-    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2, bg: "bg-[#D1FAE5]", fg: "text-[#10B981]", badge: "bg-[#10B981]" },
+    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed.", Icon: Activity },
+    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences.", Icon: Calendar },
+    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2 },
   ];
   return (
-    <section className="bg-[#EEF0F4] py-20 md:py-28 px-6">
+    <section className="bg-[#F7FAFC] py-20 md:py-28 px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
             Up and Running in 3 Minutes
           </h2>
-          <p className="text-[#64748B] text-lg">No downloads. No setup fees. No hassle.</p>
+          <p className="text-gray-500 text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 relative">
-          {steps.map(({ n, t, b, Icon, bg, fg, badge }, idx) => (
+          {steps.map(({ n, t, b, Icon }, idx) => (
             <div key={n} className="text-center relative">
               {idx < 2 && (
-                <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-[#cbd2dd]" />
+                <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-gray-300" />
               )}
               <div className="relative inline-block mb-5">
-                <div className={`w-20 h-20 rounded-2xl ${bg} grid place-items-center`}>
-                  <Icon className={`w-9 h-9 ${fg}`} />
+                <div className="w-20 h-20 rounded-2xl bg-[#E6F7F6] grid place-items-center">
+                  <Icon className="w-9 h-9 text-[#00B5A5]" />
                 </div>
-                <span className={`absolute -top-1 -right-1 ${badge} text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md`}>
+                <span className="absolute -top-1 -right-1 bg-[#00B5A5] text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md">
                   {n}
                 </span>
               </div>
-              <div className="text-xl font-bold text-[#0B1530] mb-2">{t}</div>
-              <div className="text-[#64748B] text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
+              <div className="text-xl font-bold text-[#1B2B4B] mb-2">{t}</div>
+              <div className="text-gray-500 text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
             </div>
           ))}
         </div>
@@ -476,64 +481,73 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="bg-white py-20 md:py-28 px-6">
+    <section className="bg-[#1B2B4B] py-20 md:py-28 px-6">
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-white mb-3">
             Start Free. Grow When Ready.
           </h2>
-          <p className="text-[#64748B] text-lg">
+          <p className="text-white/70 text-lg">
             The diary is free forever. Add premium tools as your business grows.
           </p>
         </div>
 
         <div className="flex flex-col gap-5 max-w-[1100px] mx-auto">
-          {plans.map((p) => (
-            <div
-              key={p.name}
-              className={`rounded-2xl overflow-hidden border bg-white grid md:grid-cols-[300px,1fr] ${p.highlight ? "border-[#1A73E8] ring-1 ring-[#1A73E8] shadow-[0_20px_60px_-25px_rgba(26,115,232,0.45)]" : "border-[#e1e4eb]"}`}
-            >
-              <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
-                <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
-                {p.highlight && (
-                  <span className="absolute top-3 right-3 bg-[#1A73E8] text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
-                    Popular
-                  </span>
-                )}
-              </div>
-              <div className="p-6 md:p-8 flex flex-col">
-                <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <span className="w-9 h-9 rounded-lg bg-[#DBEAFE] grid place-items-center">
-                      <Check className="w-4 h-4 text-[#1A73E8]" />
+          {plans.map((p) => {
+            const isPro = p.highlight;
+            const cardBg = isPro ? "bg-[#00B5A5]" : "bg-white/10 border border-white/20";
+            const titleColor = isPro ? "text-white" : "text-white";
+            const descColor = isPro ? "text-white/90" : "text-white/75";
+            const priceColor = isPro ? "text-white" : "text-[#00B5A5]";
+            const bulletText = isPro ? "text-white" : "text-white/90";
+            const ctaColor = isPro ? "text-white hover:text-white/80" : "text-[#00B5A5] hover:text-[#7FE5DC]";
+            return (
+              <div
+                key={p.name}
+                className={`rounded-2xl overflow-hidden grid md:grid-cols-[300px,1fr] ${cardBg}`}
+              >
+                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
+                  <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
+                  {isPro && (
+                    <span className="absolute top-3 right-3 bg-white text-[#00B5A5] text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
+                      Most popular
                     </span>
-                    <div className="font-black text-[#0B1530] text-xl">{p.name}</div>
-                  </div>
-                  <div className="text-[#1A73E8] font-bold text-base">{p.price}</div>
+                  )}
                 </div>
-                <p className="text-[#475569] text-[15px] leading-relaxed mb-4">{p.desc}</p>
-                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm text-[#0B1530]">
-                  {p.bullets.map((b) => (
-                    <li key={b} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#16A34A] shrink-0" /> {b}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/pricing"
-                  className={`self-start inline-flex items-center gap-1.5 font-semibold text-sm no-underline ${p.highlight ? "text-[#1A73E8] hover:text-[#1565C7]" : "text-[#1A73E8] hover:text-[#1565C7]"}`}
-                >
-                  {p.cta} <ArrowRight className="w-4 h-4" />
-                </Link>
+                <div className="p-6 md:p-8 flex flex-col">
+                  <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <span className={`w-9 h-9 rounded-lg grid place-items-center ${isPro ? "bg-white/20" : "bg-[#00B5A5]/20"}`}>
+                        <Check className={`w-4 h-4 ${isPro ? "text-white" : "text-[#00B5A5]"}`} />
+                      </span>
+                      <div className={`font-black text-xl ${titleColor}`}>{p.name}</div>
+                    </div>
+                    <div className={`font-bold text-base ${priceColor}`}>{p.price}</div>
+                  </div>
+                  <p className={`${descColor} text-[15px] leading-relaxed mb-4`}>{p.desc}</p>
+                  <ul className={`grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm ${bulletText}`}>
+                    {p.bullets.map((b) => (
+                      <li key={b} className="flex items-center gap-2">
+                        <Check className={`w-4 h-4 shrink-0 ${isPro ? "text-white" : "text-[#00B5A5]"}`} /> {b}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    to="/pricing"
+                    className={`self-start inline-flex items-center gap-1.5 font-semibold text-sm no-underline ${ctaColor}`}
+                  >
+                    {p.cta} <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="text-center mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-[#EEF0F4] hover:bg-[#E2E5EB] text-[#0B1530] font-semibold px-6 py-3 rounded-full no-underline"
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg no-underline"
           >
             Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
@@ -563,30 +577,30 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="bg-[#F4F5F7] py-20 md:py-28 px-6">
+    <section className="bg-white py-20 md:py-28 px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
             Loved by Instructors
           </h2>
-          <p className="text-[#64748B] text-lg">Real feedback from ADIs using DSM every day.</p>
+          <p className="text-gray-500 text-lg">Real feedback from ADIs using DSM every day.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((t) => (
-            <div key={t.n} className="bg-white rounded-2xl p-7 border border-[#e1e4eb]">
+            <div key={t.n} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-[#00B5A5] text-[#00B5A5]" />
                 ))}
               </div>
-              <p className="text-[#0B1530] text-[15px] leading-relaxed mb-6">"{t.q}"</p>
-              <div className="flex items-center gap-3 pt-4 border-t border-[#e1e4eb]">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-bold">
+              <p className="text-gray-600 text-[15px] leading-relaxed mb-6">"{t.q}"</p>
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-[#1B2B4B] grid place-items-center text-white font-bold">
                   {t.n.charAt(0)}
                 </div>
                 <div>
-                  <div className="font-bold text-[#0B1530] text-sm">{t.n}</div>
-                  <div className="text-[#64748B] text-xs">{t.r}</div>
+                  <div className="font-bold text-[#1B2B4B] text-sm">{t.n}</div>
+                  <div className="text-gray-500 text-xs">{t.r}</div>
                 </div>
               </div>
             </div>
@@ -608,42 +622,42 @@ function ComparisonFormula() {
     { l: "No lock-in, cancel anytime", v: "Always", positive: true },
   ];
   return (
-    <section className="bg-white py-20 md:py-28 px-6">
+    <section className="bg-[#F7FAFC] py-20 md:py-28 px-6">
       <div className="max-w-[980px] mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-block text-[#1A73E8] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
             The Math Speaks for Itself
           </div>
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530]">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
             The No-Brainer Formula
           </h2>
         </div>
 
-        <div className="bg-[#F4F5F7] rounded-2xl p-2 md:p-4">
+        <div className="bg-white rounded-2xl p-2 md:p-4 border border-gray-100 shadow-sm">
           {rows.map((r, i) => (
             <div
               key={r.l}
-              className={`flex items-center justify-between gap-4 px-5 py-5 ${i !== rows.length - 1 ? "border-b border-[#e1e4eb]" : ""}`}
+              className={`flex items-center justify-between gap-4 px-5 py-5 ${i !== rows.length - 1 ? "border-b border-gray-100" : ""}`}
             >
               <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-[#16A34A]/15 grid place-items-center shrink-0">
-                  <Check className="w-3.5 h-3.5 text-[#16A34A]" />
+                <span className="w-6 h-6 rounded-full bg-[#E6F7F6] grid place-items-center shrink-0">
+                  <Check className="w-3.5 h-3.5 text-[#00B5A5]" />
                 </span>
-                <span className="text-[#0B1530] font-medium text-[15px]">{r.l}</span>
+                <span className="text-[#1B2B4B] font-medium text-[15px]">{r.l}</span>
               </div>
-              <span className="text-[#1A73E8] font-bold text-[15px] shrink-0">{r.v}</span>
+              <span className="text-[#00B5A5] font-bold text-[15px] shrink-0">{r.v}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-[#0B1530] text-lg italic max-w-xl mx-auto mb-2">
+          <p className="text-[#1B2B4B] text-lg italic max-w-xl mx-auto mb-2">
             "Save more in tax deductions than the app costs.
           </p>
-          <p className="text-[#0B1530] text-xl font-black mb-8">It literally pays for itself."</p>
+          <p className="text-[#1B2B4B] text-xl font-black mb-8">It literally pays for itself."</p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-8 py-4 rounded-full text-[15px] no-underline shadow-[0_8px_24px_rgba(26,115,232,0.35)]"
+            className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
           >
             Start Free Today <ArrowRight className="w-4 h-4" />
           </Link>
@@ -662,11 +676,11 @@ function FinalCTA() {
     { i: Building2, t: "GDPR Compliant" },
   ];
   return (
-    <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
+    <section className="bg-[#00B5A5] py-20 md:py-28 px-6 text-white">
       <div className="max-w-[1000px] mx-auto text-center">
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
           {platforms.map(({ i: I, t }) => (
-            <span key={t} className="inline-flex items-center gap-2 text-white/60 text-sm">
+            <span key={t} className="inline-flex items-center gap-2 text-white/80 text-sm">
               <I className="w-4 h-4" /> {t}
             </span>
           ))}
@@ -675,20 +689,20 @@ function FinalCTA() {
         <h2 className="text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
           Ready to Simplify Your Business?
         </h2>
-        <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+        <p className="text-white/85 text-lg mb-10 max-w-xl mx-auto">
           Join 500+ driving instructors who've ditched the paper diary. Start free today.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-8 py-4 rounded-full text-[15px] no-underline shadow-[0_8px_24px_rgba(26,115,232,0.4)]"
+            className="inline-flex items-center gap-2 bg-white text-[#00B5A5] hover:bg-gray-50 font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
           >
             Create Free Account <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold px-8 py-4 rounded-full text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white text-white font-semibold px-8 py-4 rounded-lg text-[15px] no-underline"
           >
             Compare Plans
           </Link>
@@ -697,4 +711,3 @@ function FinalCTA() {
     </section>
   );
 }
-
