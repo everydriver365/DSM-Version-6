@@ -81,9 +81,9 @@ export function MarketingNav() {
             </button>
           </div>
           <nav className="flex flex-col gap-5">
-            {navLinks.map((l) => (
+            {navLinks.map((l, idx) => (
               <Link
-                key={l.to}
+                key={`${l.to}-${idx}`}
                 to={l.to}
                 onClick={() => setOpen(false)}
                 className="text-[#1B2B4B] text-2xl font-bold no-underline"
