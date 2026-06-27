@@ -81,7 +81,7 @@ function QuotesPage() {
       if (!uid) { setLoading(false); return; }
       let { data, error } = await supabase
         .from("quotes")
-        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, deposit_amount, status, valid_until, sent_at, created_at")
+        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, deposit_amount, status, valid_until, sent_at, created_at, personal_message")
         .eq("instructor_id", uid)
         .order("sent_at", { ascending: false });
       console.log("[quotes] fetch result:", { data, error });
