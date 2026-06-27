@@ -192,39 +192,35 @@ function QuotesPage() {
         </button>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 6,
-          padding: "8px 16px",
-        }}
-      >
-        {tabs.map((t) => {
-          const active = tab === t.key;
-          return (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              style={{
-                display: "inline-flex",
-                flex: "0 0 auto",
-                background: active ? "#1A52A0" : "#fff",
-                color: active ? "#fff" : "#1A52A0",
-                border: "1px solid #e3e6ec",
-                borderRadius: 16,
-                padding: "6px 10px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {t.label}
-            </button>
-          );
-        })}
+      <div style={{ padding: "12px 16px" }}>
+        <select
+          value={tab}
+          onChange={(e) => setTab(e.target.value as TabKey)}
+          style={{
+            width: "100%",
+            background: "#fff",
+            color: "#1A52A0",
+            border: "1px solid #e3e6ec",
+            borderRadius: 10,
+            padding: "10px 12px",
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: "Poppins, sans-serif",
+            cursor: "pointer",
+            appearance: "none",
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231A52A0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 12px center",
+            paddingRight: 36,
+          }}
+        >
+          {tabs.map((t) => (
+            <option key={t.key} value={t.key}>{t.label}</option>
+          ))}
+        </select>
       </div>
+
 
 
 
