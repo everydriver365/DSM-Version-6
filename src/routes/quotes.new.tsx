@@ -46,7 +46,7 @@ function NewQuotePage() {
   const search = useSearch({ strict: false }) as {
     name?: string; email?: string; phone?: string;
     course?: string; courseType?: string;
-    hours?: string; price?: string; message?: string; revised?: string;
+    hours?: string; price?: string; message?: string; revised?: string; originalId?: string;
   };
   const initialCourse = search.courseType || search.course || "";
   const initialPrice = search.price ? stripQuotes(search.price) : "";
