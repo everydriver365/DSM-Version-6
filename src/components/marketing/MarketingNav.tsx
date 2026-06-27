@@ -29,9 +29,9 @@ export function MarketingNav() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
-          {navLinks.map((l) => (
+          {navLinks.map((l, idx) => (
             <Link
-              key={l.to}
+              key={`${l.to}-${idx}`}
               to={l.to}
               className="text-gray-600 hover:text-[#1B2B4B] text-[14px] font-medium no-underline transition-colors"
               activeProps={{ className: "text-[#1B2B4B]" }}
