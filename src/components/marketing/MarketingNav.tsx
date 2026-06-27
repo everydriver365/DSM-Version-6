@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import dsmLogo from "@/assets/dsm-logo.png.asset.json";
+import { DsmLogoMark } from "./DsmLogoMark";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -20,12 +20,8 @@ export function MarketingNav() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="h-16 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
-        <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <img src={dsmLogo.url} alt="DSM" className="h-9 w-auto object-contain" />
-          <span className="hidden sm:flex items-baseline gap-1.5">
-            <span className="text-[#1B2B4B] font-black text-[15px] tracking-tight">DSM</span>
-            <span className="text-gray-400 text-[13px] font-medium">by EveryDriver</span>
-          </span>
+        <Link to="/" className="no-underline">
+          <DsmLogoMark size={36} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
@@ -69,12 +65,8 @@ export function MarketingNav() {
       {open && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col px-6 py-6 lg:hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
           <div className="flex items-center justify-between mb-10">
-            <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
-              <img src={dsmLogo.url} alt="DSM" className="h-9 w-auto object-contain" />
-              <span className="flex items-baseline gap-1.5">
-                <span className="text-[#1B2B4B] font-black text-[15px]">DSM</span>
-                <span className="text-gray-400 text-[13px] font-medium">by EveryDriver</span>
-              </span>
+            <Link to="/" onClick={() => setOpen(false)} className="no-underline">
+              <DsmLogoMark size={36} />
             </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
               <X size={28} />
