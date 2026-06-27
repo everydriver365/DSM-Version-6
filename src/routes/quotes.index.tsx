@@ -253,6 +253,54 @@ function QuotesPage() {
                       {displayStatus}
                     </span>
                   </div>
+                  {isDeclined && (counter != null || reason) && (
+                    <div style={{
+                      marginTop: 10, padding: 10, borderRadius: 8,
+                      background: "#FEF2F2", border: "1px solid #FECACA",
+                      display: "flex", flexDirection: "column", gap: 6,
+                    }}>
+                      {counter != null && (
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+                          Pupil suggested: <span style={{ color: "#CC2229" }}>£{counter.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {reason && (
+                        <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.4 }}>
+                          “{reason}”
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {isDeclined && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newPrice = counter != null ? counter : Number(q.price);
+                          navigate({
+                            to: "/quotes/new",
+                            search: {
+                              name: q.recipient_name ?? "",
+                              email: q.recipient_email ?? "",
+                              phone: q.recipient_phone ?? "",
+                              course: q.course_type ?? "",
+                              hours: q.hours != null ? String(q.hours) : "",
+                              price: String(newPrice),
+                              message: "Thank you for your feedback. Here is my revised quote:",
+                            } as any,
+                          });
+                        }}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
+                          background: "#1A52A0", border: "1px solid #1A52A0", color: "#fff",
+                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        <RefreshCw size={14} /> Revise & resend
+                      </button>
+                    </div>
+                  )}
                   {q.token && (
                     <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end", gap: 8 }}>
                       <button
