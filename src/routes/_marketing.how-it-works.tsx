@@ -52,13 +52,13 @@ function HowItWorksPage() {
                   width: 56,
                   height: 56,
                   borderRadius: 14,
-                  background: "linear-gradient(135deg,#00B5A5,#009687)",
+                  background: "linear-gradient(135deg,#0E7CCE,#0B69AD)",
                   color: "#fff",
                   display: "grid",
                   placeItems: "center",
                   fontWeight: 700,
                   fontSize: 22,
-                  boxShadow: "0 8px 20px rgba(0,181,165,0.28)",
+                  boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
                 }}
               >
                 {s.n}

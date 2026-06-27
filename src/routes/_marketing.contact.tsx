@@ -116,14 +116,14 @@ function ContactPage() {
                   style={{
                     padding: "13px 22px",
                     borderRadius: 12,
-                    background: "#00B5A5",
+                    background: "#0E7CCE",
                     color: "#fff",
                     fontWeight: 600,
                     fontSize: 15,
                     border: "none",
                     cursor: submitting ? "default" : "pointer",
                     opacity: submitting ? 0.7 : 1,
-                    boxShadow: "0 8px 20px rgba(0,181,165,0.28)",
+                    boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
                   }}
                 >
                   {submitting ? "Sending…" : "Send message"}
