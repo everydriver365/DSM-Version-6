@@ -193,18 +193,13 @@ function QuotesPage() {
       </div>
 
       <div
-        className="quotes-tabs-scroll"
         style={{
           display: "flex",
+          flexWrap: "wrap",
           gap: 6,
           padding: "8px 16px",
-          overflowX: "auto",
-          whiteSpace: "nowrap",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
         }}
       >
-        <style>{`.quotes-tabs-scroll::-webkit-scrollbar{display:none}`}</style>
         {tabs.map((t) => {
           const active = tab === t.key;
           return (
@@ -213,7 +208,7 @@ function QuotesPage() {
               onClick={() => setTab(t.key)}
               style={{
                 display: "inline-flex",
-                flexShrink: 0,
+                flex: "0 0 auto",
                 background: active ? "#1A52A0" : "#fff",
                 color: active ? "#fff" : "#1A52A0",
                 border: "1px solid #e3e6ec",
@@ -230,6 +225,7 @@ function QuotesPage() {
           );
         })}
       </div>
+
 
 
       <div style={{ padding: "0 16px 24px" }}>
