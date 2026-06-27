@@ -26,6 +26,8 @@ import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 const pupilAppImg = pupilAppsAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
+import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
+const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -280,7 +282,7 @@ const features = [
     bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
   },
   {
-    img: telematicsImg,
+    img: drivingSchoolHappyImg,
     title: "Telematics & Driving Data",
     body: "Monitor speed, driver scoring and trip history in real time. Give your pupils measurable feedback backed by data.",
     bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
