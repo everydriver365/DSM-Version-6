@@ -194,12 +194,6 @@ function Hero() {
 
 /* ---------- Diary section (dark) ---------- */
 function DiarySection() {
-  const stats = [
-    { n: "500+", l: "Active Instructors" },
-    { n: "50,000+", l: "Lessons Managed" },
-    { n: "4.9★", l: "Average Rating" },
-    { n: "£0", l: "To Get Started" },
-  ];
   return (
     <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
