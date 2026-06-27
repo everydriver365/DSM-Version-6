@@ -5,8 +5,18 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/quotes/new")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    name: typeof search.name === "string" ? search.name : undefined,
+    email: typeof search.email === "string" ? search.email : undefined,
+    phone: typeof search.phone === "string" ? search.phone : undefined,
+    course: typeof search.course === "string" ? search.course : undefined,
+    hours: typeof search.hours === "string" ? search.hours : undefined,
+    price: typeof search.price === "string" ? search.price : undefined,
+    message: typeof search.message === "string" ? search.message : undefined,
+  }),
   component: NewQuotePage,
 });
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plus", "Motorway", "Other"];
@@ -25,19 +35,24 @@ function NewQuotePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  const [pupilName, setPupilName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const search = Route.useSearch();
+  const [pupilName, setPupilName] = useState(search.name ?? "");
+  const [email, setEmail] = useState(search.email ?? "");
+  const [phone, setPhone] = useState(search.phone ?? "");
   const [postcode, setPostcode] = useState("");
-  const [courseType, setCourseType] = useState(COURSE_TYPES[0]);
-  const [hours, setHours] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
+  const [courseType, setCourseType] = useState(
+    search.course && COURSE_TYPES.includes(search.course) ? search.course : COURSE_TYPES[0]
+  );
+  const [hours, setHours] = useState<string>(search.hours ?? "");
+  const [price, setPrice] = useState<string>(search.price ?? "");
   const [deposit, setDeposit] = useState<string>("");
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(search.message ?? "");
+
   const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
   const [validUntil, setValidUntil] = useState(defaultValid);
-  const [priceTouched, setPriceTouched] = useState(false);
+  const [priceTouched, setPriceTouched] = useState(!!search.price);
   const [depositTouched, setDepositTouched] = useState(false);
+
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
 
   const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
