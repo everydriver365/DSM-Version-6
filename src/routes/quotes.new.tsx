@@ -42,22 +42,32 @@ function NewQuotePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  const search = Route.useSearch();
-  const [pupilName, setPupilName] = useState(search.name ?? "");
-  const [email, setEmail] = useState(search.email ?? "");
-  const [phone, setPhone] = useState(search.phone ?? "");
+  const search = useSearch({ strict: false }) as {
+    name?: string; email?: string; phone?: string;
+    course?: string; courseType?: string;
+    hours?: string; price?: string; message?: string; revised?: string;
+  };
+  const initialCourse = search.courseType || search.course || "";
+  const initialPrice = search.price ? stripQuotes(search.price) : "";
+  const initialHours = search.hours ? stripQuotes(search.hours) : "";
+
+  const [pupilName, setPupilName] = useState(search.name || "");
+  const [email, setEmail] = useState(search.email || "");
+  const [phone, setPhone] = useState(search.phone || "");
   const [postcode, setPostcode] = useState("");
   const [courseType, setCourseType] = useState(
-    search.course && COURSE_TYPES.includes(search.course) ? search.course : COURSE_TYPES[0]
+    initialCourse && COURSE_TYPES.includes(initialCourse) ? initialCourse : COURSE_TYPES[0]
   );
-  const [hours, setHours] = useState<string>(search.hours ?? "");
-  const [price, setPrice] = useState<string>(search.price ?? "");
+  const [hours, setHours] = useState<string>(initialHours);
+  const [price, setPrice] = useState<string>(initialPrice);
   const [deposit, setDeposit] = useState<string>("");
-  const [notes, setNotes] = useState(search.message ?? "");
+  const [notes, setNotes] = useState(search.message || "");
 
   const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
   const [validUntil, setValidUntil] = useState(defaultValid);
-  const [priceTouched, setPriceTouched] = useState(!!search.price);
+  const [priceTouched, setPriceTouched] = useState(!!initialPrice);
+  const isRevised = search.revised === "true";
+
   const [depositTouched, setDepositTouched] = useState(false);
 
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
