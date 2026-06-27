@@ -14,7 +14,8 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import { MarketingNav } from "../components/marketing/MarketingNav";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
-import heroImg from "../assets/marketing/hero.jpg";
+import heroAsset from "../assets/hero-april.png.asset.json";
+const heroImg = heroAsset.url;
 import diaryAsset from "../assets/diary-app.png.asset.json";
 const diaryImg = diaryAsset.url;
 import paymentsAsset from "../assets/flexible-payments.png.asset.json";
