@@ -115,7 +115,7 @@ function StatsBar() {
     { n: "£0", l: "To Get Started" },
   ];
   return (
-    <section className="bg-white py-7 px-6 border-y border-gray-100">
+    <section className="bg-white py-5 sm:py-7 px-6 border-y border-gray-100">
       <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {stats.map((s) => (
           <div key={s.l}>
@@ -132,21 +132,21 @@ function StatsBar() {
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAFC]">
-      <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-8 sm:py-12 md:py-24 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div>
-          <h1 className="text-[34px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-4">
+          <h1 className="text-[28px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-3">
             Driving School{" "}
             <span className="block md:inline">Management</span>
           </h1>
 
-          <div className="text-[18px] sm:text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-4">
+          <div className="text-[16px] sm:text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-3">
             Free forever for{" "}
             <span className="text-[#00B5A5] underline decoration-[3px] underline-offset-[6px] decoration-[#00B5A5]/30">
               ADIs &amp; PDIs
             </span>
           </div>
 
-          <p className="text-[15px] sm:text-[17px] text-gray-600 leading-relaxed mb-6 max-w-md">
+          <p className="text-[14px] sm:text-[17px] text-gray-600 leading-relaxed mb-4 max-w-md">
             Manage your lessons, track payments, and grow your business — all from one app.
             No credit card required.
           </p>
@@ -154,13 +154,13 @@ function Hero() {
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link
               to="/register"
-              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               Start Free Today <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               <Play className="w-4 h-4 fill-current" /> Watch Demo
             </Link>
@@ -202,28 +202,28 @@ function Hero() {
 /* ---------- Diary section ---------- */
 function DiarySection() {
   return (
-    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
+    <section className="bg-[#1B2B4B] py-10 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
+            <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-3 sm:px-4 py-1.5 mb-4">
               No contracts · No tie-in · Leave any time
             </div>
-            <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
+            <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-4">
               Your Diary, Your Way
               <br />
               — <span className="text-[#00B5A5]">Free for Life</span>
             </h2>
-            <p className="text-white/75 text-[17px] leading-relaxed mb-5 max-w-lg">
+            <p className="text-white/75 text-[15px] sm:text-[17px] leading-relaxed mb-4 max-w-lg">
               DSM gives every driving instructor a powerful diary and business management app — completely free,
               forever. Manage your schedule, track pupil progress, handle payments and communicate with learners
               all in one place.
             </p>
-            <p className="text-white/60 text-[15px] leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/60 text-[14px] sm:text-[15px] leading-relaxed mb-6 max-w-lg">
               Want even more? Optional paid extras like telematics, dashcam integration and a branded website are
               available when you're ready — the core app is yours to keep at absolutely no cost.
             </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85 mb-2">
+            <div className="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-2 text-sm text-white/85 mb-2">
               {["Free forever", "No credit card", "No hidden fees", "Cancel any time"].map((t) => (
                 <span key={t} className="inline-flex items-center gap-2">
                   <Check className="w-4 h-4 text-[#00B5A5]" /> {t}
@@ -314,37 +314,37 @@ const features = [
 
 function FeaturesShowcase() {
   return (
-    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-white py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+        <div className="text-center mb-10 sm:mb-16">
+          <div className="inline-block text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-3">
             Product Tour
           </div>
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-4">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3 sm:mb-4">
             See It in Action
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto">
             From diary management to live telematics — everything you need in one platform.
           </p>
         </div>
 
-        <div className="flex flex-col gap-14 sm:gap-20 md:gap-28">
+        <div className="flex flex-col gap-10 sm:gap-20 md:gap-28">
           {features.map((f, i) => {
             const reverse = i % 2 === 1;
             return (
               <div
                 key={`${f.title}-${i}`}
-                className={`grid md:grid-cols-2 gap-6 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+                className={`grid md:grid-cols-2 gap-5 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-5 sm:p-6 md:p-8">
-                  <div className="w-12 h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-5">
-                    <Check className="w-5 h-5 text-[#00B5A5]" />
+                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-4 sm:p-6 md:p-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-4">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-[#00B5A5]" />
                   </div>
-                  <h3 className="text-[22px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
+                  <h3 className="text-[18px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
                     {f.title}
                   </h3>
-                  <p className="text-gray-500 text-[16px] leading-relaxed mb-6">{f.body}</p>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 mb-7">
+                  <p className="text-gray-500 text-[14px] sm:text-[16px] leading-relaxed mb-4 sm:mb-6">{f.body}</p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-5 sm:mb-7">
                     {f.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2 text-[#1B2B4B] text-sm font-medium">
                         <span className="w-5 h-5 rounded-full bg-[#E6F7F6] grid place-items-center">
@@ -390,31 +390,31 @@ function HowItWorks() {
     { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2 },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#F7FAFC] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-2 sm:mb-3">
             Up and Running in 3 Minutes
           </h2>
-          <p className="text-gray-500 text-lg">No downloads. No setup fees. No hassle.</p>
+          <p className="text-gray-500 text-base sm:text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-10 relative">
+        <div className="grid md:grid-cols-3 gap-6 sm:gap-10 relative">
           {steps.map(({ n, t, b, Icon }, idx) => (
             <div key={n} className="text-center relative">
               {idx < 2 && (
                 <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-gray-300" />
               )}
-              <div className="relative inline-block mb-5">
-                <div className="w-20 h-20 rounded-2xl bg-[#E6F7F6] grid place-items-center">
-                  <Icon className="w-9 h-9 text-[#00B5A5]" />
+              <div className="relative inline-block mb-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#E6F7F6] grid place-items-center">
+                  <Icon className="w-7 h-7 sm:w-9 sm:h-9 text-[#00B5A5]" />
                 </div>
-                <span className="absolute -top-1 -right-1 bg-[#00B5A5] text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md">
+                <span className="absolute -top-1 -right-1 bg-[#00B5A5] text-white text-[11px] sm:text-[11px] font-bold rounded-full w-6 h-6 sm:w-7 sm:h-7 grid place-items-center shadow-md">
                   {n}
                 </span>
               </div>
-              <div className="text-xl font-bold text-[#1B2B4B] mb-2">{t}</div>
-              <div className="text-gray-500 text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
+              <div className="text-lg sm:text-xl font-bold text-[#1B2B4B] mb-2">{t}</div>
+              <div className="text-gray-500 text-[14px] sm:text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
             </div>
           ))}
         </div>
@@ -465,18 +465,18 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#1B2B4B] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1240px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-white mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-white mb-2 sm:mb-3">
             Start Free. Grow When Ready.
           </h2>
-          <p className="text-white/70 text-lg">
+          <p className="text-white/70 text-base sm:text-lg">
             The diary is free forever. Add premium tools as your business grows.
           </p>
         </div>
 
-        <div className="flex flex-col gap-5 max-w-[1100px] mx-auto">
+        <div className="flex flex-col gap-4 sm:gap-5 max-w-[1100px] mx-auto">
           {plans.map((p) => {
             const isPro = p.highlight;
             const cardBg = isPro ? "bg-[#00B5A5]" : "bg-white/10 border border-white/20";
@@ -490,7 +490,7 @@ function PricingTiers() {
                 key={p.name}
                 className={`rounded-2xl overflow-hidden grid md:grid-cols-[300px,1fr] ${cardBg}`}
               >
-                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
+                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-3 sm:p-4">
                   <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
                   {isPro && (
                     <span className="absolute top-3 right-3 bg-white text-[#00B5A5] text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
@@ -498,18 +498,18 @@ function PricingTiers() {
                     </span>
                   )}
                 </div>
-                <div className="p-5 sm:p-6 md:p-8 flex flex-col">
+                <div className="p-4 sm:p-6 md:p-8 flex flex-col">
                   <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
                     <div className="flex items-center gap-3">
                       <span className={`w-9 h-9 rounded-lg grid place-items-center ${isPro ? "bg-white/20" : "bg-[#00B5A5]/20"}`}>
                         <Check className={`w-4 h-4 ${isPro ? "text-white" : "text-[#00B5A5]"}`} />
                       </span>
-                      <div className={`font-black text-xl ${titleColor}`}>{p.name}</div>
+                      <div className={`font-black text-lg sm:text-xl ${titleColor}`}>{p.name}</div>
                     </div>
-                    <div className={`font-bold text-base ${priceColor}`}>{p.price}</div>
+                    <div className={`font-bold text-sm sm:text-base ${priceColor}`}>{p.price}</div>
                   </div>
-                  <p className={`${descColor} text-[15px] leading-relaxed mb-4`}>{p.desc}</p>
-                  <ul className={`grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm ${bulletText}`}>
+                  <p className={`${descColor} text-[14px] sm:text-[15px] leading-relaxed mb-3 sm:mb-4`}>{p.desc}</p>
+                  <ul className={`grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-4 sm:mb-5 text-sm ${bulletText}`}>
                     {p.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2">
                         <Check className={`w-4 h-4 shrink-0 ${isPro ? "text-white" : "text-[#00B5A5]"}`} /> {b}
@@ -528,10 +528,10 @@ function PricingTiers() {
           })}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-8 sm:mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg no-underline"
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg no-underline text-sm sm:text-base"
           >
             Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
@@ -561,23 +561,23 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-white py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-2 sm:mb-3">
             Loved by Instructors
           </h2>
-          <p className="text-gray-500 text-lg">Real feedback from ADIs using DSM every day.</p>
+          <p className="text-gray-500 text-base sm:text-lg">Real feedback from ADIs using DSM every day.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {items.map((t) => (
-            <div key={t.n} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
-              <div className="flex gap-0.5 mb-4">
+            <div key={t.n} className="bg-white rounded-2xl p-5 sm:p-7 border border-gray-100 shadow-sm">
+              <div className="flex gap-0.5 mb-3 sm:mb-4">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-[#00B5A5] text-[#00B5A5]" />
                 ))}
               </div>
-              <p className="text-gray-600 text-[15px] leading-relaxed mb-6">"{t.q}"</p>
+              <p className="text-gray-600 text-[14px] sm:text-[15px] leading-relaxed mb-4 sm:mb-6">"{t.q}"</p>
               <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                 <div className="w-10 h-10 rounded-full bg-[#1B2B4B] grid place-items-center text-white font-bold">
                   {t.n.charAt(0)}
@@ -606,13 +606,13 @@ function ComparisonFormula() {
     { l: "No lock-in, cancel anytime", v: "Always", positive: true },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#F7FAFC] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[980px] mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-block text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-3">
             The Math Speaks for Itself
           </div>
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
             The No-Brainer Formula
           </h2>
         </div>
@@ -621,27 +621,27 @@ function ComparisonFormula() {
           {rows.map((r, i) => (
             <div
               key={r.l}
-              className={`flex items-center justify-between gap-4 px-5 py-5 ${i !== rows.length - 1 ? "border-b border-gray-100" : ""}`}
+              className={`flex items-center justify-between gap-4 px-4 sm:px-5 py-4 sm:py-5 ${i !== rows.length - 1 ? "border-b border-gray-100" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <span className="w-6 h-6 rounded-full bg-[#E6F7F6] grid place-items-center shrink-0">
                   <Check className="w-3.5 h-3.5 text-[#00B5A5]" />
                 </span>
-                <span className="text-[#1B2B4B] font-medium text-[15px]">{r.l}</span>
+                <span className="text-[#1B2B4B] font-medium text-[14px] sm:text-[15px]">{r.l}</span>
               </div>
-              <span className="text-[#00B5A5] font-bold text-[15px] shrink-0">{r.v}</span>
+              <span className="text-[#00B5A5] font-bold text-[14px] sm:text-[15px] shrink-0">{r.v}</span>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-[#1B2B4B] text-lg italic max-w-xl mx-auto mb-2">
+        <div className="mt-8 sm:mt-10 text-center">
+          <p className="text-[#1B2B4B] text-base sm:text-lg italic max-w-xl mx-auto mb-2">
             "Save more in tax deductions than the app costs.
           </p>
-          <p className="text-[#1B2B4B] text-xl font-black mb-8">It literally pays for itself."</p>
+          <p className="text-[#1B2B4B] text-lg sm:text-xl font-black mb-6 sm:mb-8">It literally pays for itself."</p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Start Free Today <ArrowRight className="w-4 h-4" />
           </Link>
@@ -660,9 +660,9 @@ function FinalCTA() {
     { i: Building2, t: "GDPR Compliant" },
   ];
   return (
-    <section className="bg-[#00B5A5] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
+    <section className="bg-[#00B5A5] py-10 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1000px] mx-auto text-center">
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
+        <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-8 gap-y-2 sm:gap-y-3 mb-6 sm:mb-10">
           {platforms.map(({ i: I, t }) => (
             <span key={t} className="inline-flex items-center gap-2 text-white/80 text-sm">
               <I className="w-4 h-4" /> {t}
@@ -670,23 +670,23 @@ function FinalCTA() {
           ))}
         </div>
 
-        <h2 className="text-[30px] sm:text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
+        <h2 className="text-[24px] sm:text-[36px] md:text-[52px] font-black tracking-tight mb-3 sm:mb-4 leading-[1.05]">
           Ready to Simplify Your Business?
         </h2>
-        <p className="text-white/85 text-lg mb-10 max-w-xl mx-auto">
+        <p className="text-white/85 text-base sm:text-lg mb-6 sm:mb-10 max-w-xl mx-auto">
           Join 500+ driving instructors who've ditched the paper diary. Start free today.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-white text-[#00B5A5] hover:bg-gray-50 font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-white text-[#00B5A5] hover:bg-gray-50 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Create Free Account <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white text-white font-semibold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Compare Plans
           </Link>
