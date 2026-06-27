@@ -29,7 +29,7 @@ export const Route = createFileRoute("/quotes/")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
-type TabKey = "pending" | "accepted" | "declined" | "expired";
+type TabKey = "pending" | "accepted" | "declined" | "resent" | "expired";
 
 interface QuoteRow {
   id: string;
@@ -43,7 +43,9 @@ interface QuoteRow {
   status: string;
   valid_until: string | null;
   sent_at: string;
+  personal_message: string | null;
 }
+
 
 function formatDate(d: string | null) {
   if (!d) return "—";
