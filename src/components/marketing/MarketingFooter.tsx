@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
 export function MarketingFooter() {
   return (
@@ -6,12 +7,13 @@ export function MarketingFooter() {
       <div className="max-w-[1180px] mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
           <div className="col-span-2 md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="w-9 h-9 rounded-lg bg-[#00B5A5] grid place-items-center text-white font-black text-sm">
-                DSM
-              </span>
-              <span className="text-white font-bold text-[15px]">Driving School Manager</span>
-            </div>
+            <Link to="/" className="inline-flex items-center no-underline mb-4">
+              <img
+                src={logoAsset.url}
+                alt="Driving School Manager"
+                className="h-10 w-auto"
+              />
+            </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               The all-in-one app for UK driving instructors. Manage lessons, take payments, track progress —
               free forever.
