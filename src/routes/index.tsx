@@ -64,6 +64,7 @@ function HomePage() {
       <MarketingNav />
       <Hero />
       <DiarySection />
+      <StatsBar />
       <FeaturesShowcase />
       <HowItWorks />
       <PricingTiers />
@@ -72,6 +73,28 @@ function HomePage() {
       <FinalCTA />
       <MarketingFooter />
     </div>
+  );
+}
+
+/* ---------- Stats bar (between dark Diary and Features) ---------- */
+function StatsBar() {
+  const stats = [
+    { n: "500+", l: "Active Instructors" },
+    { n: "50,000+", l: "Lessons Managed" },
+    { n: "4.9★", l: "Average Rating" },
+    { n: "£0", l: "To Get Started" },
+  ];
+  return (
+    <section className="bg-[#E3E5E8] py-7 px-6 border-y border-[#d0d4dc]">
+      <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        {stats.map((s) => (
+          <div key={s.l}>
+            <div className="text-3xl md:text-4xl font-black text-[#0B1530] leading-none mb-1">{s.n}</div>
+            <div className="text-[#475569] text-sm">{s.l}</div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
