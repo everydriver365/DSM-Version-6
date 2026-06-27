@@ -18,16 +18,7 @@ export function MarketingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header
-      className="sticky top-0 z-50 w-full"
-      style={{
-        fontFamily: "'Inter', sans-serif",
-        background:
-          "radial-gradient(1100px 600px at 50% 120%, rgba(0,181,165,0.14), transparent 60%), rgba(247,250,252,0.85)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(229,233,242,0.6)",
-      }}
-    >
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="h-14 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
         <Link to="/" className="flex items-center no-underline">
           <img
