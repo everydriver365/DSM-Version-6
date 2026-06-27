@@ -296,7 +296,7 @@ const features = [
   },
   {
     img: drivingSchoolHappyImg,
-    title: "Telematics & Driving Data",
+    title: "Multi Car Schools",
     body: "Monitor speed, driver scoring and trip history in real time. Give your pupils measurable feedback backed by data.",
     bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
   },
