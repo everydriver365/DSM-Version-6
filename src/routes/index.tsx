@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Calendar,
   Globe,
@@ -10,6 +10,7 @@ import {
   Play,
   Check,
   Star,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { MarketingNav } from "../components/marketing/MarketingNav";
@@ -34,18 +35,26 @@ import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
 const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
-import brokenCarAsset from "../assets/broken-down-car.jpg.asset.json";
-const brokenCarImg = brokenCarAsset.url;
 import marketingWebsiteAsset from "../assets/marketing-website-mockup.png.asset.json";
 const marketingWebsiteImg = marketingWebsiteAsset.url;
 import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asset.json";
 const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
-const INTER_FONT = "'Inter', sans-serif";
+const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
 const NAVY = "#1B2B4B";
+const NAVY_SOFT = "#243a66";
 const TEAL = "#00B5A5";
-const LIGHT = "#F7FAFC";
-const SLATE = "#64748B";
+const TEAL_DARK = "#009687";
+const TEAL_TINT = "#E6F7F6";
+const BG = "#F7FAFC";
+const INK = "#0F172A";
+const MUTED = "#64748B";
+const HAIRLINE = "#E5E9F2";
+
+const SHADOW_SOFT =
+  "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06)";
+const SHADOW_LIFT =
+  "0 1px 2px rgba(15,23,42,0.04), 0 24px 60px rgba(27,43,75,0.14)";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,17 +72,71 @@ export const Route = createFileRoute("/")({
           "The all-in-one diary, payments and pupil management app for UK driving instructors. Free forever.",
       },
     ],
-    links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap",
-      },
-    ],
   }),
   component: HomePage,
 });
+
+/* ---------- Scroll-reveal helper ---------- */
+function Reveal({
+  children,
+  delay = 0,
+  as: Tag = "div",
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  delay?: number;
+  as?: keyof JSX.IntrinsicElements;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLElement | null>(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const prefersReduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduce) {
+      setShown(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setShown(true);
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const T = Tag as unknown as React.ComponentType<{
+    ref?: React.Ref<HTMLElement>;
+    className?: string;
+    style?: React.CSSProperties;
+    children?: ReactNode;
+  }>;
+  return (
+    <T
+      ref={ref as React.Ref<HTMLElement>}
+      className={className}
+      style={{
+        opacity: shown ? 1 : 0,
+        transform: shown ? "translateY(0)" : "translateY(16px)",
+        transition: `opacity 600ms cubic-bezier(.22,.61,.36,1) ${delay}ms, transform 600ms cubic-bezier(.22,.61,.36,1) ${delay}ms`,
+        ...style,
+      }}
+    >
+      {children}
+    </T>
+  );
+}
 
 function HomePage() {
   const navigate = useNavigate();
@@ -91,12 +154,21 @@ function HomePage() {
     };
   }, [navigate]);
 
-  if (!checked) return <div className="min-h-screen" style={{ background: LIGHT, fontFamily: INTER_FONT }} />;
+  if (!checked)
+    return (
+      <div
+        className="min-h-screen"
+        style={{ background: BG, fontFamily: FONT }}
+      />
+    );
 
   return (
-    <div className="min-h-screen antialiased" style={{ fontFamily: INTER_FONT, color: NAVY }}>
+    <div
+      className="min-h-screen antialiased"
+      style={{ fontFamily: FONT, color: INK, background: BG }}
+    >
       <MarketingNav />
-      <main style={{ background: LIGHT }}>
+      <main>
         <Hero />
         <StatsBar />
         <DiarySection />
@@ -112,54 +184,180 @@ function HomePage() {
   );
 }
 
+/* ---------- Eyebrow pill ---------- */
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase"
+      style={{
+        background: TEAL_TINT,
+        color: TEAL_DARK,
+        letterSpacing: "0.14em",
+      }}
+    >
+      <Sparkles className="w-3 h-3" />
+      {children}
+    </span>
+  );
+}
+
 /* ---------- Hero ---------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden" style={{ background: "#FFFFFF" }}>
-      <div className="max-w-[1180px] mx-auto px-6 pt-12 pb-8 sm:pt-16 sm:pb-12 md:pt-24 md:pb-16">
-        <div className="max-w-2xl">
-          <p className="text-base sm:text-lg leading-relaxed mb-6" style={{ color: SLATE }}>
-            Put the industry's most advanced diary tool to work and handle demand with ease.
-          </p>
-          <h1
-            className="text-[34px] sm:text-[44px] md:text-[56px] leading-[1.05] font-black tracking-tight mb-6"
-            style={{ color: NAVY }}
-          >
-            Driving School Management
-            <span className="block" style={{ color: TEAL }}>
-              — Free for Life
-            </span>
-          </h1>
-          <div className="w-24 h-1 mb-8" style={{ background: TEAL }} />
-          <Link
-            to="/features"
-            className="group inline-flex items-center gap-2 text-lg font-bold no-underline transition-colors"
-            style={{ color: TEAL }}
-          >
-            Maximize Your Efficiency
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
-      </div>
+    <section
+      className="relative overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(1100px 600px at 50% -10%, rgba(0,181,165,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(27,43,75,0.06), transparent 60%), " +
+          BG,
+      }}
+    >
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-24">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <Reveal>
+              <Eyebrow>Free for every instructor</Eyebrow>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1
+                className="mt-5 font-bold tracking-tight"
+                style={{
+                  color: NAVY,
+                  fontSize: "clamp(36px, 6vw, 64px)",
+                  lineHeight: 1.04,
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Driving school management,
+                <span style={{ color: TEAL }}> made effortless.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={140}>
+              <p
+                className="mt-6 max-w-xl"
+                style={{
+                  color: MUTED,
+                  fontSize: "clamp(16px, 1.4vw, 18px)",
+                  lineHeight: 1.65,
+                }}
+              >
+                Put the industry's most advanced diary to work — schedule lessons,
+                take payments, and grow your pupil base from one beautiful app.
+                Free forever.
+              </p>
+            </Reveal>
+            <Reveal delay={200}>
+              <div className="mt-8 flex flex-row gap-3">
+                <Link
+                  to="/register"
+                  className="group inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl px-5 sm:px-7 py-3.5 font-semibold no-underline transition-all"
+                  style={{
+                    background: TEAL,
+                    color: "#fff",
+                    boxShadow: "0 10px 24px rgba(0,181,165,0.35)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = TEAL_DARK;
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = TEAL;
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  Start free
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link
+                  to="/features"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl px-5 sm:px-7 py-3.5 font-semibold no-underline transition-colors"
+                  style={{
+                    background: "#fff",
+                    color: NAVY,
+                    border: `1px solid ${HAIRLINE}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#F1F5F9";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "#fff";
+                  }}
+                >
+                  See features
+                </Link>
+              </div>
+            </Reveal>
+            <Reveal delay={260}>
+              <div
+                className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"
+                style={{ color: MUTED }}
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-4 h-4" style={{ color: TEAL }} /> No card required
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-4 h-4" style={{ color: TEAL }} /> Cancel anytime
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-4 h-4" style={{ color: TEAL }} /> GDPR compliant
+                </span>
+              </div>
+            </Reveal>
+          </div>
 
-      <div className="px-6 pb-10 sm:pb-16">
-        <div className="max-w-[1180px] mx-auto relative">
-          <div className="relative rounded-2xl overflow-hidden shadow-xl">
-            <img
-              src={heroImg}
-              alt="Driving instructor with diary app and pupil tracking dashboard"
-              width={1280}
-              height={1024}
-              className="w-full h-auto"
-            />
-          </div>
-          <div
-            className="absolute -bottom-4 -right-2 sm:-bottom-6 sm:-right-4 p-4 sm:p-5 rounded-2xl shadow-xl transform rotate-3"
-            style={{ background: "#6366F1", color: "#FFFFFF" }}
-          >
-            <div className="text-2xl sm:text-3xl font-black">98%</div>
-            <div className="text-[10px] sm:text-xs font-bold opacity-90 uppercase tracking-tighter">Fill rate</div>
-          </div>
+          <Reveal delay={120}>
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-6 rounded-[40px]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(0,181,165,0.18), rgba(27,43,75,0.10))",
+                  filter: "blur(40px)",
+                }}
+              />
+              <div
+                className="relative rounded-[28px] overflow-hidden bg-white"
+                style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
+              >
+                <img
+                  src={heroImg}
+                  alt="Driving instructor diary and pupil tracking dashboard"
+                  width={1280}
+                  height={1024}
+                  className="w-full h-auto block"
+                />
+              </div>
+              <div
+                className="absolute -bottom-5 -left-4 sm:-bottom-7 sm:-left-7 rounded-2xl px-4 py-3 sm:px-5 sm:py-4"
+                style={{
+                  background: "#fff",
+                  boxShadow: SHADOW_LIFT,
+                  border: `1px solid ${HAIRLINE}`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className="w-10 h-10 rounded-xl grid place-items-center"
+                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                  >
+                    <Activity className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <div className="text-xl font-bold" style={{ color: NAVY }}>
+                      98%
+                    </div>
+                    <div
+                      className="text-[11px] font-semibold uppercase"
+                      style={{ color: MUTED, letterSpacing: "0.08em" }}
+                    >
+                      Fill rate
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -175,109 +373,206 @@ function StatsBar() {
     { n: "£0", l: "To Get Started" },
   ];
   return (
-    <section className="py-6 sm:py-8 px-6 border-y" style={{ background: "#FFFFFF", borderColor: "#EDF2F7" }}>
-      <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        {stats.map((s) => (
-          <div key={s.l}>
-            <div className="text-3xl sm:text-4xl font-black leading-none mb-1" style={{ color: NAVY }}>
-              {s.n}
-            </div>
-            <div className="text-sm" style={{ color: SLATE }}>
-              {s.l}
-            </div>
+    <section className="px-5 sm:px-8 pb-2">
+      <div className="max-w-[1180px] mx-auto">
+        <Reveal>
+          <div
+            className="rounded-3xl bg-white px-6 sm:px-10 py-7 sm:py-9 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4"
+            style={{ boxShadow: SHADOW_SOFT, border: `1px solid ${HAIRLINE}` }}
+          >
+            {stats.map((s, i) => (
+              <div
+                key={s.l}
+                className={`text-center ${i > 0 ? "md:border-l" : ""}`}
+                style={{ borderColor: HAIRLINE }}
+              >
+                <div
+                  className="font-bold leading-none mb-1.5"
+                  style={{
+                    color: NAVY,
+                    fontSize: "clamp(28px, 3vw, 36px)",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {s.n}
+                </div>
+                <div
+                  className="text-[13px] font-medium"
+                  style={{ color: MUTED }}
+                >
+                  {s.l}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </Reveal>
       </div>
     </section>
   );
 }
 
+/* ---------- Section heading ---------- */
+function SectionHead({
+  eyebrow,
+  title,
+  body,
+  align = "left",
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  body?: ReactNode;
+  align?: "left" | "center";
+}) {
+  return (
+    <div
+      className={`max-w-2xl mb-12 sm:mb-16 ${align === "center" ? "mx-auto text-center" : ""}`}
+    >
+      {eyebrow && (
+        <Reveal>
+          <Eyebrow>{eyebrow}</Eyebrow>
+        </Reveal>
+      )}
+      <Reveal delay={60}>
+        <h2
+          className={`${eyebrow ? "mt-5" : ""} font-bold tracking-tight`}
+          style={{
+            color: NAVY,
+            fontSize: "clamp(28px, 4vw, 44px)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          {title}
+        </h2>
+      </Reveal>
+      {body && (
+        <Reveal delay={120}>
+          <p
+            className="mt-5"
+            style={{ color: MUTED, fontSize: 18, lineHeight: 1.65 }}
+          >
+            {body}
+          </p>
+        </Reveal>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Diary section ---------- */
 function DiarySection() {
+  const items = [
+    {
+      title: "Drag-and-drop calendar",
+      body: "Move lessons around in seconds with a calendar that adapts to your week.",
+      Icon: Calendar,
+    },
+    {
+      title: "Google Calendar sync",
+      body: "Keep personal and business calendars in perfect sync automatically.",
+      Icon: Globe,
+    },
+    {
+      title: "Automatic gap filling",
+      body: "Fill empty slots with waitlisted pupils before they book elsewhere.",
+      Icon: Activity,
+    },
+    {
+      title: "SMS reminders",
+      body: "Reduce no-shows with automatic lesson reminders for pupils.",
+      Icon: Smartphone,
+    },
+  ];
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: "#FFFFFF" }}>
+    <section className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8">
       <div className="max-w-[1180px] mx-auto">
-        <div className="max-w-2xl mb-12 sm:mb-16">
-          <p className="text-base sm:text-lg leading-relaxed mb-6" style={{ color: SLATE }}>
-            Your diary, your way — completely free. Manage your schedule, track pupil progress, handle payments
-            and communicate with learners all in one place.
-          </p>
-          <h2
-            className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight mb-6"
-            style={{ color: NAVY }}
-          >
-            Make light work of lesson scheduling.
-          </h2>
-          <div className="w-24 h-1 mb-8" style={{ background: TEAL }} />
-          <Link
-            to="/features"
-            className="group inline-flex items-center gap-2 text-lg font-bold no-underline transition-colors"
-            style={{ color: TEAL }}
-          >
-            Explore the diary
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
+        <SectionHead
+          eyebrow="Your diary, your way"
+          title={<>Make light work of lesson scheduling.</>}
+          body="Your diary, your way — completely free. Manage your schedule, track pupil progress, handle payments and communicate with learners all in one place."
+        />
 
-        <div className="relative rounded-2xl overflow-hidden shadow-xl mb-10 sm:mb-14">
-          <div className="aspect-[16/10] grid place-items-center relative overflow-hidden group cursor-pointer" style={{ background: "#152038" }}>
-            <img
-              src={explainerPlaceholderImg}
-              alt="Explainer video preview"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.35)" }} />
-            <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
-              <span
-                className="w-16 h-16 rounded-full grid place-items-center group-hover:opacity-90 transition-opacity"
-                style={{ background: TEAL }}
-              >
-                <Play className="w-6 h-6 fill-white text-white ml-1" />
-              </span>
-              <span className="text-sm font-medium">Explainer Video</span>
+        <Reveal>
+          <div
+            className="relative rounded-[28px] overflow-hidden mb-12 sm:mb-16"
+            style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
+          >
+            <div
+              className="aspect-[16/9] grid place-items-center relative overflow-hidden group cursor-pointer"
+              style={{ background: NAVY }}
+            >
+              <img
+                src={explainerPlaceholderImg}
+                alt="Explainer video preview"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
+                }}
+              />
+              <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
+                <span
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
+                  style={{
+                    background: TEAL,
+                    boxShadow: "0 12px 30px rgba(0,181,165,0.55)",
+                  }}
+                >
+                  <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
+                </span>
+                <span className="text-sm font-medium tracking-wide">
+                  Watch the 90-second tour
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="grid sm:grid-cols-2 gap-6">
-          {[
-            {
-              title: "Drag-and-drop calendar",
-              body: "Move lessons around in seconds with a calendar that adapts to your week.",
-              Icon: Calendar,
-            },
-            {
-              title: "Google Calendar sync",
-              body: "Keep personal and business calendars in perfect sync automatically.",
-              Icon: Globe,
-            },
-            {
-              title: "Automatic gap filling",
-              body: "Fill empty slots with waitlisted pupils before they book elsewhere.",
-              Icon: Activity,
-            },
-            {
-              title: "SMS reminders",
-              body: "Reduce no-shows with automatic lesson reminders for pupils.",
-              Icon: Smartphone,
-            },
-          ].map(({ title, body, Icon }) => (
-            <div key={title} className="flex gap-4">
+        <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
+          {items.map(({ title, body, Icon }, i) => (
+            <Reveal key={title} delay={i * 70}>
               <div
-                className="shrink-0 w-12 h-12 rounded-xl grid place-items-center"
-                style={{ background: "#E6F7F6", color: TEAL }}
+                className="h-full rounded-2xl bg-white p-6 sm:p-7 transition-all"
+                style={{
+                  border: `1px solid ${HAIRLINE}`,
+                  boxShadow: SHADOW_SOFT,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = SHADOW_LIFT;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = SHADOW_SOFT;
+                }}
               >
-                <Icon className="w-6 h-6" />
+                <div className="flex gap-4">
+                  <div
+                    className="shrink-0 w-12 h-12 rounded-xl grid place-items-center"
+                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                  >
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3
+                      className="font-semibold text-lg mb-1.5"
+                      style={{ color: NAVY }}
+                    >
+                      {title}
+                    </h3>
+                    <p
+                      className="text-[15px] leading-relaxed"
+                      style={{ color: MUTED }}
+                    >
+                      {body}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>
-                  {title}
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: SLATE }}>
-                  {body}
-                </p>
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -285,7 +580,7 @@ function DiarySection() {
   );
 }
 
-/* ---------- Feature zig-zag ---------- */
+/* ---------- Features showcase ---------- */
 const features = [
   {
     img: paymentsImg,
@@ -345,78 +640,110 @@ const features = [
 
 function FeaturesShowcase() {
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: LIGHT }}>
+    <section
+      className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8"
+      style={{ background: "#fff" }}
+    >
       <div className="max-w-[1180px] mx-auto">
-        <div className="max-w-2xl mb-12 sm:mb-16">
-          <div
-            className="inline-block text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-4"
-            style={{ color: TEAL }}
-          >
-            Product Tour
-          </div>
-          <h2
-            className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight mb-6"
-            style={{ color: NAVY }}
-          >
-            See it in action
-          </h2>
-          <p className="text-base sm:text-lg leading-relaxed" style={{ color: SLATE }}>
-            From diary management to live telematics — everything you need in one platform.
-          </p>
-        </div>
+        <SectionHead
+          eyebrow="Product tour"
+          title="Everything you need, beautifully connected."
+          body="From diary management to live telematics — one platform, one login, one experience your pupils will love."
+        />
 
-        <div className="flex flex-col gap-16 sm:gap-24 md:gap-32">
+        <div className="flex flex-col gap-20 sm:gap-28 lg:gap-36">
           {features.map((f, i) => {
             const reverse = i % 2 === 1;
             return (
               <div
                 key={`${f.title}-${i}`}
-                className={`grid md:grid-cols-2 gap-8 sm:gap-12 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+                className={`grid md:grid-cols-2 gap-10 sm:gap-14 items-center ${
+                  reverse ? "md:[&>*:first-child]:order-2" : ""
+                }`}
               >
-                <div>
-                  <div className="relative rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src={f.img}
-                      alt={f.title}
-                      width={1024}
-                      height={1024}
-                      loading="lazy"
-                      className="w-full h-auto"
+                <Reveal>
+                  <div className="relative">
+                    <div
+                      aria-hidden
+                      className="absolute -inset-4 rounded-[36px]"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, rgba(0,181,165,0.10), rgba(27,43,75,0.06))",
+                        filter: "blur(28px)",
+                      }}
                     />
+                    <div
+                      className="relative rounded-[24px] overflow-hidden bg-white"
+                      style={{
+                        boxShadow: SHADOW_LIFT,
+                        border: `1px solid ${HAIRLINE}`,
+                      }}
+                    >
+                      <img
+                        src={f.img}
+                        alt={f.title}
+                        width={1024}
+                        height={1024}
+                        loading="lazy"
+                        className="w-full h-auto block"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="w-24 h-1 mb-6" style={{ background: TEAL }} />
-                  <h3
-                    className="text-[24px] sm:text-[32px] md:text-[38px] font-black leading-tight tracking-tight mb-4"
-                    style={{ color: NAVY }}
-                  >
-                    {f.title}
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed mb-6" style={{ color: SLATE }}>
-                    {f.body}
-                  </p>
-                  <ul className="grid sm:grid-cols-2 gap-3 mb-6">
-                    {f.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2 text-sm font-medium" style={{ color: NAVY }}>
-                        <span
-                          className="w-5 h-5 rounded-full grid place-items-center shrink-0"
-                          style={{ background: "#E6F7F6" }}
+                </Reveal>
+                <Reveal delay={100}>
+                  <div>
+                    <Eyebrow>Feature</Eyebrow>
+                    <h3
+                      className="mt-4 font-bold tracking-tight"
+                      style={{
+                        color: NAVY,
+                        fontSize: "clamp(24px, 3vw, 34px)",
+                        lineHeight: 1.15,
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {f.title}
+                    </h3>
+                    <p
+                      className="mt-4"
+                      style={{
+                        color: MUTED,
+                        fontSize: 17,
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {f.body}
+                    </p>
+                    <ul className="mt-6 grid sm:grid-cols-2 gap-3">
+                      {f.bullets.map((b) => (
+                        <li
+                          key={b}
+                          className="flex items-center gap-2.5 text-[14px] font-medium"
+                          style={{ color: NAVY }}
                         >
-                          <Check className="w-3 h-3" style={{ color: TEAL }} />
-                        </span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to="/features"
-                    className="group inline-flex items-center gap-1.5 font-semibold text-sm no-underline"
-                    style={{ color: TEAL }}
-                  >
-                    Learn more <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
+                          <span
+                            className="w-5 h-5 rounded-full grid place-items-center shrink-0"
+                            style={{ background: TEAL_TINT }}
+                          >
+                            <Check
+                              className="w-3 h-3"
+                              style={{ color: TEAL_DARK }}
+                            />
+                          </span>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      to="/features"
+                      className="group mt-7 inline-flex items-center gap-1.5 font-semibold no-underline"
+                      style={{ color: TEAL_DARK }}
+                    >
+                      Learn more
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </Reveal>
               </div>
             );
           })}
@@ -429,52 +756,80 @@ function FeaturesShowcase() {
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed.", Icon: Activity },
-    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences.", Icon: Calendar },
-    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2 },
+    {
+      n: "01",
+      t: "Create Your Account",
+      b: "Sign up with your email in 60 seconds. No credit card needed.",
+      Icon: Activity,
+    },
+    {
+      n: "02",
+      t: "Set Up Your Diary",
+      b: "Add availability, import existing pupils, and configure your preferences.",
+      Icon: Calendar,
+    },
+    {
+      n: "03",
+      t: "Start Teaching",
+      b: "Manage bookings, track payments and grow your business from day one.",
+      Icon: Building2,
+    },
   ];
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: "#FFFFFF" }}>
+    <section className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8">
       <div className="max-w-[1180px] mx-auto">
-        <div className="max-w-2xl mb-12 sm:mb-16">
-          <h2
-            className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight mb-6"
-            style={{ color: NAVY }}
-          >
-            Up and Running in 3 Minutes
-          </h2>
-          <p className="text-base sm:text-lg leading-relaxed" style={{ color: SLATE }}>
-            No downloads. No setup fees. No hassle.
-          </p>
-        </div>
+        <SectionHead
+          eyebrow="Getting started"
+          title="Up and running in 3 minutes."
+          body="No downloads. No setup fees. No hassle."
+        />
 
-        <div className="grid md:grid-cols-3 gap-8 sm:gap-12 relative">
-          {steps.map(({ n, t, b, Icon }, idx) => (
-            <div key={n} className="relative">
-              {idx < 2 && (
-                <div
-                  className="hidden md:block absolute top-10 left-[calc(50%+60px)] right-[-20px] border-t-2 border-dashed"
-                  style={{ borderColor: "#E2E8F0" }}
-                />
-              )}
-              <div className="relative inline-block mb-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl grid place-items-center" style={{ background: "#E6F7F6" }}>
-                  <Icon className="w-7 h-7 sm:w-9 sm:h-9" style={{ color: TEAL }} />
+        <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
+          {steps.map(({ n, t, b, Icon }, i) => (
+            <Reveal key={n} delay={i * 80}>
+              <div
+                className="h-full rounded-2xl bg-white p-7 sm:p-8 transition-all"
+                style={{
+                  border: `1px solid ${HAIRLINE}`,
+                  boxShadow: SHADOW_SOFT,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = SHADOW_LIFT;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = SHADOW_SOFT;
+                }}
+              >
+                <div className="flex items-start justify-between mb-6">
+                  <span
+                    className="w-12 h-12 rounded-xl grid place-items-center"
+                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                  >
+                    <Icon className="w-6 h-6" />
+                  </span>
+                  <span
+                    className="text-3xl font-bold"
+                    style={{ color: TEAL, opacity: 0.4, letterSpacing: "-0.04em" }}
+                  >
+                    {n}
+                  </span>
                 </div>
-                <span
-                  className="absolute -top-1 -right-1 text-white text-[11px] sm:text-xs font-bold rounded-full w-6 h-6 sm:w-7 sm:h-7 grid place-items-center shadow-md"
-                  style={{ background: TEAL }}
+                <div
+                  className="text-lg font-semibold mb-2"
+                  style={{ color: NAVY }}
                 >
-                  {n}
-                </span>
+                  {t}
+                </div>
+                <p
+                  className="text-[15px] leading-relaxed"
+                  style={{ color: MUTED }}
+                >
+                  {b}
+                </p>
               </div>
-              <div className="text-lg sm:text-xl font-bold mb-2" style={{ color: NAVY }}>
-                {t}
-              </div>
-              <div className="text-sm sm:text-base leading-relaxed" style={{ color: SLATE }}>
-                {b}
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -482,7 +837,7 @@ function HowItWorks() {
   );
 }
 
-/* ---------- Pricing tiers ---------- */
+/* ---------- Pricing ---------- */
 function PricingTiers() {
   const plans = [
     {
@@ -524,82 +879,125 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: NAVY }}>
-      <div className="max-w-[1240px] mx-auto">
-        <div className="max-w-2xl mb-12 sm:mb-16">
-          <h2 className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight mb-6 text-white">
-            Start Free. Grow When Ready.
-          </h2>
-          <p className="text-base sm:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-            The diary is free forever. Add premium tools as your business grows.
-          </p>
-        </div>
+    <section
+      className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8"
+      style={{ background: "#fff" }}
+    >
+      <div className="max-w-[1180px] mx-auto">
+        <SectionHead
+          eyebrow="Pricing"
+          title="Start free. Grow when ready."
+          body="The diary is free forever. Add premium tools as your business grows."
+        />
 
-        <div className="flex flex-col gap-4 sm:gap-5 max-w-[1100px]">
-          {plans.map((p) => {
+        <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
+          {plans.map((p, i) => {
             const isPro = p.highlight;
             return (
-              <div
-                key={p.name}
-                className="rounded-2xl overflow-hidden grid md:grid-cols-[300px,1fr]"
-                style={{
-                  background: isPro ? TEAL : "rgba(255,255,255,0.1)",
-                  border: isPro ? "none" : "1px solid rgba(255,255,255,0.2)",
-                }}
-              >
-                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-3 sm:p-4">
-                  <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
+              <Reveal key={p.name} delay={i * 70}>
+                <div
+                  className="relative h-full rounded-3xl overflow-hidden transition-all"
+                  style={{
+                    background: "#fff",
+                    border: isPro ? `2px solid ${TEAL}` : `1px solid ${HAIRLINE}`,
+                    boxShadow: isPro ? SHADOW_LIFT : SHADOW_SOFT,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-3px)";
+                    e.currentTarget.style.boxShadow = SHADOW_LIFT;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = isPro
+                      ? SHADOW_LIFT
+                      : SHADOW_SOFT;
+                  }}
+                >
                   {isPro && (
-                    <span className="absolute top-3 right-3 bg-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full" style={{ color: TEAL }}>
+                    <span
+                      className="absolute top-5 right-5 text-[10px] uppercase font-bold px-2.5 py-1 rounded-full"
+                      style={{
+                        background: TEAL,
+                        color: "#fff",
+                        letterSpacing: "0.12em",
+                      }}
+                    >
                       Most popular
                     </span>
                   )}
-                </div>
-                <div className="p-4 sm:p-6 md:p-8 flex flex-col">
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 mb-2 sm:flex sm:flex-wrap sm:justify-between">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span
-                        className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
-                        style={{ background: isPro ? "rgba(255,255,255,0.2)" : "rgba(0,181,165,0.2)" }}
-                      >
-                        <Check className={`w-4 h-4 ${isPro ? "text-white" : ""}`} style={{ color: isPro ? "#FFFFFF" : TEAL }} />
-                      </span>
-                      <div className="font-black text-lg sm:text-xl text-white">{p.name}</div>
-                    </div>
-                    <div className="font-bold text-sm sm:text-base shrink-0" style={{ color: isPro ? "#FFFFFF" : TEAL }}>
-                      {p.price}
-                    </div>
-                  </div>
-                  <p className="text-sm sm:text-base leading-relaxed mb-3 sm:mb-4" style={{ color: isPro ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.75)" }}>
-                    {p.desc}
-                  </p>
-                  <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-4 sm:mb-5 text-sm" style={{ color: isPro ? "#FFFFFF" : "rgba(255,255,255,0.9)" }}>
-                    {p.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2">
-                        <Check className="w-4 h-4 shrink-0" style={{ color: isPro ? "#FFFFFF" : TEAL }} /> {b}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to="/pricing"
-                    className="self-start inline-flex items-center gap-1.5 font-semibold text-sm no-underline"
-                    style={{ color: isPro ? "#FFFFFF" : TEAL }}
+                  <div
+                    className="aspect-[16/9] p-6 grid place-items-center"
+                    style={{ background: BG }}
                   >
-                    {p.cta} <ArrowRight className="w-4 h-4" />
-                  </Link>
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      loading="lazy"
+                      className="max-h-full w-auto object-contain"
+                    />
+                  </div>
+                  <div className="p-7 sm:p-8">
+                    <div className="flex items-baseline justify-between gap-4 mb-2">
+                      <div
+                        className="font-bold text-xl"
+                        style={{ color: NAVY }}
+                      >
+                        {p.name}
+                      </div>
+                      <div
+                        className="font-bold text-base shrink-0"
+                        style={{ color: TEAL_DARK }}
+                      >
+                        {p.price}
+                      </div>
+                    </div>
+                    <p
+                      className="text-[15px] leading-relaxed mb-5"
+                      style={{ color: MUTED }}
+                    >
+                      {p.desc}
+                    </p>
+                    <ul className="grid sm:grid-cols-2 gap-2.5 mb-6 text-[14px]">
+                      {p.bullets.map((b) => (
+                        <li
+                          key={b}
+                          className="flex items-center gap-2"
+                          style={{ color: NAVY }}
+                        >
+                          <Check
+                            className="w-4 h-4 shrink-0"
+                            style={{ color: TEAL }}
+                          />{" "}
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      to="/pricing"
+                      className="group inline-flex items-center gap-1.5 font-semibold no-underline"
+                      style={{ color: TEAL_DARK }}
+                    >
+                      {p.cta}{" "}
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>
 
-        <div className="text-center mt-8 sm:mt-10">
+        <div className="text-center mt-12">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg no-underline text-sm sm:text-base"
-            style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#FFFFFF" }}
+            className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-xl no-underline"
+            style={{
+              background: BG,
+              border: `1px solid ${HAIRLINE}`,
+              color: NAVY,
+            }}
           >
-            Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
+            Compare all plans &amp; features <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -627,47 +1025,72 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: "#FFFFFF" }}>
+    <section className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8">
       <div className="max-w-[1180px] mx-auto">
-        <div className="max-w-2xl mb-12 sm:mb-16">
-          <h2
-            className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight mb-6"
-            style={{ color: NAVY }}
-          >
-            Loved by Instructors
-          </h2>
-          <p className="text-base sm:text-lg leading-relaxed" style={{ color: SLATE }}>
-            Real feedback from ADIs using DSM every day.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
-          {items.map((t) => (
-            <div key={t.n} className="rounded-2xl p-5 sm:p-7 border" style={{ background: "#FFFFFF", borderColor: "#EDF2F7" }}>
-              <div className="flex gap-0.5 mb-3 sm:mb-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4" style={{ color: TEAL, fill: TEAL }} />
-                ))}
-              </div>
-              <p className="text-sm sm:text-base leading-relaxed mb-4 sm:mb-6" style={{ color: SLATE }}>
-                "{t.q}"
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: "#EDF2F7" }}>
-                <div
-                  className="w-10 h-10 rounded-full grid place-items-center text-white font-bold"
-                  style={{ background: NAVY }}
+        <SectionHead
+          eyebrow="Loved by instructors"
+          title="Built with ADIs, for ADIs."
+          body="Real feedback from UK instructors using DSM every day."
+        />
+        <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
+          {items.map((t, i) => (
+            <Reveal key={t.n} delay={i * 80}>
+              <div
+                className="h-full rounded-2xl bg-white p-7 transition-all"
+                style={{
+                  border: `1px solid ${HAIRLINE}`,
+                  boxShadow: SHADOW_SOFT,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = SHADOW_LIFT;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = SHADOW_SOFT;
+                }}
+              >
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <Star
+                      key={idx}
+                      className="w-4 h-4"
+                      style={{ color: TEAL, fill: TEAL }}
+                    />
+                  ))}
+                </div>
+                <p
+                  className="text-[16px] leading-relaxed mb-6"
+                  style={{ color: INK }}
                 >
-                  {t.n.charAt(0)}
-                </div>
-                <div>
-                  <div className="font-bold text-sm" style={{ color: NAVY }}>
-                    {t.n}
+                  &ldquo;{t.q}&rdquo;
+                </p>
+                <div
+                  className="flex items-center gap-3 pt-5 border-t"
+                  style={{ borderColor: HAIRLINE }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-full grid place-items-center text-white font-bold"
+                    style={{
+                      background: `linear-gradient(135deg, ${NAVY}, ${NAVY_SOFT})`,
+                    }}
+                  >
+                    {t.n.charAt(0)}
                   </div>
-                  <div className="text-xs" style={{ color: SLATE }}>
-                    {t.r}
+                  <div>
+                    <div
+                      className="font-semibold text-sm"
+                      style={{ color: NAVY }}
+                    >
+                      {t.n}
+                    </div>
+                    <div className="text-xs" style={{ color: MUTED }}>
+                      {t.r}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -678,71 +1101,104 @@ function Testimonials() {
 /* ---------- Comparison formula ---------- */
 function ComparisonFormula() {
   const rows = [
-    { l: "Free diary & scheduling", v: "£0", positive: true },
-    { l: "Auto mileage tracking = tax savings", v: "£2,250/yr", positive: true },
-    { l: "HMRC MTD filing included", v: "Others: £144/yr", positive: true },
-    { l: "Pupil app with self-service booking", v: "Included", positive: true },
-    { l: "GPS tracking & dashcam", v: "From £17/mo", positive: true },
-    { l: "No lock-in, cancel anytime", v: "Always", positive: true },
+    { l: "Free diary & scheduling", v: "£0" },
+    { l: "Auto mileage tracking = tax savings", v: "£2,250/yr" },
+    { l: "HMRC MTD filing included", v: "Others: £144/yr" },
+    { l: "Pupil app with self-service booking", v: "Included" },
+    { l: "GPS tracking & dashcam", v: "From £17/mo" },
+    { l: "No lock-in, cancel anytime", v: "Always" },
   ];
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: LIGHT }}>
+    <section
+      className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8"
+      style={{ background: "#fff" }}
+    >
       <div className="max-w-[980px] mx-auto">
-        <div className="max-w-2xl mb-8 sm:mb-12">
-          <div
-            className="text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-4"
-            style={{ color: TEAL }}
-          >
-            The Math Speaks for Itself
-          </div>
-          <h2
-            className="text-[28px] sm:text-[38px] md:text-[46px] font-black leading-[1.05] tracking-tight"
-            style={{ color: NAVY }}
-          >
-            The No-Brainer Formula
-          </h2>
-        </div>
+        <SectionHead
+          eyebrow="The math speaks for itself"
+          title="The no-brainer formula."
+        />
 
-        <div className="rounded-2xl p-2 md:p-4 border" style={{ background: "#FFFFFF", borderColor: "#EDF2F7" }}>
-          {rows.map((r, i) => (
-            <div
-              key={r.l}
-              className={`flex items-center justify-between gap-4 px-4 sm:px-5 py-4 sm:py-5 ${i !== rows.length - 1 ? "border-b" : ""}`}
-              style={{ borderColor: "#EDF2F7" }}
-            >
-              <div className="flex items-center gap-3">
+        <Reveal>
+          <div
+            className="rounded-3xl overflow-hidden"
+            style={{
+              background: BG,
+              border: `1px solid ${HAIRLINE}`,
+              boxShadow: SHADOW_SOFT,
+            }}
+          >
+            {rows.map((r, i) => (
+              <div
+                key={r.l}
+                className={`flex items-center justify-between gap-4 px-5 sm:px-7 py-5 sm:py-6 ${
+                  i !== rows.length - 1 ? "border-b" : ""
+                }`}
+                style={{ borderColor: HAIRLINE }}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className="w-7 h-7 rounded-full grid place-items-center shrink-0"
+                    style={{ background: TEAL_TINT }}
+                  >
+                    <Check
+                      className="w-3.5 h-3.5"
+                      style={{ color: TEAL_DARK }}
+                    />
+                  </span>
+                  <span
+                    className="font-medium text-[15px] sm:text-base"
+                    style={{ color: NAVY }}
+                  >
+                    {r.l}
+                  </span>
+                </div>
                 <span
-                  className="w-6 h-6 rounded-full grid place-items-center shrink-0"
-                  style={{ background: "#E6F7F6" }}
+                  className="font-bold text-[14px] sm:text-base shrink-0"
+                  style={{ color: TEAL_DARK }}
                 >
-                  <Check className="w-3.5 h-3.5" style={{ color: TEAL }} />
-                </span>
-                <span className="font-medium text-sm sm:text-base" style={{ color: NAVY }}>
-                  {r.l}
+                  {r.v}
                 </span>
               </div>
-              <span className="font-bold text-sm sm:text-base shrink-0" style={{ color: TEAL }}>
-                {r.v}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
 
-        <div className="mt-8 sm:mt-10 text-center">
-          <p className="text-base sm:text-lg italic max-w-xl mx-auto mb-2" style={{ color: NAVY }}>
-            "Save more in tax deductions than the app costs.
-          </p>
-          <p className="text-lg sm:text-xl font-black mb-6 sm:mb-8" style={{ color: NAVY }}>
-            It literally pays for itself."
-          </p>
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base no-underline"
-            style={{ background: TEAL, color: "#FFFFFF" }}
-          >
-            Start Free Today <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+        <Reveal delay={120}>
+          <div className="mt-12 text-center">
+            <p
+              className="text-base sm:text-lg italic max-w-xl mx-auto mb-1"
+              style={{ color: NAVY }}
+            >
+              &ldquo;Save more in tax deductions than the app costs.
+            </p>
+            <p
+              className="text-lg sm:text-xl font-bold mb-8"
+              style={{ color: NAVY }}
+            >
+              It literally pays for itself.&rdquo;
+            </p>
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
+              style={{
+                background: TEAL,
+                color: "#fff",
+                boxShadow: "0 12px 28px rgba(0,181,165,0.35)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = TEAL_DARK;
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = TEAL;
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Start free today <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -757,39 +1213,90 @@ function FinalCTA() {
     { i: Building2, t: "GDPR Compliant" },
   ];
   return (
-    <section className="py-16 sm:py-24 md:py-32 px-6" style={{ background: TEAL }}>
-      <div className="max-w-[1000px] mx-auto text-center">
-        <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-8 gap-y-2 sm:gap-y-3 mb-6 sm:mb-10">
-          {platforms.map(({ i: I, t }) => (
-            <span key={t} className="inline-flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
-              <I className="w-4 h-4" /> {t}
-            </span>
-          ))}
-        </div>
-
-        <h2 className="text-[28px] sm:text-[40px] md:text-[52px] font-black tracking-tight mb-3 sm:mb-4 leading-[1.05] text-white">
-          Ready to Simplify Your Business?
-        </h2>
-        <p className="text-base sm:text-lg mb-6 sm:mb-10 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.85)" }}>
-          Join 500+ driving instructors who've ditched the paper diary. Start free today.
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base no-underline"
-            style={{ background: "#FFFFFF", color: TEAL }}
+    <section className="px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-[1180px] mx-auto">
+        <Reveal>
+          <div
+            className="relative overflow-hidden rounded-[32px] px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
+            style={{
+              background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_SOFT} 100%)`,
+              boxShadow: SHADOW_LIFT,
+            }}
           >
-            Create Free Account <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-2 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-sm sm:text-base no-underline"
-            style={{ background: "transparent", border: "2px solid #FFFFFF", color: "#FFFFFF" }}
-          >
-            Compare Plans
-          </Link>
-        </div>
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(600px 300px at 80% 0%, rgba(0,181,165,0.35), transparent 60%), radial-gradient(500px 280px at 10% 100%, rgba(0,181,165,0.18), transparent 60%)",
+              }}
+            />
+            <div className="relative">
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
+                {platforms.map(({ i: I, t }) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-2 text-[13px]"
+                    style={{ color: "rgba(255,255,255,0.75)" }}
+                  >
+                    <I className="w-4 h-4" /> {t}
+                  </span>
+                ))}
+              </div>
+
+              <h2
+                className="font-bold tracking-tight mb-4 text-white mx-auto max-w-2xl"
+                style={{
+                  fontSize: "clamp(28px, 4.4vw, 48px)",
+                  lineHeight: 1.08,
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Ready to simplify your business?
+              </h2>
+              <p
+                className="text-base sm:text-lg mb-10 max-w-xl mx-auto"
+                style={{ color: "rgba(255,255,255,0.78)" }}
+              >
+                Join 500+ driving instructors who've ditched the paper diary.
+                Start free today.
+              </p>
+
+              <div className="flex flex-row sm:flex-wrap justify-center gap-3">
+                <Link
+                  to="/register"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
+                  style={{
+                    background: TEAL,
+                    color: "#fff",
+                    boxShadow: "0 12px 30px rgba(0,181,165,0.45)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = TEAL_DARK;
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = TEAL;
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  Create free account <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline"
+                  style={{
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    color: "#fff",
+                  }}
+                >
+                  Compare plans
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
