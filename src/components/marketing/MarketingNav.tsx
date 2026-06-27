@@ -50,7 +50,7 @@ export function MarketingNav() {
           </Link>
           <Link
             to="/register"
-            className="bg-[#00B5A5] hover:bg-[#009E8F] text-white font-semibold px-5 py-2.5 rounded-lg text-sm no-underline transition-colors"
+            className="bg-[#0E7CCE] hover:bg-[#0B69AD] text-white font-semibold px-5 py-2.5 rounded-lg text-sm no-underline transition-colors"
           >
             Start free →
           </Link>
@@ -103,7 +103,7 @@ export function MarketingNav() {
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="w-full text-center bg-[#00B5A5] hover:bg-[#009E8F] text-white font-semibold px-5 py-3 rounded-lg text-base no-underline"
+              className="w-full text-center bg-[#0E7CCE] hover:bg-[#0B69AD] text-white font-semibold px-5 py-3 rounded-lg text-base no-underline"
             >
               Start free →
             </Link>
