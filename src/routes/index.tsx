@@ -23,7 +23,9 @@ const paymentsImg = paymentsAsset.url;
 import websiteAsset from "../assets/driving-school-site.png.asset.json";
 const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
+import testCentreCelebrationAsset from "../assets/test-centre-celebration.jpg.asset.json";
 const pupilAppImg = pupilAppsAsset.url;
+const testSwapImg = testCentreCelebrationAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
@@ -289,7 +291,7 @@ const features = [
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
   },
   {
-    img: pupilAppImg,
+    img: testSwapImg,
     title: "Free Test Swapping App",
     body: "Dedicated apps for pupils, parents and instructors — free on every plan. Track progress, stay informed, and manage your business from anywhere.",
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
