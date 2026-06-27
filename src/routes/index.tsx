@@ -28,6 +28,8 @@ import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
 const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
+import brokenCarAsset from "../assets/broken-down-car.jpg.asset.json";
+const brokenCarImg = brokenCarAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -270,7 +272,7 @@ const features = [
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
   {
-    img: websiteImg,
+    img: brokenCarImg,
     title: "Your Own Professional Website",
     body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
