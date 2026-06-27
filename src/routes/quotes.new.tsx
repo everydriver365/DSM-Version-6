@@ -136,6 +136,7 @@ function NewQuotePage() {
           valid_until: validUntil || null,
           personal_message: notes.trim() || null,
           status,
+          revised_from_id: search.originalId || null,
         }),
       });
       const payload = await res.json();
