@@ -1,51 +1,39 @@
-# Port carma-course design to DSM marketing site
+You're right — the current build only loosely echoes carma-course. The hero proportions, image treatment, dark "Diary" section, feature blocks, pricing grid, and nav/footer are all visibly off when compared side-by-side. I want to redo it as a proper structural port rather than a loose remix.
 
-I fetched https://carma-course.lovable.app and have its full layout, copy structure, color treatment, and asset URLs. I'll rebuild the DSM marketing site to match.
+## What I'll change
 
-## Visual direction (from source)
-- Dark navy chrome (`#0A1024`-ish) on nav and dark sections, light grey dotted-grid hero background, blue primary (`#1A73E8`-ish), green accent for "free" pills.
-- Bold, heavy sans-serif headlines (Inter/system) with blue underline accent on key phrases ("Free for Life").
-- Hero = left copy + right hero image with floating stat cards ("98% Fill rate", "500+ Active instructors").
-- Alternating light/dark sections; feature blocks = text + image, zig-zag.
-- 4-card pricing tier row with image header per card.
-- "No-brainer formula" comparison list section.
+**Scope:** only marketing — `src/routes/index.tsx`, `src/components/marketing/MarketingNav.tsx`, `src/components/marketing/MarketingFooter.tsx`, plus the hero/section images under `src/assets/marketing/`. App routes untouched.
 
-## Pages to rebuild
-1. `src/routes/index.tsx` — full homepage clone (hero, "Your diary your way", feature zig-zag, 3-step how-it-works, 4-tier pricing, testimonials, comparison formula, final CTA).
-2. `src/routes/_marketing.features.tsx` — feature deep-dive grid styled to match.
-3. `src/routes/_marketing.pricing.tsx` — 4-tier card layout + compare table.
-4. `src/routes/_marketing.how-it-works.tsx` — 3-step layout matching source.
-5. `src/routes/_marketing.about.tsx` — dark hero + content sections in same style.
-6. `src/routes/_marketing.contact.tsx` — matching dark hero + form.
-7. `src/components/marketing/MarketingNav.tsx` — DSM cube logo + "Driving School Manager" wordmark, horizontal links (Home, Features, Websites & Domains, Telematics, Dashcam, Pricing, About, Contact), right side: Log in + blue rounded "Get Started Free" pill.
-8. `src/components/marketing/MarketingFooter.tsx` — match dark footer columns of source.
+### 1. Scrape the source faithfully
+Fetch the live carma-course HTML + computed styles section-by-section (hero, diary, features, pricing, testimonials, no-brainer formula, final CTA, nav, footer) and mirror:
+- DOM structure and section order
+- spacing, max-widths, type scale, radii, shadows
+- exact navy `#0B1530`-family palette and blue `#1A73E8` accent
+- floating stat-card positions over the hero image
+- alternating light / dark navy section rhythm
+- 4-tier pricing card layout with the "Most popular" highlight
+- "No-Brainer Formula" comparison block
 
-## Assets
-Hero/feature imagery will be generated locally via `imagegen` to avoid hot-linking carma-course's assets:
-- hero composite (instructor + phone + map)
-- diary screenshot mock
-- payments screenshot mock
-- website mock
-- pupil app mock
-- marketing/SEO mock
-- telematics mock
-- dashcam mock
-- driving-school dashboard mock
+### 2. Rebuild components to match
+- **MarketingNav**: white top bar (not navy) matching source, DSM wordmark left, centered nav links, "Log in" + filled blue "Get Started Free" right, UK flag pill.
+- **Hero**: light dotted-grid background, two-column with headline left + product image right, two floating cards ("98% Fill rate" top-right, "500+ Active instructors" bottom-left), pill badges row, primary blue CTA + outlined "Watch Demo".
+- **Diary section**: dark navy, eyebrow pill, large headline with blue accent phrase, video/screenshot card right.
+- **Features**: zig-zag with real product screenshots, not stock photos.
+- **Pricing**: 4 cards in one row on desktop, middle card elevated.
+- **Footer**: dark navy multi-column with newsletter, matching source.
 
-Stored in `src/assets/marketing/` and imported as ES6 image imports.
+### 3. Replace hero & section imagery
+Regenerate hero and feature shots to match the source's product-photo style (phone mock + dashboard composite on the hero, app screenshots in feature blocks) rather than the current generic stock images.
 
-## Design tokens
-- Add marketing-specific tokens (deep navy `--marketing-bg`, hero-grid background, blue primary, green free-tag) to `src/styles.css` under `@theme` so utilities like `bg-marketing-navy` work. Existing app tokens untouched.
-- Tailwind v4 conventions only.
+### 4. Tokens
+Add the navy/blue/grey tokens used by the port into `src/styles.css` so components reference semantic tokens, not hex literals.
 
 ## Out of scope
-- Auth-aware redirect on `/` is preserved as-is.
-- No copy from carma-course is used verbatim where it references EveryDriver-only features that don't apply; copy is adapted to DSM/EveryDriver branding already in the project.
-- App routes (logged-in product) are untouched.
+- Sub-pages (`/features`, `/pricing`, `/how-it-works`, `/about`, `/contact`) — I'll align those in a follow-up once the homepage match is approved.
+- App (authenticated) routes — unchanged.
+- No backend/data changes.
 
-## Technical notes
-- All updates stay in marketing files + `src/styles.css` + new `src/assets/marketing/`.
-- Each route file gets unique `head()` metadata (title, description, og).
-- Mobile: hero stacks, feature zig-zag becomes single column, pricing scrolls horizontally on small screens.
+## Verify
+After build, fetch the preview homepage screenshot and compare side-by-side with carma-course at the same viewport before handing back.
 
-Confirm and I'll build it.
+Approve and I'll execute.

@@ -154,6 +154,7 @@ function RootComponent() {
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
+    "/",
     "/satnav",
     "/weeklyreport",
     "/login",
@@ -165,6 +166,11 @@ function RootComponent() {
     "/resetpassword",
     "/search",
     "/take-payment",
+    "/features",
+    "/pricing",
+    "/how-it-works",
+    "/about",
+    "/contact",
   ]);
   const hideNav =
     hideNavExact.has(pathname) ||

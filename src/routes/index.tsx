@@ -64,6 +64,7 @@ function HomePage() {
       <MarketingNav />
       <Hero />
       <DiarySection />
+      <StatsBar />
       <FeaturesShowcase />
       <HowItWorks />
       <PricingTiers />
@@ -72,6 +73,28 @@ function HomePage() {
       <FinalCTA />
       <MarketingFooter />
     </div>
+  );
+}
+
+/* ---------- Stats bar (between dark Diary and Features) ---------- */
+function StatsBar() {
+  const stats = [
+    { n: "500+", l: "Active Instructors" },
+    { n: "50,000+", l: "Lessons Managed" },
+    { n: "4.9★", l: "Average Rating" },
+    { n: "£0", l: "To Get Started" },
+  ];
+  return (
+    <section className="bg-[#E3E5E8] py-7 px-6 border-y border-[#d0d4dc]">
+      <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        {stats.map((s) => (
+          <div key={s.l}>
+            <div className="text-3xl md:text-4xl font-black text-[#0B1530] leading-none mb-1">{s.n}</div>
+            <div className="text-[#475569] text-sm">{s.l}</div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -171,12 +194,6 @@ function Hero() {
 
 /* ---------- Diary section (dark) ---------- */
 function DiarySection() {
-  const stats = [
-    { n: "500+", l: "Active Instructors" },
-    { n: "50,000+", l: "Lessons Managed" },
-    { n: "4.9★", l: "Average Rating" },
-    { n: "£0", l: "To Get Started" },
-  ];
   return (
     <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
@@ -208,16 +225,14 @@ function DiarySection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
-            {stats.map((s) => (
-              <div
-                key={s.l}
-                className="bg-white/[0.04] border border-white/10 rounded-2xl p-7 text-center hover:bg-white/[0.06] transition-colors"
-              >
-                <div className="text-4xl md:text-5xl font-black text-[#5EA8FF] mb-2">{s.n}</div>
-                <div className="text-white/60 text-sm">{s.l}</div>
-              </div>
-            ))}
+          <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0F1A36] to-[#0A1024] grid place-items-center relative overflow-hidden group cursor-pointer">
+            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 30%, rgba(26,115,232,0.4), transparent 60%)" }} />
+            <div className="relative flex flex-col items-center gap-3 text-white/80">
+              <span className="w-16 h-16 rounded-full bg-white/10 border border-white/20 grid place-items-center group-hover:bg-white/15 transition-colors">
+                <Play className="w-6 h-6 fill-white text-white ml-1" />
+              </span>
+              <span className="text-sm font-medium">Explainer Video</span>
+            </div>
           </div>
         </div>
       </div>
@@ -329,12 +344,12 @@ function FeaturesShowcase() {
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed." },
-    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences." },
-    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one." },
+    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed.", Icon: Activity, bg: "bg-[#FFEDD5]", fg: "text-[#F97316]", badge: "bg-[#F97316]" },
+    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences.", Icon: Calendar, bg: "bg-[#DBEAFE]", fg: "text-[#1A73E8]", badge: "bg-[#1A73E8]" },
+    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2, bg: "bg-[#D1FAE5]", fg: "text-[#10B981]", badge: "bg-[#10B981]" },
   ];
   return (
-    <section className="bg-[#F4F5F7] py-20 md:py-28 px-6">
+    <section className="bg-[#EEF0F4] py-20 md:py-28 px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
@@ -343,15 +358,22 @@ function HowItWorks() {
           <p className="text-[#64748B] text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {steps.map((s) => (
-            <div
-              key={s.n}
-              className="bg-white rounded-2xl p-8 border border-[#e1e4eb] hover:shadow-[0_10px_30px_rgba(15,32,68,0.08)] transition-shadow"
-            >
-              <div className="text-[#1A73E8] text-4xl font-black mb-4 tracking-tight">{s.n}</div>
-              <div className="text-xl font-bold text-[#0B1530] mb-3">{s.t}</div>
-              <div className="text-[#64748B] text-[15px] leading-relaxed">{s.b}</div>
+        <div className="grid md:grid-cols-3 gap-10 relative">
+          {steps.map(({ n, t, b, Icon, bg, fg, badge }, idx) => (
+            <div key={n} className="text-center relative">
+              {idx < 2 && (
+                <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-[#cbd2dd]" />
+              )}
+              <div className="relative inline-block mb-5">
+                <div className={`w-20 h-20 rounded-2xl ${bg} grid place-items-center`}>
+                  <Icon className={`w-9 h-9 ${fg}`} />
+                </div>
+                <span className={`absolute -top-1 -right-1 ${badge} text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md`}>
+                  {n}
+                </span>
+              </div>
+              <div className="text-xl font-bold text-[#0B1530] mb-2">{t}</div>
+              <div className="text-[#64748B] text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
             </div>
           ))}
         </div>
@@ -413,13 +435,13 @@ function PricingTiers() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-col gap-5 max-w-[1100px] mx-auto">
           {plans.map((p) => (
             <div
               key={p.name}
-              className={`rounded-2xl overflow-hidden border ${p.highlight ? "border-[#1A73E8] shadow-[0_20px_60px_-20px_rgba(26,115,232,0.4)]" : "border-[#e1e4eb]"} bg-white flex flex-col`}
+              className={`rounded-2xl overflow-hidden border bg-white grid md:grid-cols-[300px,1fr] ${p.highlight ? "border-[#1A73E8] ring-1 ring-[#1A73E8] shadow-[0_20px_60px_-25px_rgba(26,115,232,0.45)]" : "border-[#e1e4eb]"}`}
             >
-              <div className="h-40 bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] p-4 relative">
+              <div className="relative bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
                 <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
                 {p.highlight && (
                   <span className="absolute top-3 right-3 bg-[#1A73E8] text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
@@ -427,11 +449,18 @@ function PricingTiers() {
                   </span>
                 )}
               </div>
-              <div className="p-6 flex flex-col flex-1">
-                <div className="font-black text-[#0B1530] text-xl mb-1">{p.name}</div>
-                <div className="text-[#1A73E8] font-bold text-sm mb-3">{p.price}</div>
-                <p className="text-[#64748B] text-sm leading-relaxed mb-5">{p.desc}</p>
-                <ul className="flex flex-col gap-2 mb-6 text-sm text-[#0B1530]">
+              <div className="p-6 md:p-8 flex flex-col">
+                <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-lg bg-[#DBEAFE] grid place-items-center">
+                      <Check className="w-4 h-4 text-[#1A73E8]" />
+                    </span>
+                    <div className="font-black text-[#0B1530] text-xl">{p.name}</div>
+                  </div>
+                  <div className="text-[#1A73E8] font-bold text-base">{p.price}</div>
+                </div>
+                <p className="text-[#475569] text-[15px] leading-relaxed mb-4">{p.desc}</p>
+                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm text-[#0B1530]">
                   {p.bullets.map((b) => (
                     <li key={b} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-[#16A34A] shrink-0" /> {b}
@@ -440,9 +469,9 @@ function PricingTiers() {
                 </ul>
                 <Link
                   to="/pricing"
-                  className={`mt-auto text-center font-semibold px-4 py-3 rounded-full text-sm no-underline transition-colors ${p.highlight ? "bg-[#1A73E8] hover:bg-[#1565C7] text-white" : "bg-[#F4F5F7] hover:bg-[#E8EBF0] text-[#0B1530]"}`}
+                  className={`self-start inline-flex items-center gap-1.5 font-semibold text-sm no-underline ${p.highlight ? "text-[#1A73E8] hover:text-[#1565C7]" : "text-[#1A73E8] hover:text-[#1565C7]"}`}
                 >
-                  {p.cta}
+                  {p.cta} <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -452,7 +481,7 @@ function PricingTiers() {
         <div className="text-center mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 text-[#1A73E8] hover:text-[#1565C7] font-semibold no-underline"
+            className="inline-flex items-center gap-2 bg-[#EEF0F4] hover:bg-[#E2E5EB] text-[#0B1530] font-semibold px-6 py-3 rounded-full no-underline"
           >
             Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
