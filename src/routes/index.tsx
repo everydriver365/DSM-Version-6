@@ -88,7 +88,7 @@ function Reveal({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const [shown, setShown] = useState(false);
   useEffect(() => {
     const el = ref.current;
