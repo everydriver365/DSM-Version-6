@@ -100,6 +100,8 @@ function PublicQuotePage() {
         return;
       }
       const q = data as Quote;
+      console.log("[quote] loaded:", q);
+      console.log("[quote] deposit_amount:", q?.deposit_amount, "deposit_paid:", q?.deposit_paid);
       setQuote(q);
       setAccepted(q.status === "accepted");
       setDepositPaid(!!q.deposit_paid);
