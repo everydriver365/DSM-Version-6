@@ -19,7 +19,7 @@ export function MarketingNav() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <div className="h-16 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
+      <div className="h-14 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
         <Link to="/" className="flex items-center no-underline">
           <img
             src={logoAsset.url}
