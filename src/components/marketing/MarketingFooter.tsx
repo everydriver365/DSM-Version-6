@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
 export function MarketingFooter() {
   return (
