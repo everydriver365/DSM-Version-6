@@ -65,6 +65,7 @@ function isExpired(q: QuoteRow) {
 function QuotesPage() {
   const navigate = useNavigate();
   const [quotes, setQuotes] = useState<QuoteRow[]>([]);
+  const [declineMap, setDeclineMap] = useState<Record<string, DeclineInfo>>({});
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<TabKey>("pending");
 
