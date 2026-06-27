@@ -115,7 +115,7 @@ function StatsBar() {
     { n: "£0", l: "To Get Started" },
   ];
   return (
-    <section className="bg-white py-7 px-6 border-y border-gray-100">
+    <section className="bg-white py-5 sm:py-7 px-6 border-y border-gray-100">
       <div className="max-w-[1180px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {stats.map((s) => (
           <div key={s.l}>
@@ -132,21 +132,21 @@ function StatsBar() {
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAFC]">
-      <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-8 sm:py-12 md:py-24 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div>
-          <h1 className="text-[34px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-4">
+          <h1 className="text-[28px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-3">
             Driving School{" "}
             <span className="block md:inline">Management</span>
           </h1>
 
-          <div className="text-[18px] sm:text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-4">
+          <div className="text-[16px] sm:text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-3">
             Free forever for{" "}
             <span className="text-[#00B5A5] underline decoration-[3px] underline-offset-[6px] decoration-[#00B5A5]/30">
               ADIs &amp; PDIs
             </span>
           </div>
 
-          <p className="text-[15px] sm:text-[17px] text-gray-600 leading-relaxed mb-6 max-w-md">
+          <p className="text-[14px] sm:text-[17px] text-gray-600 leading-relaxed mb-4 max-w-md">
             Manage your lessons, track payments, and grow your business — all from one app.
             No credit card required.
           </p>
@@ -154,13 +154,13 @@ function Hero() {
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link
               to="/register"
-              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               Start Free Today <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               <Play className="w-4 h-4 fill-current" /> Watch Demo
             </Link>
