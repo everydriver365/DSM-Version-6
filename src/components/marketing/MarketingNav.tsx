@@ -21,11 +21,12 @@ export function MarketingNav() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="h-16 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
-        <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <span className="text-[#1B2B4B] font-black text-[20px] tracking-tight">DSM</span>
-          <span className="hidden sm:flex items-baseline gap-1.5">
-            <span className="text-gray-400 text-[13px] font-medium">by EveryDriver</span>
-          </span>
+        <Link to="/" className="flex items-center no-underline">
+          <img
+            src={logoAsset.url}
+            alt="Driving School Manager"
+            className="h-8 sm:h-9 w-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
