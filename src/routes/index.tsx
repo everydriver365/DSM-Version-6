@@ -151,18 +151,18 @@ function Hero() {
             No credit card required.
           </p>
 
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+          <div className="flex flex-row flex-wrap gap-3">
             <Link
               to="/register"
-              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 flex-1 min-w-0 sm:flex-initial sm:w-auto bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-4 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors"
             >
-              Start Free Today <ArrowRight className="w-4 h-4" />
+              Start Free Today <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 flex-1 min-w-0 sm:flex-initial sm:w-auto border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-4 py-3 sm:px-7 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline transition-colors"
             >
-              <Play className="w-4 h-4 fill-current" /> Watch Demo
+              <Play className="w-4 h-4 fill-current shrink-0" /> Watch Demo
             </Link>
           </div>
         </div>
