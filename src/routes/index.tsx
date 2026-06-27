@@ -28,6 +28,8 @@ import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
 const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
+import brokenCarAsset from "../assets/broken-down-car.jpg.asset.json";
+const brokenCarImg = brokenCarAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
