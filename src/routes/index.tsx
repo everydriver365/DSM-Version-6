@@ -76,19 +76,20 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const navigate = useNavigate();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     supabase.auth.getSession().then(({ data }) => {
       if (cancelled) return;
-      if (data.session) window.location.href = "/home";
+      if (data.session) navigate({ to: "/home", replace: true });
       else setChecked(true);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [navigate]);
 
   if (!checked) return <div className="min-h-screen" style={{ background: LIGHT, fontFamily: INTER_FONT }} />;
 
