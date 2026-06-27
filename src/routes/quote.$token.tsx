@@ -169,9 +169,11 @@ function PublicQuotePage() {
 
   async function startDepositPayment() {
     if (!quote || !quote.deposit_amount || quote.deposit_amount <= 0) return;
+    const amountPence = Math.max(3, Math.round(Number(quote.deposit_amount) * 100));
     setPayStatus("creating");
     setPayError("");
     try {
+      console.log("[quote] create-ryft-payment request:", { amountPence, quote_id: quote.id });
       const res = await fetch(`${SUPABASE_URL}/functions/v1/create-ryft-payment`, {
         method: "POST",
         headers: {
@@ -180,7 +182,7 @@ function PublicQuotePage() {
           apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({
-          amount: Math.round(Number(quote.deposit_amount) * 100),
+          amount: amountPence,
           currency: "GBP",
           description: `Deposit for driving lessons — ${quote.recipient_name}`,
           metadata: {
@@ -193,10 +195,12 @@ function PublicQuotePage() {
         }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || json?.message || "Failed to create payment");
+      console.log("[quote] create-ryft-payment response:", res.status, json);
+      if (!res.ok) throw new Error(json?.error || json?.message || `Failed to create payment (${res.status})`);
       if (!json.clientSecret) throw new Error("No clientSecret returned");
       setClientSecret(json.clientSecret);
     } catch (e: any) {
+      console.error("[quote] create-ryft-payment failed:", e);
       setPayStatus("error");
       setPayError(e?.message || "Failed to start payment");
     }
@@ -258,11 +262,20 @@ function PublicQuotePage() {
         try { window.Ryft?.googlePay?.mount?.("#google-pay-container"); } catch (e) { console.warn("Google Pay unavailable:", e); }
         try { window.Ryft?.applePay?.mount?.("#apple-pay-container"); } catch (e) { console.warn("Apple Pay unavailable:", e); }
         window.Ryft.addEventHandler("paymentSuccess", (evt: any) => {
+          console.log("[quote] Ryft paymentSuccess:", evt);
           const status = evt?.paymentSession?.status;
           if (!status || status === "Approved" || status === "Captured") onApproved();
         });
         window.Ryft.addEventHandler("paymentError", (e: any) => {
-          setPayError(e?.error?.message || "Payment failed. Please try again.");
+          console.error("[quote] Ryft paymentError:", e);
+          const msg =
+            e?.error?.message ||
+            e?.errors?.[0]?.message ||
+            e?.message ||
+            (typeof e === "string" ? e : "") ||
+            "Payment failed. Please try again.";
+          setPayStatus("error");
+          setPayError(msg);
         });
         setPayStatus("ready");
       } catch (e: any) {

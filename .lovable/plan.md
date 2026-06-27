@@ -1,54 +1,23 @@
-## Goal
+## Investigate "Payment could not be completed" on quote deposit
 
-Restyle the pupil list rows on `/pupils` to match the Google Calendar-style layout used on `/schedule` and `/pupils/$id`, while keeping all current functionality (tabs, search, FAB, navigation, loading skeletons, filtering).
+The deposit pay flow in `src/routes/quote.$token.tsx` calls `create-ryft-payment` then mounts Ryft. The generic "Payment could not be completed. Please try again." is likely coming from Ryft's `paymentError` handler after `attemptPayment()`.
 
-Only `src/routes/pupils.index.tsx` will be modified.
+Before changing code I need a few facts:
 
-## Kept as-is
+### Questions
+1. Did the error appear **immediately on opening the form** (init failure), **after clicking Pay** (attemptPayment failure), or **after entering card details**?
+2. Is `create-ryft-payment` returning OK (clientSecret) — any 4xx/5xx in network tab?
+3. Is the Ryft account in **sandbox or live** mode, and does the public key (`pk_sandbox_...`) match?
 
-- Sticky top bar (DSM + Pupils + search toggle)
-- Search input (autofocus, query state)
-- Active / Passed / Archived segmented control
-- Supabase fetch + tab-driven filtering
-- Loading skeleton rows
-- "No pupils" empty state
-- FAB linking to `/pupils/new`
-- `<Link to="/pupils/$id" params={{ id }}>` navigation per row
+### Likely root causes
+- **Sandbox key vs live env mismatch** — the hardcoded `RYFT_PUBLIC_KEY` in `quote.$token.tsx` is `pk_sandbox_...`. If the edge function `create-ryft-payment` is using a **live** secret key (or vice versa), Ryft rejects with a generic error. Same fix applies as the take-payment screen.
+- **Card form not actually mounted** — current code calls `Ryft.init()` and mounts Google/Apple Pay but never mounts the **card form** (`Ryft.cardForm.mount('#ryft-pay-form')` or similar). `attemptPayment()` then fails because there are no card fields collected. The `take-payment.tsx` and `pay.tsx` screens were updated previously to add this mount call — this route was missed.
+- **Amount below 3p minimum** — Ryft requires ≥ 3 pence. If `deposit_amount` is very small this fails. Should add the same min-3p guard used in take-payment.
 
-## New row layout (per pupil)
+### Proposed fix (once confirmed)
+Only edit `src/routes/quote.$token.tsx`:
+1. Add a `<div id="ryft-card-form">` inside the form and mount the Ryft card element after `Ryft.init()` (matching the pattern already used in `pay.tsx`/`take-payment.tsx`).
+2. Surface the actual Ryft error code/message in `payError` instead of swallowing it — log `evt` from `paymentError` to console so we can see the real reason next time.
+3. Guard against deposits < £0.03.
 
-Replace the current `<Card>` row with a flat Google Calendar-style row:
-
-```text
-[40px avatar] [3px accent bar] [name + status badge + £balance]  [N lessons]  [chevron]
-```
-
-- Avatar column: keep the existing 40px circular initials avatar (#1A52A0 bg, white text)
-- Accent bar: 3px wide, full row height, rounded 2px
-  - Active → `#1A52A0` (blue)
-  - Passed → `#16A34A` (green)
-  - Archived → `#9CA3AF` (grey)
-- Content column:
-  - Name: 14px, semibold, `#0F2044`, truncate
-  - Sub-row: small status pill (existing `statusBadgeColor`) + `£X.XX` in red when `balance_owed > 0`
-- Right column:
-  - "N lessons" text 12px `#6B7280`
-  - `ChevronRight` 14px `#9CA3AF`
-- Row container: white bg, no card border/radius, padding `12px 16px`, full-bleed so dividers run edge-to-edge inside `px-0` list wrapper
-- Hairline divider: `0.5px #F3F4F6` between rows, inset to start at the content (after avatar) like the schedule page
-
-## List container
-
-- Switch the list wrapper from `px-4 pt-4` + `gap-2` cards to a flat `flex flex-col` with no horizontal padding, so rows are full-bleed and dividers span properly. Keep `pt-2` spacing under the segmented control.
-- Skeleton rows: update to match the new flat row geometry (avatar + bar + two text lines + right block), still inside `px-4` for visual parity during load — or full-bleed to match the loaded state. Will use full-bleed to match final state.
-
-## Technical notes
-
-- Add `ChevronRight` to the lucide-react import
-- Add an `accentColor(status)` helper alongside existing `statusBadgeColor`
-- No data shape changes, no new queries, no route changes
-- Reuse existing `initials`, `POPPINS`, `statusBadgeColor`
-
-## Files
-
-- `src/routes/pupils.index.tsx` — row JSX + skeleton geometry + lucide import + small color helper
+Please answer Q1–Q3 (or paste the browser console output around the failed payment) so I can target the right cause rather than guessing.
