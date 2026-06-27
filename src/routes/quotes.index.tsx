@@ -1,10 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, FileText, Link2, Send } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Link2, Send, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+
+type DeclineInfo = { reason?: string | null; counterOffer?: number | null };
+
+function parseCounterOffer(body: string | null | undefined): number | null {
+  if (!body) return null;
+  const m = body.match(/£\s*(\d+(?:\.\d{1,2})?)/);
+  return m ? Number(m[1]) : null;
+}
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
