@@ -107,7 +107,7 @@ function StatsBar() {
 function Hero() {
   return (
     <section
-      className="relative overflow-hidden bg-[#F4F5F7]"
+      className="relative overflow-hidden"
       style={{
         backgroundImage:
           "radial-gradient(circle, #d8dce5 1px, transparent 1px)",
@@ -326,7 +326,7 @@ function FeaturesShowcase() {
                   </Link>
                 </div>
                 <div>
-                  <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] p-6 md:p-10">
+                  <div className="rounded-2xl overflow-hidden p-6 md:p-10">
                     <img
                       src={f.img}
                       alt={f.title}
@@ -446,7 +446,7 @@ function PricingTiers() {
               key={p.name}
               className={`rounded-2xl overflow-hidden border bg-white grid md:grid-cols-[300px,1fr] ${p.highlight ? "border-[#1A73E8] ring-1 ring-[#1A73E8] shadow-[0_20px_60px_-25px_rgba(26,115,232,0.45)]" : "border-[#e1e4eb]"}`}
             >
-              <div className="relative bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
+              <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
                 <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
                 {p.highlight && (
                   <span className="absolute top-3 right-3 bg-[#1A73E8] text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
