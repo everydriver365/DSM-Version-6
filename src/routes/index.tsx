@@ -27,6 +27,7 @@ import testCentreCelebrationAsset from "../assets/test-centre-celebration.jpg.as
 import richardWithCarAsset from "../assets/richard-with-car.jpg.asset.json";
 import aiReceptionistAsset from "../assets/ai-receptionist.png.asset.json";
 const richardWithCarImg = richardWithCarAsset.url;
+const aiReceptionistImg = aiReceptionistAsset.url;
 const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testCentreCelebrationAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
