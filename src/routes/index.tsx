@@ -266,19 +266,19 @@ const features = [
   },
   {
     img: paymentsImg,
-    title: "Effortless Payment Tracking",
+    title: "Effortless Payments",
     body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
     bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
   },
   {
     img: websiteImg,
-    title: "Your Own Professional Website",
+    title: "Your Own Professional Website for Free",
     body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
   {
     img: marketingWebsiteImg,
-    title: "Your Own Professional Website",
+    title: "Free Adver",
     body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
