@@ -241,9 +241,10 @@ function DiarySection() {
           </div>
 
           <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0F1A36] to-[#0A1024] grid place-items-center relative overflow-hidden group cursor-pointer">
-            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 30%, rgba(26,115,232,0.4), transparent 60%)" }} />
-            <div className="relative flex flex-col items-center gap-3 text-white/80">
-              <span className="w-16 h-16 rounded-full bg-white/10 border border-white/20 grid place-items-center group-hover:bg-white/15 transition-colors">
+            <img src={explainerPlaceholderImg} alt="Explainer video preview" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/35" />
+            <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
+              <span className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 grid place-items-center group-hover:bg-white/30 transition-colors">
                 <Play className="w-6 h-6 fill-white text-white ml-1" />
               </span>
               <span className="text-sm font-medium">Explainer Video</span>
