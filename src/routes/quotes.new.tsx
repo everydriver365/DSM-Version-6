@@ -5,8 +5,18 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/quotes/new")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    name: typeof search.name === "string" ? search.name : undefined,
+    email: typeof search.email === "string" ? search.email : undefined,
+    phone: typeof search.phone === "string" ? search.phone : undefined,
+    course: typeof search.course === "string" ? search.course : undefined,
+    hours: typeof search.hours === "string" ? search.hours : undefined,
+    price: typeof search.price === "string" ? search.price : undefined,
+    message: typeof search.message === "string" ? search.message : undefined,
+  }),
   component: NewQuotePage,
 });
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plus", "Motorway", "Other"];
