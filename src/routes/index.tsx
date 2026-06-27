@@ -21,8 +21,8 @@ const diaryImg = diaryAsset.url;
 import paymentsAsset from "../assets/flexible-payments.png.asset.json";
 const paymentsImg = paymentsAsset.url;
 import websiteImg from "../assets/marketing/website.jpg";
-import dashcamAsset from "../assets/dashcam.png.asset.json";
-const pupilAppImg = dashcamAsset.url;
+import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
+const pupilAppImg = pupilAppsAsset.url;
 import telematicsAsset from "../assets/driving-school-website.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 
