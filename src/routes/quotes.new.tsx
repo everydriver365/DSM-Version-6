@@ -15,6 +15,7 @@ export const Route = createFileRoute("/quotes/new")({
     price: typeof search.price === "string" ? search.price : undefined,
     message: typeof search.message === "string" ? search.message : undefined,
     revised: typeof search.revised === "string" ? search.revised : undefined,
+    originalId: typeof search.originalId === "string" ? search.originalId : undefined,
   }),
   component: NewQuotePage,
 });
@@ -45,7 +46,7 @@ function NewQuotePage() {
   const search = useSearch({ strict: false }) as {
     name?: string; email?: string; phone?: string;
     course?: string; courseType?: string;
-    hours?: string; price?: string; message?: string; revised?: string;
+    hours?: string; price?: string; message?: string; revised?: string; originalId?: string;
   };
   const initialCourse = search.courseType || search.course || "";
   const initialPrice = search.price ? stripQuotes(search.price) : "";
@@ -157,7 +158,23 @@ function NewQuotePage() {
           window.location.href = `sms:${phone}?body=${encodeURIComponent(smsBody)}`;
         }
         toast.success(`Quote sent to ${pupilName}`);
+        if (search.originalId) {
+          try {
+            await fetch(`${SUPABASE_URL}/rest/v1/quotes?id=eq.${search.originalId}`, {
+              method: "PATCH",
+              headers: {
+                apikey: SUPABASE_ANON_KEY,
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: "resent" }),
+            });
+          } catch (err) {
+            console.warn("[quotes] failed to mark original as resent:", err);
+          }
+        }
       }
+
       navigate({ to: "/quotes" });
     } catch (e: any) {
       alert("Failed to save: " + (e?.message ?? "unknown"));

@@ -29,7 +29,7 @@ export const Route = createFileRoute("/quotes/")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
-type TabKey = "pending" | "accepted" | "declined" | "expired";
+type TabKey = "pending" | "accepted" | "declined" | "resent" | "expired";
 
 interface QuoteRow {
   id: string;
@@ -43,19 +43,23 @@ interface QuoteRow {
   status: string;
   valid_until: string | null;
   sent_at: string;
+  personal_message: string | null;
 }
+
 
 function formatDate(d: string | null) {
   if (!d) return "—";
   return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function statusColor(s: TabKey) {
+function statusColor(s: TabKey | string) {
   if (s === "accepted") return "#16A34A";
   if (s === "declined") return "#CC2229";
   if (s === "expired") return "#6B7280";
+  if (s === "resent") return "#1A52A0";
   return "#F59E0B";
 }
+
 
 function isExpired(q: QuoteRow) {
   if (!q.valid_until) return false;
@@ -77,7 +81,7 @@ function QuotesPage() {
       if (!uid) { setLoading(false); return; }
       let { data, error } = await supabase
         .from("quotes")
-        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, deposit_amount, status, valid_until, sent_at, created_at")
+        .select("id, token, recipient_name, recipient_email, recipient_phone, course_type, hours, price, deposit_amount, status, valid_until, sent_at, created_at, personal_message")
         .eq("instructor_id", uid)
         .order("sent_at", { ascending: false });
       console.log("[quotes] fetch result:", { data, error });
@@ -89,7 +93,7 @@ function QuotesPage() {
           .eq("instructor_id", uid)
           .order("sent_at", { ascending: false });
         console.log("[quotes] fallback result:", fb);
-        data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
+        data = (fb.data ?? []).map((r: any) => ({ ...r, token: null, personal_message: null })) as any;
       }
       const rows = (data ?? []) as QuoteRow[];
       setQuotes(rows);
@@ -123,13 +127,36 @@ function QuotesPage() {
     })();
   }, []);
 
+  const isRevision = (q: QuoteRow) =>
+    !!q.personal_message && q.personal_message.startsWith("Thank you for your feedback");
+
+  const revisionByOriginalRecipient = useMemo(() => {
+    // For each "resent" original, find the most recent revision quote (same recipient, isRevision, sent later).
+    const map: Record<string, QuoteRow | undefined> = {};
+    const revisions = quotes
+      .filter(isRevision)
+      .sort((a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime());
+    for (const q of quotes) {
+      if ((q.status || "").toLowerCase() !== "resent") continue;
+      map[q.id] = revisions.find(
+        (r) =>
+          r.id !== q.id &&
+          (r.recipient_email || "") === (q.recipient_email || "") &&
+          (r.recipient_name || "") === (q.recipient_name || "") &&
+          new Date(r.sent_at).getTime() >= new Date(q.sent_at).getTime(),
+      );
+    }
+    return map;
+  }, [quotes]);
+
   const filtered = useMemo(() => {
     const PENDING_STATUSES = new Set(["pending", "sent", "viewed", "draft"]);
     return quotes.filter((q) => {
       const s = (q.status || "pending").toLowerCase();
       if (tab === "accepted") return s === "accepted";
       if (tab === "declined") return s === "declined";
-      if (tab === "expired") return s === "expired" || (s !== "accepted" && s !== "declined" && isExpired(q));
+      if (tab === "resent") return s === "resent";
+      if (tab === "expired") return s === "expired" || (s !== "accepted" && s !== "declined" && s !== "resent" && isExpired(q));
       // pending: any non-terminal status, and not expired
       return PENDING_STATUSES.has(s) && !isExpired(q);
     });
@@ -139,8 +166,10 @@ function QuotesPage() {
     { key: "pending", label: "Pending" },
     { key: "accepted", label: "Accepted" },
     { key: "declined", label: "Declined" },
+    { key: "resent", label: "Resent" },
     { key: "expired", label: "Expired" },
   ];
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS }}>
@@ -216,8 +245,12 @@ function QuotesPage() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map((q) => {
-              const displayStatus: TabKey = isExpired(q) && q.status === "pending" ? "expired" : (q.status as TabKey);
-              const isDeclined = (q.status || "").toLowerCase() === "declined";
+              const sLower = (q.status || "").toLowerCase();
+              const displayStatus: string = isExpired(q) && q.status === "pending" ? "expired" : sLower;
+              const isDeclined = sLower === "declined";
+              const isResent = sLower === "resent";
+              const isRev = isRevision(q);
+              const revision = isResent ? revisionByOriginalRecipient[q.id] : undefined;
               const info = declineMap[q.id];
               const counter = info?.counterOffer ?? null;
               const reason = info?.reason ?? null;
@@ -228,9 +261,28 @@ function QuotesPage() {
                       <div style={{
                         fontSize: 14, fontWeight: 600, color: "#0F2044",
                         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        display: "flex", alignItems: "center", gap: 6,
                       }}>
-                        {q.recipient_name}
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{q.recipient_name}</span>
+                        {isRev && (
+                          <span style={{
+                            background: "#1A52A0", color: "#fff", fontSize: 10, fontWeight: 700,
+                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                          }}>REVISION</span>
+                        )}
+                        {isResent && (
+                          <span style={{
+                            background: "#16A34A", color: "#fff", fontSize: 10, fontWeight: 700,
+                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                          }}>FOLLOWED UP ✓</span>
+                        )}
                       </div>
+                      {isRev && (
+                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2, fontStyle: "italic" }}>
+                          Revised from declined quote
+                        </div>
+                      )}
+
                       <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
                         {q.hours ? `${q.hours}h` : ""}{q.course_type ? ` · ${q.course_type}` : ""}
                       </div>
@@ -287,7 +339,10 @@ function QuotesPage() {
                               hours: q.hours != null ? String(q.hours) : "",
                               price: String(newPrice),
                               message: "Thank you for your feedback. Here is my revised quote:",
+                              revised: "true",
+                              originalId: q.id,
                             } as any,
+
                           });
                         }}
                         style={{
@@ -301,6 +356,26 @@ function QuotesPage() {
                       </button>
                     </div>
                   )}
+                  {isResent && revision && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTab("pending");
+                          // Scroll/highlight not implemented; switching tab + toast for now.
+                          toast.success(`Revision sent ${formatDate(revision.sent_at)} · £${Number(revision.price).toFixed(0)}`);
+                        }}
+                        style={{
+                          background: "none", border: "none", color: "#1A52A0",
+                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          fontFamily: "Poppins, sans-serif", padding: 0,
+                        }}
+                      >
+                        View revision →
+                      </button>
+                    </div>
+                  )}
+
                   {q.token && (
                     <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end", gap: 8 }}>
                       <button
