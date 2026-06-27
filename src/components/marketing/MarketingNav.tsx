@@ -7,26 +7,25 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function MarketingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0F2044]" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
-      <div className="max-w-7xl mx-auto px-4 flex h-16 items-center justify-between relative">
-        <Link to="/" className="flex items-center gap-2 no-underline">
-          <span className="text-white text-xl font-bold">DSM</span>
-          <span className="text-white/60 text-sm">by EveryDriver</span>
+    <header className="sticky top-0 z-50 w-full bg-[#0F2044]">
+      <div className="h-16 flex items-center justify-between px-6 md:px-12 relative">
+        <Link to="/" className="flex items-baseline no-underline">
+          <span className="text-white font-black text-xl">DSM</span>
+          <span className="text-white/50 text-sm ml-2">by EveryDriver</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="text-white/80 hover:text-white text-sm font-medium transition-colors no-underline"
+              className="text-white/80 hover:text-white text-sm font-medium no-underline transition-colors"
             >
               {l.label}
             </Link>
@@ -36,56 +35,72 @@ export function MarketingNav() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             to="/login"
-            className="border border-white/30 text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm no-underline transition-colors"
+            className="border border-white/30 text-white px-4 py-2 rounded-lg text-sm hover:bg-white/10 no-underline transition-colors"
           >
             Log in
           </Link>
           <Link
             to="/register"
-            className="bg-white text-[#0F2044] hover:bg-white/90 rounded-lg px-4 py-2 text-sm font-semibold no-underline transition-colors"
+            className="bg-white text-[#0F2044] font-bold px-5 py-2 rounded-lg text-sm hover:bg-white/90 no-underline transition-colors"
           >
-            Get started free
+            Start free →
           </Link>
         </div>
 
-        <div className="flex md:hidden items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="text-white p-2 -mr-2"
-            aria-label="Toggle menu"
-          >
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="md:hidden text-white p-2 -mr-2"
+          aria-label="Open menu"
+        >
+          <Menu size={24} />
+        </button>
       </div>
 
       {open && (
-        <div className="md:hidden bg-[#0F2044] border-t border-white/10 px-4 py-4 flex flex-col gap-2">
-          {navLinks.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              onClick={() => setOpen(false)}
-              className="text-white/80 hover:text-white text-sm py-2 no-underline"
-            >
-              {l.label}
+        <div className="fixed inset-0 z-50 bg-[#0F2044] flex flex-col px-6 py-6 md:hidden">
+          <div className="flex items-center justify-between mb-10">
+            <Link to="/" onClick={() => setOpen(false)} className="flex items-baseline no-underline">
+              <span className="text-white font-black text-xl">DSM</span>
+              <span className="text-white/50 text-sm ml-2">by EveryDriver</span>
             </Link>
-          ))}
-          <Link
-            to="/login"
-            onClick={() => setOpen(false)}
-            className="mt-2 w-full text-center border border-white/30 text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm no-underline"
-          >
-            Log in
-          </Link>
-          <Link
-            to="/register"
-            onClick={() => setOpen(false)}
-            className="w-full text-center bg-white text-[#0F2044] hover:bg-white/90 rounded-lg px-4 py-2 text-sm font-semibold no-underline"
-          >
-            Get started free
-          </Link>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="text-white p-2 -mr-2"
+              aria-label="Close menu"
+            >
+              <X size={28} />
+            </button>
+          </div>
+          <nav className="flex flex-col gap-6">
+            {navLinks.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setOpen(false)}
+                className="text-white text-2xl font-bold no-underline"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-auto flex flex-col gap-3">
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="w-full text-center border border-white/30 text-white px-4 py-3 rounded-lg text-base hover:bg-white/10 no-underline"
+            >
+              Log in
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setOpen(false)}
+              className="w-full text-center bg-white text-[#0F2044] font-bold px-5 py-3 rounded-lg text-base hover:bg-white/90 no-underline"
+            >
+              Start free →
+            </Link>
+          </div>
         </div>
       )}
     </header>
