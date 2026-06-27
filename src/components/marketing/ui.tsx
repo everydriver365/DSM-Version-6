@@ -41,8 +41,8 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
         display: "inline-block",
         padding: "6px 14px",
         borderRadius: 999,
-        background: TEAL_TINT,
-        color: TEAL_DARK,
+        background: BLUE_TINT,
+        color: BLUE_DARK,
         fontSize: 12,
         fontWeight: 600,
         letterSpacing: "0.12em",
@@ -119,17 +119,17 @@ export function PrimaryBtn({ to, children }: { to: string; children: React.React
         gap: 8,
         padding: "14px 24px",
         borderRadius: 12,
-        background: TEAL,
+        background: BLUE,
         color: "#fff",
         fontWeight: 600,
         fontSize: 15,
         textDecoration: "none",
-        boxShadow: "0 8px 20px rgba(0,181,165,0.28)",
+        boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
         fontFamily: FONT,
         transition: "background 150ms ease, transform 150ms ease",
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = TEAL_DARK)}
-      onMouseLeave={(e) => (e.currentTarget.style.background = TEAL)}
+      onMouseEnter={(e) => (e.currentTarget.style.background = BLUE_DARK)}
+      onMouseLeave={(e) => (e.currentTarget.style.background = BLUE)}
     >
       {children}
     </Link>
@@ -195,8 +195,8 @@ export function FeatureCard({
           width: 44,
           height: 44,
           borderRadius: 12,
-          background: TEAL_TINT,
-          color: TEAL_DARK,
+          background: BLUE_TINT,
+          color: BLUE_DARK,
           display: "grid",
           placeItems: "center",
           fontSize: 22,
@@ -215,4 +215,4 @@ export function FeatureCard({
   );
 }
 
-export const MarketingTokens = { FONT, NAVY, TEAL, TEAL_DARK, TEAL_TINT, INK, MUTED, HAIRLINE, SHADOW_SOFT };
+export const MarketingTokens = { FONT, NAVY, BLUE, BLUE_DARK, BLUE_TINT, INK, MUTED, HAIRLINE, SHADOW_SOFT };
