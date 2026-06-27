@@ -15,6 +15,7 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import healthCoverAsset from "../assets/health-cover.png.asset.json";
 
 export const Route = createFileRoute("/health")({
   head: () => ({
@@ -170,6 +171,13 @@ function HealthPage() {
         </div>
         <div style={{ width: 40 }} />
       </div>
+
+      <img
+        src={healthCoverAsset.url}
+        alt="Instructor health and wellbeing cover"
+        className="w-full object-cover"
+        style={{ maxHeight: 220 }}
+      />
 
       <div className="px-4">
         <SectionHeader>TODAY</SectionHeader>
