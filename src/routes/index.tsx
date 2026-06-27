@@ -465,18 +465,18 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#1B2B4B] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1240px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-white mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-white mb-2 sm:mb-3">
             Start Free. Grow When Ready.
           </h2>
-          <p className="text-white/70 text-lg">
+          <p className="text-white/70 text-base sm:text-lg">
             The diary is free forever. Add premium tools as your business grows.
           </p>
         </div>
 
-        <div className="flex flex-col gap-5 max-w-[1100px] mx-auto">
+        <div className="flex flex-col gap-4 sm:gap-5 max-w-[1100px] mx-auto">
           {plans.map((p) => {
             const isPro = p.highlight;
             const cardBg = isPro ? "bg-[#00B5A5]" : "bg-white/10 border border-white/20";
@@ -490,7 +490,7 @@ function PricingTiers() {
                 key={p.name}
                 className={`rounded-2xl overflow-hidden grid md:grid-cols-[300px,1fr] ${cardBg}`}
               >
-                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
+                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[200px] p-3 sm:p-4">
                   <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
                   {isPro && (
                     <span className="absolute top-3 right-3 bg-white text-[#00B5A5] text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
@@ -498,18 +498,18 @@ function PricingTiers() {
                     </span>
                   )}
                 </div>
-                <div className="p-5 sm:p-6 md:p-8 flex flex-col">
+                <div className="p-4 sm:p-6 md:p-8 flex flex-col">
                   <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
                     <div className="flex items-center gap-3">
                       <span className={`w-9 h-9 rounded-lg grid place-items-center ${isPro ? "bg-white/20" : "bg-[#00B5A5]/20"}`}>
                         <Check className={`w-4 h-4 ${isPro ? "text-white" : "text-[#00B5A5]"}`} />
                       </span>
-                      <div className={`font-black text-xl ${titleColor}`}>{p.name}</div>
+                      <div className={`font-black text-lg sm:text-xl ${titleColor}`}>{p.name}</div>
                     </div>
-                    <div className={`font-bold text-base ${priceColor}`}>{p.price}</div>
+                    <div className={`font-bold text-sm sm:text-base ${priceColor}`}>{p.price}</div>
                   </div>
-                  <p className={`${descColor} text-[15px] leading-relaxed mb-4`}>{p.desc}</p>
-                  <ul className={`grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm ${bulletText}`}>
+                  <p className={`${descColor} text-[14px] sm:text-[15px] leading-relaxed mb-3 sm:mb-4`}>{p.desc}</p>
+                  <ul className={`grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-4 sm:mb-5 text-sm ${bulletText}`}>
                     {p.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2">
                         <Check className={`w-4 h-4 shrink-0 ${isPro ? "text-white" : "text-[#00B5A5]"}`} /> {b}
@@ -528,10 +528,10 @@ function PricingTiers() {
           })}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-8 sm:mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg no-underline"
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg no-underline text-sm sm:text-base"
           >
             Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
@@ -561,23 +561,23 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-white py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-2 sm:mb-3">
             Loved by Instructors
           </h2>
-          <p className="text-gray-500 text-lg">Real feedback from ADIs using DSM every day.</p>
+          <p className="text-gray-500 text-base sm:text-lg">Real feedback from ADIs using DSM every day.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {items.map((t) => (
-            <div key={t.n} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
-              <div className="flex gap-0.5 mb-4">
+            <div key={t.n} className="bg-white rounded-2xl p-5 sm:p-7 border border-gray-100 shadow-sm">
+              <div className="flex gap-0.5 mb-3 sm:mb-4">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-[#00B5A5] text-[#00B5A5]" />
                 ))}
               </div>
-              <p className="text-gray-600 text-[15px] leading-relaxed mb-6">"{t.q}"</p>
+              <p className="text-gray-600 text-[14px] sm:text-[15px] leading-relaxed mb-4 sm:mb-6">"{t.q}"</p>
               <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                 <div className="w-10 h-10 rounded-full bg-[#1B2B4B] grid place-items-center text-white font-bold">
                   {t.n.charAt(0)}
@@ -606,13 +606,13 @@ function ComparisonFormula() {
     { l: "No lock-in, cancel anytime", v: "Always", positive: true },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#F7FAFC] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[980px] mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-block text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-3">
             The Math Speaks for Itself
           </div>
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
             The No-Brainer Formula
           </h2>
         </div>
@@ -621,27 +621,27 @@ function ComparisonFormula() {
           {rows.map((r, i) => (
             <div
               key={r.l}
-              className={`flex items-center justify-between gap-4 px-5 py-5 ${i !== rows.length - 1 ? "border-b border-gray-100" : ""}`}
+              className={`flex items-center justify-between gap-4 px-4 sm:px-5 py-4 sm:py-5 ${i !== rows.length - 1 ? "border-b border-gray-100" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <span className="w-6 h-6 rounded-full bg-[#E6F7F6] grid place-items-center shrink-0">
                   <Check className="w-3.5 h-3.5 text-[#00B5A5]" />
                 </span>
-                <span className="text-[#1B2B4B] font-medium text-[15px]">{r.l}</span>
+                <span className="text-[#1B2B4B] font-medium text-[14px] sm:text-[15px]">{r.l}</span>
               </div>
-              <span className="text-[#00B5A5] font-bold text-[15px] shrink-0">{r.v}</span>
+              <span className="text-[#00B5A5] font-bold text-[14px] sm:text-[15px] shrink-0">{r.v}</span>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-[#1B2B4B] text-lg italic max-w-xl mx-auto mb-2">
+        <div className="mt-8 sm:mt-10 text-center">
+          <p className="text-[#1B2B4B] text-base sm:text-lg italic max-w-xl mx-auto mb-2">
             "Save more in tax deductions than the app costs.
           </p>
-          <p className="text-[#1B2B4B] text-xl font-black mb-8">It literally pays for itself."</p>
+          <p className="text-[#1B2B4B] text-lg sm:text-xl font-black mb-6 sm:mb-8">It literally pays for itself."</p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Start Free Today <ArrowRight className="w-4 h-4" />
           </Link>
@@ -660,9 +660,9 @@ function FinalCTA() {
     { i: Building2, t: "GDPR Compliant" },
   ];
   return (
-    <section className="bg-[#00B5A5] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
+    <section className="bg-[#00B5A5] py-10 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1000px] mx-auto text-center">
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
+        <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-8 gap-y-2 sm:gap-y-3 mb-6 sm:mb-10">
           {platforms.map(({ i: I, t }) => (
             <span key={t} className="inline-flex items-center gap-2 text-white/80 text-sm">
               <I className="w-4 h-4" /> {t}
@@ -670,23 +670,23 @@ function FinalCTA() {
           ))}
         </div>
 
-        <h2 className="text-[30px] sm:text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
+        <h2 className="text-[24px] sm:text-[36px] md:text-[52px] font-black tracking-tight mb-3 sm:mb-4 leading-[1.05]">
           Ready to Simplify Your Business?
         </h2>
-        <p className="text-white/85 text-lg mb-10 max-w-xl mx-auto">
+        <p className="text-white/85 text-base sm:text-lg mb-6 sm:mb-10 max-w-xl mx-auto">
           Join 500+ driving instructors who've ditched the paper diary. Start free today.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-white text-[#00B5A5] hover:bg-gray-50 font-bold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-white text-[#00B5A5] hover:bg-gray-50 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Create Free Account <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white text-white font-semibold px-8 py-4 rounded-lg text-[15px] no-underline"
+            className="inline-flex items-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[14px] sm:text-[15px] no-underline"
           >
             Compare Plans
           </Link>
