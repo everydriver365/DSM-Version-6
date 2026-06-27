@@ -127,13 +127,36 @@ function QuotesPage() {
     })();
   }, []);
 
+  const isRevision = (q: QuoteRow) =>
+    !!q.personal_message && q.personal_message.startsWith("Thank you for your feedback");
+
+  const revisionByOriginalRecipient = useMemo(() => {
+    // For each "resent" original, find the most recent revision quote (same recipient, isRevision, sent later).
+    const map: Record<string, QuoteRow | undefined> = {};
+    const revisions = quotes
+      .filter(isRevision)
+      .sort((a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime());
+    for (const q of quotes) {
+      if ((q.status || "").toLowerCase() !== "resent") continue;
+      map[q.id] = revisions.find(
+        (r) =>
+          r.id !== q.id &&
+          (r.recipient_email || "") === (q.recipient_email || "") &&
+          (r.recipient_name || "") === (q.recipient_name || "") &&
+          new Date(r.sent_at).getTime() >= new Date(q.sent_at).getTime(),
+      );
+    }
+    return map;
+  }, [quotes]);
+
   const filtered = useMemo(() => {
     const PENDING_STATUSES = new Set(["pending", "sent", "viewed", "draft"]);
     return quotes.filter((q) => {
       const s = (q.status || "pending").toLowerCase();
       if (tab === "accepted") return s === "accepted";
       if (tab === "declined") return s === "declined";
-      if (tab === "expired") return s === "expired" || (s !== "accepted" && s !== "declined" && isExpired(q));
+      if (tab === "resent") return s === "resent";
+      if (tab === "expired") return s === "expired" || (s !== "accepted" && s !== "declined" && s !== "resent" && isExpired(q));
       // pending: any non-terminal status, and not expired
       return PENDING_STATUSES.has(s) && !isExpired(q);
     });
@@ -143,8 +166,10 @@ function QuotesPage() {
     { key: "pending", label: "Pending" },
     { key: "accepted", label: "Accepted" },
     { key: "declined", label: "Declined" },
+    { key: "resent", label: "Resent" },
     { key: "expired", label: "Expired" },
   ];
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS }}>
