@@ -132,51 +132,51 @@ function StatsBar() {
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAFC]">
-      <div className="max-w-[1240px] mx-auto px-6 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 bg-white border border-gray-100 rounded-full px-3.5 py-1.5 text-[13px] text-[#1B2B4B] mb-6 shadow-sm">
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[12px] sm:text-[13px] text-[#1B2B4B] mb-5 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-[#00B5A5]" />
             Free for every instructor forever..
           </div>
 
-          <h1 className="text-[44px] md:text-[64px] leading-[1.02] font-black tracking-tight text-[#1B2B4B] mb-5">
+          <h1 className="text-[34px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-4">
             Driving School{" "}
             <span className="block md:inline">Management</span>
           </h1>
 
-          <div className="text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-5">
+          <div className="text-[18px] sm:text-[22px] md:text-[26px] font-bold text-[#1B2B4B] mb-4">
             Free forever for{" "}
             <span className="text-[#00B5A5] underline decoration-[3px] underline-offset-[6px] decoration-[#00B5A5]/30">
               ADIs &amp; PDIs
             </span>
           </div>
 
-          <p className="text-[17px] text-gray-600 leading-relaxed mb-7 max-w-md">
+          <p className="text-[15px] sm:text-[17px] text-gray-600 leading-relaxed mb-6 max-w-md">
             Manage your lessons, track payments, and grow your business — all from one app.
             No credit card required.
           </p>
 
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-7">
             {["Free", "Multi-instructor", "White-label", "GDPR"].map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1.5 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[13px] text-gray-600 shadow-sm"
+                className="inline-flex items-center gap-1.5 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[12px] sm:text-[13px] text-gray-600 shadow-sm"
               >
                 <Check className="w-3.5 h-3.5 text-[#00B5A5]" /> {t}
               </span>
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-7 py-4 rounded-lg text-[15px] no-underline transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-[#00B5A5] hover:bg-[#009E8F] text-white font-bold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               Start Free Today <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-7 py-4 rounded-lg text-[15px] no-underline transition-colors"
+              className="inline-flex items-center justify-center gap-2 border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold px-6 py-3.5 sm:px-7 sm:py-4 rounded-lg text-[15px] no-underline transition-colors w-full sm:w-auto"
             >
               <Play className="w-4 h-4 fill-current" /> Watch Demo
             </Link>
@@ -218,14 +218,14 @@ function Hero() {
 /* ---------- Diary section ---------- */
 function DiarySection() {
   return (
-    <section className="bg-[#1B2B4B] py-20 md:py-28 px-6 text-white">
+    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
             <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
               No contracts · No tie-in · Leave any time
             </div>
-            <h2 className="text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
+            <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
               Your Diary, Your Way
               <br />
               — <span className="text-[#00B5A5]">Free for Life</span>
@@ -330,13 +330,13 @@ const features = [
 
 function FeaturesShowcase() {
   return (
-    <section className="bg-white py-20 md:py-28 px-6">
+    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-16">
           <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
             Product Tour
           </div>
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-4">
+          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-4">
             See It in Action
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
@@ -344,23 +344,23 @@ function FeaturesShowcase() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-20 md:gap-28">
+        <div className="flex flex-col gap-14 sm:gap-20 md:gap-28">
           {features.map((f, i) => {
             const reverse = i % 2 === 1;
             return (
               <div
                 key={`${f.title}-${i}`}
-                className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+                className={`grid md:grid-cols-2 gap-6 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-6 md:p-8">
+                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-5 sm:p-6 md:p-8">
                   <div className="w-12 h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-5">
                     <Check className="w-5 h-5 text-[#00B5A5]" />
                   </div>
-                  <h3 className="text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-4 leading-tight tracking-tight">
+                  <h3 className="text-[22px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
                     {f.title}
                   </h3>
                   <p className="text-gray-500 text-[16px] leading-relaxed mb-6">{f.body}</p>
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-3 mb-7">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 mb-7">
                     {f.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2 text-[#1B2B4B] text-sm font-medium">
                         <span className="w-5 h-5 rounded-full bg-[#E6F7F6] grid place-items-center">
@@ -378,7 +378,7 @@ function FeaturesShowcase() {
                   </Link>
                 </div>
                 <div>
-                  <div className="rounded-2xl overflow-hidden p-6 md:p-10">
+                  <div className="rounded-2xl overflow-hidden p-2 sm:p-6 md:p-10">
                     <img
                       src={f.img}
                       alt={f.title}
@@ -406,10 +406,10 @@ function HowItWorks() {
     { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2 },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-20 md:py-28 px-6">
+    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
             Up and Running in 3 Minutes
           </h2>
           <p className="text-gray-500 text-lg">No downloads. No setup fees. No hassle.</p>
@@ -481,10 +481,10 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="bg-[#1B2B4B] py-20 md:py-28 px-6">
+    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-white mb-3">
+          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-white mb-3">
             Start Free. Grow When Ready.
           </h2>
           <p className="text-white/70 text-lg">
@@ -514,7 +514,7 @@ function PricingTiers() {
                     </span>
                   )}
                 </div>
-                <div className="p-6 md:p-8 flex flex-col">
+                <div className="p-5 sm:p-6 md:p-8 flex flex-col">
                   <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
                     <div className="flex items-center gap-3">
                       <span className={`w-9 h-9 rounded-lg grid place-items-center ${isPro ? "bg-white/20" : "bg-[#00B5A5]/20"}`}>
@@ -577,10 +577,10 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="bg-white py-20 md:py-28 px-6">
+    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
             Loved by Instructors
           </h2>
           <p className="text-gray-500 text-lg">Real feedback from ADIs using DSM every day.</p>
@@ -622,13 +622,13 @@ function ComparisonFormula() {
     { l: "No lock-in, cancel anytime", v: "Always", positive: true },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-20 md:py-28 px-6">
+    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[980px] mx-auto">
         <div className="text-center mb-12">
           <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
             The Math Speaks for Itself
           </div>
-          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
+          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B]">
             The No-Brainer Formula
           </h2>
         </div>
@@ -676,7 +676,7 @@ function FinalCTA() {
     { i: Building2, t: "GDPR Compliant" },
   ];
   return (
-    <section className="bg-[#00B5A5] py-20 md:py-28 px-6 text-white">
+    <section className="bg-[#00B5A5] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1000px] mx-auto text-center">
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
           {platforms.map(({ i: I, t }) => (
@@ -686,7 +686,7 @@ function FinalCTA() {
           ))}
         </div>
 
-        <h2 className="text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
+        <h2 className="text-[30px] sm:text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
           Ready to Simplify Your Business?
         </h2>
         <p className="text-white/85 text-lg mb-10 max-w-xl mx-auto">
