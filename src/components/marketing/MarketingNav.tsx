@@ -3,54 +3,61 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
+  { to: "/", label: "Home" },
   { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
   { to: "/how-it-works", label: "How it works" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function MarketingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0F2044]">
-      <div className="h-16 flex items-center justify-between px-6 md:px-12 relative">
-        <Link to="/" className="flex items-baseline no-underline">
-          <span className="text-white font-black text-xl">DSM</span>
-          <span className="text-white/50 text-sm ml-2">by EveryDriver</span>
+    <header className="sticky top-0 z-50 w-full bg-[#0A1024] border-b border-white/5">
+      <div className="h-16 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
+        <Link to="/" className="flex items-center gap-2.5 no-underline">
+          <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-black text-sm tracking-tight">
+            DSM
+          </span>
+          <span className="hidden sm:block text-white font-bold text-[15px] tracking-tight">
+            Driving School Manager
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden lg:flex items-center gap-7">
           {navLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="text-white/80 hover:text-white text-sm font-medium no-underline transition-colors"
+              className="text-white/75 hover:text-white text-[14px] font-medium no-underline transition-colors"
+              activeProps={{ className: "text-white" }}
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           <Link
             to="/login"
-            className="border border-white/30 text-white px-4 py-2 rounded-lg text-sm hover:bg-white/10 no-underline transition-colors"
+            className="text-white/85 hover:text-white text-sm font-medium no-underline px-2"
           >
             Log in
           </Link>
           <Link
             to="/register"
-            className="bg-white text-[#0F2044] font-bold px-5 py-2 rounded-lg text-sm hover:bg-white/90 no-underline transition-colors"
+            className="bg-[#1A73E8] hover:bg-[#1565C7] text-white font-semibold px-5 py-2.5 rounded-full text-sm no-underline transition-colors shadow-[0_4px_14px_rgba(26,115,232,0.4)]"
           >
-            Start free →
+            Get Started Free
           </Link>
         </div>
 
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="md:hidden text-white p-2 -mr-2"
+          className="lg:hidden text-white p-2 -mr-2"
           aria-label="Open menu"
         >
           <Menu size={24} />
@@ -58,22 +65,19 @@ export function MarketingNav() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 bg-[#0F2044] flex flex-col px-6 py-6 md:hidden">
+        <div className="fixed inset-0 z-50 bg-[#0A1024] flex flex-col px-6 py-6 lg:hidden">
           <div className="flex items-center justify-between mb-10">
-            <Link to="/" onClick={() => setOpen(false)} className="flex items-baseline no-underline">
-              <span className="text-white font-black text-xl">DSM</span>
-              <span className="text-white/50 text-sm ml-2">by EveryDriver</span>
+            <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
+              <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-black text-sm">
+                DSM
+              </span>
+              <span className="text-white font-bold text-[15px]">Driving School Manager</span>
             </Link>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="text-white p-2 -mr-2"
-              aria-label="Close menu"
-            >
+            <button type="button" onClick={() => setOpen(false)} className="text-white p-2 -mr-2" aria-label="Close menu">
               <X size={28} />
             </button>
           </div>
-          <nav className="flex flex-col gap-6">
+          <nav className="flex flex-col gap-5">
             {navLinks.map((l) => (
               <Link
                 key={l.to}
@@ -89,16 +93,16 @@ export function MarketingNav() {
             <Link
               to="/login"
               onClick={() => setOpen(false)}
-              className="w-full text-center border border-white/30 text-white px-4 py-3 rounded-lg text-base hover:bg-white/10 no-underline"
+              className="w-full text-center border border-white/30 text-white px-4 py-3 rounded-full text-base hover:bg-white/10 no-underline"
             >
               Log in
             </Link>
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="w-full text-center bg-white text-[#0F2044] font-bold px-5 py-3 rounded-lg text-base hover:bg-white/90 no-underline"
+              className="w-full text-center bg-[#1A73E8] text-white font-bold px-5 py-3 rounded-full text-base no-underline"
             >
-              Start free →
+              Get Started Free
             </Link>
           </div>
         </div>
