@@ -52,12 +52,14 @@ function formatDate(d: string | null) {
   return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function statusColor(s: TabKey) {
+function statusColor(s: TabKey | string) {
   if (s === "accepted") return "#16A34A";
   if (s === "declined") return "#CC2229";
   if (s === "expired") return "#6B7280";
+  if (s === "resent") return "#1A52A0";
   return "#F59E0B";
 }
+
 
 function isExpired(q: QuoteRow) {
   if (!q.valid_until) return false;
