@@ -32,6 +32,8 @@ import brokenCarAsset from "../assets/broken-down-car.jpg.asset.json";
 const brokenCarImg = brokenCarAsset.url;
 import marketingWebsiteAsset from "../assets/marketing-website-mockup.png.asset.json";
 const marketingWebsiteImg = marketingWebsiteAsset.url;
+import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asset.json";
+const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
