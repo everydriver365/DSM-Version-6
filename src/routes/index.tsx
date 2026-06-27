@@ -344,19 +344,19 @@ function FeaturesShowcase() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-20 md:gap-28">
+        <div className="flex flex-col gap-14 sm:gap-20 md:gap-28">
           {features.map((f, i) => {
             const reverse = i % 2 === 1;
             return (
               <div
                 key={`${f.title}-${i}`}
-                className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+                className={`grid md:grid-cols-2 gap-6 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-6 md:p-8">
+                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-5 sm:p-6 md:p-8">
                   <div className="w-12 h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-5">
                     <Check className="w-5 h-5 text-[#00B5A5]" />
                   </div>
-                  <h3 className="text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-4 leading-tight tracking-tight">
+                  <h3 className="text-[22px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
                     {f.title}
                   </h3>
                   <p className="text-gray-500 text-[16px] leading-relaxed mb-6">{f.body}</p>
@@ -378,7 +378,7 @@ function FeaturesShowcase() {
                   </Link>
                 </div>
                 <div>
-                  <div className="rounded-2xl overflow-hidden p-6 md:p-10">
+                  <div className="rounded-2xl overflow-hidden p-2 sm:p-6 md:p-10">
                     <img
                       src={f.img}
                       alt={f.title}
