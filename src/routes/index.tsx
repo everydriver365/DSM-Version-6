@@ -270,6 +270,12 @@ const features = [
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
   {
+    img: websiteImg,
+    title: "Your Own Professional Website",
+    body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
+    bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
+  },
+  {
     img: pupilAppImg,
     title: "Apps for Everyone",
     body: "Dedicated apps for pupils, parents and instructors — free on every plan. Track progress, stay informed, and manage your business from anywhere.",
