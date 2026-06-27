@@ -175,7 +175,14 @@ function NewQuotePage() {
         <div style={{ fontWeight: 700, fontSize: 16 }}>New quote</div>
       </div>
 
+      {isRevised && (
+        <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: 8, color: "#1D4ED8", fontSize: 13 }}>
+          Revised quote — pre-filled from the original. Update the price and resend.
+        </div>
+      )}
+
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+
         <div>
           <label style={labelStyle}>Pupil name *</label>
           <input
