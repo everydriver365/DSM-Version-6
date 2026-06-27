@@ -302,7 +302,7 @@ const features = [
   },
   {
     img: aiReceptionistImg,
-    title: "Free Health Insurance",
+    title: "Call Answering Service",
     body: "On our paid plans get FREE healthcover with Bennenden Health or Vitality to look after you when you ill.\u00a0",
     bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
   },
