@@ -356,6 +356,26 @@ function QuotesPage() {
                       </button>
                     </div>
                   )}
+                  {isResent && revision && (
+                    <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTab("pending");
+                          // Scroll/highlight not implemented; switching tab + toast for now.
+                          toast.success(`Revision sent ${formatDate(revision.sent_at)} · £${Number(revision.price).toFixed(0)}`);
+                        }}
+                        style={{
+                          background: "none", border: "none", color: "#1A52A0",
+                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          fontFamily: "Poppins, sans-serif", padding: 0,
+                        }}
+                      >
+                        View revision →
+                      </button>
+                    </div>
+                  )}
+
                   {q.token && (
                     <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end", gap: 8 }}>
                       <button
