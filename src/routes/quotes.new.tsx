@@ -158,7 +158,23 @@ function NewQuotePage() {
           window.location.href = `sms:${phone}?body=${encodeURIComponent(smsBody)}`;
         }
         toast.success(`Quote sent to ${pupilName}`);
+        if (search.originalId) {
+          try {
+            await fetch(`${SUPABASE_URL}/rest/v1/quotes?id=eq.${search.originalId}`, {
+              method: "PATCH",
+              headers: {
+                apikey: SUPABASE_ANON_KEY,
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: "resent" }),
+            });
+          } catch (err) {
+            console.warn("[quotes] failed to mark original as resent:", err);
+          }
+        }
       }
+
       navigate({ to: "/quotes" });
     } catch (e: any) {
       alert("Failed to save: " + (e?.message ?? "unknown"));
