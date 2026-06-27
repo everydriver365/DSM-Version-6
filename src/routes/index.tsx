@@ -151,17 +151,6 @@ function Hero() {
             No credit card required.
           </p>
 
-          <div className="flex flex-wrap gap-2 mb-7">
-            {["Free", "Multi-instructor", "White-label", "GDPR"].map((t) => (
-              <span
-                key={t}
-                className="inline-flex items-center gap-1.5 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[12px] sm:text-[13px] text-gray-600 shadow-sm"
-              >
-                <Check className="w-3.5 h-3.5 text-[#00B5A5]" /> {t}
-              </span>
-            ))}
-          </div>
-
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link
               to="/register"
