@@ -278,7 +278,7 @@ const features = [
   },
   {
     img: marketingWebsiteImg,
-    title: "Free Adver",
+    title: "Free Advertising",
     body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
