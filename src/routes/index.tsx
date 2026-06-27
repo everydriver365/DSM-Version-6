@@ -279,6 +279,12 @@ const features = [
     body: "Monitor speed, driver scoring and trip history in real time. Give your pupils measurable feedback backed by data.",
     bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
   },
+  {
+    img: telematicsImg,
+    title: "Telematics & Driving Data",
+    body: "Monitor speed, driver scoring and trip history in real time. Give your pupils measurable feedback backed by data.",
+    bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
+  },
 ];
 
 function FeaturesShowcase() {
@@ -302,7 +308,7 @@ function FeaturesShowcase() {
             const reverse = i % 2 === 1;
             return (
               <div
-                key={f.title}
+                key={`${f.title}-${i}`}
                 className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
                 <div>
