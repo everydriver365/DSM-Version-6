@@ -50,7 +50,7 @@ function PricingPage() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#1E40AF", letterSpacing: 0.4, textTransform: "uppercase" }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#009687", letterSpacing: "0.12em", textTransform: "uppercase" }}>
             DSM Professional
           </div>
           <div style={{ marginTop: 16, display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6 }}>
@@ -78,7 +78,7 @@ function PricingPage() {
           <p style={{ color: "#64748B", margin: "12px 0 18px" }}>
             We're happy to chat — instructors talk to instructors.
           </p>
-          <Link to="/contact" style={{ color: "#1E40AF", fontWeight: 600, textDecoration: "none" }}>
+          <Link to="/contact" style={{ color: "#009687", fontWeight: 600, textDecoration: "none" }}>
             Get in touch →
           </Link>
         </div>
