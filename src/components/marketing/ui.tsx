@@ -3,9 +3,9 @@ import { Link } from "@tanstack/react-router";
 
 const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
 const NAVY = "#1B2B4B";
-const TEAL = "#00B5A5";
-const TEAL_DARK = "#009687";
-const TEAL_TINT = "#E6F7F6";
+const BLUE = "#0E7CCE";
+const BLUE_DARK = "#0B69AD";
+const BLUE_TINT = "#EAF4FC";
 const INK = "#0F172A";
 const MUTED = "#64748B";
 const HAIRLINE = "#E5E9F2";
