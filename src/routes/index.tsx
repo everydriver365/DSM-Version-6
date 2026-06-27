@@ -43,9 +43,9 @@ const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
 const NAVY = "#1B2B4B";
 const NAVY_SOFT = "#243a66";
-const TEAL = "#00B5A5";
-const TEAL_DARK = "#009687";
-const TEAL_TINT = "#E6F7F6";
+const BLUE = "#0E7CCE";
+const BLUE_DARK = "#0B69AD";
+const BLUE_TINT = "#EAF4FC";
 const BG = "#F7FAFC";
 const INK = "#0F172A";
 const MUTED = "#64748B";
@@ -182,8 +182,8 @@ function Eyebrow({ children }: { children: ReactNode }) {
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase"
       style={{
-        background: TEAL_TINT,
-        color: TEAL_DARK,
+        background: BLUE_TINT,
+        color: BLUE_DARK,
         letterSpacing: "0.14em",
       }}
     >
@@ -200,7 +200,7 @@ function Hero() {
       className="relative overflow-hidden"
       style={{
         background:
-          "radial-gradient(1100px 600px at 50% -10%, rgba(0,181,165,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(27,43,75,0.06), transparent 60%), " +
+          "radial-gradient(1100px 600px at 50% -10%, rgba(14,124,206,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(27,43,75,0.06), transparent 60%), " +
           BG,
       }}
     >
@@ -221,7 +221,7 @@ function Hero() {
                 }}
               >
                 Driving school management,
-                <span style={{ color: TEAL }}> made effortless.</span>
+                <span style={{ color: BLUE }}> made effortless.</span>
               </h1>
             </Reveal>
             <Reveal delay={140}>
@@ -244,16 +244,16 @@ function Hero() {
                   to="/register"
                   className="group inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl px-5 sm:px-7 py-3.5 font-semibold no-underline transition-all"
                   style={{
-                    background: TEAL,
+                    background: BLUE,
                     color: "#fff",
-                    boxShadow: "0 10px 24px rgba(0,181,165,0.35)",
+                    boxShadow: "0 10px 24px rgba(14,124,206,0.35)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = TEAL_DARK;
+                    e.currentTarget.style.background = BLUE_DARK;
                     e.currentTarget.style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = TEAL;
+                    e.currentTarget.style.background = BLUE;
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
@@ -285,13 +285,13 @@ function Hero() {
                 style={{ color: MUTED }}
               >
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: TEAL }} /> No card required
+                  <Check className="w-4 h-4" style={{ color: BLUE }} /> No card required
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: TEAL }} /> Cancel anytime
+                  <Check className="w-4 h-4" style={{ color: BLUE }} /> Cancel anytime
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: TEAL }} /> GDPR compliant
+                  <Check className="w-4 h-4" style={{ color: BLUE }} /> GDPR compliant
                 </span>
               </div>
             </Reveal>
@@ -304,7 +304,7 @@ function Hero() {
                 className="absolute -inset-6 rounded-[40px]"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(0,181,165,0.18), rgba(27,43,75,0.10))",
+                    "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(27,43,75,0.10))",
                   filter: "blur(40px)",
                 }}
               />
@@ -331,7 +331,7 @@ function Hero() {
                 <div className="flex items-center gap-3">
                   <span
                     className="w-10 h-10 rounded-xl grid place-items-center"
-                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                    style={{ background: BLUE_TINT, color: BLUE_DARK }}
                   >
                     <Activity className="w-5 h-5" />
                   </span>
@@ -509,8 +509,8 @@ function DiarySection() {
                 <span
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
                   style={{
-                    background: TEAL,
-                    boxShadow: "0 12px 30px rgba(0,181,165,0.55)",
+                    background: BLUE,
+                    boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
                   }}
                 >
                   <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
@@ -544,7 +544,7 @@ function DiarySection() {
                 <div className="flex gap-4">
                   <div
                     className="shrink-0 w-12 h-12 rounded-xl grid place-items-center"
-                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                    style={{ background: BLUE_TINT, color: BLUE_DARK }}
                   >
                     <Icon className="w-6 h-6" />
                   </div>
@@ -660,7 +660,7 @@ function FeaturesShowcase() {
                       className="absolute -inset-4 rounded-[36px]"
                       style={{
                         background:
-                          "linear-gradient(135deg, rgba(0,181,165,0.10), rgba(27,43,75,0.06))",
+                          "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(27,43,75,0.06))",
                         filter: "blur(28px)",
                       }}
                     />
@@ -715,11 +715,11 @@ function FeaturesShowcase() {
                         >
                           <span
                             className="w-5 h-5 rounded-full grid place-items-center shrink-0"
-                            style={{ background: TEAL_TINT }}
+                            style={{ background: BLUE_TINT }}
                           >
                             <Check
                               className="w-3 h-3"
-                              style={{ color: TEAL_DARK }}
+                              style={{ color: BLUE_DARK }}
                             />
                           </span>
                           {b}
@@ -729,7 +729,7 @@ function FeaturesShowcase() {
                     <Link
                       to="/features"
                       className="group mt-7 inline-flex items-center gap-1.5 font-semibold no-underline"
-                      style={{ color: TEAL_DARK }}
+                      style={{ color: BLUE_DARK }}
                     >
                       Learn more
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -797,13 +797,13 @@ function HowItWorks() {
                 <div className="flex items-start justify-between mb-6">
                   <span
                     className="w-12 h-12 rounded-xl grid place-items-center"
-                    style={{ background: TEAL_TINT, color: TEAL_DARK }}
+                    style={{ background: BLUE_TINT, color: BLUE_DARK }}
                   >
                     <Icon className="w-6 h-6" />
                   </span>
                   <span
                     className="text-3xl font-bold"
-                    style={{ color: TEAL, opacity: 0.4, letterSpacing: "-0.04em" }}
+                    style={{ color: BLUE, opacity: 0.4, letterSpacing: "-0.04em" }}
                   >
                     {n}
                   </span>
@@ -891,7 +891,7 @@ function PricingTiers() {
                   className="relative h-full rounded-3xl overflow-hidden transition-all"
                   style={{
                     background: "#fff",
-                    border: isPro ? `2px solid ${TEAL}` : `1px solid ${HAIRLINE}`,
+                    border: isPro ? `2px solid ${BLUE}` : `1px solid ${HAIRLINE}`,
                     boxShadow: isPro ? SHADOW_LIFT : SHADOW_SOFT,
                   }}
                   onMouseEnter={(e) => {
@@ -909,7 +909,7 @@ function PricingTiers() {
                     <span
                       className="absolute top-5 right-5 text-[10px] uppercase font-bold px-2.5 py-1 rounded-full"
                       style={{
-                        background: TEAL,
+                        background: BLUE,
                         color: "#fff",
                         letterSpacing: "0.12em",
                       }}
@@ -938,7 +938,7 @@ function PricingTiers() {
                       </div>
                       <div
                         className="font-bold text-base shrink-0"
-                        style={{ color: TEAL_DARK }}
+                        style={{ color: BLUE_DARK }}
                       >
                         {p.price}
                       </div>
@@ -958,7 +958,7 @@ function PricingTiers() {
                         >
                           <Check
                             className="w-4 h-4 shrink-0"
-                            style={{ color: TEAL }}
+                            style={{ color: BLUE }}
                           />{" "}
                           {b}
                         </li>
@@ -967,7 +967,7 @@ function PricingTiers() {
                     <Link
                       to="/pricing"
                       className="group inline-flex items-center gap-1.5 font-semibold no-underline"
-                      style={{ color: TEAL_DARK }}
+                      style={{ color: BLUE_DARK }}
                     >
                       {p.cta}{" "}
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -1047,7 +1047,7 @@ function Testimonials() {
                     <Star
                       key={idx}
                       className="w-4 h-4"
-                      style={{ color: TEAL, fill: TEAL }}
+                      style={{ color: BLUE, fill: BLUE }}
                     />
                   ))}
                 </div>
@@ -1131,11 +1131,11 @@ function ComparisonFormula() {
                 <div className="flex items-center gap-3 min-w-0">
                   <span
                     className="w-7 h-7 rounded-full grid place-items-center shrink-0"
-                    style={{ background: TEAL_TINT }}
+                    style={{ background: BLUE_TINT }}
                   >
                     <Check
                       className="w-3.5 h-3.5"
-                      style={{ color: TEAL_DARK }}
+                      style={{ color: BLUE_DARK }}
                     />
                   </span>
                   <span
@@ -1147,7 +1147,7 @@ function ComparisonFormula() {
                 </div>
                 <span
                   className="font-bold text-[14px] sm:text-base shrink-0"
-                  style={{ color: TEAL_DARK }}
+                  style={{ color: BLUE_DARK }}
                 >
                   {r.v}
                 </span>
@@ -1174,16 +1174,16 @@ function ComparisonFormula() {
               to="/register"
               className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
               style={{
-                background: TEAL,
+                background: BLUE,
                 color: "#fff",
-                boxShadow: "0 12px 28px rgba(0,181,165,0.35)",
+                boxShadow: "0 12px 28px rgba(14,124,206,0.35)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = TEAL_DARK;
+                e.currentTarget.style.background = BLUE_DARK;
                 e.currentTarget.style.transform = "translateY(-1px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = TEAL;
+                e.currentTarget.style.background = BLUE;
                 e.currentTarget.style.transform = "translateY(0)";
               }}
             >
@@ -1220,7 +1220,7 @@ function FinalCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(600px 300px at 80% 0%, rgba(0,181,165,0.35), transparent 60%), radial-gradient(500px 280px at 10% 100%, rgba(0,181,165,0.18), transparent 60%)",
+                  "radial-gradient(600px 300px at 80% 0%, rgba(14,124,206,0.35), transparent 60%), radial-gradient(500px 280px at 10% 100%, rgba(14,124,206,0.18), transparent 60%)",
               }}
             />
             <div className="relative">
@@ -1259,16 +1259,16 @@ function FinalCTA() {
                   to="/register"
                   className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
                   style={{
-                    background: TEAL,
+                    background: BLUE,
                     color: "#fff",
-                    boxShadow: "0 12px 30px rgba(0,181,165,0.45)",
+                    boxShadow: "0 12px 30px rgba(14,124,206,0.45)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = TEAL_DARK;
+                    e.currentTarget.style.background = BLUE_DARK;
                     e.currentTarget.style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = TEAL;
+                    e.currentTarget.style.background = BLUE;
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
