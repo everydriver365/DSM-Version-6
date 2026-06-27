@@ -114,15 +114,9 @@ function Reveal({
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  const T = Tag as unknown as React.ComponentType<{
-    ref?: React.Ref<HTMLElement>;
-    className?: string;
-    style?: React.CSSProperties;
-    children?: ReactNode;
-  }>;
   return (
-    <T
-      ref={ref as React.Ref<HTMLElement>}
+    <div
+      ref={ref as React.RefObject<HTMLDivElement>}
       className={className}
       style={{
         opacity: shown ? 1 : 0,
@@ -132,7 +126,7 @@ function Reveal({
       }}
     >
       {children}
-    </T>
+    </div>
   );
 }
 
