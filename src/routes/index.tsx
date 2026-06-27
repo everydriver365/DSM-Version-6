@@ -344,12 +344,12 @@ function FeaturesShowcase() {
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed." },
-    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences." },
-    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one." },
+    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed.", Icon: Activity, bg: "bg-[#FFEDD5]", fg: "text-[#F97316]", badge: "bg-[#F97316]" },
+    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences.", Icon: Calendar, bg: "bg-[#DBEAFE]", fg: "text-[#1A73E8]", badge: "bg-[#1A73E8]" },
+    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2, bg: "bg-[#D1FAE5]", fg: "text-[#10B981]", badge: "bg-[#10B981]" },
   ];
   return (
-    <section className="bg-[#F4F5F7] py-20 md:py-28 px-6">
+    <section className="bg-[#EEF0F4] py-20 md:py-28 px-6">
       <div className="max-w-[1180px] mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
@@ -358,15 +358,22 @@ function HowItWorks() {
           <p className="text-[#64748B] text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {steps.map((s) => (
-            <div
-              key={s.n}
-              className="bg-white rounded-2xl p-8 border border-[#e1e4eb] hover:shadow-[0_10px_30px_rgba(15,32,68,0.08)] transition-shadow"
-            >
-              <div className="text-[#1A73E8] text-4xl font-black mb-4 tracking-tight">{s.n}</div>
-              <div className="text-xl font-bold text-[#0B1530] mb-3">{s.t}</div>
-              <div className="text-[#64748B] text-[15px] leading-relaxed">{s.b}</div>
+        <div className="grid md:grid-cols-3 gap-10 relative">
+          {steps.map(({ n, t, b, Icon, bg, fg, badge }, idx) => (
+            <div key={n} className="text-center relative">
+              {idx < 2 && (
+                <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-[#cbd2dd]" />
+              )}
+              <div className="relative inline-block mb-5">
+                <div className={`w-20 h-20 rounded-2xl ${bg} grid place-items-center`}>
+                  <Icon className={`w-9 h-9 ${fg}`} />
+                </div>
+                <span className={`absolute -top-1 -right-1 ${badge} text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md`}>
+                  {n}
+                </span>
+              </div>
+              <div className="text-xl font-bold text-[#0B1530] mb-2">{t}</div>
+              <div className="text-[#64748B] text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
             </div>
           ))}
         </div>
