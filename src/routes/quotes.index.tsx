@@ -217,6 +217,10 @@ function QuotesPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map((q) => {
               const displayStatus: TabKey = isExpired(q) && q.status === "pending" ? "expired" : (q.status as TabKey);
+              const isDeclined = (q.status || "").toLowerCase() === "declined";
+              const info = declineMap[q.id];
+              const counter = info?.counterOffer ?? null;
+              const reason = info?.reason ?? null;
               return (
                 <Card key={q.id} style={{ padding: 12 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
