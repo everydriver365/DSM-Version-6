@@ -414,17 +414,33 @@ function PublicQuotePage() {
                       <div id="apple-pay-container" style={{ marginBottom: 12 }} />
                       <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
                       <div className="Ryft--paysection">
-                        <form id="ryft-pay-form" className="Ryft--payform">
+                        <form
+                          id="ryft-pay-form"
+                          className="Ryft--payform"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            setPayError("");
+                            setPayStatus("paying");
+                            try {
+                              window.Ryft?.attemptPayment?.();
+                            } catch (err: any) {
+                              setPayStatus("error");
+                              setPayError(err?.message || "Payment failed");
+                            }
+                          }}
+                        >
                           <button
                             id="pay-btn"
                             type="submit"
+                            disabled={payStatus === "paying"}
                             style={{
                               width: "100%", background: "#1A52A0", color: "#fff",
                               border: 0, borderRadius: 10, padding: "14px 16px",
                               fontSize: 16, fontWeight: 600, cursor: "pointer",
+                              opacity: payStatus === "paying" ? 0.6 : 1,
                             }}
                           >
-                            Pay £{depositAmount.toFixed(2)}
+                            {payStatus === "paying" ? "Processing…" : `Pay £${depositAmount.toFixed(2)}`}
                           </button>
                         </form>
                       </div>
