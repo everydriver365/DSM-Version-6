@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import dsmLogo from "@/assets/dsm-logo.png.asset.json";
+import { DsmLogoMark } from "./DsmLogoMark";
 
 const navLinks = [
   { to: "/", label: "Home" },
