@@ -80,13 +80,11 @@ export const Route = createFileRoute("/")({
 function Reveal({
   children,
   delay = 0,
-  as: Tag = "div",
   className = "",
   style,
 }: {
   children: ReactNode;
   delay?: number;
-  as?: keyof JSX.IntrinsicElements;
   className?: string;
   style?: React.CSSProperties;
 }) {
