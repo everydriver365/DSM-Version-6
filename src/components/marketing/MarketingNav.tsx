@@ -70,11 +70,12 @@ export function MarketingNav() {
       {open && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col px-6 py-6 lg:hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
           <div className="flex items-center justify-between mb-10">
-          <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
-            <span className="text-[#1B2B4B] font-black text-[20px] tracking-tight">DSM</span>
-            <span className="flex items-baseline gap-1.5">
-              <span className="text-gray-400 text-[13px] font-medium">by EveryDriver</span>
-            </span>
+          <Link to="/" onClick={() => setOpen(false)} className="flex items-center no-underline">
+            <img
+              src={logoAsset.url}
+              alt="Driving School Manager"
+              className="h-8 w-auto"
+            />
           </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
               <X size={28} />
