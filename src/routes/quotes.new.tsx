@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -10,12 +10,19 @@ export const Route = createFileRoute("/quotes/new")({
     email: typeof search.email === "string" ? search.email : undefined,
     phone: typeof search.phone === "string" ? search.phone : undefined,
     course: typeof search.course === "string" ? search.course : undefined,
+    courseType: typeof search.courseType === "string" ? search.courseType : undefined,
     hours: typeof search.hours === "string" ? search.hours : undefined,
     price: typeof search.price === "string" ? search.price : undefined,
     message: typeof search.message === "string" ? search.message : undefined,
+    revised: typeof search.revised === "string" ? search.revised : undefined,
   }),
   component: NewQuotePage,
 });
+
+function stripQuotes(s: string) {
+  return s.replace(/^["']|["']$/g, "");
+}
+
 
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
