@@ -134,11 +134,6 @@ function Hero() {
     <section className="relative overflow-hidden bg-[#F7FAFC]">
       <div className="max-w-[1240px] mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 bg-white border border-gray-100 rounded-full px-3 py-1.5 text-[12px] sm:text-[13px] text-[#1B2B4B] mb-5 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#00B5A5]" />
-            Free for every instructor forever..
-          </div>
-
           <h1 className="text-[34px] sm:text-[44px] md:text-[64px] leading-[1.05] font-black tracking-tight text-[#1B2B4B] mb-4">
             Driving School{" "}
             <span className="block md:inline">Management</span>
