@@ -61,10 +61,11 @@ function HomePage() {
     };
   }, [navigate]);
 
-  if (!checked) return <div className="min-h-screen bg-white" />;
+  if (!checked) return <div className="min-h-screen" style={{ background: "rgb(227, 229, 232)" }} />;
 
   return (
-    <div className="bg-white min-h-screen font-sans text-[#0B1530] antialiased">
+    <div className="min-h-screen font-sans text-[#0B1530] antialiased" style={{ background: "rgb(227, 229, 232)" }}>
+
       <MarketingNav />
       <Hero />
       <DiarySection />
