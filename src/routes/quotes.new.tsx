@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -10,12 +10,19 @@ export const Route = createFileRoute("/quotes/new")({
     email: typeof search.email === "string" ? search.email : undefined,
     phone: typeof search.phone === "string" ? search.phone : undefined,
     course: typeof search.course === "string" ? search.course : undefined,
+    courseType: typeof search.courseType === "string" ? search.courseType : undefined,
     hours: typeof search.hours === "string" ? search.hours : undefined,
     price: typeof search.price === "string" ? search.price : undefined,
     message: typeof search.message === "string" ? search.message : undefined,
+    revised: typeof search.revised === "string" ? search.revised : undefined,
   }),
   component: NewQuotePage,
 });
+
+function stripQuotes(s: string) {
+  return s.replace(/^["']|["']$/g, "");
+}
+
 
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
@@ -35,22 +42,32 @@ function NewQuotePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  const search = Route.useSearch();
-  const [pupilName, setPupilName] = useState(search.name ?? "");
-  const [email, setEmail] = useState(search.email ?? "");
-  const [phone, setPhone] = useState(search.phone ?? "");
+  const search = useSearch({ strict: false }) as {
+    name?: string; email?: string; phone?: string;
+    course?: string; courseType?: string;
+    hours?: string; price?: string; message?: string; revised?: string;
+  };
+  const initialCourse = search.courseType || search.course || "";
+  const initialPrice = search.price ? stripQuotes(search.price) : "";
+  const initialHours = search.hours ? stripQuotes(search.hours) : "";
+
+  const [pupilName, setPupilName] = useState(search.name || "");
+  const [email, setEmail] = useState(search.email || "");
+  const [phone, setPhone] = useState(search.phone || "");
   const [postcode, setPostcode] = useState("");
   const [courseType, setCourseType] = useState(
-    search.course && COURSE_TYPES.includes(search.course) ? search.course : COURSE_TYPES[0]
+    initialCourse && COURSE_TYPES.includes(initialCourse) ? initialCourse : COURSE_TYPES[0]
   );
-  const [hours, setHours] = useState<string>(search.hours ?? "");
-  const [price, setPrice] = useState<string>(search.price ?? "");
+  const [hours, setHours] = useState<string>(initialHours);
+  const [price, setPrice] = useState<string>(initialPrice);
   const [deposit, setDeposit] = useState<string>("");
-  const [notes, setNotes] = useState(search.message ?? "");
+  const [notes, setNotes] = useState(search.message || "");
 
   const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
   const [validUntil, setValidUntil] = useState(defaultValid);
-  const [priceTouched, setPriceTouched] = useState(!!search.price);
+  const [priceTouched, setPriceTouched] = useState(!!initialPrice);
+  const isRevised = search.revised === "true";
+
   const [depositTouched, setDepositTouched] = useState(false);
 
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
@@ -158,7 +175,14 @@ function NewQuotePage() {
         <div style={{ fontWeight: 700, fontSize: 16 }}>New quote</div>
       </div>
 
+      {isRevised && (
+        <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: 8, color: "#1D4ED8", fontSize: 13 }}>
+          Revised quote — pre-filled from the original. Update the price and resend.
+        </div>
+      )}
+
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+
         <div>
           <label style={labelStyle}>Pupil name *</label>
           <input
