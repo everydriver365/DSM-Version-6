@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
+import dsmLogo from "@/assets/dsm-logo.png.asset.json";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -20,9 +21,7 @@ export function MarketingNav() {
     <header className="sticky top-0 z-50 w-full bg-[#0A1024] border-b border-white/5">
       <div className="h-16 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-black text-sm tracking-tight">
-            DSM
-          </span>
+          <img src={dsmLogo.url} alt="DSM" className="h-9 w-auto object-contain" />
           <span className="hidden sm:block text-white font-bold text-[15px] tracking-tight">
             Driving School Manager
           </span>
@@ -70,9 +69,7 @@ export function MarketingNav() {
         <div className="fixed inset-0 z-50 bg-[#0A1024] flex flex-col px-6 py-6 lg:hidden">
           <div className="flex items-center justify-between mb-10">
             <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
-              <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-black text-sm">
-                DSM
-              </span>
+              <img src={dsmLogo.url} alt="DSM" className="h-9 w-auto object-contain" />
               <span className="text-white font-bold text-[15px]">Driving School Manager</span>
             </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-white p-2 -mr-2" aria-label="Close menu">
