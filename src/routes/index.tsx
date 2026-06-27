@@ -2,31 +2,42 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Calendar,
-  PoundSterling,
-  MapPin,
-  Users,
-  BarChart3,
+  CreditCard,
   Globe,
+  Smartphone,
+  Megaphone,
+  Activity,
+  Camera,
+  Building2,
+  ArrowRight,
+  Play,
+  Check,
   Star,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { MarketingNav } from "../components/marketing/MarketingNav";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
+import heroImg from "../assets/marketing/hero.jpg";
+import diaryImg from "../assets/marketing/diary.jpg";
+import paymentsImg from "../assets/marketing/payments.jpg";
+import websiteImg from "../assets/marketing/website.jpg";
+import pupilAppImg from "../assets/marketing/pupil-app.jpg";
+import telematicsImg from "../assets/marketing/telematics.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DSM by EveryDriver — Run your driving school from your phone" },
+      { title: "Driving School Manager — Free forever for UK driving instructors" },
       {
         name: "description",
         content:
-          "Schedule lessons, take payments, track routes and manage pupils — all in one app built for UK driving instructors. Free to start.",
+          "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs.",
       },
-      { property: "og:title", content: "DSM — Driving School Manager" },
+      { property: "og:title", content: "Driving School Manager — Free for every driving instructor" },
       {
         property: "og:description",
         content:
-          "Schedule lessons, take payments, track routes and manage pupils — built for UK driving instructors.",
+          "The all-in-one diary, payments and pupil management app for UK driving instructors. Free forever.",
       },
     ],
   }),
@@ -41,11 +52,8 @@ function HomePage() {
     let cancelled = false;
     supabase.auth.getSession().then(({ data }) => {
       if (cancelled) return;
-      if (data.session) {
-        navigate({ to: "/home", replace: true });
-      } else {
-        setChecked(true);
-      }
+      if (data.session) navigate({ to: "/home", replace: true });
+      else setChecked(true);
     });
     return () => {
       cancelled = true;
@@ -55,14 +63,16 @@ function HomePage() {
   if (!checked) return <div className="min-h-screen bg-white" />;
 
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-white min-h-screen font-sans text-[#0B1530] antialiased">
       <MarketingNav />
       <Hero />
-      <FeatureTiles />
+      <DiarySection />
+      <FeaturesShowcase />
       <HowItWorks />
-      <SocialProof />
-      <PricingTeaser />
-      <BottomCTA />
+      <PricingTiers />
+      <Testimonials />
+      <ComparisonFormula />
+      <FinalCTA />
       <MarketingFooter />
     </div>
   );
@@ -71,88 +81,249 @@ function HomePage() {
 /* ---------- Hero ---------- */
 function Hero() {
   return (
-    <section className="min-h-screen bg-[#0F2044] flex">
-      <div className="flex-1 flex flex-col justify-center pl-8 md:pl-20 pr-6 py-20 max-w-xl">
-        <div className="bg-white/10 text-white/80 text-xs px-3 py-1 rounded-full mb-6 inline-flex items-center gap-2 w-fit">
-          <span className="bg-white text-[#0F2044] font-bold px-2 py-0.5 rounded-full text-[10px]">NEW</span>
-          Now with GPS tracking & payments
+    <section
+      className="relative overflow-hidden bg-[#F4F5F7]"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle, #d8dce5 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+      }}
+    >
+      <div className="max-w-[1240px] mx-auto px-6 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-[#e1e4eb] rounded-full px-3.5 py-1.5 text-[13px] text-[#0B1530] mb-6 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
+            Free for every driving instructor
+          </div>
+
+          <h1 className="text-[44px] md:text-[64px] leading-[1.02] font-black tracking-tight text-[#0B1530] mb-5">
+            Driving School{" "}
+            <span className="block md:inline">Management</span>
+          </h1>
+
+          <div className="text-[22px] md:text-[26px] font-bold text-[#0B1530] mb-5">
+            Free forever for{" "}
+            <span className="text-[#1A73E8] underline decoration-[3px] underline-offset-[6px] decoration-[#1A73E8]/30">
+              ADIs &amp; PDIs
+            </span>
+          </div>
+
+          <p className="text-[17px] text-[#475569] leading-relaxed mb-7 max-w-md">
+            Manage your lessons, track payments, and grow your business — all from one app.
+            No credit card required.
+          </p>
+
+          <div className="flex flex-wrap gap-2 mb-8">
+            {["Free", "Multi-instructor", "White-label", "GDPR"].map((t) => (
+              <span
+                key={t}
+                className="inline-flex items-center gap-1.5 bg-white border border-[#e1e4eb] rounded-full px-3 py-1.5 text-[13px] text-[#475569] shadow-sm"
+              >
+                <Check className="w-3.5 h-3.5 text-[#16A34A]" /> {t}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-7 py-4 rounded-full text-[15px] no-underline transition-colors shadow-[0_8px_24px_rgba(26,115,232,0.35)]"
+            >
+              Start Free Today <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/features"
+              className="inline-flex items-center gap-2 bg-white hover:bg-[#F8F9FB] text-[#0B1530] font-semibold px-7 py-4 rounded-full text-[15px] no-underline border border-[#e1e4eb] transition-colors"
+            >
+              <Play className="w-4 h-4 fill-current" /> Watch Demo
+            </Link>
+          </div>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6">
-          Run your driving school from your phone
-        </h1>
-
-        <p className="text-white/70 text-lg mb-8 max-w-md">
-          Schedule lessons, take payments, track routes and manage pupils — all in one app built for UK driving instructors.
-        </p>
-
-        <div className="flex flex-wrap gap-4">
-          <Link
-            to="/register"
-            className="bg-white text-[#0F2044] font-bold px-8 py-4 rounded-xl text-base hover:bg-white/90 no-underline transition-colors"
-          >
-            Start free today
-          </Link>
-          <a
-            href="#demo"
-            className="border-2 border-white/30 text-white px-8 py-4 rounded-xl text-base hover:bg-white/10 no-underline transition-colors"
-          >
-            Watch demo
-          </a>
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-6 text-white/50 text-sm">
-          <span>✓ Free to start</span>
-          <span>✓ No card required</span>
-          <span>✓ DVSA approved instructors</span>
-        </div>
-      </div>
-
-      <div className="hidden md:flex flex-1 items-center justify-center pr-8">
-        <div className="w-64 h-[520px] bg-white/10 rounded-[40px] border-2 border-white/20 flex items-center justify-center">
-          <span className="text-white/30 text-sm">App preview</span>
+        <div className="relative">
+          <img
+            src={heroImg}
+            alt="Driving instructor with car, diary calendar app and vehicle tracking dashboard"
+            width={1280}
+            height={1024}
+            className="w-full h-auto rounded-2xl"
+          />
+          <div className="absolute top-4 right-4 md:-top-4 md:-right-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(15,32,68,0.15)] px-4 py-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] grid place-items-center">
+              <Calendar className="w-5 h-5 text-[#1A73E8]" />
+            </div>
+            <div>
+              <div className="font-black text-[#0B1530] text-lg leading-none">98%</div>
+              <div className="text-[#64748B] text-xs">Fill rate</div>
+            </div>
+          </div>
+          <div className="absolute bottom-4 left-4 md:-bottom-4 md:-left-4 bg-white rounded-2xl shadow-[0_10px_30px_rgba(15,32,68,0.15)] px-4 py-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] grid place-items-center">
+              <Smartphone className="w-5 h-5 text-[#16A34A]" />
+            </div>
+            <div>
+              <div className="font-black text-[#0B1530] text-lg leading-none">500+</div>
+              <div className="text-[#64748B] text-xs">Active instructors</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ---------- Feature tiles ---------- */
-function FeatureTiles() {
-  const tiles = [
-    { bg: "bg-[#0F2044]", top: "bg-[#1A52A0]", Icon: Calendar, title: "Smart scheduling", desc: "Google Calendar-style diary. See your week at a glance." },
-    { bg: "bg-[#16A34A]", top: "bg-green-700", Icon: PoundSterling, title: "Take payments", desc: "Card, Apple Pay & Google Pay in-lesson via QR code." },
-    { bg: "bg-[#CC2229]", top: "bg-red-800", Icon: MapPin, title: "Live GPS tracking", desc: "Record every route. Monitor speed. Stay safe." },
-    { bg: "bg-[#7C3AED]", top: "bg-purple-800", Icon: Users, title: "Pupil management", desc: "Full profiles, syllabus progress and payment history." },
-    { bg: "bg-[#0891B2]", top: "bg-cyan-800", Icon: BarChart3, title: "Business reports", desc: "MTD earnings, tax estimates and weekly summaries." },
-    { bg: "bg-[#D97706]", top: "bg-amber-800", Icon: Globe, title: "Your mini website", desc: "Free booking page at everydriver.co.uk/i/you" },
+/* ---------- Diary section (dark) ---------- */
+function DiarySection() {
+  const stats = [
+    { n: "500+", l: "Active Instructors" },
+    { n: "50,000+", l: "Lessons Managed" },
+    { n: "4.9★", l: "Average Rating" },
+    { n: "£0", l: "To Get Started" },
   ];
-
   return (
-    <section className="bg-white py-24 px-6">
-      <h2 className="text-4xl font-black text-[#0F2044] text-center mb-4">Everything in one app</h2>
-      <p className="text-[#6B7280] text-center mb-16">
-        Built by an instructor. Trusted by 1,200+ ADIs across the UK.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {tiles.map((t) => {
-          const Icon = t.Icon;
-          return (
-            <div
-              key={t.title}
-              className={`${t.bg} rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer`}
-            >
-              <div className={`h-48 ${t.top} flex items-center justify-center`}>
-                <Icon className="w-20 h-20 text-white/30" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-white font-bold text-xl mb-2">{t.title}</h3>
-                <p className="text-white/70 text-sm">{t.desc}</p>
-              </div>
+    <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
+          <div>
+            <div className="inline-block border border-[#1A73E8]/40 text-[#5EA8FF] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
+              No contracts · No tie-in · Leave any time
             </div>
-          );
-        })}
+            <h2 className="text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
+              Your Diary, Your Way
+              <br />
+              — <span className="text-[#1A73E8]">Free for Life</span>
+            </h2>
+            <p className="text-white/70 text-[17px] leading-relaxed mb-5 max-w-lg">
+              DSM gives every driving instructor a powerful diary and business management app — completely free,
+              forever. Manage your schedule, track pupil progress, handle payments and communicate with learners
+              all in one place.
+            </p>
+            <p className="text-white/55 text-[15px] leading-relaxed mb-8 max-w-lg">
+              Want even more? Optional paid extras like telematics, dashcam integration and a branded website are
+              available when you're ready — the core app is yours to keep at absolutely no cost.
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80 mb-2">
+              {["Free forever", "No credit card", "No hidden fees", "Cancel any time"].map((t) => (
+                <span key={t} className="inline-flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#16A34A]" /> {t}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-5">
+            {stats.map((s) => (
+              <div
+                key={s.l}
+                className="bg-white/[0.04] border border-white/10 rounded-2xl p-7 text-center hover:bg-white/[0.06] transition-colors"
+              >
+                <div className="text-4xl md:text-5xl font-black text-[#5EA8FF] mb-2">{s.n}</div>
+                <div className="text-white/60 text-sm">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Feature zig-zag ---------- */
+const features = [
+  {
+    img: diaryImg,
+    title: "Smart Diary Management",
+    body: "Drag-and-drop scheduling, automatic gap detection, and Google Calendar sync. Never miss a booking or double-book again.",
+    bullets: ["Drag & drop calendar", "Google Calendar sync", "Automatic gap filling", "SMS reminders"],
+  },
+  {
+    img: paymentsImg,
+    title: "Effortless Payment Tracking",
+    body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
+    bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
+  },
+  {
+    img: websiteImg,
+    title: "Your Own Professional Website",
+    body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
+    bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
+  },
+  {
+    img: pupilAppImg,
+    title: "Apps for Everyone",
+    body: "Dedicated apps for pupils, parents and instructors — free on every plan. Track progress, stay informed, and manage your business from anywhere.",
+    bullets: ["Pupil progress dashboard", "Parent lesson notifications", "AI coaching tips", "Mock theory tests"],
+  },
+  {
+    img: telematicsImg,
+    title: "Telematics & Driving Data",
+    body: "Monitor speed, driver scoring and trip history in real time. Give your pupils measurable feedback backed by data.",
+    bullets: ["Live speed monitoring", "Driver scoring", "Trip replay & reports", "Progress tracking"],
+  },
+];
+
+function FeaturesShowcase() {
+  return (
+    <section className="bg-white py-20 md:py-28 px-6">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="text-center mb-16">
+          <div className="inline-block text-[#1A73E8] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+            Product Tour
+          </div>
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-4">
+            See It in Action
+          </h2>
+          <p className="text-[#64748B] text-lg max-w-2xl mx-auto">
+            From diary management to live telematics — everything you need in one platform.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-20 md:gap-28">
+          {features.map((f, i) => {
+            const reverse = i % 2 === 1;
+            return (
+              <div
+                key={f.title}
+                className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+              >
+                <div>
+                  <h3 className="text-[28px] md:text-[34px] font-black text-[#0B1530] mb-4 leading-tight tracking-tight">
+                    {f.title}
+                  </h3>
+                  <p className="text-[#475569] text-[16px] leading-relaxed mb-6">{f.body}</p>
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-3 mb-7">
+                    {f.bullets.map((b) => (
+                      <li key={b} className="flex items-center gap-2 text-[#0B1530] text-sm font-medium">
+                        <span className="w-5 h-5 rounded-full bg-[#EFF6FF] grid place-items-center">
+                          <Check className="w-3 h-3 text-[#1A73E8]" />
+                        </span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    to="/features"
+                    className="inline-flex items-center gap-1.5 text-[#1A73E8] hover:text-[#1565C7] font-semibold text-sm no-underline"
+                  >
+                    Learn more <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                <div>
+                  <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] p-6 md:p-10">
+                    <img
+                      src={f.img}
+                      alt={f.title}
+                      width={1024}
+                      height={1024}
+                      loading="lazy"
+                      className="w-full h-auto rounded-xl shadow-[0_20px_60px_-20px_rgba(15,32,68,0.3)]"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -161,139 +332,295 @@ function FeatureTiles() {
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
-    { n: 1, title: "Create account", desc: "60 seconds. No card needed." },
-    { n: 2, title: "Add your pupils", desc: "Import or add manually." },
-    { n: 3, title: "Start earning", desc: "Take payments, track lessons." },
+    { n: "01", t: "Create Your Account", b: "Sign up with your email in 60 seconds. No credit card needed." },
+    { n: "02", t: "Set Up Your Diary", b: "Add availability, import existing pupils, and configure your preferences." },
+    { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one." },
   ];
-
   return (
-    <section className="bg-[#F8F9FB] py-24 px-6">
-      <h2 className="text-4xl font-black text-[#0F2044] text-center mb-16">
-        Up and running in 5 minutes
-      </h2>
-      <div className="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto">
-        {steps.map((s) => (
-          <div key={s.n} className="flex-1 text-center">
-            <div className="w-16 h-16 rounded-full bg-[#0F2044] text-white font-black text-2xl flex items-center justify-center mx-auto mb-6">
-              {s.n}
-            </div>
-            <div className="text-xl font-bold text-[#0F2044] mb-3">{s.title}</div>
-            <div className="text-[#6B7280]">{s.desc}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Social proof ---------- */
-function SocialProof() {
-  const stats = [
-    { n: "1,200+", label: "Instructors" },
-    { n: "50,000+", label: "Lessons tracked" },
-    { n: "4.9★", label: "Average rating" },
-    { n: "£2M+", label: "Payments processed" },
-  ];
-  const testimonials = [
-    { quote: "I went from zero Google presence to enquiries every week — and I didn't pay a penny for marketing.", name: "James T.", role: "ADI, Birmingham" },
-    { quote: "Having my reviews front and centre means pupils trust me before they even call. Bookings have doubled.", name: "Laura P.", role: "ADI, Bristol" },
-    { quote: "DSM replaced three different apps I was using. Everything's in one place and I save hours every week.", name: "Amir K.", role: "ADI, Leicester" },
-  ];
-
-  return (
-    <section className="bg-white py-24 px-6">
-      <h2 className="text-3xl font-black text-[#0F2044] text-center mb-4">
-        Trusted by instructors across the UK
-      </h2>
-      <p className="text-[#6B7280] text-center mb-16">Real numbers from real ADIs.</p>
-
-      <div className="flex flex-col md:flex-row justify-center gap-16 mb-16">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <div className="text-5xl font-black text-[#1A52A0]">{s.n}</div>
-            <div className="text-[#6B7280] text-sm mt-2">{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        {testimonials.map((t) => (
-          <div key={t.name} className="border border-[#E2E6ED] rounded-2xl p-6">
-            <div className="flex gap-1 mb-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-              ))}
-            </div>
-            <p className="italic text-[#374151] text-sm leading-relaxed mb-4">"{t.quote}"</p>
-            <div className="font-bold text-[#0F2044] text-sm">{t.name}</div>
-            <div className="text-[#6B7280] text-xs">{t.role}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Pricing teaser ---------- */
-function PricingTeaser() {
-  const free = ["Schedule", "Pupils", "Basic reports", "Mini website"];
-  const pro = ["Everything in Free", "GPS tracking", "Payments", "Custom domain", "Business reports"];
-
-  return (
-    <section className="bg-[#0F2044] py-24 px-6 text-center">
-      <h2 className="text-4xl font-black text-white mb-4">Simple pricing</h2>
-      <p className="text-white/70 mb-16">Start free. Upgrade when you're ready.</p>
-
-      <div className="flex flex-col md:flex-row gap-6 max-w-2xl mx-auto">
-        <div className="bg-white/10 border border-white/20 rounded-2xl p-8 flex-1 text-left">
-          <div className="text-3xl font-black text-white mb-1">Free</div>
-          <div className="text-white/70 text-sm mb-6">£0/month</div>
-          <ul className="flex flex-col gap-2 mb-6 text-sm text-white/80">
-            {free.map((f) => <li key={f}>✓ {f}</li>)}
-          </ul>
-          <Link to="/register" className="block text-center bg-white text-[#0F2044] font-bold w-full py-3 rounded-xl hover:bg-white/90 no-underline">
-            Start free →
-          </Link>
+    <section className="bg-[#F4F5F7] py-20 md:py-28 px-6">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="text-center mb-14">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+            Up and Running in 3 Minutes
+          </h2>
+          <p className="text-[#64748B] text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 flex-1 relative text-left">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-[#0F2044] text-xs font-bold px-4 py-1 rounded-full">
-            Most popular
-          </div>
-          <div className="text-3xl font-black text-[#0F2044] mb-1">Pro</div>
-          <div className="text-[#6B7280] text-sm mb-6">£9.99/month</div>
-          <ul className="flex flex-col gap-2 mb-6 text-sm text-[#374151]">
-            {pro.map((f) => <li key={f}>✓ {f}</li>)}
-          </ul>
-          <Link to="/register" className="block text-center bg-[#1A52A0] text-white font-bold w-full py-3 rounded-xl hover:bg-[#0F2044] no-underline transition-colors">
-            Start 30-day trial →
+        <div className="grid md:grid-cols-3 gap-6">
+          {steps.map((s) => (
+            <div
+              key={s.n}
+              className="bg-white rounded-2xl p-8 border border-[#e1e4eb] hover:shadow-[0_10px_30px_rgba(15,32,68,0.08)] transition-shadow"
+            >
+              <div className="text-[#1A73E8] text-4xl font-black mb-4 tracking-tight">{s.n}</div>
+              <div className="text-xl font-bold text-[#0B1530] mb-3">{s.t}</div>
+              <div className="text-[#64748B] text-[15px] leading-relaxed">{s.b}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Pricing tiers ---------- */
+function PricingTiers() {
+  const plans = [
+    {
+      name: "Free",
+      price: "Free Forever",
+      img: diaryImg,
+      desc: "Your complete lesson management hub — scheduling, payments, and gap-filling in one place.",
+      bullets: ["Drag-and-drop calendar", "Google Calendar sync", "Gap filling & SMS", "Payment tracking"],
+      cta: "Get started free",
+      highlight: false,
+    },
+    {
+      name: "All-In",
+      price: "£7.99/mo",
+      img: websiteImg,
+      desc: "Everything to run your business — website, custom domain, online booking and marketing tools.",
+      bullets: ["Custom .co.uk domain", "Online booking", "SEO optimised", "Review showcase"],
+      cta: "Learn more",
+      highlight: true,
+    },
+    {
+      name: "GPS + Health",
+      price: "£34.99/mo",
+      img: telematicsImg,
+      desc: "Live GPS tracking, mileage logging and route replay — plus Basic Health cover included.",
+      bullets: ["Live GPS tracking", "Mileage logging", "Basic Health cover", "All All-In features"],
+      cta: "Learn more",
+      highlight: false,
+    },
+    {
+      name: "Dashcam + Health",
+      price: "£54.99/mo",
+      img: pupilAppImg,
+      desc: "Forward-facing dashcam protection with Enhanced Health cover — dental, optical, GP & more.",
+      bullets: ["Dashcam protection", "Enhanced Health cover", "Cloud storage", "All GPS features"],
+      cta: "Learn more",
+      highlight: false,
+    },
+  ];
+
+  return (
+    <section className="bg-white py-20 md:py-28 px-6">
+      <div className="max-w-[1240px] mx-auto">
+        <div className="text-center mb-14">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+            Start Free. Grow When Ready.
+          </h2>
+          <p className="text-[#64748B] text-lg">
+            The diary is free forever. Add premium tools as your business grows.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {plans.map((p) => (
+            <div
+              key={p.name}
+              className={`rounded-2xl overflow-hidden border ${p.highlight ? "border-[#1A73E8] shadow-[0_20px_60px_-20px_rgba(26,115,232,0.4)]" : "border-[#e1e4eb]"} bg-white flex flex-col`}
+            >
+              <div className="h-40 bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] p-4 relative">
+                <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
+                {p.highlight && (
+                  <span className="absolute top-3 right-3 bg-[#1A73E8] text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
+                    Popular
+                  </span>
+                )}
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <div className="font-black text-[#0B1530] text-xl mb-1">{p.name}</div>
+                <div className="text-[#1A73E8] font-bold text-sm mb-3">{p.price}</div>
+                <p className="text-[#64748B] text-sm leading-relaxed mb-5">{p.desc}</p>
+                <ul className="flex flex-col gap-2 mb-6 text-sm text-[#0B1530]">
+                  {p.bullets.map((b) => (
+                    <li key={b} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-[#16A34A] shrink-0" /> {b}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/pricing"
+                  className={`mt-auto text-center font-semibold px-4 py-3 rounded-full text-sm no-underline transition-colors ${p.highlight ? "bg-[#1A73E8] hover:bg-[#1565C7] text-white" : "bg-[#F4F5F7] hover:bg-[#E8EBF0] text-[#0B1530]"}`}
+                >
+                  {p.cta}
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 text-[#1A73E8] hover:text-[#1565C7] font-semibold no-underline"
+          >
+            Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
-
-      <Link to="/pricing" className="text-white/50 hover:text-white mt-8 inline-block no-underline">
-        See all features →
-      </Link>
     </section>
   );
 }
 
-/* ---------- Bottom CTA ---------- */
-function BottomCTA() {
+/* ---------- Testimonials ---------- */
+function Testimonials() {
+  const items = [
+    {
+      q: "I used to spend Sunday evenings sorting my diary and chasing payments. Now the app does it all — I just teach.",
+      n: "Sarah M.",
+      r: "ADI, Manchester",
+    },
+    {
+      q: "The telematics changed how I teach. Pupils can actually see their improvement in data — it's incredibly motivating.",
+      n: "James T.",
+      r: "ADI, Bristol",
+    },
+    {
+      q: "Parents love the live tracking. It's given me a real edge over other instructors in my area.",
+      n: "Priya K.",
+      r: "ADI, Birmingham",
+    },
+  ];
   return (
-    <section className="bg-[#1A52A0] py-24 px-6 text-center">
-      <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-        Ready to take control?
-      </h2>
-      <p className="text-white/80 mb-10">
-        Join 1,200+ driving instructors already using DSM.
-      </p>
-      <Link
-        to="/register"
-        className="inline-block bg-white text-[#0F2044] font-black px-12 py-5 rounded-xl text-lg hover:bg-white/90 no-underline transition-colors"
-      >
-        Start free today →
-      </Link>
+    <section className="bg-[#F4F5F7] py-20 md:py-28 px-6">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="text-center mb-14">
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530] mb-3">
+            Loved by Instructors
+          </h2>
+          <p className="text-[#64748B] text-lg">Real feedback from ADIs using DSM every day.</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {items.map((t) => (
+            <div key={t.n} className="bg-white rounded-2xl p-7 border border-[#e1e4eb]">
+              <div className="flex gap-0.5 mb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-[#0B1530] text-[15px] leading-relaxed mb-6">"{t.q}"</p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#e1e4eb]">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1A73E8] to-[#0F2044] grid place-items-center text-white font-bold">
+                  {t.n.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-bold text-[#0B1530] text-sm">{t.n}</div>
+                  <div className="text-[#64748B] text-xs">{t.r}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
+
+/* ---------- Comparison formula ---------- */
+function ComparisonFormula() {
+  const rows = [
+    { l: "Free diary & scheduling", v: "£0", positive: true },
+    { l: "Auto mileage tracking = tax savings", v: "£2,250/yr", positive: true },
+    { l: "HMRC MTD filing included", v: "Others: £144/yr", positive: true },
+    { l: "Pupil app with self-service booking", v: "Included", positive: true },
+    { l: "GPS tracking & dashcam", v: "From £17/mo", positive: true },
+    { l: "No lock-in, cancel anytime", v: "Always", positive: true },
+  ];
+  return (
+    <section className="bg-white py-20 md:py-28 px-6">
+      <div className="max-w-[980px] mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-block text-[#1A73E8] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+            The Math Speaks for Itself
+          </div>
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tight text-[#0B1530]">
+            The No-Brainer Formula
+          </h2>
+        </div>
+
+        <div className="bg-[#F4F5F7] rounded-2xl p-2 md:p-4">
+          {rows.map((r, i) => (
+            <div
+              key={r.l}
+              className={`flex items-center justify-between gap-4 px-5 py-5 ${i !== rows.length - 1 ? "border-b border-[#e1e4eb]" : ""}`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-[#16A34A]/15 grid place-items-center shrink-0">
+                  <Check className="w-3.5 h-3.5 text-[#16A34A]" />
+                </span>
+                <span className="text-[#0B1530] font-medium text-[15px]">{r.l}</span>
+              </div>
+              <span className="text-[#1A73E8] font-bold text-[15px] shrink-0">{r.v}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <p className="text-[#0B1530] text-lg italic max-w-xl mx-auto mb-2">
+            "Save more in tax deductions than the app costs.
+          </p>
+          <p className="text-[#0B1530] text-xl font-black mb-8">It literally pays for itself."</p>
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-8 py-4 rounded-full text-[15px] no-underline shadow-[0_8px_24px_rgba(26,115,232,0.35)]"
+          >
+            Start Free Today <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Final CTA ---------- */
+function FinalCTA() {
+  const platforms = [
+    { i: Smartphone, t: "iOS & Android" },
+    { i: Globe, t: "Web App" },
+    { i: Activity, t: "24/7 Access" },
+    { i: Building2, t: "GDPR Compliant" },
+  ];
+  return (
+    <section className="bg-[#0A1024] py-20 md:py-28 px-6 text-white">
+      <div className="max-w-[1000px] mx-auto text-center">
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
+          {platforms.map(({ i: I, t }) => (
+            <span key={t} className="inline-flex items-center gap-2 text-white/60 text-sm">
+              <I className="w-4 h-4" /> {t}
+            </span>
+          ))}
+        </div>
+
+        <h2 className="text-[36px] md:text-[52px] font-black tracking-tight mb-4 leading-[1.05]">
+          Ready to Simplify Your Business?
+        </h2>
+        <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+          Join 500+ driving instructors who've ditched the paper diary. Start free today.
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 bg-[#1A73E8] hover:bg-[#1565C7] text-white font-bold px-8 py-4 rounded-full text-[15px] no-underline shadow-[0_8px_24px_rgba(26,115,232,0.4)]"
+          >
+            Create Free Account <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold px-8 py-4 rounded-full text-[15px] no-underline"
+          >
+            Compare Plans
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* unused but kept for tree-shaking of imports */
+void Megaphone;
+void Camera;
+void CreditCard;
