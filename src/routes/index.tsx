@@ -231,16 +231,14 @@ function DiarySection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
-            {stats.map((s) => (
-              <div
-                key={s.l}
-                className="bg-white/[0.04] border border-white/10 rounded-2xl p-7 text-center hover:bg-white/[0.06] transition-colors"
-              >
-                <div className="text-4xl md:text-5xl font-black text-[#5EA8FF] mb-2">{s.n}</div>
-                <div className="text-white/60 text-sm">{s.l}</div>
-              </div>
-            ))}
+          <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0F1A36] to-[#0A1024] grid place-items-center relative overflow-hidden group cursor-pointer">
+            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 30%, rgba(26,115,232,0.4), transparent 60%)" }} />
+            <div className="relative flex flex-col items-center gap-3 text-white/80">
+              <span className="w-16 h-16 rounded-full bg-white/10 border border-white/20 grid place-items-center group-hover:bg-white/15 transition-colors">
+                <Play className="w-6 h-6 fill-white text-white ml-1" />
+              </span>
+              <span className="text-sm font-medium">Explainer Video</span>
+            </div>
           </div>
         </div>
       </div>
