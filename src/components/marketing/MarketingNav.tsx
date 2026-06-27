@@ -25,7 +25,6 @@ export function MarketingNav() {
         background:
           "radial-gradient(1100px 600px at 50% 120%, rgba(0,181,165,0.14), transparent 60%), rgba(247,250,252,0.85)",
         backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(229,233,242,0.6)",
       }}
     >
