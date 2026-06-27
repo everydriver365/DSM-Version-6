@@ -91,8 +91,34 @@ function QuotesPage() {
         console.log("[quotes] fallback result:", fb);
         data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
       }
-      setQuotes((data ?? []) as QuoteRow[]);
-      console.log("[quotes] all quotes statuses:", (data ?? []).map((q: any) => ({ id: q.id, status: q.status })));
+      const rows = (data ?? []) as QuoteRow[];
+      setQuotes(rows);
+      console.log("[quotes] all quotes statuses:", rows.map((q: any) => ({ id: q.id, status: q.status })));
+
+      // Fetch decline / counter-offer notifications for this instructor
+      try {
+        const { data: notifs } = await supabase
+          .from("instructor_notifications")
+          .select("type, body, data, created_at")
+          .eq("instructor_id", uid)
+          .in("type", ["quote_declined", "quote_counter"])
+          .order("created_at", { ascending: false });
+        console.log("[quotes] decline/counter notifs:", notifs);
+        const map: Record<string, DeclineInfo> = {};
+        for (const n of (notifs ?? []) as any[]) {
+          const qid: string | undefined = n?.data?.quote_id ?? n?.data?.quoteId;
+          if (!qid) continue;
+          const entry = map[qid] ?? {};
+          const offer = parseCounterOffer(n.body) ?? (typeof n?.data?.counter_offer === "number" ? n.data.counter_offer : null);
+          if (offer != null && entry.counterOffer == null) entry.counterOffer = offer;
+          if (n.type === "quote_declined" && !entry.reason) entry.reason = n?.data?.reason ?? n.body ?? null;
+          map[qid] = entry;
+        }
+        setDeclineMap(map);
+      } catch (e) {
+        console.warn("[quotes] notifications fetch failed (non-fatal):", e);
+      }
+
       setLoading(false);
     })();
   }, []);
