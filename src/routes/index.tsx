@@ -435,13 +435,13 @@ function PricingTiers() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-col gap-5 max-w-[1100px] mx-auto">
           {plans.map((p) => (
             <div
               key={p.name}
-              className={`rounded-2xl overflow-hidden border ${p.highlight ? "border-[#1A73E8] shadow-[0_20px_60px_-20px_rgba(26,115,232,0.4)]" : "border-[#e1e4eb]"} bg-white flex flex-col`}
+              className={`rounded-2xl overflow-hidden border bg-white grid md:grid-cols-[300px,1fr] ${p.highlight ? "border-[#1A73E8] ring-1 ring-[#1A73E8] shadow-[0_20px_60px_-25px_rgba(26,115,232,0.45)]" : "border-[#e1e4eb]"}`}
             >
-              <div className="h-40 bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] p-4 relative">
+              <div className="relative bg-gradient-to-br from-[#F4F5F7] to-[#E8EBF0] aspect-[16/10] md:aspect-auto md:min-h-[200px] p-4">
                 <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-contain" />
                 {p.highlight && (
                   <span className="absolute top-3 right-3 bg-[#1A73E8] text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
@@ -449,11 +449,18 @@ function PricingTiers() {
                   </span>
                 )}
               </div>
-              <div className="p-6 flex flex-col flex-1">
-                <div className="font-black text-[#0B1530] text-xl mb-1">{p.name}</div>
-                <div className="text-[#1A73E8] font-bold text-sm mb-3">{p.price}</div>
-                <p className="text-[#64748B] text-sm leading-relaxed mb-5">{p.desc}</p>
-                <ul className="flex flex-col gap-2 mb-6 text-sm text-[#0B1530]">
+              <div className="p-6 md:p-8 flex flex-col">
+                <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-lg bg-[#DBEAFE] grid place-items-center">
+                      <Check className="w-4 h-4 text-[#1A73E8]" />
+                    </span>
+                    <div className="font-black text-[#0B1530] text-xl">{p.name}</div>
+                  </div>
+                  <div className="text-[#1A73E8] font-bold text-base">{p.price}</div>
+                </div>
+                <p className="text-[#475569] text-[15px] leading-relaxed mb-4">{p.desc}</p>
+                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5 text-sm text-[#0B1530]">
                   {p.bullets.map((b) => (
                     <li key={b} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-[#16A34A] shrink-0" /> {b}
@@ -462,9 +469,9 @@ function PricingTiers() {
                 </ul>
                 <Link
                   to="/pricing"
-                  className={`mt-auto text-center font-semibold px-4 py-3 rounded-full text-sm no-underline transition-colors ${p.highlight ? "bg-[#1A73E8] hover:bg-[#1565C7] text-white" : "bg-[#F4F5F7] hover:bg-[#E8EBF0] text-[#0B1530]"}`}
+                  className={`self-start inline-flex items-center gap-1.5 font-semibold text-sm no-underline ${p.highlight ? "text-[#1A73E8] hover:text-[#1565C7]" : "text-[#1A73E8] hover:text-[#1565C7]"}`}
                 >
-                  {p.cta}
+                  {p.cta} <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -474,7 +481,7 @@ function PricingTiers() {
         <div className="text-center mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 text-[#1A73E8] hover:text-[#1565C7] font-semibold no-underline"
+            className="inline-flex items-center gap-2 bg-[#EEF0F4] hover:bg-[#E2E5EB] text-[#0B1530] font-semibold px-6 py-3 rounded-full no-underline"
           >
             Compare All Plans &amp; Features <ArrowRight className="w-4 h-4" />
           </Link>
