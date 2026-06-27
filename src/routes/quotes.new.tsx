@@ -35,15 +35,19 @@ function NewQuotePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  const [pupilName, setPupilName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const search = Route.useSearch();
+  const [pupilName, setPupilName] = useState(search.name ?? "");
+  const [email, setEmail] = useState(search.email ?? "");
+  const [phone, setPhone] = useState(search.phone ?? "");
   const [postcode, setPostcode] = useState("");
-  const [courseType, setCourseType] = useState(COURSE_TYPES[0]);
-  const [hours, setHours] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
+  const [courseType, setCourseType] = useState(
+    search.course && COURSE_TYPES.includes(search.course) ? search.course : COURSE_TYPES[0]
+  );
+  const [hours, setHours] = useState<string>(search.hours ?? "");
+  const [price, setPrice] = useState<string>(search.price ?? "");
   const [deposit, setDeposit] = useState<string>("");
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(search.message ?? "");
+
   const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
   const [validUntil, setValidUntil] = useState(defaultValid);
   const [priceTouched, setPriceTouched] = useState(false);
