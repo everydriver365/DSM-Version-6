@@ -339,7 +339,10 @@ function QuotesPage() {
                               hours: q.hours != null ? String(q.hours) : "",
                               price: String(newPrice),
                               message: "Thank you for your feedback. Here is my revised quote:",
+                              revised: "true",
+                              originalId: q.id,
                             } as any,
+
                           });
                         }}
                         style={{
