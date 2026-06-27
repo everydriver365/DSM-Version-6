@@ -50,8 +50,9 @@ function NewQuotePage() {
 
   const defaultValid = (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })();
   const [validUntil, setValidUntil] = useState(defaultValid);
-  const [priceTouched, setPriceTouched] = useState(false);
+  const [priceTouched, setPriceTouched] = useState(!!search.price);
   const [depositTouched, setDepositTouched] = useState(false);
+
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
 
   const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
