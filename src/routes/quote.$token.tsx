@@ -169,9 +169,11 @@ function PublicQuotePage() {
 
   async function startDepositPayment() {
     if (!quote || !quote.deposit_amount || quote.deposit_amount <= 0) return;
+    const amountPence = Math.max(3, Math.round(Number(quote.deposit_amount) * 100));
     setPayStatus("creating");
     setPayError("");
     try {
+      console.log("[quote] create-ryft-payment request:", { amountPence, quote_id: quote.id });
       const res = await fetch(`${SUPABASE_URL}/functions/v1/create-ryft-payment`, {
         method: "POST",
         headers: {
@@ -180,7 +182,7 @@ function PublicQuotePage() {
           apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({
-          amount: Math.round(Number(quote.deposit_amount) * 100),
+          amount: amountPence,
           currency: "GBP",
           description: `Deposit for driving lessons — ${quote.recipient_name}`,
           metadata: {
@@ -193,10 +195,12 @@ function PublicQuotePage() {
         }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || json?.message || "Failed to create payment");
+      console.log("[quote] create-ryft-payment response:", res.status, json);
+      if (!res.ok) throw new Error(json?.error || json?.message || `Failed to create payment (${res.status})`);
       if (!json.clientSecret) throw new Error("No clientSecret returned");
       setClientSecret(json.clientSecret);
     } catch (e: any) {
+      console.error("[quote] create-ryft-payment failed:", e);
       setPayStatus("error");
       setPayError(e?.message || "Failed to start payment");
     }
