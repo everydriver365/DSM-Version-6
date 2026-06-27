@@ -30,6 +30,8 @@ import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.js
 const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
 import brokenCarAsset from "../assets/broken-down-car.jpg.asset.json";
 const brokenCarImg = brokenCarAsset.url;
+import marketingWebsiteAsset from "../assets/marketing-website-mockup.png.asset.json";
+const marketingWebsiteImg = marketingWebsiteAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
