@@ -15,6 +15,7 @@ export const Route = createFileRoute("/quotes/new")({
     price: typeof search.price === "string" ? search.price : undefined,
     message: typeof search.message === "string" ? search.message : undefined,
     revised: typeof search.revised === "string" ? search.revised : undefined,
+    originalId: typeof search.originalId === "string" ? search.originalId : undefined,
   }),
   component: NewQuotePage,
 });
