@@ -2,12 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Calendar,
-  CreditCard,
   Globe,
   Smartphone,
-  Megaphone,
   Activity,
-  Camera,
   Building2,
   ArrowRight,
   Play,
@@ -620,7 +617,3 @@ function FinalCTA() {
   );
 }
 
-/* unused but kept for tree-shaking of imports */
-void Megaphone;
-void Camera;
-void CreditCard;
