@@ -202,28 +202,28 @@ function Hero() {
 /* ---------- Diary section ---------- */
 function DiarySection() {
   return (
-    <section className="bg-[#1B2B4B] py-14 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
+    <section className="bg-[#1B2B4B] py-10 sm:py-20 md:py-28 px-5 sm:px-6 text-white">
       <div className="max-w-[1180px] mx-auto">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-4 py-1.5 mb-6">
+            <div className="inline-block border border-[#00B5A5]/50 text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-semibold rounded-full px-3 sm:px-4 py-1.5 mb-4">
               No contracts · No tie-in · Leave any time
             </div>
-            <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-6">
+            <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black leading-[1.05] tracking-tight mb-4">
               Your Diary, Your Way
               <br />
               — <span className="text-[#00B5A5]">Free for Life</span>
             </h2>
-            <p className="text-white/75 text-[17px] leading-relaxed mb-5 max-w-lg">
+            <p className="text-white/75 text-[15px] sm:text-[17px] leading-relaxed mb-4 max-w-lg">
               DSM gives every driving instructor a powerful diary and business management app — completely free,
               forever. Manage your schedule, track pupil progress, handle payments and communicate with learners
               all in one place.
             </p>
-            <p className="text-white/60 text-[15px] leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/60 text-[14px] sm:text-[15px] leading-relaxed mb-6 max-w-lg">
               Want even more? Optional paid extras like telematics, dashcam integration and a branded website are
               available when you're ready — the core app is yours to keep at absolutely no cost.
             </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85 mb-2">
+            <div className="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-2 text-sm text-white/85 mb-2">
               {["Free forever", "No credit card", "No hidden fees", "Cancel any time"].map((t) => (
                 <span key={t} className="inline-flex items-center gap-2">
                   <Check className="w-4 h-4 text-[#00B5A5]" /> {t}
@@ -314,37 +314,37 @@ const features = [
 
 function FeaturesShowcase() {
   return (
-    <section className="bg-white py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-white py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-block text-[#00B5A5] text-xs uppercase tracking-[0.2em] font-bold mb-3">
+        <div className="text-center mb-10 sm:mb-16">
+          <div className="inline-block text-[#00B5A5] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-bold mb-3">
             Product Tour
           </div>
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-4">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3 sm:mb-4">
             See It in Action
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto">
             From diary management to live telematics — everything you need in one platform.
           </p>
         </div>
 
-        <div className="flex flex-col gap-14 sm:gap-20 md:gap-28">
+        <div className="flex flex-col gap-10 sm:gap-20 md:gap-28">
           {features.map((f, i) => {
             const reverse = i % 2 === 1;
             return (
               <div
                 key={`${f.title}-${i}`}
-                className={`grid md:grid-cols-2 gap-6 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+                className={`grid md:grid-cols-2 gap-5 sm:gap-10 md:gap-16 items-center ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-5 sm:p-6 md:p-8">
-                  <div className="w-12 h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-5">
-                    <Check className="w-5 h-5 text-[#00B5A5]" />
+                <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl p-4 sm:p-6 md:p-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6F7F6] grid place-items-center mb-4">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-[#00B5A5]" />
                   </div>
-                  <h3 className="text-[22px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
+                  <h3 className="text-[18px] sm:text-[28px] md:text-[34px] font-black text-[#1B2B4B] mb-3 leading-tight tracking-tight">
                     {f.title}
                   </h3>
-                  <p className="text-gray-500 text-[16px] leading-relaxed mb-6">{f.body}</p>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 mb-7">
+                  <p className="text-gray-500 text-[14px] sm:text-[16px] leading-relaxed mb-4 sm:mb-6">{f.body}</p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-5 sm:mb-7">
                     {f.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2 text-[#1B2B4B] text-sm font-medium">
                         <span className="w-5 h-5 rounded-full bg-[#E6F7F6] grid place-items-center">
@@ -390,31 +390,31 @@ function HowItWorks() {
     { n: "03", t: "Start Teaching", b: "Manage bookings, track payments and grow your business from day one.", Icon: Building2 },
   ];
   return (
-    <section className="bg-[#F7FAFC] py-14 sm:py-20 md:py-28 px-5 sm:px-6">
+    <section className="bg-[#F7FAFC] py-10 sm:py-20 md:py-28 px-5 sm:px-6">
       <div className="max-w-[1180px] mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-[22px] sm:text-[36px] md:text-[48px] font-black tracking-tight text-[#1B2B4B] mb-2 sm:mb-3">
             Up and Running in 3 Minutes
           </h2>
-          <p className="text-gray-500 text-lg">No downloads. No setup fees. No hassle.</p>
+          <p className="text-gray-500 text-base sm:text-lg">No downloads. No setup fees. No hassle.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-10 relative">
+        <div className="grid md:grid-cols-3 gap-6 sm:gap-10 relative">
           {steps.map(({ n, t, b, Icon }, idx) => (
             <div key={n} className="text-center relative">
               {idx < 2 && (
                 <div className="hidden md:block absolute top-10 left-[calc(50%+50px)] right-[-30px] border-t-2 border-dashed border-gray-300" />
               )}
-              <div className="relative inline-block mb-5">
-                <div className="w-20 h-20 rounded-2xl bg-[#E6F7F6] grid place-items-center">
-                  <Icon className="w-9 h-9 text-[#00B5A5]" />
+              <div className="relative inline-block mb-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#E6F7F6] grid place-items-center">
+                  <Icon className="w-7 h-7 sm:w-9 sm:h-9 text-[#00B5A5]" />
                 </div>
-                <span className="absolute -top-1 -right-1 bg-[#00B5A5] text-white text-[11px] font-bold rounded-full w-7 h-7 grid place-items-center shadow-md">
+                <span className="absolute -top-1 -right-1 bg-[#00B5A5] text-white text-[11px] sm:text-[11px] font-bold rounded-full w-6 h-6 sm:w-7 sm:h-7 grid place-items-center shadow-md">
                   {n}
                 </span>
               </div>
-              <div className="text-xl font-bold text-[#1B2B4B] mb-2">{t}</div>
-              <div className="text-gray-500 text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
+              <div className="text-lg sm:text-xl font-bold text-[#1B2B4B] mb-2">{t}</div>
+              <div className="text-gray-500 text-[14px] sm:text-[15px] leading-relaxed max-w-xs mx-auto">{b}</div>
             </div>
           ))}
         </div>
