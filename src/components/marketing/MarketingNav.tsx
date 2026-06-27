@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
-
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/features", label: "Features" },
