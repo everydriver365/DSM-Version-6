@@ -192,7 +192,19 @@ function QuotesPage() {
         </button>
       </div>
 
-      <div style={{ display: "flex", gap: 6, padding: "12px 16px", overflowX: "auto" }}>
+      <div
+        className="quotes-tabs-scroll"
+        style={{
+          display: "flex",
+          gap: 6,
+          padding: "8px 16px",
+          overflowX: "auto",
+          whiteSpace: "nowrap",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        <style>{`.quotes-tabs-scroll::-webkit-scrollbar{display:none}`}</style>
         {tabs.map((t) => {
           const active = tab === t.key;
           return (
@@ -200,13 +212,13 @@ function QuotesPage() {
               key={t.key}
               onClick={() => setTab(t.key)}
               style={{
-                flex: 1,
-                minWidth: 72,
+                display: "inline-flex",
+                flexShrink: 0,
                 background: active ? "#1A52A0" : "#fff",
                 color: active ? "#fff" : "#1A52A0",
                 border: "1px solid #e3e6ec",
-                borderRadius: 10,
-                padding: "8px 6px",
+                borderRadius: 16,
+                padding: "6px 10px",
                 fontSize: 12,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -218,6 +230,7 @@ function QuotesPage() {
           );
         })}
       </div>
+
 
       <div style={{ padding: "0 16px 24px" }}>
         <SectionHeader>{tab.toUpperCase()} QUOTES</SectionHeader>
