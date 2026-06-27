@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CheckCircle2, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/quote/$token")({
@@ -8,6 +8,18 @@ export const Route = createFileRoute("/quote/$token")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
+
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+const RYFT_PUBLIC_KEY =
+  "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
+
+declare global {
+  interface Window {
+    Ryft?: any;
+  }
+}
 
 type Quote = {
   id: string;
@@ -20,6 +32,8 @@ type Quote = {
   hours: number | null;
   price: number;
   deposit_amount: number | null;
+  deposit_paid: boolean | null;
+  deposit_paid_at: string | null;
   personal_message: string | null;
   valid_until: string | null;
   status: string;
@@ -65,6 +79,13 @@ function PublicQuotePage() {
   const [notFound, setNotFound] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [depositPaid, setDepositPaid] = useState(false);
+
+  // Deposit payment state
+  const [payStatus, setPayStatus] = useState<"idle" | "creating" | "ready" | "paying" | "paid" | "error">("idle");
+  const [payError, setPayError] = useState<string>("");
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const ryftInitedRef = useRef(false);
 
   useEffect(() => {
     (async () => {
@@ -81,6 +102,7 @@ function PublicQuotePage() {
       const q = data as Quote;
       setQuote(q);
       setAccepted(q.status === "accepted");
+      setDepositPaid(!!q.deposit_paid);
 
       if (!q.viewed_at) {
         await supabase
@@ -113,8 +135,6 @@ function PublicQuotePage() {
 
       // Notify instructor
       try {
-        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
         await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
           method: "POST",
           headers: {
@@ -145,6 +165,127 @@ function PublicQuotePage() {
     }
   }
 
+  async function startDepositPayment() {
+    if (!quote || !quote.deposit_amount || quote.deposit_amount <= 0) return;
+    setPayStatus("creating");
+    setPayError("");
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-ryft-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({
+          amount: Math.round(Number(quote.deposit_amount) * 100),
+          currency: "GBP",
+          description: `Deposit for driving lessons — ${quote.recipient_name}`,
+          metadata: {
+            quote_id: quote.id,
+            instructor_id: quote.instructor_id,
+            pupil_name: quote.recipient_name,
+            pupil_email: quote.recipient_email || "",
+            type: "quote_deposit",
+          },
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || json?.message || "Failed to create payment");
+      if (!json.clientSecret) throw new Error("No clientSecret returned");
+      setClientSecret(json.clientSecret);
+    } catch (e: any) {
+      setPayStatus("error");
+      setPayError(e?.message || "Failed to start payment");
+    }
+  }
+
+  // Initialise Ryft once we have a clientSecret
+  useEffect(() => {
+    if (!clientSecret || !quote) return;
+    if (ryftInitedRef.current) return;
+    ryftInitedRef.current = true;
+
+    const SDK_URL = "https://embedded.ryftpay.com/v2/ryft.min.js";
+    const existing = document.querySelector(`script[src="${SDK_URL}"]`) as HTMLScriptElement | null;
+
+    const onApproved = async () => {
+      setPayStatus("paid");
+      setDepositPaid(true);
+      try {
+        await supabase
+          .from("quotes")
+          .update({ deposit_paid: true, deposit_paid_at: new Date().toISOString() })
+          .eq("token", token);
+      } catch (err) {
+        console.error("[quote] mark deposit paid failed:", err);
+      }
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            instructor_id: quote.instructor_id,
+            title: "Deposit received! 💰",
+            body: `${quote.recipient_name} paid £${Number(quote.deposit_amount).toFixed(2)} deposit`,
+            type: "payment",
+            read: false,
+            reference_id: quote.id,
+            reference_type: "quote",
+          }),
+        });
+      } catch (err) {
+        console.error("[quote] notify deposit failed:", err);
+      }
+    };
+
+    const init = () => {
+      try {
+        if (!window.Ryft) throw new Error("Ryft SDK not loaded");
+        window.Ryft.init({
+          publicKey: RYFT_PUBLIC_KEY,
+          clientSecret,
+          googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+          applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
+        });
+        try { window.Ryft?.googlePay?.mount?.("#google-pay-container"); } catch (e) { console.warn("Google Pay unavailable:", e); }
+        try { window.Ryft?.applePay?.mount?.("#apple-pay-container"); } catch (e) { console.warn("Apple Pay unavailable:", e); }
+        window.Ryft.addEventHandler("paymentSuccess", (evt: any) => {
+          const status = evt?.paymentSession?.status;
+          if (!status || status === "Approved" || status === "Captured") onApproved();
+        });
+        window.Ryft.addEventHandler("paymentError", (e: any) => {
+          setPayError(e?.error?.message || "Payment failed. Please try again.");
+        });
+        setPayStatus("ready");
+      } catch (e: any) {
+        setPayStatus("error");
+        setPayError(e?.message || "Failed to initialise payment");
+      }
+    };
+
+    if (existing && window.Ryft) {
+      init();
+    } else {
+      const s = existing || document.createElement("script");
+      if (!existing) {
+        s.src = SDK_URL;
+        s.async = true;
+        document.body.appendChild(s);
+      }
+      s.addEventListener("load", init, { once: true });
+      s.addEventListener("error", () => {
+        setPayStatus("error");
+        setPayError("Could not load payment SDK");
+      }, { once: true });
+    }
+  }, [clientSecret, quote, token]);
+
   function askQuestion() {
     if (!instructor) return;
     const subject = `Question about my quote`;
@@ -161,6 +302,10 @@ function PublicQuotePage() {
   const badge = accepted
     ? { label: "Accepted", bg: "#DCFCE7", color: "#15803D" }
     : { label: "Awaiting response", bg: "#FEF3C7", color: "#92400E" };
+
+  const depositAmount = Number(quote.deposit_amount || 0);
+  const needsDeposit = accepted && depositAmount > 0 && !depositPaid;
+  const depositDoneNow = payStatus === "paid";
 
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
@@ -213,22 +358,101 @@ function PublicQuotePage() {
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
               <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
               <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044" }}>Quote accepted! 🎉</div>
-              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 320 }}>
-                We'll be in touch shortly to arrange your lessons.
+              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
+                {depositPaid && !depositDoneNow
+                  ? "Your booking is confirmed. We'll be in touch shortly to arrange your lessons."
+                  : depositDoneNow
+                  ? "Deposit paid ✅ Your booking is confirmed."
+                  : depositAmount > 0
+                  ? "Your place is provisionally reserved. Pay your deposit now to confirm your booking."
+                  : "We'll be in touch shortly to arrange your lessons."}
               </div>
-              <a
-                href="https://everydriver.co.uk/courses"
-                style={{
-                  marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
-                  height: 52, width: "100%", borderRadius: 12, background: "#16A34A", color: "#fff",
-                  fontWeight: 600, fontSize: 15, textDecoration: "none",
-                }}
-              >
-                Book your first lesson →
-              </a>
-              <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A52A0", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
-                Contact us
-              </a>
+
+              {depositAmount > 0 && depositPaid && (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: "#DCFCE7", color: "#15803D", fontSize: 13, fontWeight: 700 }}>
+                  <CheckCircle2 size={16} /> Deposit paid
+                </span>
+              )}
+
+              {needsDeposit && (
+                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 12, textAlign: "left" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <Lock size={18} color="#1A52A0" />
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Secure your booking</div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
+                    Pay your £{depositAmount.toFixed(2)} deposit to confirm your lesson booking
+                  </div>
+                  <div style={{ fontSize: 36, fontWeight: 700, color: "#1A52A0", lineHeight: 1, marginBottom: 16 }}>
+                    £{depositAmount.toFixed(2)}
+                  </div>
+
+                  {payError && (
+                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                      {payError}
+                    </div>
+                  )}
+
+                  {!clientSecret ? (
+                    <button
+                      disabled={payStatus === "creating"}
+                      onClick={startDepositPayment}
+                      style={{
+                        width: "100%", height: 48, background: "#1A52A0", color: "#fff",
+                        border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600,
+                        fontFamily: "Poppins, sans-serif", cursor: "pointer",
+                        opacity: payStatus === "creating" ? 0.6 : 1,
+                      }}
+                    >
+                      {payStatus === "creating" ? "Loading…" : "Pay deposit now →"}
+                    </button>
+                  ) : (
+                    <div>
+                      <div id="google-pay-container" style={{ marginBottom: 12 }} />
+                      <div id="apple-pay-container" style={{ marginBottom: 12 }} />
+                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
+                      <div className="Ryft--paysection">
+                        <form id="ryft-pay-form" className="Ryft--payform">
+                          <button
+                            id="pay-btn"
+                            type="submit"
+                            style={{
+                              width: "100%", background: "#1A52A0", color: "#fff",
+                              border: 0, borderRadius: 10, padding: "14px 16px",
+                              fontSize: 16, fontWeight: 600, cursor: "pointer",
+                            }}
+                          >
+                            Pay £{depositAmount.toFixed(2)}
+                          </button>
+                        </form>
+                      </div>
+                      {payStatus === "ready" || payStatus === "creating" ? (
+                        <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
+                          Secured by Ryft
+                        </p>
+                      ) : null}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(!needsDeposit || depositDoneNow) && (
+                <>
+                  <a
+                    href="https://everydriver.co.uk/courses"
+                    style={{
+                      marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
+                      height: 52, width: "100%", borderRadius: 12, background: "#16A34A", color: "#fff",
+                      fontWeight: 600, fontSize: 15, textDecoration: "none",
+                    }}
+                  >
+                    Book your first lesson →
+                  </a>
+                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A52A0", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                    Contact us
+                  </a>
+                </>
+              )}
             </div>
           ) : (
             <button
