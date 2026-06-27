@@ -23,7 +23,7 @@ const paymentsImg = paymentsAsset.url;
 import websiteImg from "../assets/marketing/website.jpg";
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 const pupilAppImg = pupilAppsAsset.url;
-import telematicsAsset from "../assets/driving-school-website.png.asset.json";
+import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
 
 export const Route = createFileRoute("/")({
