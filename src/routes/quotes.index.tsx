@@ -93,7 +93,7 @@ function QuotesPage() {
           .eq("instructor_id", uid)
           .order("sent_at", { ascending: false });
         console.log("[quotes] fallback result:", fb);
-        data = (fb.data ?? []).map((r: any) => ({ ...r, token: null })) as any;
+        data = (fb.data ?? []).map((r: any) => ({ ...r, token: null, personal_message: null })) as any;
       }
       const rows = (data ?? []) as QuoteRow[];
       setQuotes(rows);
