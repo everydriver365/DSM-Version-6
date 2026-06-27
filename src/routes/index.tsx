@@ -119,7 +119,7 @@ function Hero() {
         <div>
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-[#e1e4eb] rounded-full px-3.5 py-1.5 text-[13px] text-[#0B1530] mb-6 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
-            Free for every driving instructor
+            Free for every instructor forever..
           </div>
 
           <h1 className="text-[44px] md:text-[64px] leading-[1.02] font-black tracking-tight text-[#0B1530] mb-5">
