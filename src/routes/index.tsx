@@ -25,6 +25,7 @@ const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 import testCentreCelebrationAsset from "../assets/test-centre-celebration.jpg.asset.json";
 import richardWithCarAsset from "../assets/richard-with-car.jpg.asset.json";
+import aiReceptionistAsset from "../assets/ai-receptionist.png.asset.json";
 const richardWithCarImg = richardWithCarAsset.url;
 const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testCentreCelebrationAsset.url;
