@@ -24,7 +24,7 @@ export function MarketingNav() {
           <img
             src={logoAsset.url}
             alt="Driving School Manager"
-            className="h-8 sm:h-9 w-auto"
+            className="h-10 sm:h-9 w-auto"
           />
         </Link>
 
@@ -73,7 +73,7 @@ export function MarketingNav() {
             <img
               src={logoAsset.url}
               alt="Driving School Manager"
-              className="h-8 w-auto"
+              className="h-10 w-auto"
             />
           </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
