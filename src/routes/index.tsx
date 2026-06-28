@@ -425,71 +425,106 @@ function DiarySection() {
   return (
     <section className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8">
       <div className="max-w-[1180px] mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
           <Reveal>
-            <Eyebrow>Watch & learn</Eyebrow>
-          </Reveal>
-          <Reveal delay={60}>
-            <h2
-              className="mt-5 font-bold tracking-tight"
-              style={{
-                color: NAVY,
-                fontSize: "clamp(28px, 4vw, 44px)",
-                lineHeight: 1.1,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Learn all about DSM and how we can help you
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <p
-              className="mt-5"
-              style={{ color: MUTED, fontSize: 18, lineHeight: 1.65 }}
-            >
-              See how driving instructors use our free diary, payments and pupil tools to save hours every week.
-            </p>
-          </Reveal>
-        </div>
-
-        <Reveal delay={180}>
-          <div
-            className="relative rounded-[24px] overflow-hidden"
-            style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
-          >
             <div
-              className="aspect-video grid place-items-center relative overflow-hidden group cursor-pointer"
-              style={{ background: NAVY }}
+              className="relative rounded-[24px] overflow-hidden"
+              style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
             >
-              <img
-                src={explainerPlaceholderImg}
-                alt="Explainer video preview"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
               <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
-                }}
-              />
-              <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
-                <span
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
+                className="aspect-video grid place-items-center relative overflow-hidden group cursor-pointer"
+                style={{ background: NAVY }}
+              >
+                <img
+                  src={explainerPlaceholderImg}
+                  alt="Explainer video preview"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
                   style={{
-                    background: BLUE,
-                    boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
+                    background:
+                      "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
                   }}
-                >
-                  <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
-                </span>
-                <span className="text-sm sm:text-base font-medium tracking-wide">
-                  Watch the 90-second tour
-                </span>
+                />
+                <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
+                  <span
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
+                    style={{
+                      background: BLUE,
+                      boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
+                    }}
+                  >
+                    <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
+                  </span>
+                  <span className="text-sm sm:text-base font-medium tracking-wide">
+                    Watch the 90-second tour
+                  </span>
+                </div>
               </div>
             </div>
+          </Reveal>
+
+          <div>
+            <Reveal delay={80}>
+              <Eyebrow>Watch & learn</Eyebrow>
+            </Reveal>
+            <Reveal delay={140}>
+              <h2
+                className="mt-5 font-bold tracking-tight"
+                style={{
+                  color: NAVY,
+                  fontSize: "clamp(28px, 4vw, 44px)",
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Learn all about DSM and how we can help you
+              </h2>
+            </Reveal>
+            <Reveal delay={200}>
+              <p
+                className="mt-5"
+                style={{ color: MUTED, fontSize: 18, lineHeight: 1.65 }}
+              >
+                See how driving instructors use our free diary, payments and pupil tools to save hours every week and run a more professional driving school.
+              </p>
+            </Reveal>
+            <Reveal delay={260}>
+              <div
+                className="mt-7 rounded-2xl p-5 sm:p-6"
+                style={{
+                  background: "#fff",
+                  border: `1px solid ${HAIRLINE}`,
+                  boxShadow: SHADOW_SOFT,
+                }}
+              >
+                <ul className="space-y-3">
+                  {[
+                    "Schedule and manage lessons in seconds",
+                    "Take card, Apple Pay and Google Pay",
+                    "Track pupil progress and test readiness",
+                    "Grow your business with a free website",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 text-[15px]"
+                      style={{ color: INK }}
+                    >
+                      <span
+                        className="shrink-0 w-5 h-5 rounded-full grid place-items-center mt-0.5"
+                        style={{ background: BLUE_TINT, color: BLUE }}
+                      >
+                        <Check className="w-3 h-3" />
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
