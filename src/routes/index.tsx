@@ -23,7 +23,7 @@ import paymentsAsset from "../assets/driving-lessons-made-simple.png.asset.json"
 const paymentsImg = paymentsAsset.url;
 import websiteAsset from "../assets/driving-school-site.png.asset.json";
 const websiteImg = websiteAsset.url;
-import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
+import pupilAppsAsset from "../assets/pupil-app-overview.png.asset.json";
 import testSwapServiceAsset from "../assets/test-swap-service.png.asset.json";
 import healthInsuranceHeroAsset from "../assets/health-insurance-hero.png.asset.json";
 import callAnsweringHeroAsset from "../assets/call-answering-hero.png.asset.json";
