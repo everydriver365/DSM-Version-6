@@ -83,10 +83,11 @@ export function MarketingNav() {
               className="h-10 w-auto"
             />
             <span
-              className="text-[#1B2B4B] font-bold text-lg tracking-tight whitespace-nowrap"
+              className="flex flex-col leading-none text-[#1B2B4B] font-bold tracking-tight whitespace-nowrap"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              Driving School Manager
+              <span className="text-[15px]">Driving School</span>
+              <span className="text-[15px]">Manager</span>
             </span>
           </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
