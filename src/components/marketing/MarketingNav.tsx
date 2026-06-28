@@ -44,13 +44,13 @@ export function MarketingNav() {
         <div className="hidden lg:flex items-center gap-3">
           <Link
             to="/login"
-            className="text-gray-600 hover:text-[#1B2B4B] text-sm font-medium no-underline px-2"
+            className="px-5 py-2.5 rounded-lg border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] text-sm font-semibold no-underline transition-colors"
           >
             Log in
           </Link>
           <Link
             to="/register"
-            className="bg-[#0E7CCE] hover:bg-[#0B69AD] text-white font-semibold px-5 py-2.5 rounded-lg text-sm no-underline transition-colors"
+            className="px-5 py-2.5 rounded-lg bg-[#0E7CCE] hover:bg-[#0B69AD] text-white text-sm font-semibold no-underline transition-colors"
           >
             Start free →
           </Link>
@@ -96,7 +96,7 @@ export function MarketingNav() {
             <Link
               to="/login"
               onClick={() => setOpen(false)}
-              className="w-full text-center border border-gray-200 text-[#1B2B4B] px-4 py-3 rounded-lg text-base hover:bg-gray-50 no-underline font-medium"
+              className="w-full text-center border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] px-5 py-3 rounded-lg text-base no-underline font-semibold"
             >
               Log in
             </Link>
