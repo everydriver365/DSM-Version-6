@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
+import { PrimaryBtn, SecondaryBtn } from "./ui";
 
 const navLinks = [
   { to: "/", label: "Home" },
