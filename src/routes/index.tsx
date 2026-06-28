@@ -487,19 +487,6 @@ function DiarySection() {
                 }}
               />
               <div
-                className="absolute -top-4 -right-4 sm:-top-8 sm:-right-8 w-[58%] rounded-[20px] overflow-hidden hidden sm:block"
-                style={{
-                  boxShadow: SHADOW_LIFT,
-                  border: `1px solid ${HAIRLINE}`,
-                }}
-              >
-                <img
-                  src={diaryImg}
-                  alt="DSM diary app preview"
-                  className="w-full h-auto block"
-                />
-              </div>
-              <div
                 className="relative rounded-[24px] overflow-hidden bg-white"
                 style={{
                   boxShadow: SHADOW_LIFT,
