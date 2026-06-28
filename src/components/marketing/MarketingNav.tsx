@@ -75,12 +75,18 @@ export function MarketingNav() {
       {open && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col px-6 py-6 lg:hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
           <div className="flex items-center justify-between mb-10">
-          <Link to="/" onClick={() => setOpen(false)} className="flex items-center no-underline">
+          <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
             <img
               src={logoAsset.url}
               alt="Driving School Manager"
               className="h-10 w-auto"
             />
+            <span
+              className="text-[#1B2B4B] font-bold text-lg tracking-tight whitespace-nowrap"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              Driving School Manager
+            </span>
           </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
               <X size={28} />
