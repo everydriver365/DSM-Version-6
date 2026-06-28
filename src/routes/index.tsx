@@ -19,8 +19,6 @@ import heroAsset from "../assets/features-hero.png.asset.json";
 const heroImg = heroAsset.url;
 import diaryAsset from "../assets/diary-app.png.asset.json";
 const diaryImg = diaryAsset.url;
-import paymentsAsset from "../assets/manage-your-diary-hero.png.asset.json";
-const paymentsImg = paymentsAsset.url;
 import websiteAsset from "../assets/driving-school-site.png.asset.json";
 const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
@@ -538,17 +536,12 @@ function DiarySection() {
 /* ---------- Features showcase ---------- */
 const features = [
   {
-    img: paymentsImg,
-    title: "Manage Your Diary",
-    body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
-    bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
-  },
-  {
     img: websiteImg,
     title: "Your Own Professional Website",
     body: "Get a branded .co.uk website with direct pupil booking. Show up in Google searches and stand out from the competition.",
     bullets: ["Custom domain name", "SEO optimised pages", "Online booking", "Review showcase"],
   },
+
   {
     img: marketingWebsiteImg,
     title: "Free Advertising",
