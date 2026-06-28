@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
+import { PrimaryBtn, SecondaryBtn } from "./ui";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -49,18 +50,8 @@ export function MarketingNav() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/login"
-            className="px-5 py-2.5 rounded-lg border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] text-sm font-semibold no-underline transition-colors"
-          >
-            Log in
-          </Link>
-          <Link
-            to="/register"
-            className="px-5 py-2.5 rounded-lg bg-[#0E7CCE] hover:bg-[#0B69AD] text-white text-sm font-semibold no-underline transition-colors"
-          >
-            Start free →
-          </Link>
+          <SecondaryBtn to="/login">Log in</SecondaryBtn>
+          <PrimaryBtn to="/register">Start free →</PrimaryBtn>
         </div>
 
         <button
@@ -107,20 +98,12 @@ export function MarketingNav() {
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="w-full text-center border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] px-5 py-3 rounded-lg text-base no-underline font-semibold"
-            >
+            <SecondaryBtn to="/login" onClick={() => setOpen(false)} className="w-full justify-center">
               Log in
-            </Link>
-            <Link
-              to="/register"
-              onClick={() => setOpen(false)}
-              className="w-full text-center bg-[#0E7CCE] hover:bg-[#0B69AD] text-white font-semibold px-5 py-3 rounded-lg text-base no-underline"
-            >
+            </SecondaryBtn>
+            <PrimaryBtn to="/register" onClick={() => setOpen(false)} className="w-full justify-center">
               Start free →
-            </Link>
+            </PrimaryBtn>
           </div>
         </div>
       )}

@@ -109,10 +109,12 @@ export function Lead({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function PrimaryBtn({ to, children }: { to: string; children: React.ReactNode }) {
+export function PrimaryBtn({ to, children, className, onClick }: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) {
   return (
     <Link
       to={to}
+      className={className}
+      onClick={onClick}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -136,10 +138,12 @@ export function PrimaryBtn({ to, children }: { to: string; children: React.React
   );
 }
 
-export function SecondaryBtn({ to, children }: { to: string; children: React.ReactNode }) {
+export function SecondaryBtn({ to, children, className, onClick }: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) {
   return (
     <Link
       to={to}
+      className={className}
+      onClick={onClick}
       style={{
         display: "inline-flex",
         alignItems: "center",
