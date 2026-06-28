@@ -317,34 +317,6 @@ function Hero() {
                   className="w-full h-auto block"
                 />
               </div>
-              <div
-                className="absolute -bottom-5 -left-4 sm:-bottom-7 sm:-left-7 rounded-2xl px-4 py-3 sm:px-5 sm:py-4"
-                style={{
-                  background: "#fff",
-                  boxShadow: SHADOW_LIFT,
-                  border: `1px solid ${HAIRLINE}`,
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-10 h-10 rounded-xl grid place-items-center"
-                    style={{ background: BLUE_TINT, color: BLUE_DARK }}
-                  >
-                    <Activity className="w-5 h-5" />
-                  </span>
-                  <div>
-                    <div className="text-xl font-bold" style={{ color: NAVY }}>
-                      98%
-                    </div>
-                    <div
-                      className="text-[11px] font-semibold uppercase"
-                      style={{ color: MUTED, letterSpacing: "0.08em" }}
-                    >
-                      Fill rate
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </Reveal>
         </div>
