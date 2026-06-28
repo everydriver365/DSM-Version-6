@@ -544,8 +544,8 @@ const features = [
     bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
   },
   {
-    img: paymentsImg,
-    title: "Manage Your Diary",
+    img: flexiblePaymentsImg,
+    title: "Effortless Payments",
     body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
     bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
   },
