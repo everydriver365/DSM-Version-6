@@ -138,11 +138,12 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
   );
 }
 
-export function SecondaryBtn({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) {
+export function SecondaryBtn({ to, children, className, onClick }: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) {
   return (
     <Link
       to={to}
       className={className}
+      onClick={onClick}
       style={{
         display: "inline-flex",
         alignItems: "center",
