@@ -19,8 +19,6 @@ import heroAsset from "../assets/features-hero.png.asset.json";
 const heroImg = heroAsset.url;
 import diaryAsset from "../assets/diary-app.png.asset.json";
 const diaryImg = diaryAsset.url;
-import paymentsAsset from "../assets/manage-your-diary-hero.png.asset.json";
-const paymentsImg = paymentsAsset.url;
 import websiteAsset from "../assets/driving-school-site.png.asset.json";
 const websiteImg = websiteAsset.url;
 import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
