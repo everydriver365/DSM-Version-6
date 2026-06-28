@@ -20,12 +20,18 @@ export function MarketingNav() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="h-14 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
-        <Link to="/" className="flex items-center no-underline">
+        <Link to="/" className="flex items-center gap-2.5 no-underline">
           <img
             src={logoAsset.url}
             alt="Driving School Manager"
             className="h-10 sm:h-9 w-auto"
           />
+          <span
+            className="hidden sm:block text-[#1B2B4B] font-bold text-lg tracking-tight whitespace-nowrap"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Driving School Manager
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
@@ -69,12 +75,18 @@ export function MarketingNav() {
       {open && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col px-6 py-6 lg:hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
           <div className="flex items-center justify-between mb-10">
-          <Link to="/" onClick={() => setOpen(false)} className="flex items-center no-underline">
+          <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
             <img
               src={logoAsset.url}
               alt="Driving School Manager"
               className="h-10 w-auto"
             />
+            <span
+              className="text-[#1B2B4B] font-bold text-lg tracking-tight whitespace-nowrap"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              Driving School Manager
+            </span>
           </Link>
             <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
               <X size={28} />
