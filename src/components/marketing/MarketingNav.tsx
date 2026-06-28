@@ -98,20 +98,12 @@ export function MarketingNav() {
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="w-full text-center border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] px-5 py-3 rounded-lg text-base no-underline font-semibold"
-            >
+            <SecondaryBtn to="/login" onClick={() => setOpen(false)} className="w-full justify-center">
               Log in
-            </Link>
-            <Link
-              to="/register"
-              onClick={() => setOpen(false)}
-              className="w-full text-center bg-[#0E7CCE] hover:bg-[#0B69AD] text-white font-semibold px-5 py-3 rounded-lg text-base no-underline"
-            >
+            </SecondaryBtn>
+            <PrimaryBtn to="/register" onClick={() => setOpen(false)} className="w-full justify-center">
               Start free →
-            </Link>
+            </PrimaryBtn>
           </div>
         </div>
       )}
