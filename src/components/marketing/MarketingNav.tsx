@@ -96,7 +96,7 @@ export function MarketingNav() {
             <Link
               to="/login"
               onClick={() => setOpen(false)}
-              className="w-full text-center border border-gray-200 text-[#1B2B4B] px-4 py-3 rounded-lg text-base hover:bg-gray-50 no-underline font-medium"
+              className="w-full text-center border border-[#0E7CCE] text-[#0E7CCE] bg-white hover:bg-[#EAF4FC] px-5 py-3 rounded-lg text-base no-underline font-semibold"
             >
               Log in
             </Link>
