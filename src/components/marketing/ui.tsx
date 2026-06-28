@@ -137,10 +137,11 @@ export function PrimaryBtn({ to, children, className }: { to: string; children: 
   );
 }
 
-export function SecondaryBtn({ to, children }: { to: string; children: React.ReactNode }) {
+export function SecondaryBtn({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) {
   return (
     <Link
       to={to}
+      className={className}
       style={{
         display: "inline-flex",
         alignItems: "center",
