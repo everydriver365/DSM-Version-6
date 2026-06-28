@@ -204,7 +204,7 @@ function Hero() {
           BG,
       }}
     >
-      <div className="max-w-[1180px] mx-auto px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-24">
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8 pt-6 sm:pt-14 lg:pt-[88px] pb-12 sm:pb-16 lg:pb-24">
         <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
             <Reveal delay={80}>
