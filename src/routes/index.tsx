@@ -165,6 +165,7 @@ function HomePage() {
         <StatsBar />
         <DiarySection />
         <FeaturesShowcase />
+        <PaymentsFeatureDuplicate />
         <HowItWorks />
         <PricingTiers />
         <Testimonials />
