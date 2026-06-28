@@ -27,10 +27,11 @@ export function MarketingNav() {
             className="h-10 sm:h-9 w-auto"
           />
           <span
-            className="hidden sm:block text-[#1B2B4B] font-bold text-lg tracking-tight whitespace-nowrap"
+            className="hidden sm:flex flex-col leading-none text-[#1B2B4B] font-bold tracking-tight whitespace-nowrap"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            Driving School Manager
+            <span className="text-[15px]">Driving School</span>
+            <span className="text-[15px]">Manager</span>
           </span>
         </Link>
 
