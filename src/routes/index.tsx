@@ -707,6 +707,105 @@ function FeaturesShowcase() {
   );
 }
 
+/* ---------- Duplicate of Effortless Payments feature block ---------- */
+function PaymentsFeatureDuplicate() {
+  const f = features[0];
+  return (
+    <section
+      className="py-20 sm:py-28 lg:py-36 px-5 sm:px-8"
+      style={{ background: "#fff" }}
+    >
+      <div className="max-w-[1180px] mx-auto">
+        <div className="grid md:grid-cols-2 gap-10 sm:gap-14 items-center">
+          <Reveal>
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-4 rounded-[36px]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(27,43,75,0.06))",
+                  filter: "blur(28px)",
+                }}
+              />
+              <div
+                className="relative rounded-[24px] overflow-hidden bg-white"
+                style={{
+                  boxShadow: SHADOW_LIFT,
+                  border: `1px solid ${HAIRLINE}`,
+                }}
+              >
+                <img
+                  src={f.img}
+                  alt={f.title}
+                  width={1024}
+                  height={1024}
+                  loading="lazy"
+                  className="w-full h-auto block"
+                />
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={100}>
+            <div>
+              <Eyebrow>Feature</Eyebrow>
+              <h3
+                className="mt-4 font-bold tracking-tight"
+                style={{
+                  color: NAVY,
+                  fontSize: "clamp(24px, 3vw, 34px)",
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {f.title}
+              </h3>
+              <p
+                className="mt-4"
+                style={{
+                  color: MUTED,
+                  fontSize: 17,
+                  lineHeight: 1.65,
+                }}
+              >
+                {f.body}
+              </p>
+              <ul className="mt-6 grid sm:grid-cols-2 gap-3">
+                {f.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-center gap-2.5 text-[14px] font-medium"
+                    style={{ color: NAVY }}
+                  >
+                    <span
+                      className="w-5 h-5 rounded-full grid place-items-center shrink-0"
+                      style={{ background: BLUE_TINT }}
+                    >
+                      <Check
+                        className="w-3 h-3"
+                        style={{ color: BLUE_DARK }}
+                      />
+                    </span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/features"
+                className="group mt-7 inline-flex items-center gap-1.5 font-semibold no-underline"
+                style={{ color: BLUE_DARK }}
+              >
+                Learn more
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------- How it works ---------- */
 function HowItWorks() {
   const steps = [
