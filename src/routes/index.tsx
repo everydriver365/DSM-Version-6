@@ -207,9 +207,6 @@ function Hero() {
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-24">
         <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
-            <Reveal>
-              <Eyebrow>Free for every instructor</Eyebrow>
-            </Reveal>
             <Reveal delay={80}>
               <h1
                 className="mt-5 font-bold tracking-tight"
