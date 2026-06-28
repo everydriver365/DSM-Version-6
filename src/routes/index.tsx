@@ -453,89 +453,92 @@ function DiarySection() {
           body="Your diary, your way — completely free. Manage your schedule, track pupil progress, handle payments and communicate with learners all in one place."
         />
 
-        <Reveal>
-          <div
-            className="relative rounded-[28px] overflow-hidden mb-12 sm:mb-16"
-            style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
-          >
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <Reveal>
             <div
-              className="aspect-[16/9] grid place-items-center relative overflow-hidden group cursor-pointer"
-              style={{ background: NAVY }}
+              className="relative rounded-[24px] overflow-hidden"
+              style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
             >
-              <img
-                src={explainerPlaceholderImg}
-                alt="Explainer video preview"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
               <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
-                }}
-              />
-              <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
-                <span
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
-                  style={{
-                    background: BLUE,
-                    boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
-                  }}
-                >
-                  <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
-                </span>
-                <span className="text-sm font-medium tracking-wide">
-                  Watch the 90-second tour
-                </span>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
-          {items.map(({ title, body, Icon }, i) => (
-            <Reveal key={title} delay={i * 70}>
-              <div
-                className="h-full rounded-2xl bg-white p-6 sm:p-7 transition-all"
-                style={{
-                  border: `1px solid ${HAIRLINE}`,
-                  boxShadow: SHADOW_SOFT,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = SHADOW_LIFT;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = SHADOW_SOFT;
-                }}
+                className="aspect-video grid place-items-center relative overflow-hidden group cursor-pointer"
+                style={{ background: NAVY }}
               >
-                <div className="flex gap-4">
-                  <div
-                    className="shrink-0 w-12 h-12 rounded-xl grid place-items-center"
-                    style={{ background: BLUE_TINT, color: BLUE_DARK }}
+                <img
+                  src={explainerPlaceholderImg}
+                  alt="Explainer video preview"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
+                  }}
+                />
+                <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
+                  <span
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-full grid place-items-center transition-transform group-hover:scale-105"
+                    style={{
+                      background: BLUE,
+                      boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
+                    }}
                   >
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3
-                      className="font-semibold text-lg mb-1.5"
-                      style={{ color: NAVY }}
-                    >
-                      {title}
-                    </h3>
-                    <p
-                      className="text-[15px] leading-relaxed"
-                      style={{ color: MUTED }}
-                    >
-                      {body}
-                    </p>
-                  </div>
+                    <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-white text-white ml-1" />
+                  </span>
+                  <span className="text-sm font-medium tracking-wide">
+                    Watch the 90-second tour
+                  </span>
                 </div>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-5">
+            {items.map(({ title, body, Icon }, i) => (
+              <Reveal key={title} delay={i * 70}>
+                <div
+                  className="h-full rounded-2xl bg-white p-5 sm:p-6 transition-all"
+                  style={{
+                    border: `1px solid ${HAIRLINE}`,
+                    boxShadow: SHADOW_SOFT,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = SHADOW_LIFT;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = SHADOW_SOFT;
+                  }}
+                >
+                  <div className="flex gap-4">
+                    <div
+                      className="shrink-0 w-11 h-11 rounded-xl grid place-items-center"
+                      style={{ background: BLUE_TINT, color: BLUE_DARK }}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3
+                        className="font-semibold text-base mb-1"
+                        style={{ color: NAVY }}
+                      >
+                        {title}
+                      </h3>
+                      <p
+                        className="text-[14px] leading-relaxed"
+                        style={{ color: MUTED }}
+                      >
+                        {body}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   );
