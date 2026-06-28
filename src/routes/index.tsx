@@ -602,7 +602,7 @@ function FeaturesShowcase() {
       <div className="max-w-[1180px] mx-auto">
         <SectionHead
           eyebrow="Product tour"
-          title="Everything you need, beautifully connected."
+          title="Everything you need to manage your business."
           body="From diary management to live telematics — one platform, one login, one experience your pupils will love."
         />
 
