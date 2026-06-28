@@ -151,12 +151,21 @@ export function SecondaryBtn({ to, children, className, onClick }: { to: string;
         padding: "14px 24px",
         borderRadius: 12,
         background: "#fff",
-        color: NAVY,
+        color: BLUE,
         fontWeight: 600,
         fontSize: 15,
         textDecoration: "none",
-        border: `1px solid ${HAIRLINE}`,
+        border: `1px solid ${BLUE}`,
         fontFamily: FONT,
+        transition: "background 150ms ease, color 150ms ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = BLUE;
+        e.currentTarget.style.color = "#fff";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "#fff";
+        e.currentTarget.style.color = BLUE;
       }}
     >
       {children}
