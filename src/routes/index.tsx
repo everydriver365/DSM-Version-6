@@ -717,7 +717,7 @@ function PaymentsFeatureDuplicate() {
       style={{ background: "#fff" }}
     >
       <div className="max-w-[1180px] mx-auto">
-        <div className="grid md:grid-cols-2 gap-10 sm:gap-14 items-center">
+        <div className="grid md:grid-cols-2 gap-10 sm:gap-14 items-center md:[&>*:first-child]:order-2">
           <Reveal>
             <div className="relative">
               <div
