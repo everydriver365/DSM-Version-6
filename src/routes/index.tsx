@@ -27,7 +27,7 @@ import pupilAppsAsset from "../assets/pupil-apps.png.asset.json";
 import testSwapServiceAsset from "../assets/test-swap-service.png.asset.json";
 import healthInsuranceHeroAsset from "../assets/health-insurance-hero.png.asset.json";
 import callAnsweringHeroAsset from "../assets/call-answering-hero.png.asset.json";
-const richardWithCarImg = richardWithCarAsset.url;
+const richardWithCarImg = healthInsuranceHeroAsset.url;
 const callAnsweringHeroImg = callAnsweringHeroAsset.url;
 const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testSwapServiceAsset.url;
