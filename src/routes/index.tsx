@@ -331,7 +331,7 @@ function StatsBar() {
     { n: "500+", l: "Active Instructors" },
     { n: "50,000+", l: "Lessons Managed" },
     { n: "4.9★", l: "Average Rating" },
-    { n: "£0", l: "To Get Started" },
+    { n: "£0", l: "Free Forever *" },
   ];
   return (
     <section className="px-5 sm:px-8 pb-2">
