@@ -109,10 +109,11 @@ export function Lead({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function PrimaryBtn({ to, children }: { to: string; children: React.ReactNode }) {
+export function PrimaryBtn({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) {
   return (
     <Link
       to={to}
+      className={className}
       style={{
         display: "inline-flex",
         alignItems: "center",
