@@ -33,6 +33,8 @@ const pupilAppImg = pupilAppsAsset.url;
 const testSwapImg = testSwapServiceAsset.url;
 import telematicsAsset from "../assets/telematics.png.asset.json";
 const telematicsImg = telematicsAsset.url;
+import flexiblePaymentsAsset from "../assets/flexible-payments.png.asset.json";
+const flexiblePaymentsImg = flexiblePaymentsAsset.url;
 import drivingSchoolHappyAsset from "../assets/driving-school-happy.png.asset.json";
 const drivingSchoolHappyImg = drivingSchoolHappyAsset.url;
 import marketingWebsiteAsset from "../assets/marketing-website-mockup.png.asset.json";
