@@ -539,7 +539,7 @@ function DiarySection() {
 const features = [
   {
     img: paymentsImg,
-    title: "Effortless Payments",
+    title: "Manage Your Diary",
     body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
     bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
   },
