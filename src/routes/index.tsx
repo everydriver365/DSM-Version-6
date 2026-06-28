@@ -540,8 +540,8 @@ const features = [
   {
     img: paymentsImg,
     title: "Manage Your Diary",
-    body: "Take card, Apple Pay and Google Pay in-lesson via QR code. Chase outstanding balances and generate professional invoices — all built into your diary.",
-    bullets: ["Payment status tracking", "Automatic reminders", "PDF invoices", "Revenue reports"],
+    body: "The ultimate driving instructor diary. Schedule lessons, manage pupils, sync across devices and never miss a booking — all from one beautiful calendar.",
+    bullets: ["Drag-and-drop scheduling", "Pupil availability", "Calendar sync", "Lesson reminders"],
   },
   {
     img: flexiblePaymentsImg,
