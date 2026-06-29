@@ -165,9 +165,10 @@ function SchedulePage() {
     const map = new Map<string, Lesson[]>();
     if (!lessons) return map;
     for (const l of lessons) {
-      const arr = map.get(l.lesson_date) ?? [];
+      const dateKey = l.lesson_date.substring(0, 10); // Always YYYY-MM-DD
+      const arr = map.get(dateKey) ?? [];
       arr.push(l);
-      map.set(l.lesson_date, arr);
+      map.set(dateKey, arr);
     }
     const grouped = Object.fromEntries(map);
     console.log(
