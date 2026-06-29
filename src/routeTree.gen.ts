@@ -98,6 +98,7 @@ import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
+import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
@@ -555,6 +556,11 @@ const CoursesIdRoute = CoursesIdRouteImport.update({
   path: '/courses/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingsIdRoute = BookingsIdRouteImport.update({
+  id: '/bookings/$id',
+  path: '/bookings/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketingPricingRoute = MarketingPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -694,6 +700,7 @@ export interface FileRoutesByFullPath {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -795,6 +802,7 @@ export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -899,6 +907,7 @@ export interface FileRoutesById {
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
+  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/i/$slug': typeof ISlugRoute
@@ -1003,6 +1012,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -1104,6 +1114,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -1207,6 +1218,7 @@ export interface FileRouteTypes {
     | '/_marketing/features'
     | '/_marketing/how-it-works'
     | '/_marketing/pricing'
+    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/i/$slug'
@@ -1306,6 +1318,7 @@ export interface RootRouteChildren {
   WaiversRoute: typeof WaiversRoute
   WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
+  BookingsIdRoute: typeof BookingsIdRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
   ISlugRoute: typeof ISlugRoute
@@ -1953,6 +1966,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookings/$id': {
+      id: '/bookings/$id'
+      path: '/bookings/$id'
+      fullPath: '/bookings/$id'
+      preLoaderRoute: typeof BookingsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_marketing/pricing': {
       id: '/_marketing/pricing'
       path: '/pricing'
@@ -2159,6 +2179,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaiversRoute: WaiversRoute,
   WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
+  BookingsIdRoute: BookingsIdRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
   ISlugRoute: ISlugRoute,
