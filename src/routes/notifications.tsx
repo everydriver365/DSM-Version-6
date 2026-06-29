@@ -230,12 +230,8 @@ function NotificationsPage() {
                       tabIndex={0}
                       onClick={() => {
                         markRead(n.id);
-                        if (n.type === "booking") {
-                          if (n.reference_id) {
-                            navigate({ to: "/courses/$id", params: { id: n.reference_id } });
-                          } else {
-                            navigate({ to: "/courses" });
-                          }
+                        if (n.type === "booking" || n.reference_type === "course_booking") {
+                          navigate({ to: "/pupils" });
                         } else if (n.type === "enquiry") {
                           navigate({ to: "/enquiries" });
                         } else if (n.type === "message") {
