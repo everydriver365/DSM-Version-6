@@ -138,19 +138,25 @@ function SchedulePage() {
 
   useEffect(() => {
     setLessons(null);
+    const startDate = ymd(rangeStart);
+    const endDate = ymd(rangeEnd);
+    console.log("[schedule] date window:", startDate, "to", endDate);
     supabase
       .from("lessons")
       .select(
         "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url)",
       )
       .is("deleted_at", null)
-      .gte("lesson_date", ymd(rangeStart))
-      .lte("lesson_date", ymd(rangeEnd))
+      .gte("lesson_date", startDate)
+      .lte("lesson_date", endDate)
       .order("lesson_date", { ascending: true })
       .order("lesson_time", { ascending: true })
       .then(({ data, error }) => {
+        const rows = (data as unknown as Lesson[]) ?? [];
+        console.log("[schedule] fetch result:", rows.length, "lessons", error);
+        console.log("[schedule] first lesson:", rows[0]);
         if (error) console.error("[schedule] fetch error", error);
-        setLessons((data as unknown as Lesson[]) ?? []);
+        setLessons(rows);
       });
   }, [rangeStart, rangeEnd]);
 
