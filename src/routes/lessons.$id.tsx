@@ -92,6 +92,26 @@ function LessonDetailPage() {
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function confirmDelete() {
+    if (deleting) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("lessons")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    setDeleting(false);
+    if (error) {
+      console.error("[lesson] soft delete error", error);
+      toast.error("Couldn't delete lesson");
+      return;
+    }
+    setDeleteOpen(false);
+    toast.success("Lesson deleted");
+    navigate({ to: "/schedule" });
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -500,6 +520,12 @@ function LessonDetailPage() {
                 onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id } })}
                 color="#0F2044"
               />
+              <ActionRow
+                label="Delete lesson"
+                disabled={deleting}
+                onClick={() => setDeleteOpen(true)}
+                color="#CC2229"
+              />
             </Card>
           </div>
         </>
@@ -511,6 +537,17 @@ function LessonDetailPage() {
         confirmLabel="Confirm"
         onConfirm={confirmComplete}
         onCancel={() => setPendingComplete(false)}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title="Delete this lesson?"
+        message="This removes it from your schedule and reports. Use Cancel instead if the pupil cancelled — that keeps the record and any fee."
+        confirmLabel={deleting ? "Deleting…" : "Delete"}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteOpen(false);
+        }}
       />
 
       {lesson && dateObj && (
