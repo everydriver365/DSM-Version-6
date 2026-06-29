@@ -143,7 +143,15 @@ export default function InstructorTopBar({
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
           <PoundSterling size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
-        <IconBtn ariaLabel="Notifications" onClick={onBell}>
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={onBell}
+          style={{
+            ...ICON_BTN,
+            animation: unreadCount > 0 ? "dsmBellPulse 1.8s ease-in-out infinite" : "none",
+          }}
+        >
           <Bell size={17} strokeWidth={1.8} color="#ffffff" />
           {unreadCount > 0 && (
             <span
@@ -169,7 +177,13 @@ export default function InstructorTopBar({
               {unreadCount}
             </span>
           )}
-        </IconBtn>
+        </button>
+        <style>{`
+          @keyframes dsmBellPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
+            50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(204,34,41,0); }
+          }
+        `}</style>
         <IconBtn ariaLabel="Menu" onClick={onMenu}>
           <Menu size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
