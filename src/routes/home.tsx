@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
@@ -368,6 +368,78 @@ function HomePage() {
     }
     loadCount();
   }, []);
+
+  // Poll every 30s for new notifications and show a toast popup for new arrivals.
+  const lastSeenNotifIdRef = useRef<string | null>(null);
+  const notifPollerInitRef = useRef(false);
+  useEffect(() => {
+    let cancelled = false;
+    async function poll() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data: rows } = await supabase
+        .from("instructor_notifications")
+        .select("id, title, body, read, created_at")
+        .eq("instructor_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (cancelled || !rows) return;
+      const latest = rows[0];
+      if (!notifPollerInitRef.current) {
+        notifPollerInitRef.current = true;
+        lastSeenNotifIdRef.current = latest?.id ?? null;
+        return;
+      }
+      if (!latest || latest.id === lastSeenNotifIdRef.current) return;
+      const lastId = lastSeenNotifIdRef.current;
+      const newOnes: typeof rows = [];
+      for (const r of rows) {
+        if (r.id === lastId) break;
+        newOnes.push(r);
+      }
+      lastSeenNotifIdRef.current = latest.id;
+      const { count } = await supabase
+        .from("instructor_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .eq("read", false);
+      if (!cancelled) setNotifCount(count || 0);
+      for (const n of newOnes.slice(0, 3).reverse()) {
+        const raw = n.body || "";
+        const body = raw.length > 60 ? raw.slice(0, 60) + "…" : raw;
+        toast.custom((t) => (
+          <div
+            onClick={() => { toast.dismiss(t); navigate({ to: "/notifications" }); }}
+            style={{
+              background: "#0F2044",
+              color: "#FFFFFF",
+              borderRadius: 12,
+              padding: "12px 14px",
+              display: "flex",
+              gap: 10,
+              alignItems: "flex-start",
+              minWidth: 280,
+              maxWidth: 360,
+              cursor: "pointer",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Bell size={16} color="#FFFFFF" />
+            </div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{n.title}</div>
+              {body && <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2, lineHeight: 1.35 }}>{body}</div>}
+            </div>
+          </div>
+        ), { duration: 5000, position: "top-center" });
+      }
+    }
+    poll();
+    const id = setInterval(poll, 30000);
+    return () => { cancelled = true; clearInterval(id); };
+  }, [navigate]);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
