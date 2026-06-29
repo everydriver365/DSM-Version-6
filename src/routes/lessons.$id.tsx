@@ -520,6 +520,12 @@ function LessonDetailPage() {
                 onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id } })}
                 color="#0F2044"
               />
+              <ActionRow
+                label="Delete lesson"
+                disabled={deleting}
+                onClick={() => setDeleteOpen(true)}
+                color="#CC2229"
+              />
             </Card>
           </div>
         </>
@@ -531,6 +537,17 @@ function LessonDetailPage() {
         confirmLabel="Confirm"
         onConfirm={confirmComplete}
         onCancel={() => setPendingComplete(false)}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title="Delete this lesson?"
+        message="This removes it from your schedule and reports. Use Cancel instead if the pupil cancelled — that keeps the record and any fee."
+        confirmLabel={deleting ? "Deleting…" : "Delete"}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteOpen(false);
+        }}
       />
 
       {lesson && dateObj && (
