@@ -91,6 +91,10 @@ function formatTimeFromDate(d: Date) {
   const mm = String(d.getMinutes()).padStart(2, "0");
   return `${hh}:${mm}`;
 }
+function formatLessonTime(l: Lesson) {
+  const displayTime = !l.lesson_time || l.lesson_time === "00:00" ? "TBC" : l.lesson_time.substring(0, 5);
+  return displayTime;
+}
 function pupilDisplayName(p: Pupil | null) {
   if (!p) return "Unknown pupil";
   if (p.name) return p.name;
@@ -386,7 +390,7 @@ function SchedulePage() {
                 textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
-              {formatTimeFromDate(startD)}
+              {formatLessonTime(l)}
             </div>
             <div style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}>
               {formatDurationShort(l.duration_minutes)}
@@ -712,7 +716,7 @@ function SchedulePage() {
         title="Cancel this lesson?"
         message={
           cancelLesson
-            ? `${pupilDisplayName(cancelLesson.pupil)} · ${formatTimeFromDate(lessonStart(cancelLesson))}`
+            ? `${pupilDisplayName(cancelLesson.pupil)} · ${formatLessonTime(cancelLesson)}`
             : undefined
         }
         confirmLabel="Cancel lesson"

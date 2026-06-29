@@ -195,6 +195,7 @@ function londonTimeString() {
 }
 
 function formatTime(l: LessonRow) {
+  if (!l.lesson_time || l.lesson_time === "00:00") return "TBC";
   const d = lessonDateTime(l);
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
