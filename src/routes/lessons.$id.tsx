@@ -92,6 +92,26 @@ function LessonDetailPage() {
   const [updating, setUpdating] = useState(false);
   const [pendingComplete, setPendingComplete] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function confirmDelete() {
+    if (deleting) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("lessons")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    setDeleting(false);
+    if (error) {
+      console.error("[lesson] soft delete error", error);
+      toast.error("Couldn't delete lesson");
+      return;
+    }
+    setDeleteOpen(false);
+    toast.success("Lesson deleted");
+    navigate({ to: "/schedule" });
+  }
 
   useEffect(() => {
     setLoading(true);
