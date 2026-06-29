@@ -169,8 +169,20 @@ function SchedulePage() {
       arr.push(l);
       map.set(l.lesson_date, arr);
     }
+    const grouped = Object.fromEntries(map);
+    console.log(
+      "[schedule] grouped days:",
+      Object.keys(grouped),
+      "total groups:",
+      Object.keys(grouped).length,
+    );
+    console.log("[schedule] grouped lessons for first day:", Object.values(grouped)?.[0]);
+    console.log(
+      "[schedule] day keys being rendered:",
+      Array.from({ length: 8 }).map((_, i) => ymd(addDays(rangeStart, i))),
+    );
     return map;
-  }, [lessons]);
+  }, [lessons, rangeStart]);
 
   const days = useMemo(() => {
     const out: Date[] = [];
