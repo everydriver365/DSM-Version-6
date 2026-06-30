@@ -372,8 +372,7 @@ function MarketplacePage() {
             </div>
           </div>
         </div>
-        <Outlet />
-      </>
+    );
     );
 
   } catch (err) {
