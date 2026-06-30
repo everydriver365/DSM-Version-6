@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Outlet } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { CSSProperties, ComponentType } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -161,7 +161,7 @@ function MarketplacePage() {
     };
 
     return (
-      <>
+      
         <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif" }}>
           <div style={{ maxWidth: 480, margin: "0 auto" }}>
             {/* Top bar */}
@@ -372,8 +372,6 @@ function MarketplacePage() {
             </div>
           </div>
         </div>
-        <Outlet />
-      </>
     );
 
   } catch (err) {
