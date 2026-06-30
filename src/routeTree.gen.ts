@@ -52,6 +52,7 @@ import { Route as MonthToDateRouteImport } from './routes/month-to-date'
 import { Route as MinisiteRouteImport } from './routes/minisite'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LocationsRouteImport } from './routes/locations'
@@ -325,6 +326,11 @@ const MileageRoute = MileageRouteImport.update({
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketplaceRoute = MarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManifestRoute = ManifestRouteImport.update({
@@ -652,6 +658,7 @@ export interface FileRoutesByFullPath {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
+  '/marketplace': typeof MarketplaceRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -755,6 +762,7 @@ export interface FileRoutesByTo {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
+  '/marketplace': typeof MarketplaceRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -859,6 +867,7 @@ export interface FileRoutesById {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
+  '/marketplace': typeof MarketplaceRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -964,6 +973,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/login'
     | '/manifest'
+    | '/marketplace'
     | '/messages'
     | '/mileage'
     | '/minisite'
@@ -1067,6 +1077,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/login'
     | '/manifest'
+    | '/marketplace'
     | '/messages'
     | '/mileage'
     | '/minisite'
@@ -1170,6 +1181,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/login'
     | '/manifest'
+    | '/marketplace'
     | '/messages'
     | '/mileage'
     | '/minisite'
@@ -1275,6 +1287,7 @@ export interface RootRouteChildren {
   LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
   ManifestRoute: typeof ManifestRoute
+  MarketplaceRoute: typeof MarketplaceRoute
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
@@ -1642,6 +1655,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace': {
+      id: '/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof MarketplaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manifest': {
@@ -2136,6 +2156,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
   ManifestRoute: ManifestRoute,
+  MarketplaceRoute: MarketplaceRoute,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
