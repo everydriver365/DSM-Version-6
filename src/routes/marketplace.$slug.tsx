@@ -90,7 +90,6 @@ function MarketplaceProductPage() {
   }, [slug]);
 
   async function loadTile() {
-
     setLoading(true);
     const { data, error } = await supabase
       .from("marketplace_tiles")
