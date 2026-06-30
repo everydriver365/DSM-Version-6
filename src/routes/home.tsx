@@ -324,7 +324,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             <div
               key={item.title}
               onClick={() => navigate({ to: item.to })}
-              className="active:scale-[0.98]"
+              className="hover:scale-[0.98] active:scale-[0.98]"
               style={{
                 flexShrink: 0,
                 width: 220,
