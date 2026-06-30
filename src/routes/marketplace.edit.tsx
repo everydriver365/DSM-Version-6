@@ -43,6 +43,7 @@ function MarketplaceEditPage() {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     void load();
@@ -50,15 +51,30 @@ function MarketplaceEditPage() {
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase
+    setLoadError(null);
+    console.log("[marketplace.edit] fetching marketplace_tiles…");
+    const { data: sess } = await supabase.auth.getSession();
+    console.log("[marketplace.edit] session user:", sess.session?.user?.id ?? "(none)");
+    const res = await supabase
       .from("marketplace_tiles")
-      .select("*")
+      .select("*", { count: "exact" })
       .order("display_order", { ascending: true });
-    if (error) {
+    console.log("[marketplace.edit] fetch result", {
+      status: res.status,
+      statusText: res.statusText,
+      count: res.count,
+      rows: res.data?.length ?? 0,
+      data: res.data,
+      error: res.error,
+    });
+    if (res.error) {
+      const e = res.error;
+      const msg = `${e.message}${e.details ? ` — ${e.details}` : ""}${e.hint ? ` (hint: ${e.hint})` : ""}`;
+      setLoadError(msg);
       toast.error("Failed to load tiles");
-      console.error(error);
+      console.error("[marketplace.edit] load error", e);
     } else {
-      setTiles((data as Tile[]) ?? []);
+      setTiles((res.data as Tile[]) ?? []);
     }
     setLoading(false);
   }
@@ -207,10 +223,41 @@ function MarketplaceEditPage() {
       </div>
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: 16 }}>
+        {loadError && (
+          <div
+            style={{
+              background: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#991b1b",
+              padding: 12,
+              borderRadius: 8,
+              marginBottom: 12,
+              fontSize: 13,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            <strong>Load error:</strong> {loadError}
+          </div>
+        )}
         {loading ? (
           <p style={{ color: "#64748b" }}>Loading…</p>
         ) : (
           <>
+            {tiles.length === 0 && !loadError && (
+              <div
+                style={{
+                  border: "1px dashed #cbd5e1",
+                  borderRadius: 8,
+                  padding: 16,
+                  marginBottom: 12,
+                  color: "#64748b",
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+              >
+                No tiles yet. Click "Add new tile" below to create one.
+              </div>
+            )}
             {tiles.map((tile, idx) => {
               const key = tile.id ?? `new-${idx}`;
               return (
