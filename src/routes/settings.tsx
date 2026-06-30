@@ -15,6 +15,7 @@ import {
   Check,
   Trash2,
   Plus,
+  Store,
 } from "lucide-react";
 import { toast } from "sonner";
 
