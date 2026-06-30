@@ -105,11 +105,13 @@ function MarketplaceEditPage() {
         display_order: Number(tile.display_order) || 0,
         is_active: tile.is_active,
       };
+      console.log("[marketplace.edit] save payload:", payload);
       if (tile.id) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("marketplace_tiles")
           .update(payload)
           .eq("id", tile.id);
+        console.log("[marketplace.edit] save result:", data, error);
         if (error) throw error;
         toast.success("Saved");
       } else {
@@ -118,6 +120,7 @@ function MarketplaceEditPage() {
           .insert(payload)
           .select()
           .single();
+        console.log("[marketplace.edit] save result:", data, error);
         if (error) throw error;
         updateTile(idx, data as Tile);
         toast.success("Created");
