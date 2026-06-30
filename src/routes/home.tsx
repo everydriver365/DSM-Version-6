@@ -246,6 +246,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         .select("*")
         .eq("is_active", true)
         .order("display_order", { ascending: true });
+      console.log("[home] marketplace tiles fetched:", data);
       if (!cancelled && data) setTiles(data as MarketplaceTile[]);
     })();
     return () => {
