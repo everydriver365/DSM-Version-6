@@ -373,7 +373,6 @@ function MarketplacePage() {
           </div>
         </div>
     );
-    );
 
   } catch (err) {
     console.error("[marketplace] render error:", err);
