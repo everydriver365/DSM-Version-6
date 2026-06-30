@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet } from "@tanstack/react-router";
 import type { CSSProperties, ComponentType } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -161,216 +161,219 @@ function MarketplacePage() {
     };
 
     return (
-      <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif" }}>
-        <div style={{ maxWidth: 480, margin: "0 auto" }}>
-          {/* Top bar */}
-          <div
-            className="flex items-center"
-            style={{
-              background: "#0F2044",
-              color: "#FFFFFF",
-              padding: "12px 16px",
-              position: "sticky",
-              top: 0,
-              zIndex: 10,
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/home" })}
-              aria-label="Back"
+      <>
+        <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif" }}>
+          <div style={{ maxWidth: 480, margin: "0 auto" }}>
+            {/* Top bar */}
+            <div
+              className="flex items-center"
               style={{
-                background: "none",
-                border: "none",
+                background: "#0F2044",
                 color: "#FFFFFF",
-                cursor: "pointer",
-                padding: 0,
-                marginRight: 12,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                padding: "12px 16px",
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
               }}
             >
-              <ArrowLeft size={24} />
-            </button>
-            <h1
-              className="font-bold"
-              style={{ fontSize: 18, color: "#FFFFFF", fontFamily: "Poppins, sans-serif", margin: 0 }}
-            >
-              DSM Marketplace
-            </h1>
-          </div>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/home" })}
+                aria-label="Back"
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#FFFFFF",
+                  cursor: "pointer",
+                  padding: 0,
+                  marginRight: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ArrowLeft size={24} />
+              </button>
+              <h1
+                className="font-bold"
+                style={{ fontSize: 18, color: "#FFFFFF", fontFamily: "Poppins, sans-serif", margin: 0 }}
+              >
+                DSM Marketplace
+              </h1>
+            </div>
 
-          {/* Hero */}
-          <div style={{ padding: "24px 16px", background: "#F7FAFC" }}>
-            <h2
-              className="font-bold"
-              style={{ fontSize: 18, color: "#0F2044", fontFamily: "Poppins, sans-serif", margin: 0 }}
-            >
-              Everything to grow your driving business
-            </h2>
-            <p
+            {/* Hero */}
+            <div style={{ padding: "24px 16px", background: "#F7FAFC" }}>
+              <h2
+                className="font-bold"
+                style={{ fontSize: 18, color: "#0F2044", fontFamily: "Poppins, sans-serif", margin: 0 }}
+              >
+                Everything to grow your driving business
+              </h2>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: "#6B7280",
+                  fontFamily: "Poppins, sans-serif",
+                  marginTop: 6,
+                  lineHeight: 1.4,
+                }}
+              >
+                Health insurance, vehicle tracking, dashcams and more — all in one place.
+              </p>
+            </div>
+
+            {/* Category tabs */}
+            <div
               style={{
-                fontSize: 13,
-                color: "#6B7280",
-                fontFamily: "Poppins, sans-serif",
-                marginTop: 6,
-                lineHeight: 1.4,
+                display: "flex",
+                gap: 8,
+                overflowX: "auto",
+                padding: "12px 16px",
+                scrollbarWidth: "none",
+                WebkitOverflowScrolling: "touch",
               }}
             >
-              Health insurance, vehicle tracking, dashcams and more — all in one place.
-            </p>
-          </div>
+              {categories.map((cat) => {
+                const isActive = activeCategory === cat.key;
+                return (
+                  <button
+                    key={cat.key}
+                    type="button"
+                    onClick={() => setActiveCategory(cat.key)}
+                    className="font-semibold"
+                    style={{
+                      flexShrink: 0,
+                      fontSize: 13,
+                      fontFamily: "Poppins, sans-serif",
+                      padding: "8px 16px",
+                      borderRadius: 999,
+                      border: "none",
+                      cursor: "pointer",
+                      background: isActive ? "#0F2044" : "#F3F4F6",
+                      color: isActive ? "#FFFFFF" : "#374151",
+                      transition: "background 0.15s ease, color 0.15s ease",
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* Category tabs */}
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              overflowX: "auto",
-              padding: "12px 16px",
-              scrollbarWidth: "none",
-              WebkitOverflowScrolling: "touch",
-            }}
-          >
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.key;
-              return (
-                <button
-                  key={cat.key}
-                  type="button"
-                  onClick={() => setActiveCategory(cat.key)}
-                  className="font-semibold"
-                  style={{
-                    flexShrink: 0,
-                    fontSize: 13,
-                    fontFamily: "Poppins, sans-serif",
-                    padding: "8px 16px",
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: isActive ? "#0F2044" : "#F3F4F6",
-                    color: isActive ? "#FFFFFF" : "#374151",
-                    transition: "background 0.15s ease, color 0.15s ease",
-                  }}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Product grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 pb-10">
-            {filteredItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  style={{
-                    position: "relative",
-                    minHeight: 180,
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    background: item.gradient,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {item.badge && (
-                    <span
-                      className="font-bold px-2 py-1 rounded-full"
+            {/* Product grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 pb-10">
+              {filteredItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      position: "relative",
+                      minHeight: 180,
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      background: item.gradient,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    {item.badge && (
+                      <span
+                        className="font-bold px-2 py-1 rounded-full"
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          left: 12,
+                          fontSize: 10,
+                          backgroundColor: item.badgeBg,
+                          color: item.badgeColor,
+                          fontFamily: "Poppins, sans-serif",
+                          zIndex: 2,
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                    <Icon
+                      size={64}
+                      color="#FFFFFF"
                       style={{
                         position: "absolute",
                         top: 12,
-                        left: 12,
-                        fontSize: 10,
-                        backgroundColor: item.badgeBg,
-                        color: item.badgeColor,
-                        fontFamily: "Poppins, sans-serif",
+                        right: 12,
+                        opacity: 0.2,
+                      }}
+                      strokeWidth={1.5}
+                    />
+                    <div
+                      style={{
+                        padding: 16,
                         zIndex: 2,
                       }}
                     >
-                      {item.badge}
-                    </span>
-                  )}
-                  <Icon
-                    size={64}
-                    color="#FFFFFF"
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      right: 12,
-                      opacity: 0.2,
-                    }}
-                    strokeWidth={1.5}
-                  />
-                  <div
-                    style={{
-                      padding: 16,
-                      zIndex: 2,
-                    }}
-                  >
-                    <div
-                      className="font-bold"
-                      style={{
-                        fontSize: 15,
-                        color: "#FFFFFF",
-                        fontFamily: "Poppins, sans-serif",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {item.title}
+                      <div
+                        className="font-bold"
+                        style={{
+                          fontSize: 15,
+                          color: "#FFFFFF",
+                          fontFamily: "Poppins, sans-serif",
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {item.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.85)",
+                          fontFamily: "Poppins, sans-serif",
+                          marginTop: 2,
+                        }}
+                      >
+                        {item.subtitle}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.7)",
+                          fontFamily: "Poppins, sans-serif",
+                          marginTop: 6,
+                          lineHeight: 1.35,
+                          minHeight: 42,
+                        }}
+                      >
+                        {item.description}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAction(item)}
+                        className="font-semibold w-full text-left"
+                        style={{
+                          marginTop: 10,
+                          fontSize: 12,
+                          color: "#FFFFFF",
+                          fontFamily: "Poppins, sans-serif",
+                          background: "rgba(255,255,255,0.2)",
+                          border: "none",
+                          borderRadius: 8,
+                          padding: "8px 10px",
+                          cursor: "pointer",
+                          transition: "background 0.15s ease",
+                        }}
+                      >
+                        {item.buttonText}
+                      </button>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "rgba(255,255,255,0.85)",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: 2,
-                      }}
-                    >
-                      {item.subtitle}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: "rgba(255,255,255,0.7)",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: 6,
-                        lineHeight: 1.35,
-                        minHeight: 42,
-                      }}
-                    >
-                      {item.description}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAction(item)}
-                      className="font-semibold w-full text-left"
-                      style={{
-                        marginTop: 10,
-                        fontSize: 12,
-                        color: "#FFFFFF",
-                        fontFamily: "Poppins, sans-serif",
-                        background: "rgba(255,255,255,0.2)",
-                        border: "none",
-                        borderRadius: 8,
-                        padding: "8px 10px",
-                        cursor: "pointer",
-                        transition: "background 0.15s ease",
-                      }}
-                    >
-                      {item.buttonText}
-                    </button>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+        <Outlet />
+      </>
     );
 
   } catch (err) {
