@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type React from "react";
+import type { CSSProperties, ComponentType } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -22,13 +22,20 @@ export const Route = createFileRoute("/marketplace")({
   component: MarketplacePage,
 });
 
+interface IconProps {
+  size?: number;
+  color?: string;
+  strokeWidth?: number;
+  style?: CSSProperties;
+}
+
 interface MarketplaceItem {
   id: string;
   title: string;
   subtitle: string;
   description: string;
   gradient: string;
-  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number; style?: React.CSSProperties }>;
+  icon: ComponentType<IconProps>;
   badge: string | null;
   badgeBg: string;
   badgeColor: string;
