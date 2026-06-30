@@ -3072,6 +3072,8 @@ function HomePage() {
         }}
       />
 
+      <MarketplaceSection navigate={navigate} />
+
     </div>
 
   );
