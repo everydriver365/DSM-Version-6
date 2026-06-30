@@ -95,6 +95,7 @@ import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace.edit'
+import { Route as MarketplaceSlugRouteImport } from './routes/marketplace.$slug'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
@@ -543,6 +544,11 @@ const MarketplaceEditRoute = MarketplaceEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => MarketplaceRoute,
 } as any)
+const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const LessonsNewRoute = LessonsNewRouteImport.update({
   id: '/lessons/new',
   path: '/lessons/new',
@@ -719,6 +725,7 @@ export interface FileRoutesByFullPath {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -823,6 +830,7 @@ export interface FileRoutesByTo {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -930,6 +938,7 @@ export interface FileRoutesById {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -1037,6 +1046,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/$slug'
     | '/marketplace/edit'
     | '/messages/$id'
     | '/notes/$id'
@@ -1141,6 +1151,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/$slug'
     | '/marketplace/edit'
     | '/messages/$id'
     | '/notes/$id'
@@ -1247,6 +1258,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/$slug'
     | '/marketplace/edit'
     | '/messages/$id'
     | '/notes/$id'
@@ -1970,6 +1982,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceEditRouteImport
       parentRoute: typeof MarketplaceRoute
     }
+    '/marketplace/$slug': {
+      id: '/marketplace/$slug'
+      path: '/$slug'
+      fullPath: '/marketplace/$slug'
+      preLoaderRoute: typeof MarketplaceSlugRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
     '/lessons/new': {
       id: '/lessons/new'
       path: '/lessons/new'
@@ -2120,10 +2139,12 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 )
 
 interface MarketplaceRouteChildren {
+  MarketplaceSlugRoute: typeof MarketplaceSlugRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
 }
 
 const MarketplaceRouteChildren: MarketplaceRouteChildren = {
+  MarketplaceSlugRoute: MarketplaceSlugRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
 }
 
