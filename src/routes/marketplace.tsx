@@ -161,7 +161,7 @@ function MarketplacePage() {
     };
 
     return (
-      <>
+      
         <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif" }}>
           <div style={{ maxWidth: 480, margin: "0 auto" }}>
             {/* Top bar */}
