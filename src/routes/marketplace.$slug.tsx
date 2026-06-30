@@ -82,12 +82,13 @@ const TOP_BAR_HEIGHT = 52;
 function MarketplaceProductPage() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
-  const [tile, setTile] = useState<Tile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [tile, setTile] = React.useState<Tile | null>(null);
+  const [loading, setLoading] = React.useState(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
     void loadTile();
   }, [slug]);
+
 
   async function loadTile() {
     setLoading(true);
