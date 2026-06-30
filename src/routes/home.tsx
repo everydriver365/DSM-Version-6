@@ -69,6 +69,8 @@ import {
   ArrowLeftRight,
   Moon,
   Megaphone,
+  Camera,
+  Activity,
 } from "lucide-react";
 import {
   Dialog,
@@ -220,6 +222,202 @@ function statusColor(status: string) {
 }
 
 type TabKey = "today" | "tomorrow" | "next";
+
+const marketplaceItems = [
+  {
+    title: "GPS Tracker",
+    subtitle: "From £14.99/mo",
+    gradient: "linear-gradient(135deg, #1A52A0, #0F2044)",
+    icon: MapPin,
+    badge: "NEW",
+    badgeBg: "#FFFFFF",
+    badgeColor: "#1A52A0",
+    to: "/marketplace/gps-tracker" as never,
+  },
+  {
+    title: "Front & Rear Dashcam",
+    subtitle: "From £39.99/mo",
+    gradient: "linear-gradient(135deg, #CC2229, #7A1419)",
+    icon: Camera,
+    badge: null,
+    to: "/marketplace/dashcam" as never,
+  },
+  {
+    title: "Benenden Health",
+    subtitle: "Included from £21.99/mo",
+    gradient: "linear-gradient(135deg, #16A34A, #14532D)",
+    icon: Heart,
+    badge: "POPULAR",
+    badgeBg: "#FFFFFF",
+    badgeColor: "#16A34A",
+    to: "/marketplace/benenden-health" as never,
+  },
+  {
+    title: "Vitality Health",
+    subtitle: "Included from £27.99/mo",
+    gradient: "linear-gradient(135deg, #7C3AED, #4C1D95)",
+    icon: Activity,
+    badge: null,
+    to: "/marketplace/vitality-health" as never,
+  },
+  {
+    title: "CPD Courses",
+    subtitle: "Coming soon",
+    gradient: "linear-gradient(135deg, #D97706, #92400E)",
+    icon: GraduationCap,
+    badge: null,
+    to: "/marketplace/cpd-courses" as never,
+  },
+  {
+    title: "Get Featured",
+    subtitle: "From £14.99/mo",
+    gradient: "linear-gradient(135deg, #0891B2, #164E63)",
+    icon: Star,
+    badge: null,
+    to: "/marketplace/featured-listing" as never,
+  },
+];
+
+function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
+  return (
+    <div className="mt-4 pb-4">
+      <div className="mx-4 flex items-center justify-between mb-3">
+        <h2
+          className="font-bold"
+          style={{ fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
+        >
+          DSM Marketplace
+        </h2>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/marketplace" as never })}
+          className="font-medium"
+          style={{
+            fontSize: 12,
+            color: "#1A52A0",
+            fontFamily: "Poppins, sans-serif",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          See all →
+        </button>
+      </div>
+      <div
+        className="marketplace-scroll"
+        style={{
+          display: "flex",
+          gap: 12,
+          overflowX: "auto",
+          paddingBottom: 8,
+          paddingLeft: 16,
+          paddingRight: 16,
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {marketplaceItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.title}
+              onClick={() => navigate({ to: item.to })}
+              className="active:scale-[0.98]"
+              style={{
+                flexShrink: 0,
+                width: 220,
+                height: 140,
+                borderRadius: 16,
+                overflow: "hidden",
+                position: "relative",
+                cursor: "pointer",
+                background: item.gradient,
+                transition: "transform 0.15s ease",
+                userSelect: "none",
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  navigate({ to: item.to });
+                }
+              }}
+            >
+              {item.badge && (
+                <span
+                  className="font-bold px-2 py-1 rounded-full"
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    fontSize: 10,
+                    backgroundColor: item.badgeBg,
+                    color: item.badgeColor,
+                    fontFamily: "Poppins, sans-serif",
+                    zIndex: 2,
+                  }}
+                >
+                  {item.badge}
+                </span>
+              )}
+              <Icon
+                size={64}
+                color="#FFFFFF"
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  opacity: 0.2,
+                }}
+                strokeWidth={1.5}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: 16,
+                  zIndex: 2,
+                }}
+              >
+                <div
+                  className="font-bold"
+                  style={{
+                    fontSize: 15,
+                    color: "#FFFFFF",
+                    fontFamily: "Poppins, sans-serif",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {item.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.8)",
+                    fontFamily: "Poppins, sans-serif",
+                    marginTop: 2,
+                  }}
+                >
+                  {item.subtitle}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <style>{`
+        .marketplace-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
+  );
+}
 
 function HomePage() {
   const navigate = useNavigate();
@@ -2873,6 +3071,8 @@ function HomePage() {
           navigate({ to: "/pupils/$id", params: { id } });
         }}
       />
+
+      <MarketplaceSection navigate={navigate} />
 
     </div>
 
