@@ -3,7 +3,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
-export const Route = createFileRoute("/marketplace_/edit")({
+export const Route = createFileRoute("/marketplace/edit")({
   component: MarketplaceEditPage,
 });
 
