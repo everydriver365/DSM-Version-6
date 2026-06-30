@@ -223,62 +223,47 @@ function statusColor(status: string) {
 
 type TabKey = "today" | "tomorrow" | "next";
 
-const marketplaceItems = [
-  {
-    title: "GPS Tracker",
-    subtitle: "From £14.99/mo",
-    gradient: "linear-gradient(135deg, #1A52A0, #0F2044)",
-    icon: MapPin,
-    badge: "NEW",
-    badgeBg: "#FFFFFF",
-    badgeColor: "#1A52A0",
-    to: "/marketplace/gps-tracker" as never,
-  },
-  {
-    title: "Front & Rear Dashcam",
-    subtitle: "From £39.99/mo",
-    gradient: "linear-gradient(135deg, #CC2229, #7A1419)",
-    icon: Camera,
-    badge: null,
-    to: "/marketplace/dashcam" as never,
-  },
-  {
-    title: "Benenden Health",
-    subtitle: "Included from £21.99/mo",
-    gradient: "linear-gradient(135deg, #16A34A, #14532D)",
-    icon: Heart,
-    badge: "POPULAR",
-    badgeBg: "#FFFFFF",
-    badgeColor: "#16A34A",
-    to: "/marketplace/benenden-health" as never,
-  },
-  {
-    title: "Vitality Health",
-    subtitle: "Included from £27.99/mo",
-    gradient: "linear-gradient(135deg, #7C3AED, #4C1D95)",
-    icon: Activity,
-    badge: null,
-    to: "/marketplace/vitality-health" as never,
-  },
-  {
-    title: "CPD Courses",
-    subtitle: "Coming soon",
-    gradient: "linear-gradient(135deg, #D97706, #92400E)",
-    icon: GraduationCap,
-    badge: null,
-    to: "/marketplace/cpd-courses" as never,
-  },
-  {
-    title: "Get Featured",
-    subtitle: "From £14.99/mo",
-    gradient: "linear-gradient(135deg, #0891B2, #164E63)",
-    icon: Star,
-    badge: null,
-    to: "/marketplace/featured-listing" as never,
-  },
-];
+type MarketplaceTile = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  badge: string | null;
+  gradient: string | null;
+  image_url: string | null;
+  link_url: string;
+  color: string | null;
+  display_order: number | null;
+};
 
 function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
+  const [tiles, setTiles] = useState<MarketplaceTile[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("marketplace_tiles")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (!cancelled && data) setTiles(data as MarketplaceTile[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (tiles.length === 0) return null;
+
+  const handleNav = (url: string) => {
+    if (!url) return;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      navigate({ to: url as never });
+    }
+  };
+
   return (
     <div className="mt-4 pb-4">
       <div className="mx-4 flex items-center justify-between mb-3">
@@ -308,103 +293,99 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       <div
         className="marketplace-scroll"
         style={{
-          display: "flex",
-          gap: 12,
+          display: "grid",
+          gridTemplateRows: "repeat(2, 1fr)",
+          gridAutoFlow: "column",
+          gridAutoColumns: "47%",
+          gap: 10,
           overflowX: "auto",
           paddingBottom: 8,
           paddingLeft: 16,
           paddingRight: 16,
+          scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {marketplaceItems.map((item) => {
-          const Icon = item.icon;
+        {tiles.map((tile) => {
+          const hasImage = Boolean(tile.image_url);
+          const background = hasImage
+            ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%), url(${tile.image_url}) center/cover no-repeat`
+            : tile.gradient || "linear-gradient(135deg, #1A52A0, #0F2044)";
           return (
             <div
-              key={item.title}
-              onClick={() => navigate({ to: item.to })}
-              className="hover:scale-[0.98] active:scale-[0.98]"
-              style={{
-                flexShrink: 0,
-                width: 220,
-                height: 140,
-                borderRadius: 16,
-                overflow: "hidden",
-                position: "relative",
-                cursor: "pointer",
-                background: item.gradient,
-                transition: "transform 0.15s ease",
-                userSelect: "none",
-              }}
+              key={tile.id}
+              onClick={() => handleNav(tile.link_url)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  navigate({ to: item.to });
+                  handleNav(tile.link_url);
                 }
               }}
+              style={{
+                scrollSnapAlign: "start",
+                borderRadius: 14,
+                overflow: "hidden",
+                position: "relative",
+                height: 110,
+                cursor: "pointer",
+                background,
+                userSelect: "none",
+              }}
             >
-              {item.badge && (
+              {tile.badge && (
                 <span
-                  className="font-bold px-2 py-1 rounded-full"
+                  className="font-bold rounded-full"
                   style={{
                     position: "absolute",
-                    top: 12,
-                    left: 12,
-                    fontSize: 10,
-                    backgroundColor: item.badgeBg,
-                    color: item.badgeColor,
+                    top: 8,
+                    left: 8,
+                    fontSize: 9,
+                    backgroundColor: "#FFFFFF",
+                    color: tile.color || "#1A52A0",
                     fontFamily: "Poppins, sans-serif",
+                    padding: "2px 8px",
                     zIndex: 2,
                   }}
                 >
-                  {item.badge}
+                  {tile.badge}
                 </span>
               )}
-              <Icon
-                size={64}
-                color="#FFFFFF"
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  opacity: 0.2,
-                }}
-                strokeWidth={1.5}
-              />
               <div
                 style={{
                   position: "absolute",
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  padding: 16,
+                  padding: 10,
                   zIndex: 2,
                 }}
               >
                 <div
                   className="font-bold"
                   style={{
-                    fontSize: 15,
+                    fontSize: 13,
                     color: "#FFFFFF",
                     fontFamily: "Poppins, sans-serif",
-                    lineHeight: 1.3,
+                    lineHeight: 1.25,
                   }}
                 >
-                  {item.title}
+                  {tile.title}
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "rgba(255,255,255,0.8)",
-                    fontFamily: "Poppins, sans-serif",
-                    marginTop: 2,
-                  }}
-                >
-                  {item.subtitle}
-                </div>
+                {tile.subtitle && (
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: "rgba(255,255,255,0.8)",
+                      fontFamily: "Poppins, sans-serif",
+                      marginTop: 2,
+                    }}
+                  >
+                    {tile.subtitle}
+                  </div>
+                )}
               </div>
             </div>
           );
