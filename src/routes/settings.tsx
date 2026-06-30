@@ -15,6 +15,7 @@ import {
   Check,
   Trash2,
   Plus,
+  Store,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -1171,6 +1172,12 @@ function SettingsPage() {
             label="Help"
             onClick={() => navigate({ to: "/help" })}
             isFirst
+          />
+          <MenuRow
+            icon={<Store size={18} color="#52525B" />}
+            iconBg="#F4F4F5"
+            label="Edit marketplace tiles"
+            onClick={() => navigate({ to: "/marketplace/edit" })}
           />
           <MenuRow
             icon={<Shield size={18} color="#52525B" />}
