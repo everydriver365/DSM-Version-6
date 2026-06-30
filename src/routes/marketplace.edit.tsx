@@ -223,10 +223,41 @@ function MarketplaceEditPage() {
       </div>
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: 16 }}>
+        {loadError && (
+          <div
+            style={{
+              background: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#991b1b",
+              padding: 12,
+              borderRadius: 8,
+              marginBottom: 12,
+              fontSize: 13,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            <strong>Load error:</strong> {loadError}
+          </div>
+        )}
         {loading ? (
           <p style={{ color: "#64748b" }}>Loading…</p>
         ) : (
           <>
+            {tiles.length === 0 && !loadError && (
+              <div
+                style={{
+                  border: "1px dashed #cbd5e1",
+                  borderRadius: 8,
+                  padding: 16,
+                  marginBottom: 12,
+                  color: "#64748b",
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+              >
+                No tiles yet. Click "Add new tile" below to create one.
+              </div>
+            )}
             {tiles.map((tile, idx) => {
               const key = tile.id ?? `new-${idx}`;
               return (
