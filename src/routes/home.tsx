@@ -69,6 +69,8 @@ import {
   ArrowLeftRight,
   Moon,
   Megaphone,
+  Camera,
+  Activity,
 } from "lucide-react";
 import {
   Dialog,
