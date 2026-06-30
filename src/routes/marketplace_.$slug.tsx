@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
-export const Route = createFileRoute("/marketplace/$slug")({
+export const Route = createFileRoute("/marketplace_/$slug")({
   component: MarketplaceProductPage,
 });
 

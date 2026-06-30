@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Outlet } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { CSSProperties, ComponentType } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
