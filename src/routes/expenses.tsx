@@ -57,18 +57,6 @@ const FILTERS: Array<"All" | Category> = [
   "Other",
 ];
 
-const CATEGORY_META: Record<Category, { icon: any; color: string; bg: string }> = {
-  Fuel: { icon: Fuel, color: "#D97706", bg: "#FEF3C7" },
-  Insurance: { icon: Shield, color: "#2563EB", bg: "#DBEAFE" },
-  Marketing: { icon: Megaphone, color: "#DB2777", bg: "#FCE7F3" },
-  Equipment: { icon: Wrench, color: "#6B7280", bg: "#F3F4F6" },
-  Training: { icon: GraduationCap, color: "#7C3AED", bg: "#EDE9FE" },
-  Vehicle: { icon: Car, color: "#0EA5E9", bg: "#E0F2FE" },
-  Phone: { icon: Phone, color: "#059669", bg: "#D1FAE5" },
-  "Professional fees": { icon: Briefcase, color: "#B45309", bg: "#FEF3C7" },
-  Other: { icon: MoreHorizontal, color: "#4B5563", bg: "#F3F4F6" },
-};
-
 function hexToRgba(hex: string, alpha: number) {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
