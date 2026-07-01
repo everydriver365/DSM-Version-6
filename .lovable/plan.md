@@ -1,21 +1,36 @@
-# Soft-delete lessons entered in error
+## Plan
 
-Add a **Delete lesson** action to the lesson detail page that performs a soft delete (`deleted_at = now()`). All list queries (`schedule`, `home`, pupil history, earnings) already filter `deleted_at IS NULL`, so the lesson disappears everywhere immediately and stays recoverable in the database.
+1. **Keep changes limited to `src/routes/home.tsx`.**
+2. **Fix the admin lookup failure.** The console shows `admin_users` returns multiple rows for the same user, so `.maybeSingle()` fails with `PGRST116` and returns `null`. I’ll change the admin check to fetch rows with `.limit(1)` instead of requiring exactly one row.
+3. **Preserve the access flow.** If no instructor exists:
+   - query `admin_users` for the logged-in user,
+   - if at least one admin row exists, navigate to `/admin`,
+   - otherwise navigate to `/onboarding`.
+4. **Make the loading gate complete.** Set `authChecked` before any early return that navigates, so the page does not hang during redirects.
+5. **Leave debugging logs in place for now** unless you want them removed after confirming admin access works.
 
-## Changes — `src/routes/lessons.$id.tsx` only
+## Technical detail
 
-1. Add a **"Delete lesson"** button below the existing "Cancel lesson" button — red outlined, clearly destructive and distinct from cancel.
-2. Tapping it opens the existing `ConfirmDialog`:
-   - Title: "Delete this lesson?"
-   - Message: "This removes it from your schedule and reports. Use Cancel instead if the pupil cancelled — that keeps the record and any fee."
-   - Confirm label: "Delete"
-3. On confirm:
-   - `UPDATE lessons SET deleted_at = now() WHERE id = $id`
-   - `toast.success("Lesson deleted")`
-   - `navigate({ to: "/schedule" })`
-4. No pupil balance adjustments and no notifications — this is the "entered in error" path, not a cancellation.
+The current admin query is:
 
-## Out of scope
+```ts
+.maybeSingle()
+```
 
-- No bulk delete from the schedule list.
-- No "Restore deleted lessons" UI (data is preserved in DB; ask if you want a trash screen later).
+Your console log shows:
+
+```text
+PGRST116: Results contain 2 rows
+```
+
+That means the user is found in `admin_users`, but duplicate rows make `.maybeSingle()` treat it as an error. The code then falls through to onboarding. The fix is to use a list query such as:
+
+```ts
+const { data: adminRows, error: adminErr } = await supabase
+  .from("admin_users")
+  .select("role")
+  .eq("user_id", u.id)
+  .limit(1);
+
+const adminRow = adminRows?.[0] ?? null;
+```

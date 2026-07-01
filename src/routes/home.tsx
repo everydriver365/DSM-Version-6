@@ -778,19 +778,22 @@ function HomePage() {
       if (instErr) console.error("[home] instructors fetch error", instErr);
       if (!instructor) {
         console.log("[home] no instructor found, checking admin for:", u.id);
-        const { data: adminRow, error: adminErr } = await supabase
+        const { data: adminRows, error: adminErr } = await supabase
           .from("admin_users")
           .select("role")
           .eq("user_id", u.id)
-          .maybeSingle();
+          .limit(1);
+        const adminRow = adminRows?.[0] ?? null;
         console.log("[home] admin check result:", adminRow, "error:", adminErr);
         if (adminRow) {
           console.log("[home] admin confirmed, navigating to /admin");
+          setAuthChecked(true);
           navigate({ to: "/admin" });
           return;
         }
         console.log("[home] not admin, going to onboarding");
         console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
+        setAuthChecked(true);
         navigate({ to: "/onboarding", replace: true });
         return;
       }
