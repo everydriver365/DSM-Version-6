@@ -51,21 +51,51 @@ function ContactPage() {
     e.preventDefault();
     setStatus("sending");
     setErrorMsg("");
+
+    const payload = {
+      name: name.trim(),
+      email: email.trim(),
+      subject,
+      message: message.trim(),
+      source: "drivingschoolmanager.co.uk",
+    };
+
+    console.log("[contact] submitting:", { name, email, subject, message });
+
+    const url = `${SUPABASE_URL}/rest/v1/contact_submissions`;
+    const headers = {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    };
+    const body = JSON.stringify(payload);
+
+    console.log("[contact] fetch request:", { url, headers, body });
+
     try {
-      const { error } = await supabase.from("contact_submissions").insert({
-        name: name.trim(),
-        email: email.trim(),
-        subject,
-        message: message.trim(),
-        source: "drivingschoolmanager.co.uk",
+      const res = await fetch(url, {
+        method: "POST",
+        headers,
+        body,
       });
-      if (error) throw error;
+
+      const responseData = await res.text();
+      console.log("[contact] fetch response:", res.status, responseData);
+
+      if (!res.ok) {
+        throw new Error(
+          responseData || `Request failed with status ${res.status}`,
+        );
+      }
+
       setStatus("success");
       setName("");
       setEmail("");
       setSubject(SUBJECTS[0]);
       setMessage("");
     } catch (err) {
+      console.error("[contact] error:", err);
       setStatus("error");
       setErrorMsg(
         err instanceof Error
@@ -74,6 +104,7 @@ function ContactPage() {
       );
     }
   }
+
 
   return (
     <div style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
