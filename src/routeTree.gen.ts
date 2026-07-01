@@ -59,6 +59,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as LivesessionRouteImport } from './routes/livesession'
 import { Route as LiveRouteImport } from './routes/live'
+import { Route as IntakeQuestionsRouteImport } from './routes/intake-questions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HealthRouteImport } from './routes/health'
@@ -367,6 +368,11 @@ const LivesessionRoute = LivesessionRouteImport.update({
 const LiveRoute = LiveRouteImport.update({
   id: '/live',
   path: '/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntakeQuestionsRoute = IntakeQuestionsRouteImport.update({
+  id: '/intake-questions',
+  path: '/intake-questions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -691,6 +697,7 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/intake-questions': typeof IntakeQuestionsRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
@@ -801,6 +808,7 @@ export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/intake-questions': typeof IntakeQuestionsRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
@@ -912,6 +920,7 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
+  '/intake-questions': typeof IntakeQuestionsRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
@@ -1024,6 +1033,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/intake-questions'
     | '/live'
     | '/livesession'
     | '/locations'
@@ -1134,6 +1144,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/intake-questions'
     | '/live'
     | '/livesession'
     | '/locations'
@@ -1244,6 +1255,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/help'
     | '/home'
+    | '/intake-questions'
     | '/live'
     | '/livesession'
     | '/locations'
@@ -1356,6 +1368,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
+  IntakeQuestionsRoute: typeof IntakeQuestionsRoute
   LiveRoute: typeof LiveRoute
   LivesessionRoute: typeof LivesessionRoute
   LocationsRoute: typeof LocationsRoute
@@ -1781,6 +1794,13 @@ declare module '@tanstack/react-router' {
       path: '/live'
       fullPath: '/live'
       preLoaderRoute: typeof LiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intake-questions': {
+      id: '/intake-questions'
+      path: '/intake-questions'
+      fullPath: '/intake-questions'
+      preLoaderRoute: typeof IntakeQuestionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -2282,6 +2302,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
+  IntakeQuestionsRoute: IntakeQuestionsRoute,
   LiveRoute: LiveRoute,
   LivesessionRoute: LivesessionRoute,
   LocationsRoute: LocationsRoute,
