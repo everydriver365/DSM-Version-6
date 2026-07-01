@@ -34,8 +34,8 @@ type QType = "text" | "yes_no" | "multiple_choice" | "number";
 type IntakeQuestion = {
   id: string;
   instructor_id: string;
-  question_text: string;
-  question_type: QType;
+  question: string;
+  type: QType;
   options: string[] | null;
   required: boolean;
   active: boolean;
@@ -166,8 +166,8 @@ function IntakeQuestionsPage() {
     const nextOrder = questions.length;
     const r = await restInsert({
       instructor_id: userId,
-      question_text: s.text,
-      question_type: s.type,
+      question: s.text,
+      type: s.type,
       options: s.options ?? null,
       required: false,
       active: true,
@@ -183,16 +183,16 @@ function IntakeQuestionsPage() {
 
   async function saveQuestion(q: {
     id?: string;
-    question_text: string;
-    question_type: QType;
+    question: string;
+    type: QType;
     options: string[] | null;
     required: boolean;
   }) {
     if (!userId) return;
     if (q.id) {
       const r = await restUpdate(q.id, {
-        question_text: q.question_text,
-        question_type: q.question_type,
+        question: q.question,
+        type: q.type,
         options: q.options,
         required: q.required,
       });
@@ -203,8 +203,8 @@ function IntakeQuestionsPage() {
     } else {
       const r = await restInsert({
         instructor_id: userId,
-        question_text: q.question_text,
-        question_type: q.question_type,
+        question: q.question,
+        type: q.type,
         options: q.options,
         required: q.required,
         active: true,
@@ -262,7 +262,7 @@ function IntakeQuestionsPage() {
   }
 
   const availableStarters = useMemo(() => {
-    const existing = new Set(questions.map((q) => q.question_text.trim().toLowerCase()));
+    const existing = new Set(questions.map((q) => q.question.trim().toLowerCase()));
     return STARTER_QUESTIONS.filter((s) => !existing.has(s.text.trim().toLowerCase()));
   }, [questions]);
 
@@ -441,7 +441,7 @@ function IntakeQuestionsPage() {
                     marginBottom: 6,
                   }}
                 >
-                  {q.question_text}
+                  {q.question}
                 </div>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
                   <span
@@ -454,7 +454,7 @@ function IntakeQuestionsPage() {
                       fontWeight: 500,
                     }}
                   >
-                    {TYPE_LABEL[q.question_type]}
+                    {TYPE_LABEL[q.type]}
                   </span>
                   {q.required && (
                     <span
@@ -471,7 +471,7 @@ function IntakeQuestionsPage() {
                     </span>
                   )}
                 </div>
-                {q.question_type === "multiple_choice" && q.options && q.options.length > 0 && (
+                {q.type === "multiple_choice" && q.options && q.options.length > 0 && (
                   <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>
                     Options: {q.options.join(", ")}
                   </div>
@@ -562,7 +562,7 @@ function IntakeQuestionsPage() {
               Delete this question?
             </div>
             <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>
-              {confirmDelete.question_text}
+              {confirmDelete.question}
             </div>
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
               <button
@@ -651,14 +651,14 @@ function QuestionSheet({
   onClose: () => void;
   onSave: (q: {
     id?: string;
-    question_text: string;
-    question_type: QType;
+    question: string;
+    type: QType;
     options: string[] | null;
     required: boolean;
   }) => Promise<void>;
 }) {
-  const [text, setText] = useState(initial?.question_text ?? "");
-  const [type, setType] = useState<QType>(initial?.question_type ?? "text");
+  const [text, setText] = useState(initial?.question ?? "");
+  const [type, setType] = useState<QType>(initial?.type ?? "text");
   const [required, setRequired] = useState<boolean>(initial?.required ?? false);
   const [options, setOptions] = useState<string[]>(
     initial?.options && initial.options.length > 0 ? initial.options : ["", ""],
@@ -711,8 +711,8 @@ function QuestionSheet({
     try {
       await onSave({
         id: initial?.id,
-        question_text: trimmed,
-        question_type: type,
+        question: trimmed,
+        type: type,
         options: opts,
         required,
       });
