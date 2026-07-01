@@ -7,6 +7,7 @@ import { PrimaryBtn, SecondaryBtn } from "./ui";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/features", label: "Features" },
+  { to: "/how-it-works", label: "How it works" },
   { to: "/features", label: "Websites & Domains" },
   { to: "/features", label: "Telematics" },
   { to: "/features", label: "Dashcam" },
