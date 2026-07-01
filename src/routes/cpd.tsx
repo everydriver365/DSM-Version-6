@@ -684,7 +684,7 @@ function AddSheet({
         style={{
           width: "100%",
           maxWidth: 520,
-          maxHeight: "92vh",
+          maxHeight: "calc(90vh - 64px)",
           backgroundColor: "#FFFFFF",
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
@@ -851,9 +851,9 @@ function AddSheet({
               opacity: saving ? 0.6 : 1,
             }}
           >
-            {saving ? "Saving…" : editing ? "Save changes" : "Add CPD entry"}
+          {saving ? "Saving…" : editing ? "Save changes" : "Add CPD entry"}
           </button>
-          <div style={{ height: 12 }} />
+          <div style={{ height: 80 }} />
         </div>
       </div>
     </div>

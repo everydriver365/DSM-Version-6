@@ -724,7 +724,7 @@ function AddEditSheet({
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           padding: 20,
-          maxHeight: "92vh",
+          maxHeight: "calc(90vh - 64px)",
           overflowY: "auto",
         }}
       >
@@ -875,6 +875,7 @@ function AddEditSheet({
         >
           {saving ? "Saving…" : initial ? "Update expense" : "Add expense"}
         </button>
+        <div style={{ height: 80 }} />
       </div>
     </div>
   );
