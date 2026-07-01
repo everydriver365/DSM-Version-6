@@ -639,7 +639,19 @@ function AddEditSheet({
         return;
       }
       toast.success(initial ? "Expense updated" : "Expense added");
-      onSaved();
+      if (!initial) {
+        onClose();
+        setCategory("Fuel");
+        setDescription("");
+        setAmount("");
+        setDate(todayISO());
+        setTaxDed(true);
+        setRecurring(false);
+        setFrequency("Monthly");
+        setReceiptFile(null);
+      }
+      await onSaved();
+
     } catch (e: any) {
       console.error("[expenses] unexpected", e);
       toast.error("Something went wrong");
