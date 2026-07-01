@@ -436,47 +436,43 @@ function ExpenseRow({
           cursor: "pointer",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
           <div
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 999,
-              backgroundColor: hexToRgba(colour, 0.18),
-              color: colour,
-              border: `2px solid ${hexToRgba(colour, 0.3)}`,
-              boxShadow: `0 2px 6px ${hexToRgba(colour, 0.12)}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: categoryColour(row.category) + '26',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexShrink: 0,
+              color: categoryColour(row.category),
             }}
           >
-            {categoryIcon(row.category, 20)}
+            {categoryIcon(row.category)}
           </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: colour,
-                  backgroundColor: hexToRgba(colour, 0.15),
-                  padding: "2px 8px",
-                  borderRadius: 999,
-                }}
-              >
-                {row.category}
-              </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: 14,
+                color: NAVY,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {row.description || "—"}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 2 }}>
+              <span style={{ fontSize: 12, color: "#6B7280" }}>{row.category}</span>
               {row.is_recurring && (
                 <span
                   style={{
                     fontSize: 11,
                     fontWeight: 600,
-                    color: "#4B5563",
-                    background: "#F3F4F6",
-                    padding: "2px 8px",
-                    borderRadius: 999,
+                    color: "#6B7280",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 4,
@@ -486,19 +482,6 @@ function ExpenseRow({
                 </span>
               )}
             </div>
-            <div
-              style={{
-                fontWeight: 600,
-                color: NAVY,
-                marginTop: 2,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {row.description || "—"}
-            </div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>{date}</div>
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -506,6 +489,7 @@ function ExpenseRow({
             {money(Number(row.amount || 0))}
             {row.tax_deductible && <Leaf size={14} color={GREEN} />}
           </div>
+          <div style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}>{date}</div>
         </div>
       </button>
 
