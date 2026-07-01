@@ -451,18 +451,18 @@ function ExpenseRow({
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <div
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: meta.bg,
-              color: meta.color,
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              backgroundColor: hexToRgba(colour, 0.15),
+              color: colour,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <Icon size={18} />
+            {categoryIcon(row.category)}
           </div>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -470,8 +470,8 @@ function ExpenseRow({
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: meta.color,
-                  background: meta.bg,
+                  color: colour,
+                  backgroundColor: hexToRgba(colour, 0.15),
                   padding: "2px 8px",
                   borderRadius: 999,
                 }}
