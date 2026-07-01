@@ -1595,6 +1595,7 @@ function HomePage() {
     { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "CPD", route: "/cpd" },
+    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "CPD log", route: "/cpd" },
     { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Standards", route: "/standards" },
     { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tax report", route: "/tax-report" },
