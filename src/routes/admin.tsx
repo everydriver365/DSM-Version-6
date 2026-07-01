@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { ChevronLeft, Star, Users, BookOpen, Settings } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
