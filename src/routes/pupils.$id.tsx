@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -150,6 +150,7 @@ function PupilDetailPage() {
   const [instructorName, setInstructorName] = useState<string>("");
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
+  const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -281,6 +282,16 @@ function PupilDetailPage() {
         setSyllabusSum(total);
         // 27 competencies × 5 max
         setSyllabusPct(Math.round((total / (27 * 5)) * 100));
+      });
+
+    supabase
+      .from("intake_answers")
+      .select("*, intake_questions(question, type)")
+      .eq("pupil_id", id)
+      .order("created_at", { ascending: true })
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] intake answers error", error);
+        setIntakeAnswers(data ?? []);
       });
   }, [id]);
 
@@ -567,6 +578,50 @@ function PupilDetailPage() {
           </Card>
         </div>
       )}
+
+      {/* Intake answers */}
+      <div className="px-4">
+        <SectionHeader>INTAKE ANSWERS</SectionHeader>
+        {intakeAnswers === null ? null : intakeAnswers.length === 0 ? (
+          <div className="text-[14px] text-[#6B7280]" style={POPPINS}>
+            No intake answers recorded
+          </div>
+        ) : (
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              padding: 16,
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <ClipboardList size={18} color="#1A52A0" />
+              <div className="text-[14px] font-semibold" style={{ color: "#0F2044", ...POPPINS }}>
+                Intake answers
+              </div>
+            </div>
+            {intakeAnswers.map((a, i) => (
+              <div key={a.id}>
+                <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  {a.intake_questions?.question ?? "Question"}
+                </div>
+                <div
+                  className="text-[14px] font-semibold mt-0.5"
+                  style={{ color: "#0F2044", ...POPPINS }}
+                >
+                  {a.answer ?? a.answer_text ?? String(a.value ?? "")}
+                </div>
+                {i < intakeAnswers.length - 1 && (
+                  <div style={{ height: 0.5, backgroundColor: "#F3F4F6", margin: "12px 0" }} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
