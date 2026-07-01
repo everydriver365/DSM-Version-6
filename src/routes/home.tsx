@@ -781,8 +781,7 @@ function HomePage() {
           .eq("user_id", u.id)
           .maybeSingle();
         if (adminRow) {
-          console.log("[home] admin user without instructor row, staying on home");
-          setFirstName("Admin");
+          navigate({ to: "/admin" });
           return;
         }
         console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
