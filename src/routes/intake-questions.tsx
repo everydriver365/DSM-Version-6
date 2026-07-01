@@ -218,7 +218,20 @@ function IntakeQuestionsPage() {
     toast.success("Saved");
     setSheetOpen(false);
     setEditing(null);
-    await load(userId);
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    const refetchRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/intake_questions?instructor_id=eq.${userId}&deleted_at=is.null&order=display_order.asc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const refetchData = await refetchRes.json();
+    console.log("[intake] refetch after save:", refetchRes.status, refetchData);
+    setQuestions(Array.isArray(refetchData) ? refetchData : []);
   }
 
   async function toggleActive(q: IntakeQuestion) {
