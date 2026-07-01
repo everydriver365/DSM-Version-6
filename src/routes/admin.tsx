@@ -145,7 +145,46 @@ function AdminHub() {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
-        <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
+        <div style={{ color: "#6B7280", marginTop: 8 }}>
+          Your account doesn't have admin access.
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/home" })}
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 10,
+              background: "#0F2044",
+              color: "#fff",
+              border: "none",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Go to home
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              navigate({ to: "/login" as never });
+            }}
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 10,
+              background: "#fff",
+              color: "#CC2229",
+              border: "1px solid #CC2229",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     );
   }
