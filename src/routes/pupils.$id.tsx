@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
