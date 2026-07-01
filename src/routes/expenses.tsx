@@ -403,7 +403,6 @@ function ExpenseRow({
   onDelete: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const colour = categoryColour(row.category);
   const date = new Date(row.expense_date).toLocaleDateString(undefined, {
     day: "numeric",
     month: "short",
