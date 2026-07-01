@@ -283,6 +283,16 @@ function PupilDetailPage() {
         // 27 competencies × 5 max
         setSyllabusPct(Math.round((total / (27 * 5)) * 100));
       });
+
+    supabase
+      .from("intake_answers")
+      .select("*, intake_questions(question, type)")
+      .eq("pupil_id", id)
+      .order("created_at", { ascending: true })
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] intake answers error", error);
+        setIntakeAnswers(data ?? []);
+      });
   }, [id]);
 
   async function removePupil() {
