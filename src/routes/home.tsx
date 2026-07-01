@@ -775,6 +775,16 @@ function HomePage() {
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
       if (!instructor) {
+        const { data: adminRow } = await supabase
+          .from("admin_users")
+          .select("role")
+          .eq("user_id", u.id)
+          .maybeSingle();
+        if (adminRow) {
+          console.log("[home] admin user without instructor row, staying on home");
+          setFirstName("Admin");
+          return;
+        }
         console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
         navigate({ to: "/onboarding", replace: true });
         return;
