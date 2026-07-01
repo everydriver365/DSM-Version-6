@@ -81,6 +81,7 @@ import { Route as BroadcastRouteImport } from './routes/broadcast'
 import { Route as BriefingRouteImport } from './routes/briefing'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
@@ -475,6 +476,11 @@ const AutomationsRoute = AutomationsRouteImport.update({
   path: '/automations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
   getParentRoute: () => rootRouteImport,
@@ -642,6 +648,7 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -748,6 +755,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -855,6 +863,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_marketing': typeof MarketingRouteWithChildren
+  '/admin': typeof AdminRoute
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -963,6 +972,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/automations'
     | '/availability'
     | '/briefing'
@@ -1069,6 +1079,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/automations'
     | '/availability'
     | '/briefing'
@@ -1175,6 +1186,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_marketing'
+    | '/admin'
     | '/automations'
     | '/availability'
     | '/briefing'
@@ -1283,6 +1295,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MarketingRoute: typeof MarketingRouteWithChildren
+  AdminRoute: typeof AdminRoute
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
   BriefingRoute: typeof BriefingRoute
@@ -1886,6 +1899,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_marketing': {
       id: '/_marketing'
       path: ''
@@ -2168,6 +2188,7 @@ const QuotesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MarketingRoute: MarketingRouteWithChildren,
+  AdminRoute: AdminRoute,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
   BriefingRoute: BriefingRoute,
