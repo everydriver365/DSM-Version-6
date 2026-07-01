@@ -138,8 +138,11 @@ function AdminHub() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
 
+  // Child routes (e.g. /admin/featured) have their own admin gate and layout;
+  // render the Outlet unconditionally so they mount instead of the hub.
+  if (isChildRoute) return <Outlet />;
+
   if (status === "checking") {
-    if (isChildRoute) return <Outlet />;
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
