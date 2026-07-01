@@ -765,6 +765,7 @@ function HomePage() {
       const u = data.user;
       if (!u) {
         console.warn("[home] no authenticated user");
+        setAuthChecked(true);
         return;
       }
       setUserId(u.id);
