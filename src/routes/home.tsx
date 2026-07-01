@@ -1597,6 +1597,7 @@ function HomePage() {
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "CPD", route: "/cpd" },
     { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Standards", route: "/standards" },
     { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tax report", route: "/tax-report" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Todos", route: "/todos" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Notes", route: "/notes" },
     { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Documents", route: "/documents" },
