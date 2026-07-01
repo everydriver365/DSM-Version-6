@@ -1,110 +1,110 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import logoAsset from "../../assets/dsm-logo.png.asset.json";
-import { PrimaryBtn, SecondaryBtn } from "./ui";
 
 const navLinks = [
-  { to: "/", label: "Home" },
   { to: "/features", label: "Features" },
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/features", label: "Websites & Domains" },
-  { to: "/features", label: "Telematics" },
-  { to: "/features", label: "Dashcam" },
   { to: "/pricing", label: "Pricing" },
+  { to: "/how-it-works", label: "How it works" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 export function MarketingNav() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <div className="h-14 flex items-center justify-between px-5 md:px-10 max-w-[1280px] mx-auto">
-        <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <img
-            src={logoAsset.url}
-            alt="Driving School Manager"
-            className="h-10 sm:h-9 w-auto"
-          />
-          <span
-            className="hidden sm:flex flex-col leading-none text-[#1B2B4B] font-bold tracking-tight whitespace-nowrap"
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-          >
-            <span className="text-[15px]">Driving School</span>
-            <span className="text-[15px]">Manager</span>
-          </span>
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-8 h-[72px] flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center no-underline">
+          <span className="font-black text-[#1B2B4B] text-xl">DSM</span>
+          <span className="text-[#718096] text-sm ml-1.5 font-normal">by EveryDriver</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-7">
-          {navLinks.map((l, idx) => (
+        {/* Desktop nav links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((l) => (
             <Link
-              key={`${l.to}-${idx}`}
+              key={l.to}
               to={l.to}
-              className="text-gray-600 hover:text-[#1B2B4B] text-[14px] font-medium no-underline transition-colors"
-              activeProps={{ className: "text-[#1B2B4B]" }}
+              className={
+                "text-sm font-medium transition-colors no-underline " +
+                (isActive(l.to)
+                  ? "text-[#1B2B4B] font-semibold"
+                  : "text-[#374151] hover:text-[#1B2B4B]")
+              }
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-3">
-          <SecondaryBtn to="/login">Log in</SecondaryBtn>
-          <PrimaryBtn to="/register">Start free →</PrimaryBtn>
+        {/* Desktop CTAs */}
+        <div className="hidden md:flex items-center">
+          <Link
+            to="/login"
+            className="text-[#374151] hover:text-[#1B2B4B] text-sm font-medium no-underline mr-6 transition-colors"
+          >
+            Log in
+          </Link>
+          <Link
+            to="/register"
+            className="bg-[#00B5A5] hover:bg-[#009E8F] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors no-underline"
+          >
+            Start free →
+          </Link>
         </div>
 
+        {/* Mobile hamburger */}
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          className="lg:hidden text-[#1B2B4B] p-2 -mr-2"
-          aria-label="Open menu"
+          onClick={() => setOpen((prev) => !prev)}
+          className="md:hidden text-[#1B2B4B] p-2 -mr-2"
+          aria-label={open ? "Close menu" : "Open menu"}
         >
-          <Menu size={24} />
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
+      {/* Mobile dropdown */}
       {open && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col px-6 py-6 lg:hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
-          <div className="flex items-center justify-between mb-10">
-          <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 no-underline">
-            <img
-              src={logoAsset.url}
-              alt="Driving School Manager"
-              className="h-10 w-auto"
-            />
-            <span
-              className="flex flex-col leading-none text-[#1B2B4B] font-bold tracking-tight whitespace-nowrap"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
-            >
-              <span className="text-[15px]">Driving School</span>
-              <span className="text-[15px]">Manager</span>
-            </span>
-          </Link>
-            <button type="button" onClick={() => setOpen(false)} className="text-[#1B2B4B] p-2 -mr-2" aria-label="Close menu">
-              <X size={28} />
-            </button>
-          </div>
-          <nav className="flex flex-col gap-5">
-            {navLinks.map((l, idx) => (
+        <div className="md:hidden bg-white border-b border-gray-100 shadow-sm">
+          <nav className="flex flex-col">
+            {navLinks.map((l) => (
               <Link
-                key={`${l.to}-${idx}`}
+                key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className="text-[#1B2B4B] text-2xl font-bold no-underline"
+                className={
+                  "px-6 py-4 text-sm font-medium no-underline border-b border-gray-50 last:border-b-0 " +
+                  (isActive(l.to)
+                    ? "text-[#1B2B4B] font-semibold"
+                    : "text-[#374151] hover:text-[#1B2B4B]")
+                }
               >
                 {l.label}
               </Link>
             ))}
           </nav>
-          <div className="mt-auto flex flex-col gap-3">
-            <SecondaryBtn to="/login" onClick={() => setOpen(false)} className="w-full justify-center">
+          <div className="px-6 py-4 flex flex-col gap-3 border-t border-gray-100">
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="text-center text-[#374151] hover:text-[#1B2B4B] text-sm font-medium no-underline transition-colors"
+            >
               Log in
-            </SecondaryBtn>
-            <PrimaryBtn to="/register" onClick={() => setOpen(false)} className="w-full justify-center">
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setOpen(false)}
+              className="text-center bg-[#00B5A5] hover:bg-[#009E8F] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors no-underline"
+            >
               Start free →
-            </PrimaryBtn>
+            </Link>
           </div>
         </div>
       )}
