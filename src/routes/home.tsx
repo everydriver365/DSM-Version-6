@@ -775,15 +775,19 @@ function HomePage() {
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
       if (!instructor) {
-        const { data: adminRow } = await supabase
+        console.log("[home] no instructor found, checking admin for:", u.id);
+        const { data: adminRow, error: adminErr } = await supabase
           .from("admin_users")
           .select("role")
           .eq("user_id", u.id)
           .maybeSingle();
+        console.log("[home] admin check result:", adminRow, "error:", adminErr);
         if (adminRow) {
+          console.log("[home] admin confirmed, navigating to /admin");
           navigate({ to: "/admin" });
           return;
         }
+        console.log("[home] not admin, going to onboarding");
         console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
         navigate({ to: "/onboarding", replace: true });
         return;
