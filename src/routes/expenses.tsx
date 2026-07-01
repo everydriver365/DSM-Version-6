@@ -64,19 +64,19 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-const categoryIcon = (category: string): ReactNode => {
+const categoryIcon = (category: string, size: number = 16): ReactNode => {
   const icons: Record<string, ReactNode> = {
-    'Fuel': <Fuel size={16} />,
-    'Insurance': <Shield size={16} />,
-    'Marketing': <Megaphone size={16} />,
-    'Equipment': <Wrench size={16} />,
-    'Training': <GraduationCap size={16} />,
-    'Vehicle': <Car size={16} />,
-    'Phone': <Phone size={16} />,
-    'Professional fees': <Briefcase size={16} />,
-    'Other': <MoreHorizontal size={16} />,
+    'Fuel': <Fuel size={size} />,
+    'Insurance': <Shield size={size} />,
+    'Marketing': <Megaphone size={size} />,
+    'Equipment': <Wrench size={size} />,
+    'Training': <GraduationCap size={size} />,
+    'Vehicle': <Car size={size} />,
+    'Phone': <Phone size={size} />,
+    'Professional fees': <Briefcase size={size} />,
+    'Other': <MoreHorizontal size={size} />,
   };
-  return icons[category] || <MoreHorizontal size={16} />;
+  return icons[category] || <MoreHorizontal size={size} />;
 };
 
 const categoryColour = (category: string) => {
@@ -439,18 +439,20 @@ function ExpenseRow({
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: 48,
+              height: 48,
               borderRadius: 999,
-              backgroundColor: hexToRgba(colour, 0.15),
+              backgroundColor: hexToRgba(colour, 0.18),
               color: colour,
+              border: `2px solid ${hexToRgba(colour, 0.3)}`,
+              boxShadow: `0 2px 6px ${hexToRgba(colour, 0.12)}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            {categoryIcon(row.category)}
+            {categoryIcon(row.category, 20)}
           </div>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
