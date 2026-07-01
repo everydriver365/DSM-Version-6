@@ -63,12 +63,14 @@ export function useAdminGate() {
         if (!cancelled) setStatus("denied");
         return;
       }
-      const { data: adminCheck } = await supabase
+      const { data: adminRows, error: adminErr } = await supabase
         .from("admin_users")
         .select("role")
         .eq("user_id", userId)
-        .single();
+        .limit(1);
       if (cancelled) return;
+      if (adminErr) console.error("[admin] admin gate check error", adminErr);
+      const adminCheck = adminRows?.[0] ?? null;
       setStatus(adminCheck ? "allowed" : "denied");
     })();
     return () => {
