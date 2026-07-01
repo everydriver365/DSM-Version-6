@@ -88,6 +88,43 @@ function ContactPage() {
         );
       }
 
+      const RESEND_KEY = "@secret:RESEND_API_KEY ";
+
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${RESEND_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "DSM Website <info@everydriver.co.uk>",
+            to: "info@everydriver.co.uk",
+            reply_to: email,
+            subject: `New contact form submission — ${subject}`,
+            html: `
+              <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+                <div style="border-bottom: 2px solid #00B5A5; padding-bottom: 12px; margin-bottom: 24px;">
+                  <h1 style="color: #1B2B4B; margin: 0 0 4px;">New contact form submission</h1>
+                  <p style="color: #718096; margin: 0; font-size: 14px;">drivingschoolmanager.co.uk</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                  <tr><td style="padding: 8px 0; color: #718096; width: 100px;"><strong>Name:</strong></td><td style="color: #1B2B4B;">${name}</td></tr>
+                  <tr><td style="padding: 8px 0; color: #718096;"><strong>Email:</strong></td><td style="color: #1B2B4B;">${email}</td></tr>
+                  <tr><td style="padding: 8px 0; color: #718096;"><strong>Subject:</strong></td><td style="color: #1B2B4B;">${subject}</td></tr>
+                </table>
+                <div style="background: #F7FAFC; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                  <p style="color: #1B2B4B; margin: 0; white-space: pre-wrap;">${message}</p>
+                </div>
+                <p style="color: #718096; font-size: 13px;">Reply directly to this email to respond to ${name}.</p>
+              </div>
+            `,
+          }),
+        });
+      } catch (notifyErr) {
+        console.error("[contact] resend notification failed:", notifyErr);
+      }
+
       setStatus("success");
       setName("");
       setEmail("");
