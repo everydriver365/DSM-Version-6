@@ -1,171 +1,268 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
-import { Section, Eyebrow, H1, Lead } from "../components/marketing/ui";
+import { Mail, MapPin, Clock } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/_marketing/contact")({
   head: () => ({
     meta: [
       { title: "Contact — DSM by EveryDriver" },
-      { name: "description", content: "Get in touch with the DSM team. Based in Winchester, Hampshire. We respond within 24 hours." },
+      {
+        name: "description",
+        content:
+          "Get in touch with the DSM team. Questions, feedback, partnerships — we respond within 24 hours.",
+      },
       { property: "og:title", content: "Contact DSM" },
-      { property: "og:description", content: "We respond within 24 hours. Email info@everydriver.co.uk." },
+      {
+        property: "og:description",
+        content:
+          "Reach the DSM team by email or through our contact form. Based in Winchester, serving instructors across the UK.",
+      },
     ],
   }),
   component: ContactPage,
 });
 
-function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+type Status = "idle" | "sending" | "success" | "error";
 
-  async function onSubmit(e: React.FormEvent) {
+const SUBJECTS = [
+  "General enquiry",
+  "I'm an instructor",
+  "I'm a learner",
+  "Press",
+  "Partnership",
+  "Feedback",
+  "Other",
+];
+
+function ContactPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState(SUBJECTS[0]);
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setError("Please fill in name, email and message.");
-      return;
+    setStatus("sending");
+    setErrorMsg("");
+    try {
+      const { error } = await supabase.from("contact_submissions").insert({
+        name: name.trim(),
+        email: email.trim(),
+        subject,
+        message: message.trim(),
+        source: "drivingschoolmanager.co.uk",
+      });
+      if (error) throw error;
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setSubject(SUBJECTS[0]);
+      setMessage("");
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again or email info@everydriver.co.uk.",
+      );
     }
-    setSubmitting(true);
-    const { error: err } = await supabase.from("contact_submissions").insert({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      phone: form.phone.trim() || null,
-      message: form.message.trim(),
-      source: "dsm-marketing",
-    });
-    setSubmitting(false);
-    if (err) {
-      setError(err.message);
-      return;
-    }
-    setDone(true);
   }
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    padding: "12px 14px",
-    fontSize: 15,
-    borderRadius: 10,
-    border: "1px solid #CBD5E1",
-    background: "#fff",
-    color: "#0F172A",
-    outline: "none",
-    fontFamily: "inherit",
-  };
-  const labelStyle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#334155",
-    marginBottom: 6,
-    display: "block",
-  };
-
   return (
-    <>
-      <Section padY={72}>
-        <Eyebrow>Contact</Eyebrow>
-        <H1>Get in touch.</H1>
-        <Lead>Questions, feedback or want a demo? We respond within 24 hours.</Lead>
-      </Section>
+    <div style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+      {/* HERO */}
+      <section className="bg-[#F7FAFC] py-16 px-6 text-center">
+        <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
+          Get in touch
+        </span>
+        <h1 className="text-4xl font-black text-[#1B2B4B] mb-4">
+          We'd love to hear from you
+        </h1>
+        <p className="text-[#718096] text-lg max-w-2xl mx-auto">
+          Whether you have a question, feedback or just want to say hello — we're here.
+        </p>
+      </section>
 
-      <Section padY={16}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 40 }} className="dsm-contact-grid">
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #E6E8EE",
-              borderRadius: 20,
-              padding: 28,
-            }}
-          >
-            {done ? (
-              <div style={{ padding: "40px 8px", textAlign: "center" }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
-                <h2 style={{ margin: 0, fontSize: 22, color: "#0B1530" }}>Thanks!</h2>
-                <p style={{ marginTop: 8, color: "#475569" }}>We'll be in touch within 24 hours.</p>
+      {/* MAIN */}
+      <section className="bg-white py-16 px-6">
+        <div className="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+          {/* LEFT — FORM */}
+          <div>
+            <h2 className="text-2xl font-black text-[#1B2B4B] mb-8">
+              Send us a message
+            </h2>
+
+            {status === "success" ? (
+              <div className="rounded-2xl border border-green-200 bg-green-50 text-green-800 p-6">
+                <p className="font-semibold mb-1">Message sent!</p>
+                <p className="text-sm">We'll be in touch within 24 hours.</p>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="mt-4 text-sm font-semibold text-[#00B5A5] hover:underline"
+                >
+                  Send another message
+                </button>
               </div>
             ) : (
-              <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label style={labelStyle}>Name</label>
-                  <input style={inputStyle} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Email</label>
-                  <input type="email" style={inputStyle} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Phone (optional)</label>
-                  <input style={inputStyle} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Message</label>
-                  <textarea
-                    style={{ ...inputStyle, minHeight: 130, resize: "vertical" }}
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
                   />
                 </div>
-                {error && <div style={{ color: "#DC2626", fontSize: 13 }}>{error}</div>}
+                <div>
+                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                    Subject
+                  </label>
+                  <select
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] bg-white focus:outline-none focus:border-[#00B5A5]"
+                  >
+                    {SUBJECTS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
+                  />
+                </div>
+
+                {status === "error" && (
+                  <div className="rounded-xl border border-red-200 bg-red-50 text-red-700 p-4 text-sm">
+                    {errorMsg}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  disabled={submitting}
-                  style={{
-                    padding: "13px 22px",
-                    borderRadius: 12,
-                    background: "#0E7CCE",
-                    color: "#fff",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    border: "none",
-                    cursor: submitting ? "default" : "pointer",
-                    opacity: submitting ? 0.7 : 1,
-                    boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
-                  }}
+                  disabled={status === "sending"}
+                  className="bg-[#00B5A5] text-white font-semibold px-8 py-3 rounded-xl w-full hover:opacity-90 disabled:opacity-60 transition"
                 >
-                  {submitting ? "Sending…" : "Send message"}
+                  {status === "sending" ? "Sending…" : "Send message →"}
                 </button>
               </form>
             )}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            <ContactRow label="Email" value="info@everydriver.co.uk" href="mailto:info@everydriver.co.uk" />
-            <ContactRow label="Based in" value="Winchester, Hampshire" />
-            <ContactRow label="Response time" value="Within 24 hours" />
-            <div style={{ height: 1, background: "#E2E8F0", margin: "4px 0" }} />
-            <ContactRow label="Website" value="EveryDriver.co.uk" href="https://everydriver.co.uk" />
-            <ContactRow label="Privacy" value="Privacy Policy" href="https://everydriver.co.uk/privacy" />
-            <ContactRow label="Terms" value="Terms of service" href="https://everydriver.co.uk/terms" />
+          {/* RIGHT — DETAILS */}
+          <div>
+            <h2 className="text-2xl font-black text-[#1B2B4B] mb-8">
+              Other ways to reach us
+            </h2>
+
+            <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
+              <Mail className="text-[#00B5A5] shrink-0" size={24} />
+              <div>
+                <p className="font-bold text-[#1B2B4B] mb-1">Email</p>
+                <a
+                  href="mailto:info@everydriver.co.uk"
+                  className="text-[#00B5A5] font-medium"
+                >
+                  info@everydriver.co.uk
+                </a>
+                <p className="text-[#718096] text-sm mt-1">
+                  We respond within 24 hours
+                </p>
+              </div>
+            </div>
+
+            <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
+              <MapPin className="text-[#00B5A5] shrink-0" size={24} />
+              <div>
+                <p className="font-bold text-[#1B2B4B] mb-1">Based in</p>
+                <p className="text-[#1B2B4B]">Winchester, Hampshire</p>
+                <p className="text-[#718096] text-sm mt-1">
+                  Serving instructors across the UK
+                </p>
+              </div>
+            </div>
+
+            <div className="border border-gray-100 rounded-2xl p-6 mb-6 flex gap-4">
+              <Clock className="text-[#00B5A5] shrink-0" size={24} />
+              <div>
+                <p className="font-bold text-[#1B2B4B] mb-1">Support hours</p>
+                <p className="text-[#1B2B4B]">Monday – Friday, 9am – 5pm</p>
+                <p className="text-[#718096] text-sm mt-1">
+                  Emergency support for Plus & Max subscribers
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <p className="text-sm font-bold text-[#1B2B4B] mb-3">Follow us</p>
+              <div className="flex flex-col gap-2">
+                <a
+                  href="https://everydriver.co.uk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#00B5A5] font-medium hover:underline"
+                >
+                  EveryDriver →
+                </a>
+                <a
+                  href="https://drivingschoolmanager.co.uk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#00B5A5] font-medium hover:underline"
+                >
+                  Driving School Manager →
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-        <style>{`@media (max-width: 820px){.dsm-contact-grid{grid-template-columns:1fr !important;}}`}</style>
-      </Section>
-    </>
-  );
-}
+      </section>
 
-function ContactRow({ label, value, href }: { label: string; value: string; href?: string }) {
-  return (
-    <div>
-      <div style={{ fontSize: 12, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 600 }}>
-        {label}
-      </div>
-      {href ? (
-        <a
-          href={href}
-          target={href.startsWith("http") ? "_blank" : undefined}
-          rel="noreferrer"
-          style={{ color: "#0F2044", fontSize: 16, fontWeight: 600, textDecoration: "none" }}
+      {/* FAQ TEASER */}
+      <section className="bg-[#F7FAFC] py-16 px-6 text-center">
+        <h2 className="text-3xl font-black text-[#1B2B4B] mb-4">
+          Looking for quick answers?
+        </h2>
+        <p className="text-[#718096] mb-8 max-w-xl mx-auto">
+          Check our how it works page for answers to common questions.
+        </p>
+        <Link
+          to="/how-it-works"
+          className="inline-block border-2 border-[#1B2B4B] text-[#1B2B4B] font-semibold px-8 py-4 rounded-xl hover:bg-[#1B2B4B] hover:text-white transition"
         >
-          {value}
-        </a>
-      ) : (
-        <div style={{ color: "#0F172A", fontSize: 16, fontWeight: 600 }}>{value}</div>
-      )}
+          View FAQ →
+        </Link>
+      </section>
     </div>
   );
 }
