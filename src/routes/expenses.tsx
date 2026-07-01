@@ -69,6 +69,43 @@ const CATEGORY_META: Record<Category, { icon: any; color: string; bg: string }> 
   Other: { icon: MoreHorizontal, color: "#4B5563", bg: "#F3F4F6" },
 };
 
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const categoryIcon = (category: string): ReactNode => {
+  const icons: Record<string, ReactNode> = {
+    'Fuel': <Fuel size={16} />,
+    'Insurance': <Shield size={16} />,
+    'Marketing': <Megaphone size={16} />,
+    'Equipment': <Wrench size={16} />,
+    'Training': <GraduationCap size={16} />,
+    'Vehicle': <Car size={16} />,
+    'Phone': <Phone size={16} />,
+    'Professional fees': <Briefcase size={16} />,
+    'Other': <MoreHorizontal size={16} />,
+  };
+  return icons[category] || <MoreHorizontal size={16} />;
+};
+
+const categoryColour = (category: string) => {
+  const colours: Record<string, string> = {
+    'Fuel': '#F59E0B',
+    'Insurance': '#3B82F6',
+    'Marketing': '#8B5CF6',
+    'Equipment': '#6B7280',
+    'Training': '#10B981',
+    'Vehicle': '#EF4444',
+    'Phone': '#06B6D4',
+    'Professional fees': '#0F2044',
+    'Other': '#9CA3AF',
+  };
+  return colours[category] || '#9CA3AF';
+};
+
 type Expense = {
   id: string;
   instructor_id: string;
@@ -249,6 +286,7 @@ function ExpensesPage() {
       >
         {FILTERS.map((f) => {
           const active = filter === f;
+          const colour = f === "All" ? "#9CA3AF" : categoryColour(f);
           return (
             <button
               key={f}
@@ -258,14 +296,29 @@ function ExpensesPage() {
                 whiteSpace: "nowrap",
                 border: active ? `1px solid ${NAVY}` : BORDER,
                 background: active ? NAVY : "#fff",
-                color: active ? "#fff" : "#374151",
+                color: active ? "#fff" : colour,
                 padding: "8px 14px",
                 borderRadius: 999,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
+              {f === "All" ? (
+                <span
+                  style={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: "50%",
+                    background: active ? "#fff" : colour,
+                  }}
+                />
+              ) : (
+                <span style={{ display: "inline-flex" }}>{categoryIcon(f)}</span>
+              )}
               {f}
             </button>
           );
