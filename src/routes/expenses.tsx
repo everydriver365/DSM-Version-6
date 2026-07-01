@@ -620,6 +620,7 @@ function AddEditSheet({
       toast.error("Enter an amount");
       return;
     }
+    console.log("[expenses] saving:", { category, description, amount, date });
     setSaving(true);
     try {
       let receipt_url: string | null = initial?.receipt_url ?? null;
@@ -653,17 +654,35 @@ function AddEditSheet({
         receipt_url,
       };
 
-      const res = initial
-        ? await supabase.from("expenses").update(payload).eq("id", initial.id)
-        : await supabase.from("expenses").insert(payload);
-      if (res.error) {
-        console.error("[expenses] save error", res.error);
-        toast.error(res.error.message || "Save failed");
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+      const url = initial
+        ? `${SUPABASE_URL}/rest/v1/expenses?id=eq.${initial.id}`
+        : `${SUPABASE_URL}/rest/v1/expenses`;
+      const res = await fetch(url, {
+        method: initial ? "PATCH" : "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify(payload),
+      });
+      const saved = await res.json().catch(() => null);
+      console.log("[expenses] insert result:", saved, res.status);
+      console.log("[expenses] REST result:", res.status, saved);
+      if (!res.ok) {
+        const msg = saved?.message || saved?.error || JSON.stringify(saved);
+        console.error("[expenses] save error", msg);
+        toast.error(msg || "Save failed");
         setSaving(false);
         return;
       }
       toast.success(initial ? "Expense updated" : "Expense added");
-      // Reset form for next add
       setCategory("Fuel");
       setDescription("");
       setAmount("");
@@ -673,7 +692,6 @@ function AddEditSheet({
       setFrequency("Monthly");
       setReceiptFile(null);
       setSaving(false);
-      // Close sheet first, then refetch in background
       onClose();
       onSaved();
     } catch (e: any) {
