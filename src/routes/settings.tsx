@@ -1168,8 +1168,8 @@ function SettingsPage() {
         <SectionHeader>MARKETING</SectionHeader>
         <Card className="!p-0">
           <MenuRow
-            icon={<Tag size={18} color="#1A52A0" />}
-            iconBg="#E0EAFB"
+            icon={<Tag size={18} />}
+            iconBg="#FEF3C7"
             label="Discount codes"
             onClick={() => navigate({ to: "/discount-codes" })}
             isFirst
