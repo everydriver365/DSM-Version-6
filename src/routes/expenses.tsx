@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ArrowLeft,
   Plus,
@@ -57,16 +57,41 @@ const FILTERS: Array<"All" | Category> = [
   "Other",
 ];
 
-const CATEGORY_META: Record<Category, { icon: any; color: string; bg: string }> = {
-  Fuel: { icon: Fuel, color: "#D97706", bg: "#FEF3C7" },
-  Insurance: { icon: Shield, color: "#2563EB", bg: "#DBEAFE" },
-  Marketing: { icon: Megaphone, color: "#DB2777", bg: "#FCE7F3" },
-  Equipment: { icon: Wrench, color: "#6B7280", bg: "#F3F4F6" },
-  Training: { icon: GraduationCap, color: "#7C3AED", bg: "#EDE9FE" },
-  Vehicle: { icon: Car, color: "#0EA5E9", bg: "#E0F2FE" },
-  Phone: { icon: Phone, color: "#059669", bg: "#D1FAE5" },
-  "Professional fees": { icon: Briefcase, color: "#B45309", bg: "#FEF3C7" },
-  Other: { icon: MoreHorizontal, color: "#4B5563", bg: "#F3F4F6" },
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const categoryIcon = (category: string): ReactNode => {
+  const icons: Record<string, ReactNode> = {
+    'Fuel': <Fuel size={16} />,
+    'Insurance': <Shield size={16} />,
+    'Marketing': <Megaphone size={16} />,
+    'Equipment': <Wrench size={16} />,
+    'Training': <GraduationCap size={16} />,
+    'Vehicle': <Car size={16} />,
+    'Phone': <Phone size={16} />,
+    'Professional fees': <Briefcase size={16} />,
+    'Other': <MoreHorizontal size={16} />,
+  };
+  return icons[category] || <MoreHorizontal size={16} />;
+};
+
+const categoryColour = (category: string) => {
+  const colours: Record<string, string> = {
+    'Fuel': '#F59E0B',
+    'Insurance': '#3B82F6',
+    'Marketing': '#8B5CF6',
+    'Equipment': '#6B7280',
+    'Training': '#10B981',
+    'Vehicle': '#EF4444',
+    'Phone': '#06B6D4',
+    'Professional fees': '#0F2044',
+    'Other': '#9CA3AF',
+  };
+  return colours[category] || '#9CA3AF';
 };
 
 type Expense = {
@@ -249,6 +274,7 @@ function ExpensesPage() {
       >
         {FILTERS.map((f) => {
           const active = filter === f;
+          const colour = f === "All" ? "#9CA3AF" : categoryColour(f);
           return (
             <button
               key={f}
@@ -258,14 +284,29 @@ function ExpensesPage() {
                 whiteSpace: "nowrap",
                 border: active ? `1px solid ${NAVY}` : BORDER,
                 background: active ? NAVY : "#fff",
-                color: active ? "#fff" : "#374151",
+                color: active ? "#fff" : colour,
                 padding: "8px 14px",
                 borderRadius: 999,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
+              {f === "All" ? (
+                <span
+                  style={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: "50%",
+                    background: active ? "#fff" : colour,
+                  }}
+                />
+              ) : (
+                <span style={{ display: "inline-flex" }}>{categoryIcon(f)}</span>
+              )}
               {f}
             </button>
           );
@@ -362,9 +403,7 @@ function ExpenseRow({
   onDelete: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const meta =
-    CATEGORY_META[(row.category as Category) in CATEGORY_META ? (row.category as Category) : "Other"];
-  const Icon = meta.icon;
+  const colour = categoryColour(row.category);
   const date = new Date(row.expense_date).toLocaleDateString(undefined, {
     day: "numeric",
     month: "short",
@@ -400,18 +439,18 @@ function ExpenseRow({
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <div
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: meta.bg,
-              color: meta.color,
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              backgroundColor: hexToRgba(colour, 0.15),
+              color: colour,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <Icon size={18} />
+            {categoryIcon(row.category)}
           </div>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -419,8 +458,8 @@ function ExpenseRow({
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: meta.color,
-                  background: meta.bg,
+                  color: colour,
+                  backgroundColor: hexToRgba(colour, 0.15),
                   padding: "2px 8px",
                   borderRadius: 999,
                 }}
