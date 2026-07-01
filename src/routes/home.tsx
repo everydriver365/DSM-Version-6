@@ -445,6 +445,7 @@ function HomePage() {
   }>>([]);
   
   const [tab, setTab] = useState<TabKey>("today");
+  const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
@@ -800,6 +801,7 @@ function HomePage() {
       setFirstName(capitalize(first));
       setInstructorFullName(fullName);
       setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
+      setAuthChecked(true);
     })();
   }, []);
 
@@ -1629,6 +1631,23 @@ function HomePage() {
     { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "My website", route: "/minisite" },
 
   ] as const;
+
+  if (!authChecked) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ ...POPPINS, backgroundColor: '#F2F4F8' }}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="animate-spin rounded-full"
+            style={{ width: 32, height: 32, border: '3px solid #E2E6ED', borderTopColor: '#1A52A0' }}
+          />
+          <div style={{ fontSize: 14, color: '#6B7280' }}>Checking access…</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
