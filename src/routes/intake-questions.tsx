@@ -249,9 +249,11 @@ function IntakeQuestionsPage() {
         <div style={{ fontSize: 17, fontWeight: 600, flex: 1 }}>Intake questions</div>
         <button
           onClick={() => {
+            console.log("[intake] add button tapped");
             setEditing(null);
             setSheetOpen(true);
           }}
+
           style={{
             display: "inline-flex",
             alignItems: "center",
