@@ -16,6 +16,7 @@ import {
   Trash2,
   Plus,
   Store,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
