@@ -415,9 +415,7 @@ function ExpenseRow({
   onDelete: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const meta =
-    CATEGORY_META[(row.category as Category) in CATEGORY_META ? (row.category as Category) : "Other"];
-  const Icon = meta.icon;
+  const colour = categoryColour(row.category);
   const date = new Date(row.expense_date).toLocaleDateString(undefined, {
     day: "numeric",
     month: "short",
