@@ -1166,6 +1166,17 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <SectionHeader>PUPILS</SectionHeader>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<ClipboardList size={18} color="#1A52A0" />}
+            iconBg="#E0F2FE"
+            label="Intake questions"
+            onClick={() => navigate({ to: "/intake-questions" })}
+            isFirst
+          />
+        </Card>
+
         <SectionHeader>MARKETING</SectionHeader>
         <Card className="!p-0">
           <MenuRow
