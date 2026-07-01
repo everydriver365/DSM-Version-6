@@ -135,8 +135,11 @@ function AdminSectionTile({
 function AdminHub() {
   const navigate = useNavigate();
   const status = useAdminGate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
 
   if (status === "checking") {
+    if (isChildRoute) return <Outlet />;
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
