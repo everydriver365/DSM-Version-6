@@ -76,12 +76,8 @@ export function useAdminGate() {
     };
   }, []);
 
-  useEffect(() => {
-    if (status === "denied") {
-      const t = setTimeout(() => navigate({ to: "/home" }), 1200);
-      return () => clearTimeout(t);
-    }
-  }, [status, navigate]);
+  // No auto-redirect on denied — show access denied screen with actions
+  // so the user isn't punted into onboarding with no escape.
 
   return status;
 }
