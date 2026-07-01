@@ -71,6 +71,7 @@ import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EndOfDayRouteImport } from './routes/end-of-day'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as DiscountCodesRouteImport } from './routes/discount-codes'
 import { Route as DiaryRouteImport } from './routes/diary'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
@@ -428,6 +429,11 @@ const DocumentsRoute = DocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscountCodesRoute = DiscountCodesRouteImport.update({
+  id: '/discount-codes',
+  path: '/discount-codes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiaryRoute = DiaryRouteImport.update({
   id: '/diary',
   path: '/diary',
@@ -672,6 +678,7 @@ export interface FileRoutesByFullPath {
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
+  '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
@@ -781,6 +788,7 @@ export interface FileRoutesByTo {
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
+  '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
@@ -891,6 +899,7 @@ export interface FileRoutesById {
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
+  '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
@@ -1002,6 +1011,7 @@ export interface FileRouteTypes {
     | '/cpd'
     | '/dataimport'
     | '/diary'
+    | '/discount-codes'
     | '/documents'
     | '/earnings'
     | '/end-of-day'
@@ -1111,6 +1121,7 @@ export interface FileRouteTypes {
     | '/cpd'
     | '/dataimport'
     | '/diary'
+    | '/discount-codes'
     | '/documents'
     | '/earnings'
     | '/end-of-day'
@@ -1220,6 +1231,7 @@ export interface FileRouteTypes {
     | '/cpd'
     | '/dataimport'
     | '/diary'
+    | '/discount-codes'
     | '/documents'
     | '/earnings'
     | '/end-of-day'
@@ -1331,6 +1343,7 @@ export interface RootRouteChildren {
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
   DiaryRoute: typeof DiaryRoute
+  DiscountCodesRoute: typeof DiscountCodesRoute
   DocumentsRoute: typeof DocumentsRoute
   EarningsRoute: typeof EarningsRoute
   EndOfDayRoute: typeof EndOfDayRoute
@@ -1854,6 +1867,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discount-codes': {
+      id: '/discount-codes'
+      path: '/discount-codes'
+      fullPath: '/discount-codes'
+      preLoaderRoute: typeof DiscountCodesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diary': {
       id: '/diary'
       path: '/diary'
@@ -2249,6 +2269,7 @@ const rootRouteChildren: RootRouteChildren = {
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
   DiaryRoute: DiaryRoute,
+  DiscountCodesRoute: DiscountCodesRoute,
   DocumentsRoute: DocumentsRoute,
   EarningsRoute: EarningsRoute,
   EndOfDayRoute: EndOfDayRoute,

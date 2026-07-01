@@ -16,6 +16,7 @@ import {
   Trash2,
   Plus,
   Store,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -1164,6 +1165,23 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <SectionHeader>MARKETING</SectionHeader>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<Tag size={18} color="#1A52A0" />}
+            iconBg="#E0EAFB"
+            label="Discount codes"
+            onClick={() => navigate({ to: "/discount-codes" })}
+            isFirst
+          />
+          <MenuRow
+            icon={<Store size={18} color="#52525B" />}
+            iconBg="#F4F4F5"
+            label="Edit marketplace tiles"
+            onClick={() => navigate({ to: "/marketplace/edit" })}
+          />
+        </Card>
+
         <SectionHeader>SUPPORT</SectionHeader>
         <Card className="!p-0">
           <MenuRow
@@ -1172,12 +1190,6 @@ function SettingsPage() {
             label="Help"
             onClick={() => navigate({ to: "/help" })}
             isFirst
-          />
-          <MenuRow
-            icon={<Store size={18} color="#52525B" />}
-            iconBg="#F4F4F5"
-            label="Edit marketplace tiles"
-            onClick={() => navigate({ to: "/marketplace/edit" })}
           />
           <MenuRow
             icon={<Shield size={18} color="#52525B" />}
