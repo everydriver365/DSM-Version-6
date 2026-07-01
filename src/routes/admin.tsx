@@ -1,0 +1,186 @@
+import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ChevronLeft, Star, Users, BookOpen, Settings } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
+
+export const Route = createFileRoute("/admin")({
+  component: AdminHub,
+});
+
+type Status = "checking" | "allowed" | "denied";
+
+function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 40,
+        background: "#CC2229",
+        color: "#fff",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+      }}
+    >
+      <button
+        type="button"
+        onClick={onBack}
+        aria-label="Back"
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.15)",
+          border: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          color: "#fff",
+        }}
+      >
+        <ChevronLeft size={18} />
+      </button>
+      <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
+    </div>
+  );
+}
+
+export function useAdminGate() {
+  const navigate = useNavigate();
+  const [status, setStatus] = useState<Status>("checking");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData?.user?.id;
+      if (!userId) {
+        if (!cancelled) setStatus("denied");
+        return;
+      }
+      const { data: adminCheck } = await supabase
+        .from("admin_users")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+      if (cancelled) return;
+      setStatus(adminCheck ? "allowed" : "denied");
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (status === "denied") {
+      const t = setTimeout(() => navigate({ to: "/home" }), 1200);
+      return () => clearTimeout(t);
+    }
+  }, [status, navigate]);
+
+  return status;
+}
+
+function AdminSectionTile({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        background: "#fff",
+        borderWidth: "0.5px",
+        borderStyle: "solid",
+        borderColor: "#E2E6ED",
+        borderRadius: 12,
+        padding: 16,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 10,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: "#FEECEE",
+          color: "#CC2229",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>{label}</div>
+    </button>
+  );
+}
+
+function AdminHub() {
+  const navigate = useNavigate();
+  const status = useAdminGate();
+
+  if (status === "checking") {
+    return (
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+        Checking access…
+      </div>
+    );
+  }
+  if (status === "denied") {
+    return (
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
+        <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+      <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
+        <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <AdminSectionTile
+            icon={<Star size={18} />}
+            label="Featured listings"
+            onClick={() => navigate({ to: "/admin/featured" })}
+          />
+          <AdminSectionTile
+            icon={<Users size={18} />}
+            label="All instructors"
+            onClick={() => navigate({ to: "/admin/instructors" as never })}
+          />
+          <AdminSectionTile
+            icon={<BookOpen size={18} />}
+            label="All bookings"
+            onClick={() => navigate({ to: "/admin/bookings" as never })}
+          />
+          <AdminSectionTile
+            icon={<Settings size={18} />}
+            label="Platform settings"
+            onClick={() => navigate({ to: "/admin/settings" as never })}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
