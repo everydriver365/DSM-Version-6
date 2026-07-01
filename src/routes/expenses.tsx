@@ -680,26 +680,26 @@ function AddEditSheet({
         return;
       }
       toast.success(initial ? "Expense updated" : "Expense added");
-      if (!initial) {
-        onClose();
-        setCategory("Fuel");
-        setDescription("");
-        setAmount("");
-        setDate(todayISO());
-        setTaxDed(true);
-        setRecurring(false);
-        setFrequency("Monthly");
-        setReceiptFile(null);
-      }
-      await onSaved();
-
+      // Reset form for next add
+      setCategory("Fuel");
+      setDescription("");
+      setAmount("");
+      setDate(todayISO());
+      setTaxDed(true);
+      setRecurring(false);
+      setFrequency("Monthly");
+      setReceiptFile(null);
+      setSaving(false);
+      // Close sheet first, then refetch in background
+      onClose();
+      onSaved();
     } catch (e: any) {
       console.error("[expenses] unexpected", e);
-      toast.error("Something went wrong");
-    } finally {
+      toast.error(e?.message || "Something went wrong");
       setSaving(false);
     }
   };
+
 
   return (
     <div
