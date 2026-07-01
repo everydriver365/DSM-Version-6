@@ -103,6 +103,7 @@ import { Route as ISlugRouteImport } from './routes/i.$slug'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
+import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
@@ -585,6 +586,11 @@ const BookingsIdRoute = BookingsIdRouteImport.update({
   path: '/bookings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
+  id: '/featured',
+  path: '/featured',
+  getParentRoute: () => AdminRoute,
+} as any)
 const MarketingPricingRoute = MarketingPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -648,7 +654,7 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -726,6 +732,7 @@ export interface FileRoutesByFullPath {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -755,7 +762,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -832,6 +839,7 @@ export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -863,7 +871,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_marketing': typeof MarketingRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/briefing': typeof BriefingRoute
@@ -941,6 +949,7 @@ export interface FileRoutesById {
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1050,6 +1059,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1156,6 +1166,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1264,6 +1275,7 @@ export interface FileRouteTypes {
     | '/_marketing/features'
     | '/_marketing/how-it-works'
     | '/_marketing/pricing'
+    | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1295,7 +1307,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MarketingRoute: typeof MarketingRouteWithChildren
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
   BriefingRoute: typeof BriefingRoute
@@ -2053,6 +2065,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/featured': {
+      id: '/admin/featured'
+      path: '/featured'
+      fullPath: '/admin/featured'
+      preLoaderRoute: typeof AdminFeaturedRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_marketing/pricing': {
       id: '/_marketing/pricing'
       path: '/pricing'
@@ -2160,6 +2179,16 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
   MarketingRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminFeaturedRoute: typeof AdminFeaturedRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminFeaturedRoute: AdminFeaturedRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -2188,7 +2217,7 @@ const QuotesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MarketingRoute: MarketingRouteWithChildren,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
   BriefingRoute: BriefingRoute,
