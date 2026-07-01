@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { ChevronLeft, Star, Users, BookOpen, Settings } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -135,6 +135,12 @@ function AdminSectionTile({
 function AdminHub() {
   const navigate = useNavigate();
   const status = useAdminGate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
+
+  // Child routes (e.g. /admin/featured) have their own admin gate and layout;
+  // render the Outlet unconditionally so they mount instead of the hub.
+  if (isChildRoute) return <Outlet />;
 
   if (status === "checking") {
     return (
