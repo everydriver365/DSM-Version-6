@@ -1187,7 +1187,13 @@ function SettingsPage() {
               window.open("https://everydriver.co.uk/privacy-policy", "_blank", "noopener,noreferrer")
             }
           />
-
+          <MenuRow
+            icon={<Shield size={18} color="#CC2229" />}
+            iconBg="#FEECEE"
+            label="Admin"
+            labelColor="#CC2229"
+            onClick={() => navigate({ to: "/admin" })}
+          />
         </Card>
 
         <SectionHeader>DANGER ZONE</SectionHeader>
