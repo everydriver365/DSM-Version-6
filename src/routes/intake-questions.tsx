@@ -72,6 +72,21 @@ function IntakeQuestionsPage() {
   const [confirmDelete, setConfirmDelete] = useState<IntakeQuestion | null>(null);
   const dragId = useRef<string | null>(null);
 
+  const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+  async function authHeaders(extra: Record<string, string> = {}) {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    return {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      ...extra,
+    };
+  }
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -84,24 +99,72 @@ function IntakeQuestionsPage() {
 
   async function load(uid: string) {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("intake_questions")
-      .select("*")
-      .eq("instructor_id", uid)
-      .order("display_order", { ascending: true });
-    if (error) {
-      console.error(error);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/intake_questions?instructor_id=eq.${uid}&deleted_at=is.null&order=display_order.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const data = await res.json();
+      console.log("[intake] fetch result:", res.status, data);
+      if (!res.ok) {
+        toast.error("Failed to load questions");
+        setQuestions([]);
+      } else {
+        setQuestions(Array.isArray(data) ? (data as IntakeQuestion[]) : []);
+      }
+    } catch (e) {
+      console.error("[intake] fetch error", e);
       toast.error("Failed to load questions");
-    } else {
-      setQuestions((data ?? []) as IntakeQuestion[]);
+      setQuestions([]);
     }
     setLoading(false);
+  }
+
+  async function restInsert(payload: Record<string, unknown>) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/intake_questions`, {
+      method: "POST",
+      headers: await authHeaders({ Prefer: "return=representation" }),
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => null);
+    console.log("[intake] insert result:", res.status, data);
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  async function restUpdate(id: string, payload: Record<string, unknown>) {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/intake_questions?id=eq.${id}`,
+      {
+        method: "PATCH",
+        headers: await authHeaders({ Prefer: "return=representation" }),
+        body: JSON.stringify(payload),
+      },
+    );
+    const data = await res.json().catch(() => null);
+    console.log("[intake] update result:", res.status, data);
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  async function restDelete(id: string) {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/intake_questions?id=eq.${id}`,
+      { method: "DELETE", headers: await authHeaders() },
+    );
+    console.log("[intake] delete result:", res.status);
+    return { ok: res.ok, status: res.status };
   }
 
   async function addStarter(s: (typeof STARTER_QUESTIONS)[number]) {
     if (!userId) return;
     const nextOrder = questions.length;
-    const payload = {
+    const r = await restInsert({
       instructor_id: userId,
       question_text: s.text,
       question_type: s.type,
@@ -109,10 +172,8 @@ function IntakeQuestionsPage() {
       required: false,
       active: true,
       display_order: nextOrder,
-    };
-    const { error } = await supabase.from("intake_questions").insert(payload);
-    if (error) {
-      console.error(error);
+    });
+    if (!r.ok) {
       toast.error("Could not add question");
       return;
     }
@@ -129,22 +190,18 @@ function IntakeQuestionsPage() {
   }) {
     if (!userId) return;
     if (q.id) {
-      const { error } = await supabase
-        .from("intake_questions")
-        .update({
-          question_text: q.question_text,
-          question_type: q.question_type,
-          options: q.options,
-          required: q.required,
-        })
-        .eq("id", q.id);
-      if (error) {
-        console.error(error);
+      const r = await restUpdate(q.id, {
+        question_text: q.question_text,
+        question_type: q.question_type,
+        options: q.options,
+        required: q.required,
+      });
+      if (!r.ok) {
         toast.error("Save failed");
         return;
       }
     } else {
-      const { error } = await supabase.from("intake_questions").insert({
+      const r = await restInsert({
         instructor_id: userId,
         question_text: q.question_text,
         question_type: q.question_type,
@@ -153,8 +210,7 @@ function IntakeQuestionsPage() {
         active: true,
         display_order: questions.length,
       });
-      if (error) {
-        console.error(error);
+      if (!r.ok) {
         toast.error("Save failed");
         return;
       }
@@ -166,11 +222,8 @@ function IntakeQuestionsPage() {
   }
 
   async function toggleActive(q: IntakeQuestion) {
-    const { error } = await supabase
-      .from("intake_questions")
-      .update({ active: !q.active })
-      .eq("id", q.id);
-    if (error) {
+    const r = await restUpdate(q.id, { active: !q.active });
+    if (!r.ok) {
       toast.error("Update failed");
       return;
     }
@@ -180,8 +233,8 @@ function IntakeQuestionsPage() {
   }
 
   async function removeQuestion(q: IntakeQuestion) {
-    const { error } = await supabase.from("intake_questions").delete().eq("id", q.id);
-    if (error) {
+    const r = await restDelete(q.id);
+    if (!r.ok) {
       toast.error("Delete failed");
       return;
     }
@@ -200,14 +253,10 @@ function IntakeQuestionsPage() {
     list.splice(toIdx, 0, moved);
     const reindexed = list.map((q, i) => ({ ...q, display_order: i }));
     setQuestions(reindexed);
-    const updates = reindexed.map((q) =>
-      supabase
-        .from("intake_questions")
-        .update({ display_order: q.display_order })
-        .eq("id", q.id),
+    const results = await Promise.all(
+      reindexed.map((q) => restUpdate(q.id, { display_order: q.display_order })),
     );
-    const results = await Promise.all(updates);
-    if (results.some((r) => r.error)) {
+    if (results.some((r) => !r.ok)) {
       toast.error("Reorder partially failed");
     }
   }
