@@ -579,6 +579,50 @@ function PupilDetailPage() {
         </div>
       )}
 
+      {/* Intake answers */}
+      <div className="px-4">
+        <SectionHeader>INTAKE ANSWERS</SectionHeader>
+        {intakeAnswers === null ? null : intakeAnswers.length === 0 ? (
+          <div className="text-[14px] text-[#6B7280]" style={POPPINS}>
+            No intake answers recorded
+          </div>
+        ) : (
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#E2E6ED",
+              padding: 16,
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <ClipboardList size={18} color="#1A52A0" />
+              <div className="text-[14px] font-semibold" style={{ color: "#0F2044", ...POPPINS }}>
+                Intake answers
+              </div>
+            </div>
+            {intakeAnswers.map((a, i) => (
+              <div key={a.id}>
+                <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  {a.intake_questions?.question ?? "Question"}
+                </div>
+                <div
+                  className="text-[14px] font-semibold mt-0.5"
+                  style={{ color: "#0F2044", ...POPPINS }}
+                >
+                  {a.answer ?? a.answer_text ?? String(a.value ?? "")}
+                </div>
+                {i < intakeAnswers.length - 1 && (
+                  <div style={{ height: 0.5, backgroundColor: "#F3F4F6", margin: "12px 0" }} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
         <div className="grid grid-cols-3 gap-2">
