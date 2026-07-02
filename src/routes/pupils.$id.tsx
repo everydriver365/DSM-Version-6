@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, CreditCard, Flag, Heart, Loader2, Palette, Pencil, Phone, PoundSterling, Trash2, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -49,6 +49,14 @@ interface Pupil {
   test_centre: string | null;
   wants_swap: boolean | null;
   theory_pass: boolean | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  emergency_contact_relation: string | null;
+  driving_licence_number: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
+  calendar_colour: string | null;
 }
 
 interface Lesson {
@@ -164,7 +172,9 @@ function PupilDetailPage() {
         notes, profile_image_url, photo_url, photo_consent,
         address, postcode, lead_source, lead_source_detail,
         theory_pass, wants_swap,
-        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference
+        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
+        emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
+        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour
       `)
       .eq("id", id)
       .is("deleted_at", null)
@@ -577,6 +587,15 @@ function PupilDetailPage() {
             })()}
           </Card>
         </div>
+      )}
+
+      {/* Emergency contact, licence, custom rates, calendar colour */}
+      {pupil && (
+        <PupilExtras
+          pupil={pupil}
+          instructorRate={instructorRate}
+          onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
+        />
       )}
 
       {/* Intake answers */}
@@ -1332,5 +1351,270 @@ function NIRow({
         {value}
       </span>
     </div>
+  );
+}
+
+const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
+const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0F2044"];
+const EXTRAS_CARD: React.CSSProperties = {
+  borderRadius: 12,
+  border: "0.5px solid #E2E6ED",
+  padding: 16,
+  marginLeft: 16,
+  marginRight: 16,
+  marginTop: 12,
+  background: "#fff",
+};
+const EXTRAS_INPUT: React.CSSProperties = {
+  width: "100%",
+  height: 40,
+  padding: "0 12px",
+  border: "0.5px solid #E2E6ED",
+  borderRadius: 8,
+  fontSize: 14,
+  color: "#0B1F3A",
+  background: "#fff",
+  ...POPPINS,
+};
+
+function PupilExtras({
+  pupil,
+  instructorRate,
+  onUpdated,
+}: {
+  pupil: Pupil;
+  instructorRate: number | null;
+  onUpdated: (patch: Partial<Pupil>) => void;
+}) {
+  const [editEmg, setEditEmg] = useState(false);
+  const [emgName, setEmgName] = useState(pupil.emergency_contact_name ?? "");
+  const [emgPhone, setEmgPhone] = useState(pupil.emergency_contact_phone ?? "");
+  const [emgRel, setEmgRel] = useState(pupil.emergency_contact_relation ?? "Parent");
+  const [savingEmg, setSavingEmg] = useState(false);
+
+  const [editLic, setEditLic] = useState(false);
+  const [licence, setLicence] = useState(pupil.driving_licence_number ?? "");
+  const [savingLic, setSavingLic] = useState(false);
+
+  const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
+  const [r90, setR90] = useState(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
+  const [r120, setR120] = useState(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+  const [savingRates, setSavingRates] = useState(false);
+
+  async function patchPupil(patch: Record<string, unknown>) {
+    const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+    if (error) {
+      console.error("[pupil] patch error", error);
+      toast.error("Save failed");
+      return false;
+    }
+    return true;
+  }
+
+  async function saveEmg() {
+    if (!emgName.trim() || !emgPhone.trim()) {
+      toast.error("Name and phone required");
+      return;
+    }
+    setSavingEmg(true);
+    const ok = await patchPupil({
+      emergency_contact_name: emgName.trim(),
+      emergency_contact_phone: emgPhone.trim(),
+      emergency_contact_relation: emgRel,
+    });
+    setSavingEmg(false);
+    if (ok) {
+      onUpdated({
+        emergency_contact_name: emgName.trim(),
+        emergency_contact_phone: emgPhone.trim(),
+        emergency_contact_relation: emgRel,
+      });
+      setEditEmg(false);
+      toast.success("Emergency contact saved");
+    }
+  }
+
+  async function saveLic() {
+    setSavingLic(true);
+    const val = licence.trim() || null;
+    const ok = await patchPupil({ driving_licence_number: val });
+    setSavingLic(false);
+    if (ok) {
+      onUpdated({ driving_licence_number: val });
+      setEditLic(false);
+      toast.success("Licence saved");
+    }
+  }
+
+  async function saveRates() {
+    setSavingRates(true);
+    const patch = {
+      custom_rate: r1 === "" ? null : Number(r1),
+      custom_rate_90: r90 === "" ? null : Number(r90),
+      custom_rate_120: r120 === "" ? null : Number(r120),
+    };
+    const ok = await patchPupil(patch);
+    setSavingRates(false);
+    if (ok) {
+      onUpdated(patch);
+      toast.success("Custom rates saved");
+    }
+  }
+
+  async function clearRates() {
+    setR1(""); setR90(""); setR120("");
+    const patch = { custom_rate: null, custom_rate_90: null, custom_rate_120: null };
+    const ok = await patchPupil(patch);
+    if (ok) {
+      onUpdated(patch);
+      toast.success("Custom rates cleared");
+    }
+  }
+
+  async function pickColour(hex: string) {
+    const next = pupil.calendar_colour === hex ? null : hex;
+    const ok = await patchPupil({ calendar_colour: next });
+    if (ok) onUpdated({ calendar_colour: next });
+  }
+
+  return (
+    <>
+      {/* Emergency contact */}
+      <div style={EXTRAS_CARD}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Heart size={18} color="#CC2229" />
+            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
+          </div>
+          {!editEmg && (
+            <button type="button" onClick={() => setEditEmg(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+              {pupil.emergency_contact_name ? "Edit" : "Add"}
+            </button>
+          )}
+        </div>
+        {!editEmg ? (
+          pupil.emergency_contact_name ? (
+            <div>
+              <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
+              <div className="flex items-center gap-2 mt-1">
+                <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                  {pupil.emergency_contact_phone}
+                </a>
+                {pupil.emergency_contact_relation && (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}>
+                    {pupil.emergency_contact_relation}
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No emergency contact set</div>
+          )
+        ) : (
+          <div className="flex flex-col gap-2">
+            <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
+            <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+            <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
+              {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+            <div className="flex gap-2 mt-1">
+              <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                {savingEmg ? "Saving…" : "Save"}
+              </button>
+              <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Driving licence */}
+      <div style={EXTRAS_CARD}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <CreditCard size={18} color="#1877D6" />
+            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
+          </div>
+          {!editLic && (
+            <button type="button" onClick={() => setEditLic(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+              {pupil.driving_licence_number ? "Edit" : "Add"}
+            </button>
+          )}
+        </div>
+        {!editLic ? (
+          <div>
+            <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+              {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+            </div>
+            <div className="text-[11px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>Verify with DVLA (coming soon)</div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
+            <div className="flex gap-2 mt-1">
+              <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                {savingLic ? "Saving…" : "Save"}
+              </button>
+              <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Custom rates */}
+      <div style={EXTRAS_CARD}>
+        <div className="flex items-center gap-2 mb-2">
+          <PoundSterling size={18} color="#1877D6" />
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Custom lesson rates</span>
+        </div>
+        <div className="text-[12px] mb-3" style={{ color: "#6B7280", ...POPPINS }}>
+          Default: {instructorRate != null ? `£${instructorRate}/hr` : "not set"}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>1 hour lesson (£)</label>
+          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate) : ""} value={r1} onChange={(e) => setR1(e.target.value)} />
+          <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>1.5 hour lesson (£)</label>
+          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 1.5) : ""} value={r90} onChange={(e) => setR90(e.target.value)} />
+          <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>2 hour lesson (£)</label>
+          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 2) : ""} value={r120} onChange={(e) => setR120(e.target.value)} />
+        </div>
+        <div className="flex gap-2 mt-3">
+          <button type="button" onClick={saveRates} disabled={savingRates} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+            {savingRates ? "Saving…" : "Save rates"}
+          </button>
+        </div>
+        <button type="button" onClick={clearRates} className="mt-2 text-[12px] font-medium" style={{ color: "#CC2229", ...POPPINS }}>
+          Clear custom rates
+        </button>
+      </div>
+
+      {/* Calendar colour */}
+      <div style={EXTRAS_CARD}>
+        <div className="flex items-center gap-2 mb-3">
+          <Palette size={18} color="#1877D6" />
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Calendar colour</span>
+        </div>
+        <div className="grid grid-cols-8 gap-2">
+          {CAL_COLOURS.map((c) => {
+            const selected = pupil.calendar_colour === c;
+            return (
+              <button
+                key={c}
+                type="button"
+                aria-label={`Colour ${c}`}
+                onClick={() => pickColour(c)}
+                className="flex items-center justify-center rounded-full"
+                style={{ width: 32, height: 32, background: c, border: selected ? "2px solid #0B1F3A" : "0.5px solid #E2E6ED" }}
+              >
+                {selected && <Check size={16} color="#fff" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 }
