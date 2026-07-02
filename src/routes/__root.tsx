@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
+import { CommandPalette } from "../components/dsm/CommandPalette";
 
 function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname === "/" || pathname === "/home") return "home";
@@ -215,6 +216,7 @@ function RootComponent() {
         <Outlet />
       </div>
       {!hideNav && <BottomNav active={active} />}
+      <CommandPalette />
     </QueryClientProvider>
   );
 }
