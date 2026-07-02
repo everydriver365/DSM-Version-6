@@ -1,380 +1,468 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Users,
-  Car,
-  PoundSterling,
-  Receipt,
-  Star,
-  GraduationCap,
-  BookOpen,
-  Calendar as CalendarIcon,
-  Clock,
-  CheckCircle2,
-  Lock,
-  type LucideIcon,
-} from "lucide-react";
-import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Card } from "../components/dsm/Card";
-import { supabase } from "../lib/supabaseClient";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Zap, Medal, Trophy } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/rewards")({
   head: () => ({
     meta: [
-      { title: "Rewards & badges — DSM by EveryDriver" },
-      { name: "description", content: "Earn points and badges as you grow your driving school." },
+      { title: "DSM Rewards" },
+      { name: "description", content: "Earn points, climb tiers and see the DSM instructor leaderboard." },
     ],
   }),
   component: RewardsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
-interface Stats {
-  pupils: number;
-  lessonsCompleted: number;
-  payments: number;
-  paymentsTotal: number;
-  expenses: number;
-  reviews: number;
-  passRate: number; // 0-100
-  passedCount: number;
-  cpdEntries: number;
-  cpdHours: number;
-  mileageEntries: number;
-  mileageMiles: number;
-  checklistCompletions: number;
-  perfectWeek: boolean;
-  earlyMornings: number;
+type TierKey = "bronze" | "silver" | "gold" | "platinum" | "elite";
+const TIERS: Record<TierKey, { min: number; label: string; emoji: string; color: string; bg: string }> = {
+  bronze:   { min: 0,    label: "Bronze",   emoji: "🥉", color: "#CD7F32", bg: "#FDF3E7" },
+  silver:   { min: 500,  label: "Silver",   emoji: "🥈", color: "#9CA3AF", bg: "#F3F4F6" },
+  gold:     { min: 1500, label: "Gold",     emoji: "🥇", color: "#D97706", bg: "#FFFBEB" },
+  platinum: { min: 3000, label: "Platinum", emoji: "💎", color: "#6366F1", bg: "#EEF2FF" },
+  elite:    { min: 6000, label: "Elite",    emoji: "⭐", color: "#0F2044", bg: "#E0F2FE" },
+};
+const TIER_ORDER: TierKey[] = ["bronze", "silver", "gold", "platinum", "elite"];
+
+function tierFromPoints(pts: number): TierKey {
+  let result: TierKey = "bronze";
+  for (const k of TIER_ORDER) if (pts >= TIERS[k].min) result = k;
+  return result;
+}
+function nextTierFrom(t: TierKey): TierKey | null {
+  const i = TIER_ORDER.indexOf(t);
+  return i >= 0 && i < TIER_ORDER.length - 1 ? TIER_ORDER[i + 1] : null;
 }
 
-function tierFor(points: number) {
-  if (points >= 2000)
-    return { name: "Platinum", color: "#E5E4E2", textColor: "#0B1F3A", next: null as number | null };
-  if (points >= 1000)
-    return { name: "Gold", color: "#FFD700", textColor: "#0B1F3A", next: 2000 };
-  if (points >= 500)
-    return { name: "Silver", color: "#C0C0C0", textColor: "#0B1F3A", next: 1000 };
-  return { name: "Bronze", color: "#CD7F32", textColor: "#FFFFFF", next: 500 };
+const EARN_ACTIVITIES: { label: string; points: number }[] = [
+  { label: "Complete EOL after lesson", points: 10 },
+  { label: "Pupil passes test", points: 100 },
+  { label: "Complete CPD hour", points: 15 },
+  { label: "Get a 5-star review", points: 50 },
+  { label: "Refer an instructor", points: 500 },
+  { label: "Profile complete", points: 50 },
+  { label: "1 year loyalty", points: 100 },
+];
+
+type LeaderRow = {
+  instructor_id: string;
+  total_points: number;
+  tier: string | null;
+  instructors: { name: string | null; profile_image_url: string | null } | null;
+};
+
+function initials(name?: string | null) {
+  if (!name) return "?";
+  return name.trim().split(/\s+/).slice(0, 2).map((s) => s[0]?.toUpperCase() ?? "").join("") || "?";
+}
+
+async function restGet<T>(path: string, token: string | null): Promise<T> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token || SUPABASE_ANON_KEY}`,
+    },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
 }
 
 function RewardsPage() {
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+
   const [userId, setUserId] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [myPoints, setMyPoints] = useState<number>(0);
+  const [leaderboard, setLeaderboard] = useState<LeaderRow[]>([]);
+  const [showOnLeaderboard, setShowOnLeaderboard] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) setUserId(data.user.id);
+      const { data: sess } = await supabase.auth.getSession();
+      const uid = sess.session?.user?.id ?? null;
+      const tk = sess.session?.access_token ?? null;
+      setUserId(uid);
+      setToken(tk);
+      if (!uid) { setLoading(false); return; }
+      try {
+        const [mine, board, me] = await Promise.all([
+          restGet<Array<{ total_points: number; tier: string | null }>>(
+            `instructor_points?instructor_id=eq.${uid}&season_year=eq.${currentYear}&select=total_points,tier`,
+            tk,
+          ),
+          restGet<LeaderRow[]>(
+            `instructor_points?season_year=eq.${currentYear}&select=instructor_id,total_points,tier,instructors(name,profile_image_url)&order=total_points.desc&limit=20`,
+            tk,
+          ),
+          restGet<Array<{ show_on_leaderboard: boolean | null }>>(
+            `instructors?id=eq.${uid}&select=show_on_leaderboard`,
+            tk,
+          ),
+        ]);
+        setMyPoints(mine?.[0]?.total_points ?? 0);
+        setLeaderboard(board ?? []);
+        setShowOnLeaderboard(me?.[0]?.show_on_leaderboard ?? true);
+      } catch (e) {
+        console.error("[rewards] fetch failed", e);
+      } finally {
+        setLoading(false);
+      }
     })();
-  }, []);
+  }, [currentYear]);
 
-  useEffect(() => {
+  const myTierKey = useMemo(() => tierFromPoints(myPoints), [myPoints]);
+  const myTier = TIERS[myTierKey];
+  const nextKey = nextTierFrom(myTierKey);
+  const nextTier = nextKey ? TIERS[nextKey] : null;
+  const progressPct = nextTier
+    ? Math.min(100, Math.max(0, ((myPoints - myTier.min) / (nextTier.min - myTier.min)) * 100))
+    : 100;
+  const ptsToNext = nextTier ? Math.max(0, nextTier.min - myPoints) : 0;
+
+  const myRank = leaderboard.findIndex((r) => r.instructor_id === userId);
+
+  async function toggleShow(next: boolean) {
+    setShowOnLeaderboard(next);
     if (!userId) return;
-    (async () => {
-      setLoading(true);
-      const safeCount = async (
-        table: string,
-        build?: (q: ReturnType<typeof baseQuery>) => ReturnType<typeof baseQuery>,
-      ) => {
-        function baseQuery() {
-          return supabase.from(table).select("*", { count: "exact", head: true }).eq("instructor_id", userId);
-        }
-        const q = build ? build(baseQuery()) : baseQuery();
-        const { count, error } = await q;
-        if (error) {
-          console.warn(`[rewards] ${table}`, error.message);
-          return 0;
-        }
-        return count ?? 0;
-      };
-      const safeSum = async (table: string, column: string): Promise<number> => {
-        const { data, error } = await supabase
-          .from(table)
-          .select(column)
-          .eq("instructor_id", userId);
-        if (error) {
-          console.warn(`[rewards] sum ${table}.${column}`, error.message);
-          return 0;
-        }
-        const rows = (data ?? []) as unknown as Array<Record<string, unknown>>;
-        return rows.reduce((a, r) => a + (Number(r[column] ?? 0) || 0), 0);
-      };
-
-      const [
-        pupils,
-        lessonsCompleted,
-        payments,
-        paymentsTotal,
-        expenses,
-        reviews,
-        cpdEntries,
-        cpdHours,
-        mileageEntries,
-        mileageMiles,
-        checklistCompletions,
-      ] = await Promise.all([
-        safeCount("pupils", (q) => q.is("deleted_at", null)),
-        safeCount("lessons", (q) => q.eq("status", "completed")),
-        safeCount("payments"),
-        safeSum("payments", "amount"),
-        safeCount("expenses"),
-        safeCount("reviews"),
-        safeCount("cpd_entries"),
-        safeSum("cpd_entries", "hours"),
-        safeCount("mileage_logs"),
-        safeSum("mileage_logs", "miles"),
-        safeCount("checklist_completions"),
-      ]);
-
-      // Pass rate & passed count
-      const { data: tests } = await supabase
-        .from("driving_tests")
-        .select("result, pupil_id")
-        .eq("instructor_id", userId)
-        .not("result", "is", null);
-      const decided = (tests ?? []).filter((t) => t.result === "Pass" || t.result === "Fail");
-      const passes = decided.filter((t) => t.result === "Pass");
-      const passRate = decided.length > 0 ? (passes.length / decided.length) * 100 : 0;
-      const passedCount = new Set(passes.map((p) => (p as { pupil_id: string }).pupil_id)).size;
-
-      // Early bird — lessons before 08:00
-      const { data: earlyLessons } = await supabase
-        .from("lessons")
-        .select("lesson_date")
-        .eq("instructor_id", userId);
-      const earlyMornings = (earlyLessons ?? []).filter((l) => {
-        const d = new Date((l as { lesson_date: string }).lesson_date);
-        return d.getHours() < 8;
-      }).length;
-
-      // Perfect week — last 7 days, all lessons completed (≥1 lesson)
-      const weekAgo = new Date();
-      weekAgo.setDate(weekAgo.getDate() - 7);
-      const { data: weekLessons } = await supabase
-        .from("lessons")
-        .select("status")
-        .eq("instructor_id", userId)
-        .gte("lesson_date", weekAgo.toISOString());
-      const ws = weekLessons ?? [];
-      const perfectWeek =
-        ws.length > 0 &&
-        ws.every((l) => {
-          const s = (l as { status: string }).status;
-          return s === "completed";
-        });
-
-      setStats({
-        pupils,
-        lessonsCompleted,
-        payments,
-        paymentsTotal,
-        expenses,
-        reviews,
-        passRate,
-        passedCount,
-        cpdEntries,
-        cpdHours,
-        mileageEntries,
-        mileageMiles,
-        checklistCompletions,
-        perfectWeek,
-        earlyMornings,
-      });
-      setLoading(false);
-    })();
-  }, [userId]);
-
-  const earn = stats
-    ? [
-        { label: "Add a pupil", count: stats.pupils, per: 10, points: stats.pupils * 10 },
-        { label: "Complete a lesson", count: stats.lessonsCompleted, per: 5, points: stats.lessonsCompleted * 5 },
-        { label: "Record a payment", count: stats.payments, per: 2, points: stats.payments * 2 },
-        { label: "Log expenses", count: stats.expenses, per: 1, points: stats.expenses * 1 },
-        { label: "Add a review", count: stats.reviews, per: 20, points: stats.reviews * 20 },
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}`,
         {
-          label: "Pass rate >80%",
-          count: stats.passRate > 80 ? 1 : 0,
-          per: 50,
-          points: stats.passRate > 80 ? 50 : 0,
-          suffix: `${stats.passRate.toFixed(0)}%`,
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token || SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({ show_on_leaderboard: next }),
         },
-        { label: "Complete CPD", count: stats.cpdEntries, per: 15, points: stats.cpdEntries * 15 },
-        { label: "Fill in mileage", count: stats.mileageEntries, per: 1, points: stats.mileageEntries * 1 },
-        {
-          label: "Complete daily checklist",
-          count: stats.checklistCompletions,
-          per: 5,
-          points: stats.checklistCompletions * 5,
-        },
-      ]
-    : [];
-
-  const points = earn.reduce((a, e) => a + e.points, 0);
-  const tier = tierFor(points);
-  const toNext = tier.next != null ? tier.next - points : 0;
-
-  interface BadgeDef {
-    name: string;
-    desc: string;
-    Icon: LucideIcon;
-    color: string;
-    earned: boolean;
+      );
+      if (!res.ok) throw new Error(await res.text());
+      toast.success(next ? "You'll appear on the leaderboard" : "Hidden from leaderboard");
+    } catch (e) {
+      console.error(e);
+      toast.error("Could not update preference");
+      setShowOnLeaderboard(!next);
+    }
   }
-  const badges: BadgeDef[] = stats
-    ? [
-        { name: "First pupil", desc: "Add your first pupil", Icon: Users, color: "#1877D6", earned: stats.pupils >= 1 },
-        { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#1877D6", earned: stats.lessonsCompleted >= 10 },
-        { name: "Money maker", desc: "Record £1000 in payments", Icon: PoundSterling, color: "#1877D6", earned: stats.paymentsTotal >= 1000 },
-        { name: "Record keeper", desc: "Log 30 expenses", Icon: Receipt, color: "#1877D6", earned: stats.expenses >= 30 },
-        { name: "Top rated", desc: "Get 5 reviews", Icon: Star, color: "#1877D6", earned: stats.reviews >= 5 },
-        { name: "Pass master", desc: "10 pupils passed test", Icon: GraduationCap, color: "#1877D6", earned: stats.passedCount >= 10 },
-        { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#1877D6", earned: stats.cpdHours >= 20 },
-        { name: "Mileage master", desc: "Log 1000 miles", Icon: Car, color: "#6B7280", earned: stats.mileageMiles >= 1000 },
-        { name: "Perfect week", desc: "Complete all lessons in a week", Icon: CalendarIcon, color: "#1877D6", earned: stats.perfectWeek },
-        { name: "Early bird", desc: "Add 5 lessons before 8am", Icon: Clock, color: "#1877D6", earned: stats.earlyMornings >= 5 },
-      ]
-    : [];
 
   return (
-    <div className="min-h-screen bg-white pb-12" style={POPPINS}>
+    <div style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+      {/* Top bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        style={{
+          background: "#0F2044",
+          color: "#FFFFFF",
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
       >
         <button
-          type="button"
-          aria-label="Back"
           onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          aria-label="Back"
+          style={{ background: "transparent", border: 0, color: "#fff", padding: 4, display: "flex" }}
         >
-          <ArrowLeft size={22} color="#FFFFFF" />
+          <ArrowLeft size={22} />
         </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Rewards &amp; badges
-        </div>
-        <div style={{ width: 40 }} />
+        <div style={{ fontWeight: 800, fontSize: 17 }}>DSM Rewards</div>
       </div>
 
-      {/* Points card */}
+      {/* Hero */}
       <div
-        className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16, color: "#FFFFFF" }}
+        style={{
+          background: `linear-gradient(160deg, ${myTier.color} 0%, ${myTier.color}CC 60%, #0F2044 100%)`,
+          padding: "24px 16px",
+          textAlign: "center",
+          color: "#fff",
+        }}
       >
-        <div
-          className="text-[10px] uppercase"
-          style={{ color: "#9CA3AF", letterSpacing: "0.06em" }}
-        >
-          DSM Rewards
+        <div style={{ fontSize: 44, lineHeight: 1 }}>{myTier.emoji}</div>
+        <div style={{ marginTop: 6, fontWeight: 900, fontSize: 22 }}>{myTier.label}</div>
+        <div style={{ marginTop: 10, fontWeight: 900, fontSize: 36 }}>
+          {loading ? "—" : myPoints.toLocaleString()} pts
         </div>
-        <div className="flex items-end justify-between mt-1" style={{ gap: 12 }}>
-          <div className="text-[36px] font-bold leading-none">
-            {loading ? "—" : points.toLocaleString()}
-            <span className="text-[14px] font-medium ml-2" style={{ color: "#9CA3AF" }}>
-              pts
-            </span>
+        {nextTier ? (
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+              {ptsToNext.toLocaleString()} pts to {nextTier.label}
+            </div>
+            <div
+              style={{
+                marginTop: 8,
+                background: "rgba(255,255,255,0.2)",
+                borderRadius: 999,
+                height: 8,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: `${progressPct}%`,
+                  height: "100%",
+                  background: "#fff",
+                  borderRadius: 999,
+                  transition: "width 300ms ease",
+                }}
+              />
+            </div>
           </div>
-          <span
-            className="text-[12px] font-semibold"
+        ) : (
+          <div style={{ marginTop: 12, fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+            Top tier reached
+          </div>
+        )}
+        <div style={{ marginTop: 12, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+          Season {currentYear}
+        </div>
+      </div>
+
+      {/* How to earn */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 12,
+          padding: 16,
+          margin: "16px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <Zap size={18} color="#D97706" />
+          <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>How to earn points</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {EARN_ACTIVITIES.map((a) => (
+            <div
+              key={a.label}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+                padding: 10,
+                borderRadius: 10,
+                background: "#F7F9FC",
+                border: "0.5px solid #E2E6ED",
+              }}
+            >
+              <div style={{ fontSize: 12, color: "#0B1F3A", fontWeight: 600, lineHeight: 1.25 }}>
+                {a.label}
+              </div>
+              <span
+                style={{
+                  alignSelf: "flex-start",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: "2px 8px",
+                  borderRadius: 999,
+                  background: "#E0F4FF",
+                  color: "#1A52A0",
+                }}
+              >
+                +{a.points} pts
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Leaderboard */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 12,
+          padding: 16,
+          margin: "12px 16px 0",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Medal size={18} color="#D97706" />
+          <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>
+            Leaderboard {currentYear}
+          </div>
+        </div>
+        <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
+          Top 20 DSM instructors
+        </div>
+
+        {loading ? (
+          <div style={{ color: "#6B7280", fontSize: 13, padding: "12px 0" }}>Loading…</div>
+        ) : leaderboard.length === 0 ? (
+          <div
             style={{
-              backgroundColor: tier.color,
-              color: tier.textColor,
-              borderRadius: 999,
-              padding: "4px 10px",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#6B7280",
+              fontSize: 13,
+              padding: "12px 0",
             }}
           >
-            {tier.name}
-          </span>
-        </div>
-        <div className="text-[13px] mt-2" style={{ color: "#9CA3AF" }}>
-          {tier.next == null
-            ? "Max tier reached — well done!"
-            : `${Math.max(0, toNext).toLocaleString()} points to ${tierFor(tier.next).name}`}
-        </div>
-      </div>
-
-      <div className="px-4">
-        <SectionHeader>HOW TO EARN</SectionHeader>
-        <Card>
-          <div className="flex flex-col" style={{ gap: 10 }}>
-            {earn.map((e) => (
-              <div
-                key={e.label}
-                className="flex items-center justify-between"
-                style={{ gap: 12 }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>
-                    {e.label}
-                  </div>
-                  <div className="text-[11px]" style={{ color: "#6B7280" }}>
-                    {e.count}
-                    {("suffix" in e && e.suffix) ? ` · ${e.suffix}` : ""} · {e.per}pt
-                    {e.per === 1 ? "" : "s"} each
-                  </div>
-                </div>
-                <span
-                  className="text-[12px] font-semibold shrink-0"
+            <Trophy size={16} color="#9CA3AF" />
+            No leaderboard entries yet this season.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {leaderboard.map((row, i) => {
+              const rank = i + 1;
+              const isMe = row.instructor_id === userId;
+              const rankColor =
+                rank === 1 ? "#D97706" : rank === 2 ? "#9CA3AF" : rank === 3 ? "#CD7F32" : "#0B1F3A";
+              const tKey = (row.tier as TierKey) || tierFromPoints(row.total_points || 0);
+              const t = TIERS[tKey] || TIERS.bronze;
+              const name = row.instructors?.name || "Instructor";
+              const avatar = row.instructors?.profile_image_url || null;
+              return (
+                <div
+                  key={row.instructor_id}
                   style={{
-                    backgroundColor: "#EEF4FB",
-                    color: "#1877D6",
-                    borderRadius: 999,
-                    padding: "3px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "8px 10px",
+                    borderRadius: 10,
+                    background: isMe ? "#E0F4FF" : "#FFFFFF",
+                    borderLeft: isMe ? "4px solid #1A52A0" : "4px solid transparent",
+                    border: isMe ? undefined : "0.5px solid #F0F2F5",
                   }}
                 >
-                  +{e.points}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <SectionHeader>BADGES</SectionHeader>
-        <div className="grid grid-cols-2" style={{ gap: 8 }}>
-          {badges.map((b) => {
-            const Icon = b.Icon;
-            const circleBg = b.earned ? b.color : "#EEF2F7";
-            return (
-              <Card key={b.name}>
-                <div className="flex items-start justify-between" style={{ gap: 8 }}>
                   <div
-                    className="flex items-center justify-center"
                     style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 999,
-                      backgroundColor: circleBg,
-                      opacity: b.earned ? 1 : 0.6,
+                      width: 24,
+                      textAlign: "center",
+                      fontWeight: 800,
+                      color: rankColor,
+                      fontSize: 14,
                     }}
                   >
-                    <Icon size={22} color={b.earned ? "#FFFFFF" : "#9CA3AF"} />
+                    {rank}
                   </div>
-                  {b.earned ? (
-                    <CheckCircle2 size={18} color="#1877D6" />
-                  ) : (
-                    <Lock size={16} color="#9CA3AF" />
-                  )}
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      background: "#F3F4F6",
+                      color: "#0B1F3A",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 800,
+                      fontSize: 12,
+                      overflow: "hidden",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt={name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      initials(name)
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "#0B1F3A",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {isMe ? `${name} (You)` : name}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 14 }}>{t.emoji}</span>
+                    <span style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 13 }}>
+                      {(row.total_points || 0).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-                <div
-                  className="text-[12px] font-semibold mt-2"
-                  style={{ color: b.earned ? "#0B1F3A" : "#6B7280" }}
-                >
-                  {b.name}
-                </div>
-                <div className="text-[11px]" style={{ color: "#6B7280" }}>
-                  {b.desc}
-                </div>
-              </Card>
-            );
-          })}
+              );
+            })}
+          </div>
+        )}
+
+        {!loading && userId && myRank === -1 && (
+          <div style={{ marginTop: 10, fontSize: 12, color: "#6B7280" }}>
+            You're not in the top 20 yet — keep earning points!
+          </div>
+        )}
+      </div>
+
+      {/* Settings */}
+      <div style={{ padding: 16, marginTop: 4 }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 12,
+            padding: "12px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+              Show me on leaderboard
+            </div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+              Turn off to hide your name and points from other instructors.
+            </div>
+          </div>
+          <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
+            <input
+              type="checkbox"
+              checked={showOnLeaderboard}
+              onChange={(e) => toggleShow(e.target.checked)}
+              style={{ opacity: 0, width: 0, height: 0 }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: showOnLeaderboard ? "#1A52A0" : "#D1D5DB",
+                borderRadius: 999,
+                transition: "background 200ms",
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                top: 3,
+                left: showOnLeaderboard ? 21 : 3,
+                width: 20,
+                height: 20,
+                background: "#fff",
+                borderRadius: 999,
+                transition: "left 200ms",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+              }}
+            />
+          </label>
         </div>
       </div>
+
+      <div style={{ height: 32 }} />
     </div>
   );
 }
-
-export default RewardsPage;
