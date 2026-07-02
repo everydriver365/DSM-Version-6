@@ -275,6 +275,13 @@ function TaxReportPage() {
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
           £{fmt(totalIncome)}
         </div>
+        <div className="mt-2 flex items-start gap-1.5 text-[11px] text-[#6B7280]">
+          <span style={{ color: "#1877D6" }}>ⓘ</span>
+          <span>
+            Earnings calculated using per-pupil custom rates and postcode pricing rules where
+            applicable.
+          </span>
+        </div>
         <div className="mt-3 space-y-1.5">
           <Row label="Cash payments" value={`£${fmt(cash)}`} />
           <Row label="Card payments" value={`£${fmt(card)}`} />
@@ -283,6 +290,7 @@ function TaxReportPage() {
           <Row label="Course deposits" value={`£${fmt(deposits)}`} />
         </div>
       </div>
+
 
       {/* EXPENSES */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>

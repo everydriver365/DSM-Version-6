@@ -435,6 +435,13 @@ function MtdPage() {
         <SectionHeader>DIGITAL RECORDS</SectionHeader>
         <Card>
           <Row label="Income (payments)" value={fmtMoney(income)} />
+          <div className="flex items-start gap-1.5 text-[11px] text-[#6B7280] mt-1 mb-2">
+            <span style={{ color: "#1877D6" }}>ⓘ</span>
+            <span>
+              Earnings calculated using per-pupil custom rates and postcode pricing rules where
+              applicable.
+            </span>
+          </div>
           <Row label="Expenses" value={`− ${fmtMoney(expenses)}`} />
           <Row
             label={`Mileage allowance (${miles.toFixed(1)} mi × £${MILEAGE_RATE})`}
@@ -460,6 +467,7 @@ function MtdPage() {
             </Button>
           </div>
         </Card>
+
       </div>
     </div>
   );
