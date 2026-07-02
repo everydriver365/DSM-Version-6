@@ -344,9 +344,11 @@ function PupilDetailPage() {
     setSavingNotes(false);
     if (error) {
       console.error("[pupil] save notes error", error);
+      toast.error("Failed to save — please try again");
       return;
     }
     setNoteSaved(true);
+    toast.success("Notes saved");
     setTimeout(() => setNoteSaved(false), 2000);
   }
 
@@ -372,8 +374,10 @@ function PupilDetailPage() {
         .eq("id", id);
       if (error) throw error;
       setPupil((p) => (p ? { ...p, photo_url: publicUrl } : p));
+      toast.success("Photo uploaded");
     } catch (err) {
       console.error("[pupil] photo upload", err);
+      toast.error("Failed to save — please try again");
     } finally {
       setUploadingPhoto(false);
     }
@@ -387,7 +391,10 @@ function PupilDetailPage() {
       .eq("id", id);
     if (error) {
       console.error("[pupil] consent error", error);
+      toast.error("Failed to save — please try again");
       setPupil((p) => (p ? { ...p, photo_consent: !value } : p));
+    } else {
+      toast.success("Photo consent updated");
     }
   }
 
@@ -1208,7 +1215,7 @@ function PupilDetailPage() {
                             .from("pupils")
                             .update({ test_centre_id: null })
                             .eq("id", pupil.id);
-                          if (error) { toast.error("Could not clear centre"); return; }
+                          if (error) { toast.error("Failed to save — please try again"); return; }
                           setCentreInfo(null);
                           setPupil({ ...pupil, test_centre_id: null });
                           setCentrePickerOpen(false);
@@ -1243,7 +1250,7 @@ function PupilDetailPage() {
                                 .from("pupils")
                                 .update({ test_centre_id: c.id, test_centre: c.name })
                                 .eq("id", pupil.id);
-                              if (error) { toast.error("Could not update centre"); return; }
+                              if (error) { toast.error("Failed to save — please try again"); return; }
                               setCentreInfo(c);
                               setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
                               setCentrePickerOpen(false);
@@ -1623,7 +1630,7 @@ function PupilExtras({
     console.log("[custom-rates] result:", status, data, error);
     if (error) {
       console.error("[pupil] patch error", error);
-      toast.error("Save failed");
+      toast.error("Failed to save — please try again");
       return false;
     }
     return true;
@@ -1660,7 +1667,7 @@ function PupilExtras({
     if (ok) {
       onUpdated({ driving_licence_number: val });
       setEditLic(false);
-      toast.success("Licence saved");
+      toast.success("Driving licence saved");
     }
   }
 
@@ -1698,7 +1705,10 @@ function PupilExtras({
   async function pickColour(hex: string) {
     const next = pupil.calendar_colour === hex ? null : hex;
     const ok = await patchPupil({ calendar_colour: next });
-    if (ok) onUpdated({ calendar_colour: next });
+    if (ok) {
+      onUpdated({ calendar_colour: next });
+      toast.success("Colour updated");
+    }
   }
 
   return (
