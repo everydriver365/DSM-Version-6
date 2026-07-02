@@ -830,10 +830,10 @@ function PupilDetailPage() {
                         )}
                         {l.is_paid && (
                           <span
-                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
+                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
+                            style={{ backgroundColor: "#E7F8EF", color: "#067647", borderColor: "#B8ECCF", ...POPPINS }}
                           >
-                            Paid
+                            Paid ✓
                           </span>
                         )}
                         {unpaid && past && (
