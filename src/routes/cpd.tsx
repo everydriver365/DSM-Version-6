@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BottomSheet } from "../components/dsm/BottomSheet";
+import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
 
 // -- SQL to run manually in Supabase (commented for reference) --
@@ -338,12 +339,11 @@ function CpdPage() {
         {loading ? (
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : grouped.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="text-[14px] font-semibold text-[#0B1F3A]">No CPD entries yet</div>
-            <div className="text-[12px] text-[#6B7280] mt-1">
-              Tap "Add CPD" to record your first activity.
-            </div>
-          </div>
+          <EmptyState
+            icon={GraduationCap}
+            title="No CPD entries yet"
+            description='Tap "Add CPD" to record your first activity.'
+          />
         ) : (
           grouped.map(([year, entries]) => (
             <div key={year} className="mb-4">

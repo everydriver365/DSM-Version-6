@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone } from "lucide-react";
+import { ChevronRight, Plus, Search, X, Megaphone, Users } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { EmptyState } from "../components/dsm/EmptyState";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -330,11 +331,22 @@ function PupilsIndexPage() {
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex items-center justify-center py-20">
-            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
-              No pupils
-            </p>
-          </div>
+          <EmptyState
+            icon={Users}
+            title={tab === "active" ? "No active pupils" : tab === "passed" ? "No passed pupils" : "No archived pupils"}
+            description={tab === "active" ? "Add your first pupil to start tracking lessons." : undefined}
+            action={
+              tab === "active" ? (
+                <Link
+                  to="/pupils/new"
+                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                  style={{ backgroundColor: "#1877D6", fontFamily: "Inter, sans-serif" }}
+                >
+                  <Plus size={16} /> Add pupil
+                </Link>
+              ) : undefined
+            }
+          />
         ) : (
           <div className="flex flex-col">
             {filtered.map((p, idx) => {
