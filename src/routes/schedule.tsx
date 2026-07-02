@@ -139,29 +139,60 @@ function SchedulePage() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     setLessons(null);
     const windowStart = ymd(rangeStart);
     const windowEnd = ymd(rangeEnd);
     console.log("[schedule] date window:", windowStart, windowEnd);
-    supabase
-      .from("lessons")
-      .select(
-        "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url)",
-      )
-      .is("deleted_at", null)
-      .gte("lesson_date", windowStart)
-      .lte("lesson_date", windowEnd)
-      .order("lesson_date", { ascending: true })
-      .order("lesson_time", { ascending: true })
-      .then(({ data, error }) => {
-        const lessons = data as unknown as Lesson[] | null;
-        const rows = lessons ?? [];
-        console.log("[schedule] fetch result:", lessons?.length, "lessons", error);
-        console.log("[schedule] first lesson:", lessons?.[0]);
-        if (error) console.error("[schedule] fetch error", error);
-        setLessons(rows);
-      });
+
+    (async () => {
+      const { data, error } = await supabase
+        .from("lessons")
+        .select(
+          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url)",
+        )
+        .is("deleted_at", null)
+        .gte("lesson_date", windowStart)
+        .lte("lesson_date", windowEnd)
+        .order("lesson_date", { ascending: true })
+        .order("lesson_time", { ascending: true });
+
+      if (cancelled) return;
+
+      const lessons = data as unknown as Lesson[] | null;
+      const rows = lessons ?? [];
+      console.log("[schedule] fetch result:", lessons?.length, "lessons", error);
+      console.log("[schedule] first lesson:", lessons?.[0]);
+      if (error) console.error("[schedule] fetch error", error);
+      setLessons(rows);
+
+      const pupilIds = [...new Set(rows.map((l) => l.pupil_id).filter(Boolean))];
+      if (pupilIds.length > 0) {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        const token = (await supabase.auth.getSession()).data.session?.access_token;
+        if (token) {
+          const pupilRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour`,
+            {
+              headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
+            },
+          );
+          const pupilData = await pupilRes.json();
+          const map: Record<string, string> = {};
+          (pupilData || []).forEach((p: any) => {
+            if (p.calendar_colour) map[p.id] = p.calendar_colour;
+          });
+          if (!cancelled) setColourMap(map);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [rangeStart, rangeEnd]);
+
 
   const lessonsByDate = useMemo(() => {
     const map = new Map<string, Lesson[]>();
