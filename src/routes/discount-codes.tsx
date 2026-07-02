@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BottomSheet } from "../components/dsm/BottomSheet";
+import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
 
 // -- SQL to run manually --
@@ -219,12 +220,11 @@ function DiscountCodesPage() {
         {loading ? (
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : codes.length === 0 ? (
-          <div className="text-center py-10 px-4">
-            <div className="text-[14px] font-semibold text-[#0B1F3A]">No discount codes yet</div>
-            <div className="text-[12px] text-[#6B7280] mt-1">
-              Tap "New code" to create your first offer.
-            </div>
-          </div>
+          <EmptyState
+            icon={Tag}
+            title="No discount codes yet"
+            description='Tap "New code" to create your first offer.'
+          />
         ) : (
           codes.map((c) => (
             <CodeCard
