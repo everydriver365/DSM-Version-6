@@ -18,6 +18,56 @@ export const Route = createFileRoute("/pupils/$id")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
+const GOOGLE_MAPS_KEY =
+  (import.meta as any).env?.VITE_GOOGLE_API_KEY ||
+  (import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY ||
+  "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+
+function loadGoogleMapsPlaces(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as any;
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById("google-maps-places-script") as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      existing.addEventListener("load", () => resolve());
+      if (w.google?.maps?.places) resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.id = "google-maps-places-script";
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(s);
+  });
+}
+
+function fmtUKDate(iso: string | null | undefined) {
+  if (!iso) return "";
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+const THEORY_STATUSES = ["Not started", "Studying", "Booked", "Passed", "Failed"] as const;
+const PRACTICAL_STATUSES = ["Not booked", "Booked", "Passed", "Failed"] as const;
+
+function statusColour(s: string | null | undefined): { bg: string; fg: string } {
+  switch (s) {
+    case "Studying": return { bg: "#F59E0B", fg: "#FFFFFF" };
+    case "Booked": return { bg: "#1877D6", fg: "#FFFFFF" };
+    case "Passed": return { bg: "#16A34A", fg: "#FFFFFF" };
+    case "Failed": return { bg: "#DC2626", fg: "#FFFFFF" };
+    default: return { bg: "#E5E7EB", fg: "#374151" };
+  }
+}
+
 interface Pupil {
   id: string;
   name: string;
