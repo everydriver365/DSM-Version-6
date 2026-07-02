@@ -17,7 +17,7 @@ export const Route = createFileRoute("/payments")({
   component: PaymentsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface OutstandingPupil {
   id: string;
@@ -197,24 +197,24 @@ function PaymentsPage() {
 
       {/* Earnings stats card */}
       {loading ? (
-        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0F2044", borderRadius: 12 }}>
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0C2340", borderRadius: 12 }}>
           <div className="grid grid-cols-2 gap-4">
             <div
               className="skeleton-pulse"
-              style={{ height: 50, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+              style={{ height: 50, backgroundColor: "#EEF2F7", borderRadius: 8 }}
             />
             <div
               className="skeleton-pulse"
-              style={{ height: 50, backgroundColor: "#E2E6ED", borderRadius: 8 }}
+              style={{ height: 50, backgroundColor: "#EEF2F7", borderRadius: 8 }}
             />
           </div>
           <div
             className="skeleton-pulse mt-3"
-            style={{ height: 20, backgroundColor: "#E2E6ED", borderRadius: 4 }}
+            style={{ height: 20, backgroundColor: "#EEF2F7", borderRadius: 4 }}
           />
         </div>
       ) : (
-        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0F2044", borderRadius: 12 }}>
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0C2340", borderRadius: 12 }}>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div
@@ -274,12 +274,12 @@ function PaymentsPage() {
                   borderRadius: 10,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               >
                 <div
                   className="skeleton-pulse rounded-full shrink-0"
-                  style={{ width: 40, height: 40, backgroundColor: "#E2E6ED" }}
+                  style={{ width: 40, height: 40, backgroundColor: "#EEF2F7" }}
                 />
                 <div className="min-w-0 flex-1 flex flex-col gap-2">
                   <div
@@ -287,7 +287,7 @@ function PaymentsPage() {
                     style={{
                       height: 14,
                       width: "60%",
-                      backgroundColor: "#E2E6ED",
+                      backgroundColor: "#EEF2F7",
                       borderRadius: 4,
                     }}
                   />
@@ -297,7 +297,7 @@ function PaymentsPage() {
                   style={{
                     height: 14,
                     width: 50,
-                    backgroundColor: "#E2E6ED",
+                    backgroundColor: "#EEF2F7",
                     borderRadius: 4,
                   }}
                 />
@@ -320,7 +320,7 @@ function PaymentsPage() {
                     style={{
                       width: 40,
                       height: 40,
-                      backgroundColor: "#1A52A0",
+                      backgroundColor: "#1A4A6E",
                       color: "#FFFFFF",
                       ...POPPINS,
                     }}
@@ -329,7 +329,7 @@ function PaymentsPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div
-                      className="text-[14px] font-semibold text-[#0F2044] truncate"
+                      className="text-[14px] font-semibold text-[#0C2340] truncate"
                       style={POPPINS}
                     >
                       {p.name}
@@ -370,7 +370,7 @@ function PaymentsPage() {
                   borderRadius: 10,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               >
                 <div className="min-w-0 flex flex-col gap-2 flex-1">
@@ -379,7 +379,7 @@ function PaymentsPage() {
                     style={{
                       height: 14,
                       width: "70%",
-                      backgroundColor: "#E2E6ED",
+                      backgroundColor: "#EEF2F7",
                       borderRadius: 4,
                     }}
                   />
@@ -388,7 +388,7 @@ function PaymentsPage() {
                     style={{
                       height: 12,
                       width: 50,
-                      backgroundColor: "#E2E6ED",
+                      backgroundColor: "#EEF2F7",
                       borderRadius: 4,
                     }}
                   />
@@ -398,7 +398,7 @@ function PaymentsPage() {
                   style={{
                     height: 14,
                     width: 50,
-                    backgroundColor: "#E2E6ED",
+                    backgroundColor: "#EEF2F7",
                     borderRadius: 4,
                   }}
                 />
@@ -418,7 +418,7 @@ function PaymentsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div
-                      className="text-[14px] font-semibold text-[#0F2044] truncate"
+                      className="text-[14px] font-semibold text-[#0C2340] truncate"
                       style={POPPINS}
                     >
                       {row.pupils?.name ?? "Unknown pupil"}
@@ -449,7 +449,7 @@ function PaymentsPage() {
         style={{
           width: 52,
           height: 52,
-          backgroundColor: "#1A52A0",
+          backgroundColor: "#1A4A6E",
           color: "#FFFFFF",
           right: 16,
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
@@ -572,7 +572,7 @@ function RecordSheet({
         style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, ...POPPINS }}
       >
         <div className="flex items-center justify-between mb-3">
-          <div className="text-[16px] font-semibold text-[#0F2044]" style={POPPINS}>
+          <div className="text-[16px] font-semibold text-[#0C2340]" style={POPPINS}>
             Record payment
           </div>
           <button type="button" aria-label="Close" onClick={onClose}>
@@ -591,12 +591,12 @@ function RecordSheet({
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={{
                 ...POPPINS,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
               }}
             >
               <option value="">Select a pupil…</option>

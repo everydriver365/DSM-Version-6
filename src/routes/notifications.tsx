@@ -21,7 +21,7 @@ export const Route = createFileRoute("/notifications")({
   component: NotificationsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Notification {
   id: string;
@@ -59,7 +59,7 @@ function formatTime(iso: string) {
 function typeIcon(type: string | null) {
   switch (type) {
     case "lesson":
-      return { bg: "#1A52A0", node: <CalendarIcon size={18} color="#FFFFFF" /> };
+      return { bg: "#1A4A6E", node: <CalendarIcon size={18} color="#FFFFFF" /> };
     case "payment":
       return { bg: "#16A34A", node: <PoundSterling size={18} color="#FFFFFF" /> };
     case "pupil":
@@ -251,9 +251,9 @@ function NotificationsPage() {
                         backgroundColor: n.read ? "#F8F9FB" : "#EEF4FB",
                         borderWidth: "0.5px",
                         borderStyle: "solid",
-                        borderColor: "#E2E6ED",
+                        borderColor: "#EEF2F7",
                         borderLeftWidth: n.read ? "0.5px" : "3px",
-                        borderLeftColor: n.read ? "#E2E6ED" : "#1A52A0",
+                        borderLeftColor: n.read ? "#EEF2F7" : "#1A4A6E",
                       }}
                     >
                       <div className="flex items-start gap-3 p-3">
@@ -265,7 +265,7 @@ function NotificationsPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div
-                            className="text-[14px] font-semibold text-[#0F2044] truncate"
+                            className="text-[14px] font-semibold text-[#0C2340] truncate"
                             style={POPPINS}
                           >
                             {n.title}

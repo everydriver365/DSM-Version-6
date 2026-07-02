@@ -14,7 +14,7 @@ export const Route = createFileRoute("/pupils/history/$id")({
   component: PupilHistoryPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Lesson {
   id: string;
@@ -36,7 +36,7 @@ function monthLabel(d: Date) {
 function statusColor(s: string) {
   const x = (s ?? "").toLowerCase();
   if (x === "completed") return "#16A34A";
-  if (x === "confirmed") return "#1A52A0";
+  if (x === "confirmed") return "#1A4A6E";
   if (x === "cancelled") return "#CC2229";
   if (x === "pending") return "#F59E0B";
   return "#6B7280";
@@ -133,12 +133,12 @@ function PupilHistoryPage() {
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div
-                            className="text-[14px] font-semibold text-[#0F2044]"
+                            className="text-[14px] font-semibold text-[#0C2340]"
                             style={POPPINS}
                           >
                             {formatDateShort(d)}
                           </div>
-                          <div className="text-[14px] text-[#0F2044]" style={POPPINS}>
+                          <div className="text-[14px] text-[#0C2340]" style={POPPINS}>
                             {formatTime(l.lesson_time)}
                           </div>
                           <div className="text-[13px] text-[#6B7280]" style={POPPINS}>

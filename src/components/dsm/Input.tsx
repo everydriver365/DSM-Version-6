@@ -16,7 +16,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
         <label
           htmlFor={inputId}
           className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-          style={{ fontFamily: "Poppins, sans-serif" }}
+          style={{ fontFamily: "Inter, sans-serif" }}
         >
           {label}
         </label>
@@ -25,12 +25,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
         ref={ref}
         id={inputId}
         {...rest}
-        className={`h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none ${className}`}
+        className={`h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none ${className}`}
         style={{
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
           borderWidth: "0.5px",
           borderStyle: "solid",
-          borderColor: "#E2E6ED",
+          borderColor: "#EEF2F7",
           ...style,
         }}
       />

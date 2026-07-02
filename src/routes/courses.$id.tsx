@@ -17,9 +17,9 @@ export const Route = createFileRoute("/courses/$id")({
   component: CourseDetailPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const LABEL = "#6B7280";
-const VALUE = "#0F2044";
+const VALUE = "#0C2340";
 
 const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 
@@ -94,7 +94,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#1A52A0";
+  return "#1A4A6E";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -255,7 +255,7 @@ function CourseDetailPage() {
   const spacesLeft = course ? Math.max(0, (course.max_spaces ?? 0) - (course.spaces_taken ?? 0)) : 0;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 32 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       {/* Top bar */}
       <div
         style={{
@@ -458,10 +458,10 @@ function CourseDetailPage() {
                         width: "100%",
                         height: 44,
                         borderRadius: 8,
-                        border: "0.5px solid #E2E6ED",
+                        border: "0.5px solid #EEF2F7",
                         padding: "0 10px",
                         background: "#fff",
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Inter, sans-serif",
                         fontSize: 14,
                         color: "#1A1A2E",
                       }}
@@ -477,12 +477,12 @@ function CourseDetailPage() {
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
-                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A52A0", full: false },
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A4A6E", full: false },
                         { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
                         { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
                         { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
                         { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A52A0", full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A4A6E", full: false },
                         { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
                       ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
                         const active = (form.lesson_time_preference || "flexible") === key;
@@ -502,10 +502,10 @@ function CourseDetailPage() {
                               gap: 10,
                               padding: "10px 12px",
                               borderRadius: 12,
-                              border: `1.5px solid ${active ? color : "#E2E6ED"}`,
+                              border: `1.5px solid ${active ? color : "#EEF2F7"}`,
                               background: active ? `${color}10` : "#fff",
                               cursor: "pointer",
-                              fontFamily: "Poppins, sans-serif",
+                              fontFamily: "Inter, sans-serif",
                               textAlign: "left",
                             }}
                           >
@@ -518,7 +518,7 @@ function CourseDetailPage() {
                               <Icon size={18} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>{label}</span>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0C2340" }}>{label}</span>
                               <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
                             </div>
                           </button>
@@ -528,7 +528,7 @@ function CourseDetailPage() {
                     {form.lesson_time_preference === "custom" && (
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>From</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Inter, sans-serif" }}>From</span>
                           <input
                             type="time"
                             value={form.lesson_time_from ?? "09:00"}
@@ -536,14 +536,14 @@ function CourseDetailPage() {
                               setForm((prev) => (prev ? { ...prev, lesson_time_from: e.target.value || null } : prev))
                             }
                             style={{
-                              height: 44, borderRadius: 10, border: "0.5px solid #E2E6ED",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                              height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
                               color: "#1A1A2E", background: "#fff",
                             }}
                           />
                         </label>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>To</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Inter, sans-serif" }}>To</span>
                           <input
                             type="time"
                             value={form.lesson_time_to ?? "17:00"}
@@ -551,8 +551,8 @@ function CourseDetailPage() {
                               setForm((prev) => (prev ? { ...prev, lesson_time_to: e.target.value || null } : prev))
                             }
                             style={{
-                              height: 44, borderRadius: 10, border: "0.5px solid #E2E6ED",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                              height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
                               color: "#1A1A2E", background: "#fff",
                             }}
                           />
@@ -584,10 +584,10 @@ function CourseDetailPage() {
                             style={{
                               height: 36,
                               borderRadius: 8,
-                              border: `1px solid ${active ? "#0F2044" : "#E2E6ED"}`,
-                              background: active ? "#0F2044" : "#fff",
-                              color: active ? "#fff" : "#0F2044",
-                              fontFamily: "Poppins, sans-serif",
+                              border: `1px solid ${active ? "#0C2340" : "#EEF2F7"}`,
+                              background: active ? "#0C2340" : "#fff",
+                              color: active ? "#fff" : "#0C2340",
+                              fontFamily: "Inter, sans-serif",
                               fontSize: 12,
                               fontWeight: 600,
                               cursor: "pointer",
@@ -636,10 +636,10 @@ function CourseDetailPage() {
                                 height: 36,
                                 padding: "0 10px",
                                 borderRadius: 999,
-                                border: `1px solid ${active ? "#0F2044" : "#E2E6ED"}`,
-                                background: active ? "#0F2044" : "#fff",
-                                color: active ? "#fff" : "#0F2044",
-                                fontFamily: "Poppins, sans-serif",
+                                border: `1px solid ${active ? "#0C2340" : "#EEF2F7"}`,
+                                background: active ? "#0C2340" : "#fff",
+                                color: active ? "#fff" : "#0C2340",
+                                fontFamily: "Inter, sans-serif",
                                 fontSize: 12,
                                 fontWeight: 600,
                                 cursor: "pointer",
@@ -668,10 +668,10 @@ function CourseDetailPage() {
                               height: 30,
                               padding: "0 12px",
                               borderRadius: 999,
-                              border: "1px solid #E2E6ED",
+                              border: "1px solid #EEF2F7",
                               background: "#fff",
-                              color: "#0F2044",
-                              fontFamily: "Poppins, sans-serif",
+                              color: "#0C2340",
+                              fontFamily: "Inter, sans-serif",
                               fontSize: 11,
                               fontWeight: 600,
                               cursor: "pointer",
@@ -716,9 +716,9 @@ function CourseDetailPage() {
                       style={{
                         width: "100%",
                         borderRadius: 8,
-                        border: "0.5px solid #E2E6ED",
+                        border: "0.5px solid #EEF2F7",
                         padding: 10,
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Inter, sans-serif",
                         fontSize: 14,
                         color: "#1A1A2E",
                         resize: "vertical",
@@ -993,7 +993,7 @@ function DetailRow({ label, value, last }: { label: string; value: string; last?
         alignItems: "flex-start",
         gap: 12,
         padding: "10px 12px",
-        borderBottom: last ? "none" : "0.5px solid #E2E6ED",
+        borderBottom: last ? "none" : "0.5px solid #EEF2F7",
       }}
     >
       <div style={{ fontSize: 13, color: LABEL }}>{label}</div>
@@ -1076,10 +1076,10 @@ function SelectRow({
           width: "100%",
           height: 44,
           borderRadius: 8,
-          border: "0.5px solid #E2E6ED",
+          border: "0.5px solid #EEF2F7",
           padding: "0 10px",
           background: "#fff",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
           fontSize: 14,
           color: "#1A1A2E",
         }}
@@ -1421,10 +1421,10 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A52A0" : "#E2E6ED"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A4A6E" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             fontSize: 14,
             color: "#1A1A2E",
             background: "#fff",
@@ -1434,7 +1434,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
           {error}
         </div>
       )}
@@ -1448,7 +1448,7 @@ function PostcodeAutocomplete(props: {
             zIndex: 50,
             marginTop: 4,
             background: "#fff",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 8,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
             maxHeight: 240,
@@ -1470,11 +1470,11 @@ function PostcodeAutocomplete(props: {
                 gap: 8,
                 cursor: "pointer",
                 background: active === i ? "#F8F9FB" : "#fff",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               <MapPin size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0F2044", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: 700, color: "#0C2340", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

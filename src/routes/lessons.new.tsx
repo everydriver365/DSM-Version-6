@@ -29,10 +29,10 @@ interface Pupil {
 const DURATIONS = [30, 45, 60, 90, 120];
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
+  fontFamily: "Inter, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
-  borderColor: "#E2E6ED",
+  borderColor: "#EEF2F7",
 };
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -40,7 +40,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
     <label
       htmlFor={htmlFor}
       className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
       {children}
     </label>
@@ -170,7 +170,7 @@ function NewLessonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "Poppins, sans-serif" }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -179,11 +179,11 @@ function NewLessonPage() {
             onClick={() => navigate({ to: "/schedule" })}
             className="flex items-center justify-center w-8 h-8 -ml-1"
           >
-            <ArrowLeft size={20} color="#0F2044" />
+            <ArrowLeft size={20} color="#0C2340" />
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
+            style={{ color: "#0C2340", fontFamily: "Inter, sans-serif" }}
           >
             Add lesson
           </p>
@@ -202,7 +202,7 @@ function NewLessonPage() {
               id="pupil"
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select a pupil</option>
@@ -254,7 +254,7 @@ function NewLessonPage() {
               id="duration"
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               {DURATIONS.map((m) => (
@@ -276,10 +276,10 @@ function NewLessonPage() {
                 setPickup(e.target.value);
               }}
               placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             />
-            <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Poppins, sans-serif" }}>
+            <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Inter, sans-serif" }}>
               Defaults to the pupil&rsquo;s home address if left blank.
             </p>
           </div>
@@ -291,7 +291,7 @@ function NewLessonPage() {
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             />
           </div>

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/checklist")({
   component: ChecklistPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const GROUPS: { title: string; items: string[] }[] = [
   {
@@ -157,7 +157,7 @@ function ChecklistPage() {
               className="bg-white"
               style={{
                 borderRadius: 10,
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 overflow: "hidden",
               }}
             >
@@ -191,7 +191,7 @@ function ChecklistPage() {
                     <span
                       className="text-[14px]"
                       style={{
-                        color: "#0F2044",
+                        color: "#0C2340",
                         textDecoration: on ? "line-through" : "none",
                         opacity: on ? 0.7 : 1,
                       }}

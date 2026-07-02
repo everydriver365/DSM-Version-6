@@ -15,7 +15,7 @@ export const Route = createFileRoute("/tests")({
   component: TestsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -235,20 +235,20 @@ function TestCard({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1A52A0", ...POPPINS }}
+          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1A4A6E", ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044", ...POPPINS }}>
+            <div className="text-[14px] font-semibold truncate" style={{ color: "#0C2340", ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
               <span
                 className="text-[11px] font-medium shrink-0"
                 style={{
-                  color: "#1A52A0",
+                  color: "#1A4A6E",
                   backgroundColor: "#EEF4FB",
                   padding: "2px 8px",
                   borderRadius: 999,
@@ -273,7 +273,7 @@ function TestCard({
               </span>
             )}
           </div>
-          <div className="text-[13px] font-bold mt-1" style={{ color: "#0F2044", ...POPPINS }}>
+          <div className="text-[13px] font-bold mt-1" style={{ color: "#0C2340", ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
           <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
@@ -307,8 +307,8 @@ function TestCard({
                       padding: "0 12px",
                       borderRadius: 8,
                       backgroundColor: "transparent",
-                      border: "1px solid #1A52A0",
-                      color: "#1A52A0",
+                      border: "1px solid #1A4A6E",
+                      color: "#1A4A6E",
                       ...POPPINS,
                     }}
                   >
@@ -429,7 +429,7 @@ function AddTestSheet({
             style={{
               height: 44,
               borderRadius: 8,
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
               fontSize: 14,
               ...POPPINS,
@@ -500,7 +500,7 @@ function LogResultSheet({
           className="rounded-[12px] p-3"
           style={{ backgroundColor: "#F3F4F6" }}
         >
-          <div className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
+          <div className="text-[14px] font-semibold" style={{ color: "#0C2340" }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
           <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -555,7 +555,7 @@ function LogResultSheet({
             className="w-full px-3 py-2 bg-white"
             style={{
               borderRadius: 8,
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
               fontSize: 14,
               resize: "none",

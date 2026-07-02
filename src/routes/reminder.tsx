@@ -15,7 +15,7 @@ export const Route = createFileRoute("/reminder")({
   component: ReminderPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -131,7 +131,7 @@ function ReminderPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium mt-4"
-            style={{ color: "#1A52A0" }}
+            style={{ color: "#1A4A6E" }}
           >
             {allVisibleSelected ? "Deselect all" : "Select all"}
           </button>
@@ -148,12 +148,12 @@ function ReminderPage() {
             placeholder="Search pupils"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
             style={{
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           />
         </div>
@@ -178,7 +178,7 @@ function ReminderPage() {
                     gap: 10,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: isSel ? "#1A52A0" : "#E2E6ED",
+                    borderColor: isSel ? "#1A4A6E" : "#EEF2F7",
                   }}
                 >
                   <span
@@ -187,10 +187,10 @@ function ReminderPage() {
                       width: 18,
                       height: 18,
                       borderRadius: 4,
-                      backgroundColor: isSel ? "#1A52A0" : "#ffffff",
+                      backgroundColor: isSel ? "#1A4A6E" : "#ffffff",
                       borderWidth: "0.5px",
                       borderStyle: "solid",
-                      borderColor: isSel ? "#1A52A0" : "#9CA3AF",
+                      borderColor: isSel ? "#1A4A6E" : "#9CA3AF",
                       color: "#ffffff",
                       fontSize: 12,
                       lineHeight: 1,
@@ -204,13 +204,13 @@ function ReminderPage() {
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      backgroundColor: "#1A52A0",
+                      backgroundColor: "#1A4A6E",
                     }}
                   >
                     {initials(p.name)}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] text-[#0F2044] truncate">{p.name}</div>
+                    <div className="text-[14px] text-[#0C2340] truncate">{p.name}</div>
                     <div className="text-[13px] text-[#6B7280] truncate">
                       {p.phone ?? "No phone"}
                     </div>
@@ -233,10 +233,10 @@ function ReminderPage() {
                 padding: "8px 12px",
                 borderRadius: 999,
                 backgroundColor: "#F3F4F6",
-                color: "#0F2044",
+                color: "#0C2340",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
               }}
             >
               {t.label}
@@ -249,12 +249,12 @@ function ReminderPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
-          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none resize-none"
+          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none resize-none"
           style={{
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#E2E6ED",
+            borderColor: "#EEF2F7",
           }}
         />
         <div className="mt-1 text-[12px] text-[#6B7280] text-right">

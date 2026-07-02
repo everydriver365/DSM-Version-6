@@ -3,7 +3,7 @@ import { Bell, BellOff, CheckCircle2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const VAPID_PUBLIC_KEY =
   "BCPt7KU8Me_IlOTU1OlId15UTBFlWgTiZbW-IfQmA0M1NH0__IOfyhekALKRRPFSSCrKDPQ2y0qXK7wwftTBKWE";
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -105,7 +105,7 @@ export function PushPermissionCard() {
         className="rounded-xl p-3"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
+          border: "0.5px solid #EEF2F7",
           boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
         }}
       >
@@ -121,13 +121,13 @@ export function PushPermissionCard() {
             {isDenied ? (
               <AlertTriangle size={18} color="#B45309" />
             ) : (
-              <Bell size={18} color="#1A52A0" />
+              <Bell size={18} color="#1A4A6E" />
             )}
           </div>
           <div className="min-w-0 flex-1">
             <div
               className="text-[14px] font-semibold"
-              style={{ ...POPPINS, color: "#0F2044" }}
+              style={{ ...POPPINS, color: "#0C2340" }}
             >
               {isUnsupported
                 ? "Notifications not supported"
@@ -162,7 +162,7 @@ export function PushPermissionCard() {
                   onClick={enable}
                   disabled={busy}
                   className="text-[13px] font-semibold rounded-md px-3 py-1.5 disabled:opacity-60"
-                  style={{ ...POPPINS, backgroundColor: "#1A52A0", color: "#FFFFFF" }}
+                  style={{ ...POPPINS, backgroundColor: "#1A4A6E", color: "#FFFFFF" }}
                 >
                   {busy ? "Enabling…" : "Enable notifications"}
                 </button>

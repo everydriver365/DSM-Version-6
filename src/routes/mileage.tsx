@@ -18,7 +18,7 @@ export const Route = createFileRoute("/mileage")({
   component: MileagePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const TAX_RATE = 0.45;
 
 interface MileageRow {
@@ -182,7 +182,7 @@ function MileagePage() {
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
-          style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}
+          style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
         >
           <div className="flex">
             <div className="flex-1 pr-3">
@@ -242,7 +242,7 @@ function MileagePage() {
                       {formatDateLabel(log.trip_date)}
                     </span>
                     <div className="flex items-center" style={{ gap: 8 }}>
-                      <span className="text-[14px] font-bold text-[#0F2044]">
+                      <span className="text-[14px] font-bold text-[#0C2340]">
                         {Number(log.miles).toFixed(1)} mi
                       </span>
                       <button
@@ -257,14 +257,14 @@ function MileagePage() {
                     </div>
                   </div>
                   <div className="mt-1 flex items-center justify-between">
-                    <span className="text-[14px] font-semibold text-[#0F2044]">
+                    <span className="text-[14px] font-semibold text-[#0C2340]">
                       {log.description || "Trip"}
                     </span>
                     <span
                       className="text-[10px] uppercase font-medium px-2 py-0.5 rounded-full"
                       style={{
                         color: log.purpose === "business" ? "#FFFFFF" : "#FFFFFF",
-                        backgroundColor: log.purpose === "business" ? "#1A52A0" : "#6B7280",
+                        backgroundColor: log.purpose === "business" ? "#1A4A6E" : "#6B7280",
                         letterSpacing: "0.05em",
                       }}
                     >
@@ -292,7 +292,7 @@ function MileagePage() {
             }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0F2044]">Add mileage</div>
+              <div className="text-[16px] font-semibold text-[#0C2340]">Add mileage</div>
               <button
                 type="button"
                 onClick={() => setShowSheet(false)}
@@ -306,7 +306,7 @@ function MileagePage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Date
                 </label>
@@ -314,12 +314,12 @@ function MileagePage() {
                   type="date"
                   value={tripDate}
                   onChange={(e) => setTripDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                   }}
                 />
               </div>
@@ -343,7 +343,7 @@ function MileagePage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Purpose
                 </label>
@@ -353,12 +353,12 @@ function MileagePage() {
                     onClick={() => setPurpose("business")}
                     className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
                     style={{
-                      backgroundColor: purpose === "business" ? "#1A52A0" : "transparent",
+                      backgroundColor: purpose === "business" ? "#1A4A6E" : "transparent",
                       color: purpose === "business" ? "#FFFFFF" : "#6B7280",
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: "Inter, sans-serif",
                       borderWidth: purpose === "business" ? 0 : "0.5px",
                       borderStyle: "solid",
-                      borderColor: "#E2E6ED",
+                      borderColor: "#EEF2F7",
                     }}
                   >
                     Business
@@ -370,10 +370,10 @@ function MileagePage() {
                     style={{
                       backgroundColor: purpose === "personal" ? "#6B7280" : "transparent",
                       color: purpose === "personal" ? "#FFFFFF" : "#6B7280",
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: "Inter, sans-serif",
                       borderWidth: purpose === "personal" ? 0 : "0.5px",
                       borderStyle: "solid",
-                      borderColor: "#E2E6ED",
+                      borderColor: "#EEF2F7",
                     }}
                   >
                     Personal

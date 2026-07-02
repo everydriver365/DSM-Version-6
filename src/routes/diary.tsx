@@ -17,7 +17,7 @@ export const Route = createFileRoute("/diary")({
   component: DiaryPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface DiaryRow {
   id: string;
@@ -274,9 +274,9 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronLeft size={20} color="#1A52A0" />
+            <ChevronLeft size={20} color="#1A4A6E" />
           </button>
-          <div className="text-[15px] font-semibold text-[#0F2044]">
+          <div className="text-[15px] font-semibold text-[#0C2340]">
             {monthLabel(month)}
           </div>
           <button
@@ -286,7 +286,7 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronRight size={20} color="#1A52A0" />
+            <ChevronRight size={20} color="#1A4A6E" />
           </button>
         </div>
 
@@ -312,11 +312,11 @@ function DiaryPage() {
               const hasLesson = lessonDays.has(dStr);
               const hasEntry = entryDays.has(dStr);
               const circleBg = isSelected
-                ? "#0F2044"
+                ? "#0C2340"
                 : isToday
-                  ? "#1A52A0"
+                  ? "#1A4A6E"
                   : "transparent";
-              const textColor = isSelected || isToday ? "#FFFFFF" : "#0F2044";
+              const textColor = isSelected || isToday ? "#FFFFFF" : "#0C2340";
               return (
                 <button
                   key={i}
@@ -342,7 +342,7 @@ function DiaryPage() {
                     {hasLesson && (
                       <span
                         className="rounded-full"
-                        style={{ width: 4, height: 4, backgroundColor: "#1A52A0" }}
+                        style={{ width: 4, height: 4, backgroundColor: "#1A4A6E" }}
                       />
                     )}
                     {hasEntry && (
@@ -365,7 +365,7 @@ function DiaryPage() {
             <div className="flex items-center" style={{ gap: 6 }}>
               <span
                 className="rounded-full"
-                style={{ width: 6, height: 6, backgroundColor: "#1A52A0" }}
+                style={{ width: 6, height: 6, backgroundColor: "#1A4A6E" }}
               />
               <span className="text-[11px] text-[#6B7280]">Lessons</span>
             </div>
@@ -395,7 +395,7 @@ function DiaryPage() {
                 <Card key={l.id} className="!py-3 !px-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="text-[14px] font-semibold text-[#0F2044] truncate">
+                      <div className="text-[14px] font-semibold text-[#0C2340] truncate">
                         {l.pupils?.name ?? "Pupil"}
                       </div>
                       <div className="text-[13px] text-[#6B7280]">
@@ -405,7 +405,7 @@ function DiaryPage() {
                     </div>
                     <span
                       className="text-[11px] rounded-full px-2 py-1"
-                      style={{ backgroundColor: "#EEF4FB", color: "#1A52A0" }}
+                      style={{ backgroundColor: "#EEF4FB", color: "#1A4A6E" }}
                     >
                       Lesson
                     </span>
@@ -421,7 +421,7 @@ function DiaryPage() {
                 >
                   <div className="flex items-start" style={{ gap: 12 }}>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[14px] font-semibold text-[#0F2044] truncate">
+                      <div className="text-[14px] font-semibold text-[#0C2340] truncate">
                         {e.title}
                       </div>
                       {e.body && (
@@ -468,7 +468,7 @@ function DiaryPage() {
             }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0F2044]">
+              <div className="text-[16px] font-semibold text-[#0C2340]">
                 Add entry
               </div>
               <button
@@ -499,12 +499,12 @@ function DiaryPage() {
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={5}
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                     resize: "vertical",
                   }}
                 />
@@ -527,12 +527,12 @@ function DiaryPage() {
                 <select
                   value={entryType}
                   onChange={(e) => setEntryType(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                   }}
                 >
                   {TYPES.map((t) => (
@@ -577,7 +577,7 @@ function DiaryPage() {
                 <div className="text-[11px] uppercase font-medium text-[#6B7280]">
                   {viewEntry.entry_type}
                 </div>
-                <div className="text-[18px] font-semibold text-[#0F2044]">
+                <div className="text-[18px] font-semibold text-[#0C2340]">
                   {viewEntry.title}
                 </div>
                 <div className="text-[12px] text-[#6B7280] mt-1">

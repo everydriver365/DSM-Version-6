@@ -11,7 +11,7 @@ export const Route = createFileRoute("/lessons/reschedule/$id")({
   component: RescheduleLessonPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Lesson {
   id: string;
@@ -180,7 +180,7 @@ function RescheduleLessonPage() {
               >
                 Current lesson
               </div>
-              <div className="text-[16px] font-semibold mt-1" style={{ color: "#0F2044" }}>
+              <div className="text-[16px] font-semibold mt-1" style={{ color: "#0C2340" }}>
                 {pupilName}
               </div>
               <div className="text-[14px] font-bold mt-1" style={{ color: "#CC2229" }}>
@@ -194,7 +194,7 @@ function RescheduleLessonPage() {
 
           <SectionHeader>NEW DATE & TIME</SectionHeader>
           <Card>
-            <label className="text-[12px] font-semibold" style={{ color: "#0F2044" }}>
+            <label className="text-[12px] font-semibold" style={{ color: "#0C2340" }}>
               Date
             </label>
             <input
@@ -206,14 +206,14 @@ function RescheduleLessonPage() {
               style={{
                 height: 44,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
-                color: "#0F2044",
+                border: "1px solid #EEF2F7",
+                color: "#0C2340",
                 fontSize: 14,
                 ...POPPINS,
               }}
             />
 
-            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0F2044" }}>
+            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0C2340" }}>
               Time
             </label>
             <input
@@ -224,14 +224,14 @@ function RescheduleLessonPage() {
               style={{
                 height: 44,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
-                color: "#0F2044",
+                border: "1px solid #EEF2F7",
+                color: "#0C2340",
                 fontSize: 14,
                 ...POPPINS,
               }}
             />
 
-            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0F2044" }}>
+            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0C2340" }}>
               Duration
             </label>
             <select
@@ -241,8 +241,8 @@ function RescheduleLessonPage() {
               style={{
                 height: 44,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
-                color: "#0F2044",
+                border: "1px solid #EEF2F7",
+                color: "#0C2340",
                 fontSize: 14,
                 ...POPPINS,
               }}
@@ -258,7 +258,7 @@ function RescheduleLessonPage() {
           <SectionHeader>NOTIFY PUPIL</SectionHeader>
           <Card>
             <div className="flex items-center justify-between">
-              <span className="text-[14px] font-medium" style={{ color: "#0F2044" }}>
+              <span className="text-[14px] font-medium" style={{ color: "#0C2340" }}>
                 Send SMS notification to pupil
               </span>
               <button
@@ -271,7 +271,7 @@ function RescheduleLessonPage() {
                   width: 44,
                   height: 26,
                   borderRadius: 999,
-                  backgroundColor: notify ? "#16A34A" : "#E2E6ED",
+                  backgroundColor: notify ? "#16A34A" : "#EEF2F7",
                   transition: "background-color 0.15s",
                 }}
               >
@@ -291,7 +291,7 @@ function RescheduleLessonPage() {
 
             {notify && (
               <div className="mt-3">
-                <label className="text-[12px] font-semibold" style={{ color: "#0F2044" }}>
+                <label className="text-[12px] font-semibold" style={{ color: "#0C2340" }}>
                   SMS preview
                 </label>
                 <textarea
@@ -304,8 +304,8 @@ function RescheduleLessonPage() {
                   className="w-full mt-1 px-3 py-2 bg-white"
                   style={{
                     borderRadius: 8,
-                    border: "1px solid #E2E6ED",
-                    color: "#0F2044",
+                    border: "1px solid #EEF2F7",
+                    color: "#0C2340",
                     fontSize: 14,
                     resize: "none",
                     ...POPPINS,
@@ -328,7 +328,7 @@ function RescheduleLessonPage() {
             style={{
               height: 52,
               borderRadius: 10,
-              backgroundColor: canSubmit ? "#1A52A0" : "#9CA3AF",
+              backgroundColor: canSubmit ? "#1A4A6E" : "#9CA3AF",
               fontSize: 15,
               ...POPPINS,
             }}

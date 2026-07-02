@@ -28,7 +28,7 @@ export const Route = createFileRoute("/notificationsettings")({
   component: NotificationSettingsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type SettingsState = {
   lesson_booked: boolean;
@@ -165,10 +165,10 @@ function NotificationSettingsPage() {
               className="flex items-center justify-center rounded-full"
               style={{ width: 32, height: 32, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
-              <Bell size={16} color="#1A52A0" />
+              <Bell size={16} color="#1A4A6E" />
             </span>
             <div className="flex-1">
-              <div className="text-[14px] font-semibold text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-semibold text-[#0C2340]" style={POPPINS}>
                 Push notifications
               </div>
               <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
@@ -189,7 +189,7 @@ function NotificationSettingsPage() {
               style={{
                 width: 44,
                 height: 26,
-                backgroundColor: pushStatus === "enabled" ? "#1A52A0" : "#E2E6ED",
+                backgroundColor: pushStatus === "enabled" ? "#1A4A6E" : "#EEF2F7",
                 opacity: pushStatus === "unsupported" || pushBusy ? 0.5 : 1,
               }}
             >
@@ -245,7 +245,7 @@ function NotificationSettingsPage() {
                     }}
                     className="text-white text-[12px] font-semibold rounded-lg"
                     style={{
-                      backgroundColor: "#1A52A0",
+                      backgroundColor: "#1A4A6E",
                       padding: "8px 12px",
                       ...POPPINS,
                     }}
@@ -297,8 +297,8 @@ function NotificationSettingsPage() {
                 type="time"
                 value={state.quiet_from}
                 onChange={(e) => setKey("quiet_from", e.target.value)}
-                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0F2044]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", ...POPPINS }}
+                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0C2340]"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
               />
             </label>
             <label className="flex-1">
@@ -307,8 +307,8 @@ function NotificationSettingsPage() {
                 type="time"
                 value={state.quiet_to}
                 onChange={(e) => setKey("quiet_to", e.target.value)}
-                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0F2044]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", ...POPPINS }}
+                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0C2340]"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
               />
             </label>
           </div>
@@ -338,9 +338,9 @@ function ToggleRow({
   return (
     <div
       className="flex items-center justify-between px-4 py-3"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
     >
-      <span className="flex-1 text-[14px] text-[#0F2044] pr-3" style={POPPINS}>{label}</span>
+      <span className="flex-1 text-[14px] text-[#0C2340] pr-3" style={POPPINS}>{label}</span>
       <button
         type="button"
         role="switch"
@@ -350,7 +350,7 @@ function ToggleRow({
         style={{
           width: 44,
           height: 26,
-          backgroundColor: value ? "#1A52A0" : "#E2E6ED",
+          backgroundColor: value ? "#1A4A6E" : "#EEF2F7",
         }}
       >
         <span

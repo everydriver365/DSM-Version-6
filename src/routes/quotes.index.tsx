@@ -27,7 +27,7 @@ export const Route = createFileRoute("/quotes/")({
   component: QuotesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type TabKey = "pending" | "accepted" | "declined" | "resent" | "expired";
 
@@ -56,7 +56,7 @@ function statusColor(s: TabKey | string) {
   if (s === "accepted") return "#16A34A";
   if (s === "declined") return "#CC2229";
   if (s === "expired") return "#6B7280";
-  if (s === "resent") return "#1A52A0";
+  if (s === "resent") return "#1A4A6E";
   return "#F59E0B";
 }
 
@@ -172,7 +172,7 @@ function QuotesPage() {
 
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
       <div
         style={{
           position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
@@ -199,13 +199,13 @@ function QuotesPage() {
           style={{
             width: "100%",
             background: "#fff",
-            color: "#1A52A0",
+            color: "#1A4A6E",
             border: "1px solid #e3e6ec",
             borderRadius: 10,
             padding: "10px 12px",
             fontSize: 14,
             fontWeight: 700,
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             cursor: "pointer",
             appearance: "none",
             backgroundImage:
@@ -240,9 +240,9 @@ function QuotesPage() {
             </div>
             <button onClick={() => navigate({ to: "/quotes/new" })}
               style={{
-                marginTop: 8, background: "#1A52A0", color: "#fff", border: "none",
+                marginTop: 8, background: "#1A4A6E", color: "#fff", border: "none",
                 borderRadius: 10, padding: "10px 16px", fontWeight: 600, fontSize: 14,
-                cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                cursor: "pointer", fontFamily: "Inter, sans-serif",
               }}>
               + New quote
             </button>
@@ -264,14 +264,14 @@ function QuotesPage() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
-                        fontSize: 14, fontWeight: 600, color: "#0F2044",
+                        fontSize: 14, fontWeight: 600, color: "#0C2340",
                         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                         display: "flex", alignItems: "center", gap: 6,
                       }}>
                         <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{q.recipient_name}</span>
                         {isRev && (
                           <span style={{
-                            background: "#1A52A0", color: "#fff", fontSize: 10, fontWeight: 700,
+                            background: "#1A4A6E", color: "#fff", fontSize: 10, fontWeight: 700,
                             padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
                           }}>REVISION</span>
                         )}
@@ -292,7 +292,7 @@ function QuotesPage() {
                         {q.hours ? `${q.hours}h` : ""}{q.course_type ? ` · ${q.course_type}` : ""}
                       </div>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0F2044" }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0C2340" }}>
                       £{Number(q.price).toFixed(0)}
                     </div>
                   </div>
@@ -317,7 +317,7 @@ function QuotesPage() {
                       display: "flex", flexDirection: "column", gap: 6,
                     }}>
                       {counter != null && (
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0C2340" }}>
                           Pupil suggested: <span style={{ color: "#CC2229" }}>£{counter.toFixed(2)}</span>
                         </div>
                       )}
@@ -352,9 +352,9 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#1A52A0", border: "1px solid #1A52A0", color: "#fff",
+                          background: "#1A4A6E", border: "1px solid #1A4A6E", color: "#fff",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                          cursor: "pointer", fontFamily: "Inter, sans-serif",
                         }}
                       >
                         <RefreshCw size={14} /> Revise & resend
@@ -371,9 +371,9 @@ function QuotesPage() {
                           toast.success(`Revision sent ${formatDate(revision.sent_at)} · £${Number(revision.price).toFixed(0)}`);
                         }}
                         style={{
-                          background: "none", border: "none", color: "#1A52A0",
+                          background: "none", border: "none", color: "#1A4A6E",
                           fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          fontFamily: "Poppins, sans-serif", padding: 0,
+                          fontFamily: "Inter, sans-serif", padding: 0,
                         }}
                       >
                         View revision →
@@ -396,9 +396,9 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#fff", border: "1px solid #1A52A0", color: "#1A52A0",
+                          background: "#fff", border: "1px solid #1A4A6E", color: "#1A4A6E",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                          cursor: "pointer", fontFamily: "Inter, sans-serif",
                         }}
                       >
                         <Link2 size={14} /> Copy link
@@ -433,9 +433,9 @@ function QuotesPage() {
                           }}
                           style={{
                             display: "inline-flex", alignItems: "center", gap: 6,
-                            background: "#0F2044", border: "1px solid #0F2044", color: "#fff",
+                            background: "#0C2340", border: "1px solid #0C2340", color: "#fff",
                             fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                            cursor: "pointer", fontFamily: "Poppins, sans-serif",
+                            cursor: "pointer", fontFamily: "Inter, sans-serif",
                           }}
                         >
                           <Send size={14} /> Send

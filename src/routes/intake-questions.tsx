@@ -27,7 +27,7 @@ export const Route = createFileRoute("/intake-questions")({
   component: IntakeQuestionsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type QType = "text" | "yes_no" | "multiple_choice" | "number";
 
@@ -284,7 +284,7 @@ function IntakeQuestionsPage() {
       {/* Top bar */}
       <div
         style={{
-          backgroundColor: "#0F2044",
+          backgroundColor: "#0C2340",
           color: "#FFFFFF",
           padding: "14px 16px",
           display: "flex",
@@ -321,7 +321,7 @@ function IntakeQuestionsPage() {
             alignItems: "center",
             gap: 6,
             backgroundColor: "#FFFFFF",
-            color: "#0F2044",
+            color: "#0C2340",
             border: "none",
             borderRadius: 8,
             padding: "8px 12px",
@@ -348,8 +348,8 @@ function IntakeQuestionsPage() {
           alignItems: "flex-start",
         }}
       >
-        <ClipboardList size={20} color="#1A52A0" style={{ flexShrink: 0, marginTop: 2 }} />
-        <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0F2044" }}>
+        <ClipboardList size={20} color="#1A4A6E" style={{ flexShrink: 0, marginTop: 2 }} />
+        <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0C2340" }}>
           These questions are shown to new pupils when they register or book for the first
           time. Use them to gather important information upfront.
         </div>
@@ -374,7 +374,7 @@ function IntakeQuestionsPage() {
               key={i}
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 borderRadius: 12,
                 padding: "12px 14px",
                 marginBottom: 8,
@@ -383,14 +383,14 @@ function IntakeQuestionsPage() {
                 gap: 12,
               }}
             >
-              <div style={{ flex: 1, fontSize: 14, color: "#0F2044" }}>{s.text}</div>
+              <div style={{ flex: 1, fontSize: 14, color: "#0C2340" }}>{s.text}</div>
               <button
                 onClick={() => addStarter(s)}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 4,
-                  background: "#0F2044",
+                  background: "#0C2340",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: 8,
@@ -425,7 +425,7 @@ function IntakeQuestionsPage() {
               }}
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 borderRadius: 12,
                 padding: "14px 16px",
                 margin: "0 16px 8px",
@@ -450,7 +450,7 @@ function IntakeQuestionsPage() {
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: "#0F2044",
+                    color: "#0C2340",
                     marginBottom: 6,
                   }}
                 >
@@ -463,7 +463,7 @@ function IntakeQuestionsPage() {
                       padding: "2px 8px",
                       borderRadius: 6,
                       backgroundColor: "#EEF2FF",
-                      color: "#1A52A0",
+                      color: "#1A4A6E",
                       fontWeight: 500,
                     }}
                   >
@@ -498,7 +498,7 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#1A52A0",
+                      color: "#1A4A6E",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -571,7 +571,7 @@ function IntakeQuestionsPage() {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0F2044", marginBottom: 8 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340", marginBottom: 8 }}>
               Delete this question?
             </div>
             <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>
@@ -583,9 +583,9 @@ function IntakeQuestionsPage() {
                 style={{
                   padding: "8px 14px",
                   borderRadius: 8,
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                   background: "#FFFFFF",
-                  color: "#0F2044",
+                  color: "#0C2340",
                   fontWeight: 500,
                   cursor: "pointer",
                   ...POPPINS,
@@ -632,7 +632,7 @@ function Toggle({
         height: 24,
         borderRadius: 12,
         border: "none",
-        backgroundColor: checked ? "#1A52A0" : "#D1D5DB",
+        backgroundColor: checked ? "#1A4A6E" : "#D1D5DB",
         position: "relative",
         cursor: "pointer",
         flexShrink: 0,
@@ -757,7 +757,7 @@ function QuestionSheet({
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           overflowY: "auto",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
       >
         <div
@@ -769,7 +769,7 @@ function QuestionSheet({
             borderBottom: "1px solid #F1F3F7",
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 600, color: "#0F2044" }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340" }}>
             {initial ? "Edit question" : "Add question"}
           </div>
           <button
@@ -800,13 +800,13 @@ function QuestionSheet({
               rows={3}
               style={{
                 width: "100%",
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 borderRadius: 10,
                 padding: "10px 40px 10px 12px",
                 fontSize: 14,
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 resize: "vertical",
-                color: "#0F2044",
+                color: "#0C2340",
                 outline: "none",
               }}
             />
@@ -839,13 +839,13 @@ function QuestionSheet({
               width: "100%",
               marginTop: 6,
               marginBottom: 16,
-              border: "1px solid #E2E6ED",
+              border: "1px solid #EEF2F7",
               borderRadius: 10,
               padding: "10px 12px",
               fontSize: 14,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               backgroundColor: "#FFFFFF",
-              color: "#0F2044",
+              color: "#0C2340",
               outline: "none",
             }}
           >
@@ -874,12 +874,12 @@ function QuestionSheet({
                       placeholder={`Option ${i + 1}`}
                       style={{
                         flex: 1,
-                        border: "1px solid #E2E6ED",
+                        border: "1px solid #EEF2F7",
                         borderRadius: 10,
                         padding: "8px 12px",
                         fontSize: 14,
-                        fontFamily: "Poppins, sans-serif",
-                        color: "#0F2044",
+                        fontFamily: "Inter, sans-serif",
+                        color: "#0C2340",
                         outline: "none",
                       }}
                     />
@@ -908,7 +908,7 @@ function QuestionSheet({
                     marginTop: 8,
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
-                    color: "#1A52A0",
+                    color: "#1A4A6E",
                     borderRadius: 10,
                     padding: "8px 12px",
                     fontSize: 13,
@@ -917,7 +917,7 @@ function QuestionSheet({
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 4,
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   <Plus size={14} /> Add option
@@ -939,7 +939,7 @@ function QuestionSheet({
             }}
           >
             <div>
-              <div style={{ fontSize: 14, fontWeight: 500, color: "#0F2044" }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: "#0C2340" }}>
                 Required
               </div>
               <div style={{ fontSize: 12, color: "#6B7280" }}>
@@ -956,14 +956,14 @@ function QuestionSheet({
               width: "100%",
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0F2044",
+              backgroundColor: "#0C2340",
               color: "#FFFFFF",
               border: "none",
               fontSize: 15,
               fontWeight: 600,
               cursor: saving ? "not-allowed" : "pointer",
               opacity: saving ? 0.6 : 1,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {saving ? "Saving…" : "Save question"}

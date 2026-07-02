@@ -38,7 +38,7 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const DAYS = [
   { key: "mon", label: "Monday" },
@@ -459,13 +459,13 @@ function SettingsPage() {
             ) : (
               <div
                 className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-                style={{ width: 56, height: 56, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
+                style={{ width: 56, height: 56, backgroundColor: "#1A4A6E", color: "#FFFFFF", ...POPPINS }}
               >
                 {initials(displayedName)}
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <div className="text-[18px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+              <div className="text-[18px] font-semibold text-[#0C2340] truncate" style={POPPINS}>
                 {displayedName}
               </div>
               <div className="text-[13px] text-[#6B7280] truncate" style={POPPINS}>
@@ -499,7 +499,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Clock size={18} color="#1A52A0" />}
+            icon={<Clock size={18} color="#1A4A6E" />}
             iconBg="#DBEAFE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
@@ -515,7 +515,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Calendar size={18} color="#1A52A0" />}
+            icon={<Calendar size={18} color="#1A4A6E" />}
             iconBg="#DBEAFE"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
@@ -534,7 +534,7 @@ function SettingsPage() {
         <Card>
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                 Pass booking fee to pupil
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -551,7 +551,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: passBookingFee ? "#1A52A0" : "#D1D5DB",
+                background: passBookingFee ? "#1A4A6E" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -580,21 +580,21 @@ function SettingsPage() {
         <div
           style={{
             background: "#FFFFFF",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 12,
             padding: 16,
           }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <Bell size={18} color="#1A52A0" />
-            <div className="text-[15px] font-semibold text-[#0F2044]" style={POPPINS}>
+            <Bell size={18} color="#1A4A6E" />
+            <div className="text-[15px] font-semibold text-[#0C2340]" style={POPPINS}>
               Lesson reminders
             </div>
           </div>
 
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                 Send pupils lesson reminders
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -611,7 +611,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: sendLessonReminders ? "#1A52A0" : "#D1D5DB",
+                background: sendLessonReminders ? "#1A4A6E" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -636,18 +636,18 @@ function SettingsPage() {
           </div>
 
           {sendLessonReminders && (
-            <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid #E2E6ED" }}>
-              <div className="text-[14px] font-medium text-[#0F2044] mb-2" style={POPPINS}>
+            <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <div className="text-[14px] font-medium text-[#0C2340] mb-2" style={POPPINS}>
                 Reminder timing
               </div>
               <select
                 value={reminderTiming}
                 onChange={(e) => updateReminderTiming(e.target.value as "evening" | "morning" | "both")}
-                className="w-full text-[14px] text-[#0F2044]"
+                className="w-full text-[14px] text-[#0C2340]"
                 style={{
                   ...POPPINS,
                   padding: "10px 12px",
-                  border: "0.5px solid #E2E6ED",
+                  border: "0.5px solid #EEF2F7",
                   borderRadius: 8,
                   background: "#FFFFFF",
                 }}
@@ -666,7 +666,7 @@ function SettingsPage() {
           {/* Hourly rate */}
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                 Hourly rate
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -686,12 +686,12 @@ function SettingsPage() {
                     setHourlyRate(val);
                   }
                 }}
-                className="text-[14px] font-medium text-[#0F2044] text-right"
+                className="text-[14px] font-medium text-[#0C2340] text-right"
                 style={{
                   width: 72,
                   height: 36,
                   borderRadius: 8,
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                   padding: "0 8px",
                   ...POPPINS,
                 }}
@@ -702,21 +702,21 @@ function SettingsPage() {
           {/* Default lesson duration */}
           <div
             className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
           >
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                 Default lesson duration
               </div>
             </div>
             <select
               value={defaultDuration}
               onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0F2044]"
+              className="text-[13px] text-[#0C2340]"
               style={{
                 height: 36,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 padding: "0 8px",
                 backgroundColor: "#fff",
                 ...POPPINS,
@@ -736,10 +736,10 @@ function SettingsPage() {
           {/* Buffer between lessons */}
           <div
             className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
           >
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                 Buffer between lessons
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -749,11 +749,11 @@ function SettingsPage() {
             <select
               value={bufferMinutes}
               onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0F2044]"
+              className="text-[13px] text-[#0C2340]"
               style={{
                 height: 36,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 padding: "0 8px",
                 backgroundColor: "#fff",
                 ...POPPINS,
@@ -778,7 +778,7 @@ function SettingsPage() {
             style={{
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0F2044",
+              backgroundColor: "#0C2340",
               border: "none",
               opacity: savingRates ? 0.7 : 1,
               cursor: savingRates ? "not-allowed" : "pointer",
@@ -793,13 +793,13 @@ function SettingsPage() {
         <Card
           style={{
             background: "#fff",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 12,
             padding: 16,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <MapPin size={18} color="#1A52A0" />
+            <MapPin size={18} color="#1A4A6E" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Coverage area
             </span>
@@ -819,7 +819,7 @@ function SettingsPage() {
                 width: "100%",
                 height: 44,
                 padding: "0 36px 0 12px",
-                border: `0.5px solid ${postcodeShowError ? "#CC2229" : "#E2E6ED"}`,
+                border: `0.5px solid ${postcodeShowError ? "#CC2229" : "#EEF2F7"}`,
                 borderRadius: 10,
                 fontSize: 14,
                 background: "#fff",
@@ -851,7 +851,7 @@ function SettingsPage() {
               width: "100%",
               height: 44,
               padding: "0 12px",
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               borderRadius: 10,
               fontSize: 14,
               marginTop: 6,
@@ -875,7 +875,7 @@ function SettingsPage() {
             style={{
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0F2044",
+              backgroundColor: "#0C2340",
               border: "none",
               opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
               cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
@@ -887,9 +887,9 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>PRICING RULES</SectionHeader>
-        <Card style={{ background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 16 }}>
+        <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <PoundSterling size={18} color="#1A52A0" />
+            <PoundSterling size={18} color="#1A4A6E" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Pricing rules
             </span>
@@ -912,7 +912,7 @@ function SettingsPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  border: "0.5px solid #E2E6ED",
+                  border: "0.5px solid #EEF2F7",
                   borderRadius: 10,
                   padding: 12,
                   background: "#fff",
@@ -929,7 +929,7 @@ function SettingsPage() {
                         padding: "2px 8px",
                         borderRadius: 999,
                         background: "#EEF2FF",
-                        color: "#1A52A0",
+                        color: "#1A4A6E",
                         ...POPPINS,
                       }}
                     >
@@ -957,7 +957,7 @@ function SettingsPage() {
                     type="checkbox"
                     checked={r.is_active}
                     onChange={(e) => toggleRule(r.id, e.target.checked)}
-                    style={{ width: 18, height: 18, accentColor: "#1A52A0" }}
+                    style={{ width: 18, height: 18, accentColor: "#1A4A6E" }}
                   />
                 </label>
                 <button
@@ -978,7 +978,7 @@ function SettingsPage() {
             ))}
           </div>
 
-          <div style={{ borderTop: "0.5px solid #E2E6ED", paddingTop: 14 }}>
+          <div style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1A2E", marginBottom: 10, ...POPPINS }}>
               Add new rule
             </div>
@@ -991,7 +991,7 @@ function SettingsPage() {
               placeholder="e.g. Evening Surcharge"
               style={{
                 width: "100%", height: 44, padding: "0 12px",
-                border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                 marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
               }}
             />
@@ -1002,7 +1002,7 @@ function SettingsPage() {
               onChange={(e) => setRuleType(e.target.value as RuleType)}
               style={{
                 width: "100%", height: 44, padding: "0 12px",
-                border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                 marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
               }}
             >
@@ -1021,7 +1021,7 @@ function SettingsPage() {
                   onChange={(e) => setRuleTime(e.target.value)}
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                     marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
                   }}
                 />
@@ -1037,7 +1037,7 @@ function SettingsPage() {
                       key={d.key}
                       style={{
                         display: "inline-flex", alignItems: "center", gap: 6,
-                        padding: "6px 10px", border: "0.5px solid #E2E6ED",
+                        padding: "6px 10px", border: "0.5px solid #EEF2F7",
                         borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
                       }}
                     >
@@ -1045,7 +1045,7 @@ function SettingsPage() {
                         type="checkbox"
                         checked={ruleDays[d.key]}
                         onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
-                        style={{ accentColor: "#1A52A0" }}
+                        style={{ accentColor: "#1A4A6E" }}
                       />
                       {d.label.slice(0, 3)}
                     </label>
@@ -1070,7 +1070,7 @@ function SettingsPage() {
                     placeholder="SO22, SO23 9AX"
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: `0.5px solid ${invalid.length ? "#CC2229" : "#E2E6ED"}`,
+                      border: `0.5px solid ${invalid.length ? "#CC2229" : "#EEF2F7"}`,
                       borderRadius: 10, fontSize: 14,
                       marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
                       background: "#fff", color: "#1A1A2E",
@@ -1109,7 +1109,7 @@ function SettingsPage() {
                   onChange={(e) => setRuleHours(Number(e.target.value))}
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                     marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
                   }}
                 />
@@ -1124,7 +1124,7 @@ function SettingsPage() {
                   onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                     marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
                   }}
                 >
@@ -1141,7 +1141,7 @@ function SettingsPage() {
                   onChange={(e) => setRuleAdjValue(Number(e.target.value))}
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #E2E6ED", borderRadius: 10, fontSize: 14,
+                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
                     marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
                   }}
                 />
@@ -1154,7 +1154,7 @@ function SettingsPage() {
               disabled={savingRule || hasInvalidPostcodes}
               className="w-full text-[14px] font-semibold text-white mt-4"
               style={{
-                height: 48, borderRadius: 10, backgroundColor: "#0F2044", border: "none",
+                height: 48, borderRadius: 10, backgroundColor: "#0C2340", border: "none",
                 opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
                 cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -1169,7 +1169,7 @@ function SettingsPage() {
         <SectionHeader>PUPILS</SectionHeader>
         <Card className="!p-0">
           <MenuRow
-            icon={<ClipboardList size={18} color="#1A52A0" />}
+            icon={<ClipboardList size={18} color="#1A4A6E" />}
             iconBg="#E0F2FE"
             label="Intake questions"
             onClick={() => navigate({ to: "/intake-questions" })}
@@ -1258,7 +1258,7 @@ function MenuRow({
       type="button"
       onClick={onClick}
       className="w-full flex items-center gap-3 px-4 py-3 text-left"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
     >
       <div
         className="flex items-center justify-center rounded-full shrink-0"
@@ -1266,7 +1266,7 @@ function MenuRow({
       >
         {icon}
       </div>
-      <span className="flex-1 text-[14px] text-[#0F2044]" style={POPPINS}>{label}</span>
+      <span className="flex-1 text-[14px] text-[#0C2340]" style={POPPINS}>{label}</span>
       {value ? (
         <span className="text-[13px] text-[#6B7280]" style={POPPINS}>{value}</span>
       ) : null}
@@ -1283,7 +1283,7 @@ function PlaceholderBlock({ text }: { text: string }) {
   return (
     <div
       className="px-4 py-4 text-[13px] text-[#6B7280]"
-      style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED", ...POPPINS }}
+      style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7", ...POPPINS }}
     >
       {text}
     </div>

@@ -109,7 +109,7 @@ function MarketplaceProductPage() {
       {/* TOP BAR */}
       <div
         style={{
-          background: "#0F2044",
+          background: "#0C2340",
           color: "#fff",
           height: TOP_BAR_HEIGHT,
           padding: "0 16px",
@@ -177,8 +177,8 @@ function MarketplaceProductPage() {
               width: "100%",
               height: 200,
               background: tile.image_url
-                ? `#F2F4F8 url(${tile.image_url}) center/cover`
-                : tile.gradient || "#F2F4F8",
+                ? `#F3F8FF url(${tile.image_url}) center/cover`
+                : tile.gradient || "#F3F8FF",
               position: "relative",
               display: "flex",
               alignItems: "center",
@@ -211,7 +211,7 @@ function MarketplaceProductPage() {
               style={{
                 fontSize: 22,
                 fontWeight: 700,
-                color: "#0F2044",
+                color: "#0C2340",
                 marginBottom: 6,
               }}
             >
@@ -242,7 +242,7 @@ function MarketplaceProductPage() {
             <div
               style={{
                 background: "#fff",
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 borderRadius: 12,
                 padding: 16,
                 marginTop: 16,
@@ -279,7 +279,7 @@ function MarketplaceProductPage() {
               left: 0,
               right: 0,
               background: "#fff",
-              borderTop: "0.5px solid #E2E6ED",
+              borderTop: "0.5px solid #EEF2F7",
               padding: 16,
               zIndex: 20,
             }}
@@ -291,7 +291,7 @@ function MarketplaceProductPage() {
                 }
                 style={{
                   width: "100%",
-                  background: "#0F2044",
+                  background: "#0C2340",
                   color: "#fff",
                   border: "none",
                   padding: "14px",
@@ -337,5 +337,5 @@ function MarketplaceProductPage() {
 
 function CategoryIcon({ category }: { category: string }) {
   const Icon = CATEGORY_ICONS[category] || Star;
-  return <Icon size={64} color="#0F2044" style={{ opacity: 0.3 }} />;
+  return <Icon size={64} color="#0C2340" style={{ opacity: 0.3 }} />;
 }

@@ -50,11 +50,11 @@ const marketplaceItems: MarketplaceItem[] = [
     title: "GPS Tracker",
     subtitle: "£14.99/month per vehicle",
     description: "Live location, journey history, harsh event alerts, Geotab integration.",
-    gradient: "linear-gradient(135deg, #1A52A0, #0F2044)",
+    gradient: "linear-gradient(135deg, #1A4A6E, #0C2340)",
     icon: MapPin,
     badge: "NEW",
     badgeBg: "#FFFFFF",
-    badgeColor: "#1A52A0",
+    badgeColor: "#1A4A6E",
     category: "tracking",
     action: "plan",
     buttonText: "Add to plan →",
@@ -162,13 +162,13 @@ function MarketplacePage() {
 
     return (
       
-        <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Inter, sans-serif" }}>
           <div style={{ maxWidth: 480, margin: "0 auto" }}>
             {/* Top bar */}
             <div
               className="flex items-center"
               style={{
-                background: "#0F2044",
+                background: "#0C2340",
                 color: "#FFFFFF",
                 padding: "12px 16px",
                 position: "sticky",
@@ -196,7 +196,7 @@ function MarketplacePage() {
               </button>
               <h1
                 className="font-bold"
-                style={{ fontSize: 18, color: "#FFFFFF", fontFamily: "Poppins, sans-serif", margin: 0 }}
+                style={{ fontSize: 18, color: "#FFFFFF", fontFamily: "Inter, sans-serif", margin: 0 }}
               >
                 DSM Marketplace
               </h1>
@@ -206,7 +206,7 @@ function MarketplacePage() {
             <div style={{ padding: "24px 16px", background: "#F7FAFC" }}>
               <h2
                 className="font-bold"
-                style={{ fontSize: 18, color: "#0F2044", fontFamily: "Poppins, sans-serif", margin: 0 }}
+                style={{ fontSize: 18, color: "#0C2340", fontFamily: "Inter, sans-serif", margin: 0 }}
               >
                 Everything to grow your driving business
               </h2>
@@ -214,7 +214,7 @@ function MarketplacePage() {
                 style={{
                   fontSize: 13,
                   color: "#6B7280",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   marginTop: 6,
                   lineHeight: 1.4,
                 }}
@@ -245,12 +245,12 @@ function MarketplacePage() {
                     style={{
                       flexShrink: 0,
                       fontSize: 13,
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: "Inter, sans-serif",
                       padding: "8px 16px",
                       borderRadius: 999,
                       border: "none",
                       cursor: "pointer",
-                      background: isActive ? "#0F2044" : "#F3F4F6",
+                      background: isActive ? "#0C2340" : "#F3F4F6",
                       color: isActive ? "#FFFFFF" : "#374151",
                       transition: "background 0.15s ease, color 0.15s ease",
                     }}
@@ -289,7 +289,7 @@ function MarketplacePage() {
                           fontSize: 10,
                           backgroundColor: item.badgeBg,
                           color: item.badgeColor,
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           zIndex: 2,
                         }}
                       >
@@ -318,7 +318,7 @@ function MarketplacePage() {
                         style={{
                           fontSize: 15,
                           color: "#FFFFFF",
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           lineHeight: 1.3,
                         }}
                       >
@@ -328,7 +328,7 @@ function MarketplacePage() {
                         style={{
                           fontSize: 12,
                           color: "rgba(255,255,255,0.85)",
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           marginTop: 2,
                         }}
                       >
@@ -338,7 +338,7 @@ function MarketplacePage() {
                         style={{
                           fontSize: 11,
                           color: "rgba(255,255,255,0.7)",
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           marginTop: 6,
                           lineHeight: 1.35,
                           minHeight: 42,
@@ -354,7 +354,7 @@ function MarketplacePage() {
                           marginTop: 10,
                           fontSize: 12,
                           color: "#FFFFFF",
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           background: "rgba(255,255,255,0.2)",
                           border: "none",
                           borderRadius: 8,

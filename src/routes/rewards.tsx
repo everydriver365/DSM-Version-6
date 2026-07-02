@@ -29,7 +29,7 @@ export const Route = createFileRoute("/rewards")({
   component: RewardsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Stats {
   pupils: number;
@@ -51,11 +51,11 @@ interface Stats {
 
 function tierFor(points: number) {
   if (points >= 2000)
-    return { name: "Platinum", color: "#E5E4E2", textColor: "#0F2044", next: null as number | null };
+    return { name: "Platinum", color: "#E5E4E2", textColor: "#0C2340", next: null as number | null };
   if (points >= 1000)
-    return { name: "Gold", color: "#FFD700", textColor: "#0F2044", next: 2000 };
+    return { name: "Gold", color: "#FFD700", textColor: "#0C2340", next: 2000 };
   if (points >= 500)
-    return { name: "Silver", color: "#C0C0C0", textColor: "#0F2044", next: 1000 };
+    return { name: "Silver", color: "#C0C0C0", textColor: "#0C2340", next: 1000 };
   return { name: "Bronze", color: "#CD7F32", textColor: "#FFFFFF", next: 500 };
 }
 
@@ -227,12 +227,12 @@ function RewardsPage() {
   const badges: BadgeDef[] = stats
     ? [
         { name: "First pupil", desc: "Add your first pupil", Icon: Users, color: "#16A34A", earned: stats.pupils >= 1 },
-        { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#1A52A0", earned: stats.lessonsCompleted >= 10 },
+        { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#1A4A6E", earned: stats.lessonsCompleted >= 10 },
         { name: "Money maker", desc: "Record £1000 in payments", Icon: PoundSterling, color: "#F59E0B", earned: stats.paymentsTotal >= 1000 },
         { name: "Record keeper", desc: "Log 30 expenses", Icon: Receipt, color: "#7C3AED", earned: stats.expenses >= 30 },
         { name: "Top rated", desc: "Get 5 reviews", Icon: Star, color: "#F59E0B", earned: stats.reviews >= 5 },
         { name: "Pass master", desc: "10 pupils passed test", Icon: GraduationCap, color: "#16A34A", earned: stats.passedCount >= 10 },
-        { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#1A52A0", earned: stats.cpdHours >= 20 },
+        { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#1A4A6E", earned: stats.cpdHours >= 20 },
         { name: "Mileage master", desc: "Log 1000 miles", Icon: Car, color: "#6B7280", earned: stats.mileageMiles >= 1000 },
         { name: "Perfect week", desc: "Complete all lessons in a week", Icon: CalendarIcon, color: "#16A34A", earned: stats.perfectWeek },
         { name: "Early bird", desc: "Add 5 lessons before 8am", Icon: Clock, color: "#F59E0B", earned: stats.earlyMornings >= 5 },
@@ -263,7 +263,7 @@ function RewardsPage() {
       {/* Points card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16, color: "#FFFFFF" }}
+        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16, color: "#FFFFFF" }}
       >
         <div
           className="text-[10px] uppercase"
@@ -308,7 +308,7 @@ function RewardsPage() {
                 style={{ gap: 12 }}
               >
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium" style={{ color: "#0F2044" }}>
+                  <div className="text-[13px] font-medium" style={{ color: "#0C2340" }}>
                     {e.label}
                   </div>
                   <div className="text-[11px]" style={{ color: "#6B7280" }}>
@@ -321,7 +321,7 @@ function RewardsPage() {
                   className="text-[12px] font-semibold shrink-0"
                   style={{
                     backgroundColor: "#EEF4FB",
-                    color: "#1A52A0",
+                    color: "#1A4A6E",
                     borderRadius: 999,
                     padding: "3px 10px",
                   }}
@@ -337,7 +337,7 @@ function RewardsPage() {
         <div className="grid grid-cols-2" style={{ gap: 8 }}>
           {badges.map((b) => {
             const Icon = b.Icon;
-            const circleBg = b.earned ? b.color : "#E2E6ED";
+            const circleBg = b.earned ? b.color : "#EEF2F7";
             return (
               <Card key={b.name}>
                 <div className="flex items-start justify-between" style={{ gap: 8 }}>
@@ -361,7 +361,7 @@ function RewardsPage() {
                 </div>
                 <div
                   className="text-[12px] font-semibold mt-2"
-                  style={{ color: b.earned ? "#0F2044" : "#6B7280" }}
+                  style={{ color: b.earned ? "#0C2340" : "#6B7280" }}
                 >
                   {b.name}
                 </div>

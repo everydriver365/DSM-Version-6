@@ -67,12 +67,12 @@ function StatCard({ label, value }: { label: string; value: string }) {
         background: "#F8F9FB",
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         borderRadius: 12,
         padding: 14,
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 600, color: "#0F2044" }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 600, color: "#0C2340" }}>{value}</div>
       <div
         style={{
           fontSize: 11,
@@ -206,14 +206,14 @@ function AdminFeatured() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
       </div>
@@ -221,7 +221,7 @@ function AdminFeatured() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
       <TopBar onBack={() => navigate({ to: "/admin" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)", paddingBottom: 32 }}>
         {/* stats */}
@@ -238,7 +238,7 @@ function AdminFeatured() {
               alignItems: "center",
               gap: 8,
               background: "#F8F9FB",
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               borderRadius: 10,
               padding: "8px 12px",
             }}
@@ -254,7 +254,7 @@ function AdminFeatured() {
                 outline: "none",
                 background: "transparent",
                 fontSize: 14,
-                color: "#0F2044",
+                color: "#0C2340",
               }}
             />
           </div>
@@ -274,7 +274,7 @@ function AdminFeatured() {
                   background: "#fff",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                   borderRadius: 12,
                   padding: 14,
                   display: "flex",
@@ -284,7 +284,7 @@ function AdminFeatured() {
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0C2340" }}>
                       {inst.name ?? "Unnamed"}
                     </div>
                     {inst.featured_listing && (

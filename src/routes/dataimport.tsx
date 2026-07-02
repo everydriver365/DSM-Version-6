@@ -15,7 +15,7 @@ export const Route = createFileRoute("/dataimport")({
   component: DataImportPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const HEADERS = ["name", "first_name", "last_name", "phone", "email", "status"] as const;
 type Row = Record<(typeof HEADERS)[number], string>;
@@ -173,15 +173,15 @@ function DataImportPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#1A52A0",
+              borderColor: "#1A4A6E",
               borderRadius: 12,
               padding: 16,
               display: "flex",
               gap: 12,
             }}
           >
-            <Info size={20} color="#1A52A0" style={{ flexShrink: 0, marginTop: 2 }} />
-            <div className="text-[13px] text-[#0F2044]">
+            <Info size={20} color="#1A4A6E" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div className="text-[13px] text-[#0C2340]">
               Upload a CSV file to import pupils in bulk. Download the template below to get started.
             </div>
           </div>
@@ -200,7 +200,7 @@ function DataImportPage() {
             style={{
               borderWidth: "1px",
               borderStyle: "dashed",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               borderRadius: 12,
               padding: 32,
               gap: 8,
@@ -240,23 +240,23 @@ function DataImportPage() {
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                   borderRadius: 8,
                 }}
               >
                 <table className="w-full text-[12px]" style={{ borderCollapse: "collapse" }}>
                   <thead>
-                    <tr style={{ backgroundColor: "#F2F4F8" }}>
+                    <tr style={{ backgroundColor: "#F3F8FF" }}>
                       {HEADERS.map((h) => (
-                        <th key={h} className="text-left px-2 py-2 text-[#0F2044] font-semibold">{h}</th>
+                        <th key={h} className="text-left px-2 py-2 text-[#0C2340] font-semibold">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {preview.map((r, i) => (
-                      <tr key={i} style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                      <tr key={i} style={{ borderTop: "0.5px solid #EEF2F7" }}>
                         {HEADERS.map((h) => (
-                          <td key={h} className="px-2 py-2 text-[#0F2044] whitespace-nowrap">{r[h]}</td>
+                          <td key={h} className="px-2 py-2 text-[#0C2340] whitespace-nowrap">{r[h]}</td>
                         ))}
                       </tr>
                     ))}
@@ -279,7 +279,7 @@ function DataImportPage() {
                   style={{
                     height: 6,
                     borderRadius: 999,
-                    backgroundColor: "#E2E6ED",
+                    backgroundColor: "#EEF2F7",
                     overflow: "hidden",
                   }}
                 >
@@ -287,7 +287,7 @@ function DataImportPage() {
                     style={{
                       width: `${progress}%`,
                       height: "100%",
-                      backgroundColor: "#1A52A0",
+                      backgroundColor: "#1A4A6E",
                       transition: "width 0.2s",
                     }}
                   />
@@ -352,7 +352,7 @@ function DataImportPage() {
             style={{
               borderWidth: "0.5px",
               borderStyle: "dashed",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               borderRadius: 12,
             }}
           >

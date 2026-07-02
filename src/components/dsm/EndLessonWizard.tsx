@@ -41,7 +41,7 @@ import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 export interface EndLessonWizardProps {
   open: boolean;
@@ -652,7 +652,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             flex: 1,
             height: 4,
             borderRadius: 999,
-            backgroundColor: n <= current ? "#16A34A" : "#E2E6ED",
+            backgroundColor: n <= current ? "#16A34A" : "#EEF2F7",
           }}
         />
       ))}
@@ -694,7 +694,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             width: 36,
             height: 4,
             borderRadius: 999,
-            backgroundColor: "#E2E6ED",
+            backgroundColor: "#EEF2F7",
             margin: "0 auto 12px",
           }}
         />
@@ -724,7 +724,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 1 — SUMMARY */}
         {!done && step === 1 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0F2044" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
               How did it go?
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -745,7 +745,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               className="w-full p-3 text-[14px]"
               style={{
                 borderRadius: 10,
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#1A1A2E",
                 resize: "vertical",
@@ -758,7 +758,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 style={{
                   borderRadius: 10,
                   backgroundColor: "#F8F9FB",
-                  border: "0.5px solid #E2E6ED",
+                  border: "0.5px solid #EEF2F7",
                 }}
               >
                 <div
@@ -819,7 +819,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 2 — PAYMENT */}
         {!done && step === 2 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0F2044" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
               Record payment
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -831,14 +831,14 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               style={{
                 borderRadius: 10,
                 backgroundColor: "#F8F9FB",
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
               }}
             >
               <div>
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
                   {pricing.adjustments.length > 0 ? "Total" : "Lesson cost"}
                 </div>
-                <div className="text-[18px]" style={{ color: "#0F2044", fontWeight: 700 }}>
+                <div className="text-[18px]" style={{ color: "#0C2340", fontWeight: 700 }}>
                   £{lessonCost.toFixed(2)}
                 </div>
                 {pricing.adjustments.length > 0 && (
@@ -859,7 +859,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <div
                   className="text-[14px]"
                   style={{
-                    color: balance < 0 ? "#CC2229" : balance > 0 ? "#16A34A" : "#0F2044",
+                    color: balance < 0 ? "#CC2229" : balance > 0 ? "#16A34A" : "#0C2340",
                     fontWeight: 600,
                   }}
                 >
@@ -890,7 +890,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     style={{
                       borderRadius: 10,
                       backgroundColor: active ? "#F0FDF4" : "#F8F9FB",
-                      border: `1px solid ${active ? "#16A34A" : "#E2E6ED"}`,
+                      border: `1px solid ${active ? "#16A34A" : "#EEF2F7"}`,
                       color: active ? "#16A34A" : "#1A1A2E",
                       minHeight: 72,
                     }}
@@ -919,7 +919,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               className="w-full p-3 text-[14px]"
               style={{
                 borderRadius: 10,
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#1A1A2E",
               }}
@@ -944,7 +944,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               disabled={qrGenerating || paymentSaving || !!qrUrl}
               className="mt-2 w-full h-11 rounded-lg text-[14px] font-semibold flex items-center justify-center gap-2"
               style={{
-                backgroundColor: "#0F2044",
+                backgroundColor: "#0C2340",
                 color: "#fff",
                 border: "none",
                 opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
@@ -960,7 +960,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 style={{
                   borderRadius: 10,
                   backgroundColor: "#F8F9FB",
-                  border: "0.5px solid #E2E6ED",
+                  border: "0.5px solid #EEF2F7",
                 }}
               >
                 <div
@@ -968,12 +968,12 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     background: "#fff",
                     padding: 12,
                     borderRadius: 8,
-                    border: "1px solid #E2E6ED",
+                    border: "1px solid #EEF2F7",
                   }}
                 >
                   <QRCodeSVG value={qrUrl} size={180} />
                 </div>
-                <div className="text-[13px] mt-3" style={{ color: "#0F2044", fontWeight: 600 }}>
+                <div className="text-[13px] mt-3" style={{ color: "#0C2340", fontWeight: 600 }}>
                   Pupil scans to pay £{(Number(amount) || lessonCost).toFixed(2)}
                 </div>
                 <div className="text-[11px] mt-1" style={{ color: "#6B7280" }}>
@@ -998,7 +998,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 3 — SKILLS */}
         {!done && step === 3 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0F2044" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
               Pupil progress
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -1015,7 +1015,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     style={{
                       borderRadius: 10,
                       backgroundColor: "#F8F9FB",
-                      border: "0.5px solid #E2E6ED",
+                      border: "0.5px solid #EEF2F7",
                     }}
                   >
                     <div
@@ -1115,7 +1115,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               className="w-full p-3 text-[14px]"
               style={{
                 borderRadius: 10,
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#1A1A2E",
                 resize: "vertical",
@@ -1149,7 +1149,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 </div>
                 <div
                   className="text-[20px] mt-3"
-                  style={{ color: "#0F2044", fontWeight: 700 }}
+                  style={{ color: "#0C2340", fontWeight: 700 }}
                 >
                   Course complete! 🎓
                 </div>
@@ -1165,7 +1165,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <CheckCircle2 size={64} color="#16A34A" />
                 <div
                   className="text-[20px] mt-3"
-                  style={{ color: "#0F2044", fontWeight: 700 }}
+                  style={{ color: "#0C2340", fontWeight: 700 }}
                 >
                   Lesson complete! 🎉
                 </div>
@@ -1177,7 +1177,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               style={{
                 borderRadius: 10,
                 backgroundColor: "#F8F9FB",
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 textAlign: "left",
               }}
             >

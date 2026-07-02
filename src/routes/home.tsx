@@ -124,7 +124,7 @@ interface PrevLessonRow {
   notes: string | null;
 }
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const WEEKLY_LESSON_GOAL = 30;
 const WEEKLY_EARNINGS_GOAL = 1000;
 
@@ -270,7 +270,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       <div className="mx-4 flex items-center justify-between mb-3">
         <h2
           className="font-bold"
-          style={{ fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
+          style={{ fontSize: 16, color: "#0C2340", fontFamily: "Inter, sans-serif" }}
         >
           DSM Marketplace
         </h2>
@@ -280,8 +280,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           className="font-medium"
           style={{
             fontSize: 12,
-            color: "#1A52A0",
-            fontFamily: "Poppins, sans-serif",
+            color: "#1A4A6E",
+            fontFamily: "Inter, sans-serif",
             background: "none",
             border: "none",
             cursor: "pointer",
@@ -312,7 +312,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           const hasImage = Boolean(tile.image_url);
           const background = hasImage
             ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%), url(${tile.image_url}) center/cover no-repeat`
-            : tile.gradient || "linear-gradient(135deg, #1A52A0, #0F2044)";
+            : tile.gradient || "linear-gradient(135deg, #1A4A6E, #0C2340)";
           return (
             <div
               key={tile.id}
@@ -345,8 +345,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     left: 8,
                     fontSize: 9,
                     backgroundColor: "#FFFFFF",
-                    color: tile.color || "#1A52A0",
-                    fontFamily: "Poppins, sans-serif",
+                    color: tile.color || "#1A4A6E",
+                    fontFamily: "Inter, sans-serif",
                     padding: "2px 8px",
                     zIndex: 2,
                   }}
@@ -369,7 +369,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   style={{
                     fontSize: 13,
                     color: "#FFFFFF",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     lineHeight: 1.25,
                   }}
                 >
@@ -380,7 +380,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     style={{
                       fontSize: 10,
                       color: "rgba(255,255,255,0.8)",
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: "Inter, sans-serif",
                       marginTop: 2,
                     }}
                   >
@@ -593,7 +593,7 @@ function HomePage() {
           <div
             onClick={() => { toast.dismiss(t); navigate({ to: "/notifications" }); }}
             style={{
-              background: "#0F2044",
+              background: "#0C2340",
               color: "#FFFFFF",
               borderRadius: 12,
               padding: "12px 14px",
@@ -604,7 +604,7 @@ function HomePage() {
               maxWidth: 360,
               cursor: "pointer",
               boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -1194,7 +1194,7 @@ function HomePage() {
       isLive ? "#CC2229"
       : status === "completed" ? "#16A34A"
       : status === "cancelled" ? "#9CA3AF"
-      : "#1A52A0";
+      : "#1A4A6E";
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
@@ -1227,7 +1227,7 @@ function HomePage() {
           borderRadius: 10,
           borderWidth: "0.5px",
           borderStyle: "solid",
-          borderColor: "#E2E6ED",
+          borderColor: "#EEF2F7",
           marginBottom: 6,
           backgroundColor: isLive ? "#FFF5F5" : "#FFFFFF",
           cursor: "pointer",
@@ -1251,7 +1251,7 @@ function HomePage() {
           </span>
           <div style={{ minWidth: 0 }}>
             <div className="flex items-center" style={{ gap: 6, flexWrap: "wrap" }}>
-              <span className="text-[14px] font-semibold text-[#0F2044]">{pupilName(l)}</span>
+              <span className="text-[14px] font-semibold text-[#0C2340]">{pupilName(l)}</span>
               {typeBadge && (
                 <span
                   className="text-[10px] font-semibold uppercase"
@@ -1286,7 +1286,7 @@ function HomePage() {
               }}
               style={{
                 backgroundColor: "#EEF4FB",
-                color: "#1A52A0",
+                color: "#1A4A6E",
                 fontSize: 12,
                 fontWeight: 700,
                 textTransform: "uppercase",
@@ -1355,7 +1355,7 @@ function HomePage() {
     const state: "past" | "current" | "next" | "future" =
       isCurrent ? "current" : isNext ? "next" : isPast ? "past" : "future";
 
-    const lineColor = isPast ? "#9CA3AF" : "#E2E6ED";
+    const lineColor = isPast ? "#9CA3AF" : "#EEF2F7";
     const isLast = idx === arr.length - 1;
 
     let dot: React.ReactNode;
@@ -1378,15 +1378,15 @@ function HomePage() {
             width: 12,
             height: 12,
             borderRadius: 999,
-            backgroundColor: "#0F2044",
+            backgroundColor: "#0C2340",
             border: "2px solid #FFFFFF",
-            boxShadow: "0 0 0 1px #0F2044",
+            boxShadow: "0 0 0 1px #0C2340",
           }}
         />
       );
     } else {
       dot = (
-        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#FFFFFF", border: "2px solid #E2E6ED" }} />
+        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#FFFFFF", border: "2px solid #EEF2F7" }} />
       );
     }
 
@@ -1400,13 +1400,13 @@ function HomePage() {
       justifyContent: "space-between",
       gap: 8,
     };
-    let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #E2E6ED" };
-    if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #E2E6ED" };
+    let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #EEF2F7" };
+    if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #EEF2F7" };
     else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
-    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0F2044", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
+    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0C2340", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
 
-    const timeColor = isPast ? "#9CA3AF" : "#0F2044";
-    const nameColor = isPast ? "#9CA3AF" : "#0F2044";
+    const timeColor = isPast ? "#9CA3AF" : "#0C2340";
+    const nameColor = isPast ? "#9CA3AF" : "#0C2340";
     const endPassed = end.getTime() < now.getTime();
     const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const eolDone = l.eol_completed === true;
@@ -1439,7 +1439,7 @@ function HomePage() {
               fontSize: 12,
               fontWeight: 700,
               color: timeColor,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               flexShrink: 0,
               minWidth: 48,
             }}
@@ -1447,7 +1447,7 @@ function HomePage() {
             {formatTime(l)}
           </span>
         )}
-        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
+        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Inter, sans-serif" }} className="truncate flex-1">
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
@@ -1467,7 +1467,7 @@ function HomePage() {
                   backgroundColor: b.bg,
                   color: b.color,
                   fontWeight: 700,
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   lineHeight: 1.4,
                   border: "none",
                   cursor: "pointer",
@@ -1485,7 +1485,7 @@ function HomePage() {
                   backgroundColor: b.bg,
                   color: b.color,
                   fontWeight: 700,
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   lineHeight: 1.4,
                 }}
               >
@@ -1545,7 +1545,7 @@ function HomePage() {
               color: timeColor,
               textDecoration: isPast ? "line-through" : "none",
               zIndex: 1,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {formatTime(l)}
@@ -1572,36 +1572,36 @@ function HomePage() {
   };
 
   const quickAccessTiles = [
-    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Schedule", route: "/schedule" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "MTD", route: "/month-to-date" },
+    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Schedule", route: "/schedule" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "MTD", route: "/month-to-date" },
     { icon: <Map size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Start tracking", route: "/live" },
     { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Month end", route: "/monthend" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
     { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Payments", route: "/payments" },
-    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Messages", route: "/messages" },
+    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Messages", route: "/messages" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Earnings", route: "/earnings" },
     { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#D97706", label: "Expenses", route: "/expenses" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
     { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel costs", route: "/fuel" },
-    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Reports", route: "/reports" },
+    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Test day", route: "/testday" },
     { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Rewards", route: "/rewards" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
-    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Enquiries", route: "/enquiries" },
+    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Enquiries", route: "/enquiries" },
     { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
     { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
-    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "CPD", route: "/cpd" },
+    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "CPD", route: "/cpd" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "CPD log", route: "/cpd" },
     { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Standards", route: "/standards" },
     { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tax report", route: "/tax-report" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Todos", route: "/todos" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Notes", route: "/notes" },
-    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Documents", route: "/documents" },
+    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Documents", route: "/documents" },
     { icon: <ClipboardList size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Manifest", route: "/manifest" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Checklist", route: "/checklist" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
@@ -1610,31 +1610,31 @@ function HomePage() {
     { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
     { icon: <LayoutGrid size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Pipeline", route: "/pipeline" },
     { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
-    { icon: <Search size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Find gaps", route: "/gaps" },
+    { icon: <Search size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Find gaps", route: "/gaps" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
     { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Sat Nav", route: "/satnav" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Weekly report", route: "/weekly-report" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Weekly report", route: "/weekly-report" },
     { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
     { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
     { icon: <Award size={20} color="#FFFFFF" />, bg: "#D97706", label: "Certifications", route: "/certifications" },
-    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Availability", route: "/availability" },
+    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Availability", route: "/availability" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#D97706", label: "EOD", route: "/eod" },
-    { icon: <Moon size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "End of day", route: "/end-of-day" },
+    { icon: <Moon size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "End of day", route: "/end-of-day" },
     { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
     { icon: <Zap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Automations", route: "/automations" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Diary", route: "/diary" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Diary", route: "/diary" },
     { icon: <Crown size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "My plan", route: "/subscription" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
     { icon: <Search size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Availability", route: "/quickavailability" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Availability", route: "/quickavailability" },
     { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Calendar sync", route: "/calendarsync" },
-    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "Profile", route: "/profile" },
+    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "Profile", route: "/profile" },
     { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#D97706", label: "MTD", route: "/mtd" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Quotes", route: "/quotes" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Briefing", route: "/briefing" },
     { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1A52A0", label: "My website", route: "/minisite" },
+    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1A4A6E", label: "My website", route: "/minisite" },
 
   ] as const;
 
@@ -1642,12 +1642,12 @@ function HomePage() {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
-        style={{ ...POPPINS, backgroundColor: '#F2F4F8' }}
+        style={{ ...POPPINS, backgroundColor: '#F3F8FF' }}
       >
         <div className="flex flex-col items-center gap-3">
           <div
             className="animate-spin rounded-full"
-            style={{ width: 32, height: 32, border: '3px solid #E2E6ED', borderTopColor: '#1A52A0' }}
+            style={{ width: 32, height: 32, border: '3px solid #EEF2F7', borderTopColor: '#1A4A6E' }}
           />
           <div style={{ fontSize: 14, color: '#6B7280' }}>Checking access…</div>
         </div>
@@ -1656,7 +1656,7 @@ function HomePage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F2F4F8', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
@@ -1692,11 +1692,11 @@ function HomePage() {
               width: "min(82vw, 320px)", height: "100vh", background: "#fff",
               boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
               display: "flex", flexDirection: "column",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <div style={{
-              background: "#0F2044", color: "#fff", padding: "16px 18px",
+              background: "#0C2340", color: "#fff", padding: "16px 18px",
               display: "flex", alignItems: "center", justifyContent: "space-between",
             }}>
               <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
@@ -1739,8 +1739,8 @@ function HomePage() {
                   style={{
                     width: "100%", textAlign: "left", padding: "12px 18px",
                     background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 500, color: "#0F2044",
-                    fontFamily: "Poppins, sans-serif",
+                    fontSize: 14, fontWeight: 500, color: "#0C2340",
+                    fontFamily: "Inter, sans-serif",
                     display: "flex", alignItems: "center", justifyContent: "space-between",
                   }}
                 >
@@ -1751,7 +1751,7 @@ function HomePage() {
             </div>
 
             {/* Auth action at bottom */}
-            <div style={{ borderTop: "0.5px solid #E2E6ED", padding: "12px 18px" }}>
+            <div style={{ borderTop: "0.5px solid #EEF2F7", padding: "12px 18px" }}>
               {userId ? (
                 <button
                   onClick={async () => {
@@ -1763,7 +1763,7 @@ function HomePage() {
                     width: "100%", textAlign: "left", padding: "12px 0",
                     background: "none", border: "none", cursor: "pointer",
                     fontSize: 14, fontWeight: 600, color: "#CC2229",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     display: "flex", alignItems: "center", gap: 10,
                   }}
                 >
@@ -1776,8 +1776,8 @@ function HomePage() {
                   style={{
                     width: "100%", textAlign: "left", padding: "12px 0",
                     background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 600, color: "#1A52A0",
-                    fontFamily: "Poppins, sans-serif",
+                    fontSize: 14, fontWeight: 600, color: "#1A4A6E",
+                    fontFamily: "Inter, sans-serif",
                     display: "flex", alignItems: "center", gap: 10,
                   }}
                 >
@@ -1806,10 +1806,10 @@ function HomePage() {
             }}
             style={{
               position: 'absolute', top: 6, right: 6, zIndex: 10,
-              fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+              fontSize: 10, fontWeight: 700, fontFamily: 'Inter, sans-serif',
               padding: '4px 8px', borderRadius: 6, border: 'none',
-              background: carEditMode ? '#1A52A0' : 'rgba(15,32,68,0.08)',
-              color: carEditMode ? '#FFFFFF' : '#0F2044', cursor: 'pointer',
+              background: carEditMode ? '#1A4A6E' : 'rgba(15,32,68,0.08)',
+              color: carEditMode ? '#FFFFFF' : '#0C2340', cursor: 'pointer',
             }}
             title="Drag the car to reposition. Values are saved automatically."
           >
@@ -1860,7 +1860,7 @@ function HomePage() {
                 zIndex: carEditMode ? 5 : 0,
                 pointerEvents: carEditMode ? 'auto' : 'none',
                 cursor: carEditMode ? 'move' : 'default',
-                outline: carEditMode ? '2px dashed #1A52A0' : 'none',
+                outline: carEditMode ? '2px dashed #1A4A6E' : 'none',
                 WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
                 maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
@@ -1869,19 +1869,19 @@ function HomePage() {
             />
 
             {/* Label */}
-            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Poppins, sans-serif', position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Inter, sans-serif', position: 'relative', zIndex: 1 }}>
               Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
             </div>
             {/* Content */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#0F2044', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#0C2340', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
                   {upcoming ? formatTime(upcoming) : '—'}
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', marginTop: 4, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#0C2340', marginTop: 4, fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
                   {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Poppins, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
                   {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
                 </div>
               </div>
@@ -1891,7 +1891,7 @@ function HomePage() {
               const phone = upcoming?.pupils?.phone ?? "";
               const postcode = upcoming?.pupils?.postcode ?? "";
               const stop = (e: React.MouseEvent) => e.stopPropagation();
-              const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
+              const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
               return (
                 <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
                   {phone ? (
@@ -1938,7 +1938,7 @@ function HomePage() {
                 margin: '12px 16px 16px',
                 background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
                 padding: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                fontSize: 11, fontFamily: 'Poppins, sans-serif', color: '#0F2044',
+                fontSize: 11, fontFamily: 'Inter, sans-serif', color: '#0C2340',
                 display: 'flex', flexDirection: 'column', gap: 6,
               }}
             >
@@ -1974,7 +1974,7 @@ function HomePage() {
                   try { navigator.clipboard?.writeText(txt); toast.success("Car position copied to clipboard"); } catch {}
                   console.log('[car position]', txt);
                 }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1A4A6E', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Copy
                 </button>
                 <button type="button" onClick={() => {
@@ -2000,7 +2000,7 @@ function HomePage() {
                 setCarEditMode(false);
                 toast.success('Car position saved');
               }}
-                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#1A52A0', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#1A4A6E', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                 Save position
               </button>
             </div>
@@ -2018,10 +2018,10 @@ function HomePage() {
                 borderTop: '1px solid #EEF1F5',
                 background: '#FAFBFC',
                 cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
+                fontFamily: 'Inter, sans-serif',
                 fontSize: 11,
                 fontWeight: 700,
-                color: '#1A52A0',
+                color: '#1A4A6E',
                 textTransform: 'uppercase',
                 letterSpacing: 0.6,
               }}
@@ -2029,7 +2029,7 @@ function HomePage() {
               {heroExpanded ? 'Hide details' : 'Tap for details'}
               <ChevronDown
                 size={16}
-                color="#1A52A0"
+                color="#1A4A6E"
                 style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
               />
             </div>
@@ -2050,7 +2050,7 @@ function HomePage() {
         <Dialog open={lateOpen} onOpenChange={setLateOpen}>
           <DialogContent className="max-w-[320px]">
             <DialogHeader>
-              <DialogTitle style={{ fontFamily: 'Poppins, sans-serif' }}>How many minutes late?</DialogTitle>
+              <DialogTitle style={{ fontFamily: 'Inter, sans-serif' }}>How many minutes late?</DialogTitle>
             </DialogHeader>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginTop: 8 }}>
               {[5, 10, 15, 20].map((m) => (
@@ -2064,7 +2064,7 @@ function HomePage() {
                     window.location.href = `sms:${phone}?&body=${body}`;
                     setLateOpen(false);
                   }}
-                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
                 >{m}m</button>
               ))}
             </div>
@@ -2181,7 +2181,7 @@ function HomePage() {
             display: "flex",
             alignItems: "center",
             gap: 10,
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
           }}
         >
           <span
@@ -2217,7 +2217,7 @@ function HomePage() {
               }
             }}
             style={{
-              background: "#1A52A0",
+              background: "#1A4A6E",
               color: "#fff",
               border: "none",
               borderRadius: 8,
@@ -2225,7 +2225,7 @@ function HomePage() {
               fontSize: 12,
               fontWeight: 600,
               cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               flexShrink: 0,
             }}
           >
@@ -2277,10 +2277,10 @@ function HomePage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
+          border: "0.5px solid #EEF2F7",
           borderRadius: 16,
           padding: "12px 0",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
       >
         {/* Header */}
@@ -2288,7 +2288,7 @@ function HomePage() {
           className="flex items-center justify-between"
           style={{ padding: "0 16px 8px 16px" }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0C2340" }}>
             Schedule
           </div>
           <button
@@ -2297,10 +2297,10 @@ function HomePage() {
             style={{
               fontSize: 12,
               fontWeight: 600,
-              color: "#1A52A0",
+              color: "#1A4A6E",
               background: "transparent",
               cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             View all →
@@ -2337,7 +2337,7 @@ function HomePage() {
               fontSize: 13,
               color: "#9CA3AF",
               textAlign: "center",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {tab === "today"
@@ -2393,7 +2393,7 @@ function HomePage() {
                         fontWeight: 700,
                         letterSpacing: 0.4,
                         color: "#6B7280",
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Inter, sans-serif",
                       }}
                     >
                       {formatDayLabel(startD)}
@@ -2403,13 +2403,13 @@ function HomePage() {
                 }
               }
 
-              let accent = "#1A52A0";
+              let accent = "#1A4A6E";
               if (isCancelled) accent = "#9CA3AF";
               else if (isCurrent) accent = "#CC2229";
               else if (isCompleted) accent = "#16A34A";
 
-              const nameColor = isCancelled ? "#9CA3AF" : "#0F2044";
-              const timeColor = isCancelled ? "#9CA3AF" : "#0F2044";
+              const nameColor = isCancelled ? "#9CA3AF" : "#0C2340";
+              const timeColor = isCancelled ? "#9CA3AF" : "#0C2340";
 
               const badges: React.ReactNode[] = [];
               if (isCurrent) {
@@ -2460,7 +2460,7 @@ function HomePage() {
                         color: "#92400E",
                         border: 0,
                         cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Inter, sans-serif",
                       }}
                     >
                       Complete EOL
@@ -2535,7 +2535,7 @@ function HomePage() {
                       padding: "1px 6px",
                       borderRadius: 999,
                       backgroundColor: "#EEF4FB",
-                      color: "#1A52A0",
+                      color: "#1A4A6E",
                     }}
                   >
                     Prepaid
@@ -2725,11 +2725,11 @@ function HomePage() {
                     padding: "6px 0",
                     fontSize: 12,
                     fontWeight: 600,
-                    color: "#1A52A0",
+                    color: "#1A4A6E",
                     background: "transparent",
                     cursor: "pointer",
                     textAlign: "left",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   View all {tabLessons.length} lessons →
@@ -2759,8 +2759,8 @@ function HomePage() {
                 placeholder="Search…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 text-[13px] text-[#0F2044] outline-none bg-transparent"
-                style={{ fontFamily: "Poppins, sans-serif" }}
+                className="flex-1 text-[13px] text-[#0C2340] outline-none bg-transparent"
+                style={{ fontFamily: "Inter, sans-serif" }}
               />
               <button
                 type="button"
@@ -2775,7 +2775,7 @@ function HomePage() {
               <div className="flex items-center gap-2">
                 <span
                   className="text-[11px] uppercase"
-                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
+                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
                 >
                   QUICK ACCESS
                 </span>
@@ -2794,7 +2794,7 @@ function HomePage() {
                   type="button"
                   onClick={() => navigate({ to: "/quickaccess" as never })}
                   className="text-[13px]"
-                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                  style={{ color: "#1A4A6E", fontFamily: "Inter, sans-serif" }}
                 >
                   See all
                 </button>
@@ -2802,7 +2802,7 @@ function HomePage() {
                   type="button"
                   onClick={() => alert("Coming soon")}
                   className="text-[13px]"
-                  style={{ color: "#1A52A0", fontFamily: "Poppins, sans-serif" }}
+                  style={{ color: "#1A4A6E", fontFamily: "Inter, sans-serif" }}
                 >
                   Edit pins
                 </button>
@@ -2875,11 +2875,11 @@ function HomePage() {
               backgroundColor: "#FFFFFF",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               borderRadius: 12,
               padding: 12,
               gap: 12,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <div
@@ -2889,7 +2889,7 @@ function HomePage() {
               <Trophy size={18} color="#D97706" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+              <div className="text-[13px] font-semibold" style={{ color: "#0C2340" }}>
                 DSM Rewards
               </div>
               <div className="text-[13px]" style={{ color: "#6B7280" }}>
@@ -2914,10 +2914,10 @@ function HomePage() {
               backgroundColor: "#FFFFFF",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               borderRadius: 12,
               padding: 12,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <div className="flex items-center gap-3">
@@ -2925,7 +2925,7 @@ function HomePage() {
                 className="flex items-center justify-center shrink-0"
                 style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#DBEAFE" }}
               >
-                <Calculator size={18} color="#1A52A0" />
+                <Calculator size={18} color="#1A4A6E" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
@@ -2939,7 +2939,7 @@ function HomePage() {
                     {taxYearLabel}
                   </span>
                 </div>
-                <div className="text-[20px] font-bold mt-0.5" style={{ color: "#0F2044" }}>
+                <div className="text-[20px] font-bold mt-0.5" style={{ color: "#0C2340" }}>
                   £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
                 </div>
               </div>
@@ -2950,13 +2950,13 @@ function HomePage() {
             </div>
             <div
               className="mt-2 w-full"
-              style={{ height: 4, borderRadius: 2, backgroundColor: "#E2E6ED", overflow: "hidden" }}
+              style={{ height: 4, borderRadius: 2, backgroundColor: "#EEF2F7", overflow: "hidden" }}
             >
               <div
                 style={{
                   height: "100%",
                   width: `${(monthsElapsed / 12) * 100}%`,
-                  backgroundColor: "#1A52A0",
+                  backgroundColor: "#1A4A6E",
                   borderRadius: 2,
                 }}
               />
@@ -2972,11 +2972,11 @@ function HomePage() {
               backgroundColor: "#FFFFFF",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               borderRadius: 12,
               padding: 12,
               gap: 12,
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <div
@@ -2986,7 +2986,7 @@ function HomePage() {
               <FileSpreadsheet size={18} color="#16A34A" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+              <div className="text-[13px] font-semibold" style={{ color: "#0C2340" }}>
                 Making Tax Digital
               </div>
             </div>
@@ -3130,7 +3130,7 @@ function HeroExpandedPanel({
     borderRadius: 10,
     border: '1px solid #e3e6ec',
     background: '#fff',
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: 'Inter, sans-serif',
     fontWeight: 600,
     fontSize: 12,
     display: 'flex',
@@ -3146,12 +3146,12 @@ function HeroExpandedPanel({
     color: '#999',
     letterSpacing: 0.6,
     fontWeight: 700,
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: 'Inter, sans-serif',
     marginBottom: 6,
   };
 
   return (
-    <div style={{ background: '#F2F4F8', borderRadius: '0 0 16px 16px', padding: 12 }}>
+    <div style={{ background: '#F3F8FF', borderRadius: '0 0 16px 16px', padding: 12 }}>
       {/* Row 1 — status */}
       <div style={{ display: 'flex', gap: 6 }}>
         <button
@@ -3189,9 +3189,9 @@ function HeroExpandedPanel({
             height: 36,
             borderRadius: 10,
             border: 'none',
-            background: '#1A52A0',
+            background: '#1A4A6E',
             color: '#fff',
-            fontFamily: 'Poppins, sans-serif',
+            fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
             fontSize: 12,
             display: 'flex',
@@ -3213,7 +3213,7 @@ function HeroExpandedPanel({
       {/* Pickup */}
       <div style={{ marginTop: 12 }}>
         <div style={sectionLabel}>PICKUP</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
           <MapPin size={14} color="#6B7280" />
           {pickupPostcode ? (
             <>
@@ -3222,11 +3222,11 @@ function HeroExpandedPanel({
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: '#1A52A0', fontWeight: 600, marginLeft: 'auto' }}
+                style={{ color: '#1A4A6E', fontWeight: 600, marginLeft: 'auto' }}
               >Navigate</a>
               <button
                 onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
-                style={{ background: 'none', border: 'none', color: '#1A52A0', fontWeight: 600, fontFamily: 'Poppins, sans-serif', fontSize: 13, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#1A4A6E', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
               >Copy</button>
             </>
           ) : (
@@ -3239,19 +3239,19 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 12 }}>
         <div style={sectionLabel}>ACCOUNT</div>
         {balance > 0 ? (
-          <div style={{ background: '#fbe8e8', border: '1px solid #f5c5c5', borderRadius: 10, padding: 10, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ background: '#fbe8e8', border: '1px solid #f5c5c5', borderRadius: 10, padding: 10, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif' }}>
             <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: '#991B1B' }}>£{balance.toFixed(2)} outstanding</span>
             <button
               onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${balance.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: '1px solid #f5c5c5', background: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: '1px solid #f5c5c5', background: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
             >Chase</button>
             <button
               onClick={() => navigateTo('/payments')}
-              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: 'none', background: '#991B1B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+              style={{ height: 28, padding: '0 10px', borderRadius: 8, border: 'none', background: '#991B1B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
             >Mark paid</button>
           </div>
         ) : (
-          <div style={{ color: '#16A34A', fontWeight: 700, fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>Paid up ✓</div>
+          <div style={{ color: '#16A34A', fontWeight: 700, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>Paid up ✓</div>
         )}
       </div>
 
@@ -3259,7 +3259,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 12 }}>
         <div style={sectionLabel}>LAST LESSON</div>
         {prev ? (
-          <div style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#1A1A2E' }}>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#1A1A2E' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontWeight: 600 }}>{new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
               <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, color: '#fff', background: statusColor(prev.status) }}>{prev.status}</span>
@@ -3271,7 +3271,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ color: '#6B7280', fontFamily: 'Poppins, sans-serif', fontSize: 13 }}>No previous lesson</div>
+          <div style={{ color: '#6B7280', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>No previous lesson</div>
         )}
       </div>
     </div>
@@ -3297,7 +3297,7 @@ function QuickTile({
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         borderRadius: 10,
         padding: 10,
       }}
@@ -3331,12 +3331,12 @@ function TabBtn({
       className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
-        color: active ? "#0F2044" : "#9CA3AF",
+        color: active ? "#0C2340" : "#9CA3AF",
         borderRadius: 8,
         padding: "8px 6px",
         fontWeight: active ? 600 : 400,
         fontSize: 13,
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
         lineHeight: 1.2,
         border: "none",
         cursor: "pointer",
@@ -3369,7 +3369,7 @@ function AccessTile({
         height: 80,
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         borderRadius: 12,
         gap: 6,
         padding: 12,
@@ -3383,7 +3383,7 @@ function AccessTile({
       >
         {icon}
       </span>
-      <span className="text-[10px] text-[#0F2044] text-center leading-tight" style={{ maxWidth: '100%', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{label}</span>
+      <span className="text-[10px] text-[#0C2340] text-center leading-tight" style={{ maxWidth: '100%', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{label}</span>
     </button>
   );
 }
@@ -3414,11 +3414,11 @@ function EndOfDayBanner() {
         border: "1px solid #BFDBFE",
         padding: "10px 16px",
         borderRadius: 10,
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      <Moon size={16} color="#1A52A0" />
-      <div style={{ fontSize: 13, color: "#0F2044", fontWeight: 600 }}>
+      <Moon size={16} color="#1A4A6E" />
+      <div style={{ fontSize: 13, color: "#0C2340", fontWeight: 600 }}>
         Ready to wrap up?
       </div>
       <button
@@ -3428,10 +3428,10 @@ function EndOfDayBanner() {
           marginLeft: "auto",
           fontSize: 12,
           fontWeight: 600,
-          color: "#1A52A0",
+          color: "#1A4A6E",
           background: "transparent",
           cursor: "pointer",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
       >
         View summary →
@@ -3483,7 +3483,7 @@ function TodayTile({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'Poppins, sans-serif',
+        fontFamily: 'Inter, sans-serif',
       }}
     >
       <div style={{ fontSize: valueSize, fontWeight: 700, color: valueColor, lineHeight: 1.1 }}>
@@ -3539,7 +3539,7 @@ function NeedsAttention({
         border: '1px solid #e0e3ea',
         borderRadius: 14,
         padding: 12,
-        fontFamily: 'Poppins, sans-serif',
+        fontFamily: 'Inter, sans-serif',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -3572,7 +3572,7 @@ function NeedsAttention({
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
+                fontFamily: 'Inter, sans-serif',
                 position: 'relative',
               }}
             >
@@ -3650,7 +3650,7 @@ function OutstandingBreakdownModal({
         style={{
           maxWidth: 480,
           padding: 0,
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
           maxHeight: "85vh",
           display: "flex",
           flexDirection: "column",
@@ -3762,7 +3762,7 @@ function OutstandingBreakdownModal({
                       fontSize: 11,
                       fontWeight: 600,
                       backgroundColor: "#F1F5F9",
-                      color: "#0F2044",
+                      color: "#0C2340",
                       border: "1px solid #CBD5E1",
                       borderRadius: 6,
                       cursor: "pointer",
@@ -3785,7 +3785,7 @@ function OutstandingBreakdownModal({
               padding: "10px 12px",
               fontSize: 13,
               fontWeight: 700,
-              backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1A52A0",
+              backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1A4A6E",
               color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
               border: "none",
               borderRadius: 8,
@@ -3837,7 +3837,7 @@ function EarningsBreakdownModal({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -3853,7 +3853,7 @@ function EarningsBreakdownModal({
               <div style={{ marginTop: 8 }}>
                 <button
                   onClick={onRecord}
-                  style={{ background: "none", border: "none", color: "#1A52A0", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
+                  style={{ background: "none", border: "none", color: "#1A4A6E", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
                 >
                   Record payment →
                 </button>
@@ -3890,7 +3890,7 @@ function EarningsBreakdownModal({
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1A52A0", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1A4A6E", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
             >
               View MTD →
             </button>
@@ -3951,7 +3951,7 @@ function LessonsBreakdownModal({
     <>
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Lessons this week</DialogTitle>
@@ -3992,13 +3992,13 @@ function LessonsBreakdownModal({
                     cursor: "pointer",
                   }}
                 >
-                  <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0F2044" }}>
+                  <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0C2340" }}>
                     {fmtDayTime(r.lesson_date, r.lesson_time)}
                   </div>
                   <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {r.pupilName}
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0F2044" }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#F1F5F9", color: "#0C2340" }}>
                     {r.duration_minutes ?? 60}m
                   </span>
                   <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
@@ -4034,7 +4034,7 @@ function LessonsBreakdownModal({
           <div style={{ fontSize: 12, color: "#374151", fontWeight: 600 }}>
             Completed: {completed} · Upcoming: {upcoming} · Cancelled: {cancelled}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#0C2340" }}>
             {totalHours.toFixed(1)}h taught this week
           </div>
           <button
@@ -4048,7 +4048,7 @@ function LessonsBreakdownModal({
     </Dialog>
 
     <Dialog open={confirmId !== null} onOpenChange={(v) => !v && !deleting && closeConfirm()}>
-      <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Poppins, sans-serif" }}>
+      <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Inter, sans-serif" }}>
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Delete this lesson?</DialogTitle>
         </DialogHeader>
@@ -4151,7 +4151,7 @@ function TestsBreakdownModal({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Tests</DialogTitle>
@@ -4214,8 +4214,8 @@ function TestsBreakdownModal({
           })}
 
           <div style={{ padding: "16px 16px 8px", display: "flex", alignItems: "center", gap: 6 }}>
-            <ArrowLeftRight size={14} color="#1A52A0" />
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#1A52A0", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            <ArrowLeftRight size={14} color="#1A4A6E" />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#1A4A6E", textTransform: "uppercase", letterSpacing: 0.5 }}>
               EverySwap requests
             </span>
           </div>
@@ -4232,7 +4232,7 @@ function TestsBreakdownModal({
                     key={s.id}
                     style={{
                       background: "#fff",
-                      border: "0.5px solid #E2E6ED",
+                      border: "0.5px solid #EEF2F7",
                       borderRadius: 10,
                       padding: "10px 12px",
                       display: "flex",

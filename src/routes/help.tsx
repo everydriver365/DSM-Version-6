@@ -17,7 +17,7 @@ export const Route = createFileRoute("/help")({
   component: HelpPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface ContactItem {
   label: string;
@@ -29,7 +29,7 @@ interface ContactItem {
 const contacts: ContactItem[] = [
   {
     label: "Email support",
-    icon: <Mail size={18} color="#1A52A0" />,
+    icon: <Mail size={18} color="#1A4A6E" />,
     iconBg: "#DBEAFE",
     href: "mailto:support@everydriver.co.uk",
   },
@@ -118,7 +118,7 @@ function HelpPage() {
               style={{
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
                 textDecoration: "none",
               }}
             >
@@ -128,7 +128,7 @@ function HelpPage() {
               >
                 {c.icon}
               </div>
-              <span className="flex-1 ml-3 text-[14px] font-semibold text-[#0F2044]">
+              <span className="flex-1 ml-3 text-[14px] font-semibold text-[#0C2340]">
                 {c.label}
               </span>
               <ChevronRight size={18} color="#6B7280" className="shrink-0" />
@@ -155,11 +155,11 @@ function HelpPage() {
                       : {
                           borderTopWidth: "0.5px",
                           borderTopStyle: "solid",
-                          borderTopColor: "#E2E6ED",
+                          borderTopColor: "#EEF2F7",
                         }
                   }
                 >
-                  <span className="text-[14px] font-semibold text-[#0F2044] pr-2">
+                  <span className="text-[14px] font-semibold text-[#0C2340] pr-2">
                     {faq.question}
                   </span>
                   {isOpen ? (
@@ -174,7 +174,7 @@ function HelpPage() {
                     style={{
                       borderTopWidth: "0.5px",
                       borderTopStyle: "solid",
-                      borderTopColor: "#E2E6ED",
+                      borderTopColor: "#EEF2F7",
                       ...POPPINS,
                     }}
                   >
@@ -191,7 +191,7 @@ function HelpPage() {
       <div className="px-4">
         <SectionHeader>ABOUT</SectionHeader>
         <Card className="flex flex-col items-center text-center" style={{ gap: 4 }}>
-          <div className="text-[16px] font-bold text-[#0F2044]">DSM by EveryDriver</div>
+          <div className="text-[16px] font-bold text-[#0C2340]">DSM by EveryDriver</div>
           <div className="text-[13px] text-[#6B7280]">Version 1.0.0</div>
           <div className="text-[13px] text-[#6B7280] mt-1">© 2026 EveryDriver Ltd</div>
         </Card>

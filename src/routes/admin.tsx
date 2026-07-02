@@ -101,7 +101,7 @@ function AdminSectionTile({
         background: "#fff",
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         borderRadius: 12,
         padding: 16,
         display: "flex",
@@ -110,7 +110,7 @@ function AdminSectionTile({
         gap: 10,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       <div
@@ -127,7 +127,7 @@ function AdminSectionTile({
       >
         {icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: "#0C2340" }}>{label}</div>
     </button>
   );
 }
@@ -144,14 +144,14 @@ function AdminHub() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>
           Your account doesn't have admin access.
@@ -164,7 +164,7 @@ function AdminHub() {
               flex: 1,
               height: 44,
               borderRadius: 10,
-              background: "#0F2044",
+              background: "#0C2340",
               color: "#fff",
               border: "none",
               fontWeight: 600,
@@ -198,7 +198,7 @@ function AdminHub() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

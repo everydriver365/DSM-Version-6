@@ -16,7 +16,7 @@ export const Route = createFileRoute("/availability")({
   component: AvailabilityPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const DAYS = [
   { key: "mon", label: "Monday" },
@@ -132,10 +132,10 @@ function AvailabilityPage() {
               <div
                 key={d.key}
                 className="px-4 py-3"
-                style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+                style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#0F2044]">{d.label}</span>
+                  <span className="text-[14px] text-[#0C2340]">{d.label}</span>
                   <button
                     type="button"
                     role="switch"
@@ -143,7 +143,7 @@ function AvailabilityPage() {
                     aria-label={`${d.label} working`}
                     onClick={() => toggleDay(d.key)}
                     className="relative inline-flex items-center rounded-full transition-colors"
-                    style={{ width: 40, height: 22, backgroundColor: on ? "#1A52A0" : "#E2E6ED" }}
+                    style={{ width: 40, height: 22, backgroundColor: on ? "#1A4A6E" : "#EEF2F7" }}
                   >
                     <span
                       className="inline-block rounded-full bg-white transition-transform"
@@ -161,8 +161,8 @@ function AvailabilityPage() {
                         type="time"
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
-                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white focus:border-[#1A52A0] focus:outline-none"
-                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:border-[#1A4A6E] focus:outline-none"
+                        style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
                     <div className="flex-1">
@@ -173,8 +173,8 @@ function AvailabilityPage() {
                         type="time"
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
-                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white focus:border-[#1A52A0] focus:outline-none"
-                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:border-[#1A4A6E] focus:outline-none"
+                        style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
                   </div>
@@ -242,9 +242,9 @@ function Segmented<T extends number>({
             onClick={() => onChange(o.value)}
             className="flex-1 h-9 rounded-md text-[12px] font-medium transition-colors"
             style={{
-              backgroundColor: active ? "#1A52A0" : "transparent",
+              backgroundColor: active ? "#1A4A6E" : "transparent",
               color: active ? "#FFFFFF" : "#6B7280",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {o.label}

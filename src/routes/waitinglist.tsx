@@ -16,7 +16,7 @@ export const Route = createFileRoute("/waitinglist")({
   component: WaitingListPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Entry {
   id: string;
@@ -144,8 +144,8 @@ function WaitingListPage() {
                         width: 36,
                         height: 36,
                         borderRadius: 18,
-                        backgroundColor: "#1A52A014",
-                        color: "#1A52A0",
+                        backgroundColor: "#1A4A6E14",
+                        color: "#1A4A6E",
                         fontSize: 18,
                         ...POPPINS,
                       }}
@@ -157,7 +157,7 @@ function WaitingListPage() {
                         <div className="min-w-0">
                           <div
                             className="text-[14px] font-semibold truncate"
-                            style={{ color: "#0F2044", ...POPPINS }}
+                            style={{ color: "#0C2340", ...POPPINS }}
                           >
                             {e.name}
                           </div>
@@ -193,7 +193,7 @@ function WaitingListPage() {
                           className="w-full text-[13px] font-semibold py-2"
                           style={{
                             color: "#CC2229",
-                            border: "0.5px solid #E2E6ED",
+                            border: "0.5px solid #EEF2F7",
                             borderRadius: 8,
                             backgroundColor: "white",
                             ...POPPINS,
@@ -356,7 +356,7 @@ function AddEntrySheet({
             className="w-full px-3 py-2 bg-white"
             style={{
               borderRadius: 8,
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
               fontSize: 14,
               resize: "none",
@@ -392,7 +392,7 @@ function ConfirmSheet({
         <div className="flex items-center justify-center" style={{ paddingTop: 8 }}>
           <Hourglass size={28} color="#CC2229" />
         </div>
-        <div className="text-[14px] text-center" style={{ color: "#0F2044" }}>
+        <div className="text-[14px] text-center" style={{ color: "#0C2340" }}>
           Remove <span className="font-semibold">{name}</span> from the waiting list?
         </div>
         <div className="grid grid-cols-2" style={{ gap: 8 }}>

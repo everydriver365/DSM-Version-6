@@ -366,7 +366,7 @@ function TakePaymentPage() {
     }
   };
 
-  const NAVY = "#0F2044";
+  const NAVY = "#0C2340";
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
   const numpadRows = [
     numpadKeys.slice(0, 3),
@@ -494,7 +494,7 @@ function TakePaymentPage() {
               minWidth: 0,
               padding: "6px 8px",
               borderRadius: 8,
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               fontSize: 13,
               color: NAVY,
               background: "#fff",
@@ -517,7 +517,7 @@ function TakePaymentPage() {
               minWidth: 0,
               padding: "6px 8px",
               borderRadius: 8,
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               fontSize: 13,
               color: NAVY,
             }}
@@ -600,7 +600,7 @@ function TakePaymentPage() {
                       padding: "4px 0",
                       fontSize: 20,
                       fontWeight: 600,
-                      border: "0.5px solid #E2E6ED",
+                      border: "0.5px solid #EEF2F7",
                       borderRadius: 8,
                       background: "white",
                       cursor: "pointer",
@@ -676,7 +676,7 @@ function TakePaymentPage() {
                         style={{
                           width: "100%",
                           marginTop: 12,
-                          background: "#0F2044",
+                          background: "#0C2340",
                           color: "#fff",
                           border: 0,
                           borderRadius: 10,
@@ -719,7 +719,7 @@ function TakePaymentPage() {
                       padding: "4px 0",
                       fontSize: 20,
                       fontWeight: 600,
-                      border: "0.5px solid #E2E6ED",
+                      border: "0.5px solid #EEF2F7",
                       borderRadius: 8,
                       background: "white",
                       cursor: "pointer",
@@ -744,7 +744,7 @@ function TakePaymentPage() {
                     padding: "0 10px",
                     height: 44,
                     borderRadius: 10,
-                    border: "0.5px solid #E2E6ED",
+                    border: "0.5px solid #EEF2F7",
                     fontSize: 13,
                     color: NAVY,
                     background: "#fff",
@@ -843,7 +843,7 @@ function TakePaymentPage() {
             display: "flex",
             flexDirection: "column",
             height: "100vh",
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
           }}
         >
           {/* Close button */}

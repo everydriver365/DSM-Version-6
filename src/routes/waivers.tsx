@@ -13,7 +13,7 @@ export const Route = createFileRoute("/waivers")({
   component: WaiversPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Template = {
   id: string;
@@ -163,7 +163,7 @@ function WaiversPage() {
         )}
         {!loading && templates.length === 0 && (
           <Card className="flex flex-col items-center justify-center text-center" style={{ padding: 24 }}>
-            <FileSignature size={36} color="#1A52A0" />
+            <FileSignature size={36} color="#1A4A6E" />
             <div className="mt-2 text-[13px]" style={{ color: "#6B7280" }}>
               No waiver templates yet
             </div>
@@ -182,10 +182,10 @@ function WaiversPage() {
                   className="flex items-center justify-center rounded-full flex-shrink-0"
                   style={{ width: 36, height: 36, backgroundColor: "#EEF4FB" }}
                 >
-                  <FileText size={18} color="#1A52A0" />
+                  <FileText size={18} color="#1A4A6E" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044" }}>
+                  <div className="text-[14px] font-semibold truncate" style={{ color: "#0C2340" }}>
                     {t.name}
                   </div>
                   <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -231,12 +231,12 @@ function WaiversPage() {
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <div
                     className="flex items-center justify-center rounded-full flex-shrink-0 text-white text-[12px] font-semibold"
-                    style={{ width: 36, height: 36, backgroundColor: "#1A52A0" }}
+                    style={{ width: 36, height: 36, backgroundColor: "#1A4A6E" }}
                   >
                     {initials(pupilName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044" }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0C2340" }}>
                       {pupilName}
                     </div>
                     <div className="text-[13px] truncate" style={{ color: "#6B7280" }}>
@@ -317,15 +317,15 @@ function SheetShell({
           borderTopRightRadius: 16,
           maxHeight: "90vh",
           overflowY: "auto",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
           className="sticky top-0 flex items-center justify-between bg-white"
-          style={{ padding: "14px 16px", borderBottom: "0.5px solid #E2E6ED" }}
+          style={{ padding: "14px 16px", borderBottom: "0.5px solid #EEF2F7" }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0F2044" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0C2340" }}>
             {title}
           </div>
           <button
@@ -335,7 +335,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0F2044" />
+            <X size={20} color="#0C2340" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>
@@ -405,9 +405,9 @@ function CreateWaiverSheet({
             rows={8}
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               resize: "vertical",
             }}
           />
@@ -504,9 +504,9 @@ function SendToPupilSheet({
             onChange={(e) => setPupilId(e.target.value)}
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             <option value="">Select pupil…</option>
@@ -522,21 +522,21 @@ function SendToPupilSheet({
           <div
             style={{
               backgroundColor: "#EEF4FB",
-              border: "0.5px solid #1A52A0",
+              border: "0.5px solid #1A4A6E",
               borderRadius: 12,
               padding: 12,
             }}
           >
-            <div className="text-[12px] font-medium mb-1" style={{ color: "#0F2044" }}>
+            <div className="text-[12px] font-medium mb-1" style={{ color: "#0C2340" }}>
               Signing link
             </div>
-            <div className="text-[12px] break-all" style={{ color: "#1A52A0" }}>
+            <div className="text-[12px] break-all" style={{ color: "#1A4A6E" }}>
               {link}
             </div>
             <button
               type="button"
               className="mt-2 text-[12px] font-medium"
-              style={{ color: "#1A52A0" }}
+              style={{ color: "#1A4A6E" }}
               onClick={() => {
                 if (typeof navigator !== "undefined" && navigator.clipboard) {
                   navigator.clipboard.writeText(link);
@@ -576,7 +576,7 @@ function TemplateDetailSheet({
     <SheetShell title={template.name} onClose={onClose}>
       <div
         className="text-[13px] whitespace-pre-wrap"
-        style={{ color: "#0F2044", lineHeight: 1.5 }}
+        style={{ color: "#0C2340", lineHeight: 1.5 }}
       >
         {template.content}
       </div>

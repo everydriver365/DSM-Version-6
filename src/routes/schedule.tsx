@@ -26,7 +26,7 @@ export const Route = createFileRoute("/schedule")({
   component: SchedulePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id?: string;
@@ -295,13 +295,13 @@ function SchedulePage() {
     const isCancelled = l.status === "cancelled";
     const isCompleted = l.status === "completed" || l.eol_completed === true;
 
-    let accent = "#1A52A0";
+    let accent = "#1A4A6E";
     if (isCancelled) accent = "#9CA3AF";
     else if (isCurrent) accent = "#CC2229";
     else if (isCompleted) accent = "#16A34A";
 
-    const timeColor = isCancelled ? "#9CA3AF" : "#0F2044";
-    const nameColor = isCancelled ? "#9CA3AF" : "#0F2044";
+    const timeColor = isCancelled ? "#9CA3AF" : "#0C2340";
+    const nameColor = isCancelled ? "#9CA3AF" : "#0C2340";
 
     const badges: React.ReactNode[] = [];
     if (isCurrent) {
@@ -614,7 +614,7 @@ function SchedulePage() {
             ...POPPINS,
             fontSize: 13,
             fontWeight: 600,
-            color: "#0F2044",
+            color: "#0C2340",
             marginTop: isFirst ? 0 : 0,
           }}
         >
@@ -682,7 +682,7 @@ function SchedulePage() {
               ...POPPINS,
               fontSize: 13,
               fontWeight: 600,
-              color: "#1A52A0",
+              color: "#1A4A6E",
               backgroundColor: "transparent",
               padding: "8px 16px",
             }}
@@ -704,7 +704,7 @@ function SchedulePage() {
           width: 52,
           height: 52,
           borderRadius: 999,
-          backgroundColor: "#0F2044",
+          backgroundColor: "#0C2340",
           color: "#FFFFFF",
           display: "flex",
           alignItems: "center",

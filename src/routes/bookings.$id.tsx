@@ -16,17 +16,17 @@ export const Route = createFileRoute("/bookings/$id")({
   }),
   component: BookingDetailPage,
   errorComponent: ({ error }) => (
-    <div style={{ padding: 24, fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ padding: 24, fontFamily: "Inter, sans-serif" }}>
       <p>Failed to load booking.</p>
       <p style={{ color: "#6B7280", fontSize: 13 }}>{error.message}</p>
     </div>
   ),
   notFoundComponent: () => (
-    <div style={{ padding: 24, fontFamily: "Poppins, sans-serif" }}>Booking not found.</div>
+    <div style={{ padding: 24, fontFamily: "Inter, sans-serif" }}>Booking not found.</div>
   ),
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Course {
   name: string | null;
@@ -77,7 +77,7 @@ function Card({ children }: { children: React.ReactNode }) {
     <div
       style={{
         background: "#fff",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         borderRadius: 12,
         padding: 16,
         marginLeft: 16,
@@ -95,7 +95,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "6px 0" }}>
       <span style={{ color: "#6B7280", fontSize: 13 }}>{label}</span>
-      <span style={{ color: "#0F2044", fontSize: 14, fontWeight: 500, textAlign: "right" }}>
+      <span style={{ color: "#0C2340", fontSize: 14, fontWeight: 500, textAlign: "right" }}>
         {value || "—"}
       </span>
     </div>
@@ -158,7 +158,7 @@ function BookingDetailPage() {
       {/* Top bar */}
       <div
         style={{
-          background: "#0F2044",
+          background: "#0C2340",
           color: "#fff",
           display: "flex",
           alignItems: "center",
@@ -186,7 +186,7 @@ function BookingDetailPage() {
         <>
           {/* Reference */}
           <div style={{ textAlign: "center", padding: 24 }}>
-            <div style={{ fontSize: 26, fontWeight: 700, color: "#0F2044", letterSpacing: 0.5 }}>
+            <div style={{ fontSize: 26, fontWeight: 700, color: "#0C2340", letterSpacing: 0.5 }}>
               ED-{booking.id.slice(0, 6).toUpperCase()}
             </div>
             <div style={{ marginTop: 10 }}>
@@ -209,8 +209,8 @@ function BookingDetailPage() {
           {/* Pupil details */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <UserIcon size={18} color="#0F2044" />
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0F2044" }}>
+              <UserIcon size={18} color="#0C2340" />
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0C2340" }}>
                 Pupil details
               </h2>
             </div>
@@ -235,9 +235,9 @@ function BookingDetailPage() {
                   justifyContent: "center",
                   gap: 6,
                   padding: "10px 12px",
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0F2044",
+                  color: "#0C2340",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -256,9 +256,9 @@ function BookingDetailPage() {
                   justifyContent: "center",
                   gap: 6,
                   padding: "10px 12px",
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0F2044",
+                  color: "#0C2340",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -277,9 +277,9 @@ function BookingDetailPage() {
                   justifyContent: "center",
                   gap: 6,
                   padding: "10px 12px",
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0F2044",
+                  color: "#0C2340",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -295,8 +295,8 @@ function BookingDetailPage() {
           {/* Course details */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <BookOpen size={18} color="#0F2044" />
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0F2044" }}>
+              <BookOpen size={18} color="#0C2340" />
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0C2340" }}>
                 Course details
               </h2>
             </div>
@@ -322,7 +322,7 @@ function BookingDetailPage() {
             <button
               onClick={goPupil}
               style={{
-                background: "#0F2044",
+                background: "#0C2340",
                 color: "#fff",
                 border: 0,
                 borderRadius: 10,
@@ -339,8 +339,8 @@ function BookingDetailPage() {
               onClick={() => navigate({ to: "/schedule" })}
               style={{
                 background: "transparent",
-                color: "#0F2044",
-                border: "1px solid #E2E6ED",
+                color: "#0C2340",
+                border: "1px solid #EEF2F7",
                 borderRadius: 10,
                 padding: "12px 14px",
                 fontSize: 14,

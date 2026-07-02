@@ -13,7 +13,7 @@ export const Route = createFileRoute("/pipeline")({
   component: PipelinePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Stage = "new" | "contacted" | "trial_booked" | "active_pupil" | "lost";
 
@@ -133,20 +133,20 @@ function PipelinePage() {
                   className="sticky top-[52px] z-10 flex items-center justify-between"
                   style={{
                     backgroundColor: "#F8F9FB",
-                    border: "0.5px solid #E2E6ED",
+                    border: "0.5px solid #EEF2F7",
                     borderRadius: 10,
                     padding: "8px 12px",
                     marginBottom: 8,
                   }}
                 >
-                  <span className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
+                  <span className="text-[13px] font-semibold" style={{ color: "#0C2340" }}>
                     {s.label}
                   </span>
                   <span
                     className="text-[11px] font-medium"
                     style={{
-                      backgroundColor: "#E2E6ED",
-                      color: "#0F2044",
+                      backgroundColor: "#EEF2F7",
+                      color: "#0C2340",
                       padding: "2px 8px",
                       borderRadius: 999,
                     }}
@@ -166,7 +166,7 @@ function PipelinePage() {
                       style={{
                         color: "#9CA3AF",
                         padding: "16px 8px",
-                        border: "0.5px dashed #E2E6ED",
+                        border: "0.5px dashed #EEF2F7",
                         borderRadius: 10,
                       }}
                     >
@@ -180,12 +180,12 @@ function PipelinePage() {
                       onClick={() => setDetail(lead)}
                       className="text-left bg-white"
                       style={{
-                        border: "0.5px solid #E2E6ED",
+                        border: "0.5px solid #EEF2F7",
                         borderRadius: 10,
                         padding: 12,
                       }}
                     >
-                      <div className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
+                      <div className="text-[14px] font-semibold" style={{ color: "#0C2340" }}>
                         {lead.name}
                       </div>
                       {lead.phone && (
@@ -194,7 +194,7 @@ function PipelinePage() {
                         </div>
                       )}
                       {lead.course_interest && (
-                        <div className="text-[12px] mt-1" style={{ color: "#0F2044" }}>
+                        <div className="text-[12px] mt-1" style={{ color: "#0C2340" }}>
                           {lead.course_interest}
                         </div>
                       )}
@@ -202,7 +202,7 @@ function PipelinePage() {
                         className="inline-block mt-2 text-[10px] font-medium"
                         style={{
                           backgroundColor: "#EEF4FB",
-                          color: "#1A52A0",
+                          color: "#1A4A6E",
                           padding: "2px 8px",
                           borderRadius: 999,
                         }}
@@ -271,7 +271,7 @@ function SheetShell({
           borderTopRightRadius: 16,
           maxHeight: "90vh",
           overflowY: "auto",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -279,10 +279,10 @@ function SheetShell({
           className="sticky top-0 flex items-center justify-between bg-white"
           style={{
             padding: "14px 16px",
-            borderBottom: "0.5px solid #E2E6ED",
+            borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0F2044" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0C2340" }}>
             {title}
           </div>
           <button
@@ -292,7 +292,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0F2044" />
+            <X size={20} color="#0C2340" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>
@@ -369,9 +369,9 @@ function AddLeadSheet({
             onChange={(e) => setSource(e.target.value)}
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {SOURCES.map((s) => (
@@ -395,9 +395,9 @@ function AddLeadSheet({
             rows={4}
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               resize: "vertical",
             }}
           />
@@ -511,9 +511,9 @@ function LeadDetailSheet({
             onChange={(e) => setStage(e.target.value as Stage)}
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {STAGES.map((s) => (
@@ -537,9 +537,9 @@ function LeadDetailSheet({
             rows={4}
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               color: "#1A1A2E",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               resize: "vertical",
             }}
           />

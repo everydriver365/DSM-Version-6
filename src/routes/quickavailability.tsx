@@ -14,7 +14,7 @@ export const Route = createFileRoute("/quickavailability")({
   component: QuickAvailabilityPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function QuickAvailabilityPage() {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ function QuickAvailabilityPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F2F4F8", margin: -8 }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
@@ -145,7 +145,7 @@ function QuickAvailabilityPage() {
                 height: 52,
                 fontSize: 15,
                 backgroundColor: isActive ? "#CC2229" : "#16A34A",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               {isActive ? "Go unavailable" : "Go available"}

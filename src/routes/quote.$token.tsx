@@ -7,7 +7,7 @@ export const Route = createFileRoute("/quote/$token")({
   component: PublicQuotePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
+const POPPINS = { fontFamily: "Inter, sans-serif" as const };
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -64,7 +64,7 @@ function MessagePage({ title, body }: { title: string; body: string }) {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", marginBottom: 8 }}>{title}</div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#0C2340", marginBottom: 8 }}>{title}</div>
         <div style={{ fontSize: 14, color: "#6B7280" }}>{body}</div>
       </div>
     </div>
@@ -325,17 +325,17 @@ function PublicQuotePage() {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
-        <div style={{ background: "#0F2044", color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
+        <div style={{ background: "#0C2340", color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
           <div style={{ fontWeight: 700, fontSize: 18 }}>EveryDriver</div>
           <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4 }}>Your driving lesson quote</div>
         </div>
 
-        <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 16 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", marginBottom: 16 }}>
+        <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 16 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#0C2340", marginBottom: 16 }}>
             Quote for {quote.recipient_name}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14, color: "#0F2044" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14, color: "#0C2340" }}>
             {quote.course_type && (
               <Row label="Course type" value={quote.course_type} />
             )}
@@ -344,7 +344,7 @@ function PublicQuotePage() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 4 }}>
               <span style={{ color: "#6B7280" }}>Total price</span>
-              <span style={{ fontSize: 24, fontWeight: 700, color: "#1A52A0" }}>£{Number(quote.price).toFixed(2)}</span>
+              <span style={{ fontSize: 24, fontWeight: 700, color: "#1A4A6E" }}>£{Number(quote.price).toFixed(2)}</span>
             </div>
             {quote.deposit_amount != null && (
               <div style={{ display: "flex", justifyContent: "space-between", color: "#6B7280", fontSize: 13 }}>
@@ -372,7 +372,7 @@ function PublicQuotePage() {
           {accepted ? (
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
               <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044" }}>Quote accepted! 🎉</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0C2340" }}>Quote accepted! 🎉</div>
               <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
                 {depositPaid && !depositDoneNow
                   ? "Your booking is confirmed. We'll be in touch shortly to arrange your lessons."
@@ -390,15 +390,15 @@ function PublicQuotePage() {
               )}
 
               {needsDeposit && (
-                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 12, textAlign: "left" }}>
+                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <Lock size={18} color="#1A52A0" />
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Secure your booking</div>
+                    <Lock size={18} color="#1A4A6E" />
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0C2340" }}>Secure your booking</div>
                   </div>
                   <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
                     Pay your £{depositAmount.toFixed(2)} deposit to confirm your lesson booking
                   </div>
-                  <div style={{ fontSize: 36, fontWeight: 700, color: "#1A52A0", lineHeight: 1, marginBottom: 16 }}>
+                  <div style={{ fontSize: 36, fontWeight: 700, color: "#1A4A6E", lineHeight: 1, marginBottom: 16 }}>
                     £{depositAmount.toFixed(2)}
                   </div>
 
@@ -413,9 +413,9 @@ function PublicQuotePage() {
                       disabled={payStatus === "creating"}
                       onClick={startDepositPayment}
                       style={{
-                        width: "100%", height: 48, background: "#1A52A0", color: "#fff",
+                        width: "100%", height: 48, background: "#1A4A6E", color: "#fff",
                         border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600,
-                        fontFamily: "Poppins, sans-serif", cursor: "pointer",
+                        fontFamily: "Inter, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
                       }}
                     >
@@ -447,7 +447,7 @@ function PublicQuotePage() {
                             type="submit"
                             disabled={payStatus === "paying"}
                             style={{
-                              width: "100%", background: "#1A52A0", color: "#fff",
+                              width: "100%", background: "#1A4A6E", color: "#fff",
                               border: 0, borderRadius: 10, padding: "14px 16px",
                               fontSize: 16, fontWeight: 600, cursor: "pointer",
                               opacity: payStatus === "paying" ? 0.6 : 1,
@@ -479,7 +479,7 @@ function PublicQuotePage() {
                   >
                     Book your first lesson →
                   </a>
-                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A52A0", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1A4A6E", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
                     Contact us
                   </a>
                 </>
@@ -492,7 +492,7 @@ function PublicQuotePage() {
               style={{
                 height: 52, borderRadius: 12, border: "none",
                 background: "#16A34A", color: "#fff", fontWeight: 600, fontSize: 15,
-                fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
+                fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
               }}
             >
               {accepting ? "Accepting…" : "Accept this quote →"}
@@ -503,8 +503,8 @@ function PublicQuotePage() {
             onClick={askQuestion}
             style={{
               height: 48, borderRadius: 12, background: "#fff",
-              border: "1px solid #0F2044", color: "#0F2044",
-              fontWeight: 600, fontSize: 14, fontFamily: "Poppins, sans-serif", cursor: "pointer",
+              border: "1px solid #0C2340", color: "#0C2340",
+              fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", cursor: "pointer",
             }}
           >
             I have questions
@@ -513,7 +513,7 @@ function PublicQuotePage() {
 
         <div style={{ padding: "16px 16px 32px", textAlign: "center", fontSize: 12, color: "#6B7280" }}>
           Powered by{" "}
-          <a href="https://everydriver.co.uk" style={{ color: "#1A52A0", textDecoration: "none", fontWeight: 600 }}>
+          <a href="https://everydriver.co.uk" style={{ color: "#1A4A6E", textDecoration: "none", fontWeight: 600 }}>
             EveryDriver
           </a>
         </div>

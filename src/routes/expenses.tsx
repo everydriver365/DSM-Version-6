@@ -28,8 +28,8 @@ export const Route = createFileRoute("/expenses")({
   component: ExpensesPage,
 });
 
-const NAVY = "#0F2044";
-const BORDER = "0.5px solid #E2E6ED";
+const NAVY = "#0C2340";
+const BORDER = "0.5px solid #EEF2F7";
 const GREEN = "#059669";
 
 const CATEGORIES = [
@@ -88,7 +88,7 @@ const categoryColour = (category: string) => {
     'Training': '#10B981',
     'Vehicle': '#EF4444',
     'Phone': '#06B6D4',
-    'Professional fees': '#0F2044',
+    'Professional fees': '#0C2340',
     'Other': '#9CA3AF',
   };
   return colours[category] || '#9CA3AF';

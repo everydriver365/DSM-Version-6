@@ -18,7 +18,7 @@ export const Route = createFileRoute("/todos")({
   component: TodosPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Priority = "high" | "medium" | "low";
 
@@ -169,7 +169,7 @@ function TodosPage() {
             height: 22,
             borderWidth: "1px",
             borderStyle: "solid",
-            borderColor: t.completed ? "#16A34A" : "#E2E6ED",
+            borderColor: t.completed ? "#16A34A" : "#EEF2F7",
             backgroundColor: t.completed ? "#16A34A" : "#FFFFFF",
             flexShrink: 0,
           }}
@@ -180,7 +180,7 @@ function TodosPage() {
           <div
             className="text-[14px] font-semibold truncate"
             style={{
-              color: t.completed ? "#6B7280" : "#0F2044",
+              color: t.completed ? "#6B7280" : "#0C2340",
               textDecoration: t.completed ? "line-through" : "none",
             }}
           >
@@ -296,7 +296,7 @@ function TodosPage() {
             style={{ animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0F2044]">Add to-do</div>
+              <div className="text-[16px] font-semibold text-[#0C2340]">Add to-do</div>
               <button
                 type="button"
                 onClick={() => setShowSheet(false)}
@@ -317,7 +317,7 @@ function TodosPage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Due date
                 </label>
@@ -325,12 +325,12 @@ function TodosPage() {
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                   }}
                 />
               </div>
@@ -338,7 +338,7 @@ function TodosPage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Priority
                 </label>
@@ -354,10 +354,10 @@ function TodosPage() {
                         style={{
                           backgroundColor: active ? priorityColor(p) : "transparent",
                           color: active ? "#FFFFFF" : "#6B7280",
-                          fontFamily: "Poppins, sans-serif",
+                          fontFamily: "Inter, sans-serif",
                           borderWidth: active ? 0 : "0.5px",
                           borderStyle: "solid",
-                          borderColor: "#E2E6ED",
+                          borderColor: "#EEF2F7",
                         }}
                       >
                         {p}

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/notes/")({
   component: NotesListPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface NoteRow {
   id: string;
@@ -117,7 +117,7 @@ function NotesListPage() {
             >
               <div className="flex items-start justify-between" style={{ gap: 8 }}>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[14px] font-semibold text-[#0F2044] truncate">
+                  <div className="text-[14px] font-semibold text-[#0C2340] truncate">
                     {n.title?.trim() || "Untitled"}
                   </div>
                   <div
