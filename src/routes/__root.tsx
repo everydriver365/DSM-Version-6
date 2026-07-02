@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Driving School Manager" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
-      { name: "theme-color", content: "#0C2340" },
+      { name: "theme-color", content: "#0A2540" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "DSM" },
@@ -190,7 +190,7 @@ function RootComponent() {
 
   const wrapperStyle: Record<string, string | number> = {};
   if (!hideNav) wrapperStyle.paddingBottom = 80;
-  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F3F8FF";
+  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F7F5EF";
 
   // Track recent screens for the search screen's "Recent" list.
   useEffect(() => {

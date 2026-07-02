@@ -183,7 +183,7 @@ function LocationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <MapPin size={28} color="#1A4A6E" />
+                <MapPin size={28} color="#0B7DDA" />
               </div>
               <div className="text-[14px] text-[#6B7280]">No saved locations yet</div>
             </div>
@@ -207,10 +207,10 @@ function LocationsPage() {
                           flexShrink: 0,
                         }}
                       >
-                        <MapPin size={18} color="#1A4A6E" />
+                        <MapPin size={18} color="#0B7DDA" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[14px] font-semibold text-[#0C2340] truncate">
+                        <div className="text-[14px] font-semibold text-[#0A2540] truncate">
                           {r.name}
                         </div>
                         {(r.postcode || r.address) && (
@@ -251,10 +251,10 @@ function LocationsPage() {
                         height: 32,
                         gap: 4,
                         flexShrink: 0,
-                        color: "#1A4A6E",
+                        color: "#0B7DDA",
                       }}
                     >
-                      <NavIcon size={14} color="#1A4A6E" />
+                      <NavIcon size={14} color="#0B7DDA" />
                       <span className="text-[12px] font-medium">Navigate</span>
                     </button>
                   </div>
@@ -277,7 +277,7 @@ function LocationsPage() {
             style={{ animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0C2340]">
+              <div className="text-[16px] font-semibold text-[#0A2540]">
                 {editing ? "Edit location" : "Add location"}
               </div>
               <button

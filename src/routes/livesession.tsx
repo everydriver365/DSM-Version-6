@@ -202,7 +202,7 @@ function LiveSessionPage() {
               width: 48,
               height: 48,
               borderRadius: 24,
-              background: "#1A4A6E",
+              background: "#0B7DDA",
               color: "#fff",
               display: "flex",
               alignItems: "center",
@@ -214,7 +214,7 @@ function LiveSessionPage() {
             {initials(pupilName)}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: "#0C2340" }}>{pupilName}</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: "#0A2540" }}>{pupilName}</div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
               Start {startTimeLabel} · {lesson?.duration_minutes ?? 60} min
             </div>
@@ -238,7 +238,7 @@ function LiveSessionPage() {
           <button
             type="button"
             onClick={() => setNoteSheetOpen(true)}
-            style={actionBtn("#1A4A6E")}
+            style={actionBtn("#0B7DDA")}
           >
             <StickyNote size={20} color="#fff" />
             <span>Add note</span>
@@ -275,7 +275,7 @@ function LiveSessionPage() {
               borderRadius: 12,
               padding: 12,
               background: "#ffffff",
-              color: "#0C2340",
+              color: "#0A2540",
               fontSize: 14,
               border: "none",
               resize: "vertical",
@@ -323,7 +323,7 @@ function LiveSessionPage() {
               padding: 16,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340", marginBottom: 12 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#0A2540", marginBottom: 12 }}>
               Quick note
             </div>
             <textarea

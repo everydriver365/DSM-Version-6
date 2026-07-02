@@ -87,7 +87,7 @@ function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0C2340] px-4"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0A2540] px-4"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       {/* Logo */}
@@ -113,7 +113,7 @@ function LoginPage() {
         }}
       >
         <h2
-          className="text-[20px] font-semibold text-[#0C2340] text-center"
+          className="text-[20px] font-semibold text-[#0A2540] text-center"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           Welcome back
@@ -142,7 +142,7 @@ function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -166,7 +166,7 @@ function LoginPage() {
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -194,13 +194,13 @@ function LoginPage() {
                   setRemember(on);
                   persistRemember(email, on);
                 }}
-                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A4A6E]"
+                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#0B7DDA]"
               />
               Remember me
             </label>
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#1A4A6E] hover:underline"
+              className="text-[13px] text-[#0B7DDA] hover:underline"
             >
               Forgot password?
             </Link>
@@ -218,7 +218,7 @@ function LoginPage() {
 
           <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Inter, sans-serif" }}>
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-[#1A4A6E] hover:underline font-medium">
+            <Link to="/register" className="text-[#0B7DDA] hover:underline font-medium">
               Create account
             </Link>
           </p>
@@ -227,7 +227,7 @@ function LoginPage() {
             <button
               type="button"
               onClick={onBiometric}
-              className="h-12 w-full rounded-lg bg-white text-[#0C2340] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
+              className="h-12 w-full rounded-lg bg-white text-[#0A2540] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
               style={{ border: "1.5px solid #EEF2F7", fontFamily: "Inter, sans-serif" }}
             >
               <ScanFace size={20} />
@@ -238,7 +238,7 @@ function LoginPage() {
           {webauthnSupported && (
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#1A4A6E] hover:underline text-center"
+              className="text-[13px] text-[#0B7DDA] hover:underline text-center"
             >
               Forgot password?
             </Link>

@@ -50,11 +50,11 @@ const marketplaceItems: MarketplaceItem[] = [
     title: "GPS Tracker",
     subtitle: "£14.99/month per vehicle",
     description: "Live location, journey history, harsh event alerts, Geotab integration.",
-    gradient: "linear-gradient(135deg, #1A4A6E, #0C2340)",
+    gradient: "linear-gradient(135deg, #0B7DDA, #0A2540)",
     icon: MapPin,
     badge: "NEW",
     badgeBg: "#FFFFFF",
-    badgeColor: "#1A4A6E",
+    badgeColor: "#0B7DDA",
     category: "tracking",
     action: "plan",
     buttonText: "Add to plan →",
@@ -168,7 +168,7 @@ function MarketplacePage() {
             <div
               className="flex items-center"
               style={{
-                background: "#0C2340",
+                background: "#0A2540",
                 color: "#FFFFFF",
                 padding: "12px 16px",
                 position: "sticky",
@@ -206,7 +206,7 @@ function MarketplacePage() {
             <div style={{ padding: "24px 16px", background: "#F7FAFC" }}>
               <h2
                 className="font-bold"
-                style={{ fontSize: 18, color: "#0C2340", fontFamily: "Inter, sans-serif", margin: 0 }}
+                style={{ fontSize: 18, color: "#0A2540", fontFamily: "Inter, sans-serif", margin: 0 }}
               >
                 Everything to grow your driving business
               </h2>
@@ -250,7 +250,7 @@ function MarketplacePage() {
                       borderRadius: 999,
                       border: "none",
                       cursor: "pointer",
-                      background: isActive ? "#0C2340" : "#F3F4F6",
+                      background: isActive ? "#0A2540" : "#F3F4F6",
                       color: isActive ? "#FFFFFF" : "#374151",
                       transition: "background 0.15s ease, color 0.15s ease",
                     }}

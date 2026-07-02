@@ -36,7 +36,7 @@ function monthLabel(d: Date) {
 function statusColor(s: string) {
   const x = (s ?? "").toLowerCase();
   if (x === "completed") return "#16A34A";
-  if (x === "confirmed") return "#1A4A6E";
+  if (x === "confirmed") return "#0B7DDA";
   if (x === "cancelled") return "#CC2229";
   if (x === "pending") return "#F59E0B";
   return "#6B7280";
@@ -133,12 +133,12 @@ function PupilHistoryPage() {
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div
-                            className="text-[14px] font-semibold text-[#0C2340]"
+                            className="text-[14px] font-semibold text-[#0A2540]"
                             style={POPPINS}
                           >
                             {formatDateShort(d)}
                           </div>
-                          <div className="text-[14px] text-[#0C2340]" style={POPPINS}>
+                          <div className="text-[14px] text-[#0A2540]" style={POPPINS}>
                             {formatTime(l.lesson_time)}
                           </div>
                           <div className="text-[13px] text-[#6B7280]" style={POPPINS}>

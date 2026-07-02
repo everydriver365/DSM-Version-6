@@ -286,7 +286,7 @@ function MtdPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F7F5EF", margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
@@ -315,7 +315,7 @@ function MtdPage() {
             background: "#EEF4FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#1A4A6E",
+            borderColor: "#0B7DDA",
             borderRadius: 12,
             padding: 16,
             fontSize: 13,
@@ -367,7 +367,7 @@ function MtdPage() {
               checked={row.is_enrolled}
               disabled={saving}
               onChange={(e) => persist({ is_enrolled: e.target.checked })}
-              style={{ width: 20, height: 20, accentColor: "#1A4A6E" }}
+              style={{ width: 20, height: 20, accentColor: "#0B7DDA" }}
             />
           </label>
 

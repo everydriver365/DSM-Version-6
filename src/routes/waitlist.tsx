@@ -14,8 +14,8 @@ export const Route = createFileRoute("/waitlist")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0C2340";
-const BLUE = "#1A4A6E";
+const NAVY = "#0A2540";
+const BLUE = "#0B7DDA";
 const RED = "#CC2229";
 const GREEN = "#16A34A";
 const AMBER = "#D97706";
@@ -124,7 +124,7 @@ function WaitlistPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
+    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#F7F5EF" }}>
       {/* Header */}
       <div
         className="sticky top-0 z-30 flex items-center"
@@ -175,7 +175,7 @@ function WaitlistPage() {
           ) : waiting.length === 0 ? (
             <div className="p-10 text-center" style={POPPINS}>
               <Clock size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
-              <div className="text-[14px] font-semibold text-[#0C2340]">No pupils waiting</div>
+              <div className="text-[14px] font-semibold text-[#0A2540]">No pupils waiting</div>
               <div className="text-[12px] mt-1" style={{ color: GREY }}>
                 Tap + to add a pupil to the waiting list.
               </div>
@@ -192,7 +192,7 @@ function WaitlistPage() {
                       {initials(w.pupil_name || "?")}
                     </div>
                     <div className="min-w-0 flex-1 flex flex-col justify-center">
-                      <div className="text-[14px] font-semibold text-[#0C2340] truncate" style={POPPINS}>
+                      <div className="text-[14px] font-semibold text-[#0A2540] truncate" style={POPPINS}>
                         {w.pupil_name || "Unknown pupil"}
                       </div>
                       <div className="text-[12px] mt-0.5" style={{ color: GREY, ...POPPINS }}>
@@ -239,7 +239,7 @@ function WaitlistPage() {
           ) : offers.length === 0 ? (
             <div className="p-10 text-center" style={POPPINS}>
               <Send size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
-              <div className="text-[14px] font-semibold text-[#0C2340]">No slot offers yet</div>
+              <div className="text-[14px] font-semibold text-[#0A2540]">No slot offers yet</div>
               <div className="text-[12px] mt-1" style={{ color: GREY }}>
                 Offer a slot to someone on the waiting list.
               </div>
@@ -258,7 +258,7 @@ function WaitlistPage() {
                         style={{ width: 3, borderRadius: 2, backgroundColor: color, alignSelf: "stretch" }}
                       />
                       <div className="min-w-0 flex-1 flex flex-col justify-center">
-                        <div className="text-[14px] font-semibold text-[#0C2340] truncate" style={POPPINS}>
+                        <div className="text-[14px] font-semibold text-[#0A2540] truncate" style={POPPINS}>
                           {o.pupil_name || "Unknown pupil"}
                         </div>
                         <div className="text-[12px] mt-0.5" style={{ color: "#374151", ...POPPINS }}>
@@ -406,7 +406,7 @@ function AddWaitlistModal({
         style={{ maxHeight: "90vh" }}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
-          <div className="text-[15px] font-semibold text-[#0C2340]" style={POPPINS}>
+          <div className="text-[15px] font-semibold text-[#0A2540]" style={POPPINS}>
             Add to waiting list
           </div>
           <button onClick={onClose} className="p-1">
@@ -442,7 +442,7 @@ function AddWaitlistModal({
                   style={{
                     ...POPPINS,
                     backgroundColor: pupilId === p.id ? "#EEF4FB" : "transparent",
-                    color: pupilId === p.id ? BLUE : "#0C2340",
+                    color: pupilId === p.id ? BLUE : "#0A2540",
                     fontWeight: pupilId === p.id ? 600 : 400,
                   }}
                 >
@@ -581,7 +581,7 @@ function OfferSlotModal({
     >
       <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
-          <div className="text-[15px] font-semibold text-[#0C2340]" style={POPPINS}>
+          <div className="text-[15px] font-semibold text-[#0A2540]" style={POPPINS}>
             Offer slot to {pupilName}
           </div>
           <button onClick={onClose} className="p-1">

@@ -96,7 +96,7 @@ function ymd(d: Date) {
 function statusBadge(status: string | null) {
   const s = (status ?? "active").toLowerCase();
   if (s === "active") return { bg: "#16A34A", label: "Active" };
-  if (s === "passed") return { bg: "#1A4A6E", label: "Passed" };
+  if (s === "passed") return { bg: "#0B7DDA", label: "Passed" };
   return { bg: "#6B7280", label: s.charAt(0).toUpperCase() + s.slice(1) };
 }
 function lessonStatusColor(s: string) {
@@ -121,7 +121,7 @@ function accentColor(l: Lesson) {
   if (isLessonLive(l)) return "#CC2229";
   if (l.status === "completed") return "#16A34A";
   if (l.status === "cancelled") return "#9CA3AF";
-  return "#1A4A6E";
+  return "#0B7DDA";
 }
 function daysBetween(a: string, b: string) {
   const d1 = new Date(`${a}T00:00:00`);
@@ -442,7 +442,7 @@ function PupilDetailPage() {
                 style={{
                   width: 56,
                   height: 56,
-                  backgroundColor: "#1A4A6E",
+                  backgroundColor: "#0B7DDA",
                   color: "#FFFFFF",
                   ...POPPINS,
                 }}
@@ -469,12 +469,12 @@ function PupilDetailPage() {
                     border: "1px solid #EEF2F7",
                   }}
                 >
-                  <Camera size={11} color="#1A4A6E" />
+                  <Camera size={11} color="#0B7DDA" />
                 </span>
               </button>
               <div className="min-w-0 flex-1">
                 <div
-                  className="text-[18px] font-semibold text-[#0C2340] truncate"
+                  className="text-[18px] font-semibold text-[#0A2540] truncate"
                   style={POPPINS}
                 >
                   {pupil.name}
@@ -534,7 +534,7 @@ function PupilDetailPage() {
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
               let barColor = "#CC2229";
               if (score >= 100) barColor = "#16A34A";
-              else if (score >= 71) barColor = "#1A4A6E";
+              else if (score >= 71) barColor = "#0B7DDA";
               else if (score >= 41) barColor = "#F59E0B";
               return (
                 <div className="mt-4">
@@ -556,7 +556,7 @@ function PupilDetailPage() {
                     </div>
                     <div
                       className="text-[14px] font-bold"
-                      style={{ color: "#0C2340", ...POPPINS }}
+                      style={{ color: "#0A2540", ...POPPINS }}
                     >
                       {score}%
                     </div>
@@ -598,8 +598,8 @@ function PupilDetailPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <ClipboardList size={18} color="#1A4A6E" />
-              <div className="text-[14px] font-semibold" style={{ color: "#0C2340", ...POPPINS }}>
+              <ClipboardList size={18} color="#0B7DDA" />
+              <div className="text-[14px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
                 Intake answers
               </div>
             </div>
@@ -610,7 +610,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   className="text-[14px] font-semibold mt-0.5"
-                  style={{ color: "#0C2340", ...POPPINS }}
+                  style={{ color: "#0A2540", ...POPPINS }}
                 >
                   {a.answer ?? a.answer_text ?? String(a.value ?? "")}
                 </div>
@@ -642,7 +642,7 @@ function PupilDetailPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0C2340",
+              color: "#0A2540",
               ...POPPINS,
             }}
           >
@@ -655,7 +655,7 @@ function PupilDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#1A4A6E",
+              backgroundColor: "#0B7DDA",
               border: "none",
               ...POPPINS,
             }}
@@ -703,16 +703,16 @@ function PupilDetailPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0C2340",
+              color: "#0A2540",
               border: "none",
               ...POPPINS,
             }}
           >
             <span className="inline-flex items-center gap-2 text-[13px] font-medium">
-              <BookOpen size={16} color="#0C2340" />
+              <BookOpen size={16} color="#0A2540" />
               Syllabus
             </span>
-            <span className="text-[12px] font-semibold" style={{ color: "#1A4A6E" }}>
+            <span className="text-[12px] font-semibold" style={{ color: "#0B7DDA" }}>
               {syllabusPct == null ? "—" : `${syllabusPct}%`}
             </span>
           </button>
@@ -779,7 +779,7 @@ function PupilDetailPage() {
                       className="flex flex-col items-center justify-center shrink-0"
                       style={{ width: 40, padding: "8px 0" }}
                     >
-                      <span className="text-[12px] font-bold" style={{ color: "#0C2340", ...POPPINS }}>
+                      <span className="text-[12px] font-bold" style={{ color: "#0A2540", ...POPPINS }}>
                         {formatTime(l.lesson_time)}
                       </span>
                       <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
@@ -792,7 +792,7 @@ function PupilDetailPage() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
-                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0C2340", ...POPPINS }}>
+                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0A2540", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
                       {l.lesson_type && (
@@ -906,13 +906,13 @@ function PupilDetailPage() {
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEF4FB", color: "#1A4A6E", ...POPPINS }}
+                  style={{ backgroundColor: "#EEF4FB", color: "#0B7DDA", ...POPPINS }}
                 >
                   National Intensive
                 </span>
                 <span
                   className="text-[13px] font-semibold"
-                  style={{ color: "#0C2340", ...POPPINS }}
+                  style={{ color: "#0A2540", ...POPPINS }}
                 >
                   Payment details
                 </span>
@@ -1012,7 +1012,7 @@ function PupilDetailPage() {
                         marginTop: 10,
                         height: 8,
                         borderRadius: 4,
-                        backgroundColor: "#F3F8FF",
+                        backgroundColor: "#F7F5EF",
                         overflow: "hidden",
                       }}
                     >
@@ -1020,7 +1020,7 @@ function PupilDetailPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#1A4A6E",
+                          backgroundColor: "#0B7DDA",
                           borderRadius: 4,
                         }}
                       />
@@ -1080,7 +1080,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1A4A6E", ...POPPINS }}
+                  style={{ color: "#0B7DDA", ...POPPINS }}
                 >
                   Edit payment details
                 </button>
@@ -1088,7 +1088,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1A4A6E", ...POPPINS }}
+                  style={{ color: "#0B7DDA", ...POPPINS }}
                 >
                   Manage swap
                 </button>
@@ -1104,7 +1104,7 @@ function PupilDetailPage() {
           value={notesDraft}
           onChange={(e) => setNotesDraft(e.target.value)}
           placeholder="Add a note about this pupil…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
+          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
@@ -1144,7 +1144,7 @@ function PupilDetailPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Award size={20} color="#F59E0B" />
-                <div className="text-[16px] font-semibold text-[#0C2340]">Generate certificate</div>
+                <div className="text-[16px] font-semibold text-[#0A2540]">Generate certificate</div>
               </div>
               <button type="button" onClick={() => setCertOpen(false)} aria-label="Close">
                 <X size={20} color="#6B7280" />
@@ -1155,7 +1155,7 @@ function PupilDetailPage() {
             <select
               value={certMilestone}
               onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none mb-4"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none mb-4"
               style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <option value="first_lesson">First lesson complete</option>
@@ -1279,7 +1279,7 @@ function PupilDetailPage() {
 function StatChip({
   label,
   value,
-  valueColor = "#0C2340",
+  valueColor = "#0A2540",
 }: {
   label: string;
   value: string;
@@ -1314,7 +1314,7 @@ function StatChip({
 function NIRow({
   label,
   value,
-  valueColor = "#0C2340",
+  valueColor = "#0A2540",
 }: {
   label: string;
   value: string;

@@ -121,13 +121,13 @@ export function PushPermissionCard() {
             {isDenied ? (
               <AlertTriangle size={18} color="#B45309" />
             ) : (
-              <Bell size={18} color="#1A4A6E" />
+              <Bell size={18} color="#0B7DDA" />
             )}
           </div>
           <div className="min-w-0 flex-1">
             <div
               className="text-[14px] font-semibold"
-              style={{ ...POPPINS, color: "#0C2340" }}
+              style={{ ...POPPINS, color: "#0A2540" }}
             >
               {isUnsupported
                 ? "Notifications not supported"
@@ -162,7 +162,7 @@ export function PushPermissionCard() {
                   onClick={enable}
                   disabled={busy}
                   className="text-[13px] font-semibold rounded-md px-3 py-1.5 disabled:opacity-60"
-                  style={{ ...POPPINS, backgroundColor: "#1A4A6E", color: "#FFFFFF" }}
+                  style={{ ...POPPINS, backgroundColor: "#0B7DDA", color: "#FFFFFF" }}
                 >
                   {busy ? "Enabling…" : "Enable notifications"}
                 </button>

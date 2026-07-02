@@ -192,7 +192,7 @@ function ReportsPage() {
           <Card>
             <BreakdownRow color="#16A34A" label="Confirmed" count={counts.confirmed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
-            <BreakdownRow color="#1A4A6E" label="Completed" count={counts.completed} />
+            <BreakdownRow color="#0B7DDA" label="Completed" count={counts.completed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
             <BreakdownRow color="#CC2229" label="Cancelled" count={counts.cancelled} />
           </Card>
@@ -211,12 +211,12 @@ function ReportsPage() {
                 <div className="flex items-center px-3 py-3">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[12px] font-semibold"
-                    style={{ background: "#1A4A6E" }}
+                    style={{ background: "#0B7DDA" }}
                   >
                     {initials(p.name)}
                   </div>
-                  <div className="flex-1 ml-3 text-[14px] text-[#0C2340]">{p.name}</div>
-                  <div className="text-[14px] font-semibold text-[#0C2340]">{p.count}</div>
+                  <div className="flex-1 ml-3 text-[14px] text-[#0A2540]">{p.name}</div>
+                  <div className="text-[14px] font-semibold text-[#0A2540]">{p.count}</div>
                 </div>
               </div>
             ))}
@@ -231,8 +231,8 @@ function BreakdownRow({ color, label, count }: { color: string; label: string; c
   return (
     <div className="flex items-center">
       <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-      <div className="flex-1 ml-3 text-[14px] text-[#0C2340]">{label}</div>
-      <div className="text-[14px] font-semibold text-[#0C2340]">{count}</div>
+      <div className="flex-1 ml-3 text-[14px] text-[#0A2540]">{label}</div>
+      <div className="text-[14px] font-semibold text-[#0A2540]">{count}</div>
     </div>
   );
 }

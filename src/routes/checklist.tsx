@@ -191,7 +191,7 @@ function ChecklistPage() {
                     <span
                       className="text-[14px]"
                       style={{
-                        color: "#0C2340",
+                        color: "#0A2540",
                         textDecoration: on ? "line-through" : "none",
                         opacity: on ? 0.7 : 1,
                       }}

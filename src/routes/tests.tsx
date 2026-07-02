@@ -235,20 +235,20 @@ function TestCard({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1A4A6E", ...POPPINS }}
+          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#0B7DDA", ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="text-[14px] font-semibold truncate" style={{ color: "#0C2340", ...POPPINS }}>
+            <div className="text-[14px] font-semibold truncate" style={{ color: "#0A2540", ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
               <span
                 className="text-[11px] font-medium shrink-0"
                 style={{
-                  color: "#1A4A6E",
+                  color: "#0B7DDA",
                   backgroundColor: "#EEF4FB",
                   padding: "2px 8px",
                   borderRadius: 999,
@@ -273,7 +273,7 @@ function TestCard({
               </span>
             )}
           </div>
-          <div className="text-[13px] font-bold mt-1" style={{ color: "#0C2340", ...POPPINS }}>
+          <div className="text-[13px] font-bold mt-1" style={{ color: "#0A2540", ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
           <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
@@ -307,8 +307,8 @@ function TestCard({
                       padding: "0 12px",
                       borderRadius: 8,
                       backgroundColor: "transparent",
-                      border: "1px solid #1A4A6E",
-                      color: "#1A4A6E",
+                      border: "1px solid #0B7DDA",
+                      color: "#0B7DDA",
                       ...POPPINS,
                     }}
                   >
@@ -500,7 +500,7 @@ function LogResultSheet({
           className="rounded-[12px] p-3"
           style={{ backgroundColor: "#F3F4F6" }}
         >
-          <div className="text-[14px] font-semibold" style={{ color: "#0C2340" }}>
+          <div className="text-[14px] font-semibold" style={{ color: "#0A2540" }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
           <div className="text-[12px]" style={{ color: "#6B7280" }}>

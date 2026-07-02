@@ -225,7 +225,7 @@ function TaxReportPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0C2340" }}
+        style={{ backgroundColor: "#0A2540" }}
       >
         <button
           type="button"
@@ -245,14 +245,14 @@ function TaxReportPage() {
         className="bg-white flex items-center justify-between"
         style={{ padding: 16, borderBottom: "0.5px solid #EEF2F7" }}
       >
-        <label htmlFor="tax-year" className="text-[13px] font-medium text-[#0C2340]">
+        <label htmlFor="tax-year" className="text-[13px] font-medium text-[#0A2540]">
           Tax year
         </label>
         <select
           id="tax-year"
           value={year}
           onChange={(e) => setYear(e.target.value as YearKey)}
-          className="text-[13px] font-medium text-[#0C2340] bg-white"
+          className="text-[13px] font-medium text-[#0A2540] bg-white"
           style={{
             height: 36,
             padding: "0 12px",
@@ -270,7 +270,7 @@ function TaxReportPage() {
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
         <div className="flex items-center gap-2">
           <PoundSterling size={18} color="#16A34A" />
-          <div className="text-[15px] font-semibold text-[#0C2340]">Income</div>
+          <div className="text-[15px] font-semibold text-[#0A2540]">Income</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#16A34A" }}>
           £{fmt(totalIncome)}
@@ -288,7 +288,7 @@ function TaxReportPage() {
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
           <Receipt size={18} color="#CC2229" />
-          <div className="text-[15px] font-semibold text-[#0C2340]">Allowable expenses</div>
+          <div className="text-[15px] font-semibold text-[#0A2540]">Allowable expenses</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#CC2229" }}>
           £{fmt(expensesTotal)}
@@ -309,10 +309,10 @@ function TaxReportPage() {
       {/* PROFIT */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <TrendingUp size={18} color="#0C2340" />
-          <div className="text-[15px] font-semibold text-[#0C2340]">Net profit</div>
+          <TrendingUp size={18} color="#0A2540" />
+          <div className="text-[15px] font-semibold text-[#0A2540]">Net profit</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#0C2340" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: "#0A2540" }}>
           £{fmt(netProfit)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -327,10 +327,10 @@ function TaxReportPage() {
       {/* MILEAGE */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <Car size={18} color="#1A4A6E" />
-          <div className="text-[15px] font-semibold text-[#0C2340]">Mileage allowance</div>
+          <Car size={18} color="#0B7DDA" />
+          <div className="text-[15px] font-semibold text-[#0A2540]">Mileage allowance</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1A4A6E" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: "#0B7DDA" }}>
           £{fmt(mileageAllowance)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -352,7 +352,7 @@ function TaxReportPage() {
       {/* SUMMARY */}
       <div
         style={{
-          backgroundColor: "#0C2340",
+          backgroundColor: "#0A2540",
           borderRadius: 12,
           marginLeft: 16,
           marginRight: 16,
@@ -389,8 +389,8 @@ function TaxReportPage() {
 function Row({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className={`text-[13px] ${muted ? "text-[#6B7280]" : "text-[#0C2340]"}`}>{label}</span>
-      <span className={`text-[13px] font-semibold ${muted ? "text-[#6B7280]" : "text-[#0C2340]"}`}>
+      <span className={`text-[13px] ${muted ? "text-[#6B7280]" : "text-[#0A2540]"}`}>{label}</span>
+      <span className={`text-[13px] font-semibold ${muted ? "text-[#6B7280]" : "text-[#0A2540]"}`}>
         {value}
       </span>
     </div>

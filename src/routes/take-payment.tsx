@@ -366,7 +366,7 @@ function TakePaymentPage() {
     }
   };
 
-  const NAVY = "#0C2340";
+  const NAVY = "#0A2540";
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
   const numpadRows = [
     numpadKeys.slice(0, 3),
@@ -676,7 +676,7 @@ function TakePaymentPage() {
                         style={{
                           width: "100%",
                           marginTop: 12,
-                          background: "#0C2340",
+                          background: "#0A2540",
                           color: "#fff",
                           border: 0,
                           borderRadius: 10,

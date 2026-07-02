@@ -278,7 +278,7 @@ function PupilProgressPage() {
             className="absolute inset-0 flex flex-col items-center justify-center"
             style={POPPINS}
           >
-            <div className="text-[28px] font-semibold text-[#0C2340] leading-none">
+            <div className="text-[28px] font-semibold text-[#0A2540] leading-none">
               {pct}%
             </div>
             <div className="text-[12px] text-[#6B7280] mt-1">
@@ -354,7 +354,7 @@ function PupilProgressPage() {
                         className="w-full flex items-center justify-between px-3 py-3 text-left"
                       >
                         <span
-                          className="text-[14px] text-[#0C2340]"
+                          className="text-[14px] text-[#0A2540]"
                           style={POPPINS}
                         >
                           {it.label}

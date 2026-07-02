@@ -57,7 +57,7 @@ export function ConfirmDialog({
         <div
           id="confirm-dialog-title"
           className="text-[16px] font-semibold"
-          style={{ color: "#0C2340" }}
+          style={{ color: "#0A2540" }}
         >
           {title}
         </div>
@@ -73,7 +73,7 @@ export function ConfirmDialog({
             className="flex-1 h-11 rounded-lg text-[14px] font-medium"
             style={{
               backgroundColor: "transparent",
-              color: "#0C2340",
+              color: "#0A2540",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",

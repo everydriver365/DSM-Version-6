@@ -28,7 +28,7 @@ interface Referral {
 
 function statusColor(s: Status) {
   if (s === "booked") return "#16A34A";
-  if (s === "paid") return "#1A4A6E";
+  if (s === "paid") return "#0B7DDA";
   return "#F59E0B";
 }
 
@@ -123,7 +123,7 @@ function ReferralsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
       >
         <div className="text-[11px] tracking-wider font-semibold" style={{ color: "#9CA3AF" }}>
           TOTAL REFERRALS
@@ -157,7 +157,7 @@ function ReferralsPage() {
         </div>
         <div
           className="font-bold mt-1"
-          style={{ fontSize: 20, color: "#0C2340", letterSpacing: 1.5, ...POPPINS }}
+          style={{ fontSize: 20, color: "#0A2540", letterSpacing: 1.5, ...POPPINS }}
         >
           {code}
         </div>
@@ -189,7 +189,7 @@ function ReferralsPage() {
                   <div className="min-w-0">
                     <div
                       className="text-[14px] font-semibold truncate"
-                      style={{ color: "#0C2340", ...POPPINS }}
+                      style={{ color: "#0A2540", ...POPPINS }}
                     >
                       {r.referred_name}
                     </div>
