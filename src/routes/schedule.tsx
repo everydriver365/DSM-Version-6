@@ -421,8 +421,8 @@ function SchedulePage() {
             borderLeft: `4px solid ${lessonColour}`,
             background: `${lessonColour}15`,
           }}
-
         >
+
           <div
             style={{
               width: 48,
