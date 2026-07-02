@@ -71,6 +71,7 @@ import {
   Megaphone,
   Camera,
   Activity,
+  CheckCircle2,
 } from "lucide-react";
 import {
   Dialog,
