@@ -2601,32 +2601,22 @@ function HomePage() {
                         params: { id: l.id } as never,
                       });
                   }}
+                  className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
                   style={{
-                    display: "flex",
-                    gap: 10,
                     padding: "10px 16px",
-                    alignItems: "stretch",
-                    cursor: "pointer",
                     borderLeft: `4px solid ${lessonColour}`,
                     background: `${lessonColour}10`,
                   }}
                 >
-
                   {(() => {
                     const needsAttention =
                       !isCancelled &&
                       ((pastEnd && !l.eol_completed) ||
                         (l.payment_status === "unpaid" || !l.payment_status));
-
-
                     return (
                       <div
-                        style={{
-                          width: 40,
-                          flexShrink: 0,
-                          textAlign: "right",
-                          position: "relative",
-                        }}
+                        className="relative shrink-0 text-right"
+                        style={{ width: 40 }}
                       >
                         {needsAttention && (
                           <span
@@ -2642,29 +2632,28 @@ function HomePage() {
                             }}
                           />
                         )}
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: timeColor,
-                        textDecoration: isCancelled ? "line-through" : "none",
-                      }}
-                    >
-                      {fmtT(startD)}
-                    </div>
-                    <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>
-                      {durShort(l.duration_minutes)}
-                    </div>
-                  </div>
+                        <div
+                          className="truncate text-xs font-bold"
+                          style={{
+                            color: timeColor,
+                            textDecoration: isCancelled ? "line-through" : "none",
+                          }}
+                        >
+                          {fmtT(startD)}
+                        </div>
+                        <div
+                          className="truncate text-[10px] text-[#9CA3AF]"
+                          style={{ marginTop: 2 }}
+                        >
+                          {durShort(l.duration_minutes)}
+                        </div>
+                      </div>
                     );
                   })()}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-
+                  <div className="min-w-0">
                     <div
-                      className="truncate"
+                      className="truncate text-[13px] font-semibold"
                       style={{
-                        fontSize: 13,
-                        fontWeight: 600,
                         color: nameColor,
                         textDecoration: isCancelled ? "line-through" : "none",
                       }}
@@ -2673,15 +2662,8 @@ function HomePage() {
                     </div>
                     {l.pickup_location && (
                       <div
-                        className="truncate"
-                        style={{
-                          fontSize: 11,
-                          color: "#6B7280",
-                          marginTop: 2,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 3,
-                        }}
+                        className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
+                        style={{ marginTop: 2 }}
                       >
                         <MapPin size={10} color="#6B7280" />
                         <span className="truncate">{l.pickup_location}</span>
@@ -2689,28 +2671,19 @@ function HomePage() {
                     )}
                     {badges.length > 0 && (
                       <div
-                        style={{
-                          display: "flex",
-                          gap: 6,
-                          marginTop: 4,
-                          flexWrap: "wrap",
-                        }}
+                        className="flex flex-wrap gap-1.5"
+                        style={{ marginTop: 4 }}
                       >
                         {badges}
                       </div>
                     )}
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexShrink: 0,
-                    }}
-                  >
+                  <div className="flex shrink-0 items-center">
                     <ChevronRight size={14} color="#D1D5DB" />
                   </div>
                 </div>,
               );
+
 
               const next = shown[i + 1];
               if (next && (tab !== "next" || ymd(lessonDateTime(next)) === ymd(startD))) {
