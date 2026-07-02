@@ -197,3 +197,36 @@
   padding: 12px 20px;
   border: 1px solid #EEF2F7;
 }
+
+/* Checkfront shimmer skeleton */
+@utility cf-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #EEF2F7;
+  border-radius: 10px;
+}
+
+@keyframes cf-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@utility cf-skeleton-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(24, 119, 214, 0.08) 50%,
+    transparent 100%
+  );
+  animation: cf-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Tap feedback for tiles and buttons */
+@utility cf-tap {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  &:active {
+    transform: scale(0.97);
+  }
+}

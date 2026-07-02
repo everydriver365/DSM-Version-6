@@ -1,10 +1,16 @@
 import type { HTMLAttributes } from "react";
 
-export function Card({ className = "", style, children, ...rest }: HTMLAttributes<HTMLDivElement>) {
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  interactive?: boolean;
+}
+
+export function Card({ className = "", style, children, interactive, onClick, ...rest }: CardProps) {
+  const tap = interactive || !!onClick ? "cf-tap cursor-pointer" : "";
   return (
     <div
       {...rest}
-      className={`bg-white rounded-2xl p-5 ${className}`}
+      onClick={onClick}
+      className={`bg-white rounded-2xl p-5 ${tap} ${className}`}
       style={{
         borderWidth: "1px",
         borderStyle: "solid",

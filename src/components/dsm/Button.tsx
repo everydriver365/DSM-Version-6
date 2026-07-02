@@ -16,7 +16,7 @@ export function Button({
   ...rest
 }: Props) {
   const base =
-    "h-11 rounded-[10px] font-semibold text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center px-5";
+    "cf-tap h-11 rounded-[10px] font-semibold text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center px-5";
   const width = inline ? "" : "w-full";
 
   let variantClasses = "";
