@@ -310,11 +310,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         }}
       >
         {tiles.map((tile) => {
-          const hasImage = Boolean(tile.image_url);
-          const mediaBackground = hasImage
-            ? `url(${tile.image_url}) center/cover no-repeat`
-            : tile.gradient || "linear-gradient(135deg, #1877D6, #0B1F3A)";
-          const accentColor = tile.color || "#1877D6";
+          const accentColor = tile.color || "#4DA3FF";
           return (
             <div
               key={tile.id}
@@ -329,44 +325,68 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               }}
               style={{
                 scrollSnapAlign: "start",
-                borderRadius: 20,
+                borderRadius: 22,
                 overflow: "hidden",
                 position: "relative",
                 height: 180,
                 cursor: "pointer",
-                background: "#FFFFFF",
-                border: "1px solid #EEF2F7",
-                boxShadow: "0 10px 24px -12px rgba(11, 31, 58, 0.18)",
+                background:
+                  "linear-gradient(155deg, #0B1F3A 0%, #0F2A४F 55%, #14356A 100%)".replace("४", "4"),
+                border: "1px solid rgba(255,255,255,0.06)",
+                boxShadow: "0 14px 28px -14px rgba(11, 31, 58, 0.55)",
                 userSelect: "none",
                 display: "flex",
                 flexDirection: "column",
+                padding: 14,
               }}
             >
-              {/* Media area */}
+              {/* Ghost accent orb */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: -30,
+                  right: -30,
+                  width: 110,
+                  height: 110,
+                  borderRadius: "50%",
+                  background: `radial-gradient(circle at center, ${accentColor}55, transparent 70%)`,
+                  pointerEvents: "none",
+                }}
+              />
+              {/* Header row: icon + badge */}
               <div
                 style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   position: "relative",
-                  height: 74,
-                  background: mediaBackground,
-                  flexShrink: 0,
+                  zIndex: 1,
                 }}
               >
+                <div
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 10,
+                    background: tile.image_url
+                      ? `url(${tile.image_url}) center/cover no-repeat`
+                      : `linear-gradient(135deg, ${accentColor}, rgba(255,255,255,0.08))`,
+                    border: "1px solid rgba(255,255,255,0.14)",
+                    flexShrink: 0,
+                  }}
+                />
                 {tile.badge && (
                   <span
                     className="font-bold"
                     style={{
-                      position: "absolute",
-                      top: 8,
-                      left: 8,
-                      fontSize: 9,
-                      letterSpacing: 0.4,
-                      color: "#FFFFFF",
-                      backgroundColor: "rgba(255,255,255,0.22)",
-                      backdropFilter: "blur(6px)",
-                      WebkitBackdropFilter: "blur(6px)",
-                      border: "1px solid rgba(255,255,255,0.4)",
+                      fontSize: 8.5,
+                      letterSpacing: 0.5,
+                      color: accentColor,
+                      backgroundColor: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.14)",
                       fontFamily: "Inter, sans-serif",
-                      padding: "2px 8px",
+                      padding: "3px 7px",
                       borderRadius: 999,
                       textTransform: "uppercase",
                     }}
@@ -375,29 +395,25 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   </span>
                 )}
               </div>
-              {/* Content area */}
+              {/* Content */}
               <div
                 style={{
-                  padding: "10px 12px 12px",
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  minHeight: 0,
+                  marginTop: "auto",
+                  position: "relative",
+                  zIndex: 1,
                 }}
               >
                 <div
                   className="font-bold"
                   style={{
-                    fontSize: 13,
-                    color: "#0B1F3A",
+                    fontSize: 14,
+                    color: "#FFFFFF",
                     fontFamily: "Inter, sans-serif",
-                    lineHeight: "16px",
-                    height: 32,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    lineHeight: "17px",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   {tile.title}
@@ -408,35 +424,19 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     fontSize: 10,
                     color: accentColor,
                     fontFamily: "Inter, sans-serif",
-                    marginTop: 4,
-                    letterSpacing: 0.2,
-                    lineHeight: "14px",
-                    height: 14,
-                    overflow: "hidden",
+                    marginTop: 6,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
                     whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {tile.subtitle || "\u00A0"}
-                </div>
-                <div style={{ flex: 1 }} />
-                <div
-                  style={{
-                    height: 3,
-                    borderRadius: 999,
-                    background: "#F1F5F9",
                     overflow: "hidden",
-                    marginTop: 8,
+                    textOverflow: "ellipsis",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
                   }}
                 >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: "60%",
-                      background: accentColor,
-                      borderRadius: 999,
-                    }}
-                  />
+                  {tile.subtitle || "Explore"}
+                  <span style={{ marginLeft: 2 }}>→</span>
                 </div>
               </div>
             </div>
