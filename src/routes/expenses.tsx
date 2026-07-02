@@ -355,17 +355,23 @@ function ExpensesPage() {
         )}
       </div>
 
-      {sheetOpen && (
-        <AddEditSheet
-          initial={editing}
-          instructorId={instructorId}
-          onClose={() => setSheetOpen(false)}
-          onSaved={async () => {
-            setSheetOpen(false);
-            if (instructorId) await refetch(instructorId);
-          }}
-        />
-      )}
+      <BottomSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        title={editing ? "Edit expense" : "Add expense"}
+      >
+        {sheetOpen && (
+          <AddEditSheet
+            initial={editing}
+            instructorId={instructorId}
+            onClose={() => setSheetOpen(false)}
+            onSaved={async () => {
+              setSheetOpen(false);
+              if (instructorId) await refetch(instructorId);
+            }}
+          />
+        )}
+      </BottomSheet>
     </div>
   );
 }
