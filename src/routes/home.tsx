@@ -386,44 +386,39 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 }}
               >
                 <div
+                  className="font-bold"
                   style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                    gap: 6,
+                    fontSize: 13,
+                    color: "#0B1F3A",
+                    fontFamily: "Inter, sans-serif",
+                    lineHeight: "16px",
+                    height: 32,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
                   }}
                 >
-                  <div
-                    className="font-bold"
-                    style={{
-                      fontSize: 13,
-                      color: "#0B1F3A",
-                      fontFamily: "Inter, sans-serif",
-                      lineHeight: 1.2,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                    }}
-                  >
-                    {tile.title}
-                  </div>
+                  {tile.title}
                 </div>
-                {tile.subtitle && (
-                  <div
-                    className="font-semibold"
-                    style={{
-                      fontSize: 10,
-                      color: accentColor,
-                      fontFamily: "Inter, sans-serif",
-                      marginTop: 4,
-                      letterSpacing: 0.2,
-                    }}
-                  >
-                    {tile.subtitle}
-                  </div>
-                )}
+                <div
+                  className="font-semibold"
+                  style={{
+                    fontSize: 10,
+                    color: accentColor,
+                    fontFamily: "Inter, sans-serif",
+                    marginTop: 4,
+                    letterSpacing: 0.2,
+                    lineHeight: "14px",
+                    height: 14,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {tile.subtitle || "\u00A0"}
+                </div>
                 <div style={{ flex: 1 }} />
                 <div
                   style={{
