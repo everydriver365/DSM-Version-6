@@ -2291,3 +2291,267 @@ function PupilExtras({
     </>
   );
 }
+
+function AddressEditor({
+  initialAddress,
+  initialPostcode,
+  inputRef,
+  onSave,
+}: {
+  initialAddress: string;
+  initialPostcode: string;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onSave: (address: string, postcode: string) => void | Promise<void>;
+}) {
+  const [addr, setAddr] = useState(initialAddress);
+  const [pc, setPc] = useState(initialPostcode);
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Start typing address..."
+        value={addr}
+        onChange={(e) => setAddr(e.target.value)}
+        autoComplete="off"
+        style={{
+          width: "100%",
+          height: 40,
+          padding: "0 12px",
+          borderRadius: 8,
+          border: "0.5px solid #E2E6ED",
+          fontSize: 14,
+          outline: "none",
+          ...POPPINS,
+        }}
+      />
+      <input
+        type="text"
+        placeholder="Postcode"
+        value={pc}
+        onChange={(e) => setPc(e.target.value)}
+        style={{
+          width: "100%",
+          height: 40,
+          padding: "0 12px",
+          borderRadius: 8,
+          border: "0.5px solid #E2E6ED",
+          fontSize: 14,
+          outline: "none",
+          ...POPPINS,
+        }}
+      />
+      <div className="flex justify-end">
+        <Button variant="primary" onClick={() => onSave(addr, pc)}>Save</Button>
+      </div>
+    </div>
+  );
+}
+
+function TheoryEditor({
+  pupil,
+  onSave,
+}: {
+  pupil: Pupil;
+  onSave: (patch: Record<string, unknown>) => void | Promise<void>;
+}) {
+  const [status, setStatus] = useState<string>(pupil.theory_status || "Not started");
+  const [testDate, setTestDate] = useState<string>(pupil.theory_test_date || "");
+  const [passDate, setPassDate] = useState<string>(pupil.theory_pass_date || "");
+  const [score, setScore] = useState<string>(
+    typeof pupil.theory_score === "number" ? String(pupil.theory_score) : "",
+  );
+  const showDate = ["Booked", "Passed", "Failed"].includes(status);
+  const showPassDate = status === "Passed";
+  const showScore = status === "Passed" || status === "Failed";
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+  };
+  return (
+    <div className="flex flex-col gap-2">
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
+        {THEORY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+      {showDate && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Test date
+          <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      {showPassDate && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Pass date
+          <input type="date" value={passDate} onChange={(e) => setPassDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      {showScore && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Score
+          <input type="number" value={score} onChange={(e) => setScore(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      <div className="flex justify-end">
+        <Button
+          variant="primary"
+          onClick={() => onSave({
+            theory_status: status,
+            theory_test_date: showDate && testDate ? testDate : null,
+            theory_pass_date: showPassDate && passDate ? passDate : null,
+            theory_score: showScore && score !== "" ? Number(score) : null,
+          })}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function PracticalEditor({
+  pupil,
+  centreInfo,
+  allCentres,
+  pickerOpen,
+  setPickerOpen,
+  search,
+  setSearch,
+  onCentreSelect,
+  onSave,
+}: {
+  pupil: Pupil;
+  centreInfo: { id: string; name: string; town: string | null } | null;
+  allCentres: { id: string; name: string; town: string | null }[];
+  pickerOpen: boolean;
+  setPickerOpen: (v: boolean) => void;
+  search: string;
+  setSearch: (v: string) => void;
+  onCentreSelect: (c: { id: string; name: string; town: string | null } | null) => void;
+  onSave: (patch: Record<string, unknown>) => void | Promise<void>;
+}) {
+  const [status, setStatus] = useState<string>(pupil.test_status || "Not booked");
+  const [testDate, setTestDate] = useState<string>(pupil.test_date || "");
+  const [testTime, setTestTime] = useState<string>(pupil.test_time ? pupil.test_time.slice(0, 5) : "");
+  const [centreId, setCentreId] = useState<string | null>(pupil.test_centre_id);
+  const [centreLabel, setCentreLabel] = useState<string>(
+    centreInfo ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}` : (pupil.test_centre ?? ""),
+  );
+  const [examiner, setExaminer] = useState<string>(pupil.examiner ?? "");
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+  };
+  const filtered = search.trim()
+    ? allCentres.filter((c) => {
+        const q = search.trim().toLowerCase();
+        return (c.name || "").toLowerCase().includes(q) || (c.town || "").toLowerCase().includes(q);
+      })
+    : allCentres;
+  return (
+    <div className="flex flex-col gap-2">
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
+        {PRACTICAL_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Test date
+        <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Test time
+        <input type="time" value={testTime} onChange={(e) => setTestTime(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <div>
+        <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Test centre</div>
+        <div className="flex items-center gap-2 mt-1">
+          <div className="flex-1 text-[13px]" style={{ color: centreLabel ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+            {centreLabel || "None selected"}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPickerOpen(!pickerOpen)}
+            className="text-[12px] font-semibold"
+            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+          >
+            {pickerOpen ? "Close" : "Choose"}
+          </button>
+        </div>
+        {pickerOpen && (
+          <div className="mt-2">
+            <div style={{ position: "relative" }}>
+              <Search size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+              <input
+                type="text"
+                placeholder="Search test centres..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
+              />
+            </div>
+            <div style={{ marginTop: 6, border: "0.5px solid #E2E6ED", borderRadius: 8, maxHeight: 220, overflowY: "auto", backgroundColor: "#FFFFFF" }}>
+              <div
+                onClick={() => {
+                  setCentreId(null);
+                  setCentreLabel("");
+                  onCentreSelect(null);
+                  setPickerOpen(false);
+                }}
+                className="cursor-pointer text-[13px]"
+                style={{ padding: "10px 12px", color: "#EF4444", borderBottom: "0.5px solid #F3F4F6", ...POPPINS }}
+              >
+                Clear test centre
+              </div>
+              {filtered.length === 0 ? (
+                <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>No centres found</div>
+              ) : (
+                filtered.map((c) => (
+                  <div
+                    key={c.id}
+                    onClick={() => {
+                      setCentreId(c.id);
+                      setCentreLabel(`${c.name}${c.town ? `, ${c.town}` : ""}`);
+                      onCentreSelect(c);
+                      setPickerOpen(false);
+                      setSearch("");
+                    }}
+                    className="cursor-pointer"
+                    style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                  >
+                    <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{c.name}</div>
+                    {c.town && <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>{c.town}</div>}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Examiner (optional)
+        <input type="text" value={examiner} onChange={(e) => setExaminer(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <div className="flex justify-end">
+        <Button
+          variant="primary"
+          onClick={async () => {
+            const patch: Record<string, unknown> = {
+              test_status: status,
+              test_date: testDate || null,
+              test_time: testTime ? `${testTime}:00` : null,
+              test_centre_id: centreId,
+              test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
+            };
+            // examiner column may not exist — attempt with, fall back without
+            const withExaminer = { ...patch, examiner: examiner.trim() || null };
+            try {
+              await onSave(withExaminer);
+            } catch {
+              await onSave(patch);
+            }
+          }}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+}
