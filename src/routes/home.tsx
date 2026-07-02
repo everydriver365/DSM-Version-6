@@ -3381,12 +3381,12 @@ function iconTint(solid: string) {
 
 function tileColor(route: string) {
   const r = route.toLowerCase();
-  if (r.includes("payment") || r.includes("earning") || r.includes("tax") || r.includes("quote") || r.includes("outstanding") || r.includes("mtd")) return "#16A34A";
+  if (r.includes("payment") || r.includes("earning") || r.includes("tax") || r.includes("quote") || r.includes("outstanding") || r.includes("mtd") || r.includes("month-to-date")) return "#16A34A";
   if (r.includes("pupil") || r.includes("people") || r.includes("user") || r.includes("enquir") || r.includes("waitlist") || r.includes("referral")) return "#7C3AED";
   if (r.includes("message") || r.includes("broadcast") || r.includes("bulkmessage")) return "#EC4899";
   if (r.includes("live") || r.includes("satnav") || r.includes("map") || r.includes("location") || r.includes("gap") || r.includes("track")) return "#06B6D4";
   if (r.includes("mileage") || r.includes("fuel") || r.includes("vehicle") || r.includes("car") || r.includes("reminder") || r.includes("alert")) return "#DC2626";
-  if (r.includes("report") || r.includes("performance") || r.includes("pipeline") || r.includes("analytic") || r.includes("document") || r.includes("manifest") || r.includes("checklist") || r.includes("note") || r.includes("todo") || r.includes("waiver") || r.includes("import") || r.includes("certification") || r.includes("standard") || r.includes("help")) return "#0B1F3A";
+  if (r.includes("report") || r.includes("performance") || r.includes("pipeline") || r.includes("analytic") || r.includes("document") || r.includes("manifest") || r.includes("checklist") || r.includes("note") || r.includes("todo") || r.includes("waiver") || r.includes("import") || r.includes("certification") || r.includes("standard") || r.includes("help") || r.includes("expenses")) return "#0B1F3A";
   if (r.includes("test") || r.includes("course") || r.includes("cpd") || r.includes("briefing") || r.includes("health") || r.includes("eod") || r.includes("end-of-day") || r.includes("resource")) return "#F59E0B";
   if (r.includes("reward") || r.includes("review") || r.includes("trophy")) return "#EC4899";
   if (r.includes("setting") || r.includes("profile") || r.includes("search") || r.includes("notification") || r.includes("subscription") || r.includes("plan")) return "#6B7280";
