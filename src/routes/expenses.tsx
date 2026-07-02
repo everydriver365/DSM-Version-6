@@ -837,9 +837,7 @@ function AddEditSheet({
         >
           {saving ? "Saving…" : initial ? "Update expense" : "Add expense"}
         </button>
-        <div style={{ height: 80 }} />
-      </div>
-    </div>
+    </>
   );
 }
 
