@@ -33,9 +33,16 @@ export function BottomNav({ active }: Props) {
           <Link
             key={key}
             to={to}
-            className="flex-1 flex flex-col items-center justify-center gap-1 select-none"
+            className="flex-1 flex flex-col items-center justify-center gap-1 select-none relative"
             style={{ color }}
           >
+            {isActive && (
+              <span
+                aria-hidden
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-8 rounded-b-full"
+                style={{ backgroundColor: "#1877D6" }}
+              />
+            )}
             <Icon size={22} color={color} />
             <span className="text-[10px] whitespace-nowrap" style={{ color }}>
               {label}
