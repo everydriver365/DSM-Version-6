@@ -822,9 +822,6 @@ function AddSheet({
           >
           {saving ? "Saving…" : editing ? "Save changes" : "Add CPD entry"}
           </button>
-          <div style={{ height: 80 }} />
-        </div>
-      </div>
     </div>
   );
 }
