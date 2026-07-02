@@ -384,21 +384,30 @@ function CpdPage() {
         </div>
       )}
 
-      {showAdd && (
-        <AddSheet
-          userId={userId!}
-          editing={editing}
-          onClose={() => {
-            setShowAdd(false);
-            setEditing(null);
-          }}
-          onSaved={() => {
-            setShowAdd(false);
-            setEditing(null);
-            fetchLogs();
-          }}
-        />
-      )}
+      <BottomSheet
+        open={showAdd}
+        onOpenChange={(v) => {
+          setShowAdd(v);
+          if (!v) setEditing(null);
+        }}
+        title={editing ? "Edit CPD" : "Add CPD"}
+      >
+        {showAdd && (
+          <AddSheet
+            userId={userId!}
+            editing={editing}
+            onClose={() => {
+              setShowAdd(false);
+              setEditing(null);
+            }}
+            onSaved={() => {
+              setShowAdd(false);
+              setEditing(null);
+              fetchLogs();
+            }}
+          />
+        )}
+      </BottomSheet>
     </div>
   );
 }
