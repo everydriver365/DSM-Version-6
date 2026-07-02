@@ -677,48 +677,7 @@ function AddSheet({
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        zIndex: 50,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-      }}
-      onClick={onClose}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: "100%",
-          maxWidth: 520,
-          maxHeight: "calc(90vh - 64px)",
-          backgroundColor: "#FFFFFF",
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          overflowY: "auto",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        <div
-          className="sticky top-0 flex items-center justify-between px-4"
-          style={{
-            height: 52,
-            backgroundColor: "#FFFFFF",
-            borderBottom: "0.5px solid #EEF2F7",
-          }}
-        >
-          <div className="text-[15px] font-semibold text-[#0B1F3A]">
-            {editing ? "Edit CPD" : "Add CPD"}
-          </div>
-          <button type="button" onClick={onClose} aria-label="Close">
-            <X size={20} color="#0B1F3A" />
-          </button>
-        </div>
-
-        <div className="p-4 space-y-3">
+    <div className="space-y-3">
           <Field label="Title *">
             <input
               value={title}
