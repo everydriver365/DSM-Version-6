@@ -114,9 +114,15 @@ function NoShowPolicyPage() {
   const previewText =
     lateCancelFee === 0 && noShowFee === 0
       ? "Please give as much notice as possible if you need to cancel your lesson."
-      : `Lessons cancelled with less than ${lateCancelHours} hours notice will incur a £${lateCancelFee.toFixed(
-          2,
-        )} cancellation fee. Pupils who do not show up for their lesson will be charged £${noShowFee.toFixed(2)}.`;
+      : `${
+          lateCancelFee > 0
+            ? `Lessons cancelled with less than ${lateCancelHours} hours notice will incur a ${lateCancelFee}% cancellation charge. `
+            : ""
+        }${
+          noShowFee > 0
+            ? `Pupils who do not show up will be charged ${noShowFee}% of the lesson price.`
+            : ""
+        }`.trim();
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe" style={FONT}>
@@ -196,16 +202,16 @@ function NoShowPolicyPage() {
 
         <div className="mb-4">
           <label className="block text-[13px] text-[#0F2044] mb-1.5" style={FONT}>
-            Fee charged for late cancellations
+            Late cancellation fee (% of lesson price)
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-[15px] text-[#6B7280]" style={FONT}>£</span>
             <input
               type="number"
-              step={0.5}
+              step={5}
               min={0}
+              max={100}
               value={lateCancelFee}
-              onChange={(e) => setLateCancelFee(Number(e.target.value) || 0)}
+              onChange={(e) => setLateCancelFee(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
               className="flex-1 text-[14px] text-[#0F2044] bg-white"
               style={{
                 border: "0.5px solid #E2E6ED",
@@ -214,24 +220,25 @@ function NoShowPolicyPage() {
                 ...FONT,
               }}
             />
+            <span className="text-[15px] text-[#6B7280]" style={FONT}>%</span>
           </div>
           <div className="text-[12px] text-[#6B7280] mt-1" style={FONT}>
-            Set to £0 for no charge
+            e.g. 50% of a £40 lesson = £20 late cancel fee
           </div>
         </div>
 
         <div className="mb-4">
           <label className="block text-[13px] text-[#0F2044] mb-1.5" style={FONT}>
-            Fee charged if pupil doesn't show up
+            No-show fee (% of lesson price)
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-[15px] text-[#6B7280]" style={FONT}>£</span>
             <input
               type="number"
-              step={0.5}
+              step={5}
               min={0}
+              max={100}
               value={noShowFee}
-              onChange={(e) => setNoShowFee(Number(e.target.value) || 0)}
+              onChange={(e) => setNoShowFee(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
               className="flex-1 text-[14px] text-[#0F2044] bg-white"
               style={{
                 border: "0.5px solid #E2E6ED",
@@ -240,6 +247,10 @@ function NoShowPolicyPage() {
                 ...FONT,
               }}
             />
+            <span className="text-[15px] text-[#6B7280]" style={FONT}>%</span>
+          </div>
+          <div className="text-[12px] text-[#6B7280] mt-1" style={FONT}>
+            e.g. 50% of a £40 lesson = £20 no-show fee
           </div>
         </div>
 
