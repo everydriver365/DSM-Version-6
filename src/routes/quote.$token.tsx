@@ -64,7 +64,7 @@ function MessagePage({ title, body }: { title: string; body: string }) {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: 700, color: "#0A2540", marginBottom: 8 }}>{title}</div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>{title}</div>
         <div style={{ fontSize: 14, color: "#6B7280" }}>{body}</div>
       </div>
     </div>
@@ -325,17 +325,17 @@ function PublicQuotePage() {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
-        <div style={{ background: "#0A2540", color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
+        <div style={{ background: "#0B1F3A", color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
           <div style={{ fontWeight: 700, fontSize: 18 }}>EveryDriver</div>
           <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4 }}>Your driving lesson quote</div>
         </div>
 
         <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 16 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0A2540", marginBottom: 16 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", marginBottom: 16 }}>
             Quote for {quote.recipient_name}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14, color: "#0A2540" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14, color: "#0B1F3A" }}>
             {quote.course_type && (
               <Row label="Course type" value={quote.course_type} />
             )}
@@ -344,7 +344,7 @@ function PublicQuotePage() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 4 }}>
               <span style={{ color: "#6B7280" }}>Total price</span>
-              <span style={{ fontSize: 24, fontWeight: 700, color: "#00A3B4" }}>£{Number(quote.price).toFixed(2)}</span>
+              <span style={{ fontSize: 24, fontWeight: 700, color: "#1877D6" }}>£{Number(quote.price).toFixed(2)}</span>
             </div>
             {quote.deposit_amount != null && (
               <div style={{ display: "flex", justifyContent: "space-between", color: "#6B7280", fontSize: 13 }}>
@@ -372,7 +372,7 @@ function PublicQuotePage() {
           {accepted ? (
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
               <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#0A2540" }}>Quote accepted! 🎉</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A" }}>Quote accepted! 🎉</div>
               <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
                 {depositPaid && !depositDoneNow
                   ? "Your booking is confirmed. We'll be in touch shortly to arrange your lessons."
@@ -392,13 +392,13 @@ function PublicQuotePage() {
               {needsDeposit && (
                 <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <Lock size={18} color="#00A3B4" />
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0A2540" }}>Secure your booking</div>
+                    <Lock size={18} color="#1877D6" />
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Secure your booking</div>
                   </div>
                   <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
                     Pay your £{depositAmount.toFixed(2)} deposit to confirm your lesson booking
                   </div>
-                  <div style={{ fontSize: 36, fontWeight: 700, color: "#00A3B4", lineHeight: 1, marginBottom: 16 }}>
+                  <div style={{ fontSize: 36, fontWeight: 700, color: "#1877D6", lineHeight: 1, marginBottom: 16 }}>
                     £{depositAmount.toFixed(2)}
                   </div>
 
@@ -413,7 +413,7 @@ function PublicQuotePage() {
                       disabled={payStatus === "creating"}
                       onClick={startDepositPayment}
                       style={{
-                        width: "100%", height: 48, background: "#00A3B4", color: "#fff",
+                        width: "100%", height: 48, background: "#1877D6", color: "#fff",
                         border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600,
                         fontFamily: "Inter, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
@@ -447,7 +447,7 @@ function PublicQuotePage() {
                             type="submit"
                             disabled={payStatus === "paying"}
                             style={{
-                              width: "100%", background: "#00A3B4", color: "#fff",
+                              width: "100%", background: "#1877D6", color: "#fff",
                               border: 0, borderRadius: 10, padding: "14px 16px",
                               fontSize: 16, fontWeight: 600, cursor: "pointer",
                               opacity: payStatus === "paying" ? 0.6 : 1,
@@ -479,7 +479,7 @@ function PublicQuotePage() {
                   >
                     Book your first lesson →
                   </a>
-                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#00A3B4", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1877D6", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
                     Contact us
                   </a>
                 </>
@@ -503,7 +503,7 @@ function PublicQuotePage() {
             onClick={askQuestion}
             style={{
               height: 48, borderRadius: 12, background: "#fff",
-              border: "1px solid #0A2540", color: "#0A2540",
+              border: "1px solid #0B1F3A", color: "#0B1F3A",
               fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", cursor: "pointer",
             }}
           >
@@ -513,7 +513,7 @@ function PublicQuotePage() {
 
         <div style={{ padding: "16px 16px 32px", textAlign: "center", fontSize: 12, color: "#6B7280" }}>
           Powered by{" "}
-          <a href="https://everydriver.co.uk" style={{ color: "#00A3B4", textDecoration: "none", fontWeight: 600 }}>
+          <a href="https://everydriver.co.uk" style={{ color: "#1877D6", textDecoration: "none", fontWeight: 600 }}>
             EveryDriver
           </a>
         </div>

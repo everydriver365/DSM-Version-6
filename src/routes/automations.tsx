@@ -192,12 +192,12 @@ function AutomationsPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#00A3B4",
+              borderColor: "#1877D6",
               borderRadius: 12,
               padding: 16,
             }}
           >
-            <div className="text-[13px]" style={{ color: "#0A2540" }}>
+            <div className="text-[13px]" style={{ color: "#0B1F3A" }}>
               Automations send messages to pupils automatically based on triggers. SMS
               requires Twilio integration.
             </div>
@@ -214,7 +214,7 @@ function AutomationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <Zap size={28} color="#00A3B4" />
+                <Zap size={28} color="#1877D6" />
               </div>
               <div className="text-[14px] text-[#6B7280]">
                 No automations set up yet
@@ -235,7 +235,7 @@ function AutomationsPage() {
                         width: 36,
                         height: 20,
                         flexShrink: 0,
-                        backgroundColor: r.is_active ? "#00A3B4" : "#D1D5DB",
+                        backgroundColor: r.is_active ? "#1877D6" : "#D1D5DB",
                       }}
                     >
                       <span
@@ -249,7 +249,7 @@ function AutomationsPage() {
                     </button>
 
                     <div className="flex-1 min-w-0">
-                      <div className="text-[14px] font-semibold text-[#0A2540] truncate">
+                      <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">
                         {r.name}
                       </div>
                       <div className="text-[13px] text-[#6B7280] truncate">
@@ -292,7 +292,7 @@ function AutomationsPage() {
             style={{ animation: "slideUp 0.25s ease-out", maxHeight: "90vh", overflowY: "auto" }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0A2540]">
+              <div className="text-[16px] font-semibold text-[#0B1F3A]">
                 {editing ? "Edit automation" : "Add automation"}
               </div>
               <button
@@ -322,7 +322,7 @@ function AutomationsPage() {
                 <select
                   value={triggerType}
                   onChange={(e) => setTriggerType(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -350,7 +350,7 @@ function AutomationsPage() {
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
                   placeholder="Hi [name], reminder of your lesson on [date] at [time]."
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -368,7 +368,7 @@ function AutomationsPage() {
                       className="text-[11px] rounded-md px-2 py-1"
                       style={{
                         backgroundColor: "#EEF4FB",
-                        color: "#00A3B4",
+                        color: "#1877D6",
                         fontFamily: "Inter, sans-serif",
                       }}
                     >
@@ -382,7 +382,7 @@ function AutomationsPage() {
                 className="flex items-center justify-between"
                 style={{ marginTop: 4 }}
               >
-                <span className="text-[14px] text-[#0A2540]">Active</span>
+                <span className="text-[14px] text-[#0B1F3A]">Active</span>
                 <button
                   type="button"
                   onClick={() => setActive((a) => !a)}
@@ -391,7 +391,7 @@ function AutomationsPage() {
                   style={{
                     width: 44,
                     height: 24,
-                    backgroundColor: active ? "#00A3B4" : "#D1D5DB",
+                    backgroundColor: active ? "#1877D6" : "#D1D5DB",
                   }}
                 >
                   <span

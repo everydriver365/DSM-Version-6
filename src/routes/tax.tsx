@@ -128,7 +128,7 @@ function TaxPage() {
               style={{
                 height: 36,
                 borderRadius: 8,
-                backgroundColor: active ? "#00A3B4" : "#F3F4F6",
+                backgroundColor: active ? "#1877D6" : "#F3F4F6",
                 color: active ? "#ffffff" : "#6B7280",
               }}
             >
@@ -141,7 +141,7 @@ function TaxPage() {
       {/* SUMMARY CARD */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
       >
         <div className="text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
           GROSS INCOME
@@ -169,7 +169,7 @@ function TaxPage() {
         <SectionHeader>TAX BREAKDOWN</SectionHeader>
         <Card className="bg-white">
           <Row label="Personal allowance" value={`£${fmt(PA)}`} color="#16A34A" />
-          <Row label="Taxable income" value={`£${fmt(taxable)}`} color="#0A2540" />
+          <Row label="Taxable income" value={`£${fmt(taxable)}`} color="#0B1F3A" />
           <Row
             label="Income tax (20%)"
             value={`£${fmt(incomeTax)}`}
@@ -179,7 +179,7 @@ function TaxPage() {
           <Row label="Class 4 NI (9%)" value={`£${fmt(class4)}`} color="#CC2229" />
           <div className="my-2" style={{ height: "0.5px", backgroundColor: "#EEF2F7" }} />
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-bold text-[#0A2540]">ESTIMATED TAX BILL</span>
+            <span className="text-[14px] font-bold text-[#0B1F3A]">ESTIMATED TAX BILL</span>
             <span className="text-[20px] font-bold" style={{ color: "#CC2229" }}>
               £{fmt(totalTax)}
             </span>
@@ -199,7 +199,7 @@ function TaxPage() {
             className="mt-2 overflow-hidden"
             style={{ height: 6, borderRadius: 3, backgroundColor: "#F3F4F6" }}
           >
-            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#00A3B4" }} />
+            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#1877D6" }} />
           </div>
         </Card>
 
@@ -214,7 +214,7 @@ function TaxPage() {
 function Row({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-[13px] text-[#0A2540]">{label}</span>
+      <span className="text-[13px] text-[#0B1F3A]">{label}</span>
       <span className="text-[13px] font-semibold" style={{ color }}>
         {value}
       </span>

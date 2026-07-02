@@ -19,7 +19,7 @@ function SubscriptionPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F7F5EF", margin: -8 }}>
+    <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -42,7 +42,7 @@ function SubscriptionPage() {
       <div
         className="mx-4 mt-3"
         style={{
-          backgroundColor: "#0A2540",
+          backgroundColor: "#0B1F3A",
           borderRadius: 12,
           padding: 16,
         }}
@@ -91,15 +91,15 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          border: "2px solid #00A3B4",
+          border: "2px solid #1877D6",
           borderRadius: 12,
           padding: 16,
           position: "relative",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0A2540" }}>DSM Pro</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#00A3B4" }}>£19.99/month</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A" }}>DSM Pro</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#1877D6" }}>£19.99/month</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
@@ -169,7 +169,7 @@ function Feature({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <Check size={16} color="#16A34A" strokeWidth={3} />
-      <span style={{ fontSize: 14, color: "#0A2540" }}>{text}</span>
+      <span style={{ fontSize: 14, color: "#0B1F3A" }}>{text}</span>
     </div>
   );
 }

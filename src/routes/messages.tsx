@@ -159,7 +159,7 @@ function MessagesPage() {
               type="button"
               onClick={openCompose}
               className="rounded-lg px-4 py-2 text-[13px] font-semibold text-white"
-              style={{ backgroundColor: "#00A3B4", ...POPPINS }}
+              style={{ backgroundColor: "#1877D6", ...POPPINS }}
             >
               Start a conversation
             </button>
@@ -188,7 +188,7 @@ function MessagesPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        backgroundColor: "#00A3B4",
+                        backgroundColor: "#1877D6",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}
@@ -197,7 +197,7 @@ function MessagesPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div
-                        className="text-[14px] font-semibold text-[#0A2540] truncate"
+                        className="text-[14px] font-semibold text-[#0B1F3A] truncate"
                         style={POPPINS}
                       >
                         {name}
@@ -248,7 +248,7 @@ function MessagesPage() {
             style={{ maxHeight: "80vh", display: "flex", flexDirection: "column", ...POPPINS }}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "#EEF2F7" }}>
-              <div className="text-[15px] font-semibold text-[#0A2540]" style={POPPINS}>
+              <div className="text-[15px] font-semibold text-[#0B1F3A]" style={POPPINS}>
                 New conversation
               </div>
               <button
@@ -264,7 +264,7 @@ function MessagesPage() {
             <div className="px-4 py-3 border-b" style={{ borderColor: "#EEF2F7" }}>
               <div
                 className="flex items-center gap-2 rounded-lg px-3"
-                style={{ backgroundColor: "#F7F5EF", height: 40 }}
+                style={{ backgroundColor: "#F3F8FF", height: 40 }}
               >
                 <Search size={16} color="#6B7280" />
                 <input
@@ -272,7 +272,7 @@ function MessagesPage() {
                   value={pupilQuery}
                   onChange={(e) => setPupilQuery(e.target.value)}
                   placeholder="Search pupils"
-                  className="flex-1 bg-transparent outline-none text-[14px] text-[#0A2540]"
+                  className="flex-1 bg-transparent outline-none text-[14px] text-[#0B1F3A]"
                   style={POPPINS}
                 />
               </div>
@@ -297,14 +297,14 @@ function MessagesPage() {
                       style={{
                         width: 36,
                         height: 36,
-                        backgroundColor: "#00A3B4",
+                        backgroundColor: "#1877D6",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}
                     >
                       {initials(p.name)}
                     </div>
-                    <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+                    <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                       {p.name}
                     </div>
                   </button>

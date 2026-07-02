@@ -88,7 +88,7 @@ const LEVEL_META: { n: 0 | 1 | 2 | 3 | 4 | 5; label: string; color: string }[] =
   { n: 1, label: "Introduced", color: "#DC2626" },
   { n: 2, label: "Under guidance", color: "#EA580C" },
   { n: 3, label: "Prompted", color: "#EAB308" },
-  { n: 4, label: "Seldom prompted", color: "#00A3B4" },
+  { n: 4, label: "Seldom prompted", color: "#1877D6" },
   { n: 5, label: "Independent", color: "#16A34A" },
 ];
 
@@ -143,7 +143,7 @@ function PupilSyllabusPage() {
 
   let pctColor = "#CC2229";
   if (pct >= 80) pctColor = "#16A34A";
-  else if (pct >= 60) pctColor = "#00A3B4";
+  else if (pct >= 60) pctColor = "#1877D6";
   else if (pct >= 40) pctColor = "#F59E0B";
 
   const dirty = useMemo(() => {
@@ -237,7 +237,7 @@ function PupilSyllabusPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-2"
-        style={{ height: 52, backgroundColor: "#0A2540" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -329,7 +329,7 @@ function PupilSyllabusPage() {
                   aria-expanded={isOpen}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="text-[14px] font-bold" style={{ color: "#0A2540" }}>
+                    <div className="text-[14px] font-bold" style={{ color: "#0B1F3A" }}>
                       {cat.title}
                     </div>
                     <div className="flex items-center gap-2">
@@ -338,7 +338,7 @@ function PupilSyllabusPage() {
                       </span>
                       <ChevronDown
                         size={18}
-                        color="#0A2540"
+                        color="#0B1F3A"
                         style={{
                           transition: "transform 150ms ease",
                           transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
@@ -352,7 +352,7 @@ function PupilSyllabusPage() {
                   >
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${catPct}%`, backgroundColor: "#00A3B4" }}
+                      style={{ width: `${catPct}%`, backgroundColor: "#1877D6" }}
                     />
                   </div>
                 </button>
@@ -373,7 +373,7 @@ function PupilSyllabusPage() {
                             borderColor: "#EEF2F7",
                           }}
                         >
-                          <div className="text-[14px] font-bold" style={{ color: "#0A2540" }}>
+                          <div className="text-[14px] font-bold" style={{ color: "#0B1F3A" }}>
                             {item.name}
                           </div>
                           <div className="text-[11px] mt-0.5" style={{ color: "#6B7280" }}>
@@ -396,7 +396,7 @@ function PupilSyllabusPage() {
                                     padding: "6px 0",
                                     borderRadius: 8,
                                     backgroundColor: isSel ? lv.color : "#F3F4F6",
-                                    color: isSel ? "#FFFFFF" : "#0A2540",
+                                    color: isSel ? "#FFFFFF" : "#0B1F3A",
                                     border: isSel
                                       ? `1px solid ${lv.color}`
                                       : "1px solid transparent",
@@ -445,7 +445,7 @@ function PupilSyllabusPage() {
               ? "#16A34A"
               : !dirty || saving
                 ? "#9CA3AF"
-                : "#0A2540",
+                : "#0B1F3A",
             border: "none",
             transition: "background-color 150ms ease",
             ...POPPINS,

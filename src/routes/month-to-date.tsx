@@ -226,7 +226,7 @@ function MonthToDatePage() {
           <ArrowLeft size={22} color="#1A1A2E" />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <BarChart3 size={20} color="#00A3B4" />
+          <BarChart3 size={20} color="#1877D6" />
           <div>
             <div style={{ fontWeight: 700, fontSize: 16, color: "#1A1A2E" }}>Month to date</div>
             <div style={{ fontSize: 12, color: "#6B7280" }}>{monthLabel}</div>
@@ -266,7 +266,7 @@ function MonthToDatePage() {
         {/* Tax estimate */}
         <div style={CARD}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <Calculator size={18} color="#00A3B4" />
+            <Calculator size={18} color="#1877D6" />
             <div style={{ fontWeight: 700, color: "#1A1A2E" }}>Tax estimate</div>
           </div>
           <Row label="Projected annual" value={fmtGBP(projectedAnnual, { maximumFractionDigits: 0 })} />
@@ -303,7 +303,7 @@ function MonthToDatePage() {
                 <div style={{ flex: 1, background: "#F3F4F6", borderRadius: 6, overflow: "hidden" }}>
                   <div
                     style={{
-                      background: "#00A3B4",
+                      background: "#1877D6",
                       height: 24,
                       width: `${(w.total / maxWeek) * 100}%`,
                       minWidth: w.total > 0 ? 4 : 0,
@@ -365,7 +365,7 @@ function MonthToDatePage() {
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            background: "#00A3B4",
+            background: "#1877D6",
             color: "#fff",
             border: "none",
             borderRadius: 12,

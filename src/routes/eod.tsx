@@ -49,7 +49,7 @@ function startOfDay(d: Date) {
 }
 function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
-  if (s === "completed") return "#00A3B4";
+  if (s === "completed") return "#1877D6";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
@@ -203,7 +203,7 @@ function EodPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
       >
         <div className="grid grid-cols-2" style={{ gap: 12 }}>
           <StatBox value={String(completedCount)} label="Lessons completed" />
@@ -235,10 +235,10 @@ function EodPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center" style={{ gap: 12 }}>
-                    <span className="text-[14px] font-bold text-[#0A2540]">
+                    <span className="text-[14px] font-bold text-[#0B1F3A]">
                       {timeOnly(l.lesson_time)}
                     </span>
-                    <span className="text-[14px] text-[#0A2540]">
+                    <span className="text-[14px] text-[#0B1F3A]">
                       {l.pupils?.name ?? "Pupil"}
                     </span>
                   </div>
@@ -287,7 +287,7 @@ function EodPage() {
                 }}
               >
                 <div>
-                  <div className="text-[14px] text-[#0A2540]">
+                  <div className="text-[14px] text-[#0B1F3A]">
                     {p.pupils?.name ?? "Pupil"}
                   </div>
                   <div className="text-[12px] text-[#6B7280]">
@@ -312,7 +312,7 @@ function EodPage() {
           value={notes}
           onChange={(e) => saveNotes(e.target.value)}
           placeholder="How did the day go?"
-          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none resize-none"
+          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
           style={{
             fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",
@@ -341,10 +341,10 @@ function EodPage() {
                 }}
               >
                 <div className="flex items-center" style={{ gap: 12 }}>
-                  <span className="text-[14px] font-bold text-[#0A2540]">
+                  <span className="text-[14px] font-bold text-[#0B1F3A]">
                     {timeOnly(l.lesson_time)}
                   </span>
-                  <span className="text-[14px] text-[#0A2540]">
+                  <span className="text-[14px] text-[#0B1F3A]">
                     {l.pupils?.name ?? "Pupil"}
                   </span>
                 </div>

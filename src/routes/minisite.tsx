@@ -35,7 +35,7 @@ type Font = "Poppins" | "Inter" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
-  { key: "classic", label: "Classic", swatch: ["#0A2540", "#00A3B4", "#FFFFFF"] },
+  { key: "classic", label: "Classic", swatch: ["#0B1F3A", "#1877D6", "#FFFFFF"] },
   { key: "modern", label: "Modern", swatch: ["#111111", "#2A2A2A", "#F5F5F5"] },
   { key: "warm", label: "Warm", swatch: ["#C2410C", "#FB923C", "#FFF7ED"] },
   { key: "bold", label: "Bold", swatch: ["#000000", "#DC2626", "#FFFFFF"] },
@@ -49,7 +49,7 @@ const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
 ];
 
 const COLOUR_SWATCHES = [
-  "#00A3B4", "#0A2540", "#16A34A", "#DC2626",
+  "#1877D6", "#0B1F3A", "#16A34A", "#DC2626",
   "#D97706", "#7C3AED", "#0EA5E9", "#111111",
 ];
 
@@ -90,7 +90,7 @@ function MiniSitePage() {
   const [theme, setTheme] = useState<Theme>("classic");
   const [font, setFont] = useState<Font>("Poppins");
   const [headerStyle, setHeaderStyle] = useState<HeaderStyle>("standard");
-  const [brandColour, setBrandColour] = useState<string>("#00A3B4");
+  const [brandColour, setBrandColour] = useState<string>("#1877D6");
 
   const heroInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -287,8 +287,8 @@ function MiniSitePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F7F5EF" }}>
-        <Loader2 className="animate-spin" color="#00A3B4" />
+      <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
+        <Loader2 className="animate-spin" color="#1877D6" />
       </div>
     );
   }
@@ -296,7 +296,7 @@ function MiniSitePage() {
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
 
   return (
-    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F7F5EF", paddingTop: 52 }}>
+    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: 52 }}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center"
@@ -324,11 +324,11 @@ function MiniSitePage() {
             Your website
           </div>
           <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="text-[14px] truncate" style={{ color: "#00A3B4" }}>{displayUrl}</div>
+            <div className="text-[14px] truncate" style={{ color: "#1877D6" }}>{displayUrl}</div>
             <button
               onClick={copyUrl}
               aria-label="Copy URL"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#00A3B4", display: "flex" }}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex" }}
             >
               <Copy size={18} />
             </button>
@@ -395,7 +395,7 @@ function MiniSitePage() {
               placeholder="your-name"
             />
             <div className="text-[12px] mt-2" style={{ color: "#6B7280" }}>
-              {SITE_BASE}<span style={{ color: "#00A3B4", fontWeight: 600 }}>{slug || "your-slug"}</span>
+              {SITE_BASE}<span style={{ color: "#1877D6", fontWeight: 600 }}>{slug || "your-slug"}</span>
             </div>
             <div className="text-[12px] mt-1 flex items-center gap-1" style={{ minHeight: 18 }}>
               {!slugValidFormat && slug && (
@@ -439,7 +439,7 @@ function MiniSitePage() {
             onChange={(e) => setWebsiteBio(e.target.value)}
             placeholder="Tell pupils about yourself, your teaching style, and why they should choose you"
             rows={5}
-            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
               fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
@@ -482,7 +482,7 @@ function MiniSitePage() {
               }}
             >
               {uploadingHero ? (
-                <Loader2 className="animate-spin" color="#00A3B4" />
+                <Loader2 className="animate-spin" color="#1877D6" />
               ) : (
                 <>
                   <Camera size={28} color="#9CA3AF" />
@@ -537,7 +537,7 @@ function MiniSitePage() {
               }}
             >
               {uploadingGallery ? (
-                <Loader2 className="animate-spin" color="#00A3B4" />
+                <Loader2 className="animate-spin" color="#1877D6" />
               ) : (
                 <>
                   <Camera size={22} color="#9CA3AF" />
@@ -564,7 +564,7 @@ function MiniSitePage() {
                   onClick={() => setTheme(t.key)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#00A3B4" : "#EEF2F7",
+                    borderColor: selected ? "#1877D6" : "#EEF2F7",
                     borderRadius: 12, padding: 10, background: "#fff",
                     cursor: "pointer", textAlign: "left",
                   }}
@@ -593,7 +593,7 @@ function MiniSitePage() {
                   onClick={() => setFont(f)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#00A3B4" : "#EEF2F7",
+                    borderColor: selected ? "#1877D6" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 12px", background: "#fff",
                     cursor: "pointer", textAlign: "left",
                     fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#1A1A2E",
@@ -618,7 +618,7 @@ function MiniSitePage() {
                   onClick={() => setHeaderStyle(h.key)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#00A3B4" : "#EEF2F7",
+                    borderColor: selected ? "#1877D6" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 8px", background: "#fff",
                     cursor: "pointer", textAlign: "center",
                     fontSize: 12, color: "#1A1A2E",
@@ -643,7 +643,7 @@ function MiniSitePage() {
             <Input
               value={brandColour}
               onChange={(e) => setBrandColour(e.target.value)}
-              placeholder="#00A3B4"
+              placeholder="#1877D6"
             />
           </div>
           <div className="flex flex-wrap gap-2">

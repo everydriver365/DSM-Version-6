@@ -163,7 +163,7 @@ function WaiversPage() {
         )}
         {!loading && templates.length === 0 && (
           <Card className="flex flex-col items-center justify-center text-center" style={{ padding: 24 }}>
-            <FileSignature size={36} color="#00A3B4" />
+            <FileSignature size={36} color="#1877D6" />
             <div className="mt-2 text-[13px]" style={{ color: "#6B7280" }}>
               No waiver templates yet
             </div>
@@ -182,10 +182,10 @@ function WaiversPage() {
                   className="flex items-center justify-center rounded-full flex-shrink-0"
                   style={{ width: 36, height: 36, backgroundColor: "#EEF4FB" }}
                 >
-                  <FileText size={18} color="#00A3B4" />
+                  <FileText size={18} color="#1877D6" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold truncate" style={{ color: "#0A2540" }}>
+                  <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A" }}>
                     {t.name}
                   </div>
                   <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -231,12 +231,12 @@ function WaiversPage() {
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <div
                     className="flex items-center justify-center rounded-full flex-shrink-0 text-white text-[12px] font-semibold"
-                    style={{ width: 36, height: 36, backgroundColor: "#00A3B4" }}
+                    style={{ width: 36, height: 36, backgroundColor: "#1877D6" }}
                   >
                     {initials(pupilName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0A2540" }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A" }}>
                       {pupilName}
                     </div>
                     <div className="text-[13px] truncate" style={{ color: "#6B7280" }}>
@@ -325,7 +325,7 @@ function SheetShell({
           className="sticky top-0 flex items-center justify-between bg-white"
           style={{ padding: "14px 16px", borderBottom: "0.5px solid #EEF2F7" }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0A2540" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>
             {title}
           </div>
           <button
@@ -335,7 +335,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0A2540" />
+            <X size={20} color="#0B1F3A" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>
@@ -522,21 +522,21 @@ function SendToPupilSheet({
           <div
             style={{
               backgroundColor: "#EEF4FB",
-              border: "0.5px solid #00A3B4",
+              border: "0.5px solid #1877D6",
               borderRadius: 12,
               padding: 12,
             }}
           >
-            <div className="text-[12px] font-medium mb-1" style={{ color: "#0A2540" }}>
+            <div className="text-[12px] font-medium mb-1" style={{ color: "#0B1F3A" }}>
               Signing link
             </div>
-            <div className="text-[12px] break-all" style={{ color: "#00A3B4" }}>
+            <div className="text-[12px] break-all" style={{ color: "#1877D6" }}>
               {link}
             </div>
             <button
               type="button"
               className="mt-2 text-[12px] font-medium"
-              style={{ color: "#00A3B4" }}
+              style={{ color: "#1877D6" }}
               onClick={() => {
                 if (typeof navigator !== "undefined" && navigator.clipboard) {
                   navigator.clipboard.writeText(link);
@@ -576,7 +576,7 @@ function TemplateDetailSheet({
     <SheetShell title={template.name} onClose={onClose}>
       <div
         className="text-[13px] whitespace-pre-wrap"
-        style={{ color: "#0A2540", lineHeight: 1.5 }}
+        style={{ color: "#0B1F3A", lineHeight: 1.5 }}
       >
         {template.content}
       </div>

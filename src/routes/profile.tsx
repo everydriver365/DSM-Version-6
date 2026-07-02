@@ -52,12 +52,12 @@ const SECTION_META: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   iconColor: string;
 }[] = [
-  { key: "personal", label: "Personal", icon: User, iconColor: "#00A3B4" },
+  { key: "personal", label: "Personal", icon: User, iconColor: "#1877D6" },
   { key: "business", label: "Business", icon: Briefcase, iconColor: "#16A34A" },
   { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#F59E0B" },
   { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#7C3AED" },
   { key: "security", label: "Security", icon: Shield, iconColor: "#CC2229" },
-  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#00A3B4" },
+  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1877D6" },
   { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#CC2229" },
 ];
 
@@ -228,7 +228,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
         width: 40,
         height: 22,
         borderRadius: 999,
-        backgroundColor: checked ? "#00A3B4" : "#D1D5DB",
+        backgroundColor: checked ? "#1877D6" : "#D1D5DB",
         transition: "background-color 120ms",
       }}
       aria-pressed={checked}
@@ -263,7 +263,7 @@ function VerifiedPill() {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[16px] font-semibold text-[#0A2540] mb-3" style={POPPINS}>
+    <h2 className="text-[16px] font-semibold text-[#0B1F3A] mb-3" style={POPPINS}>
       {children}
     </h2>
   );
@@ -729,7 +729,7 @@ function ProfilePage() {
                   border: "1px solid #EEF2F7",
                 }}
               >
-                <Camera size={14} color="#00A3B4" />
+                <Camera size={14} color="#1877D6" />
               </span>
             </button>
             <input
@@ -744,7 +744,7 @@ function ProfilePage() {
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
               className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
-              style={{ color: "#00A3B4", ...POPPINS }}
+              style={{ color: "#1877D6", ...POPPINS }}
             >
               {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
             </button>
@@ -761,7 +761,7 @@ function ProfilePage() {
                       height: 24,
                       borderRadius: 999,
                       backgroundColor: hex,
-                      outline: avatarColor === key ? "2px solid #0A2540" : "none",
+                      outline: avatarColor === key ? "2px solid #0B1F3A" : "none",
                       outlineOffset: 2,
                     }}
                   />
@@ -848,7 +848,7 @@ function ProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
                 placeholder="Tell pupils a bit about yourself"
-                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -889,7 +889,7 @@ function ProfilePage() {
                     </>
                   )}
                 </span>
-                <span className="text-[13px]" style={{ color: "#00A3B4", ...POPPINS }}>
+                <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
                   {dbsUploaded ? "Replace" : "Upload"}
                 </span>
               </button>
@@ -907,11 +907,11 @@ function ProfilePage() {
                   <span
                     key={a}
                     className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px]"
-                    style={{ backgroundColor: "#E0ECFA", color: "#0A2540", ...POPPINS }}
+                    style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
                   >
                     {a}
                     <button type="button" onClick={() => removeServiceArea(a)} aria-label={`Remove ${a}`}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A2540" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                   </span>
                 ))}
@@ -957,7 +957,7 @@ function ProfilePage() {
                     onClick={() => vehiclePhotoRef.current?.click()}
                     disabled={uploadingVehicle}
                     className="text-[13px] disabled:opacity-50"
-                    style={{ color: "#00A3B4", ...POPPINS }}
+                    style={{ color: "#1877D6", ...POPPINS }}
                   >
                     {uploadingVehicle ? "Uploading…" : "Change photo"}
                   </button>
@@ -987,13 +987,13 @@ function ProfilePage() {
                 }}
               >
                 {uploadingVehicle ? (
-                  <Loader2 size={24} color="#00A3B4" className="animate-spin" />
+                  <Loader2 size={24} color="#1877D6" className="animate-spin" />
                 ) : (
                   <Car size={28} color="#F59E0B" />
                 )}
                 <span
                   className="mt-2 text-[13px]"
-                  style={{ color: "#00A3B4", ...POPPINS }}
+                  style={{ color: "#1877D6", ...POPPINS }}
                 >
                   {uploadingVehicle ? "Uploading…" : "Tap to upload vehicle photo"}
                 </span>
@@ -1089,7 +1089,7 @@ function ProfilePage() {
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
                 </div>
               </div>
-              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#00A3B4", ...POPPINS }}>
+              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
                 Change password
               </Link>
             </div>

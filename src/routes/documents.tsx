@@ -46,7 +46,7 @@ interface Doc {
 }
 
 const TYPES: { value: DocType; label: string; color: string; tint: string }[] = [
-  { value: "adi", label: "ADI Badge", color: "#00A3B4", tint: "#DBEAFE" },
+  { value: "adi", label: "ADI Badge", color: "#1877D6", tint: "#DBEAFE" },
   { value: "insurance", label: "Insurance", color: "#16A34A", tint: "#ECFDF5" },
   { value: "mot", label: "MOT", color: "#F59E0B", tint: "#FEF3C7" },
   { value: "dbs", label: "DBS Check", color: "#CC2229", tint: "#FEE2E2" },
@@ -237,7 +237,7 @@ function DocumentsPage() {
                           <div className="min-w-0">
                             <div
                               className="text-[14px] font-semibold truncate"
-                              style={{ color: "#0A2540" }}
+                              style={{ color: "#0B1F3A" }}
                             >
                               {d.name}
                             </div>
@@ -282,11 +282,11 @@ function DocumentsPage() {
                         padding: "0 12px",
                         borderRadius: 8,
                         backgroundColor: "#F1F5F9",
-                        color: "#00A3B4",
+                        color: "#1877D6",
                         border: "0.5px solid #CBD5E1",
                       }}
                     >
-                      <ExternalLink size={13} color="#00A3B4" /> View file
+                      <ExternalLink size={13} color="#1877D6" /> View file
                     </a>
                   )}
                 </Card>
@@ -518,7 +518,7 @@ function DocSheet({
                     height: 40,
                     borderRadius: 8,
                     backgroundColor: active ? t.tint : "#F8F9FB",
-                    color: active ? t.color : "#0A2540",
+                    color: active ? t.color : "#0B1F3A",
                     border: active
                       ? `1px solid ${t.color}`
                       : "0.5px solid #EEF2F7",
@@ -552,7 +552,7 @@ function DocSheet({
               border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0A2540",
+              color: "#0B1F3A",
               outline: "none",
               resize: "vertical",
             }}
@@ -573,11 +573,11 @@ function DocSheet({
               height: 44,
               borderRadius: 8,
               backgroundColor: "#F8F9FB",
-              color: "#00A3B4",
-              border: "1px dashed #00A3B4",
+              color: "#1877D6",
+              border: "1px dashed #1877D6",
             }}
           >
-            <Upload size={16} color="#00A3B4" />
+            <Upload size={16} color="#1877D6" />
             Upload file
             <input
               type="file"
@@ -587,7 +587,7 @@ function DocSheet({
             />
           </label>
           {file ? (
-            <div className="mt-1 text-[12px]" style={{ color: "#0A2540" }}>
+            <div className="mt-1 text-[12px]" style={{ color: "#0B1F3A" }}>
               {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
             </div>
           ) : existingUrl ? (

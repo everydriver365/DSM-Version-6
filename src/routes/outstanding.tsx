@@ -182,7 +182,7 @@ function OutstandingPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F7F5EF", ...POPPINS, paddingBottom: 32 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -213,7 +213,7 @@ function OutstandingPage() {
             display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
           }}>
             <CheckCircle2 size={64} color="#16A34A" />
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0A2540" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
               All clear! Nothing needs attention
             </div>
             <div style={{ fontSize: 13, color: "#6B7280", maxWidth: 280 }}>
@@ -291,7 +291,7 @@ function OutstandingPage() {
                           </div>
                           {e.phone && (
                             <a href={`tel:${e.phone}`} style={{
-                              ...actionBase, background: "#00A3B4", color: "#fff",
+                              ...actionBase, background: "#1877D6", color: "#fff",
                               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4,
                             }}>
                               <Phone size={12} /> Call
@@ -334,7 +334,7 @@ function OutstandingPage() {
                               aria-label="Complete"
                               style={{
                                 background: "none", border: "none", cursor: "pointer",
-                                color: "#00A3B4", display: "flex", padding: 0,
+                                color: "#1877D6", display: "flex", padding: 0,
                               }}
                             >
                               <Square size={20} />
@@ -373,7 +373,7 @@ function OutstandingPage() {
 }
 
 const rowTitle = {
-  fontSize: 14, fontWeight: 600, color: "#0A2540",
+  fontSize: 14, fontWeight: 600, color: "#0B1F3A",
   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const,
 };
 const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
@@ -393,8 +393,8 @@ function ActionBtn({
   disabled?: boolean;
 }) {
   const styles = variant === "primary"
-    ? { background: disabled ? "#cbd5e1" : "#00A3B4", color: "#fff", border: "none" as const }
-    : { background: "#fff", color: disabled ? "#9CA3AF" : "#00A3B4", border: `1px solid ${disabled ? "#e3e6ec" : "#00A3B4"}` };
+    ? { background: disabled ? "#cbd5e1" : "#1877D6", color: "#fff", border: "none" as const }
+    : { background: "#fff", color: disabled ? "#9CA3AF" : "#1877D6", border: `1px solid ${disabled ? "#e3e6ec" : "#1877D6"}` };
   return (
     <button
       onClick={onClick}

@@ -216,11 +216,11 @@ function NewPupilPage() {
             onClick={() => navigate({ to: "/pupils" })}
             className="flex items-center justify-center w-8 h-8 -ml-1"
           >
-            <ArrowLeft size={20} color="#0A2540" />
+            <ArrowLeft size={20} color="#0B1F3A" />
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0A2540", fontFamily: "Inter, sans-serif" }}
+            style={{ color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}
           >
             Add pupil
           </p>
@@ -293,7 +293,7 @@ function NewPupilPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label
-              className="text-[13px] font-medium text-[#0A2540]"
+              className="text-[13px] font-medium text-[#0B1F3A]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               How did they find you?
@@ -304,7 +304,7 @@ function NewPupilPage() {
                 setLeadSource(e.target.value);
                 setLeadSourceDetail("");
               }}
-              className="text-[14px] text-[#0A2540]"
+              className="text-[14px] text-[#0B1F3A]"
               style={{
                 height: 44,
                 borderRadius: 8,
@@ -339,7 +339,7 @@ function NewPupilPage() {
               className="flex items-center justify-between gap-3 mt-1"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <span className="text-[13px] font-medium text-[#0A2540]">
+              <span className="text-[13px] font-medium text-[#0B1F3A]">
                 Block booking / prepaid hours
               </span>
               <input
@@ -393,7 +393,7 @@ function NewPupilPage() {
               })()}
               <div className="flex flex-col gap-1">
                 <label
-                  className="text-[13px] font-medium text-[#0A2540]"
+                  className="text-[13px] font-medium text-[#0B1F3A]"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Payment method
@@ -401,7 +401,7 @@ function NewPupilPage() {
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="text-[14px] text-[#0A2540]"
+                  className="text-[14px] text-[#0B1F3A]"
                   style={{
                     height: 44,
                     borderRadius: 8,
@@ -419,7 +419,7 @@ function NewPupilPage() {
               </div>
               <div className="flex flex-col gap-1">
                 <label
-                  className="text-[13px] font-medium text-[#0A2540]"
+                  className="text-[13px] font-medium text-[#0B1F3A]"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Notes (optional)
@@ -429,7 +429,7 @@ function NewPupilPage() {
                   value={blockNotes}
                   onChange={(e) => setBlockNotes(e.target.value)}
                   placeholder="e.g. Paid via National Intensive, transfer ref: xxx"
-                  className="text-[14px] text-[#0A2540] p-2"
+                  className="text-[14px] text-[#0B1F3A] p-2"
                   style={{
                     borderRadius: 8,
                     border: "1px solid #EEF2F7",

@@ -135,7 +135,7 @@ function AvailabilityPage() {
                 style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#0A2540]">{d.label}</span>
+                  <span className="text-[14px] text-[#0B1F3A]">{d.label}</span>
                   <button
                     type="button"
                     role="switch"
@@ -143,7 +143,7 @@ function AvailabilityPage() {
                     aria-label={`${d.label} working`}
                     onClick={() => toggleDay(d.key)}
                     className="relative inline-flex items-center rounded-full transition-colors"
-                    style={{ width: 40, height: 22, backgroundColor: on ? "#00A3B4" : "#EEF2F7" }}
+                    style={{ width: 40, height: 22, backgroundColor: on ? "#1877D6" : "#EEF2F7" }}
                   >
                     <span
                       className="inline-block rounded-full bg-white transition-transform"
@@ -161,7 +161,7 @@ function AvailabilityPage() {
                         type="time"
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
-                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#00A3B4] focus:outline-none"
+                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                         style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
@@ -173,7 +173,7 @@ function AvailabilityPage() {
                         type="time"
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
-                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#00A3B4] focus:outline-none"
+                        className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                         style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
@@ -242,7 +242,7 @@ function Segmented<T extends number>({
             onClick={() => onChange(o.value)}
             className="flex-1 h-9 rounded-md text-[12px] font-medium transition-colors"
             style={{
-              backgroundColor: active ? "#00A3B4" : "transparent",
+              backgroundColor: active ? "#1877D6" : "transparent",
               color: active ? "#FFFFFF" : "#6B7280",
               fontFamily: "Inter, sans-serif",
             }}

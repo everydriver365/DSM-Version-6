@@ -75,7 +75,7 @@ function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
-  if (s === "completed") return "#00A3B4";
+  if (s === "completed") return "#1877D6";
   return "#6B7280";
 }
 
@@ -258,7 +258,7 @@ function LessonDetailPage() {
         <div className="flex flex-col items-center justify-center mt-20 px-6">
           <div
             className="text-[16px] font-semibold"
-            style={{ color: "#0A2540", ...POPPINS }}
+            style={{ color: "#0B1F3A", ...POPPINS }}
           >
             Lesson not found
           </div>
@@ -275,7 +275,7 @@ function LessonDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#00A3B4",
+              backgroundColor: "#1877D6",
               padding: "0 24px",
               border: "none",
               ...POPPINS,
@@ -293,7 +293,7 @@ function LessonDetailPage() {
             <Card>
               <div
                 className="text-[32px] font-bold leading-tight"
-                style={{ color: "#0A2540", ...POPPINS }}
+                style={{ color: "#0B1F3A", ...POPPINS }}
               >
                 {formatTime(lesson.lesson_time)}
               </div>
@@ -302,7 +302,7 @@ function LessonDetailPage() {
               </div>
               <div
                 className="text-[16px] font-semibold mt-3 truncate"
-                style={{ color: "#0A2540", ...POPPINS }}
+                style={{ color: "#0B1F3A", ...POPPINS }}
               >
                 {pupilName}
               </div>
@@ -338,7 +338,7 @@ function LessonDetailPage() {
                 height: 40,
                 borderRadius: 8,
                 backgroundColor: "#F3F4F6",
-                color: "#0A2540",
+                color: "#0B1F3A",
                 ...POPPINS,
               }}
             >
@@ -389,10 +389,10 @@ function LessonDetailPage() {
                   }}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <Map size={18} color="#00A3B4" />
+                    <Map size={18} color="#1877D6" />
                     <span
                       className="text-[11px] font-semibold tracking-wider"
-                      style={{ color: "#00A3B4", ...POPPINS }}
+                      style={{ color: "#1877D6", ...POPPINS }}
                     >
                       Route & tracking
                     </span>
@@ -402,7 +402,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0A2540", ...POPPINS }}
+                        style={{ color: "#0B1F3A", ...POPPINS }}
                       >
                         {(route.distance_miles ?? 0).toFixed(1)} mi
                       </div>
@@ -416,7 +416,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0A2540", ...POPPINS }}
+                        style={{ color: "#0B1F3A", ...POPPINS }}
                       >
                         {route.duration_minutes ?? 0} mins
                       </div>
@@ -430,7 +430,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0A2540", ...POPPINS }}
+                        style={{ color: "#0B1F3A", ...POPPINS }}
                       >
                         {(route.max_speed_mph ?? 0).toFixed(0)} mph
                       </div>
@@ -483,7 +483,7 @@ function LessonDetailPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#00A3B4",
+                      color: "#1877D6",
                       padding: "10px 0",
                       cursor: "pointer",
                       ...POPPINS,
@@ -513,12 +513,12 @@ function LessonDetailPage() {
               <ActionRow
                 label="Feedback"
                 onClick={() => navigate({ to: "/lessons/feedback/$id", params: { id } })}
-                color="#00A3B4"
+                color="#1877D6"
               />
               <ActionRow
                 label="Reschedule"
                 onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id } })}
-                color="#0A2540"
+                color="#0B1F3A"
               />
               <ActionRow
                 label="Delete lesson"
@@ -693,7 +693,7 @@ function CancelLessonSheet({
             className="rounded-[12px] p-3"
             style={{ backgroundColor: "#F3F4F6" }}
           >
-            <div className="text-[14px] font-semibold" style={{ color: "#0A2540" }}>
+            <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
               {pupilName}
             </div>
             <div className="text-[12px]" style={{ color: "#6B7280" }}>{when}</div>
@@ -701,7 +701,7 @@ function CancelLessonSheet({
         </div>
 
         <div className="px-4 mt-4">
-          <label className="text-[12px] font-semibold" style={{ color: "#0A2540" }}>
+          <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
             Cancellation reason *
           </label>
           <select
@@ -712,7 +712,7 @@ function CancelLessonSheet({
               height: 44,
               borderRadius: 8,
               border: "1px solid #EEF2F7",
-              color: "#0A2540",
+              color: "#0B1F3A",
               fontSize: 14,
               ...POPPINS,
             }}
@@ -726,7 +726,7 @@ function CancelLessonSheet({
 
         <div className="px-4 mt-4">
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-medium" style={{ color: "#0A2540" }}>
+            <span className="text-[14px] font-medium" style={{ color: "#0B1F3A" }}>
               Charge cancellation fee?
             </span>
             <button
@@ -768,7 +768,7 @@ function CancelLessonSheet({
                   value={fee}
                   onChange={(e) => setFee(e.target.value)}
                   className="flex-1 px-2 bg-transparent outline-none"
-                  style={{ color: "#0A2540", fontSize: 14, ...POPPINS, height: 42 }}
+                  style={{ color: "#0B1F3A", fontSize: 14, ...POPPINS, height: 42 }}
                 />
               </div>
               <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -779,7 +779,7 @@ function CancelLessonSheet({
         </div>
 
         <div className="px-4 mt-4">
-          <label className="text-[12px] font-semibold" style={{ color: "#0A2540" }}>
+          <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
             Additional notes
           </label>
           <textarea
@@ -790,7 +790,7 @@ function CancelLessonSheet({
             style={{
               borderRadius: 8,
               border: "1px solid #EEF2F7",
-              color: "#0A2540",
+              color: "#0B1F3A",
               fontSize: 14,
               resize: "none",
               ...POPPINS,
@@ -808,7 +808,7 @@ function CancelLessonSheet({
               borderRadius: 8,
               backgroundColor: "transparent",
               border: "1px solid #EEF2F7",
-              color: "#0A2540",
+              color: "#0B1F3A",
               ...POPPINS,
             }}
           >
@@ -837,7 +837,7 @@ function CancelLessonSheet({
 function DetailRow({
   label,
   value,
-  valueColor = "#0A2540",
+  valueColor = "#0B1F3A",
   multiline,
   isFirst,
 }: {

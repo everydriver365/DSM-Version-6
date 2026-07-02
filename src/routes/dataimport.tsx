@@ -173,15 +173,15 @@ function DataImportPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#00A3B4",
+              borderColor: "#1877D6",
               borderRadius: 12,
               padding: 16,
               display: "flex",
               gap: 12,
             }}
           >
-            <Info size={20} color="#00A3B4" style={{ flexShrink: 0, marginTop: 2 }} />
-            <div className="text-[13px] text-[#0A2540]">
+            <Info size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div className="text-[13px] text-[#0B1F3A]">
               Upload a CSV file to import pupils in bulk. Download the template below to get started.
             </div>
           </div>
@@ -246,9 +246,9 @@ function DataImportPage() {
               >
                 <table className="w-full text-[12px]" style={{ borderCollapse: "collapse" }}>
                   <thead>
-                    <tr style={{ backgroundColor: "#F7F5EF" }}>
+                    <tr style={{ backgroundColor: "#F3F8FF" }}>
                       {HEADERS.map((h) => (
-                        <th key={h} className="text-left px-2 py-2 text-[#0A2540] font-semibold">{h}</th>
+                        <th key={h} className="text-left px-2 py-2 text-[#0B1F3A] font-semibold">{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -256,7 +256,7 @@ function DataImportPage() {
                     {preview.map((r, i) => (
                       <tr key={i} style={{ borderTop: "0.5px solid #EEF2F7" }}>
                         {HEADERS.map((h) => (
-                          <td key={h} className="px-2 py-2 text-[#0A2540] whitespace-nowrap">{r[h]}</td>
+                          <td key={h} className="px-2 py-2 text-[#0B1F3A] whitespace-nowrap">{r[h]}</td>
                         ))}
                       </tr>
                     ))}
@@ -287,7 +287,7 @@ function DataImportPage() {
                     style={{
                       width: `${progress}%`,
                       height: "100%",
-                      backgroundColor: "#00A3B4",
+                      backgroundColor: "#1877D6",
                       transition: "width 0.2s",
                     }}
                   />

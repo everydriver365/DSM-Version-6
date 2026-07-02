@@ -206,11 +206,11 @@ function GapsPage() {
                 style={{
                   width: 52,
                   height: 64,
-                  backgroundColor: active ? "#00A3B4" : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#0A2540",
+                  backgroundColor: active ? "#1877D6" : "#F8F9FB",
+                  color: active ? "#FFFFFF" : "#0B1F3A",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#00A3B4" : "#EEF2F7",
+                  borderColor: active ? "#1877D6" : "#EEF2F7",
                 }}
               >
                 <span className="text-[10px] uppercase font-medium">
@@ -241,11 +241,11 @@ function GapsPage() {
                   onClick={() => setMinGapMins(o.mins)}
                   className="flex-1 h-10 rounded-lg text-[13px] font-medium"
                   style={{
-                    backgroundColor: active ? "#00A3B4" : "#FFFFFF",
-                    color: active ? "#FFFFFF" : "#0A2540",
+                    backgroundColor: active ? "#1877D6" : "#FFFFFF",
+                    color: active ? "#FFFFFF" : "#0B1F3A",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: active ? "#00A3B4" : "#EEF2F7",
+                    borderColor: active ? "#1877D6" : "#EEF2F7",
                   }}
                 >
                   {o.label}
@@ -264,7 +264,7 @@ function GapsPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -279,7 +279,7 @@ function GapsPage() {
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -307,7 +307,7 @@ function GapsPage() {
             >
               <Check size={24} color="#16A34A" />
             </div>
-            <div className="text-[14px] font-semibold text-[#0A2540]">
+            <div className="text-[14px] font-semibold text-[#0B1F3A]">
               No gaps found — fully booked!
             </div>
           </Card>
@@ -316,12 +316,12 @@ function GapsPage() {
             <Card key={i}>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[16px] font-semibold text-[#0A2540]">
+                  <div className="text-[16px] font-semibold text-[#0B1F3A]">
                     {g.start} – {g.end}
                   </div>
                   <span
                     className="inline-block mt-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#EEF4FB", color: "#00A3B4" }}
+                    style={{ backgroundColor: "#EEF4FB", color: "#1877D6" }}
                   >
                     {fmtDuration(g.minutes)}
                   </span>

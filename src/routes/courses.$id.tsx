@@ -19,7 +19,7 @@ export const Route = createFileRoute("/courses/$id")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const LABEL = "#6B7280";
-const VALUE = "#0A2540";
+const VALUE = "#0B1F3A";
 
 const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
 
@@ -94,7 +94,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#00A3B4";
+  return "#1877D6";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -255,7 +255,7 @@ function CourseDetailPage() {
   const spacesLeft = course ? Math.max(0, (course.max_spaces ?? 0) - (course.spaces_taken ?? 0)) : 0;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F7F5EF", ...POPPINS, paddingBottom: 32 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       {/* Top bar */}
       <div
         style={{
@@ -477,12 +477,12 @@ function CourseDetailPage() {
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
-                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#00A3B4", full: false },
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1877D6", full: false },
                         { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
                         { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
                         { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
                         { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#00A3B4", full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1877D6", full: false },
                         { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
                       ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
                         const active = (form.lesson_time_preference || "flexible") === key;
@@ -518,7 +518,7 @@ function CourseDetailPage() {
                               <Icon size={18} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0A2540" }}>{label}</span>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{label}</span>
                               <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
                             </div>
                           </button>
@@ -584,9 +584,9 @@ function CourseDetailPage() {
                             style={{
                               height: 36,
                               borderRadius: 8,
-                              border: `1px solid ${active ? "#0A2540" : "#EEF2F7"}`,
-                              background: active ? "#0A2540" : "#fff",
-                              color: active ? "#fff" : "#0A2540",
+                              border: `1px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
+                              background: active ? "#0B1F3A" : "#fff",
+                              color: active ? "#fff" : "#0B1F3A",
                               fontFamily: "Inter, sans-serif",
                               fontSize: 12,
                               fontWeight: 600,
@@ -636,9 +636,9 @@ function CourseDetailPage() {
                                 height: 36,
                                 padding: "0 10px",
                                 borderRadius: 999,
-                                border: `1px solid ${active ? "#0A2540" : "#EEF2F7"}`,
-                                background: active ? "#0A2540" : "#fff",
-                                color: active ? "#fff" : "#0A2540",
+                                border: `1px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
+                                background: active ? "#0B1F3A" : "#fff",
+                                color: active ? "#fff" : "#0B1F3A",
                                 fontFamily: "Inter, sans-serif",
                                 fontSize: 12,
                                 fontWeight: 600,
@@ -670,7 +670,7 @@ function CourseDetailPage() {
                               borderRadius: 999,
                               border: "1px solid #EEF2F7",
                               background: "#fff",
-                              color: "#0A2540",
+                              color: "#0B1F3A",
                               fontFamily: "Inter, sans-serif",
                               fontSize: 11,
                               fontWeight: 600,
@@ -1421,7 +1421,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#00A3B4" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
@@ -1474,7 +1474,7 @@ function PostcodeAutocomplete(props: {
               }}
             >
               <MapPin size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0A2540", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

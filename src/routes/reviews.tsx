@@ -99,7 +99,7 @@ function ReviewsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
       >
         <div className="text-white font-bold" style={{ fontSize: 36, lineHeight: 1, ...POPPINS }}>
           {count > 0 ? average.toFixed(1) : "—"}
@@ -129,7 +129,7 @@ function ReviewsPage() {
               return (
                 <Card key={r.id}>
                   <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0A2540", ...POPPINS }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
                       {name}
                     </div>
                     <div className="text-[11px] shrink-0" style={{ color: "#6B7280", ...POPPINS }}>

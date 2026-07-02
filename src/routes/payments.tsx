@@ -197,7 +197,7 @@ function PaymentsPage() {
 
       {/* Earnings stats card */}
       {loading ? (
-        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0A2540", borderRadius: 12 }}>
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0B1F3A", borderRadius: 12 }}>
           <div className="grid grid-cols-2 gap-4">
             <div
               className="skeleton-pulse"
@@ -214,7 +214,7 @@ function PaymentsPage() {
           />
         </div>
       ) : (
-        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0A2540", borderRadius: 12 }}>
+        <div className="mx-4 mt-3 p-4" style={{ backgroundColor: "#0B1F3A", borderRadius: 12 }}>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div
@@ -320,7 +320,7 @@ function PaymentsPage() {
                     style={{
                       width: 40,
                       height: 40,
-                      backgroundColor: "#00A3B4",
+                      backgroundColor: "#1877D6",
                       color: "#FFFFFF",
                       ...POPPINS,
                     }}
@@ -329,7 +329,7 @@ function PaymentsPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div
-                      className="text-[14px] font-semibold text-[#0A2540] truncate"
+                      className="text-[14px] font-semibold text-[#0B1F3A] truncate"
                       style={POPPINS}
                     >
                       {p.name}
@@ -418,7 +418,7 @@ function PaymentsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div
-                      className="text-[14px] font-semibold text-[#0A2540] truncate"
+                      className="text-[14px] font-semibold text-[#0B1F3A] truncate"
                       style={POPPINS}
                     >
                       {row.pupils?.name ?? "Unknown pupil"}
@@ -449,7 +449,7 @@ function PaymentsPage() {
         style={{
           width: 52,
           height: 52,
-          backgroundColor: "#00A3B4",
+          backgroundColor: "#1877D6",
           color: "#FFFFFF",
           right: 16,
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
@@ -572,7 +572,7 @@ function RecordSheet({
         style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, ...POPPINS }}
       >
         <div className="flex items-center justify-between mb-3">
-          <div className="text-[16px] font-semibold text-[#0A2540]" style={POPPINS}>
+          <div className="text-[16px] font-semibold text-[#0B1F3A]" style={POPPINS}>
             Record payment
           </div>
           <button type="button" aria-label="Close" onClick={onClose}>
@@ -591,7 +591,7 @@ function RecordSheet({
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
               style={{
                 ...POPPINS,
                 borderWidth: "0.5px",

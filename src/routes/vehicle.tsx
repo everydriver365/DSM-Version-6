@@ -22,7 +22,7 @@ export const Route = createFileRoute("/vehicle")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0A2540";
+const NAVY = "#0B1F3A";
 const BORDER = "0.5px solid #EEF2F7";
 
 type VehicleHealth = {

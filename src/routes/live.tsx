@@ -608,7 +608,7 @@ function LivePage() {
             borderRadius: 12,
             maxWidth: 280,
             textAlign: "center",
-            color: "#0A2540",
+            color: "#0B1F3A",
             fontSize: 14,
             boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
           }}
@@ -695,9 +695,9 @@ function LivePage() {
           }}
         >
           <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
-            <MapIcon size={44} color="#00A3B4" strokeWidth={1.8} />
+            <MapIcon size={44} color="#1877D6" strokeWidth={1.8} />
           </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#0A2540", marginBottom: 6 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
             No active lesson
           </div>
           <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
@@ -710,7 +710,7 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 10,
-              background: "#00A3B4",
+              background: "#1877D6",
               border: "none",
               color: "#fff",
               fontSize: 15,
@@ -771,7 +771,7 @@ function LivePage() {
               className="flex items-center justify-between"
               style={{ marginTop: 4 }}
             >
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0A2540" }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
                 {activeLesson.pupils?.name ?? "Pupil"}
               </div>
               <div style={{ fontSize: 13, color: "#6B7280", fontWeight: 600 }}>
@@ -792,7 +792,7 @@ function LivePage() {
             >
               Tracking
             </div>
-            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0A2540" }}>
+            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
               Manual journey
             </div>
           </div>
@@ -820,14 +820,14 @@ function LivePage() {
           }}
         >
           <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0A2540" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
               {distanceMiles.toFixed(1)}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>mi</div>
           </div>
           <div style={{ width: 1, background: "#E5E7EB" }} />
           <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0A2540" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
               {elapsedMin}:{String(elapsedSecRem).padStart(2, "0")}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>duration</div>
@@ -849,7 +849,7 @@ function LivePage() {
               style={{
                 fontSize: 16,
                 fontWeight: 700,
-                color: overspeedCount > 0 ? "#EF4444" : "#0A2540",
+                color: overspeedCount > 0 ? "#EF4444" : "#0B1F3A",
                 textDecoration: overspeedCount > 0 ? "underline" : "none",
               }}
             >
@@ -922,7 +922,7 @@ function LivePage() {
             }}
           >
             <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0A2540" }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
                 Overspeed events ({overspeedEvents.length})
               </div>
               <button
@@ -958,7 +958,7 @@ function LivePage() {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0A2540" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
                           {ev.road_name ?? "Unknown road"}
                         </div>
                         <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>
