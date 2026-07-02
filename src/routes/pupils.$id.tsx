@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Palette, Pencil, Phone, PoundSterling, Trash2, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Palette, Pencil, Phone, PoundSterling, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -785,6 +785,23 @@ function PupilDetailPage() {
           >
             <ClipboardCheck size={16} color="#FFFFFF" />
             Mock test
+          </button>
+        </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
+            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#D97706",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <Trophy size={16} color="#FFFFFF" />
+            Test result
           </button>
         </div>
 
