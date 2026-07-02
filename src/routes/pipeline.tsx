@@ -92,7 +92,7 @@ function PipelinePage() {
     <div className="min-h-screen bg-white" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -260,7 +260,7 @@ function SheetShell({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ backgroundColor: "rgba(15,32,68,0.45)" }}
+      style={{ backgroundColor: "rgba(11,31,58,0.45)" }}
       onClick={onClose}
     >
       <div
@@ -370,7 +370,7 @@ function AddLeadSheet({
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontFamily: "Inter, sans-serif",
             }}
           >
@@ -396,7 +396,7 @@ function AddLeadSheet({
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontFamily: "Inter, sans-serif",
               resize: "vertical",
             }}
@@ -512,7 +512,7 @@ function LeadDetailSheet({
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontFamily: "Inter, sans-serif",
             }}
           >
@@ -538,7 +538,7 @@ function LeadDetailSheet({
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontFamily: "Inter, sans-serif",
               resize: "vertical",
             }}

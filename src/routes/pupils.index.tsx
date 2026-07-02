@@ -196,7 +196,7 @@ function PupilsIndexPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-bold text-white" style={POPPINS}>
@@ -246,7 +246,7 @@ function PupilsIndexPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
               ...POPPINS,
               borderWidth: "0.5px",

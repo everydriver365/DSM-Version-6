@@ -105,7 +105,7 @@ function StandardsPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -282,7 +282,7 @@ function SheetShell({
     >
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
         onClick={onClose}
         aria-hidden
       />

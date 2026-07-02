@@ -437,7 +437,7 @@ function SettingsPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-bold text-white" style={POPPINS}>DSM</span>
@@ -800,7 +800,7 @@ function SettingsPage() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <MapPin size={18} color="#1877D6" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
               Coverage area
             </span>
           </div>
@@ -823,7 +823,7 @@ function SettingsPage() {
                 borderRadius: 10,
                 fontSize: 14,
                 background: "#fff",
-                color: "#1A1A2E",
+                color: "#0B1F3A",
                 textTransform: "uppercase",
                 ...POPPINS,
               }}
@@ -856,7 +856,7 @@ function SettingsPage() {
               fontSize: 14,
               marginTop: 6,
               background: "#fff",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               ...POPPINS,
             }}
           >
@@ -890,7 +890,7 @@ function SettingsPage() {
         <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <PoundSterling size={18} color="#1877D6" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
               Pricing rules
             </span>
           </div>
@@ -920,7 +920,7 @@ function SettingsPage() {
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                    <span style={{ fontWeight: 600, fontSize: 14, color: "#1A1A2E", ...POPPINS }}>
+                    <span style={{ fontWeight: 600, fontSize: 14, color: "#0B1F3A", ...POPPINS }}>
                       {r.rule_name}
                     </span>
                     <span
@@ -979,7 +979,7 @@ function SettingsPage() {
           </div>
 
           <div style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1A2E", marginBottom: 10, ...POPPINS }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginBottom: 10, ...POPPINS }}>
               Add new rule
             </div>
 
@@ -992,7 +992,7 @@ function SettingsPage() {
               style={{
                 width: "100%", height: 44, padding: "0 12px",
                 border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
               }}
             />
 
@@ -1003,7 +1003,7 @@ function SettingsPage() {
               style={{
                 width: "100%", height: 44, padding: "0 12px",
                 border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
               }}
             >
               <option value="time_of_day">Time of Day</option>
@@ -1022,7 +1022,7 @@ function SettingsPage() {
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
                     border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                   }}
                 />
               </>
@@ -1073,7 +1073,7 @@ function SettingsPage() {
                       border: `0.5px solid ${invalid.length ? "#CC2229" : "#EEF2F7"}`,
                       borderRadius: 10, fontSize: 14,
                       marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
-                      background: "#fff", color: "#1A1A2E",
+                      background: "#fff", color: "#0B1F3A",
                       textTransform: "uppercase", ...POPPINS,
                     }}
                   />
@@ -1110,7 +1110,7 @@ function SettingsPage() {
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
                     border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                   }}
                 />
               </>
@@ -1125,7 +1125,7 @@ function SettingsPage() {
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
                     border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                    marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
                   }}
                 >
                   <option value="flat">Flat amount (£)</option>
@@ -1142,7 +1142,7 @@ function SettingsPage() {
                   style={{
                     width: "100%", height: 44, padding: "0 12px",
                     border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, background: "#fff", color: "#1A1A2E", ...POPPINS,
+                    marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
                   }}
                 />
               </div>

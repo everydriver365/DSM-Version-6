@@ -633,7 +633,7 @@ function SchedulePage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-bold text-white" style={POPPINS}>
@@ -709,7 +709,7 @@ function SchedulePage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: "0 6px 16px rgba(15,32,68,0.35)",
+          boxShadow: "0 6px 16px rgba(11,31,58,0.35)",
           zIndex: 30,
         }}
       >

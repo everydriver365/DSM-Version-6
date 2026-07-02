@@ -124,7 +124,7 @@ function TextField({
           placeholder={placeholder}
           type={type}
           inputMode={inputMode}
-          className="flex-1 bg-transparent text-[14px] text-[#1A1A2E] outline-none"
+          className="flex-1 bg-transparent text-[14px] text-[#0B1F3A] outline-none"
           style={POPPINS}
         />
         {rightSlot}
@@ -157,7 +157,7 @@ function AccordionCard({
         className="w-full flex items-center gap-3 px-4 py-3"
       >
         <Icon size={18} color={meta.iconColor} />
-        <span className="flex-1 text-left text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>
+        <span className="flex-1 text-left text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
           {meta.label}
         </span>
         <ChevronDown
@@ -205,7 +205,7 @@ function SelectField({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-10 rounded-lg bg-white px-3 text-[14px] text-[#1A1A2E] outline-none"
+        className="w-full h-10 rounded-lg bg-white px-3 text-[14px] text-[#0B1F3A] outline-none"
         style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
       >
         {options.map((o) => (
@@ -670,7 +670,7 @@ function ProfilePage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -848,7 +848,7 @@ function ProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
                 placeholder="Tell pupils a bit about yourself"
-                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -926,7 +926,7 @@ function ProfilePage() {
                   }}
                   onBlur={addServiceArea}
                   placeholder="Add a town and press Enter"
-                  className="flex-1 min-w-[140px] bg-transparent text-[14px] text-[#1A1A2E] outline-none px-1"
+                  className="flex-1 min-w-[140px] bg-transparent text-[14px] text-[#0B1F3A] outline-none px-1"
                   style={POPPINS}
                 />
               </div>
@@ -1019,7 +1019,7 @@ function ProfilePage() {
             />
             <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 48 }}>
-              <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Dual controls fitted</span>
+              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Dual controls fitted</span>
               <Toggle checked={dualControls} onChange={setDualControls} />
             </div>
             <div className="sm:col-span-2">
@@ -1034,7 +1034,7 @@ function ProfilePage() {
                   type="date"
                   value={insuranceExpiry}
                   onChange={(e) => setInsuranceExpiry(e.target.value)}
-                  className="flex-1 bg-transparent text-[14px] text-[#1A1A2E] outline-none"
+                  className="flex-1 bg-transparent text-[14px] text-[#0B1F3A] outline-none"
                   style={POPPINS}
                 />
                 {insuranceWarning ? (
@@ -1064,7 +1064,7 @@ function ProfilePage() {
                   const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
                   return (
                     <tr key={ev.key} className="border-t" style={{ borderColor: "#EEF2F7" }}>
-                      <td className="py-2 pr-2 text-[#1A1A2E]">{ev.label}</td>
+                      <td className="py-2 pr-2 text-[#0B1F3A]">{ev.label}</td>
                       <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.email} onChange={(v) => setNotif(ev.key, "email", v)} /></div></td>
                       <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.sms} onChange={(v) => setNotif(ev.key, "sms", v)} /></div></td>
                       <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.push} onChange={(v) => setNotif(ev.key, "push", v)} /></div></td>
@@ -1084,7 +1084,7 @@ function ProfilePage() {
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div>
-                <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Password</div>
+                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Password</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
                 </div>
@@ -1099,7 +1099,7 @@ function ProfilePage() {
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Two-factor authentication</span>
+                <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Two-factor authentication</span>
                 <Toggle checked={twoFactorEnabled} onChange={setTwoFactorEnabled} />
               </div>
               {twoFactorEnabled && (
@@ -1120,7 +1120,7 @@ function ProfilePage() {
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div>
-                <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Active sessions</div>
+                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Active sessions</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>{activeSessions} device signed in</div>
               </div>
             </div>
@@ -1129,7 +1129,7 @@ function ProfilePage() {
               className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
-              <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Login alerts</span>
+              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Login alerts</span>
               <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
             </div>
           </div>
@@ -1150,7 +1150,7 @@ function ProfilePage() {
                 <CalendarIcon size={20} color="#4285F4" />
               </div>
               <div className="flex-1">
-                <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Google Calendar</div>
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Google Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
                   Two-way sync your DSM schedule with Google Calendar
                 </div>
@@ -1169,7 +1169,7 @@ function ProfilePage() {
                 <Apple size={20} color="#000000" />
               </div>
               <div className="flex-1">
-                <div className="text-[14px] font-medium text-[#1A1A2E]" style={POPPINS}>Apple Calendar</div>
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Apple Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
                   Subscribe to your DSM schedule on iPhone
                 </div>

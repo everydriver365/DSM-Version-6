@@ -262,7 +262,7 @@ function CourseDetailPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#072b47",
+          backgroundColor: "#0B1F3A",
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",
@@ -463,7 +463,7 @@ function CourseDetailPage() {
                         background: "#fff",
                         fontFamily: "Inter, sans-serif",
                         fontSize: 14,
-                        color: "#1A1A2E",
+                        color: "#0B1F3A",
                       }}
                     >
                       {RADIUS_OPTIONS.map((m) => (
@@ -538,7 +538,7 @@ function CourseDetailPage() {
                             style={{
                               height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
                               padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
-                              color: "#1A1A2E", background: "#fff",
+                              color: "#0B1F3A", background: "#fff",
                             }}
                           />
                         </label>
@@ -553,7 +553,7 @@ function CourseDetailPage() {
                             style={{
                               height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
                               padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
-                              color: "#1A1A2E", background: "#fff",
+                              color: "#0B1F3A", background: "#fff",
                             }}
                           />
                         </label>
@@ -720,7 +720,7 @@ function CourseDetailPage() {
                         padding: 10,
                         fontFamily: "Inter, sans-serif",
                         fontSize: 14,
-                        color: "#1A1A2E",
+                        color: "#0B1F3A",
                         resize: "vertical",
                       }}
                     />
@@ -1081,7 +1081,7 @@ function SelectRow({
           background: "#fff",
           fontFamily: "Inter, sans-serif",
           fontSize: 14,
-          color: "#1A1A2E",
+          color: "#0B1F3A",
         }}
       >
         {options.map(([v, l]) => (
@@ -1194,7 +1194,7 @@ function AddBookingSheet({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(15,32,68,0.45)",
+        background: "rgba(11,31,58,0.45)",
         zIndex: 50,
         display: "flex",
         alignItems: "flex-end",
@@ -1426,7 +1426,7 @@ function PostcodeAutocomplete(props: {
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
             fontSize: 14,
-            color: "#1A1A2E",
+            color: "#0B1F3A",
             background: "#fff",
             outline: "none",
             boxSizing: "border-box",

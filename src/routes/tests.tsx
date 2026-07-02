@@ -122,7 +122,7 @@ function TestsPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -337,7 +337,7 @@ function SheetShell({
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
         onClick={onClose}
         aria-hidden
       />
@@ -430,7 +430,7 @@ function AddTestSheet({
               height: 44,
               borderRadius: 8,
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontSize: 14,
               ...POPPINS,
             }}
@@ -556,7 +556,7 @@ function LogResultSheet({
             style={{
               borderRadius: 8,
               border: "0.5px solid #EEF2F7",
-              color: "#1A1A2E",
+              color: "#0B1F3A",
               fontSize: 14,
               resize: "none",
               ...POPPINS,

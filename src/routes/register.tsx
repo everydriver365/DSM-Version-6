@@ -216,7 +216,7 @@ function RegisterPage() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#1A1A2E]"
+              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
@@ -249,7 +249,7 @@ function RegisterPage() {
             <button
               type="button"
               onClick={() => setShowConfirm((v) => !v)}
-              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#1A1A2E]"
+              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
               aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
               tabIndex={-1}
             >

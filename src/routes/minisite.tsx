@@ -300,7 +300,7 @@ function MiniSitePage() {
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center"
-        style={{ backgroundColor: "#072b47", height: 52 }}
+        style={{ backgroundColor: "#0B1F3A", height: 52 }}
       >
         <button
           onClick={() => navigate({ to: "/home" })}
@@ -386,7 +386,7 @@ function MiniSitePage() {
         {/* SLUG CLAIM */}
         {!originalSlug && (
           <Card className="mb-3" style={{ background: "#fff" }}>
-            <div className="text-[13px] font-medium mb-2" style={{ color: "#1A1A2E" }}>
+            <div className="text-[13px] font-medium mb-2" style={{ color: "#0B1F3A" }}>
               Choose your website address
             </div>
             <Input
@@ -439,7 +439,7 @@ function MiniSitePage() {
             onChange={(e) => setWebsiteBio(e.target.value)}
             placeholder="Tell pupils about yourself, your teaching style, and why they should choose you"
             rows={5}
-            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
               fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
@@ -463,7 +463,7 @@ function MiniSitePage() {
                 onClick={() => heroInputRef.current?.click()}
                 style={{
                   position: "absolute", bottom: 8, right: 8,
-                  background: "rgba(15,32,68,0.85)", color: "#fff",
+                  background: "rgba(11,31,58,0.85)", color: "#fff",
                   border: "none", borderRadius: 8, padding: "6px 10px",
                   fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4,
                 }}
@@ -574,7 +574,7 @@ function MiniSitePage() {
                       <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #EEF2F7" }} />
                     ))}
                   </div>
-                  <div className="text-[13px] font-medium" style={{ color: "#1A1A2E" }}>{t.label}</div>
+                  <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{t.label}</div>
                 </button>
               );
             })}
@@ -596,7 +596,7 @@ function MiniSitePage() {
                     borderColor: selected ? "#1877D6" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 12px", background: "#fff",
                     cursor: "pointer", textAlign: "left",
-                    fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#1A1A2E",
+                    fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#0B1F3A",
                   }}
                 >
                   {f}
@@ -621,7 +621,7 @@ function MiniSitePage() {
                     borderColor: selected ? "#1877D6" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 8px", background: "#fff",
                     cursor: "pointer", textAlign: "center",
-                    fontSize: 12, color: "#1A1A2E",
+                    fontSize: 12, color: "#0B1F3A",
                   }}
                 >
                   {h.label}
@@ -656,7 +656,7 @@ function MiniSitePage() {
                 style={{
                   width: 28, height: 28, borderRadius: 999,
                   background: c, cursor: "pointer",
-                  border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #1A1A2E" : "0.5px solid #EEF2F7",
+                  border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #0B1F3A" : "0.5px solid #EEF2F7",
                 }}
               />
             ))}

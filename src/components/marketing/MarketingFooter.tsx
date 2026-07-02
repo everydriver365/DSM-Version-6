@@ -3,7 +3,7 @@ import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
 export function MarketingFooter() {
   return (
-    <footer className="bg-[#1B2B4B] pt-16 pb-10 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <footer className="bg-[#133155] pt-16 pb-10 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="max-w-[1180px] mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
           <div className="col-span-2 md:col-span-2">

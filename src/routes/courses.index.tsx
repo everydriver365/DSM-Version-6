@@ -103,7 +103,7 @@ function CoursesPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#072b47",
+          backgroundColor: "#0B1F3A",
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",
@@ -188,7 +188,7 @@ function CoursesPage() {
                     padding: 12,
                     userSelect: "none",
                     WebkitUserSelect: "none",
-                    WebkitTapHighlightColor: "rgba(15,32,68,0.08)",
+                    WebkitTapHighlightColor: "rgba(11,31,58,0.08)",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

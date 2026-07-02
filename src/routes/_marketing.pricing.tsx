@@ -30,7 +30,7 @@ function PricingPage() {
         <span className="bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4 inline-block">
           No confusion. No surprises.
         </span>
-        <h1 className="text-4xl md:text-5xl font-black text-[#1B2B4B] mb-4">
+        <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
           Simple, transparent pricing
         </h1>
         <p className="text-[#718096] text-lg mb-8 max-w-2xl mx-auto">
@@ -43,9 +43,9 @@ function PricingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6 pb-16">
           {/* STARTER */}
           <div className="border border-gray-200 rounded-2xl p-8 bg-white flex flex-col">
-            <h3 className="font-black text-[#1B2B4B] text-2xl mb-2">Starter</h3>
+            <h3 className="font-black text-[#133155] text-2xl mb-2">Starter</h3>
             <div className="mb-1">
-              <span className="text-4xl font-black text-[#1B2B4B]">Free</span>
+              <span className="text-4xl font-black text-[#133155]">Free</span>
               <span className="text-[#718096] text-sm">/forever</span>
             </div>
             <p className="text-[#718096] text-sm mb-6">Everything you need to get started</p>
@@ -67,7 +67,7 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="border-2 border-[#1B2B4B] text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="border-2 border-[#133155] text-[#133155] hover:bg-[#133155] hover:text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
             >
               Get started free →
             </Link>
@@ -78,9 +78,9 @@ function PricingPage() {
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#00B5A5] text-white text-xs font-bold px-4 py-1 rounded-full">
               Most popular
             </span>
-            <h3 className="font-black text-[#1B2B4B] text-2xl mb-2">Plus</h3>
+            <h3 className="font-black text-[#133155] text-2xl mb-2">Plus</h3>
             <div className="mb-1">
-              <span className="text-4xl font-black text-[#1B2B4B]">£24.99</span>
+              <span className="text-4xl font-black text-[#133155]">£24.99</span>
               <span className="text-[#718096] text-sm">/month</span>
             </div>
             <p className="text-[#718096] text-sm mb-6">Everything in Starter, plus:</p>
@@ -103,7 +103,7 @@ function PricingPage() {
           </div>
 
           {/* MAX */}
-          <div className="bg-[#1B2B4B] rounded-2xl p-8 relative flex flex-col">
+          <div className="bg-[#133155] rounded-2xl p-8 relative flex flex-col">
             <h3 className="font-black text-white text-2xl mb-2">Max</h3>
             <div className="mb-1">
               <span className="text-4xl font-black text-white">£29.99</span>
@@ -132,7 +132,7 @@ function PricingPage() {
 
       {/* ADD-ONS */}
       <section className="bg-white py-16 px-6">
-        <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-4">
+        <h2 className="text-3xl font-black text-[#133155] text-center mb-4">
           Add vehicle tracking &amp; dashcams
         </h2>
         <p className="text-[#718096] text-center mb-12">
@@ -141,8 +141,8 @@ function PricingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
             <MapPin className="text-[#00B5A5] w-8 h-8 mb-4" />
-            <h3 className="font-bold text-[#1B2B4B] text-lg mb-1">GPS Tracker</h3>
-            <div className="text-2xl font-black text-[#1B2B4B]">£14.99/month</div>
+            <h3 className="font-bold text-[#133155] text-lg mb-1">GPS Tracker</h3>
+            <div className="text-2xl font-black text-[#133155]">£14.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
             <ul className="text-sm text-[#2D3748] space-y-1">
               <li>Live location</li>
@@ -154,8 +154,8 @@ function PricingPage() {
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
             <Camera className="text-[#00B5A5] w-8 h-8 mb-4" />
-            <h3 className="font-bold text-[#1B2B4B] text-lg mb-1">Front Dashcam</h3>
-            <div className="text-2xl font-black text-[#1B2B4B]">£19.99/month</div>
+            <h3 className="font-bold text-[#133155] text-lg mb-1">Front Dashcam</h3>
+            <div className="text-2xl font-black text-[#133155]">£19.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
             <ul className="text-sm text-[#2D3748] space-y-1">
               <li>HD front recording</li>
@@ -165,7 +165,7 @@ function PricingPage() {
             </ul>
           </div>
 
-          <div className="bg-[#1B2B4B] rounded-2xl p-6">
+          <div className="bg-[#133155] rounded-2xl p-6">
             <Camera className="text-[#00B5A5] w-8 h-8 mb-4" />
             <h3 className="font-bold text-white text-lg mb-1">Front &amp; Rear Dashcam</h3>
             <div className="text-2xl font-black text-white">£39.99/month</div>
@@ -182,17 +182,17 @@ function PricingPage() {
 
       {/* COMPARISON TABLE */}
       <section className="bg-[#F7FAFC] py-16 px-6">
-        <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-12">
+        <h2 className="text-3xl font-black text-[#133155] text-center mb-12">
           Compare plans
         </h2>
         <div className="max-w-4xl mx-auto overflow-x-auto">
           <table className="w-full text-sm bg-white rounded-2xl overflow-hidden">
             <thead>
               <tr className="border-b-2 border-gray-200">
-                <th className="text-left p-4 text-[#1B2B4B] font-bold">Feature</th>
-                <th className="p-4 text-center font-bold text-[#1B2B4B]">Starter</th>
-                <th className="p-4 text-center font-bold text-[#1B2B4B]">Plus</th>
-                <th className="p-4 text-center font-bold text-[#1B2B4B]">Max</th>
+                <th className="text-left p-4 text-[#133155] font-bold">Feature</th>
+                <th className="p-4 text-center font-bold text-[#133155]">Starter</th>
+                <th className="p-4 text-center font-bold text-[#133155]">Plus</th>
+                <th className="p-4 text-center font-bold text-[#133155]">Max</th>
               </tr>
             </thead>
             <tbody>
@@ -215,7 +215,7 @@ function PricingPage() {
 
       {/* FAQ */}
       <section className="bg-white py-16 px-6">
-        <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-12">
+        <h2 className="text-3xl font-black text-[#133155] text-center mb-12">
           Common questions
         </h2>
         <div className="max-w-2xl mx-auto space-y-3">
@@ -327,7 +327,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between p-5 text-left"
       >
-        <span className="font-semibold text-[#1B2B4B]">{q}</span>
+        <span className="font-semibold text-[#133155]">{q}</span>
         <ChevronDown
           className={`text-[#718096] w-5 h-5 transition-transform ${open ? "rotate-180" : ""}`}
         />

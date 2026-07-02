@@ -223,12 +223,12 @@ function MonthToDatePage() {
           aria-label="Back"
           style={{ background: "none", border: "none", padding: 4, cursor: "pointer" }}
         >
-          <ArrowLeft size={22} color="#1A1A2E" />
+          <ArrowLeft size={22} color="#0B1F3A" />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <BarChart3 size={20} color="#1877D6" />
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#1A1A2E" }}>Month to date</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#0B1F3A" }}>Month to date</div>
             <div style={{ fontSize: 12, color: "#6B7280" }}>{monthLabel}</div>
           </div>
         </div>
@@ -245,13 +245,13 @@ function MonthToDatePage() {
           </div>
           <div style={CARD}>
             <div style={{ fontSize: 12, color: "#6B7280" }}>Lessons completed</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#1A1A2E", marginTop: 4 }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", marginTop: 4 }}>
               {loading ? "…" : lessonsCount}
             </div>
           </div>
           <div style={CARD}>
             <div style={{ fontSize: 12, color: "#6B7280" }}>Hours taught</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#1A1A2E", marginTop: 4 }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", marginTop: 4 }}>
               {loading ? "…" : fmtHM(totalMinutes)}
             </div>
           </div>
@@ -267,7 +267,7 @@ function MonthToDatePage() {
         <div style={CARD}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <Calculator size={18} color="#1877D6" />
-            <div style={{ fontWeight: 700, color: "#1A1A2E" }}>Tax estimate</div>
+            <div style={{ fontWeight: 700, color: "#0B1F3A" }}>Tax estimate</div>
           </div>
           <Row label="Projected annual" value={fmtGBP(projectedAnnual, { maximumFractionDigits: 0 })} />
           <Row label="Income tax (est.)" value={fmtGBP(incomeTax, { maximumFractionDigits: 0 })} />
@@ -281,7 +281,7 @@ function MonthToDatePage() {
               borderTop: BORDER,
             }}
           >
-            <div style={{ fontWeight: 600, color: "#1A1A2E" }}>Total estimated tax</div>
+            <div style={{ fontWeight: 600, color: "#0B1F3A" }}>Total estimated tax</div>
             <div style={{ fontWeight: 700, color: "#D97706" }}>
               {fmtGBP(totalTax, { maximumFractionDigits: 0 })}
             </div>
@@ -293,7 +293,7 @@ function MonthToDatePage() {
 
         {/* Weekly bar chart */}
         <div style={CARD}>
-          <div style={{ fontWeight: 700, color: "#1A1A2E", marginBottom: 10 }}>
+          <div style={{ fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
             Earnings by week
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -311,7 +311,7 @@ function MonthToDatePage() {
                     }}
                   />
                 </div>
-                <div style={{ width: 70, textAlign: "right", fontSize: 12, color: "#1A1A2E" }}>
+                <div style={{ width: 70, textAlign: "right", fontSize: 12, color: "#0B1F3A" }}>
                   {fmtGBP(w.total, { maximumFractionDigits: 0 })}
                 </div>
               </div>
@@ -321,7 +321,7 @@ function MonthToDatePage() {
 
         {/* Recent payments */}
         <div style={CARD}>
-          <div style={{ fontWeight: 700, color: "#1A1A2E", marginBottom: 10 }}>
+          <div style={{ fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
             Recent payments
           </div>
           {history.length === 0 && !loading ? (
@@ -340,7 +340,7 @@ function MonthToDatePage() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 14, color: "#1A1A2E", fontWeight: 600 }}>
+                    <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 600 }}>
                       {pupilName(h.pupil_id)}
                     </div>
                     <div style={{ fontSize: 11, color: "#6B7280" }}>
@@ -387,7 +387,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
       <div style={{ fontSize: 13, color: "#6B7280" }}>{label}</div>
-      <div style={{ fontSize: 13, color: "#1A1A2E", fontWeight: 600 }}>{value}</div>
+      <div style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>{value}</div>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/mtd")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const VALUE = "#1A1A2E";
+const VALUE = "#0B1F3A";
 const MUTED = "#6B7280";
 const MILEAGE_RATE = 0.45;
 
@@ -290,7 +290,7 @@ function MtdPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: "#072b47" }}
+        style={{ backgroundColor: "#0B1F3A" }}
       >
         <button
           onClick={() => navigate({ to: "/home" })}

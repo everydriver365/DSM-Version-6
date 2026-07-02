@@ -183,7 +183,7 @@ function PaymentsPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-bold text-white" style={POPPINS}>
@@ -566,7 +566,7 @@ function RecordSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end" style={{ backgroundColor: "rgba(15,32,68,0.4)" }}>
+    <div className="fixed inset-0 z-[60] flex items-end" style={{ backgroundColor: "rgba(11,31,58,0.4)" }}>
       <div
         className="w-full bg-white p-4"
         style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, ...POPPINS }}
@@ -591,7 +591,7 @@ function RecordSheet({
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={{
                 ...POPPINS,
                 borderWidth: "0.5px",

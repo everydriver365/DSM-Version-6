@@ -563,7 +563,7 @@ function TakePaymentPage() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 4,
-                  boxShadow: active ? "0 1px 2px rgba(15,32,68,0.08)" : "none",
+                  boxShadow: active ? "0 1px 2px rgba(11,31,58,0.08)" : "none",
                   cursor: "pointer",
                 }}
               >

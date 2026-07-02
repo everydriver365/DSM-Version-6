@@ -109,7 +109,7 @@ function ReminderPage() {
     <div className="min-h-screen bg-white pb-12" style={POPPINS}>
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#072b47" }}
+        style={{ backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -148,7 +148,7 @@ function ReminderPage() {
             placeholder="Search pupils"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
               fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px",
@@ -249,7 +249,7 @@ function ReminderPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
-          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
+          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
           style={{
             fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",

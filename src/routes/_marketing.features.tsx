@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, PoundSterling, MapPin, Users, BarChart3, Globe, Check } from "lucide-react";
 
-const NAVY = "#1B2B4B";
+const NAVY = "#133155";
 const TEAL = "#00B5A5";
 const LIGHT_BG = "#F7FAFC";
 const WHITE = "#FFFFFF";
@@ -58,7 +58,7 @@ function FeatureSection({
             <div className="w-12 h-12 rounded-xl bg-[#00B5A5]/10 flex items-center justify-center mb-5">
               <Icon size={24} color={TEAL} strokeWidth={2} />
             </div>
-            <h3 className="text-3xl font-black text-[#1B2B4B] mb-4">{heading}</h3>
+            <h3 className="text-3xl font-black text-[#133155] mb-4">{heading}</h3>
             <p className="text-[#718096] text-lg leading-relaxed mb-6">{description}</p>
             <div className="flex flex-col gap-3">
               {features.map((f) => (
@@ -93,7 +93,7 @@ function FeaturesPage() {
           <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
             Everything you need
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#1B2B4B] mb-4">
+          <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
             Built for driving instructors. By a driving instructor.
           </h1>
           <p className="text-[#718096] text-lg max-w-2xl mx-auto">
@@ -220,7 +220,7 @@ function FeaturesPage() {
       />
 
       {/* EveryDriver integration */}
-      <section className="bg-[#1B2B4B] py-20 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-white mb-4">Get more pupils automatically</h2>
           <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">

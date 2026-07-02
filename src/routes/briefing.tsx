@@ -218,7 +218,7 @@ function BriefingPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
-        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
+        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0B1F3A",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <button onClick={() => navigate({ to: "/home" })}
@@ -377,7 +377,7 @@ function BriefingPage() {
               }}>
                 {r.icon}
               </div>
-              <div style={{ flex: 1, fontSize: 14, color: "#1A1A2E", fontWeight: 500 }}>
+              <div style={{ flex: 1, fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>
                 {r.label}
               </div>
               <span style={{
@@ -411,7 +411,7 @@ function BriefingPage() {
               <Wrench size={18} color="#5B21B6" />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#1A1A2E" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
                 {nextService ? nextService.type : "Next service"}
               </div>
               <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
@@ -432,7 +432,7 @@ function BriefingPage() {
             }}>
               <Fuel size={18} color="#92400E" />
             </div>
-            <div style={{ flex: 1, fontSize: 13, color: "#1A1A2E" }}>
+            <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A" }}>
               Remember to check fuel before lessons
             </div>
           </div>

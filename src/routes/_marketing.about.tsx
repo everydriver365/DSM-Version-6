@@ -4,7 +4,7 @@ import { Shield, Zap, Heart } from "lucide-react";
 const TEAL = "#00B5A5";
 const WHITE = "#FFFFFF";
 const LIGHT_BG = "#F7FAFC";
-const NAVY = "#1B2B4B";
+const NAVY = "#133155";
 const MUTED = "#718096";
 
 export const Route = createFileRoute("/_marketing/about")({
@@ -53,7 +53,7 @@ function AboutPage() {
           <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
             Our story
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#1B2B4B] mb-4">
+          <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
             Built by an instructor. For instructors.
           </h1>
           <p className="text-[#718096] text-lg max-w-2xl mx-auto">
@@ -65,7 +65,7 @@ function AboutPage() {
       {/* Story section */}
       <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] mb-8">Why we built DSM</h2>
+          <h2 className="text-3xl font-black text-[#133155] mb-8">Why we built DSM</h2>
           <div className="flex flex-col gap-6">
             <p className="text-[#374151] text-lg leading-relaxed">
               We're driving instructors. We know what it's like to juggle a full diary, chase payments, manage pupils and try to grow a business — all from your car.
@@ -86,7 +86,7 @@ function AboutPage() {
       {/* Mission section */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] mb-6">Our mission</h2>
+          <h2 className="text-3xl font-black text-[#133155] mb-6">Our mission</h2>
           <p className="text-2xl font-black text-[#00B5A5] mb-6">
             Making driving instruction better for everyone.
           </p>
@@ -99,7 +99,7 @@ function AboutPage() {
       {/* Values section */}
       <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-12">What we stand for</h2>
+          <h2 className="text-3xl font-black text-[#133155] text-center mb-12">What we stand for</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {values.map((v) => {
               const Icon = v.icon;
@@ -111,7 +111,7 @@ function AboutPage() {
                   <div className="text-[#00B5A5] mb-5">
                     <Icon size={32} strokeWidth={2} />
                   </div>
-                  <h3 className="font-bold text-[#1B2B4B] text-lg mb-3">{v.title}</h3>
+                  <h3 className="font-bold text-[#133155] text-lg mb-3">{v.title}</h3>
                   <p className="text-[#718096] text-base leading-relaxed">{v.body}</p>
                 </div>
               );
@@ -121,7 +121,7 @@ function AboutPage() {
       </section>
 
       {/* Stats section */}
-      <section className="bg-[#1B2B4B] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
             {stats.map((s) => (
@@ -137,7 +137,7 @@ function AboutPage() {
       {/* Contact teaser */}
       <section className="bg-[#F7FAFC] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] mb-4">Get in touch</h2>
+          <h2 className="text-3xl font-black text-[#133155] mb-4">Get in touch</h2>
           <p className="text-[#718096] mb-8">Questions, feedback or just want to say hello?</p>
           <Link
             to="/contact"

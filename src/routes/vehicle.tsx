@@ -416,7 +416,7 @@ function VehiclePage() {
           height: 56,
           borderRadius: 999,
           backgroundColor: NAVY,
-          boxShadow: "0 6px 16px rgba(15,32,68,0.25)",
+          boxShadow: "0 6px 16px rgba(11,31,58,0.25)",
         }}
       >
         <Plus size={24} color="#FFFFFF" />
@@ -524,7 +524,7 @@ function EditFieldModal({
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
         onClick={onClose}
         aria-hidden
       />
@@ -649,7 +649,7 @@ function AddJourneyModal({
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(15,32,68,0.5)" }}
+        style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
         onClick={onClose}
         aria-hidden
       />

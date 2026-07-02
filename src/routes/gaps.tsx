@@ -176,7 +176,7 @@ function GapsPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 flex items-center px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -264,7 +264,7 @@ function GapsPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -279,7 +279,7 @@ function GapsPage() {
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",

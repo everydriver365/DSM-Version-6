@@ -668,7 +668,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   return (
     <div
       className="fixed inset-0 z-[90] flex items-end"
-      style={{ backgroundColor: "rgba(15,32,68,0.4)", ...POPPINS }}
+      style={{ backgroundColor: "rgba(11,31,58,0.4)", ...POPPINS }}
       role="dialog"
       aria-modal="true"
     >
@@ -685,7 +685,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           padding: 20,
           maxHeight: "92vh",
           overflowY: "auto",
-          boxShadow: "0 -10px 30px rgba(15,32,68,0.18)",
+          boxShadow: "0 -10px 30px rgba(11,31,58,0.18)",
           paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
         }}
       >
@@ -733,7 +733,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
             <label
               className="block text-[12px] mt-4 mb-1"
-              style={{ color: "#1A1A2E", fontWeight: 600 }}
+              style={{ color: "#0B1F3A", fontWeight: 600 }}
             >
               Lesson notes
             </label>
@@ -747,7 +747,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 borderRadius: 10,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
-                color: "#1A1A2E",
+                color: "#0B1F3A",
                 resize: "vertical",
               }}
             />
@@ -767,7 +767,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 >
                   Route summary
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-[13px]" style={{ color: "#1A1A2E" }}>
+                <div className="grid grid-cols-2 gap-2 text-[13px]" style={{ color: "#0B1F3A" }}>
                   <div>
                     <div style={{ color: "#6B7280", fontSize: 11 }}>Distance</div>
                     <div style={{ fontWeight: 600 }}>
@@ -891,7 +891,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                       borderRadius: 10,
                       backgroundColor: active ? "#F0FDF4" : "#F8F9FB",
                       border: `1px solid ${active ? "#16A34A" : "#EEF2F7"}`,
-                      color: active ? "#16A34A" : "#1A1A2E",
+                      color: active ? "#16A34A" : "#0B1F3A",
                       minHeight: 72,
                     }}
                   >
@@ -906,7 +906,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
             <label
               className="block text-[12px] mt-4 mb-1"
-              style={{ color: "#1A1A2E", fontWeight: 600 }}
+              style={{ color: "#0B1F3A", fontWeight: 600 }}
             >
               Amount (£)
             </label>
@@ -921,7 +921,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 borderRadius: 10,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
-                color: "#1A1A2E",
+                color: "#0B1F3A",
               }}
             />
 
@@ -1020,7 +1020,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   >
                     <div
                       className="text-[13px] mb-2"
-                      style={{ color: "#1A1A2E", fontWeight: 600 }}
+                      style={{ color: "#0B1F3A", fontWeight: 600 }}
                     >
                       {c}
                     </div>
@@ -1104,7 +1104,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
             <label
               className="block text-[12px] mt-4 mb-1"
-              style={{ color: "#1A1A2E", fontWeight: 600 }}
+              style={{ color: "#0B1F3A", fontWeight: 600 }}
             >
               Comments on progress (optional)
             </label>
@@ -1117,7 +1117,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 borderRadius: 10,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
-                color: "#1A1A2E",
+                color: "#0B1F3A",
                 resize: "vertical",
               }}
             />
@@ -1183,23 +1183,23 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             >
               <div className="flex justify-between text-[13px] py-1">
                 <span style={{ color: "#6B7280" }}>Pupil</span>
-                <span style={{ color: "#1A1A2E", fontWeight: 600 }}>{pupilName}</span>
+                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{pupilName}</span>
               </div>
               <div className="flex justify-between text-[13px] py-1">
                 <span style={{ color: "#6B7280" }}>Duration</span>
-                <span style={{ color: "#1A1A2E", fontWeight: 600 }}>{durationMinutes} mins</span>
+                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{durationMinutes} mins</span>
               </div>
               {finalDistance != null && (
                 <div className="flex justify-between text-[13px] py-1">
                   <span style={{ color: "#6B7280" }}>Distance</span>
-                  <span style={{ color: "#1A1A2E", fontWeight: 600 }}>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
                     {finalDistance.toFixed(1)} mi
                   </span>
                 </div>
               )}
               <div className="flex justify-between text-[13px] py-1">
                 <span style={{ color: "#6B7280" }}>Payment</span>
-                <span style={{ color: "#1A1A2E", fontWeight: 600 }}>{finalPaymentLabel}</span>
+                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{finalPaymentLabel}</span>
               </div>
             </div>
 

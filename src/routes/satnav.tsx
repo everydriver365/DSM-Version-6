@@ -93,7 +93,7 @@ function SatNavPage() {
       {/* TOP BAR */}
       <div
         className="shrink-0 h-[52px] px-4 flex items-center justify-between relative z-50"
-        style={{ backgroundColor: "#072b47" }}
+        style={{ backgroundColor: "#0B1F3A" }}
       >
         <div className="w-10" />
         <span className="text-white text-[15px] font-semibold">Sat Nav</span>
@@ -203,7 +203,7 @@ function SatNavPage() {
                   height: 40,
                   borderRadius: 8,
                   backgroundColor: "#F3F4F6",
-                  color: "#1A1A2E",
+                  color: "#0B1F3A",
                 }}
               >
                 <MessageSquare size={16} /> Text
