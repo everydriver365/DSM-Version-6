@@ -571,9 +571,6 @@ function AddSheet({
           >
           {saving ? "Creating…" : "Create code"}
           </button>
-          <div style={{ height: 80 }} />
-        </div>
-      </div>
     </div>
   );
 }
