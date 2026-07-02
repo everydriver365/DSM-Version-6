@@ -388,8 +388,6 @@ function SchedulePage() {
         </span>,
       );
     }
-
-
     return (
       <div key={l.id}>
         <div
