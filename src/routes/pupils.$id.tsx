@@ -224,6 +224,102 @@ function PupilDetailPage() {
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
+
+  // Bind Google Places Autocomplete to the address input when editing
+  useEffect(() => {
+    if (!addressEditing) return;
+    let cancelled = false;
+    loadGoogleMapsPlaces()
+      .then(() => {
+        if (cancelled) return;
+        const input = addressInputRef.current;
+        const g = (window as any).google;
+        if (!input || !g?.maps?.places) return;
+        const ac = new g.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: "gb" },
+          types: ["address"],
+          fields: ["formatted_address", "address_components", "geometry"],
+        });
+        ac.addListener("place_changed", async () => {
+          const place = ac.getPlace();
+          const formatted: string = place.formatted_address ?? "";
+          const comps: any[] = place.address_components ?? [];
+          const pc = comps.find((c: any) => c.types.includes("postal_code"))?.long_name ?? "";
+          const town =
+            comps.find((c: any) => c.types.includes("postal_town"))?.long_name ??
+            comps.find((c: any) => c.types.includes("locality"))?.long_name ??
+            "";
+          const lat = place.geometry?.location?.lat?.();
+          const lng = place.geometry?.location?.lng?.();
+          const basePatch: Record<string, unknown> = {};
+          if (formatted) basePatch.address = formatted;
+          if (pc) basePatch.postcode = pc;
+          // Include town only if we have a value; column may not exist — handled with fallback
+          const patchWithTown = town ? { ...basePatch, town } : basePatch;
+          const patchWithGeo =
+            typeof lat === "number" && typeof lng === "number"
+              ? { ...patchWithTown, lat, lng }
+              : patchWithTown;
+          let { error } = await supabase.from("pupils").update(patchWithGeo).eq("id", id);
+          if (error) {
+            // Retry without possibly-missing columns (town, lat, lng)
+            const retry = await supabase.from("pupils").update(basePatch).eq("id", id);
+            error = retry.error as any;
+          }
+          if (error) {
+            console.error("[pupil] address save error", error);
+            toast.error("Failed to save address");
+            return;
+          }
+          setPupil((p) =>
+            p
+              ? {
+                  ...p,
+                  address: formatted || p.address,
+                  postcode: pc || p.postcode,
+                  lat: typeof lat === "number" ? lat : p.lat,
+                  lng: typeof lng === "number" ? lng : p.lng,
+                }
+              : p,
+          );
+          setAddressEditing(false);
+          toast.success("Address updated");
+        });
+      })
+      .catch(() => {
+        // silent — user can still type manually and press Save
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [addressEditing, id]);
+
+  async function saveAddressManual(nextAddress: string, nextPostcode: string) {
+    const patch: Record<string, unknown> = {
+      address: nextAddress.trim() || null,
+      postcode: nextPostcode.trim() || null,
+    };
+    const { error } = await supabase.from("pupils").update(patch).eq("id", id);
+    if (error) {
+      toast.error("Failed to save address");
+      return;
+    }
+    setPupil((p) => (p ? { ...p, ...(patch as any) } : p));
+    setAddressEditing(false);
+    toast.success("Address updated");
+  }
+
+  async function savePupilFields(patch: Record<string, unknown>, successMsg: string) {
+    const { error } = await supabase.from("pupils").update(patch).eq("id", id);
+    if (error) {
+      console.error("[pupil] save error", error);
+      toast.error("Failed to save — please try again");
+      return false;
+    }
+    setPupil((p) => (p ? { ...p, ...(patch as any) } : p));
+    toast.success(successMsg);
+    return true;
+  }
   const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
