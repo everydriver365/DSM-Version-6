@@ -657,6 +657,179 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
 };
 
+function CentreSearchSelect({
+  centres,
+  centreSearch,
+  setCentreSearch,
+  showDropdown,
+  setShowDropdown,
+  selectedCentre,
+  setSelectedCentre,
+  setCentreId,
+  setCentreName,
+  addCentreByName,
+}: {
+  centres: TestCentre[];
+  centreSearch: string;
+  setCentreSearch: (v: string) => void;
+  showDropdown: boolean;
+  setShowDropdown: (v: boolean) => void;
+  selectedCentre: { id: string; name: string; town: string } | null;
+  setSelectedCentre: (v: { id: string; name: string; town: string } | null) => void;
+  setCentreId: (v: string | null) => void;
+  setCentreName: (v: string) => void;
+  addCentreByName: (name: string) => void;
+}) {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [setShowDropdown]);
+
+  const q = centreSearch.trim().toLowerCase();
+  const filtered = q
+    ? centres.filter((c) => {
+        const name = (c.name || "").toLowerCase();
+        const town = (c.town || "").toLowerCase();
+        return name.includes(q) || town.includes(q);
+      })
+    : centres;
+
+  function pick(c: TestCentre) {
+    const centre = { id: c.id, name: c.name, town: c.town ?? "" };
+    setSelectedCentre(centre);
+    setCentreId(c.id);
+    setCentreName(c.name);
+    setCentreSearch(c.name);
+    setShowDropdown(false);
+  }
+
+  return (
+    <div ref={wrapRef} style={{ position: "relative" }}>
+      {selectedCentre ? (
+        <div
+          className="flex items-center justify-between"
+          style={{
+            padding: "10px 12px",
+            borderRadius: 8,
+            border: "0.5px solid #E2E6ED",
+            backgroundColor: "#F0FDF4",
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Check size={16} color="#16A34A" />
+            <span className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
+              {selectedCentre.name}
+              {selectedCentre.town ? (
+                <span className="font-normal" style={{ color: "#64748B" }}>
+                  {" "}
+                  · {selectedCentre.town}
+                </span>
+              ) : null}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedCentre(null);
+              setCentreId(null);
+              setCentreName("");
+              setCentreSearch("");
+              setShowDropdown(true);
+            }}
+            className="text-[12px] font-semibold"
+            style={{ color: "#1A52A0", background: "none", border: "none" }}
+          >
+            Change
+          </button>
+        </div>
+      ) : (
+        <>
+          <div style={{ position: "relative" }}>
+            <Search
+              size={16}
+              color="#64748B"
+              style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+            />
+            <input
+              type="text"
+              placeholder="Search test centres..."
+              value={centreSearch}
+              onChange={(e) => {
+                setCentreSearch(e.target.value);
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              style={{ ...inputStyle, paddingLeft: 36 }}
+            />
+          </div>
+          {showDropdown && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: 0,
+                right: 0,
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 8,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                maxHeight: 200,
+                overflowY: "auto",
+                zIndex: 50,
+              }}
+            >
+              {filtered.map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => pick(c)}
+                  className="cursor-pointer"
+                  style={{ padding: "12px 16px" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F7FAFC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <div className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
+                    {c.name}
+                  </div>
+                  {c.town ? (
+                    <div className="text-[12px]" style={{ color: "#64748B" }}>
+                      {c.town}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+              {filtered.length === 0 && centreSearch.trim().length > 2 && (
+                <div
+                  onClick={() => addCentreByName(centreSearch)}
+                  className="cursor-pointer flex items-center gap-2"
+                  style={{ padding: "12px 16px", color: "#1A52A0" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F7FAFC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <Plus size={14} />
+                  <span className="text-[13px] font-semibold">
+                    Add &ldquo;{centreSearch.trim()}&rdquo; as new centre
+                  </span>
+                </div>
+              )}
+              {filtered.length === 0 && centreSearch.trim().length <= 2 && (
+                <div className="text-[12px]" style={{ padding: "12px 16px", color: "#64748B" }}>
+                  Keep typing to search or add a new centre…
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 function Pill({
   active,
   color,
