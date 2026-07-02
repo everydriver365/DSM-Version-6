@@ -361,7 +361,7 @@ function EditPupilPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -441,7 +441,7 @@ function EditPupilPage() {
                 setLeadSource(e.target.value);
                 setLeadSourceDetail("");
               }}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select…</option>
@@ -464,7 +464,7 @@ function EditPupilPage() {
 
           {leadSource !== "National Intensive" && (
             <label className="flex items-center justify-between gap-3" style={POPPINS}>
-              <span className="text-[13px] font-medium text-[#1A1A2E]">
+              <span className="text-[13px] font-medium text-[#0B1F3A]">
                 Block booking / prepaid hours
               </span>
               <input
@@ -525,7 +525,7 @@ function EditPupilPage() {
                         id="payment_method"
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="cash">Cash</option>
@@ -542,7 +542,7 @@ function EditPupilPage() {
                         value={topUpNotes}
                         onChange={(e) => setTopUpNotes(e.target.value)}
                         placeholder="e.g. Top-up paid by bank transfer, ref: xxx"
-                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                        className="w-full rounded-lg p-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                         style={{ ...fieldBorder, resize: "vertical" }}
                       />
                     </div>
@@ -583,7 +583,7 @@ function EditPupilPage() {
                   id="ni_payer"
                   value={niPayer}
                   onChange={(e) => setNiPayer(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={fieldBorder}
                 >
                   <option value="pupil">Pupil pays directly</option>
@@ -717,7 +717,7 @@ function EditPupilPage() {
                   EVERYSWAP
                 </p>
                 <label className="flex items-center justify-between gap-3" style={POPPINS}>
-                  <span className="text-[13px] font-medium text-[#1A1A2E]">
+                  <span className="text-[13px] font-medium text-[#0B1F3A]">
                     Add to EverySwap swap list
                   </span>
                   <input
@@ -747,7 +747,7 @@ function EditPupilPage() {
                         id="swap_preferred_time"
                         value={swapPreferredTime}
                         onChange={(e) => setSwapPreferredTime(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="any">Any</option>
@@ -786,7 +786,7 @@ function EditPupilPage() {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={fieldBorder}
             >
               {STATUSES.map((s) => (
@@ -812,7 +812,7 @@ function EditPupilPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this pupil…"
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={fieldBorder}
             />
           </div>
@@ -890,7 +890,7 @@ function CentreSearch({
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder="Search test centres…"
-        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
         style={fieldBorder}
       />
       {open && (results.length > 0 || loading) && (
@@ -912,7 +912,7 @@ function CentreSearch({
                 onChange(r.name);
                 setOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 text-[13px] text-[#1A1A2E] hover:bg-[#F3F4F6]"
+              className="block w-full text-left px-3 py-2 text-[13px] text-[#0B1F3A] hover:bg-[#F3F4F6]"
               style={POPPINS}
             >
               <span className="font-medium">{r.name}</span>

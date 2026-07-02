@@ -35,7 +35,7 @@ export function ConfirmDialog({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center px-6"
-      style={{ backgroundColor: "rgba(15,32,68,0.4)", ...POPPINS }}
+      style={{ backgroundColor: "rgba(11,31,58,0.4)", ...POPPINS }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
@@ -51,7 +51,7 @@ export function ConfirmDialog({
           maxWidth: 340,
           borderRadius: 16,
           padding: 20,
-          boxShadow: "0 20px 40px rgba(15,32,68,0.18)",
+          boxShadow: "0 20px 40px rgba(11,31,58,0.18)",
         }}
       >
         <div

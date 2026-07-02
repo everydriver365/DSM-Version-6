@@ -80,7 +80,7 @@ function QuickAvailabilityPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: "#072b47" }}
+        style={{ backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -171,7 +171,7 @@ function QuickAvailabilityPage() {
                 {savedReturnDate && (
                   <div className="text-[12px] text-[#6B7280]">
                     Current return date:{" "}
-                    <span className="text-[#1A1A2E] font-medium">{savedReturnDate}</span>
+                    <span className="text-[#0B1F3A] font-medium">{savedReturnDate}</span>
                   </div>
                 )}
                 <Button variant="ghost" onClick={saveTemporary} disabled={saving}>
@@ -188,7 +188,7 @@ function QuickAvailabilityPage() {
             >
               <Card>
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#1A1A2E] font-medium">
+                  <span className="text-[14px] text-[#0B1F3A] font-medium">
                     Edit working hours
                   </span>
                   <ChevronRight size={18} color="#6B7280" />

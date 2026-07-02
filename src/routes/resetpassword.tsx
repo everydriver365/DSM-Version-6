@@ -94,7 +94,7 @@ function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-3 top-9 text-[#6B7280] hover:text-[#1A1A2E]"
+                  className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
                   aria-label={showPw ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >
@@ -120,7 +120,7 @@ function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm((v) => !v)}
-                  className="absolute right-3 top-9 text-[#6B7280] hover:text-[#1A1A2E]"
+                  className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
                   aria-label={showConfirm ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >

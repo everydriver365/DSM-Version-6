@@ -106,7 +106,7 @@ export function PushPermissionCard() {
         style={{
           backgroundColor: "#FFFFFF",
           border: "0.5px solid #EEF2F7",
-          boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+          boxShadow: "0 1px 2px rgba(11,31,58,0.04)",
         }}
       >
         <div className="flex items-start gap-3">

@@ -174,7 +174,7 @@ function PerformancePage() {
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -207,7 +207,7 @@ function PerformancePage() {
                 borderRadius: 8,
                 backgroundColor: active ? "#FFFFFF" : "transparent",
                 color: active ? "#1877D6" : "#6B7280",
-                boxShadow: active ? "0 1px 2px rgba(15,32,68,0.08)" : "none",
+                boxShadow: active ? "0 1px 2px rgba(11,31,58,0.08)" : "none",
                 ...POPPINS,
               }}
             >

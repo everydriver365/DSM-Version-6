@@ -175,7 +175,7 @@ function QuotesPage() {
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
       <div
         style={{
-          position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
+          position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0B1F3A",
           padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
         }}
       >

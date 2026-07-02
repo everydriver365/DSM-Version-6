@@ -407,7 +407,7 @@ function NewCoursePage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#072b47",
+          backgroundColor: "#0B1F3A",
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",
@@ -707,7 +707,7 @@ function Step1(props: {
                   borderRadius: 8,
                   border: `1px solid ${active ? "#1877D6" : "#e3e6ec"}`,
                   background: active ? "#1877D6" : "#fff",
-                  color: active ? "#fff" : "#1A1A2E",
+                  color: active ? "#fff" : "#0B1F3A",
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: "pointer",
@@ -861,7 +861,7 @@ function Step2(props: {
             background: "#F3F8FF",
             border: "0.5px solid #EEF2F7",
             borderRadius: 10,
-            color: "#1A1A2E",
+            color: "#0B1F3A",
             fontSize: 14,
             fontFamily: "Inter, sans-serif",
           }}
@@ -895,7 +895,7 @@ function Step2(props: {
                   borderRadius: 12,
                   border: `2px solid ${active ? "#0B1F3A" : "#e3e6ec"}`,
                   background: active ? "#0B1F3A" : "#fff",
-                  color: active ? "#fff" : "#1A1A2E",
+                  color: active ? "#fff" : "#0B1F3A",
                   cursor: "pointer",
                   textAlign: "left",
                   fontFamily: "Inter, sans-serif",
@@ -1083,7 +1083,7 @@ function Step2(props: {
             fontSize: 14,
             fontFamily: "Inter, sans-serif",
             background: "#fff",
-            color: "#1A1A2E",
+            color: "#0B1F3A",
           }}
         >
           {RADIUS_OPTIONS.map((m) => (
@@ -1135,7 +1135,7 @@ function Step2(props: {
                   <Icon size={18} />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#1A1A2E" }}>{label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{label}</span>
                   <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
                 </div>
               </button>
@@ -1153,7 +1153,7 @@ function Step2(props: {
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
-                  color: "#1A1A2E", background: "#fff",
+                  color: "#0B1F3A", background: "#fff",
                 }}
               />
             </label>
@@ -1166,7 +1166,7 @@ function Step2(props: {
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
-                  color: "#1A1A2E", background: "#fff",
+                  color: "#0B1F3A", background: "#fff",
                 }}
               />
             </label>
@@ -1308,7 +1308,7 @@ function ToggleRow({
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#1A1A2E" }}>{label}</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
         {sublabel && (
           <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{sublabel}</div>
         )}
@@ -1367,7 +1367,7 @@ function CheckRow({
         textAlign: "left",
         fontFamily: "Inter, sans-serif",
         fontSize: 14,
-        color: "#1A1A2E",
+        color: "#0B1F3A",
       }}
     >
       <div
@@ -1552,7 +1552,7 @@ function PostcodeAutocomplete(props: {
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
             fontSize: 14,
-            color: "#1A1A2E",
+            color: "#0B1F3A",
             background: "#fff",
             outline: "none",
             boxSizing: "border-box",

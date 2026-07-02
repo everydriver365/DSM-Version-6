@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "@tanstack/react-router";
 
 const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
-const NAVY = "#1B2B4B";
+const NAVY = "#133155";
 const BLUE = "#0E7CCE";
 const BLUE_DARK = "#0B69AD";
 const BLUE_TINT = "#EAF4FC";
@@ -196,7 +196,7 @@ export function FeatureCard({
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
         e.currentTarget.style.boxShadow =
-          "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(27,43,75,0.12)";
+          "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(19,49,85,0.12)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";

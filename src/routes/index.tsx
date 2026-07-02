@@ -43,7 +43,7 @@ import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asse
 const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
 const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
-const NAVY = "#1B2B4B";
+const NAVY = "#133155";
 const NAVY_SOFT = "#243a66";
 const BLUE = "#0E7CCE";
 const BLUE_DARK = "#0B69AD";
@@ -56,7 +56,7 @@ const HAIRLINE = "#E5E9F2";
 const SHADOW_SOFT =
   "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06)";
 const SHADOW_LIFT =
-  "0 1px 2px rgba(15,23,42,0.04), 0 24px 60px rgba(27,43,75,0.14)";
+  "0 1px 2px rgba(15,23,42,0.04), 0 24px 60px rgba(19,49,85,0.14)";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -202,7 +202,7 @@ function Hero() {
       className="relative overflow-hidden"
       style={{
         background:
-          "radial-gradient(1100px 600px at 50% -10%, rgba(14,124,206,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(27,43,75,0.06), transparent 60%), " +
+          "radial-gradient(1100px 600px at 50% -10%, rgba(14,124,206,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(19,49,85,0.06), transparent 60%), " +
           BG,
       }}
     >
@@ -303,7 +303,7 @@ function Hero() {
                 className="absolute -inset-6 rounded-[40px]"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(27,43,75,0.10))",
+                    "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(19,49,85,0.10))",
                   filter: "blur(40px)",
                 }}
               />
@@ -485,7 +485,7 @@ function DiarySection() {
                 className="absolute -inset-8 rounded-[40px] opacity-60"
                 style={{
                   background:
-                    "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(27,43,75,0.08), transparent 60%)",
+                    "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(19,49,85,0.08), transparent 60%)",
                 }}
               />
               <div
@@ -629,7 +629,7 @@ function FeaturesShowcase() {
                       className="absolute -inset-4 rounded-[36px]"
                       style={{
                         background:
-                          "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(27,43,75,0.06))",
+                          "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(19,49,85,0.06))",
                         filter: "blur(28px)",
                       }}
                     />

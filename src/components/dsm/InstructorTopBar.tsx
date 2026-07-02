@@ -70,7 +70,7 @@ export default function InstructorTopBar({
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#072b47",
+        background: "#0B1F3A",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 18px 16px",
         display: "flex",
         alignItems: "center",
@@ -170,7 +170,7 @@ export default function InstructorTopBar({
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "0 3px",
-                border: "2px solid #072b47",
+                border: "2px solid #0B1F3A",
                 lineHeight: 1,
               }}
             >

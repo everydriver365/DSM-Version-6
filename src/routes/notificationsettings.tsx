@@ -146,7 +146,7 @@ function NotificationSettingsPage() {
     <div className="min-h-screen bg-white pb-24" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button type="button" onClick={() => navigate({ to: "/settings" })} aria-label="Back">
           <ArrowLeft size={22} color="#FFFFFF" />

@@ -1791,7 +1791,7 @@ function HomePage() {
       )}
 
       {/* NAVY HEADER SECTION (hero + stats strip) */}
-      <div style={{ backgroundColor: '#072b47', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#0B1F3A', paddingTop: 12, paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
         <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative' }}>
           {/* Car edit toggle */}
@@ -1808,7 +1808,7 @@ function HomePage() {
               position: 'absolute', top: 6, right: 6, zIndex: 10,
               fontSize: 10, fontWeight: 700, fontFamily: 'Inter, sans-serif',
               padding: '4px 8px', borderRadius: 6, border: 'none',
-              background: carEditMode ? '#1877D6' : 'rgba(15,32,68,0.08)',
+              background: carEditMode ? '#1877D6' : 'rgba(11,31,58,0.08)',
               color: carEditMode ? '#FFFFFF' : '#0B1F3A', cursor: 'pointer',
             }}
             title="Drag the car to reposition. Values are saved automatically."
@@ -1904,12 +1904,12 @@ function HomePage() {
                     </button>
                   )}
                   {phone ? (
-                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E' }}>
-                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F4F6', color: '#0B1F3A' }}>
+                      <MessageSquare size={16} color="#0B1F3A" /> Text
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F4F6', color: '#1A1A2E', border: 'none', opacity: 0.6 }}>
-                      <MessageSquare size={16} color="#1A1A2E" /> Text
+                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F4F6', color: '#0B1F3A', border: 'none', opacity: 0.6 }}>
+                      <MessageSquare size={16} color="#0B1F3A" /> Text
                     </button>
                   )}
                   {postcode ? (
@@ -3138,7 +3138,7 @@ function HeroExpandedPanel({
     justifyContent: 'center',
     gap: 4,
     cursor: 'pointer',
-    color: '#1A1A2E',
+    color: '#0B1F3A',
   };
   const sectionLabel: React.CSSProperties = {
     fontSize: 10,
@@ -3217,7 +3217,7 @@ function HeroExpandedPanel({
           <MapPin size={14} color="#6B7280" />
           {pickupPostcode ? (
             <>
-              <span style={{ color: '#1A1A2E', fontWeight: 600 }}>{pickupPostcode}</span>
+              <span style={{ color: '#0B1F3A', fontWeight: 600 }}>{pickupPostcode}</span>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
                 target="_blank"
@@ -3259,7 +3259,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 12 }}>
         <div style={sectionLabel}>LAST LESSON</div>
         {prev ? (
-          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#1A1A2E' }}>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#0B1F3A' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontWeight: 600 }}>{new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
               <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, color: '#fff', background: statusColor(prev.status) }}>{prev.status}</span>

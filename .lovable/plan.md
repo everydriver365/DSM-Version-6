@@ -1,36 +1,22 @@
-## Plan
+## Why you see no changes
 
-1. **Keep changes limited to `src/routes/home.tsx`.**
-2. **Fix the admin lookup failure.** The console shows `admin_users` returns multiple rows for the same user, so `.maybeSingle()` fails with `PGRST116` and returns `null`. I’ll change the admin check to fetch rows with `.limit(1)` instead of requiring exactly one row.
-3. **Preserve the access flow.** If no instructor exists:
-   - query `admin_users` for the logged-in user,
-   - if at least one admin row exists, navigate to `/admin`,
-   - otherwise navigate to `/onboarding`.
-4. **Make the loading gate complete.** Set `authChecked` before any early return that navigates, so the page does not hang during redirects.
-5. **Leave debugging logs in place for now** unless you want them removed after confirming admin access works.
+The previous restyles replaced specific hex codes (`#0C2340`, `#0A2540`, etc.), but the app's most visible surfaces are hardcoded with **different** navy hexes that were never on the replacement list:
 
-## Technical detail
+- `#072b47` — the top header bar on every logged-in screen (`InstructorTopBar` + ~70 route files)
+- `#1B2B4B` — secondary dark surfaces (66 occurrences)
+- `#1A1A2E` — near-black text/surfaces (147 occurrences)
+- `rgba(15, 32, 68, …)` — translucent navy overlays in inline styles
 
-The current admin query is:
+I confirmed the live preview is rendering `#072b47` in the header right now — so it's not a caching issue; those elements genuinely still have the old colors.
 
-```ts
-.maybeSingle()
-```
+## Fix
 
-Your console log shows:
+Map every remaining legacy dark color to the Checkfront palette so the change is unmissable:
 
-```text
-PGRST116: Results contain 2 rows
-```
+1. Replace `#072b47` / `#072B47` → Checkfront deep navy `#0B1F3A` everywhere (header bars, borders, gradients).
+2. Replace `#1B2B4B` → `#0B1F3A` (or a slightly lighter Checkfront navy for hierarchy).
+3. Replace `#1A1A2E` → `#0B1F3A` where used as a surface, and Checkfront text navy where used as text.
+4. Replace lingering `rgba(15,32,68,…)` overlays with the `#0B1F3A` rgb equivalents.
+5. Verify visually with an automated screenshot of `/home` before handing back, confirming the header renders `#0B1F3A` and accents render `#1877D6`.
 
-That means the user is found in `admin_users`, but duplicate rows make `.maybeSingle()` treat it as an error. The code then falls through to onboarding. The fix is to use a list query such as:
-
-```ts
-const { data: adminRows, error: adminErr } = await supabase
-  .from("admin_users")
-  .select("role")
-  .eq("user_id", u.id)
-  .limit(1);
-
-const adminRow = adminRows?.[0] ?? null;
-```
+Only color values change — no layout, functionality, or file structure changes.

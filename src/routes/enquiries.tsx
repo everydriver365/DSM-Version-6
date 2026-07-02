@@ -259,7 +259,7 @@ function EnquiriesPage() {
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -595,7 +595,7 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
       >
         {label}
       </div>
-      <div className="text-[13px] flex-1" style={{ color: "#1A1A2E", wordBreak: "break-word" }}>
+      <div className="text-[13px] flex-1" style={{ color: "#0B1F3A", wordBreak: "break-word" }}>
         {shown}
       </div>
     </div>

@@ -399,7 +399,7 @@ function AddWaitlistModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
-      style={{ backgroundColor: "rgba(15,32,68,0.55)" }}
+      style={{ backgroundColor: "rgba(11,31,58,0.55)" }}
     >
       <div
         className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col"
@@ -577,7 +577,7 @@ function OfferSlotModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
-      style={{ backgroundColor: "rgba(15,32,68,0.55)" }}
+      style={{ backgroundColor: "rgba(11,31,58,0.55)" }}
     >
       <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">

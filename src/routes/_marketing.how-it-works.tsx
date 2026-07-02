@@ -20,7 +20,7 @@ import {
 const TEAL = "#00B5A5";
 const WHITE = "#FFFFFF";
 const LIGHT_BG = "#F7FAFC";
-const NAVY = "#1B2B4B";
+const NAVY = "#133155";
 const MUTED = "#718096";
 
 const instructorSteps = [
@@ -131,7 +131,7 @@ function StepsRow({
               <div className="mb-4 text-[#00B5A5]">
                 <Icon size={28} strokeWidth={2} />
               </div>
-              <h3 className="font-bold text-[#1B2B4B] text-lg mb-3">{step.title}</h3>
+              <h3 className="font-bold text-[#133155] text-lg mb-3">{step.title}</h3>
               <p className="text-[#718096] text-sm leading-relaxed">{step.description}</p>
             </div>
           );
@@ -150,7 +150,7 @@ function HowItWorksPage() {
           <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
             Simple by design
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#1B2B4B] mb-4">
+          <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
             Up and running in minutes
           </h1>
           <p className="text-[#718096] text-lg max-w-2xl mx-auto">
@@ -162,7 +162,7 @@ function HowItWorksPage() {
       {/* For instructors */}
       <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-16">For instructors</h2>
+          <h2 className="text-3xl font-black text-[#133155] text-center mb-16">For instructors</h2>
           <StepsRow steps={instructorSteps} />
         </div>
       </section>
@@ -170,13 +170,13 @@ function HowItWorksPage() {
       {/* For learners */}
       <section className="bg-[#F7FAFC] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-16">For learners</h2>
+          <h2 className="text-3xl font-black text-[#133155] text-center mb-16">For learners</h2>
           <StepsRow steps={learnerSteps} />
         </div>
       </section>
 
       {/* EveryDriver connection */}
-      <section className="bg-[#1B2B4B] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-white text-center mb-6">
             One platform. Both sides connected.
@@ -199,11 +199,11 @@ function HowItWorksPage() {
       {/* FAQ */}
       <section className="bg-white py-16 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
-          <h2 className="text-3xl font-black text-[#1B2B4B] text-center mb-12">Common questions</h2>
+          <h2 className="text-3xl font-black text-[#133155] text-center mb-12">Common questions</h2>
           <Accordion type="single" collapsible className="max-w-2xl mx-auto">
             {faqs.map((faq, idx) => (
               <AccordionItem key={idx} value={`item-${idx}`}>
-                <AccordionTrigger className="text-[#1B2B4B] text-left font-semibold">
+                <AccordionTrigger className="text-[#133155] text-left font-semibold">
                   {faq.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-[#718096] leading-relaxed">

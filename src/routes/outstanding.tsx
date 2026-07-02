@@ -184,7 +184,7 @@ function OutstandingPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
-        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
+        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0B1F3A",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <button onClick={() => navigate({ to: "/home" })}
@@ -240,7 +240,7 @@ function OutstandingPage() {
                     }}>
                       {s.icon}
                     </div>
-                    <div style={{ flex: 1, fontSize: 14, color: "#1A1A2E", fontWeight: 600 }}>
+                    <div style={{ flex: 1, fontSize: 14, color: "#0B1F3A", fontWeight: 600 }}>
                       {s.label}
                     </div>
                     <span style={{

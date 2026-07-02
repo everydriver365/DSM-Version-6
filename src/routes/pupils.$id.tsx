@@ -373,7 +373,7 @@ function PupilDetailPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -502,7 +502,7 @@ function PupilDetailPage() {
                   onChange={(e) => togglePhotoConsent(e.target.checked)}
                   style={{ marginTop: 2 }}
                 />
-                <span className="text-[12px] text-[#1A1A2E]">
+                <span className="text-[12px] text-[#0B1F3A]">
                   I have consent to use this pupil&apos;s photo publicly
                 </span>
               </label>
@@ -864,7 +864,7 @@ function PupilDetailPage() {
           <>
             <SectionHeader>LEAD SOURCE</SectionHeader>
             <div
-              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#1A1A2E]"
+              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#0B1F3A]"
               style={{
                 ...POPPINS,
                 borderWidth: "0.5px",
@@ -1104,7 +1104,7 @@ function PupilDetailPage() {
           value={notesDraft}
           onChange={(e) => setNotesDraft(e.target.value)}
           placeholder="Add a note about this pupil…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+          className="w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
@@ -1155,7 +1155,7 @@ function PupilDetailPage() {
             <select
               value={certMilestone}
               onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none mb-4"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none mb-4"
               style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <option value="first_lesson">First lesson complete</option>

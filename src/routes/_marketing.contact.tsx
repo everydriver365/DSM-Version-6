@@ -126,7 +126,7 @@ function ContactPage() {
         <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
           Get in touch
         </span>
-        <h1 className="text-4xl font-black text-[#1B2B4B] mb-4">
+        <h1 className="text-4xl font-black text-[#133155] mb-4">
           We'd love to hear from you
         </h1>
         <p className="text-[#718096] text-lg max-w-2xl mx-auto">
@@ -139,7 +139,7 @@ function ContactPage() {
         <div className="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
           {/* LEFT — FORM */}
           <div>
-            <h2 className="text-2xl font-black text-[#1B2B4B] mb-8">
+            <h2 className="text-2xl font-black text-[#133155] mb-8">
               Send us a message
             </h2>
 
@@ -158,7 +158,7 @@ function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                  <label className="block text-sm font-semibold text-[#133155] mb-2">
                     Name
                   </label>
                   <input
@@ -166,11 +166,11 @@ function ContactPage() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                  <label className="block text-sm font-semibold text-[#133155] mb-2">
                     Email
                   </label>
                   <input
@@ -178,17 +178,17 @@ function ContactPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                  <label className="block text-sm font-semibold text-[#133155] mb-2">
                     Subject
                   </label>
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] bg-white focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] bg-white focus:outline-none focus:border-[#00B5A5]"
                   >
                     {SUBJECTS.map((s) => (
                       <option key={s} value={s}>
@@ -198,7 +198,7 @@ function ContactPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#1B2B4B] mb-2">
+                  <label className="block text-sm font-semibold text-[#133155] mb-2">
                     Message
                   </label>
                   <textarea
@@ -206,7 +206,7 @@ function ContactPage() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#1B2B4B] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
                   />
                 </div>
 
@@ -229,14 +229,14 @@ function ContactPage() {
 
           {/* RIGHT — DETAILS */}
           <div>
-            <h2 className="text-2xl font-black text-[#1B2B4B] mb-8">
+            <h2 className="text-2xl font-black text-[#133155] mb-8">
               Other ways to reach us
             </h2>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
               <Mail className="text-[#00B5A5] shrink-0" size={24} />
               <div>
-                <p className="font-bold text-[#1B2B4B] mb-1">Email</p>
+                <p className="font-bold text-[#133155] mb-1">Email</p>
                 <a
                   href="mailto:info@everydriver.co.uk"
                   className="text-[#00B5A5] font-medium"
@@ -252,8 +252,8 @@ function ContactPage() {
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
               <MapPin className="text-[#00B5A5] shrink-0" size={24} />
               <div>
-                <p className="font-bold text-[#1B2B4B] mb-1">Based in</p>
-                <p className="text-[#1B2B4B]">Winchester, Hampshire</p>
+                <p className="font-bold text-[#133155] mb-1">Based in</p>
+                <p className="text-[#133155]">Winchester, Hampshire</p>
                 <p className="text-[#718096] text-sm mt-1">
                   Serving instructors across the UK
                 </p>
@@ -263,8 +263,8 @@ function ContactPage() {
             <div className="border border-gray-100 rounded-2xl p-6 mb-6 flex gap-4">
               <Clock className="text-[#00B5A5] shrink-0" size={24} />
               <div>
-                <p className="font-bold text-[#1B2B4B] mb-1">Support hours</p>
-                <p className="text-[#1B2B4B]">Monday – Friday, 9am – 5pm</p>
+                <p className="font-bold text-[#133155] mb-1">Support hours</p>
+                <p className="text-[#133155]">Monday – Friday, 9am – 5pm</p>
                 <p className="text-[#718096] text-sm mt-1">
                   Emergency support for Plus & Max subscribers
                 </p>
@@ -272,7 +272,7 @@ function ContactPage() {
             </div>
 
             <div className="pt-2">
-              <p className="text-sm font-bold text-[#1B2B4B] mb-3">Follow us</p>
+              <p className="text-sm font-bold text-[#133155] mb-3">Follow us</p>
               <div className="flex flex-col gap-2">
                 <a
                   href="https://everydriver.co.uk"
@@ -298,7 +298,7 @@ function ContactPage() {
 
       {/* FAQ TEASER */}
       <section className="bg-[#F7FAFC] py-16 px-6 text-center">
-        <h2 className="text-3xl font-black text-[#1B2B4B] mb-4">
+        <h2 className="text-3xl font-black text-[#133155] mb-4">
           Looking for quick answers?
         </h2>
         <p className="text-[#718096] mb-8 max-w-xl mx-auto">
@@ -306,7 +306,7 @@ function ContactPage() {
         </p>
         <Link
           to="/how-it-works"
-          className="inline-block border-2 border-[#1B2B4B] text-[#1B2B4B] font-semibold px-8 py-4 rounded-xl hover:bg-[#1B2B4B] hover:text-white transition"
+          className="inline-block border-2 border-[#133155] text-[#133155] font-semibold px-8 py-4 rounded-xl hover:bg-[#133155] hover:text-white transition"
         >
           View FAQ →
         </Link>

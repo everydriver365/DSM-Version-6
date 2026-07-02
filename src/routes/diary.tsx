@@ -238,7 +238,7 @@ function DiaryPage() {
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
-        style={{ background: "#072b47" }}
+        style={{ background: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -499,7 +499,7 @@ function DiaryPage() {
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={5}
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -527,7 +527,7 @@ function DiaryPage() {
                 <select
                   value={entryType}
                   onChange={(e) => setEntryType(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -597,7 +597,7 @@ function DiaryPage() {
 
             {viewEntry.body && (
               <div
-                className="text-[14px] text-[#1A1A2E] whitespace-pre-wrap"
+                className="text-[14px] text-[#0B1F3A] whitespace-pre-wrap"
                 style={{ marginBottom: 16 }}
               >
                 {viewEntry.body}

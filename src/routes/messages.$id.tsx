@@ -123,7 +123,7 @@ function ThreadPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -168,7 +168,7 @@ function ThreadPage() {
                 className="max-w-[78%] px-3 py-2 text-[14px]"
                 style={{
                   backgroundColor: mine ? "#1877D6" : "#F3F4F6",
-                  color: mine ? "#FFFFFF" : "#1A1A2E",
+                  color: mine ? "#FFFFFF" : "#0B1F3A",
                   borderRadius: mine ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                   ...POPPINS,
                   whiteSpace: "pre-wrap",
@@ -209,7 +209,7 @@ function ThreadPage() {
           }}
           rows={1}
           placeholder="Message"
-          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
+          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",

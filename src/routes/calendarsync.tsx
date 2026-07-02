@@ -80,7 +80,7 @@ function CalendarSyncPage() {
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#072b47" }}
+        style={{ height: 52, backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -122,7 +122,7 @@ function CalendarSyncPage() {
           <input
             readOnly
             value={icsUrl}
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white"
+            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
             style={{
               fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px",
