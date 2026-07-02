@@ -5,6 +5,7 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
+import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
 function extractPostcode(addr: string | null | undefined): string | undefined {
@@ -12,6 +13,8 @@ function extractPostcode(addr: string | null | undefined): string | undefined {
   const m = addr.match(UK_POSTCODE_RE);
   return m ? m[1].toUpperCase() : undefined;
 }
+
+
 
 export const Route = createFileRoute("/lessons/new")({
   head: () => ({
@@ -24,7 +27,11 @@ interface Pupil {
   id: string;
   name: string;
   address: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
 }
+
 
 const DURATIONS = [30, 45, 60, 90, 120];
 
@@ -73,12 +80,13 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, name, address")
+        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
         .order("name", { ascending: true });
       setPupils((data as Pupil[]) ?? []);
+
     })();
   }, []);
 
@@ -117,19 +125,31 @@ function NewLessonPage() {
         ? `${baseNotes}\n\nPickup: ${pickupValue}`
         : `Pickup: ${pickupValue}`
       : baseNotes;
-    // Fetch instructor hourly rate
-    const { data: instructor } = await supabase
-      .from("instructors")
-      .select("hourly_rate, default_lesson_duration_minutes")
-      .eq("id", user.id)
-      .single();
+    // Resolve the correct base price using pupil custom rates, postcode rates,
+    // then the instructor's default hourly rate.
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token ?? "";
 
-    const hourlyRate = (instructor as any)?.hourly_rate ?? 0;
-    const baseCost = hourlyRate
-      ? Math.round(((hourlyRate / 60) * duration) * 100) / 100
-      : 0;
+    const [{ data: instructor }, postcodeRates] = await Promise.all([
+      supabase
+        .from("instructors")
+        .select("hourly_rate, default_lesson_duration_minutes")
+        .eq("id", user.id)
+        .single(),
+      fetchPostcodeRates(user.id, token),
+    ]);
 
-    // Apply pricing rules
+    const baseCost = computeLessonAmount({
+      durationMinutes: duration,
+      pupilCustomRate: selected?.custom_rate,
+      pupilCustomRate90: selected?.custom_rate_90,
+      pupilCustomRate120: selected?.custom_rate_120,
+      pupilPostcode: extractPostcode(pickupValue) ?? extractPostcode(selected?.address),
+      instructorDefaultRate: (instructor as any)?.hourly_rate ?? 0,
+      postcodeRates,
+    });
+
+    // Apply pricing rules on top of the resolved base cost
     let amountDue = baseCost;
     try {
       const { data: rules } = await supabase
@@ -150,6 +170,7 @@ function NewLessonPage() {
     } catch (e) {
       console.warn("[lessons.new] pricing rules failed", e);
     }
+
 
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
