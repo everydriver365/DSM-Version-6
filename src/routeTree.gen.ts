@@ -39,6 +39,7 @@ import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
@@ -268,6 +269,11 @@ const QuickaccessRoute = QuickaccessRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostcodeRatesRoute = PostcodeRatesRouteImport.update({
+  id: '/postcode-rates',
+  path: '/postcode-rates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PipelineRoute = PipelineRouteImport.update({
@@ -718,6 +724,7 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
+  '/postcode-rates': typeof PostcodeRatesRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -829,6 +836,7 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
+  '/postcode-rates': typeof PostcodeRatesRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -941,6 +949,7 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
+  '/postcode-rates': typeof PostcodeRatesRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1054,6 +1063,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/performance'
     | '/pipeline'
+    | '/postcode-rates'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1165,6 +1175,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/performance'
     | '/pipeline'
+    | '/postcode-rates'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1276,6 +1287,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/performance'
     | '/pipeline'
+    | '/postcode-rates'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1389,6 +1401,7 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
+  PostcodeRatesRoute: typeof PostcodeRatesRoute
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
@@ -1654,6 +1667,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/postcode-rates': {
+      id: '/postcode-rates'
+      path: '/postcode-rates'
+      fullPath: '/postcode-rates'
+      preLoaderRoute: typeof PostcodeRatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pipeline': {
@@ -2323,6 +2343,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
+  PostcodeRatesRoute: PostcodeRatesRoute,
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
