@@ -48,6 +48,7 @@ import { Route as OutstandingRouteImport } from './routes/outstanding'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NotificationsettingsRouteImport } from './routes/notificationsettings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as NoShowPolicyRouteImport } from './routes/no-show-policy'
 import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MonthToDateRouteImport } from './routes/month-to-date'
@@ -317,6 +318,11 @@ const NotificationsettingsRoute = NotificationsettingsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoShowPolicyRoute = NoShowPolicyRouteImport.update({
+  id: '/no-show-policy',
+  path: '/no-show-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MtdRoute = MtdRouteImport.update({
@@ -734,6 +740,7 @@ export interface FileRoutesByFullPath {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
+  '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -849,6 +856,7 @@ export interface FileRoutesByTo {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
+  '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -965,6 +973,7 @@ export interface FileRoutesById {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/mtd': typeof MtdRoute
+  '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
   '/onboarding': typeof OnboardingRoute
@@ -1082,6 +1091,7 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/mtd'
+    | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -1197,6 +1207,7 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/mtd'
+    | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -1312,6 +1323,7 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/mtd'
+    | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
     | '/onboarding'
@@ -1429,6 +1441,7 @@ export interface RootRouteChildren {
   MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
   MtdRoute: typeof MtdRoute
+  NoShowPolicyRoute: typeof NoShowPolicyRoute
   NotificationsRoute: typeof NotificationsRoute
   NotificationsettingsRoute: typeof NotificationsettingsRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -1769,6 +1782,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/no-show-policy': {
+      id: '/no-show-policy'
+      path: '/no-show-policy'
+      fullPath: '/no-show-policy'
+      preLoaderRoute: typeof NoShowPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mtd': {
@@ -2395,6 +2415,7 @@ const rootRouteChildren: RootRouteChildren = {
   MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
   MtdRoute: MtdRoute,
+  NoShowPolicyRoute: NoShowPolicyRoute,
   NotificationsRoute: NotificationsRoute,
   NotificationsettingsRoute: NotificationsettingsRoute,
   OnboardingRoute: OnboardingRoute,
