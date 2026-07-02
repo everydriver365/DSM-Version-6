@@ -1469,6 +1469,10 @@ function PupilExtras({
     setSavingRates(false);
     if (ok) {
       onUpdated(patch);
+      setR1(patch.custom_rate != null ? String(patch.custom_rate) : "");
+      setR90(patch.custom_rate_90 != null ? String(patch.custom_rate_90) : "");
+      setR120(patch.custom_rate_120 != null ? String(patch.custom_rate_120) : "");
+      setEditRates(false);
       toast.success("Custom rates saved");
     }
   }
@@ -1479,6 +1483,7 @@ function PupilExtras({
     const ok = await patchPupil(patch);
     if (ok) {
       onUpdated(patch);
+      setEditRates(false);
       toast.success("Custom rates cleared");
     }
   }
