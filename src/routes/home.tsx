@@ -1235,11 +1235,13 @@ function HomePage() {
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
+    const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
     const accent =
-      isLive ? "#1877D6"
-      : status === "completed" ? "#1877D6"
+      isLive ? lessonColour
+      : status === "completed" ? lessonColour
       : status === "cancelled" ? "#9CA3AF"
-      : "#1877D6";
+      : lessonColour;
+
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
