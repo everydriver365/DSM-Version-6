@@ -27,7 +27,11 @@ interface Pupil {
   id: string;
   name: string;
   address: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
 }
+
 
 const DURATIONS = [30, 45, 60, 90, 120];
 
