@@ -536,16 +536,25 @@ function IntakeQuestionsPage() {
         )}
       </div>
 
-      {sheetOpen && (
-        <QuestionSheet
-          initial={editing}
-          onClose={() => {
-            setSheetOpen(false);
-            setEditing(null);
-          }}
-          onSave={saveQuestion}
-        />
-      )}
+      <BottomSheet
+        open={sheetOpen}
+        onOpenChange={(v) => {
+          setSheetOpen(v);
+          if (!v) setEditing(null);
+        }}
+        title={editing ? "Edit question" : "Add question"}
+      >
+        {sheetOpen && (
+          <QuestionSheet
+            initial={editing}
+            onClose={() => {
+              setSheetOpen(false);
+              setEditing(null);
+            }}
+            onSave={saveQuestion}
+          />
+        )}
+      </BottomSheet>
 
       {confirmDelete && (
         <div
