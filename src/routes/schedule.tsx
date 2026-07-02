@@ -329,12 +329,11 @@ function SchedulePage() {
     const isCompleted = l.status === "completed" || l.eol_completed === true;
 
     const lessonColour = l.pupil_id ? (colourMap[l.pupil_id] || "#1A52A0") : "#1A52A0";
-
     const timeColor = isCancelled ? "#9CA3AF" : lessonColour;
     const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
-
     const badges: React.ReactNode[] = [];
+
     if (isCurrent) {
       badges.push(
         <span
