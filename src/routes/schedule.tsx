@@ -496,9 +496,10 @@ function SchedulePage() {
             style={{
               display: "flex",
               gap: 8,
-              padding: "8px 16px 12px 76px",
+              padding: "8px 16px 12px 80px",
               backgroundColor: "#F8F9FB",
             }}
+
           >
             <button
               type="button"
