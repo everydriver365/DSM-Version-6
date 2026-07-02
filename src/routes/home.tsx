@@ -298,7 +298,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           gridTemplateRows: "repeat(2, 1fr)",
           gridAutoFlow: "column",
           gridAutoColumns: "calc(50% - 5px)",
-          gap: 10,
+          gap: 12,
           overflowX: "auto",
           paddingBottom: 8,
           paddingLeft: 16,
@@ -311,9 +311,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       >
         {tiles.map((tile) => {
           const hasImage = Boolean(tile.image_url);
-          const background = hasImage
-            ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%), url(${tile.image_url}) center/cover no-repeat`
+          const mediaBackground = hasImage
+            ? `url(${tile.image_url}) center/cover no-repeat`
             : tile.gradient || "linear-gradient(135deg, #1877D6, #0B1F3A)";
+          const accentColor = tile.color || "#1877D6";
           return (
             <div
               key={tile.id}
@@ -328,66 +329,120 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               }}
               style={{
                 scrollSnapAlign: "start",
-                borderRadius: 14,
+                borderRadius: 20,
                 overflow: "hidden",
                 position: "relative",
-                height: 110,
+                height: 180,
                 cursor: "pointer",
-                background,
+                background: "#FFFFFF",
+                border: "1px solid #EEF2F7",
+                boxShadow: "0 10px 24px -12px rgba(11, 31, 58, 0.18)",
                 userSelect: "none",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              {tile.badge && (
-                <span
-                  className="font-bold rounded-full"
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    fontSize: 9,
-                    backgroundColor: "#FFFFFF",
-                    color: tile.color || "#1877D6",
-                    fontFamily: "Inter, sans-serif",
-                    padding: "2px 8px",
-                    zIndex: 2,
-                  }}
-                >
-                  {tile.badge}
-                </span>
-              )}
+              {/* Media area */}
               <div
                 style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: 10,
-                  zIndex: 2,
+                  position: "relative",
+                  height: 74,
+                  background: mediaBackground,
+                  flexShrink: 0,
+                }}
+              >
+                {tile.badge && (
+                  <span
+                    className="font-bold"
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      fontSize: 9,
+                      letterSpacing: 0.4,
+                      color: "#FFFFFF",
+                      backgroundColor: "rgba(255,255,255,0.22)",
+                      backdropFilter: "blur(6px)",
+                      WebkitBackdropFilter: "blur(6px)",
+                      border: "1px solid rgba(255,255,255,0.4)",
+                      fontFamily: "Inter, sans-serif",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {tile.badge}
+                  </span>
+                )}
+              </div>
+              {/* Content area */}
+              <div
+                style={{
+                  padding: "10px 12px 12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: 1,
+                  minHeight: 0,
                 }}
               >
                 <div
-                  className="font-bold"
                   style={{
-                    fontSize: 13,
-                    color: "#FFFFFF",
-                    fontFamily: "Inter, sans-serif",
-                    lineHeight: 1.25,
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    gap: 6,
                   }}
                 >
-                  {tile.title}
+                  <div
+                    className="font-bold"
+                    style={{
+                      fontSize: 13,
+                      color: "#0B1F3A",
+                      fontFamily: "Inter, sans-serif",
+                      lineHeight: 1.2,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {tile.title}
+                  </div>
                 </div>
                 {tile.subtitle && (
                   <div
+                    className="font-semibold"
                     style={{
                       fontSize: 10,
-                      color: "rgba(255,255,255,0.8)",
+                      color: accentColor,
                       fontFamily: "Inter, sans-serif",
-                      marginTop: 2,
+                      marginTop: 4,
+                      letterSpacing: 0.2,
                     }}
                   >
                     {tile.subtitle}
                   </div>
                 )}
+                <div style={{ flex: 1 }} />
+                <div
+                  style={{
+                    height: 3,
+                    borderRadius: 999,
+                    background: "#F1F5F9",
+                    overflow: "hidden",
+                    marginTop: 8,
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: "60%",
+                      background: accentColor,
+                      borderRadius: 999,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           );
