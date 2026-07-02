@@ -2611,8 +2611,8 @@ function HomePage() {
                     borderLeft: `4px solid ${lessonColour}`,
                     background: `${lessonColour}10`,
                   }}
-
                 >
+
                   {(() => {
                     const needsAttention =
                       !isCancelled &&
