@@ -3388,7 +3388,7 @@ function AccessTile({
   onClick: () => void;
 }) {
   const coloredIcon = isValidElement(icon)
-    ? cloneElement<{ color?: string }>(icon, { color: bg })
+    ? cloneElement(icon as React.ReactElement<{ color?: string }>, { color: bg })
     : icon;
   return (
     <button
