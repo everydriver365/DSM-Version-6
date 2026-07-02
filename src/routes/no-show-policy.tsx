@@ -229,16 +229,16 @@ function NoShowPolicyPage() {
 
         <div className="mb-4">
           <label className="block text-[13px] text-[#0F2044] mb-1.5" style={FONT}>
-            Fee charged if pupil doesn't show up
+            No-show fee (% of lesson price)
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-[15px] text-[#6B7280]" style={FONT}>£</span>
             <input
               type="number"
-              step={0.5}
+              step={5}
               min={0}
+              max={100}
               value={noShowFee}
-              onChange={(e) => setNoShowFee(Number(e.target.value) || 0)}
+              onChange={(e) => setNoShowFee(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
               className="flex-1 text-[14px] text-[#0F2044] bg-white"
               style={{
                 border: "0.5px solid #E2E6ED",
@@ -247,6 +247,10 @@ function NoShowPolicyPage() {
                 ...FONT,
               }}
             />
+            <span className="text-[15px] text-[#6B7280]" style={FONT}>%</span>
+          </div>
+          <div className="text-[12px] text-[#6B7280] mt-1" style={FONT}>
+            e.g. 50% of a £40 lesson = £20 no-show fee
           </div>
         </div>
 
