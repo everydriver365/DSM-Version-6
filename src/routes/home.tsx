@@ -3204,8 +3204,32 @@ function HeroExpandedPanel({
           <ClipboardList size={14} /> Prep
         </button>
         <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEol();
+          }}
           style={{
-            flex: 1.6,
+            flex: 1,
+            background: '#CC2229',
+            border: 'none',
+            borderRadius: 10,
+            padding: '8px 16px',
+            color: 'white',
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          <CheckCircle2 size={14} color="#ffffff" /> End of lesson
+        </button>
+        <button
+          style={{
+            flex: 1,
             height: 36,
             borderRadius: 10,
             border: 'none',
