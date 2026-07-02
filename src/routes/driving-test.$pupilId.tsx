@@ -823,64 +823,18 @@ function RecordTab(props: any) {
       {/* Test centre */}
       <Card>
         <SectionTitle icon={<MapPin size={16} color="#0F2044" />}>Test centre</SectionTitle>
-        <div className="flex flex-wrap gap-2">
-          {centres.map((c: TestCentre) => (
-            <Pill
-              key={c.id}
-              active={centreId === c.id}
-              onClick={() => {
-                setCentreId(c.id);
-                setCentreName(c.name);
-              }}
-            >
-              {c.name}
-              {c.town ? ` · ${c.town}` : ""}
-            </Pill>
-          ))}
-          {!addingCentre ? (
-            <Pill onClick={() => setAddingCentre(true)}>+ Add new centre</Pill>
-          ) : null}
-        </div>
-        {addingCentre && (
-          <div className="mt-3 space-y-2">
-            <input
-              placeholder="Centre name"
-              value={newCentre.name}
-              onChange={(e) => setNewCentre({ ...newCentre, name: e.target.value })}
-              style={inputStyle}
-            />
-            <input
-              placeholder="Town"
-              value={newCentre.town}
-              onChange={(e) => setNewCentre({ ...newCentre, town: e.target.value })}
-              style={inputStyle}
-            />
-            <input
-              placeholder="Postcode"
-              value={newCentre.postcode}
-              onChange={(e) => setNewCentre({ ...newCentre, postcode: e.target.value })}
-              style={inputStyle}
-            />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={addCentre}
-                className="text-[12px] font-semibold text-white px-3"
-                style={{ height: 36, borderRadius: 8, backgroundColor: "#0F2044", border: "none" }}
-              >
-                Save centre
-              </button>
-              <button
-                type="button"
-                onClick={() => setAddingCentre(false)}
-                className="text-[12px] font-medium px-3"
-                style={{ height: 36, borderRadius: 8, backgroundColor: "#F1F4F9", color: "#0F2044", border: "none" }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+        <CentreSearchSelect
+          centres={centres}
+          centreSearch={centreSearch}
+          setCentreSearch={setCentreSearch}
+          showDropdown={showCentreDropdown}
+          setShowDropdown={setShowCentreDropdown}
+          selectedCentre={selectedCentre}
+          setSelectedCentre={setSelectedCentre}
+          setCentreId={setCentreId}
+          setCentreName={setCentreName}
+          addCentreByName={addCentreByName}
+        />
       </Card>
 
       {/* Examiner */}
