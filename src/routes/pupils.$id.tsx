@@ -1127,7 +1127,147 @@ function PupilDetailPage() {
                 value={pupil.test_date ? new Date(`${pupil.test_date}T00:00:00`).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—"}
               />
               <NIRow label="Test time" value={pupil.test_time ? pupil.test_time.slice(0, 5) : "—"} />
-              <NIRow label="Test centre" value={pupil.test_centre || "—"} />
+              <div
+                className="py-1.5"
+                style={{ borderTop: "0.5px solid #F3F4F6" }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                    Test centre
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {(centreInfo || pupil.test_centre) ? (
+                      <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                        <MapPin size={14} color="#1877D6" />
+                        {centreInfo
+                          ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}`
+                          : pupil.test_centre}
+                      </span>
+                    ) : (
+                      <span className="text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>—</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const next = !centrePickerOpen;
+                        setCentrePickerOpen(next);
+                        setCentreSearch("");
+                        if (next && allCentres.length === 0) {
+                          const { data } = await supabase
+                            .from("test_centres")
+                            .select("id, name, town")
+                            .order("name", { ascending: true });
+                          setAllCentres((data as any) ?? []);
+                        }
+                      }}
+                      className="text-[12px] font-semibold"
+                      style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      {centrePickerOpen ? "Cancel" : "Edit"}
+                    </button>
+                  </div>
+                </div>
+                {centrePickerOpen && (
+                  <div className="mt-2" style={{ position: "relative" }}>
+                    <div style={{ position: "relative" }}>
+                      <Search
+                        size={16}
+                        color="#64748B"
+                        style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Search test centres..."
+                        value={centreSearch}
+                        onChange={(e) => setCentreSearch(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: 36,
+                          padding: "0 12px 0 36px",
+                          borderRadius: 8,
+                          border: "0.5px solid #E2E6ED",
+                          fontSize: 13,
+                          outline: "none",
+                          ...POPPINS,
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        border: "0.5px solid #E2E6ED",
+                        borderRadius: 8,
+                        maxHeight: 220,
+                        overflowY: "auto",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    >
+                      <div
+                        onClick={async () => {
+                          const { error } = await supabase
+                            .from("pupils")
+                            .update({ test_centre_id: null })
+                            .eq("id", pupil.id);
+                          if (error) { toast.error("Could not clear centre"); return; }
+                          setCentreInfo(null);
+                          setPupil({ ...pupil, test_centre_id: null });
+                          setCentrePickerOpen(false);
+                          toast.success("Test centre cleared");
+                        }}
+                        className="cursor-pointer text-[13px]"
+                        style={{ padding: "10px 12px", color: "#EF4444", borderBottom: "0.5px solid #F3F4F6", ...POPPINS }}
+                      >
+                        Clear test centre
+                      </div>
+                      {(() => {
+                        const q = centreSearch.trim().toLowerCase();
+                        const filtered = q
+                          ? allCentres.filter(
+                              (c) =>
+                                (c.name || "").toLowerCase().includes(q) ||
+                                (c.town || "").toLowerCase().includes(q),
+                            )
+                          : allCentres;
+                        if (filtered.length === 0) {
+                          return (
+                            <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>
+                              No centres found
+                            </div>
+                          );
+                        }
+                        return filtered.map((c) => (
+                          <div
+                            key={c.id}
+                            onClick={async () => {
+                              const { error } = await supabase
+                                .from("pupils")
+                                .update({ test_centre_id: c.id, test_centre: c.name })
+                                .eq("id", pupil.id);
+                              if (error) { toast.error("Could not update centre"); return; }
+                              setCentreInfo(c);
+                              setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
+                              setCentrePickerOpen(false);
+                              setCentreSearch("");
+                              toast.success("Test centre updated");
+                            }}
+                            className="cursor-pointer"
+                            style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                          >
+                            <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                              {c.name}
+                            </div>
+                            {c.town ? (
+                              <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                                {c.town}
+                              </div>
+                            ) : null}
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <div
                 className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
