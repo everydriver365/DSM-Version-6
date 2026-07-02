@@ -4,11 +4,12 @@ export function Card({ className = "", style, children, ...rest }: HTMLAttribute
   return (
     <div
       {...rest}
-      className={`bg-[#F8F9FB] rounded-xl p-4 ${className}`}
+      className={`bg-white rounded-2xl p-5 ${className}`}
       style={{
-        borderWidth: "0.5px",
+        borderWidth: "1px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
+        boxShadow: "0 1px 2px rgba(11,31,58,0.04)",
         ...style,
       }}
     >
