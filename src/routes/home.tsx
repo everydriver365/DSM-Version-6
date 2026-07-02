@@ -2093,17 +2093,17 @@ function HomePage() {
         {loading ? (
           <div
             className="skeleton-pulse"
-            style={{ margin: '10px 16px 0', height: 78, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.16)' }}
+            style={{ margin: '10px 16px 0', height: 78, borderRadius: 12, backgroundColor: '#F3F8FF' }}
           />
         ) : (
           <div
             style={{
               margin: '10px 16px 0',
-              backgroundColor: 'rgba(255,255,255,0.16)',
-              border: '1px solid rgba(255,255,255,0.22)',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid rgba(11,31,58,0.08)',
               borderRadius: 12,
               overflow: 'hidden',
-              boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+              boxShadow: '0 2px 10px rgba(11,31,58,0.06)',
               display: 'flex',
             }}
           >
@@ -2111,15 +2111,15 @@ function HomePage() {
               onClick={() => setEarningsOpen(true)}
               role="button"
               tabIndex={0}
-              style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer' }}
+              style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(11,31,58,0.08)', cursor: 'pointer' }}
             >
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 EARNINGS · WEEK
               </div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: '#FFD27A', marginTop: 2, lineHeight: 1.1 }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: '#1877D6', marginTop: 2, lineHeight: 1.1 }}>
                 £{weekEarnings.toFixed(0)}
                 {earningsEstimated && (
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginLeft: 4 }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(11,31,58,0.5)', marginLeft: 4 }}>
                     (est.)
                   </span>
                 )}
@@ -2128,7 +2128,7 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
-                  style={{ fontSize: 10, color: '#FFD27A', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
+                  style={{ fontSize: 10, color: '#1877D6', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
                 >
                   Record payments via EOL →
                 </button>
@@ -2136,17 +2136,17 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
-                  style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
+                  style={{ fontSize: 10, color: 'rgba(11,31,58,0.7)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
                 >
                   Complete EOL
                 </button>
               ) : (
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+                <div style={{ fontSize: 10, color: 'rgba(11,31,58,0.6)', marginTop: 2 }}>
                   £{todayEarnings.toFixed(0)} today
                 </div>
               )}
-              <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#CC2229' }} />
+              <div style={{ height: 4, borderRadius: 2, backgroundColor: '#F3F8FF', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#1877D6' }} />
               </div>
             </div>
             <div
@@ -2155,17 +2155,17 @@ function HomePage() {
               tabIndex={0}
               style={{ flex: 1, padding: '10px 12px', cursor: 'pointer' }}
             >
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                 LESSONS · WEEK
               </div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: '#8FF0C2', marginTop: 2, lineHeight: 1.1 }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: '#1877D6', marginTop: 2, lineHeight: 1.1 }}>
                 {weekLessonsTotal}
               </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+              <div style={{ fontSize: 10, color: 'rgba(11,31,58,0.6)', marginTop: 2 }}>
                 {todayLessons.length} today
               </div>
-              <div style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', marginTop: 6, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#8FF0C2' }} />
+              <div style={{ height: 4, borderRadius: 2, backgroundColor: '#F3F8FF', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#1877D6' }} />
               </div>
             </div>
           </div>
