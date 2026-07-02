@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
+import { EmptyState } from "../components/dsm/EmptyState";
 
 export const Route = createFileRoute("/expenses")({
   head: () => ({ meta: [{ title: "Expenses — DSM by EveryDriver" }] }),
@@ -319,9 +320,11 @@ function ExpensesPage() {
         {loading ? (
           <div style={{ color: "#6B7280", padding: 32, textAlign: "center" }}>Loading…</div>
         ) : grouped.length === 0 ? (
-          <div style={{ color: "#6B7280", padding: 32, textAlign: "center" }}>
-            No expenses yet. Tap “Add expense”.
-          </div>
+          <EmptyState
+            icon={Briefcase}
+            title="No expenses yet"
+            description="Track your business costs to make tax season painless."
+          />
         ) : (
           grouped.map(([k, items]) => {
             const total = items.reduce((s, r) => s + Number(r.amount || 0), 0);
