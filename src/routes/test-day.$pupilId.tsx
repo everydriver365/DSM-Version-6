@@ -7,6 +7,7 @@ import {
   ChevronUp,
   FileCheck,
   Navigation,
+  Search,
   Shield,
   Trophy,
 } from "lucide-react";
@@ -25,8 +26,17 @@ type Pupil = {
   test_date: string | null;
   test_time: string | null;
   test_centre: string | null;
+  test_centre_id: string | null;
   phone: string | null;
   status?: string | null;
+};
+
+type TestCentre = {
+  id: string;
+  name: string;
+  address: string | null;
+  town: string | null;
+  postcode: string | null;
 };
 
 const DOCS = [
@@ -214,7 +224,10 @@ function TestDayPage() {
   const { pupilId } = Route.useParams();
   const navigate = useNavigate();
   const [pupil, setPupil] = useState<Pupil | null>(null);
-  const [centreAddress, setCentreAddress] = useState<string | null>(null);
+  const [centre, setCentre] = useState<TestCentre | null>(null);
+  const [allCentres, setAllCentres] = useState<TestCentre[]>([]);
+  const [showCentrePicker, setShowCentrePicker] = useState(false);
+  const [centreSearch, setCentreSearch] = useState("");
   const [docs, setDocs] = useState<boolean[]>(() => DOCS.map(() => false));
   const [prep, setPrep] = useState<boolean[]>(() => PREP.map(() => false));
   const [qaOpen, setQaOpen] = useState(false);
@@ -249,18 +262,25 @@ function TestDayPage() {
     (async () => {
       const { data } = await supabase
         .from("pupils")
-        .select("id, name, test_date, test_time, test_centre, phone, status")
+        .select("id, name, test_date, test_time, test_centre, test_centre_id, phone, status")
         .eq("id", pupilId)
         .maybeSingle();
       if (cancel) return;
       setPupil((data as Pupil) ?? null);
-      if (data?.test_centre) {
+      if ((data as any)?.test_centre_id) {
         const { data: tc } = await supabase
           .from("test_centres")
-          .select("address")
+          .select("id, name, address, town, postcode")
+          .eq("id", (data as any).test_centre_id)
+          .maybeSingle();
+        if (!cancel) setCentre((tc as TestCentre) ?? null);
+      } else if (data?.test_centre) {
+        const { data: tc } = await supabase
+          .from("test_centres")
+          .select("id, name, address, town, postcode")
           .eq("name", data.test_centre)
           .maybeSingle();
-        if (!cancel) setCentreAddress((tc as any)?.address ?? null);
+        if (!cancel && tc) setCentre(tc as TestCentre);
       }
     })();
     return () => {
@@ -268,13 +288,55 @@ function TestDayPage() {
     };
   }, [pupilId]);
 
+  useEffect(() => {
+    if (!showCentrePicker || allCentres.length > 0) return;
+    let cancel = false;
+    (async () => {
+      const { data } = await supabase
+        .from("test_centres")
+        .select("id, name, address, town, postcode")
+        .order("name", { ascending: true });
+      if (!cancel) setAllCentres((data as TestCentre[]) ?? []);
+    })();
+    return () => {
+      cancel = true;
+    };
+  }, [showCentrePicker, allCentres.length]);
+
+  const centreDisplayName = centre?.name ?? pupil?.test_centre ?? null;
+  const centreFullAddress = centre
+    ? [centre.address, centre.town, centre.postcode].filter(Boolean).join(", ")
+    : null;
+
   const days = useMemo(() => daysUntil(pupil?.test_date ?? null), [pupil?.test_date]);
   const isTestDay = days === 0;
 
   const mapsQuery = useMemo(() => {
-    const parts = [pupil?.test_centre, centreAddress].filter(Boolean).join(", ");
-    return parts || pupil?.test_centre || "";
-  }, [pupil?.test_centre, centreAddress]);
+    if (centre) {
+      const parts = [centre.name, centre.address, centre.town, centre.postcode]
+        .filter(Boolean)
+        .join(", ");
+      if (parts) return parts;
+    }
+    return pupil?.test_centre ?? "";
+  }, [centre, pupil?.test_centre]);
+
+  async function selectCentre(c: TestCentre) {
+    if (!pupil) return;
+    const { error } = await supabase
+      .from("pupils")
+      .update({ test_centre_id: c.id, test_centre: c.name })
+      .eq("id", pupil.id);
+    if (error) {
+      toast.error("Could not update test centre");
+      return;
+    }
+    setCentre(c);
+    setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
+    setShowCentrePicker(false);
+    setCentreSearch("");
+    toast.success("Test centre updated");
+  }
 
   const recordResult = async (passed: boolean) => {
     if (!pupil) return;
@@ -438,12 +500,95 @@ function TestDayPage() {
             Navigate to test centre
           </h2>
         </div>
-        <div className="text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-          {pupil?.test_centre ?? "No test centre set"}
+        <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          {centreDisplayName ?? "No test centre set"}
         </div>
-        {centreAddress && (
+        {centreFullAddress && (
           <div className="text-[13px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>
-            {centreAddress}
+            {centreFullAddress}
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            setShowCentrePicker((v) => !v);
+            setCentreSearch("");
+          }}
+          className="text-[12px] font-semibold mt-2"
+          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+        >
+          {showCentrePicker ? "Cancel" : "Change test centre"}
+        </button>
+        {showCentrePicker && (
+          <div className="mt-2" style={{ position: "relative" }}>
+            <div style={{ position: "relative" }}>
+              <Search
+                size={16}
+                color="#64748B"
+                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+              />
+              <input
+                type="text"
+                placeholder="Search test centres..."
+                value={centreSearch}
+                onChange={(e) => setCentreSearch(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  padding: "0 12px 0 36px",
+                  borderRadius: 8,
+                  border: "0.5px solid #E2E6ED",
+                  fontSize: 14,
+                  outline: "none",
+                  ...POPPINS,
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 8,
+                maxHeight: 220,
+                overflowY: "auto",
+                backgroundColor: "#FFFFFF",
+              }}
+            >
+              {(() => {
+                const q = centreSearch.trim().toLowerCase();
+                const filtered = q
+                  ? allCentres.filter(
+                      (c) =>
+                        (c.name || "").toLowerCase().includes(q) ||
+                        (c.town || "").toLowerCase().includes(q),
+                    )
+                  : allCentres;
+                if (filtered.length === 0) {
+                  return (
+                    <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>
+                      No centres found
+                    </div>
+                  );
+                }
+                return filtered.map((c) => (
+                  <div
+                    key={c.id}
+                    onClick={() => selectCentre(c)}
+                    className="cursor-pointer"
+                    style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                  >
+                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      {c.name}
+                    </div>
+                    {c.town ? (
+                      <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                        {c.town}
+                      </div>
+                    ) : null}
+                  </div>
+                ));
+              })()}
+            </div>
           </div>
         )}
         <div className="grid grid-cols-2 gap-2 mt-3">
