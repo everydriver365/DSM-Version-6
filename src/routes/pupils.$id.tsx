@@ -1630,7 +1630,7 @@ function PupilExtras({
     console.log("[custom-rates] result:", status, data, error);
     if (error) {
       console.error("[pupil] patch error", error);
-      toast.error("Save failed");
+      toast.error("Failed to save — please try again");
       return false;
     }
     return true;
@@ -1667,7 +1667,7 @@ function PupilExtras({
     if (ok) {
       onUpdated({ driving_licence_number: val });
       setEditLic(false);
-      toast.success("Licence saved");
+      toast.success("Driving licence saved");
     }
   }
 
@@ -1705,7 +1705,10 @@ function PupilExtras({
   async function pickColour(hex: string) {
     const next = pupil.calendar_colour === hex ? null : hex;
     const ok = await patchPupil({ calendar_colour: next });
-    if (ok) onUpdated({ calendar_colour: next });
+    if (ok) {
+      onUpdated({ calendar_colour: next });
+      toast.success("Colour updated");
+    }
   }
 
   return (
