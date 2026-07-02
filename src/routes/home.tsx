@@ -2852,7 +2852,7 @@ function HomePage() {
               <AccessTile
                 key={`${t.route}-${t.label}`}
                 icon={t.icon}
-                bg={t.bg}
+                route={t.route}
                 label={t.label}
                 onClick={() => navigate({ to: t.route })}
               />
