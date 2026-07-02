@@ -130,6 +130,8 @@ function SchedulePage() {
   const [openActionsId, setOpenActionsId] = useState<string | null>(null);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
+  const [colourMap, setColourMap] = useState<Record<string, string>>({});
+
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 60000);
