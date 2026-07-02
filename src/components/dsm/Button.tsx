@@ -16,19 +16,19 @@ export function Button({
   ...rest
 }: Props) {
   const base =
-    "h-11 rounded-lg font-medium text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center px-4";
+    "h-11 rounded-[10px] font-semibold text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center px-5";
   const width = inline ? "" : "w-full";
 
   let variantClasses = "";
   let extraStyle: CSSProperties = {};
 
   if (variant === "primary") {
-    variantClasses = "bg-[#1877D6] text-white hover:bg-[#163d7a]";
+    variantClasses = "bg-[#1877D6] text-white hover:bg-[#0F5FB0]";
   } else if (variant === "destructive") {
-    variantClasses = "bg-[#1877D6] text-white hover:bg-[#a81b21]";
+    variantClasses = "bg-[#DC2626] text-white hover:bg-[#B91C1C]";
   } else {
-    variantClasses = "bg-transparent text-[#1877D6] hover:bg-[#f0f4ff]";
-    extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#1877D6" };
+    variantClasses = "bg-white text-[#0B1F3A] hover:bg-[#F3F8FF]";
+    extraStyle = { borderWidth: "1px", borderStyle: "solid", borderColor: "#EEF2F7" };
   }
 
   return (
