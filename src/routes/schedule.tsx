@@ -449,16 +449,8 @@ function SchedulePage() {
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div
-            style={{
-              width: 3,
-              borderRadius: 2,
-              backgroundColor: accent,
-              flexShrink: 0,
-              alignSelf: "stretch",
-            }}
-          />
           <div style={{ flex: 1, minWidth: 0 }}>
+
             <div
               style={{
                 fontSize: 14,
