@@ -887,6 +887,15 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>PRICING RULES</SectionHeader>
+        <Card className="!p-0" style={{ marginBottom: 12 }}>
+          <MenuRow
+            icon={<MapPin size={18} color="#0369A1" />}
+            iconBg="#E0F2FE"
+            label="Postcode rates"
+            onClick={() => navigate({ to: "/postcode-rates" })}
+            isFirst
+          />
+        </Card>
         <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <PoundSterling size={18} color="#1877D6" />
