@@ -1015,9 +1015,6 @@ function PupilDetailPage() {
                     {centreInfo?.town ? `, ${centreInfo.town}` : ""}
                   </div>
                 )}
-                {pupil.examiner && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Examiner: {pupil.examiner}</div>
-                )}
               </div>
             )}
           </div>
@@ -1292,11 +1289,6 @@ function PupilDetailPage() {
                       <div className="text-[13px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
-                      {l.lesson_type && (
-                        <div className="text-[11px] truncate" style={{ color: "#6B7280", ...POPPINS }}>
-                          {l.lesson_type}
-                        </div>
-                      )}
                       {l.notes && (
                         <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
                           {l.notes}
@@ -2435,7 +2427,7 @@ function PracticalEditor({
   const [centreLabel, setCentreLabel] = useState<string>(
     centreInfo ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}` : (pupil.test_centre ?? ""),
   );
-  const [examiner, setExaminer] = useState<string>(pupil.examiner ?? "");
+  const [examiner, setExaminer] = useState<string>("");
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
     border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
