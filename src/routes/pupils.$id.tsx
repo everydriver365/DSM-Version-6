@@ -218,6 +218,12 @@ function PupilDetailPage() {
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
+  const [addressEditing, setAddressEditing] = useState(false);
+  const [theoryEditing, setTheoryEditing] = useState(false);
+  const [practicalEditing, setPracticalEditing] = useState(false);
+  const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
+  const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
+  const addressInputRef = useRef<HTMLInputElement>(null);
   const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
