@@ -341,14 +341,14 @@ function SchedulePage() {
         <span
           key="live"
           className="text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse"
-          style={{ backgroundColor: "#FEE2E2", color: "#1877D6", ...POPPINS, fontWeight: 700 }}
+          style={{ backgroundColor: `${lessonColour}20`, color: lessonColour, ...POPPINS, fontWeight: 700 }}
         >
           <span
             style={{
               width: 6,
               height: 6,
               borderRadius: 999,
-              backgroundColor: "#1877D6",
+              backgroundColor: lessonColour,
               display: "inline-block",
             }}
           />
@@ -361,7 +361,7 @@ function SchedulePage() {
         <span
           key="eol"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS, fontWeight: 600 }}
+          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600 }}
         >
           EOL pending
         </span>,
@@ -372,7 +372,7 @@ function SchedulePage() {
         <span
           key="paid"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS, fontWeight: 600 }}
+          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600 }}
         >
           Paid
         </span>,
@@ -382,7 +382,7 @@ function SchedulePage() {
         <span
           key="due"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#FEE2E2", color: "#1877D6", ...POPPINS, fontWeight: 700 }}
+          style={{ backgroundColor: isSelected ? `${lessonColour}20` : "#FEE2E2", color: isSelected ? lessonColour : "#1877D6", ...POPPINS, fontWeight: 700 }}
         >
           £{Number(l.amount_due).toFixed(2)}
         </span>,
