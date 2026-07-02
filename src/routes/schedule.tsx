@@ -327,10 +327,12 @@ function SchedulePage() {
     const isCurrent = l.id === currentId;
     const isCancelled = l.status === "cancelled";
     const isCompleted = l.status === "completed" || l.eol_completed === true;
+    const showActions = openActionsId === l.id;
+    const isSelected = isCurrent || showActions;
 
     const lessonColour = l.pupil_id ? (colourMap[l.pupil_id] || "#1A52A0") : "#1A52A0";
-    const timeColor = isCancelled ? "#9CA3AF" : lessonColour;
-    const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+    const timeColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : lessonColour;
+    const nameColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : "#0B1F3A";
 
     const badges: React.ReactNode[] = [];
 
