@@ -362,6 +362,24 @@ function MockTestsPage() {
         />
       </div>
 
+      <div className="px-4 pb-2">
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId } })}
+          className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-semibold"
+          style={{
+            height: 44,
+            borderRadius: 10,
+            backgroundColor: "#0F2044",
+            color: "#FFFFFF",
+            border: "none",
+            ...INTER,
+          }}
+        >
+          Full test report (DL25) →
+        </button>
+      </div>
+
       {/* Trend chart */}
       {chartData.length >= 2 && (
         <div className="px-4 pb-2">
