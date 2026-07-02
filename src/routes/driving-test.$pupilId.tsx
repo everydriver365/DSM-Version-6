@@ -191,6 +191,9 @@ function DrivingTestPage() {
   const [centreName, setCentreName] = useState("");
   const [addingCentre, setAddingCentre] = useState(false);
   const [newCentre, setNewCentre] = useState({ name: "", town: "", postcode: "" });
+  const [centreSearch, setCentreSearch] = useState("");
+  const [showCentreDropdown, setShowCentreDropdown] = useState(false);
+  const [selectedCentre, setSelectedCentre] = useState<{ id: string; name: string; town: string } | null>(null);
   const [examiners, setExaminers] = useState<Examiner[]>([]);
   const [examinerId, setExaminerId] = useState<string | null>(null);
   const [examinerName, setExaminerName] = useState("");
