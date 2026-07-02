@@ -589,6 +589,15 @@ function PupilDetailPage() {
         </div>
       )}
 
+      {/* Emergency contact, licence, custom rates, calendar colour */}
+      {pupil && (
+        <PupilExtras
+          pupil={pupil}
+          instructorRate={instructorRate}
+          onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
+        />
+      )}
+
       {/* Intake answers */}
       <div className="px-4">
         <SectionHeader>INTAKE ANSWERS</SectionHeader>
