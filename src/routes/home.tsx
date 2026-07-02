@@ -297,8 +297,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           display: "grid",
           gridTemplateRows: "repeat(2, 1fr)",
           gridAutoFlow: "column",
-          gridAutoColumns: "calc(50% - 5px)",
-          gap: 12,
+          gridAutoColumns: "calc(33.333% - 8px)",
+          gap: 10,
           overflowX: "auto",
           paddingBottom: 8,
           paddingLeft: 16,
@@ -311,6 +311,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       >
         {tiles.map((tile) => {
           const accentColor = tile.color || "#4DA3FF";
+          const hero = tile.image_url
+            ? `url(${tile.image_url}) center/cover no-repeat`
+            : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
           return (
             <div
               key={tile.id}
@@ -325,41 +328,100 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               }}
               style={{
                 scrollSnapAlign: "start",
-                borderRadius: 22,
+                borderRadius: 12,
                 overflow: "hidden",
                 position: "relative",
-                height: 180,
+                height: 118,
                 cursor: "pointer",
-                background:
-                  "linear-gradient(155deg, #0B1F3A 0%, #0F2A4F 55%, #14356A 100%)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                boxShadow: "0 14px 28px -14px rgba(11, 31, 58, 0.55)",
+                background: "#FFFFFF",
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#EEF2F7",
                 userSelect: "none",
                 display: "flex",
                 flexDirection: "column",
-                padding: 14,
               }}
             >
-              {/* Ghost accent orb */}
+              {/* Hero image */}
               <div
-                aria-hidden
                 style={{
-                  position: "absolute",
-                  top: -30,
-                  right: -30,
-                  width: 110,
-                  height: 110,
-                  borderRadius: "50%",
-                  background: `radial-gradient(circle at center, ${accentColor}55, transparent 70%)`,
-                  pointerEvents: "none",
+                  position: "relative",
+                  height: 66,
+                  background: hero,
+                  flexShrink: 0,
                 }}
-              />
-              {/* Header row: icon + badge */}
+              >
+                {tile.badge && (
+                  <span
+                    className="font-bold"
+                    style={{
+                      position: "absolute",
+                      top: 5,
+                      left: 5,
+                      fontSize: 8,
+                      letterSpacing: 0.4,
+                      color: "#FFFFFF",
+                      backgroundColor: "rgba(11,31,58,0.55)",
+                      backdropFilter: "blur(6px)",
+                      WebkitBackdropFilter: "blur(6px)",
+                      fontFamily: "Inter, sans-serif",
+                      padding: "2px 6px",
+                      borderRadius: 999,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {tile.badge}
+                  </span>
+                )}
+              </div>
+              {/* Label */}
               <div
                 style={{
+                  flex: 1,
+                  padding: "6px 8px",
                   display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  textAlign: "center",
+                }}
+              >
+                <span
+                  className="text-[10px] text-[#0B1F3A] text-center leading-tight"
+                  style={{
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    fontWeight: 600,
+                    fontFamily: "Inter, sans-serif",
+                  }}
+                >
+                  {tile.title}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <style>{`
+        .marketplace-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function _RemovedMarketplaceLegacy() {
+  return (
+    <>
+      {/* legacy block kept for diff clarity */}
+      <div>
+        <div>
+          <div
+            style={{
                   position: "relative",
                   zIndex: 1,
                 }}
@@ -369,20 +431,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     width: 34,
                     height: 34,
                     borderRadius: 10,
-                    background: tile.image_url
-                      ? `url(${tile.image_url}) center/cover no-repeat`
-                      : `linear-gradient(135deg, ${accentColor}, rgba(255,255,255,0.08))`,
                     border: "1px solid rgba(255,255,255,0.14)",
                     flexShrink: 0,
                   }}
                 />
-                {tile.badge && (
                   <span
                     className="font-bold"
                     style={{
                       fontSize: 8.5,
                       letterSpacing: 0.5,
-                      color: accentColor,
                       backgroundColor: "rgba(255,255,255,0.08)",
                       border: "1px solid rgba(255,255,255,0.14)",
                       fontFamily: "Inter, sans-serif",
@@ -391,9 +448,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       textTransform: "uppercase",
                     }}
                   >
-                    {tile.badge}
                   </span>
-                )}
               </div>
               {/* Content */}
               <div
@@ -416,13 +471,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     overflow: "hidden",
                   }}
                 >
-                  {tile.title}
                 </div>
                 <div
                   className="font-semibold"
                   style={{
                     fontSize: 10,
-                    color: accentColor,
                     fontFamily: "Inter, sans-serif",
                     marginTop: 6,
                     letterSpacing: 0.4,
@@ -435,20 +488,13 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     gap: 4,
                   }}
                 >
-                  {tile.subtitle || "Explore"}
                   <span style={{ marginLeft: 2 }}>→</span>
                 </div>
               </div>
             </div>
-          );
-        })}
+        </div>
       </div>
-      <style>{`
-        .marketplace-scroll::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-    </div>
+    </>
   );
 }
 
