@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -17,6 +17,56 @@ export const Route = createFileRoute("/pupils/$id")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+
+const GOOGLE_MAPS_KEY =
+  (import.meta as any).env?.VITE_GOOGLE_API_KEY ||
+  (import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY ||
+  "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+
+function loadGoogleMapsPlaces(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as any;
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById("google-maps-places-script") as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      existing.addEventListener("load", () => resolve());
+      if (w.google?.maps?.places) resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.id = "google-maps-places-script";
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(s);
+  });
+}
+
+function fmtUKDate(iso: string | null | undefined) {
+  if (!iso) return "";
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+const THEORY_STATUSES = ["Not started", "Studying", "Booked", "Passed", "Failed"] as const;
+const PRACTICAL_STATUSES = ["Not booked", "Booked", "Passed", "Failed"] as const;
+
+function statusColour(s: string | null | undefined): { bg: string; fg: string } {
+  switch (s) {
+    case "Studying": return { bg: "#F59E0B", fg: "#FFFFFF" };
+    case "Booked": return { bg: "#1877D6", fg: "#FFFFFF" };
+    case "Passed": return { bg: "#16A34A", fg: "#FFFFFF" };
+    case "Failed": return { bg: "#DC2626", fg: "#FFFFFF" };
+    default: return { bg: "#E5E7EB", fg: "#374151" };
+  }
+}
 
 interface Pupil {
   id: string;
@@ -58,6 +108,14 @@ interface Pupil {
   custom_rate_90: number | null;
   custom_rate_120: number | null;
   calendar_colour: string | null;
+  theory_status: string | null;
+  theory_test_date: string | null;
+  theory_pass_date: string | null;
+  theory_score: number | null;
+  test_status: string | null;
+  examiner: string | null;
+  lat: number | null;
+  lng: number | null;
 }
 
 interface Lesson {
@@ -160,6 +218,108 @@ function PupilDetailPage() {
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
+  const [addressEditing, setAddressEditing] = useState(false);
+  const [theoryEditing, setTheoryEditing] = useState(false);
+  const [practicalEditing, setPracticalEditing] = useState(false);
+  const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
+  const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
+  const addressInputRef = useRef<HTMLInputElement>(null);
+
+  // Bind Google Places Autocomplete to the address input when editing
+  useEffect(() => {
+    if (!addressEditing) return;
+    let cancelled = false;
+    loadGoogleMapsPlaces()
+      .then(() => {
+        if (cancelled) return;
+        const input = addressInputRef.current;
+        const g = (window as any).google;
+        if (!input || !g?.maps?.places) return;
+        const ac = new g.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: "gb" },
+          types: ["address"],
+          fields: ["formatted_address", "address_components", "geometry"],
+        });
+        ac.addListener("place_changed", async () => {
+          const place = ac.getPlace();
+          const formatted: string = place.formatted_address ?? "";
+          const comps: any[] = place.address_components ?? [];
+          const pc = comps.find((c: any) => c.types.includes("postal_code"))?.long_name ?? "";
+          const town =
+            comps.find((c: any) => c.types.includes("postal_town"))?.long_name ??
+            comps.find((c: any) => c.types.includes("locality"))?.long_name ??
+            "";
+          const lat = place.geometry?.location?.lat?.();
+          const lng = place.geometry?.location?.lng?.();
+          const basePatch: Record<string, unknown> = {};
+          if (formatted) basePatch.address = formatted;
+          if (pc) basePatch.postcode = pc;
+          // Include town only if we have a value; column may not exist — handled with fallback
+          const patchWithTown = town ? { ...basePatch, town } : basePatch;
+          const patchWithGeo =
+            typeof lat === "number" && typeof lng === "number"
+              ? { ...patchWithTown, lat, lng }
+              : patchWithTown;
+          let { error } = await supabase.from("pupils").update(patchWithGeo).eq("id", id);
+          if (error) {
+            // Retry without possibly-missing columns (town, lat, lng)
+            const retry = await supabase.from("pupils").update(basePatch).eq("id", id);
+            error = retry.error as any;
+          }
+          if (error) {
+            console.error("[pupil] address save error", error);
+            toast.error("Failed to save address");
+            return;
+          }
+          setPupil((p) =>
+            p
+              ? {
+                  ...p,
+                  address: formatted || p.address,
+                  postcode: pc || p.postcode,
+                  lat: typeof lat === "number" ? lat : p.lat,
+                  lng: typeof lng === "number" ? lng : p.lng,
+                }
+              : p,
+          );
+          setAddressEditing(false);
+          toast.success("Address updated");
+        });
+      })
+      .catch(() => {
+        // silent — user can still type manually and press Save
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [addressEditing, id]);
+
+  async function saveAddressManual(nextAddress: string, nextPostcode: string) {
+    const patch: Record<string, unknown> = {
+      address: nextAddress.trim() || null,
+      postcode: nextPostcode.trim() || null,
+    };
+    const { error } = await supabase.from("pupils").update(patch).eq("id", id);
+    if (error) {
+      toast.error("Failed to save address");
+      return;
+    }
+    setPupil((p) => (p ? { ...p, ...(patch as any) } : p));
+    setAddressEditing(false);
+    toast.success("Address updated");
+  }
+
+  async function savePupilFields(patch: Record<string, unknown>, successMsg: string) {
+    const { error } = await supabase.from("pupils").update(patch).eq("id", id);
+    if (error) {
+      console.error("[pupil] save error", error);
+      toast.error("Failed to save — please try again");
+      return false;
+    }
+    setPupil((p) => (p ? { ...p, ...(patch as any) } : p));
+    toast.success(successMsg);
+    return true;
+  }
   const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
@@ -180,7 +340,9 @@ function PupilDetailPage() {
         theory_pass, wants_swap,
         ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
-        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour
+        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
+        theory_status, theory_test_date, theory_pass_date, theory_score,
+        test_status, examiner
       `)
       .eq("id", id)
       .is("deleted_at", null)
@@ -612,6 +774,91 @@ function PupilDetailPage() {
         </div>
       )}
 
+      {/* Test status strips */}
+      {pupil && (() => {
+        const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
+        const showPractical = !!pupil.test_date;
+        if (!showTheory && !showPractical) return null;
+        const theoryBadge = statusColour(pupil.theory_status);
+        const practBadge = statusColour(pupil.test_status);
+        const centreName = centreInfo?.name || pupil.test_centre || "";
+        return (
+          <div className="mx-4 mt-3">
+            <div
+              className="flex gap-2 overflow-x-auto"
+              style={{ scrollbarWidth: "none" as any }}
+            >
+              {showTheory && (
+                <div
+                  className="flex items-center gap-2 shrink-0 bg-white"
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 12,
+                    border: "0.5px solid #E2E6ED",
+                    ...POPPINS,
+                  }}
+                >
+                  <BookOpen size={16} color="#1A52A0" />
+                  <span
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: theoryBadge.bg, color: theoryBadge.fg }}
+                  >
+                    {pupil.theory_status}
+                  </span>
+                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                    {pupil.theory_status === "Passed"
+                      ? `Theory ✓ passed ${fmtUKDate(pupil.theory_pass_date)}`
+                      : pupil.theory_test_date
+                        ? `Theory test: ${fmtUKDate(pupil.theory_test_date)}`
+                        : ""}
+                  </span>
+                </div>
+              )}
+              {showPractical && (
+                <div
+                  className="flex items-center gap-2 shrink-0 bg-white"
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 12,
+                    border: "0.5px solid #E2E6ED",
+                    ...POPPINS,
+                  }}
+                >
+                  <Car size={16} color="#0F2044" />
+                  <span
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: practBadge.bg, color: practBadge.fg }}
+                  >
+                    {pupil.test_status || "Booked"}
+                  </span>
+                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                    Test: {fmtUKDate(pupil.test_date)}
+                    {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
+                    {centreName ? ` — ${centreName}` : ""}
+                  </span>
+                  {pupil.test_status === "Passed" && (
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#16A34A", color: "#FFFFFF" }}
+                    >
+                      PASSED ✓
+                    </span>
+                  )}
+                  {pupil.test_status === "Failed" && (
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#DC2626", color: "#FFFFFF" }}
+                    >
+                      FAILED
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Emergency contact, licence, custom rates, calendar colour */}
       {pupil && (
         <PupilExtras
@@ -619,6 +866,164 @@ function PupilDetailPage() {
           instructorRate={instructorRate}
           onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
+      )}
+
+      {/* Address (Google Places autocomplete) */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              border: "0.5px solid #E2E6ED",
+              padding: 16,
+            }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <MapPin size={16} color="#1A52A0" /> Address
+              </span>
+              <button
+                type="button"
+                onClick={() => setAddressEditing((v) => !v)}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {addressEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {addressEditing ? (
+              <AddressEditor
+                initialAddress={pupil.address ?? ""}
+                initialPostcode={pupil.postcode ?? ""}
+                inputRef={addressInputRef}
+                onSave={saveAddressManual}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+                {pupil.address || "No address on file"}
+                {pupil.postcode ? (
+                  <span className="ml-2" style={{ color: "#6B7280" }}>{pupil.postcode}</span>
+                ) : null}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Theory test card */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <BookOpen size={16} color="#1A52A0" /> Theory test
+              </span>
+              <button
+                type="button"
+                onClick={() => setTheoryEditing((v) => !v)}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {theoryEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {theoryEditing ? (
+              <TheoryEditor
+                pupil={pupil}
+                onSave={async (patch) => {
+                  const ok = await savePupilFields(patch, "Theory test saved");
+                  if (ok) setTheoryEditing(false);
+                }}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div>Status: <b>{pupil.theory_status || "Not started"}</b></div>
+                {pupil.theory_test_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Test date: {fmtUKDate(pupil.theory_test_date)}</div>
+                )}
+                {pupil.theory_pass_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Pass date: {fmtUKDate(pupil.theory_pass_date)}</div>
+                )}
+                {typeof pupil.theory_score === "number" && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Score: {pupil.theory_score}</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Practical test card */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <Car size={16} color="#0F2044" /> Practical test
+              </span>
+              <button
+                type="button"
+                onClick={async () => {
+                  const next = !practicalEditing;
+                  setPracticalEditing(next);
+                  if (next && allCentres.length === 0) {
+                    const { data } = await supabase
+                      .from("test_centres")
+                      .select("id, name, town")
+                      .order("name", { ascending: true });
+                    setAllCentres((data as any) ?? []);
+                  }
+                }}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {practicalEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {practicalEditing ? (
+              <PracticalEditor
+                pupil={pupil}
+                centreInfo={centreInfo}
+                allCentres={allCentres}
+                pickerOpen={practicalCentrePickerOpen}
+                setPickerOpen={setPracticalCentrePickerOpen}
+                search={practicalCentreSearch}
+                setSearch={setPracticalCentreSearch}
+                onCentreSelect={(c) => setCentreInfo(c)}
+                onSave={async (patch) => {
+                  const ok = await savePupilFields(patch, "Practical test saved");
+                  if (ok) setPracticalEditing(false);
+                }}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div>Status: <b>{pupil.test_status || "Not booked"}</b></div>
+                {pupil.test_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Date: {fmtUKDate(pupil.test_date)}</div>
+                )}
+                {pupil.test_time && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Time: {pupil.test_time.slice(0, 5)}</div>
+                )}
+                {(centreInfo || pupil.test_centre) && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>
+                    Centre: {centreInfo?.name || pupil.test_centre}
+                    {centreInfo?.town ? `, ${centreInfo.town}` : ""}
+                  </div>
+                )}
+                {pupil.examiner && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Examiner: {pupil.examiner}</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Intake answers */}
@@ -1884,5 +2289,269 @@ function PupilExtras({
         </div>
       </div>
     </>
+  );
+}
+
+function AddressEditor({
+  initialAddress,
+  initialPostcode,
+  inputRef,
+  onSave,
+}: {
+  initialAddress: string;
+  initialPostcode: string;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onSave: (address: string, postcode: string) => void | Promise<void>;
+}) {
+  const [addr, setAddr] = useState(initialAddress);
+  const [pc, setPc] = useState(initialPostcode);
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Start typing address..."
+        value={addr}
+        onChange={(e) => setAddr(e.target.value)}
+        autoComplete="off"
+        style={{
+          width: "100%",
+          height: 40,
+          padding: "0 12px",
+          borderRadius: 8,
+          border: "0.5px solid #E2E6ED",
+          fontSize: 14,
+          outline: "none",
+          ...POPPINS,
+        }}
+      />
+      <input
+        type="text"
+        placeholder="Postcode"
+        value={pc}
+        onChange={(e) => setPc(e.target.value)}
+        style={{
+          width: "100%",
+          height: 40,
+          padding: "0 12px",
+          borderRadius: 8,
+          border: "0.5px solid #E2E6ED",
+          fontSize: 14,
+          outline: "none",
+          ...POPPINS,
+        }}
+      />
+      <div className="flex justify-end">
+        <Button variant="primary" onClick={() => onSave(addr, pc)}>Save</Button>
+      </div>
+    </div>
+  );
+}
+
+function TheoryEditor({
+  pupil,
+  onSave,
+}: {
+  pupil: Pupil;
+  onSave: (patch: Record<string, unknown>) => void | Promise<void>;
+}) {
+  const [status, setStatus] = useState<string>(pupil.theory_status || "Not started");
+  const [testDate, setTestDate] = useState<string>(pupil.theory_test_date || "");
+  const [passDate, setPassDate] = useState<string>(pupil.theory_pass_date || "");
+  const [score, setScore] = useState<string>(
+    typeof pupil.theory_score === "number" ? String(pupil.theory_score) : "",
+  );
+  const showDate = ["Booked", "Passed", "Failed"].includes(status);
+  const showPassDate = status === "Passed";
+  const showScore = status === "Passed" || status === "Failed";
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+  };
+  return (
+    <div className="flex flex-col gap-2">
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
+        {THEORY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+      {showDate && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Test date
+          <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      {showPassDate && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Pass date
+          <input type="date" value={passDate} onChange={(e) => setPassDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      {showScore && (
+        <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+          Score
+          <input type="number" value={score} onChange={(e) => setScore(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+        </label>
+      )}
+      <div className="flex justify-end">
+        <Button
+          variant="primary"
+          onClick={() => onSave({
+            theory_status: status,
+            theory_test_date: showDate && testDate ? testDate : null,
+            theory_pass_date: showPassDate && passDate ? passDate : null,
+            theory_score: showScore && score !== "" ? Number(score) : null,
+          })}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function PracticalEditor({
+  pupil,
+  centreInfo,
+  allCentres,
+  pickerOpen,
+  setPickerOpen,
+  search,
+  setSearch,
+  onCentreSelect,
+  onSave,
+}: {
+  pupil: Pupil;
+  centreInfo: { id: string; name: string; town: string | null } | null;
+  allCentres: { id: string; name: string; town: string | null }[];
+  pickerOpen: boolean;
+  setPickerOpen: (v: boolean) => void;
+  search: string;
+  setSearch: (v: string) => void;
+  onCentreSelect: (c: { id: string; name: string; town: string | null } | null) => void;
+  onSave: (patch: Record<string, unknown>) => void | Promise<void>;
+}) {
+  const [status, setStatus] = useState<string>(pupil.test_status || "Not booked");
+  const [testDate, setTestDate] = useState<string>(pupil.test_date || "");
+  const [testTime, setTestTime] = useState<string>(pupil.test_time ? pupil.test_time.slice(0, 5) : "");
+  const [centreId, setCentreId] = useState<string | null>(pupil.test_centre_id);
+  const [centreLabel, setCentreLabel] = useState<string>(
+    centreInfo ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}` : (pupil.test_centre ?? ""),
+  );
+  const [examiner, setExaminer] = useState<string>(pupil.examiner ?? "");
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+  };
+  const filtered = search.trim()
+    ? allCentres.filter((c) => {
+        const q = search.trim().toLowerCase();
+        return (c.name || "").toLowerCase().includes(q) || (c.town || "").toLowerCase().includes(q);
+      })
+    : allCentres;
+  return (
+    <div className="flex flex-col gap-2">
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
+        {PRACTICAL_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Test date
+        <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Test time
+        <input type="time" value={testTime} onChange={(e) => setTestTime(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <div>
+        <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Test centre</div>
+        <div className="flex items-center gap-2 mt-1">
+          <div className="flex-1 text-[13px]" style={{ color: centreLabel ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+            {centreLabel || "None selected"}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPickerOpen(!pickerOpen)}
+            className="text-[12px] font-semibold"
+            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+          >
+            {pickerOpen ? "Close" : "Choose"}
+          </button>
+        </div>
+        {pickerOpen && (
+          <div className="mt-2">
+            <div style={{ position: "relative" }}>
+              <Search size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+              <input
+                type="text"
+                placeholder="Search test centres..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
+              />
+            </div>
+            <div style={{ marginTop: 6, border: "0.5px solid #E2E6ED", borderRadius: 8, maxHeight: 220, overflowY: "auto", backgroundColor: "#FFFFFF" }}>
+              <div
+                onClick={() => {
+                  setCentreId(null);
+                  setCentreLabel("");
+                  onCentreSelect(null);
+                  setPickerOpen(false);
+                }}
+                className="cursor-pointer text-[13px]"
+                style={{ padding: "10px 12px", color: "#EF4444", borderBottom: "0.5px solid #F3F4F6", ...POPPINS }}
+              >
+                Clear test centre
+              </div>
+              {filtered.length === 0 ? (
+                <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>No centres found</div>
+              ) : (
+                filtered.map((c) => (
+                  <div
+                    key={c.id}
+                    onClick={() => {
+                      setCentreId(c.id);
+                      setCentreLabel(`${c.name}${c.town ? `, ${c.town}` : ""}`);
+                      onCentreSelect(c);
+                      setPickerOpen(false);
+                      setSearch("");
+                    }}
+                    className="cursor-pointer"
+                    style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                  >
+                    <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{c.name}</div>
+                    {c.town && <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>{c.town}</div>}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+        Examiner (optional)
+        <input type="text" value={examiner} onChange={(e) => setExaminer(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
+      </label>
+      <div className="flex justify-end">
+        <Button
+          variant="primary"
+          onClick={async () => {
+            const patch: Record<string, unknown> = {
+              test_status: status,
+              test_date: testDate || null,
+              test_time: testTime ? `${testTime}:00` : null,
+              test_centre_id: centreId,
+              test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
+            };
+            // examiner column may not exist — attempt with, fall back without
+            const withExaminer = { ...patch, examiner: examiner.trim() || null };
+            try {
+              await onSave(withExaminer);
+            } catch {
+              await onSave(patch);
+            }
+          }}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
   );
 }
