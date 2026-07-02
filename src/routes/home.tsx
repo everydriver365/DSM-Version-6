@@ -2830,7 +2830,7 @@ function HomePage() {
             .filter((t) => t.label.toLowerCase().includes(searchQuery.toLowerCase()))
             .map((t) => (
               <AccessTile
-                key={t.label}
+                key={`${t.route}-${t.label}`}
                 icon={t.icon}
                 bg={t.bg}
                 label={t.label}
