@@ -168,7 +168,7 @@ function DiscountCodesPage() {
     <div className="min-h-screen bg-white pb-16" style={POPPINS}>
       {/* TOP BAR */}
       <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
+        className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0B1F3A" }}
       >
         <button
