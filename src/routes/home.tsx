@@ -3124,6 +3124,7 @@ function HeroExpandedPanel({
   setGoingActive,
   onOpenLate,
   navigateTo,
+  onEol,
 }: {
   lesson: LessonRow;
   prev: PrevLessonRow | null;
@@ -3131,6 +3132,7 @@ function HeroExpandedPanel({
   setGoingActive: (v: boolean) => void;
   onOpenLate: () => void;
   navigateTo: (to: string) => void;
+  onEol: () => void;
 }) {
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
