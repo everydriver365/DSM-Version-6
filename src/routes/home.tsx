@@ -2918,142 +2918,136 @@ function HomePage() {
 
       {/* AT A GLANCE */}
       <div className="mx-4 mt-4">
-        <SectionHeader>AT A GLANCE</SectionHeader>
-        <div className="flex flex-col gap-2 mt-2">
-          {/* Rewards card */}
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/rewards" })}
-            className="flex items-center text-left"
-            style={{
-              backgroundColor: "#FFFFFF",
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-              borderRadius: 12,
-              padding: 12,
-              gap: 12,
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            <div
-              className="flex items-center justify-center shrink-0"
-              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#FEF3C7" }}
-            >
-              <Trophy size={18} color="#D97706" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                DSM Rewards
-              </div>
-              <div className="text-[13px]" style={{ color: "#6B7280" }}>
-                {glancePoints} pts
-              </div>
-            </div>
-            <span
-              className="text-[11px] font-semibold px-2 py-1 rounded-full"
-              style={{ backgroundColor: glanceTierColor, color: "#FFFFFF" }}
-            >
-              {glanceTier}
-            </span>
-            <ChevronRight size={18} color="#9CA3AF" />
-          </button>
+        <div className="flex items-center justify-between px-1" style={{ fontFamily: "Inter, sans-serif" }}>
+          <h2 className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.1em", color: "rgba(11,31,58,0.6)" }}>
+            At a Glance
+          </h2>
+        </div>
 
-          {/* Tax estimate card */}
+        <div className="grid grid-cols-2 gap-3 mt-3" style={{ fontFamily: "Inter, sans-serif" }}>
+          {/* Tax Estimate Hero (full width) */}
           <button
             type="button"
             onClick={() => navigate({ to: "/tax" })}
-            className="text-left w-full"
+            className="col-span-2 text-left active:scale-[0.98] transition-transform flex flex-col justify-between"
             style={{
               backgroundColor: "#FFFFFF",
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-              borderRadius: 12,
-              padding: 12,
-              fontFamily: "Inter, sans-serif",
+              borderRadius: 24,
+              padding: 20,
+              border: "1px solid rgba(11,31,58,0.05)",
+              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
             }}
           >
-            <div className="flex items-center gap-3">
-              <div
-                className="flex items-center justify-center shrink-0"
-                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#DBEAFE" }}
-              >
-                <Calculator size={18} color="#1877D6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="text-[10px] uppercase font-semibold"
-                    style={{ color: "#9CA3AF", letterSpacing: 0.6 }}
-                  >
-                    TAX ESTIMATE
-                  </span>
-                  <span className="text-[10px]" style={{ color: "#9CA3AF" }}>
-                    {taxYearLabel}
-                  </span>
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 16, backgroundColor: "#F3F8FF" }}
+                >
+                  <Calculator size={20} color="#1877D6" />
                 </div>
-                <div className="text-[20px] font-bold mt-0.5" style={{ color: "#0B1F3A" }}>
+                <div>
+                  <p className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>Tax Estimate</p>
+                  <p className="text-[11px] font-medium" style={{ color: "rgba(11,31,58,0.5)" }}>Tax Year {taxYearLabel}</p>
+                </div>
+              </div>
+              <ChevronRight size={20} color="rgba(11,31,58,0.2)" />
+            </div>
+
+            <div className="mb-6">
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold" style={{ color: "#0B1F3A" }}>
                   £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
-                </div>
+                </span>
+                <span className="text-[13px] font-medium" style={{ color: "rgba(11,31,58,0.4)" }}>projected</span>
               </div>
-              <ChevronRight size={18} color="#9CA3AF" />
+              <p className="text-[12px] mt-1" style={{ color: "rgba(11,31,58,0.6)" }}>
+                Full-year estimate based on current data
+              </p>
             </div>
-            <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
-              Projected full-year estimate
-            </div>
-            <div
-              className="mt-2 w-full"
-              style={{ height: 4, borderRadius: 2, backgroundColor: "#EEF2F7", overflow: "hidden" }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: `${(monthsElapsed / 12) * 100}%`,
-                  backgroundColor: "#1877D6",
-                  borderRadius: 2,
-                }}
-              />
+
+            <div className="space-y-2">
+              <div className="w-full" style={{ height: 6, backgroundColor: "#F3F8FF", borderRadius: 999, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${(monthsElapsed / 12) * 100}%`, backgroundColor: "#1877D6", borderRadius: 999 }} />
+              </div>
+              <div className="flex justify-between text-[10px] font-bold uppercase" style={{ letterSpacing: "0.08em", color: "rgba(11,31,58,0.4)" }}>
+                <span>Year Progress</span>
+                <span>{Math.round((monthsElapsed / 12) * 100)}%</span>
+              </div>
             </div>
           </button>
 
-          {/* MTD card */}
+          {/* Rewards */}
           <button
             type="button"
-            onClick={() => navigate({ to: "/mtd" })}
-            className="flex items-center text-left"
+            onClick={() => navigate({ to: "/rewards" })}
+            className="text-left flex flex-col active:scale-[0.98] transition-transform"
             style={{
               backgroundColor: "#FFFFFF",
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-              borderRadius: 12,
-              padding: 12,
-              gap: 12,
-              fontFamily: "Inter, sans-serif",
+              borderRadius: 24,
+              padding: 16,
+              height: 176,
+              border: "1px solid rgba(11,31,58,0.05)",
+              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
             }}
           >
             <div
-              className="flex items-center justify-center shrink-0"
-              style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#ECFDF5" }}
+              className="flex items-center justify-center mb-4"
+              style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: "#FFF7ED" }}
             >
-              <FileSpreadsheet size={18} color="#16A34A" />
+              <Trophy size={20} color="#EA580C" />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                Making Tax Digital
-              </div>
+            <p className="text-[13px] font-semibold mb-1" style={{ color: "#0B1F3A" }}>Rewards</p>
+            <div className="mt-auto">
+              <p className="text-xl font-bold" style={{ color: "#0B1F3A" }}>
+                {glancePoints}{" "}
+                <span className="text-[11px] font-medium uppercase" style={{ color: "rgba(11,31,58,0.4)" }}>pts</span>
+              </p>
+              <span
+                className="inline-block mt-2 px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase"
+                style={{ backgroundColor: glanceTierColor, color: "#FFFFFF", letterSpacing: "-0.01em" }}
+              >
+                {glanceTier}
+              </span>
             </div>
-            <span
-              className="text-[11px] font-semibold px-2 py-1 rounded-full"
-              style={{
-                backgroundColor: glanceMtdEnrolled ? "#ECFDF5" : "#FEF3C7",
-                color: glanceMtdEnrolled ? "#16A34A" : "#B45309",
-              }}
+          </button>
+
+          {/* MTD */}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/mtd" })}
+            className="text-left flex flex-col active:scale-[0.98] transition-transform"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: 24,
+              padding: 16,
+              height: 176,
+              border: "1px solid rgba(11,31,58,0.05)",
+              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
+            }}
+          >
+            <div
+              className="flex items-center justify-center mb-4"
+              style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: "#ECFDF5" }}
             >
-              {glanceMtdEnrolled ? "Enrolled" : "Not enrolled"}
-            </span>
-            <ChevronRight size={18} color="#9CA3AF" />
+              <FileSpreadsheet size={20} color="#059669" />
+            </div>
+            <p className="text-[13px] font-semibold mb-1" style={{ color: "#0B1F3A" }}>MTD Status</p>
+            <div className="mt-auto">
+              <p className="text-[12px] leading-tight font-medium mb-3" style={{ color: "rgba(11,31,58,0.7)" }}>
+                Making Tax Digital enrollment
+              </p>
+              <span
+                className="inline-block px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase"
+                style={{
+                  backgroundColor: glanceMtdEnrolled ? "#ECFDF5" : "#FFFBEB",
+                  color: glanceMtdEnrolled ? "#047857" : "#B45309",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {glanceMtdEnrolled ? "Enrolled" : "Not Enrolled"}
+              </span>
+            </div>
           </button>
         </div>
       </div>
