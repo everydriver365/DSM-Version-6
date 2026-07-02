@@ -1210,12 +1210,7 @@ function HomePage() {
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
-    const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
-    const accent =
-      isLive ? lessonColour
-      : status === "completed" ? lessonColour
-      : status === "cancelled" ? "#9CA3AF"
-      : lessonColour;
+    const accent = status === "cancelled" ? "#9CA3AF" : "#1A52A0";
 
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
@@ -1250,9 +1245,8 @@ function HomePage() {
           borderWidth: "0.5px",
           borderStyle: "solid",
           borderColor: "#EEF2F7",
-          borderLeft: `4px solid ${lessonColour}`,
+          borderLeft: `4px solid ${accent}`,
           marginBottom: 6,
-          background: `${lessonColour}10`,
           cursor: "pointer",
         }}
       >
@@ -2418,7 +2412,7 @@ function HomePage() {
                 }
               }
 
-              const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
+              
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
@@ -2578,8 +2572,8 @@ function HomePage() {
                   className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
                   style={{
                     padding: "10px 16px",
-                    borderLeft: `4px solid ${lessonColour}`,
-                    background: `${lessonColour}10`,
+                    borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                    background: "#fff",
                   }}
                 >
                   {(() => {
