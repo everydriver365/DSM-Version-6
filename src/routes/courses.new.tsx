@@ -16,7 +16,7 @@ export const Route = createFileRoute("/courses/new")({
   component: NewCoursePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
@@ -57,7 +57,7 @@ const TYPE_META: Record<
   intensive: { label: "Intensive", color: "#CC2229", bg: "#fbe8e8", desc: "All hours in one week" },
   "semi-intensive": { label: "Semi-intensive", color: "#F59E0B", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
   weekly: { label: "Weekly lessons", color: "#16A34A", bg: "#e7f6ec", desc: "Regular weekly slots" },
-  custom: { label: "Custom", color: "#1A52A0", bg: "#e8eefb", desc: "You define the schedule" },
+  custom: { label: "Custom", color: "#1A4A6E", bg: "#e8eefb", desc: "You define the schedule" },
 };
 
 function ymd(d: Date) {
@@ -400,7 +400,7 @@ function NewCoursePage() {
 
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 24 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 24 }}>
       {/* Top bar */}
       <div
         style={{
@@ -461,15 +461,15 @@ function NewCoursePage() {
               onClick={() => setStep(s.n as 1 | 2 | 3)}
               style={{
                 flex: 1,
-                background: active ? "#1A52A0" : done ? "#e8eefb" : "#fff",
-                color: active ? "#fff" : "#1A52A0",
+                background: active ? "#1A4A6E" : done ? "#e8eefb" : "#fff",
+                color: active ? "#fff" : "#1A4A6E",
                 border: "1px solid #e3e6ec",
                 borderRadius: 10,
                 padding: "8px 6px",
                 fontSize: 12,
                 fontWeight: 700,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               {s.n}. {s.label}
@@ -560,12 +560,12 @@ function NewCoursePage() {
                 flex: 1,
                 height: 44,
                 background: "#fff",
-                color: "#1A52A0",
-                border: "1px solid #1A52A0",
+                color: "#1A4A6E",
+                border: "1px solid #1A4A6E",
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >Back</button>
           )}
@@ -575,13 +575,13 @@ function NewCoursePage() {
               style={{
                 flex: 1,
                 height: 44,
-                background: "#1A52A0",
+                background: "#1A4A6E",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >Next</button>
           ) : (
@@ -593,12 +593,12 @@ function NewCoursePage() {
                   flex: 1,
                   height: 44,
                   background: "#fff",
-                  color: "#1A52A0",
-                  border: "1px solid #1A52A0",
+                  color: "#1A4A6E",
+                  border: "1px solid #1A4A6E",
                   borderRadius: 10,
                   fontWeight: 600,
                   cursor: "pointer",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >Save draft</button>
               <button
@@ -613,7 +613,7 @@ function NewCoursePage() {
                   borderRadius: 10,
                   fontWeight: 700,
                   cursor: saving ? "not-allowed" : "pointer",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -676,7 +676,7 @@ function Step1(props: {
                 border: `2px solid ${active ? meta.color : "#e3e6ec"}`,
                 background: active ? meta.bg : "#fff",
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               <div style={{ fontSize: 13, fontWeight: 800, color: meta.color }}>{meta.label}</div>
@@ -705,13 +705,13 @@ function Step1(props: {
                 style={{
                   padding: "8px 12px",
                   borderRadius: 8,
-                  border: `1px solid ${active ? "#1A52A0" : "#e3e6ec"}`,
-                  background: active ? "#1A52A0" : "#fff",
+                  border: `1px solid ${active ? "#1A4A6E" : "#e3e6ec"}`,
+                  background: active ? "#1A4A6E" : "#fff",
                   color: active ? "#fff" : "#1A1A2E",
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: "pointer",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
                 {h}h{h === 28 ? " (test week)" : ""}
@@ -738,10 +738,10 @@ function Step1(props: {
           style={{
             width: "100%",
             borderRadius: 10,
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             padding: 10,
             fontSize: 14,
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             background: "#fff",
             resize: "vertical",
           }}
@@ -858,12 +858,12 @@ function Step2(props: {
             display: "flex",
             alignItems: "center",
             padding: "0 12px",
-            background: "#F2F4F8",
-            border: "0.5px solid #E2E6ED",
+            background: "#F3F8FF",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 10,
             color: "#1A1A2E",
             fontSize: 14,
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
           }}
         >
           {endDate
@@ -893,15 +893,15 @@ function Step2(props: {
                   gap: 4,
                   padding: 12,
                   borderRadius: 12,
-                  border: `2px solid ${active ? "#0F2044" : "#e3e6ec"}`,
-                  background: active ? "#0F2044" : "#fff",
+                  border: `2px solid ${active ? "#0C2340" : "#e3e6ec"}`,
+                  background: active ? "#0C2340" : "#fff",
                   color: active ? "#fff" : "#1A1A2E",
                   cursor: "pointer",
                   textAlign: "left",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
-                <Icon size={18} color={active ? "#fff" : "#0F2044"} />
+                <Icon size={18} color={active ? "#fff" : "#0C2340"} />
                 <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
                 <div style={{ fontSize: 11, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
               </button>
@@ -927,13 +927,13 @@ function Step2(props: {
                     minWidth: 44,
                     height: 40,
                     borderRadius: 20,
-                    border: `1.5px solid ${active ? "#0F2044" : "#E2E6ED"}`,
-                    background: active ? "#0F2044" : "#fff",
-                    color: active ? "#fff" : "#0F2044",
+                    border: `1.5px solid ${active ? "#0C2340" : "#EEF2F7"}`,
+                    background: active ? "#0C2340" : "#fff",
+                    color: active ? "#fff" : "#0C2340",
                     fontWeight: 600,
                     fontSize: 12,
                     cursor: "pointer",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   {DAY_LABELS[d]}
@@ -950,19 +950,19 @@ function Step2(props: {
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
-                    ? "#0F2044"
+                    ? "#0C2340"
                     : "#fff",
                 color:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0F2044",
+                    : "#0C2340",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               Weekdays
@@ -974,19 +974,19 @@ function Step2(props: {
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
-                    ? "#0F2044"
+                    ? "#0C2340"
                     : "#fff",
                 color:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0F2044",
+                    : "#0C2340",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               Weekends
@@ -998,19 +998,19 @@ function Step2(props: {
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
-                    ? "#0F2044"
+                    ? "#0C2340"
                     : "#fff",
                 color:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0F2044",
+                    : "#0C2340",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               All days
@@ -1043,11 +1043,11 @@ function Step2(props: {
         style={{
           padding: 12,
           background: "#F8F9FB",
-          border: "0.5px solid #E2E6ED",
+          border: "0.5px solid #EEF2F7",
           borderRadius: 10,
           fontSize: 13,
-          color: "#0F2044",
-          fontFamily: "Poppins, sans-serif",
+          color: "#0C2340",
+          fontFamily: "Inter, sans-serif",
           lineHeight: 1.4,
         }}
       >
@@ -1078,10 +1078,10 @@ function Step2(props: {
             width: "100%",
             height: 44,
             borderRadius: 10,
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             padding: "0 10px",
             fontSize: 14,
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             background: "#fff",
             color: "#1A1A2E",
           }}
@@ -1098,12 +1098,12 @@ function Step2(props: {
         <FieldLabel>Lesson times</FieldLabel>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A52A0", full: false },
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A4A6E", full: false },
             { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
             { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
             { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
             { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A52A0", full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A4A6E", full: false },
             { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
           ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
             const active = timePref === key;
@@ -1122,7 +1122,7 @@ function Step2(props: {
                   border: `1.5px solid ${active ? color : "#e3e6ec"}`,
                   background: active ? `${color}10` : "#fff",
                   cursor: "pointer",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   textAlign: "left",
                 }}
               >
@@ -1145,27 +1145,27 @@ function Step2(props: {
         {timePref === "custom" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>From</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>From</span>
               <input
                 type="time"
                 value={lessonTimeFrom}
                 onChange={(e) => setLessonTimeFrom(e.target.value)}
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
                   color: "#1A1A2E", background: "#fff",
                 }}
               />
             </label>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>To</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>To</span>
               <input
                 type="time"
                 value={lessonTimeTo}
                 onChange={(e) => setLessonTimeTo(e.target.value)}
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
                   color: "#1A1A2E", background: "#fff",
                 }}
               />
@@ -1275,7 +1275,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
         fontWeight: 600,
         color: "#6B7280",
         marginBottom: 6,
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       {children}
@@ -1300,11 +1300,11 @@ function ToggleRow({
         gap: 10,
         padding: 12,
         background: "#fff",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         borderRadius: 10,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -1318,7 +1318,7 @@ function ToggleRow({
           width: 40,
           height: 24,
           borderRadius: 12,
-          background: value ? "#16A34A" : "#E2E6ED",
+          background: value ? "#16A34A" : "#EEF2F7",
           position: "relative",
           transition: "background 150ms",
           flexShrink: 0,
@@ -1360,12 +1360,12 @@ function CheckRow({
         gap: 10,
         padding: "10px 12px",
         background: "#fff",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         borderRadius: 10,
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         textAlign: "left",
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Inter, sans-serif",
         fontSize: 14,
         color: "#1A1A2E",
       }}
@@ -1375,8 +1375,8 @@ function CheckRow({
           width: 20,
           height: 20,
           borderRadius: 4,
-          border: `1.5px solid ${checked ? "#1A52A0" : "#9CA3AF"}`,
-          background: checked ? "#1A52A0" : "#fff",
+          border: `1.5px solid ${checked ? "#1A4A6E" : "#9CA3AF"}`,
+          background: checked ? "#1A4A6E" : "#fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1547,10 +1547,10 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A52A0" : "#E2E6ED"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A4A6E" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
-            fontFamily: "Poppins, sans-serif",
+            fontFamily: "Inter, sans-serif",
             fontSize: 14,
             color: "#1A1A2E",
             background: "#fff",
@@ -1560,7 +1560,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
           {error}
         </div>
       )}
@@ -1574,7 +1574,7 @@ function PostcodeAutocomplete(props: {
             zIndex: 50,
             marginTop: 4,
             background: "#fff",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 8,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
             maxHeight: 240,
@@ -1596,11 +1596,11 @@ function PostcodeAutocomplete(props: {
                 gap: 8,
                 cursor: "pointer",
                 background: active === i ? "#F8F9FB" : "#fff",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               <MapPin size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0F2044", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: 700, color: "#0C2340", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

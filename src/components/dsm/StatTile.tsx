@@ -10,11 +10,11 @@ export function StatTile({ value, label }: Props) {
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
-        fontFamily: "Poppins, sans-serif",
+        borderColor: "#EEF2F7",
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      <div className="text-[24px] font-semibold text-[#0F2044] leading-tight">{value}</div>
+      <div className="text-[24px] font-semibold text-[#0C2340] leading-tight">{value}</div>
       <div
         className="mt-1 text-[11px] font-medium text-[#6B7280] uppercase"
         style={{ letterSpacing: "0.05em" }}

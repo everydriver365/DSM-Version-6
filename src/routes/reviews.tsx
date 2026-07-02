@@ -12,7 +12,7 @@ export const Route = createFileRoute("/reviews")({
   component: ReviewsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Review {
   id: string;
@@ -37,8 +37,8 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
           <Star
             key={i}
             size={size}
-            color={filled ? "#F59E0B" : "#E2E6ED"}
-            fill={filled ? "#F59E0B" : "#E2E6ED"}
+            color={filled ? "#F59E0B" : "#EEF2F7"}
+            fill={filled ? "#F59E0B" : "#EEF2F7"}
           />
         );
       })}
@@ -99,7 +99,7 @@ function ReviewsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
       >
         <div className="text-white font-bold" style={{ fontSize: 36, lineHeight: 1, ...POPPINS }}>
           {count > 0 ? average.toFixed(1) : "—"}
@@ -129,7 +129,7 @@ function ReviewsPage() {
               return (
                 <Card key={r.id}>
                   <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0F2044", ...POPPINS }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0C2340", ...POPPINS }}>
                       {name}
                     </div>
                     <div className="text-[11px] shrink-0" style={{ color: "#6B7280", ...POPPINS }}>

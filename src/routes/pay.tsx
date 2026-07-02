@@ -104,7 +104,7 @@ function PayPage() {
       <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column" }}>
         <header
           style={{
-            background: "#0F2044",
+            background: "#0C2340",
             color: "#fff",
             padding: 16,
             textAlign: "center",
@@ -139,13 +139,13 @@ function PayPage() {
             >
               ✓
             </div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0F2044" }}>Payment confirmed!</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0C2340" }}>Payment confirmed!</h1>
             <p style={{ color: "#64748b", marginTop: 8 }}>Thank you.</p>
           </div>
         ) : (
           <>
             <div style={{ padding: 24, textAlign: "center" }}>
-              <div style={{ fontSize: 48, fontWeight: 700, color: "#0F2044", lineHeight: 1 }}>
+              <div style={{ fontSize: 48, fontWeight: 700, color: "#0C2340", lineHeight: 1 }}>
                 £{amountPounds}
               </div>
               {desc && (
@@ -181,7 +181,7 @@ function PayPage() {
                     style={{
                       width: "100%",
                       marginTop: 12,
-                      background: "#0F2044",
+                      background: "#0C2340",
                       color: "#fff",
                       border: 0,
                       borderRadius: 10,

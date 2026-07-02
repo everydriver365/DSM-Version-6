@@ -38,8 +38,8 @@ function ForgotPasswordPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0F2044] px-4"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0C2340] px-4"
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div className="flex flex-col items-center mb-8">
         <img src={dsmLogoAsset.url} alt="DSM logo" className="h-[60px] w-auto mb-2" />
@@ -53,21 +53,21 @@ function ForgotPasswordPage() {
         {sent ? (
           <div className="flex flex-col items-center text-center">
             <CheckCircle2 size={48} className="text-[#16A34A] mb-3" />
-            <h2 className="text-[20px] font-semibold text-[#0F2044]">Check your email</h2>
+            <h2 className="text-[20px] font-semibold text-[#0C2340]">Check your email</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">
-              We've sent a password reset link to <span className="text-[#0F2044]">{email}</span>.
+              We've sent a password reset link to <span className="text-[#0C2340]">{email}</span>.
             </p>
             <p className="text-[12px] text-[#6B7280] mt-3">
               Check your spam folder too. The link will take you to the reset password page.
             </p>
 
-            <Link to="/login" className="text-[13px] text-[#1A52A0] hover:underline mt-6">
+            <Link to="/login" className="text-[13px] text-[#1A4A6E] hover:underline mt-6">
               Back to sign in
             </Link>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="flex flex-col">
-            <h2 className="text-[20px] font-semibold text-[#0F2044] text-center">Reset password</h2>
+            <h2 className="text-[20px] font-semibold text-[#0C2340] text-center">Reset password</h2>
             <p className="text-[13px] text-[#6B7280] text-center mb-6">
               Enter your email and we'll send a reset link
             </p>
@@ -83,8 +83,8 @@ function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
-              style={{ fontFamily: "Poppins, sans-serif", border: "1.5px solid #CBD5E1" }}
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
+              style={{ fontFamily: "Inter, sans-serif", border: "1.5px solid #CBD5E1" }}
             />
 
             <div className="mt-6">
@@ -99,7 +99,7 @@ function ForgotPasswordPage() {
               </p>
             )}
 
-            <Link to="/login" className="text-[13px] text-[#1A52A0] hover:underline text-center mt-4">
+            <Link to="/login" className="text-[13px] text-[#1A4A6E] hover:underline text-center mt-4">
               Back to sign in
             </Link>
           </form>

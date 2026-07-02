@@ -12,7 +12,7 @@ export const Route = createFileRoute("/onboarding")({
   component: OnboardingPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const TOTAL_STEPS = 6;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;
@@ -172,7 +172,7 @@ function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen w-full bg-[#0F2044] flex flex-col items-center px-4 py-8"
+      className="min-h-screen w-full bg-[#0C2340] flex flex-col items-center px-4 py-8"
       style={POPPINS}
     >
       {/* Progress */}
@@ -183,7 +183,7 @@ function OnboardingPage() {
         </div>
         <div className="h-2 w-full bg-[#1f2f55] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1A52A0] transition-all duration-300"
+            className="h-full bg-[#1A4A6E] transition-all duration-300"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -197,7 +197,7 @@ function OnboardingPage() {
         {step === 1 && (
           <div className="flex flex-col items-center gap-4">
             <img src={dsmLogoAsset.url} alt="DSM" className="h-[60px] w-auto" />
-            <h1 className="text-[24px] font-semibold text-[#0F2044] text-center">Welcome to DSM</h1>
+            <h1 className="text-[24px] font-semibold text-[#0C2340] text-center">Welcome to DSM</h1>
             <p className="text-[14px] text-[#6B7280] text-center">
               Let&apos;s get you set up in 3 minutes
             </p>
@@ -209,7 +209,7 @@ function OnboardingPage() {
 
         {step === 2 && (
           <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0F2044]">Tell us about yourself</h2>
+            <h2 className="text-[20px] font-semibold text-[#0C2340]">Tell us about yourself</h2>
             <Field label="First name" value={firstName} onChange={setFirstName} />
             <Field label="Last name" value={lastName} onChange={setLastName} />
             <Field label="Phone" value={phone} onChange={setPhone} type="tel" />
@@ -225,7 +225,7 @@ function OnboardingPage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0F2044]">Your teaching vehicle</h2>
+            <h2 className="text-[20px] font-semibold text-[#0C2340]">Your teaching vehicle</h2>
             <Field label="Car make" placeholder="Ford" value={carMake} onChange={setCarMake} />
             <Field label="Car model" placeholder="Fiesta" value={carModel} onChange={setCarModel} />
             <Field label="Year" placeholder="2022" value={carYear} onChange={setCarYear} type="number" />
@@ -235,7 +235,7 @@ function OnboardingPage() {
               <select
                 value={transmission}
                 onChange={(e) => setTransmission(e.target.value as "Manual" | "Automatic")}
-                className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white focus:outline-none focus:border-[#1A52A0]"
+                className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:outline-none focus:border-[#1A4A6E]"
                 style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
               >
                 <option>Manual</option>
@@ -250,7 +250,7 @@ function OnboardingPage() {
 
         {step === 4 && (
           <div className="flex flex-col gap-3">
-            <h2 className="text-[20px] font-semibold text-[#0F2044]">When do you work?</h2>
+            <h2 className="text-[20px] font-semibold text-[#0C2340]">When do you work?</h2>
             <div className="flex flex-col gap-2">
               {DAYS.map(({ key, label }) => {
                 const h = hours[key];
@@ -258,16 +258,16 @@ function OnboardingPage() {
                   <div
                     key={key}
                     className="flex items-center gap-2 p-2 rounded-lg"
-                    style={{ border: "1px solid #E2E6ED" }}
+                    style={{ border: "1px solid #EEF2F7" }}
                   >
-                    <label className="flex items-center gap-2 w-[110px] text-[13px] text-[#0F2044] cursor-pointer">
+                    <label className="flex items-center gap-2 w-[110px] text-[13px] text-[#0C2340] cursor-pointer">
                       <input
                         type="checkbox"
                         checked={h.enabled}
                         onChange={(e) =>
                           setHours((prev) => ({ ...prev, [key]: { ...prev[key], enabled: e.target.checked } }))
                         }
-                        className="h-4 w-4 accent-[#1A52A0]"
+                        className="h-4 w-4 accent-[#1A4A6E]"
                       />
                       {label}
                     </label>
@@ -278,7 +278,7 @@ function OnboardingPage() {
                       onChange={(e) =>
                         setHours((prev) => ({ ...prev, [key]: { ...prev[key], start: e.target.value } }))
                       }
-                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0F2044] bg-white disabled:opacity-40"
+                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0C2340] bg-white disabled:opacity-40"
                       style={{ ...POPPINS, border: "1px solid #CBD5E1" }}
                     />
                     <span className="text-[#6B7280] text-[12px]">to</span>
@@ -289,7 +289,7 @@ function OnboardingPage() {
                       onChange={(e) =>
                         setHours((prev) => ({ ...prev, [key]: { ...prev[key], end: e.target.value } }))
                       }
-                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0F2044] bg-white disabled:opacity-40"
+                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0C2340] bg-white disabled:opacity-40"
                       style={{ ...POPPINS, border: "1px solid #CBD5E1" }}
                     />
                   </div>
@@ -302,7 +302,7 @@ function OnboardingPage() {
 
         {step === 5 && (
           <div className="flex flex-col gap-4">
-            <h2 className="text-[24px] font-bold text-[#0F2044]">Want a free website?</h2>
+            <h2 className="text-[24px] font-bold text-[#0C2340]">Want a free website?</h2>
             <p className="text-[14px] text-[#6B7280]">
               Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
             </p>
@@ -316,19 +316,19 @@ function OnboardingPage() {
             />
             {websiteChoice === "yes" && (
               <div className="pl-2 -mt-2 flex flex-col gap-2">
-                <label className="flex items-start gap-2 text-[13px] text-[#0F2044] cursor-pointer">
+                <label className="flex items-start gap-2 text-[13px] text-[#0C2340] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={wantsCustomDomain}
                     onChange={(e) => setWantsCustomDomain(e.target.checked)}
-                    className="h-4 w-4 mt-0.5 accent-[#1A52A0]"
+                    className="h-4 w-4 mt-0.5 accent-[#1A4A6E]"
                   />
                   <span>
                     I&apos;d like a custom domain (e.g. www.myname.co.uk) — contact me about this
                   </span>
                 </label>
                 {wantsCustomDomain && (
-                  <p className="text-[12px] text-[#1A52A0] bg-[#EEF3FB] rounded-md px-3 py-2">
+                  <p className="text-[12px] text-[#1A4A6E] bg-[#EEF3FB] rounded-md px-3 py-2">
                     Our team will be in touch to help set this up
                   </p>
                 )}
@@ -336,7 +336,7 @@ function OnboardingPage() {
             )}
 
             <ChoiceCard
-              icon={<Globe size={22} color="#1A52A0" />}
+              icon={<Globe size={22} color="#1A4A6E" />}
               title="I already have a website"
               subtitle="Skip this — I'll link my existing site instead"
               selected={websiteChoice === "existing"}
@@ -352,7 +352,7 @@ function OnboardingPage() {
                   value={existingWebsiteUrl}
                   placeholder="https://www.mydrivingschool.co.uk"
                   onChange={(e) => setExistingWebsiteUrl(e.target.value)}
-                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
                   style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
                 />
               </div>
@@ -380,7 +380,7 @@ function OnboardingPage() {
             >
               <Check size={36} color="#fff" strokeWidth={3} />
             </div>
-            <h2 className="text-[24px] font-semibold text-[#0F2044] text-center">You&apos;re all set!</h2>
+            <h2 className="text-[24px] font-semibold text-[#0C2340] text-center">You&apos;re all set!</h2>
             <p className="text-[14px] text-[#6B7280] text-center">Your DSM account is ready</p>
             {error && (
               <p className="text-[13px] text-[#CC2229] text-center" role="alert">{error}</p>
@@ -420,7 +420,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+        className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
         style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
       />
     </div>
@@ -447,13 +447,13 @@ function ChoiceCard({
       className="w-full flex items-start gap-3 rounded-xl p-3 text-left transition-colors"
       style={{
         ...POPPINS,
-        border: selected ? "1.5px solid #1A52A0" : "1px solid #E2E6ED",
+        border: selected ? "1.5px solid #1A4A6E" : "1px solid #EEF2F7",
         background: selected ? "#EEF3FB" : "#FFFFFF",
       }}
     >
       <div className="mt-0.5">{icon}</div>
       <div className="flex-1">
-        <div className="text-[14px] font-semibold text-[#0F2044]">{title}</div>
+        <div className="text-[14px] font-semibold text-[#0C2340]">{title}</div>
         <div className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</div>
       </div>
     </button>

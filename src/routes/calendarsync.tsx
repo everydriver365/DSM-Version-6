@@ -17,7 +17,7 @@ export const Route = createFileRoute("/calendarsync")({
   component: CalendarSyncPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 
 function CalendarSyncPage() {
@@ -105,13 +105,13 @@ function CalendarSyncPage() {
             backgroundColor: "#EEF4FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#1A52A0",
+            borderColor: "#1A4A6E",
             borderRadius: 12,
             padding: 16,
           }}
         >
-          <Info size={20} color="#1A52A0" className="shrink-0 mt-0.5" />
-          <p className="text-[13px] text-[#0F2044] leading-[1.5]" style={POPPINS}>
+          <Info size={20} color="#1A4A6E" className="shrink-0 mt-0.5" />
+          <p className="text-[13px] text-[#0C2340] leading-[1.5]" style={POPPINS}>
             Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
           </p>
         </div>
@@ -124,10 +124,10 @@ function CalendarSyncPage() {
             value={icsUrl}
             className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white"
             style={{
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
             onFocus={(e) => e.target.select()}
           />
@@ -160,7 +160,7 @@ function CalendarSyncPage() {
           }}
         >
           <AlertTriangle size={20} color="#F59E0B" className="shrink-0 mt-0.5" />
-          <p className="text-[13px] text-[#0F2044] leading-[1.5]" style={POPPINS}>
+          <p className="text-[13px] text-[#0C2340] leading-[1.5]" style={POPPINS}>
             This is a one-way read feed. Your DSM lessons appear in your calendar app, but changes made in your calendar app will not sync back to DSM. Always manage your lessons in DSM.
           </p>
         </div>
@@ -176,12 +176,12 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0C2340]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#1A52A0" />
+                <Calendar size={20} color="#1A4A6E" />
                 Google Calendar
               </span>
             </AccordionTrigger>
@@ -190,55 +190,55 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     1
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Open Google Calendar on a computer (not phone)
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     2
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click + next to "Other calendars" on the left sidebar
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     3
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click "From URL"
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     4
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Paste your ICS feed URL above
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     5
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click "Add calendar"
                   </p>
                 </li>
@@ -258,10 +258,10 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0C2340]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
                 <Calendar size={20} color="#CC2229" />
                 Apple Calendar
@@ -276,7 +276,7 @@ function CalendarSyncPage() {
                   >
                     1
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Open the Calendar app on Mac or iPhone
                   </p>
                 </li>
@@ -287,7 +287,7 @@ function CalendarSyncPage() {
                   >
                     2
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click File → New Calendar Subscription (Mac) or tap Calendars → Add Calendar → Add Subscription Calendar (iPhone)
                   </p>
                 </li>
@@ -298,7 +298,7 @@ function CalendarSyncPage() {
                   >
                     3
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Paste your ICS feed URL
                   </p>
                 </li>
@@ -309,7 +309,7 @@ function CalendarSyncPage() {
                   >
                     4
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click Subscribe
                   </p>
                 </li>
@@ -329,12 +329,12 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0F2044]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0C2340]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#1A52A0" />
+                <Calendar size={20} color="#1A4A6E" />
                 Outlook
               </span>
             </AccordionTrigger>
@@ -343,44 +343,44 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     1
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Go to outlook.com and open Calendar
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     2
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click Add calendar → Subscribe from web
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     3
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Paste your ICS feed URL
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1A52A0", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1A4A6E", ...POPPINS }}
                   >
                     4
                   </div>
-                  <p className="text-[14px] text-[#0F2044] leading-[1.4] pt-0.5" style={POPPINS}>
+                  <p className="text-[14px] text-[#0C2340] leading-[1.4] pt-0.5" style={POPPINS}>
                     Click Import
                   </p>
                 </li>

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -57,7 +57,7 @@ export function ConfirmDialog({
         <div
           id="confirm-dialog-title"
           className="text-[16px] font-semibold"
-          style={{ color: "#0F2044" }}
+          style={{ color: "#0C2340" }}
         >
           {title}
         </div>
@@ -73,10 +73,10 @@ export function ConfirmDialog({
             className="flex-1 h-11 rounded-lg text-[14px] font-medium"
             style={{
               backgroundColor: "transparent",
-              color: "#0F2044",
+              color: "#0C2340",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           >
             {cancelLabel}

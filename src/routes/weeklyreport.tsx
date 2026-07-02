@@ -16,7 +16,7 @@ export const Route = createFileRoute("/weeklyreport")({
   component: WeeklyReportPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -225,9 +225,9 @@ function WeeklyReportPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: "#F3F4F6" }}
         >
-          <ChevronLeft size={18} color="#0F2044" />
+          <ChevronLeft size={18} color="#0C2340" />
         </button>
-        <div className="text-[14px] font-medium text-[#0F2044]">
+        <div className="text-[14px] font-medium text-[#0C2340]">
           {formatShort(weekStart)} — {formatShort(addDays(weekStart, 6))}
         </div>
         <button
@@ -237,14 +237,14 @@ function WeeklyReportPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: "#F3F4F6" }}
         >
-          <ChevronRight size={18} color="#0F2044" />
+          <ChevronRight size={18} color="#0C2340" />
         </button>
       </div>
 
       {/* SUMMARY CARD */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
       >
         <div className="grid grid-cols-2 gap-3">
           <SummaryStat label="Lessons" value={String(totalLessons)} color="#ffffff" />
@@ -258,9 +258,9 @@ function WeeklyReportPage() {
         <SectionHeader>LESSON BREAKDOWN</SectionHeader>
         <Card>
           <BreakdownRow label="Completed" count={completed.length} color="#16A34A" />
-          <div style={{ height: 1, backgroundColor: "#E2E6ED", margin: "10px 0" }} />
+          <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "10px 0" }} />
           <BreakdownRow label="Cancelled" count={cancelled.length} color="#CC2229" />
-          <div style={{ height: 1, backgroundColor: "#E2E6ED", margin: "10px 0" }} />
+          <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "10px 0" }} />
           <BreakdownRow label="No-show" count={noShow.length} color="#F59E0B" />
         </Card>
 
@@ -272,7 +272,7 @@ function WeeklyReportPage() {
             topEarners.map((p, i) => (
               <div key={i}>
                 {i > 0 && (
-                  <div style={{ height: 1, backgroundColor: "#E2E6ED", margin: "10px 0" }} />
+                  <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "10px 0" }} />
                 )}
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <div
@@ -281,18 +281,18 @@ function WeeklyReportPage() {
                       width: 36,
                       height: 36,
                       borderRadius: 18,
-                      backgroundColor: "#1A52A0",
+                      backgroundColor: "#1A4A6E",
                     }}
                   >
                     {p.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
-                    <div className="text-[14px] font-medium text-[#0F2044]">{p.name}</div>
+                    <div className="text-[14px] font-medium text-[#0C2340]">{p.name}</div>
                     <div className="text-[12px] text-[#6B7280]">
                       {p.count} lesson{p.count === 1 ? "" : "s"}
                     </div>
                   </div>
-                  <div className="text-[14px] font-semibold text-[#0F2044]">
+                  <div className="text-[14px] font-semibold text-[#0C2340]">
                     {formatGBP(p.amount)}
                   </div>
                 </div>
@@ -308,19 +308,19 @@ function WeeklyReportPage() {
             return (
               <div key={i}>
                 {i > 0 && (
-                  <div style={{ height: 1, backgroundColor: "#E2E6ED", margin: "8px 0" }} />
+                  <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "8px 0" }} />
                 )}
                 <div
                   className="flex items-center justify-between"
                   style={{ opacity: empty ? 0.45 : 1 }}
                 >
-                  <div className="text-[14px] font-medium text-[#0F2044]" style={{ width: 56 }}>
+                  <div className="text-[14px] font-medium text-[#0C2340]" style={{ width: 56 }}>
                     {d.label}
                   </div>
                   <div className="text-[13px] text-[#6B7280] flex-1 text-center">
                     {d.count} · {d.hours.toFixed(1)}h
                   </div>
-                  <div className="text-[14px] font-semibold text-[#0F2044]">
+                  <div className="text-[14px] font-semibold text-[#0C2340]">
                     {formatGBP(d.earned)}
                   </div>
                 </div>
@@ -334,7 +334,7 @@ function WeeklyReportPage() {
           value={notes}
           onChange={(e) => saveNotes(e.target.value)}
           placeholder="Add notes for this week…"
-          className="w-full text-[14px] text-[#0F2044]"
+          className="w-full text-[14px] text-[#0C2340]"
           style={{
             minHeight: 96,
             borderRadius: 12,
@@ -342,8 +342,8 @@ function WeeklyReportPage() {
             backgroundColor: "#F8F9FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#E2E6ED",
-            fontFamily: "Poppins, sans-serif",
+            borderColor: "#EEF2F7",
+            fontFamily: "Inter, sans-serif",
             resize: "vertical",
           }}
         />
@@ -380,9 +380,9 @@ function BreakdownRow({ label, count, color }: { label: string; count: number; c
     <div className="flex items-center justify-between">
       <div className="flex items-center" style={{ gap: 10 }}>
         <span className="rounded-full" style={{ width: 10, height: 10, backgroundColor: color }} />
-        <span className="text-[14px] text-[#0F2044]">{label}</span>
+        <span className="text-[14px] text-[#0C2340]">{label}</span>
       </div>
-      <span className="text-[14px] font-semibold text-[#0F2044]">{count}</span>
+      <span className="text-[14px] font-semibold text-[#0C2340]">{count}</span>
     </div>
   );
 }

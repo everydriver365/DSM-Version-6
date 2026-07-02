@@ -17,7 +17,7 @@ export const Route = createFileRoute("/bulkmessage")({
   component: BulkMessagePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type FilterKey =
   | "all"
@@ -231,11 +231,11 @@ function BulkMessagePage() {
                 onClick={() => setFilter(f.key)}
                 className="px-3 py-2 rounded-full text-[13px]"
                 style={{
-                  backgroundColor: active ? "#1A52A0" : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#0F2044",
+                  backgroundColor: active ? "#1A4A6E" : "#F8F9FB",
+                  color: active ? "#FFFFFF" : "#0C2340",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#1A52A0" : "#E2E6ED",
+                  borderColor: active ? "#1A4A6E" : "#EEF2F7",
                   ...POPPINS,
                 }}
               >
@@ -263,17 +263,17 @@ function BulkMessagePage() {
                     type="button"
                     onClick={() => toggleSelected(p.id)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left"
-                    style={idx === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+                    style={idx === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
                   >
                     <div
                       className="flex items-center justify-center rounded shrink-0"
                       style={{
                         width: 20,
                         height: 20,
-                        backgroundColor: checked ? "#1A52A0" : "#FFFFFF",
+                        backgroundColor: checked ? "#1A4A6E" : "#FFFFFF",
                         borderWidth: "1px",
                         borderStyle: "solid",
-                        borderColor: checked ? "#1A52A0" : "#9CA3AF",
+                        borderColor: checked ? "#1A4A6E" : "#9CA3AF",
                       }}
                     >
                       {checked && (
@@ -284,12 +284,12 @@ function BulkMessagePage() {
                     </div>
                     <div
                       className="flex items-center justify-center rounded-full shrink-0 text-[12px] font-semibold"
-                      style={{ width: 36, height: 36, backgroundColor: "#1A52A0", color: "#FFFFFF", ...POPPINS }}
+                      style={{ width: 36, height: 36, backgroundColor: "#1A4A6E", color: "#FFFFFF", ...POPPINS }}
                     >
                       {initials(dn)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[14px] text-[#0F2044] truncate" style={POPPINS}>{dn}</div>
+                      <div className="text-[14px] text-[#0C2340] truncate" style={POPPINS}>{dn}</div>
                       <div
                         className="text-[13px] truncate"
                         style={{ color: hasPhone ? "#6B7280" : "#CC2229", ...POPPINS }}
@@ -315,11 +315,11 @@ function BulkMessagePage() {
                 onClick={() => pickTemplate(k)}
                 className="px-3 py-2 rounded-full text-[13px]"
                 style={{
-                  backgroundColor: active ? "#1A52A0" : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#0F2044",
+                  backgroundColor: active ? "#1A4A6E" : "#F8F9FB",
+                  color: active ? "#FFFFFF" : "#0C2340",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#1A52A0" : "#E2E6ED",
+                  borderColor: active ? "#1A4A6E" : "#EEF2F7",
                   ...POPPINS,
                 }}
               >
@@ -336,8 +336,8 @@ function BulkMessagePage() {
             if (template !== "custom") setTemplate("custom");
           }}
           placeholder="Type your message…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#0F2044] bg-white resize-none"
-          style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", ...POPPINS }}
+          className="w-full rounded-lg p-3 text-[14px] text-[#0C2340] bg-white resize-none"
+          style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
         />
         <div className="text-right text-[13px] text-[#6B7280] mt-1" style={POPPINS}>
           {message.length} characters
@@ -349,7 +349,7 @@ function BulkMessagePage() {
             onClick={() => setConfirmOpen(true)}
             disabled={sendCount === 0 || !message.trim() || sending}
             className="w-full rounded-lg text-white text-[14px] font-medium disabled:opacity-50"
-            style={{ height: 52, backgroundColor: "#1A52A0", ...POPPINS }}
+            style={{ height: 52, backgroundColor: "#1A4A6E", ...POPPINS }}
           >
             Send to {sendCount} pupils
           </button>
@@ -370,7 +370,7 @@ function BulkMessagePage() {
       {toast && (
         <div
           className="fixed left-1/2 -translate-x-1/2 bottom-6 px-4 py-3 rounded-lg text-white text-[14px] z-50"
-          style={{ backgroundColor: "#0F2044", ...POPPINS }}
+          style={{ backgroundColor: "#0C2340", ...POPPINS }}
         >
           {toast}
         </div>

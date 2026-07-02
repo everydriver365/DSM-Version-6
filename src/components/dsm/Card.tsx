@@ -8,7 +8,7 @@ export function Card({ className = "", style, children, ...rest }: HTMLAttribute
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         ...style,
       }}
     >

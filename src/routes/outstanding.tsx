@@ -17,7 +17,7 @@ export const Route = createFileRoute("/outstanding")({
   component: OutstandingPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface PupilDebt { id: string; name: string; phone: string | null; balance_owed: number }
 interface TestRow { id: string; test_date: string; test_centre: string | null; pupil_name: string | null }
@@ -182,7 +182,7 @@ function OutstandingPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS, paddingBottom: 32 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -213,7 +213,7 @@ function OutstandingPage() {
             display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
           }}>
             <CheckCircle2 size={64} color="#16A34A" />
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0C2340" }}>
               All clear! Nothing needs attention
             </div>
             <div style={{ fontSize: 13, color: "#6B7280", maxWidth: 280 }}>
@@ -231,7 +231,7 @@ function OutstandingPage() {
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
                       padding: "12px 14px", background: "#fff", border: "none",
-                      cursor: "pointer", fontFamily: "Poppins, sans-serif", textAlign: "left",
+                      cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left",
                     }}
                   >
                     <div style={{
@@ -255,7 +255,7 @@ function OutstandingPage() {
                   </button>
 
                   {isOpen && (
-                    <div style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                    <div style={{ borderTop: "0.5px solid #EEF2F7" }}>
                       {s.key === "payments" && debts.map((p, i) => (
                         <Row key={p.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
@@ -291,7 +291,7 @@ function OutstandingPage() {
                           </div>
                           {e.phone && (
                             <a href={`tel:${e.phone}`} style={{
-                              ...actionBase, background: "#1A52A0", color: "#fff",
+                              ...actionBase, background: "#1A4A6E", color: "#fff",
                               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4,
                             }}>
                               <Phone size={12} /> Call
@@ -334,7 +334,7 @@ function OutstandingPage() {
                               aria-label="Complete"
                               style={{
                                 background: "none", border: "none", cursor: "pointer",
-                                color: "#1A52A0", display: "flex", padding: 0,
+                                color: "#1A4A6E", display: "flex", padding: 0,
                               }}
                             >
                               <Square size={20} />
@@ -373,7 +373,7 @@ function OutstandingPage() {
 }
 
 const rowTitle = {
-  fontSize: 14, fontWeight: 600, color: "#0F2044",
+  fontSize: 14, fontWeight: 600, color: "#0C2340",
   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const,
 };
 const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
@@ -381,7 +381,7 @@ const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
 const actionBase = {
   height: 30, padding: "0 10px", borderRadius: 8,
   fontSize: 12, fontWeight: 600, cursor: "pointer",
-  fontFamily: "Poppins, sans-serif", border: "none",
+  fontFamily: "Inter, sans-serif", border: "none",
 } as const;
 
 function ActionBtn({
@@ -393,8 +393,8 @@ function ActionBtn({
   disabled?: boolean;
 }) {
   const styles = variant === "primary"
-    ? { background: disabled ? "#cbd5e1" : "#1A52A0", color: "#fff", border: "none" as const }
-    : { background: "#fff", color: disabled ? "#9CA3AF" : "#1A52A0", border: `1px solid ${disabled ? "#e3e6ec" : "#1A52A0"}` };
+    ? { background: disabled ? "#cbd5e1" : "#1A4A6E", color: "#fff", border: "none" as const }
+    : { background: "#fff", color: disabled ? "#9CA3AF" : "#1A4A6E", border: `1px solid ${disabled ? "#e3e6ec" : "#1A4A6E"}` };
   return (
     <button
       onClick={onClick}
@@ -414,7 +414,7 @@ function Row({ children, top }: { children: React.ReactNode; top: boolean }) {
     <div style={{
       display: "flex", alignItems: "center", gap: 8,
       padding: "12px 14px", background: "#fff",
-      borderTop: top ? "0.5px solid #E2E6ED" : "none",
+      borderTop: top ? "0.5px solid #EEF2F7" : "none",
     }}>
       {children}
     </div>

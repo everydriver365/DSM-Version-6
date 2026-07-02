@@ -10,7 +10,7 @@ export const Route = createFileRoute("/messages/$id")({
   component: ThreadPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Message {
   id: string;
@@ -167,7 +167,7 @@ function ThreadPage() {
               <div
                 className="max-w-[78%] px-3 py-2 text-[14px]"
                 style={{
-                  backgroundColor: mine ? "#1A52A0" : "#F3F4F6",
+                  backgroundColor: mine ? "#1A4A6E" : "#F3F4F6",
                   color: mine ? "#FFFFFF" : "#1A1A2E",
                   borderRadius: mine ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                   ...POPPINS,
@@ -195,7 +195,7 @@ function ThreadPage() {
         style={{
           borderTopWidth: "0.5px",
           borderTopStyle: "solid",
-          borderTopColor: "#E2E6ED",
+          borderTopColor: "#EEF2F7",
         }}
       >
         <textarea
@@ -209,12 +209,12 @@ function ThreadPage() {
           }}
           rows={1}
           placeholder="Message"
-          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#E2E6ED",
+            borderColor: "#EEF2F7",
             maxHeight: 120,
             resize: "none",
           }}
@@ -227,7 +227,7 @@ function ThreadPage() {
           style={{
             width: 40,
             height: 40,
-            backgroundColor: "#1A52A0",
+            backgroundColor: "#1A4A6E",
             color: "#FFFFFF",
             border: "none",
           }}

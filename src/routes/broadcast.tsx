@@ -14,9 +14,9 @@ export const Route = createFileRoute("/broadcast")({
   component: BroadcastPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const NAVY = "#0F2044";
-const BORDER = "#E2E6ED";
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const NAVY = "#0C2340";
+const BORDER = "#EEF2F7";
 
 type FilterKey = "all" | "week" | "outstanding" | "active" | "passed";
 type SendMethod = "sms" | "email" | "both";
@@ -318,7 +318,7 @@ function BroadcastPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium"
-            style={{ color: "#1A52A0", ...POPPINS }}
+            style={{ color: "#1A4A6E", ...POPPINS }}
           >
             {allSelectedInList ? "Deselect all" : "Select all"}
           </button>
@@ -373,7 +373,7 @@ function BroadcastPage() {
                           : "#F3F4F6",
                       color:
                         (p.status ?? "active").toLowerCase() === "passed"
-                          ? "#1A52A0"
+                          ? "#1A4A6E"
                           : (p.status ?? "active").toLowerCase() === "active"
                           ? "#16A34A"
                           : "#6B7280",
@@ -438,7 +438,7 @@ function BroadcastPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message…"
-          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#1A52A0]"
+          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#1A4A6E]"
           style={{
             minHeight: 120,
             borderWidth: "0.5px",

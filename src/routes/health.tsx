@@ -24,7 +24,7 @@ export const Route = createFileRoute("/health")({
   component: HealthPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Log {
   log_date: string;
@@ -184,7 +184,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             <QuickLog
-              icon={<Droplets size={20} color="#1A52A0" />}
+              icon={<Droplets size={20} color="#1A4A6E" />}
               tint="#DBEAFE"
               label="Log water"
               onClick={() =>
@@ -221,7 +221,7 @@ function HealthPage() {
               style={{ color: "#6B7280" }}
             >
               <span>Water today</span>
-              <span style={{ color: "#0F2044", fontWeight: 600 }}>
+              <span style={{ color: "#0C2340", fontWeight: 600 }}>
                 {today.water_glasses} / 8 glasses
               </span>
             </div>
@@ -237,12 +237,12 @@ function HealthPage() {
                       height: 32,
                       borderRadius: 6,
                       backgroundColor: filled ? "#DBEAFE" : "#F8F9FB",
-                      border: "0.5px solid #E2E6ED",
+                      border: "0.5px solid #EEF2F7",
                     }}
                   >
                     <Droplets
                       size={14}
-                      color={filled ? "#1A52A0" : "#C7CCD3"}
+                      color={filled ? "#1A4A6E" : "#C7CCD3"}
                     />
                   </div>
                 );
@@ -283,7 +283,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div
             className="text-[14px]"
-            style={{ color: "#0F2044", lineHeight: 1.5 }}
+            style={{ color: "#0C2340", lineHeight: 1.5 }}
           >
             {TIPS[tipIndex]}
           </div>
@@ -298,7 +298,7 @@ function HealthPage() {
                   width: 6,
                   height: 6,
                   borderRadius: 3,
-                  backgroundColor: i === tipIndex ? "#1A52A0" : "#E2E6ED",
+                  backgroundColor: i === tipIndex ? "#1A4A6E" : "#EEF2F7",
                 }}
               />
             ))}
@@ -327,8 +327,8 @@ function HealthPage() {
                     borderRadius: 28,
                     backgroundColor: active ? "#DBEAFE" : "#F8F9FB",
                     border: active
-                      ? "1px solid #1A52A0"
-                      : "0.5px solid #E2E6ED",
+                      ? "1px solid #1A4A6E"
+                      : "0.5px solid #EEF2F7",
                     fontSize: 28,
                   }}
                 >
@@ -374,7 +374,7 @@ function QuickLog({
         gap: 10,
         padding: 12,
         borderRadius: 10,
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         backgroundColor: "#FFFFFF",
       }}
     >
@@ -391,7 +391,7 @@ function QuickLog({
       </div>
       <span
         className="text-[13px] font-semibold text-left"
-        style={{ color: "#0F2044" }}
+        style={{ color: "#0C2340" }}
       >
         {label}
       </span>
@@ -406,7 +406,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
         padding: 10,
         borderRadius: 8,
         backgroundColor: "#F8F9FB",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
       }}
     >
       <div
@@ -417,7 +417,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
       </div>
       <div
         className="mt-0.5 font-bold"
-        style={{ color: "#0F2044", fontSize: 16 }}
+        style={{ color: "#0C2340", fontSize: 16 }}
       >
         {value}
       </div>

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/pupils/")({
   component: PupilsIndexPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -40,13 +40,13 @@ function initials(name: string) {
 
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#16A34A";
-  if (status === "passed") return "#1A52A0";
+  if (status === "passed") return "#1A4A6E";
   if (status === "archived") return "#9CA3AF";
   return "#6B7280";
 }
 
 function accentColor(status: StatusKey) {
-  if (status === "active") return "#1A52A0";
+  if (status === "active") return "#1A4A6E";
   if (status === "passed") return "#16A34A";
   if (status === "archived") return "#9CA3AF";
   return "#9CA3AF";
@@ -246,12 +246,12 @@ function PupilsIndexPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
             style={{
               ...POPPINS,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
             }}
           />
         </div>
@@ -265,7 +265,7 @@ function PupilsIndexPage() {
             backgroundColor: "#F8F9FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#E2E6ED",
+            borderColor: "#EEF2F7",
           }}
         >
           {(
@@ -285,10 +285,10 @@ function PupilsIndexPage() {
                 style={{
                   ...POPPINS,
                   backgroundColor: active ? "#FFFFFF" : "transparent",
-                  color: active ? "#0F2044" : "#6B7280",
+                  color: active ? "#0C2340" : "#6B7280",
                   borderWidth: active ? "0.5px" : 0,
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               >
                 {s.label}
@@ -310,20 +310,20 @@ function PupilsIndexPage() {
               >
                 <div
                   className="skeleton-pulse rounded-full shrink-0"
-                  style={{ width: 40, height: 40, backgroundColor: "#E2E6ED" }}
+                  style={{ width: 40, height: 40, backgroundColor: "#EEF2F7" }}
                 />
                 <div
                   className="shrink-0"
-                  style={{ width: 3, borderRadius: 2, backgroundColor: "#E2E6ED" }}
+                  style={{ width: 3, borderRadius: 2, backgroundColor: "#EEF2F7" }}
                 />
                 <div className="min-w-0 flex-1 flex flex-col justify-center gap-2">
                   <div
                     className="skeleton-pulse"
-                    style={{ height: 14, width: "60%", backgroundColor: "#E2E6ED", borderRadius: 4 }}
+                    style={{ height: 14, width: "60%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
                   />
                   <div
                     className="skeleton-pulse"
-                    style={{ height: 12, width: "40%", backgroundColor: "#E2E6ED", borderRadius: 4 }}
+                    style={{ height: 12, width: "40%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
                   />
                 </div>
               </div>
@@ -365,7 +365,7 @@ function PupilsIndexPage() {
                         style={{
                           width: 40,
                           height: 40,
-                          backgroundColor: "#1A52A0",
+                          backgroundColor: "#1A4A6E",
                           color: "#FFFFFF",
                           ...POPPINS,
                         }}
@@ -378,7 +378,7 @@ function PupilsIndexPage() {
                       />
                       <div className="min-w-0 flex-1 flex flex-col justify-center">
                         <div
-                          className="text-[14px] font-semibold text-[#0F2044] truncate"
+                          className="text-[14px] font-semibold text-[#0C2340] truncate"
                           style={POPPINS}
                         >
                           {p.name}
@@ -398,7 +398,7 @@ function PupilsIndexPage() {
                                 <span
                                   className="text-[12px] font-medium"
                                   style={{
-                                    color: hoursRemaining > 5 ? "#1A52A0" : "#F59E0B",
+                                    color: hoursRemaining > 5 ? "#1A4A6E" : "#F59E0B",
                                     ...POPPINS,
                                   }}
                                 >
@@ -483,7 +483,7 @@ function PupilsIndexPage() {
         style={{
           width: 52,
           height: 52,
-          backgroundColor: "#1A52A0",
+          backgroundColor: "#1A4A6E",
           color: "#FFFFFF",
           right: 16,
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",

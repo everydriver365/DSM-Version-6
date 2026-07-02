@@ -20,7 +20,7 @@ export const Route = createFileRoute("/resources")({
   component: ResourcesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface ResourceItem {
   title: string;
@@ -36,7 +36,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Official DVSA instructor guidance and updates",
     url: "https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency",
     Icon: BookOpen,
-    iconColor: "#1A52A0",
+    iconColor: "#1A4A6E",
   },
   {
     title: "Check a driving licence",
@@ -64,7 +64,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Check the approved driving instructor register",
     url: "https://www.gov.uk/find-driving-instructor",
     Icon: Award,
-    iconColor: "#1A52A0",
+    iconColor: "#1A4A6E",
   },
   {
     title: "Highway Code",
@@ -88,7 +88,7 @@ const usefulTools: ResourceItem[] = [
     description: "Navigate to your next lesson",
     url: "https://maps.google.com",
     Icon: Navigation,
-    iconColor: "#1A52A0",
+    iconColor: "#1A4A6E",
   },
   {
     title: "Met Office",
@@ -159,7 +159,7 @@ function ResourceCard({ resource }: { resource: ResourceItem }) {
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
         textDecoration: "none",
       }}
     >
@@ -170,7 +170,7 @@ function ResourceCard({ resource }: { resource: ResourceItem }) {
         <Icon size={18} color={iconColor} />
       </span>
       <div className="ml-3 flex-1 min-w-0">
-        <div className="text-[14px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+        <div className="text-[14px] font-semibold text-[#0C2340] truncate" style={POPPINS}>
           {title}
         </div>
         <div className="text-[13px] text-[#6B7280] truncate">{description}</div>

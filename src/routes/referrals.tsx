@@ -14,7 +14,7 @@ export const Route = createFileRoute("/referrals")({
   component: ReferralsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Status = "pending" | "booked" | "paid";
 
@@ -28,7 +28,7 @@ interface Referral {
 
 function statusColor(s: Status) {
   if (s === "booked") return "#16A34A";
-  if (s === "paid") return "#1A52A0";
+  if (s === "paid") return "#1A4A6E";
   return "#F59E0B";
 }
 
@@ -123,7 +123,7 @@ function ReferralsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0F2044", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
       >
         <div className="text-[11px] tracking-wider font-semibold" style={{ color: "#9CA3AF" }}>
           TOTAL REFERRALS
@@ -144,7 +144,7 @@ function ReferralsPage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "white",
-          border: "0.5px solid #E2E6ED",
+          border: "0.5px solid #EEF2F7",
           borderRadius: 12,
           padding: 16,
         }}
@@ -157,7 +157,7 @@ function ReferralsPage() {
         </div>
         <div
           className="font-bold mt-1"
-          style={{ fontSize: 20, color: "#0F2044", letterSpacing: 1.5, ...POPPINS }}
+          style={{ fontSize: 20, color: "#0C2340", letterSpacing: 1.5, ...POPPINS }}
         >
           {code}
         </div>
@@ -189,7 +189,7 @@ function ReferralsPage() {
                   <div className="min-w-0">
                     <div
                       className="text-[14px] font-semibold truncate"
-                      style={{ color: "#0F2044", ...POPPINS }}
+                      style={{ color: "#0C2340", ...POPPINS }}
                     >
                       {r.referred_name}
                     </div>

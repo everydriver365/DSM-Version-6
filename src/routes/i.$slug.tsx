@@ -65,14 +65,14 @@ type Review = {
 };
 
 const THEMES: Record<Theme, { bg: string; primary: string; accent: string; surface: string; muted: string; border: string; isDark: boolean }> = {
-  classic: { bg: "#FFFFFF", primary: "#0F2044", accent: "#1A52A0", surface: "#F8FAFC", muted: "#475569", border: "#E2E8F0", isDark: false },
+  classic: { bg: "#FFFFFF", primary: "#0C2340", accent: "#1A4A6E", surface: "#F8FAFC", muted: "#475569", border: "#E2E8F0", isDark: false },
   modern: { bg: "#0A0A0A", primary: "#FFFFFF", accent: "#6366F1", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
   warm: { bg: "#FFF8F0", primary: "#7C2D12", accent: "#EA580C", surface: "#FFEDD5", muted: "#78350F", border: "#FED7AA", isDark: false },
   bold: { bg: "#0A0A0A", primary: "#DC2626", accent: "#FFFFFF", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
 };
 
 const FONT_FAMILY: Record<Font, string> = {
-  poppins: "'Poppins', sans-serif",
+  poppins: "'Inter', sans-serif",
   inter: "'Inter', sans-serif",
   playfair: "'Playfair Display', serif",
 };
@@ -133,7 +133,7 @@ function InstructorMiniSite() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0F2044", fontFamily: "system-ui" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0C2340", fontFamily: "system-ui" }}>
         Loading…
       </div>
     );
@@ -141,13 +141,13 @@ function InstructorMiniSite() {
 
   if (!instructor) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0F2044", fontFamily: "system-ui", padding: 24, textAlign: "center" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0C2340", fontFamily: "system-ui", padding: 24, textAlign: "center" }}>
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>This page isn't available</h1>
           <p style={{ color: "#475569", marginBottom: 20 }}>
             The instructor page you're looking for doesn't exist or isn't published.
           </p>
-          <Link to="/courses" style={{ color: "#1A52A0", fontWeight: 600, textDecoration: "underline" }}>
+          <Link to="/courses" style={{ color: "#1A4A6E", fontWeight: 600, textDecoration: "underline" }}>
             Browse all courses →
           </Link>
         </div>

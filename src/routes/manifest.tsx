@@ -23,7 +23,7 @@ export const Route = createFileRoute("/manifest")({
   component: ManifestPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Lesson {
   id: string;
@@ -52,7 +52,7 @@ function lessonTime(l: Lesson) {
 }
 function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
-  if (s === "completed") return "#1A52A0";
+  if (s === "completed") return "#1A4A6E";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
@@ -178,7 +178,7 @@ function ManifestPage() {
       {/* SUMMARY STRIP */}
       <div
         className="px-4 py-3 flex"
-        style={{ backgroundColor: "#0F2044", gap: 8 }}
+        style={{ backgroundColor: "#0C2340", gap: 8 }}
       >
         <Stat value={String(lessons.length)} label="LESSONS" />
         <Stat value={totalHours} label="HOURS" />
@@ -205,16 +205,16 @@ function ManifestPage() {
                     borderRadius: 10,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                   }}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start" style={{ gap: 12 }}>
-                      <span className="text-[14px] font-bold text-[#0F2044]">
+                      <span className="text-[14px] font-bold text-[#0C2340]">
                         {lessonTime(l)}
                       </span>
                       <div>
-                        <div className="text-[14px] text-[#0F2044]">
+                        <div className="text-[14px] text-[#0C2340]">
                           {l.pupils?.name ?? "Pupil"}
                         </div>
                         <div className="text-[13px] text-[#6B7280]">
@@ -303,12 +303,12 @@ function ManifestPage() {
               value={notes}
               onChange={(e) => saveNotes(e.target.value)}
               placeholder="How did the day go?"
-              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none resize-none"
+              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none resize-none"
               style={{
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
               }}
             />
           </div>
@@ -413,7 +413,7 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-[13px] text-[#0F2044]">{label}</span>
+      <span className="text-[13px] text-[#0C2340]">{label}</span>
       <span className="text-[13px] font-semibold" style={{ color }}>
         {value}
       </span>

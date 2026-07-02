@@ -12,7 +12,7 @@ export const Route = createFileRoute("/performance")({
   component: PerformancePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Period = "week" | "month" | "year" | "all";
 const TABS: { key: Period; label: string }[] = [
@@ -206,7 +206,7 @@ function PerformancePage() {
                 height: 32,
                 borderRadius: 8,
                 backgroundColor: active ? "#FFFFFF" : "transparent",
-                color: active ? "#1A52A0" : "#6B7280",
+                color: active ? "#1A4A6E" : "#6B7280",
                 boxShadow: active ? "0 1px 2px rgba(15,32,68,0.08)" : "none",
                 ...POPPINS,
               }}
@@ -247,7 +247,7 @@ function PerformancePage() {
           className="rounded-xl p-4 flex flex-col"
           style={{
             backgroundColor: "#F8F9FB",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             gap: 12,
           }}
         >
@@ -280,12 +280,12 @@ function ResultBar({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium" style={{ color: "#0F2044" }}>{label}</span>
+        <span className="text-[13px] font-medium" style={{ color: "#0C2340" }}>{label}</span>
         <span className="text-[13px]" style={{ color: "#6B7280" }}>{count}</span>
       </div>
       <div
         className="mt-1 overflow-hidden"
-        style={{ height: 8, borderRadius: 4, backgroundColor: "#E2E6ED" }}
+        style={{ height: 8, borderRadius: 4, backgroundColor: "#EEF2F7" }}
       >
         <div style={{ width: `${pct}%`, height: "100%", backgroundColor: color }} />
       </div>

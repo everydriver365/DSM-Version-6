@@ -31,7 +31,7 @@ export const Route = createFileRoute("/documents")({
   component: DocumentsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type DocType = "adi" | "insurance" | "mot" | "dbs" | "tax" | "other";
 
@@ -46,7 +46,7 @@ interface Doc {
 }
 
 const TYPES: { value: DocType; label: string; color: string; tint: string }[] = [
-  { value: "adi", label: "ADI Badge", color: "#1A52A0", tint: "#DBEAFE" },
+  { value: "adi", label: "ADI Badge", color: "#1A4A6E", tint: "#DBEAFE" },
   { value: "insurance", label: "Insurance", color: "#16A34A", tint: "#ECFDF5" },
   { value: "mot", label: "MOT", color: "#F59E0B", tint: "#FEF3C7" },
   { value: "dbs", label: "DBS Check", color: "#CC2229", tint: "#FEE2E2" },
@@ -237,7 +237,7 @@ function DocumentsPage() {
                           <div className="min-w-0">
                             <div
                               className="text-[14px] font-semibold truncate"
-                              style={{ color: "#0F2044" }}
+                              style={{ color: "#0C2340" }}
                             >
                               {d.name}
                             </div>
@@ -282,11 +282,11 @@ function DocumentsPage() {
                         padding: "0 12px",
                         borderRadius: 8,
                         backgroundColor: "#F1F5F9",
-                        color: "#1A52A0",
+                        color: "#1A4A6E",
                         border: "0.5px solid #CBD5E1",
                       }}
                     >
-                      <ExternalLink size={13} color="#1A52A0" /> View file
+                      <ExternalLink size={13} color="#1A4A6E" /> View file
                     </a>
                   )}
                 </Card>
@@ -518,10 +518,10 @@ function DocSheet({
                     height: 40,
                     borderRadius: 8,
                     backgroundColor: active ? t.tint : "#F8F9FB",
-                    color: active ? t.color : "#0F2044",
+                    color: active ? t.color : "#0C2340",
                     border: active
                       ? `1px solid ${t.color}`
-                      : "0.5px solid #E2E6ED",
+                      : "0.5px solid #EEF2F7",
                   }}
                 >
                   {t.label}
@@ -549,10 +549,10 @@ function DocSheet({
             rows={3}
             className="w-full text-[14px]"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0F2044",
+              color: "#0C2340",
               outline: "none",
               resize: "vertical",
             }}
@@ -573,11 +573,11 @@ function DocSheet({
               height: 44,
               borderRadius: 8,
               backgroundColor: "#F8F9FB",
-              color: "#1A52A0",
-              border: "1px dashed #1A52A0",
+              color: "#1A4A6E",
+              border: "1px dashed #1A4A6E",
             }}
           >
-            <Upload size={16} color="#1A52A0" />
+            <Upload size={16} color="#1A4A6E" />
             Upload file
             <input
               type="file"
@@ -587,7 +587,7 @@ function DocSheet({
             />
           </label>
           {file ? (
-            <div className="mt-1 text-[12px]" style={{ color: "#0F2044" }}>
+            <div className="mt-1 text-[12px]" style={{ color: "#0C2340" }}>
               {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
             </div>
           ) : existingUrl ? (

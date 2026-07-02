@@ -26,14 +26,14 @@ function stripQuotes(s: string) {
 
 
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
+const POPPINS = { fontFamily: "Inter, sans-serif" as const };
 const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plus", "Motorway", "Other"];
 const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", padding: "10px 12px", border: "1px solid #E2E6ED",
-  borderRadius: 8, fontSize: 14, fontFamily: "Poppins, sans-serif",
-  background: "#fff", color: "#0F2044", boxSizing: "border-box",
+  width: "100%", padding: "10px 12px", border: "1px solid #EEF2F7",
+  borderRadius: 8, fontSize: 14, fontFamily: "Inter, sans-serif",
+  background: "#fff", color: "#0C2340", boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 4, display: "block" };
 
@@ -73,7 +73,7 @@ function NewQuotePage() {
 
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
 
-  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
+  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Inter, sans-serif" };
   const errorInputStyle: React.CSSProperties = { ...inputStyle, border: "1px solid #D92D20" };
 
   useEffect(() => {
@@ -186,7 +186,7 @@ function NewQuotePage() {
 
   return (
     <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#fff" }}>
-      <div style={{ background: "#0F2044", color: "#fff", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, paddingTop: "calc(14px + env(safe-area-inset-top, 0px))" }}>
+      <div style={{ background: "#0C2340", color: "#fff", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, paddingTop: "calc(14px + env(safe-area-inset-top, 0px))" }}>
         <button onClick={() => navigate({ to: "/quotes" })} aria-label="Back" style={{ background: "none", border: "none", color: "#fff", display: "flex" }}>
           <ArrowLeft size={22} />
         </button>
@@ -267,16 +267,16 @@ function NewQuotePage() {
         </div>
       </div>
 
-      <div style={{ position: "fixed", bottom: "calc(64px + env(safe-area-inset-bottom, 0px))", left: 0, right: 0, background: "#fff", borderTop: "0.5px solid #E2E6ED", padding: "16px", display: "flex", gap: 8, zIndex: 50 }}>
+      <div style={{ position: "fixed", bottom: "calc(64px + env(safe-area-inset-bottom, 0px))", left: 0, right: 0, background: "#fff", borderTop: "0.5px solid #EEF2F7", padding: "16px", display: "flex", gap: 8, zIndex: 50 }}>
         <button disabled={saving} onClick={() => save("draft")} style={{
-          flex: 1, padding: "12px", borderRadius: 10, border: "1px solid #0F2044",
-          background: "#fff", color: "#0F2044", fontWeight: 600, fontSize: 14,
-          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+          flex: 1, padding: "12px", borderRadius: 10, border: "1px solid #0C2340",
+          background: "#fff", color: "#0C2340", fontWeight: 600, fontSize: 14,
+          fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save as draft</button>
         <button disabled={saving} onClick={() => save("sent")} style={{
           flex: 1, padding: "12px", borderRadius: 10, border: "none",
-          background: "#0F2044", color: "#fff", fontWeight: 600, fontSize: 14,
-          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+          background: "#0C2340", color: "#fff", fontWeight: 600, fontSize: 14,
+          fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save and send</button>
       </div>
     </div>

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/reports")({
   component: ReportsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function formatGBP(n: number) {
   return `£${n.toFixed(2)}`;
@@ -191,9 +191,9 @@ function ReportsPage() {
           <SectionHeader>LESSON BREAKDOWN</SectionHeader>
           <Card>
             <BreakdownRow color="#16A34A" label="Confirmed" count={counts.confirmed} />
-            <div className="h-px bg-[#E2E6ED] my-2" />
-            <BreakdownRow color="#1A52A0" label="Completed" count={counts.completed} />
-            <div className="h-px bg-[#E2E6ED] my-2" />
+            <div className="h-px bg-[#EEF2F7] my-2" />
+            <BreakdownRow color="#1A4A6E" label="Completed" count={counts.completed} />
+            <div className="h-px bg-[#EEF2F7] my-2" />
             <BreakdownRow color="#CC2229" label="Cancelled" count={counts.cancelled} />
           </Card>
         </div>
@@ -207,16 +207,16 @@ function ReportsPage() {
             )}
             {topPupils.map((p, idx) => (
               <div key={p.name + idx}>
-                {idx > 0 && <div className="h-px bg-[#E2E6ED] mx-3" />}
+                {idx > 0 && <div className="h-px bg-[#EEF2F7] mx-3" />}
                 <div className="flex items-center px-3 py-3">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[12px] font-semibold"
-                    style={{ background: "#1A52A0" }}
+                    style={{ background: "#1A4A6E" }}
                   >
                     {initials(p.name)}
                   </div>
-                  <div className="flex-1 ml-3 text-[14px] text-[#0F2044]">{p.name}</div>
-                  <div className="text-[14px] font-semibold text-[#0F2044]">{p.count}</div>
+                  <div className="flex-1 ml-3 text-[14px] text-[#0C2340]">{p.name}</div>
+                  <div className="text-[14px] font-semibold text-[#0C2340]">{p.count}</div>
                 </div>
               </div>
             ))}
@@ -231,8 +231,8 @@ function BreakdownRow({ color, label, count }: { color: string; label: string; c
   return (
     <div className="flex items-center">
       <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-      <div className="flex-1 ml-3 text-[14px] text-[#0F2044]">{label}</div>
-      <div className="text-[14px] font-semibold text-[#0F2044]">{count}</div>
+      <div className="flex-1 ml-3 text-[14px] text-[#0C2340]">{label}</div>
+      <div className="text-[14px] font-semibold text-[#0C2340]">{count}</div>
     </div>
   );
 }

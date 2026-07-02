@@ -10,7 +10,7 @@ export const Route = createFileRoute("/messages")({
   component: MessagesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Conversation {
   id: string;
@@ -159,7 +159,7 @@ function MessagesPage() {
               type="button"
               onClick={openCompose}
               className="rounded-lg px-4 py-2 text-[13px] font-semibold text-white"
-              style={{ backgroundColor: "#1A52A0", ...POPPINS }}
+              style={{ backgroundColor: "#1A4A6E", ...POPPINS }}
             >
               Start a conversation
             </button>
@@ -179,7 +179,7 @@ function MessagesPage() {
                     backgroundColor: "#F8F9FB",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    borderColor: "#EEF2F7",
                   }}
                 >
                   <div className="flex items-center gap-3 p-3">
@@ -188,7 +188,7 @@ function MessagesPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        backgroundColor: "#1A52A0",
+                        backgroundColor: "#1A4A6E",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}
@@ -197,7 +197,7 @@ function MessagesPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div
-                        className="text-[14px] font-semibold text-[#0F2044] truncate"
+                        className="text-[14px] font-semibold text-[#0C2340] truncate"
                         style={POPPINS}
                       >
                         {name}
@@ -247,8 +247,8 @@ function MessagesPage() {
             className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white rounded-t-2xl pb-safe"
             style={{ maxHeight: "80vh", display: "flex", flexDirection: "column", ...POPPINS }}
           >
-            <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "#E2E6ED" }}>
-              <div className="text-[15px] font-semibold text-[#0F2044]" style={POPPINS}>
+            <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "#EEF2F7" }}>
+              <div className="text-[15px] font-semibold text-[#0C2340]" style={POPPINS}>
                 New conversation
               </div>
               <button
@@ -261,10 +261,10 @@ function MessagesPage() {
                 <X size={20} color="#6B7280" />
               </button>
             </div>
-            <div className="px-4 py-3 border-b" style={{ borderColor: "#E2E6ED" }}>
+            <div className="px-4 py-3 border-b" style={{ borderColor: "#EEF2F7" }}>
               <div
                 className="flex items-center gap-2 rounded-lg px-3"
-                style={{ backgroundColor: "#F2F4F8", height: 40 }}
+                style={{ backgroundColor: "#F3F8FF", height: 40 }}
               >
                 <Search size={16} color="#6B7280" />
                 <input
@@ -272,7 +272,7 @@ function MessagesPage() {
                   value={pupilQuery}
                   onChange={(e) => setPupilQuery(e.target.value)}
                   placeholder="Search pupils"
-                  className="flex-1 bg-transparent outline-none text-[14px] text-[#0F2044]"
+                  className="flex-1 bg-transparent outline-none text-[14px] text-[#0C2340]"
                   style={POPPINS}
                 />
               </div>
@@ -297,14 +297,14 @@ function MessagesPage() {
                       style={{
                         width: 36,
                         height: 36,
-                        backgroundColor: "#1A52A0",
+                        backgroundColor: "#1A4A6E",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}
                     >
                       {initials(p.name)}
                     </div>
-                    <div className="text-[14px] font-medium text-[#0F2044]" style={POPPINS}>
+                    <div className="text-[14px] font-medium text-[#0C2340]" style={POPPINS}>
                       {p.name}
                     </div>
                   </button>

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/gaps")({
   component: GapsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface LessonRow {
   id: string;
@@ -206,11 +206,11 @@ function GapsPage() {
                 style={{
                   width: 52,
                   height: 64,
-                  backgroundColor: active ? "#1A52A0" : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#0F2044",
+                  backgroundColor: active ? "#1A4A6E" : "#F8F9FB",
+                  color: active ? "#FFFFFF" : "#0C2340",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#1A52A0" : "#E2E6ED",
+                  borderColor: active ? "#1A4A6E" : "#EEF2F7",
                 }}
               >
                 <span className="text-[10px] uppercase font-medium">
@@ -241,11 +241,11 @@ function GapsPage() {
                   onClick={() => setMinGapMins(o.mins)}
                   className="flex-1 h-10 rounded-lg text-[13px] font-medium"
                   style={{
-                    backgroundColor: active ? "#1A52A0" : "#FFFFFF",
-                    color: active ? "#FFFFFF" : "#0F2044",
+                    backgroundColor: active ? "#1A4A6E" : "#FFFFFF",
+                    color: active ? "#FFFFFF" : "#0C2340",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: active ? "#1A52A0" : "#E2E6ED",
+                    borderColor: active ? "#1A4A6E" : "#EEF2F7",
                   }}
                 >
                   {o.label}
@@ -264,12 +264,12 @@ function GapsPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                 style={{
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               />
             </div>
@@ -279,12 +279,12 @@ function GapsPage() {
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                 style={{
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               />
             </div>
@@ -307,7 +307,7 @@ function GapsPage() {
             >
               <Check size={24} color="#16A34A" />
             </div>
-            <div className="text-[14px] font-semibold text-[#0F2044]">
+            <div className="text-[14px] font-semibold text-[#0C2340]">
               No gaps found — fully booked!
             </div>
           </Card>
@@ -316,12 +316,12 @@ function GapsPage() {
             <Card key={i}>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[16px] font-semibold text-[#0F2044]">
+                  <div className="text-[16px] font-semibold text-[#0C2340]">
                     {g.start} – {g.end}
                   </div>
                   <span
                     className="inline-block mt-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#EEF4FB", color: "#1A52A0" }}
+                    style={{ backgroundColor: "#EEF4FB", color: "#1A4A6E" }}
                   >
                     {fmtDuration(g.minutes)}
                   </span>

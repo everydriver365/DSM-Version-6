@@ -21,9 +21,9 @@ export const Route = createFileRoute("/vehicle")({
   component: VehiclePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const NAVY = "#0F2044";
-const BORDER = "0.5px solid #E2E6ED";
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const NAVY = "#0C2340";
+const BORDER = "0.5px solid #EEF2F7";
 
 type VehicleHealth = {
   id?: string;

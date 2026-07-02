@@ -11,7 +11,7 @@ export const Route = createFileRoute("/notes/$id")({
   component: NoteEditPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function NoteEditPage() {
   const { id } = Route.useParams();
@@ -113,15 +113,15 @@ function NoteEditPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
-          className="w-full text-[20px] font-semibold text-[#0F2044] bg-transparent outline-none border-0 placeholder-[#9CA3AF]"
-          style={{ fontFamily: "Poppins, sans-serif" }}
+          className="w-full text-[20px] font-semibold text-[#0C2340] bg-transparent outline-none border-0 placeholder-[#9CA3AF]"
+          style={{ fontFamily: "Inter, sans-serif" }}
         />
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Start writing..."
           className="w-full flex-1 mt-3 text-[14px] text-[#1A1A2E] bg-transparent outline-none border-0 resize-none placeholder-[#9CA3AF]"
-          style={{ fontFamily: "Poppins, sans-serif", minHeight: "60vh" }}
+          style={{ fontFamily: "Inter, sans-serif", minHeight: "60vh" }}
         />
       </div>
 

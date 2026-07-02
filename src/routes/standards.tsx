@@ -16,7 +16,7 @@ export const Route = createFileRoute("/standards")({
   component: StandardsPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Grade = "A" | "B" | "C" | "D";
 
@@ -31,7 +31,7 @@ interface Check {
 
 const GRADE_COLORS: Record<string, string> = {
   A: "#16A34A",
-  B: "#1A52A0",
+  B: "#1A4A6E",
   C: "#F59E0B",
   D: "#CC2229",
 };
@@ -138,7 +138,7 @@ function StandardsPage() {
         <div
           className="mx-4 mt-3 flex items-center"
           style={{
-            backgroundColor: "#0F2044",
+            backgroundColor: "#0C2340",
             borderRadius: 12,
             padding: 16,
             gap: 16,
@@ -216,7 +216,7 @@ function StandardsPage() {
                       <div className="flex-1 min-w-0">
                         <div
                           className="text-[14px] font-bold"
-                          style={{ color: "#0F2044" }}
+                          style={{ color: "#0C2340" }}
                         >
                           {formatShortDate(c.check_date)}
                         </div>
@@ -401,7 +401,7 @@ function AddCheckSheet({
                     color: active ? "#FFFFFF" : gradeColor(g),
                     border: active
                       ? "1px solid transparent"
-                      : "0.5px solid #E2E6ED",
+                      : "0.5px solid #EEF2F7",
                     fontSize: 18,
                   }}
                 >
@@ -436,10 +436,10 @@ function AddCheckSheet({
             rows={5}
             className="w-full text-[14px]"
             style={{
-              border: "0.5px solid #E2E6ED",
+              border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0F2044",
+              color: "#0C2340",
               outline: "none",
               resize: "vertical",
             }}

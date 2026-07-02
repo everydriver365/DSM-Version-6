@@ -26,7 +26,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const AVATAR_COLORS: Record<string, string> = {
   blue: "#85B7EB",
@@ -52,12 +52,12 @@ const SECTION_META: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   iconColor: string;
 }[] = [
-  { key: "personal", label: "Personal", icon: User, iconColor: "#1A52A0" },
+  { key: "personal", label: "Personal", icon: User, iconColor: "#1A4A6E" },
   { key: "business", label: "Business", icon: Briefcase, iconColor: "#16A34A" },
   { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#F59E0B" },
   { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#7C3AED" },
   { key: "security", label: "Security", icon: Shield, iconColor: "#CC2229" },
-  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1A52A0" },
+  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1A4A6E" },
   { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#CC2229" },
 ];
 
@@ -115,7 +115,7 @@ function TextField({
       </label>
       <div
         className="flex items-center gap-2 rounded-lg bg-white px-3"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 40 }}
+        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 40 }}
       >
         {icon ? <span className="flex-shrink-0">{icon}</span> : null}
         <input
@@ -149,7 +149,7 @@ function AccordionCard({
   return (
     <div
       className="bg-white mb-3"
-      style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", borderRadius: 12 }}
+      style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", borderRadius: 12 }}
     >
       <button
         type="button"
@@ -175,7 +175,7 @@ function AccordionCard({
           style={{
             borderTopWidth: "0.5px",
             borderTopStyle: "solid",
-            borderTopColor: "#E2E6ED",
+            borderTopColor: "#EEF2F7",
             paddingTop: 16,
           }}
         >
@@ -206,7 +206,7 @@ function SelectField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full h-10 rounded-lg bg-white px-3 text-[14px] text-[#1A1A2E] outline-none"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", ...POPPINS }}
+        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -228,7 +228,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
         width: 40,
         height: 22,
         borderRadius: 999,
-        backgroundColor: checked ? "#1A52A0" : "#D1D5DB",
+        backgroundColor: checked ? "#1A4A6E" : "#D1D5DB",
         transition: "background-color 120ms",
       }}
       aria-pressed={checked}
@@ -263,7 +263,7 @@ function VerifiedPill() {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[16px] font-semibold text-[#0F2044] mb-3" style={POPPINS}>
+    <h2 className="text-[16px] font-semibold text-[#0C2340] mb-3" style={POPPINS}>
       {children}
     </h2>
   );
@@ -726,10 +726,10 @@ function ProfilePage() {
                   width: 26,
                   height: 26,
                   backgroundColor: "#FFFFFF",
-                  border: "1px solid #E2E6ED",
+                  border: "1px solid #EEF2F7",
                 }}
               >
-                <Camera size={14} color="#1A52A0" />
+                <Camera size={14} color="#1A4A6E" />
               </span>
             </button>
             <input
@@ -744,7 +744,7 @@ function ProfilePage() {
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
               className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
-              style={{ color: "#1A52A0", ...POPPINS }}
+              style={{ color: "#1A4A6E", ...POPPINS }}
             >
               {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
             </button>
@@ -761,7 +761,7 @@ function ProfilePage() {
                       height: 24,
                       borderRadius: 999,
                       backgroundColor: hex,
-                      outline: avatarColor === key ? "2px solid #0F2044" : "none",
+                      outline: avatarColor === key ? "2px solid #0C2340" : "none",
                       outlineOffset: 2,
                     }}
                   />
@@ -848,12 +848,12 @@ function ProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
                 placeholder="Tell pupils a bit about yourself"
-                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                 style={{
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                   resize: "vertical",
                 }}
               />
@@ -874,7 +874,7 @@ function ProfilePage() {
                 type="button"
                 onClick={() => dbsRef.current?.click()}
                 className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               >
                 <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
                   {dbsUploaded ? (
@@ -889,7 +889,7 @@ function ProfilePage() {
                     </>
                   )}
                 </span>
-                <span className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
+                <span className="text-[13px]" style={{ color: "#1A4A6E", ...POPPINS }}>
                   {dbsUploaded ? "Replace" : "Upload"}
                 </span>
               </button>
@@ -901,17 +901,17 @@ function ProfilePage() {
               </label>
               <div
                 className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", minHeight: 44 }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
               >
                 {serviceAreas.map((a) => (
                   <span
                     key={a}
                     className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px]"
-                    style={{ backgroundColor: "#E0ECFA", color: "#0F2044", ...POPPINS }}
+                    style={{ backgroundColor: "#E0ECFA", color: "#0C2340", ...POPPINS }}
                   >
                     {a}
                     <button type="button" onClick={() => removeServiceArea(a)} aria-label={`Remove ${a}`}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0F2044" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0C2340" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                   </span>
                 ))}
@@ -957,7 +957,7 @@ function ProfilePage() {
                     onClick={() => vehiclePhotoRef.current?.click()}
                     disabled={uploadingVehicle}
                     className="text-[13px] disabled:opacity-50"
-                    style={{ color: "#1A52A0", ...POPPINS }}
+                    style={{ color: "#1A4A6E", ...POPPINS }}
                   >
                     {uploadingVehicle ? "Uploading…" : "Change photo"}
                   </button>
@@ -981,19 +981,19 @@ function ProfilePage() {
                 style={{
                   borderWidth: "1px",
                   borderStyle: "dashed",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                   borderRadius: 12,
                   padding: 24,
                 }}
               >
                 {uploadingVehicle ? (
-                  <Loader2 size={24} color="#1A52A0" className="animate-spin" />
+                  <Loader2 size={24} color="#1A4A6E" className="animate-spin" />
                 ) : (
                   <Car size={28} color="#F59E0B" />
                 )}
                 <span
                   className="mt-2 text-[13px]"
-                  style={{ color: "#1A52A0", ...POPPINS }}
+                  style={{ color: "#1A4A6E", ...POPPINS }}
                 >
                   {uploadingVehicle ? "Uploading…" : "Tap to upload vehicle photo"}
                 </span>
@@ -1018,7 +1018,7 @@ function ProfilePage() {
               ]}
             />
             <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 48 }}>
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 48 }}>
               <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Dual controls fitted</span>
               <Toggle checked={dualControls} onChange={setDualControls} />
             </div>
@@ -1028,7 +1028,7 @@ function ProfilePage() {
               </label>
               <div
                 className="flex items-center gap-2 rounded-lg bg-white px-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED", height: 40 }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 40 }}
               >
                 <input
                   type="date"
@@ -1063,7 +1063,7 @@ function ProfilePage() {
                 {NOTIF_EVENTS.map((ev) => {
                   const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
                   return (
-                    <tr key={ev.key} className="border-t" style={{ borderColor: "#E2E6ED" }}>
+                    <tr key={ev.key} className="border-t" style={{ borderColor: "#EEF2F7" }}>
                       <td className="py-2 pr-2 text-[#1A1A2E]">{ev.label}</td>
                       <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.email} onChange={(v) => setNotif(ev.key, "email", v)} /></div></td>
                       <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.sms} onChange={(v) => setNotif(ev.key, "sms", v)} /></div></td>
@@ -1081,7 +1081,7 @@ function ProfilePage() {
           <div className="flex flex-col gap-3">
             <div
               className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div>
                 <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Password</div>
@@ -1089,14 +1089,14 @@ function ProfilePage() {
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
                 </div>
               </div>
-              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1A52A0", ...POPPINS }}>
+              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1A4A6E", ...POPPINS }}>
                 Change password
               </Link>
             </div>
 
             <div
               className="rounded-lg bg-white px-3 py-3 flex flex-col gap-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Two-factor authentication</span>
@@ -1117,7 +1117,7 @@ function ProfilePage() {
 
             <div
               className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div>
                 <div className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Active sessions</div>
@@ -1127,7 +1127,7 @@ function ProfilePage() {
 
             <div
               className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <span className="text-[14px] text-[#1A1A2E]" style={POPPINS}>Login alerts</span>
               <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
@@ -1141,7 +1141,7 @@ function ProfilePage() {
             <Link
               to="/calendarsync"
               className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div
                 className="flex items-center justify-center rounded-lg"
@@ -1160,7 +1160,7 @@ function ProfilePage() {
             <Link
               to="/calendarsync"
               className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <div
                 className="flex items-center justify-center rounded-lg"

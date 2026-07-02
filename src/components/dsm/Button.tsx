@@ -23,19 +23,19 @@ export function Button({
   let extraStyle: CSSProperties = {};
 
   if (variant === "primary") {
-    variantClasses = "bg-[#1A52A0] text-white hover:bg-[#163d7a]";
+    variantClasses = "bg-[#1A4A6E] text-white hover:bg-[#163d7a]";
   } else if (variant === "destructive") {
     variantClasses = "bg-[#CC2229] text-white hover:bg-[#a81b21]";
   } else {
-    variantClasses = "bg-transparent text-[#1A52A0] hover:bg-[#f0f4ff]";
-    extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#1A52A0" };
+    variantClasses = "bg-transparent text-[#1A4A6E] hover:bg-[#f0f4ff]";
+    extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#1A4A6E" };
   }
 
   return (
     <button
       {...rest}
       className={`${base} ${width} ${variantClasses} ${className}`}
-      style={{ fontFamily: "Poppins, sans-serif", ...extraStyle, ...style }}
+      style={{ fontFamily: "Inter, sans-serif", ...extraStyle, ...style }}
     >
       {children}
     </button>

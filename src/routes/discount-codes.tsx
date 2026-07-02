@@ -44,7 +44,7 @@ export const Route = createFileRoute("/discount-codes")({
   component: DiscountCodesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const SUGGESTIONS = ["SAVE10", "WELCOME", "FIRSTLESSON", "REFER5", "BLOCK10"];
 
@@ -167,7 +167,7 @@ function DiscountCodesPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044" }}
+        style={{ backgroundColor: "#0C2340" }}
       >
         <button
           type="button"
@@ -205,7 +205,7 @@ function DiscountCodesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <Tag size={20} color="#1A52A0" />
+          <Tag size={20} color="#1A4A6E" />
           <div className="text-[13px] text-[#1E3A8A] leading-snug">
             Offer discounts to your pupils. Share a code and they'll get money off their
             booking.
@@ -219,7 +219,7 @@ function DiscountCodesPage() {
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : codes.length === 0 ? (
           <div className="text-center py-10 px-4">
-            <div className="text-[14px] font-semibold text-[#0F2044]">No discount codes yet</div>
+            <div className="text-[14px] font-semibold text-[#0C2340]">No discount codes yet</div>
             <div className="text-[12px] text-[#6B7280] mt-1">
               Tap "New code" to create your first offer.
             </div>
@@ -266,7 +266,7 @@ function CodeCard({
   onDelete: () => void;
 }) {
   const isPct = code.type === "percentage";
-  const typeColor = isPct ? "#D97706" : "#1A52A0";
+  const typeColor = isPct ? "#D97706" : "#1A4A6E";
   const typeBg = isPct ? "#FEF3C7" : "#DBEAFE";
   const usesLabel = `${code.uses_count} / ${code.max_uses ?? "∞"} uses`;
   return (
@@ -276,7 +276,7 @@ function CodeCard({
         padding: 16,
         borderRadius: 12,
         backgroundColor: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         opacity: code.active ? 1 : 0.6,
       }}
     >
@@ -284,7 +284,7 @@ function CodeCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div
-              className="text-[20px] font-bold text-[#0F2044] truncate"
+              className="text-[20px] font-bold text-[#0C2340] truncate"
               style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
             >
               {code.code}
@@ -303,7 +303,7 @@ function CodeCard({
                 justifyContent: "center",
               }}
             >
-              <Copy size={14} color="#0F2044" />
+              <Copy size={14} color="#0C2340" />
             </button>
           </div>
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -318,7 +318,7 @@ function CodeCard({
             >
               {isPct ? "% OFF" : "£ OFF"}
             </span>
-            <span className="text-[13px] font-semibold text-[#0F2044]">
+            <span className="text-[13px] font-semibold text-[#0C2340]">
               {isPct ? `${code.value}% off` : `£${Number(code.value).toFixed(2)} off`}
             </span>
           </div>
@@ -366,7 +366,7 @@ function CodeCard({
           type="button"
           onClick={onShare}
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
-          style={{ height: 34, borderRadius: 8, backgroundColor: "#1A52A0" }}
+          style={{ height: 34, borderRadius: 8, backgroundColor: "#1A4A6E" }}
         >
           <Share2 size={13} /> Share
         </button>
@@ -478,7 +478,7 @@ function AddSheet({
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           overflowY: "auto",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
       >
         <div
@@ -486,12 +486,12 @@ function AddSheet({
           style={{
             height: 52,
             backgroundColor: "#FFFFFF",
-            borderBottom: "0.5px solid #E2E6ED",
+            borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold text-[#0F2044]">New discount code</div>
+          <div className="text-[15px] font-semibold text-[#0C2340]">New discount code</div>
           <button type="button" onClick={onClose} aria-label="Close">
-            <X size={20} color="#0F2044" />
+            <X size={20} color="#0C2340" />
           </button>
         </div>
 
@@ -521,7 +521,7 @@ function AddSheet({
                       padding: "0 10px",
                       borderRadius: 999,
                       backgroundColor: "#F3F4F6",
-                      color: "#0F2044",
+                      color: "#0C2340",
                     }}
                   >
                     {s}
@@ -595,7 +595,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#1A52A0",
+              backgroundColor: "#1A4A6E",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,
@@ -629,9 +629,9 @@ function TypeBtn({
       style={{
         height: 40,
         borderRadius: 8,
-        border: `0.5px solid ${active ? "#1A52A0" : "#E2E6ED"}`,
+        border: `0.5px solid ${active ? "#1A4A6E" : "#EEF2F7"}`,
         backgroundColor: active ? "#EFF6FF" : "#FFFFFF",
-        color: active ? "#1A52A0" : "#6B7280",
+        color: active ? "#1A4A6E" : "#6B7280",
       }}
     >
       {icon} {label}
@@ -644,11 +644,11 @@ const inputStyle: React.CSSProperties = {
   height: 40,
   padding: "0 12px",
   borderRadius: 8,
-  border: "0.5px solid #E2E6ED",
+  border: "0.5px solid #EEF2F7",
   backgroundColor: "#FFFFFF",
-  color: "#0F2044",
+  color: "#0C2340",
   fontSize: 14,
-  fontFamily: "Poppins, sans-serif",
+  fontFamily: "Inter, sans-serif",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/pupils/edit/$id")({
   component: EditPupilPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const STATUSES: { label: string; value: string }[] = [
   { label: "Active", value: "active" },
@@ -36,10 +36,10 @@ const LEAD_SOURCES = [
 ];
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
+  fontFamily: "Inter, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
-  borderColor: "#E2E6ED",
+  borderColor: "#EEF2F7",
 };
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -441,7 +441,7 @@ function EditPupilPage() {
                 setLeadSource(e.target.value);
                 setLeadSourceDetail("");
               }}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select…</option>
@@ -479,7 +479,7 @@ function EditPupilPage() {
           {(blockToggle || leadSource === "National Intensive") && (
             <div
               className="flex flex-col gap-3 p-3 rounded-lg"
-              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+              style={{ border: "1px solid #EEF2F7", backgroundColor: "#F9FAFB" }}
             >
               <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
                 BLOCK BOOKING
@@ -525,7 +525,7 @@ function EditPupilPage() {
                         id="payment_method"
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="cash">Cash</option>
@@ -542,7 +542,7 @@ function EditPupilPage() {
                         value={topUpNotes}
                         onChange={(e) => setTopUpNotes(e.target.value)}
                         placeholder="e.g. Top-up paid by bank transfer, ref: xxx"
-                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                         style={{ ...fieldBorder, resize: "vertical" }}
                       />
                     </div>
@@ -555,7 +555,7 @@ function EditPupilPage() {
           {leadSource === "National Intensive" && (
             <div
               className="flex flex-col gap-3 p-3 rounded-lg"
-              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+              style={{ border: "1px solid #EEF2F7", backgroundColor: "#F9FAFB" }}
             >
               <p className="text-[12px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
                 NATIONAL INTENSIVE PAYMENT
@@ -583,7 +583,7 @@ function EditPupilPage() {
                   id="ni_payer"
                   value={niPayer}
                   onChange={(e) => setNiPayer(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={fieldBorder}
                 >
                   <option value="pupil">Pupil pays directly</option>
@@ -638,14 +638,14 @@ function EditPupilPage() {
                     </span>
                     <span
                       className="text-[13px] font-semibold"
-                      style={{ color: color ?? "#0F2044", ...POPPINS }}
+                      style={{ color: color ?? "#0C2340", ...POPPINS }}
                     >
                       {value}
                     </span>
                   </div>
                 );
                 return (
-                  <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+                  <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
                     <p
                       className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
                       style={POPPINS}
@@ -662,7 +662,7 @@ function EditPupilPage() {
                         marginTop: 10,
                         height: 8,
                         borderRadius: 4,
-                        backgroundColor: "#F2F4F8",
+                        backgroundColor: "#F3F8FF",
                         overflow: "hidden",
                       }}
                     >
@@ -670,7 +670,7 @@ function EditPupilPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#1A52A0",
+                          backgroundColor: "#1A4A6E",
                           borderRadius: 4,
                         }}
                       />
@@ -681,7 +681,7 @@ function EditPupilPage() {
 
 
 
-              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
                 <p
                   className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
                   style={POPPINS}
@@ -709,7 +709,7 @@ function EditPupilPage() {
                 </div>
               </div>
 
-              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+              <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
                 <p
                   className="text-[12px] font-semibold tracking-wide text-[#6B7280] mb-2"
                   style={POPPINS}
@@ -747,7 +747,7 @@ function EditPupilPage() {
                         id="swap_preferred_time"
                         value={swapPreferredTime}
                         onChange={(e) => setSwapPreferredTime(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="any">Any</option>
@@ -786,7 +786,7 @@ function EditPupilPage() {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               {STATUSES.map((s) => (
@@ -812,7 +812,7 @@ function EditPupilPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this pupil…"
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             />
           </div>
@@ -890,13 +890,13 @@ function CentreSearch({
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder="Search test centres…"
-        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
         style={fieldBorder}
       />
       {open && (results.length > 0 || loading) && (
         <div
           className="absolute z-20 left-0 right-0 mt-1 rounded-lg bg-white shadow-lg overflow-hidden"
-          style={{ border: "0.5px solid #E2E6ED", maxHeight: 240, overflowY: "auto" }}
+          style={{ border: "0.5px solid #EEF2F7", maxHeight: 240, overflowY: "auto" }}
         >
           {loading && (
             <div className="px-3 py-2 text-[12px] text-[#6B7280]" style={POPPINS}>

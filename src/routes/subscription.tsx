@@ -13,13 +13,13 @@ export const Route = createFileRoute("/subscription")({
   component: SubscriptionPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function SubscriptionPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F2F4F8", margin: -8 }}>
+    <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -42,7 +42,7 @@ function SubscriptionPage() {
       <div
         className="mx-4 mt-3"
         style={{
-          backgroundColor: "#0F2044",
+          backgroundColor: "#0C2340",
           borderRadius: 12,
           padding: 16,
         }}
@@ -91,15 +91,15 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          border: "2px solid #1A52A0",
+          border: "2px solid #1A4A6E",
           borderRadius: 12,
           padding: 16,
           position: "relative",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044" }}>DSM Pro</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#1A52A0" }}>£19.99/month</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#0C2340" }}>DSM Pro</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#1A4A6E" }}>£19.99/month</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
@@ -169,7 +169,7 @@ function Feature({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <Check size={16} color="#16A34A" strokeWidth={3} />
-      <span style={{ fontSize: 14, color: "#0F2044" }}>{text}</span>
+      <span style={{ fontSize: 14, color: "#0C2340" }}>{text}</span>
     </div>
   );
 }

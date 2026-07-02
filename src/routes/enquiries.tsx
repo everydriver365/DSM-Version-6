@@ -12,7 +12,7 @@ export const Route = createFileRoute("/enquiries")({
   component: EnquiriesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface EnquiryNotification {
   id: string;
@@ -480,7 +480,7 @@ function EnquiryCard({
             <div className="min-w-0 flex-1">
               <div
                 className="text-[14px] font-semibold truncate"
-                style={{ color: "#0F2044" }}
+                style={{ color: "#0C2340" }}
               >
                 {n.title ?? "Enquiry"}
               </div>
@@ -502,7 +502,7 @@ function EnquiryCard({
           </div>
 
           {expanded && (
-            <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+            <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
               {loading && enquiry == null ? (
                 <div className="text-[13px]" style={{ color: "#6B7280" }}>
                   Loading…

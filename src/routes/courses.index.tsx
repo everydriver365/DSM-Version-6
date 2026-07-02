@@ -15,7 +15,7 @@ export const Route = createFileRoute("/courses/")({
   component: CoursesPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface CourseRow {
   id: string;
@@ -35,7 +35,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#1A52A0";
+  return "#1A4A6E";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -96,7 +96,7 @@ function CoursesPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F2F4F8", ...POPPINS }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
       {/* Top bar */}
       <div
         style={{
@@ -152,7 +152,7 @@ function CoursesPage() {
               onClick={() => navigate({ to: "/courses/new" })}
               style={{
                 marginTop: 8,
-                background: "#1A52A0",
+                background: "#1A4A6E",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
@@ -160,7 +160,7 @@ function CoursesPage() {
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               + New course
@@ -211,7 +211,7 @@ function CoursesPage() {
                         style={{
                           fontSize: 14,
                           fontWeight: 600,
-                          color: "#0F2044",
+                          color: "#0C2340",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
@@ -220,7 +220,7 @@ function CoursesPage() {
                         {c.name}
                       </div>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0F2044" }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0C2340" }}>
                       £{Number(c.price).toFixed(0)}
                     </div>
                   </div>
@@ -230,10 +230,10 @@ function CoursesPage() {
                     if (list.length === 0) return null;
                     return (
                       <div style={{ marginTop: 8, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-                        <MapPin size={12} color="#1A52A0" />
+                        <MapPin size={12} color="#1A4A6E" />
                         {list.slice(0, 3).map((pc, index) => (
                           <span key={`${pc}-${index}`} style={{
-                            background: "#e8eefb", color: "#0F2044", fontWeight: 600,
+                            background: "#e8eefb", color: "#0C2340", fontWeight: 600,
                             fontSize: 11, padding: "2px 8px", borderRadius: 10,
                           }}>{pc}</span>
                         ))}
@@ -278,7 +278,7 @@ function CoursesPage() {
                     style={{
                       marginTop: 10,
                       paddingTop: 10,
-                      borderTop: "0.5px solid #E2E6ED",
+                      borderTop: "0.5px solid #EEF2F7",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -295,7 +295,7 @@ function CoursesPage() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 6,
-                        background: "#0F2044",
+                        background: "#0C2340",
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,
@@ -303,7 +303,7 @@ function CoursesPage() {
                         fontWeight: 600,
                         fontSize: 13,
                         cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Inter, sans-serif",
                       }}
                     >
                       <Pencil size={14} />

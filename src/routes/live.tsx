@@ -10,7 +10,7 @@ export const Route = createFileRoute("/live")({
   component: LivePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 
 interface LessonRow {
@@ -608,7 +608,7 @@ function LivePage() {
             borderRadius: 12,
             maxWidth: 280,
             textAlign: "center",
-            color: "#0F2044",
+            color: "#0C2340",
             fontSize: 14,
             boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
           }}
@@ -687,7 +687,7 @@ function LivePage() {
             width: "calc(100% - 40px)",
             maxWidth: 340,
             background: "#fff",
-            border: "0.5px solid #E2E6ED",
+            border: "0.5px solid #EEF2F7",
             borderRadius: 16,
             padding: 24,
             textAlign: "center",
@@ -695,9 +695,9 @@ function LivePage() {
           }}
         >
           <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
-            <MapIcon size={44} color="#1A52A0" strokeWidth={1.8} />
+            <MapIcon size={44} color="#1A4A6E" strokeWidth={1.8} />
           </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", marginBottom: 6 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0C2340", marginBottom: 6 }}>
             No active lesson
           </div>
           <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
@@ -710,7 +710,7 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 10,
-              background: "#1A52A0",
+              background: "#1A4A6E",
               border: "none",
               color: "#fff",
               fontSize: 15,
@@ -771,7 +771,7 @@ function LivePage() {
               className="flex items-center justify-between"
               style={{ marginTop: 4 }}
             >
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044" }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#0C2340" }}>
                 {activeLesson.pupils?.name ?? "Pupil"}
               </div>
               <div style={{ fontSize: 13, color: "#6B7280", fontWeight: 600 }}>
@@ -792,7 +792,7 @@ function LivePage() {
             >
               Tracking
             </div>
-            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0F2044" }}>
+            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0C2340" }}>
               Manual journey
             </div>
           </div>
@@ -820,14 +820,14 @@ function LivePage() {
           }}
         >
           <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0C2340" }}>
               {distanceMiles.toFixed(1)}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>mi</div>
           </div>
           <div style={{ width: 1, background: "#E5E7EB" }} />
           <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0C2340" }}>
               {elapsedMin}:{String(elapsedSecRem).padStart(2, "0")}
             </div>
             <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>duration</div>
@@ -849,7 +849,7 @@ function LivePage() {
               style={{
                 fontSize: 16,
                 fontWeight: 700,
-                color: overspeedCount > 0 ? "#EF4444" : "#0F2044",
+                color: overspeedCount > 0 ? "#EF4444" : "#0C2340",
                 textDecoration: overspeedCount > 0 ? "underline" : "none",
               }}
             >
@@ -922,7 +922,7 @@ function LivePage() {
             }}
           >
             <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0C2340" }}>
                 Overspeed events ({overspeedEvents.length})
               </div>
               <button
@@ -958,7 +958,7 @@ function LivePage() {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0C2340" }}>
                           {ev.road_name ?? "Unknown road"}
                         </div>
                         <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/lessons/edit/$id")({
   component: EditLessonPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -36,10 +36,10 @@ const STATUSES = [
 ];
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
+  fontFamily: "Inter, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
-  borderColor: "#E2E6ED",
+  borderColor: "#EEF2F7",
 };
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -207,7 +207,7 @@ function EditLessonPage() {
               id="pupil"
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select a pupil</option>
@@ -240,7 +240,7 @@ function EditLessonPage() {
               id="duration"
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               {DURATIONS.map((d) => (
@@ -257,7 +257,7 @@ function EditLessonPage() {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             >
               {STATUSES.map((s) => (
@@ -275,7 +275,7 @@ function EditLessonPage() {
               rows={4}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
               style={fieldBorder}
             />
           </div>

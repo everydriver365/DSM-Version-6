@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Driving School Manager" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
-      { name: "theme-color", content: "#0F2044" },
+      { name: "theme-color", content: "#0C2340" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "DSM" },
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap",
       },
     ],
   }),
@@ -190,7 +190,7 @@ function RootComponent() {
 
   const wrapperStyle: Record<string, string | number> = {};
   if (!hideNav) wrapperStyle.paddingBottom = 80;
-  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F2F4F8";
+  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F3F8FF";
 
   // Track recent screens for the search screen's "Recent" list.
   useEffect(() => {

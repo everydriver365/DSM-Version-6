@@ -87,8 +87,8 @@ function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0F2044] px-4"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0C2340] px-4"
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
@@ -97,7 +97,7 @@ function LoginPage() {
           alt="DSM logo"
           className="h-[60px] w-auto mb-2"
         />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
+        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Inter, sans-serif" }}>
           by EveryDriver
         </span>
       </div>
@@ -113,14 +113,14 @@ function LoginPage() {
         }}
       >
         <h2
-          className="text-[20px] font-semibold text-[#0F2044] text-center"
-          style={{ fontFamily: "Poppins, sans-serif" }}
+          className="text-[20px] font-semibold text-[#0C2340] text-center"
+          style={{ fontFamily: "Inter, sans-serif" }}
         >
           Welcome back
         </h2>
         <p
           className="text-[13px] text-[#6B7280] text-center"
-          style={{ fontFamily: "Poppins, sans-serif" }}
+          style={{ fontFamily: "Inter, sans-serif" }}
         >
           Sign in to your account
         </p>
@@ -130,7 +130,7 @@ function LoginPage() {
             <label
               htmlFor="login-email"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
               Email
             </label>
@@ -142,9 +142,9 @@ function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
               style={{
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -154,7 +154,7 @@ function LoginPage() {
             <label
               htmlFor="login-password"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
               Password
             </label>
@@ -166,9 +166,9 @@ function LoginPage() {
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0F2044] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A52A0]"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0C2340] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1A4A6E]"
               style={{
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -194,13 +194,13 @@ function LoginPage() {
                   setRemember(on);
                   persistRemember(email, on);
                 }}
-                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A52A0]"
+                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1A4A6E]"
               />
               Remember me
             </label>
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#1A52A0] hover:underline"
+              className="text-[13px] text-[#1A4A6E] hover:underline"
             >
               Forgot password?
             </Link>
@@ -216,9 +216,9 @@ function LoginPage() {
             </Button>
           </div>
 
-          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Poppins, sans-serif" }}>
+          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Inter, sans-serif" }}>
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-[#1A52A0] hover:underline font-medium">
+            <Link to="/register" className="text-[#1A4A6E] hover:underline font-medium">
               Create account
             </Link>
           </p>
@@ -227,8 +227,8 @@ function LoginPage() {
             <button
               type="button"
               onClick={onBiometric}
-              className="h-12 w-full rounded-lg bg-white text-[#0F2044] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
-              style={{ border: "1.5px solid #E2E6ED", fontFamily: "Poppins, sans-serif" }}
+              className="h-12 w-full rounded-lg bg-white text-[#0C2340] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
+              style={{ border: "1.5px solid #EEF2F7", fontFamily: "Inter, sans-serif" }}
             >
               <ScanFace size={20} />
               Sign in with Face ID / Touch ID
@@ -238,7 +238,7 @@ function LoginPage() {
           {webauthnSupported && (
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#1A52A0] hover:underline text-center"
+              className="text-[13px] text-[#1A4A6E] hover:underline text-center"
             >
               Forgot password?
             </Link>
@@ -248,7 +248,7 @@ function LoginPage() {
             <p
               className="text-[13px] text-[#CC2229] text-center"
               role="alert"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
               {error}
             </p>
@@ -259,7 +259,7 @@ function LoginPage() {
       {/* Footer */}
       <p
         className="text-[#6B7280] text-[11px] text-center mt-8"
-        style={{ fontFamily: "Poppins, sans-serif" }}
+        style={{ fontFamily: "Inter, sans-serif" }}
       >
         DSM by EveryDriver &copy; 2026
       </p>

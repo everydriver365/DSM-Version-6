@@ -44,7 +44,7 @@ export const Route = createFileRoute("/cpd")({
   component: CpdPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const CATEGORIES = [
   "Standards check",
@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 const CAT_COLORS: Record<string, string> = {
   "Standards check": "#7C3AED",
-  "Business skills": "#1A52A0",
+  "Business skills": "#1A4A6E",
   "Pupil welfare": "#16A34A",
   "Road safety": "#CC2229",
   Specialist: "#D97706",
@@ -223,7 +223,7 @@ function CpdPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0F2044" }}
+        style={{ backgroundColor: "#0C2340" }}
       >
         <button
           type="button"
@@ -256,8 +256,8 @@ function CpdPage() {
       {/* STATS */}
       <div className="px-4 pt-4 grid grid-cols-3 gap-2">
         <StatCard label="This year" value={`${yearHours.toFixed(1)}h`} color="#16A34A" />
-        <StatCard label="Entries" value={String(totalEntries)} color="#1A52A0" />
-        <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0F2044" small />
+        <StatCard label="Entries" value={String(totalEntries)} color="#1A4A6E" />
+        <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0C2340" small />
       </div>
 
       {/* ADI RENEWAL BANNER */}
@@ -321,7 +321,7 @@ function CpdPage() {
                   height: 32,
                   padding: "0 12px",
                   borderRadius: 16,
-                  backgroundColor: active ? "#0F2044" : "#F3F4F6",
+                  backgroundColor: active ? "#0C2340" : "#F3F4F6",
                   color: active ? "#FFFFFF" : "#6B7280",
                 }}
               >
@@ -338,7 +338,7 @@ function CpdPage() {
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : grouped.length === 0 ? (
           <div className="text-center py-10">
-            <div className="text-[14px] font-semibold text-[#0F2044]">No CPD entries yet</div>
+            <div className="text-[14px] font-semibold text-[#0C2340]">No CPD entries yet</div>
             <div className="text-[12px] text-[#6B7280] mt-1">
               Tap "Add CPD" to record your first activity.
             </div>
@@ -346,7 +346,7 @@ function CpdPage() {
         ) : (
           grouped.map(([year, entries]) => (
             <div key={year} className="mb-4">
-              <div className="text-[15px] font-bold text-[#0F2044] mb-2">{year}</div>
+              <div className="text-[15px] font-bold text-[#0C2340] mb-2">{year}</div>
               {entries.map((l) => (
                 <EntryCard
                   key={l.id}
@@ -417,7 +417,7 @@ function StatCard({
     <div
       style={{
         backgroundColor: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         borderRadius: 12,
         padding: 12,
       }}
@@ -453,7 +453,7 @@ function EntryCard({
       className="mb-2"
       style={{
         backgroundColor: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
+        border: "0.5px solid #EEF2F7",
         borderRadius: 12,
         padding: "14px 16px",
       }}
@@ -466,7 +466,7 @@ function EntryCard({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="text-[14px] font-semibold text-[#0F2044] truncate">{log.title}</div>
+            <div className="text-[14px] font-semibold text-[#0C2340] truncate">{log.title}</div>
             {log.provider && (
               <div className="text-[12px] text-[#6B7280] truncate">{log.provider}</div>
             )}
@@ -485,7 +485,7 @@ function EntryCard({
               <span
                 className="text-[10px] font-semibold"
                 style={{
-                  color: "#0F2044",
+                  color: "#0C2340",
                   backgroundColor: "#F3F4F6",
                   padding: "3px 8px",
                   borderRadius: 6,
@@ -507,7 +507,7 @@ function EntryCard({
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 mt-2 text-[12px] font-medium"
-            style={{ color: "#1A52A0" }}
+            style={{ color: "#1A4A6E" }}
           >
             <Paperclip size={12} /> Certificate
           </a>
@@ -515,7 +515,7 @@ function EntryCard({
       </button>
 
       {open && (
-        <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: "0.5px solid #E2E6ED" }}>
+        <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
           <button
             type="button"
             onClick={onEdit}
@@ -524,7 +524,7 @@ function EntryCard({
               height: 34,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0F2044",
+              color: "#0C2340",
             }}
           >
             <Pencil size={13} /> Edit
@@ -689,7 +689,7 @@ function AddSheet({
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           overflowY: "auto",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Inter, sans-serif",
         }}
       >
         <div
@@ -697,14 +697,14 @@ function AddSheet({
           style={{
             height: 52,
             backgroundColor: "#FFFFFF",
-            borderBottom: "0.5px solid #E2E6ED",
+            borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold text-[#0F2044]">
+          <div className="text-[15px] font-semibold text-[#0C2340]">
             {editing ? "Edit CPD" : "Add CPD"}
           </div>
           <button type="button" onClick={onClose} aria-label="Close">
-            <X size={20} color="#0F2044" />
+            <X size={20} color="#0C2340" />
           </button>
         </div>
 
@@ -791,7 +791,7 @@ function AddSheet({
                 {listening ? (
                   <MicOff size={16} color="#FFFFFF" />
                 ) : (
-                  <Mic size={16} color="#0F2044" />
+                  <Mic size={16} color="#0C2340" />
                 )}
               </button>
             </div>
@@ -805,7 +805,7 @@ function AddSheet({
                   target="_blank"
                   rel="noreferrer"
                   className="text-[12px] font-medium truncate"
-                  style={{ color: "#1A52A0" }}
+                  style={{ color: "#1A4A6E" }}
                 >
                   View uploaded certificate
                 </a>
@@ -824,8 +824,8 @@ function AddSheet({
                 style={{
                   height: 40,
                   borderRadius: 8,
-                  border: "0.5px dashed #E2E6ED",
-                  color: "#0F2044",
+                  border: "0.5px dashed #EEF2F7",
+                  color: "#0C2340",
                 }}
               >
                 <Upload size={14} /> {uploading ? "Uploading…" : "Upload certificate"}
@@ -845,7 +845,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#1A52A0",
+              backgroundColor: "#1A4A6E",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,
@@ -865,11 +865,11 @@ const inputStyle: React.CSSProperties = {
   height: 40,
   padding: "0 12px",
   borderRadius: 8,
-  border: "0.5px solid #E2E6ED",
+  border: "0.5px solid #EEF2F7",
   backgroundColor: "#FFFFFF",
-  color: "#0F2044",
+  color: "#0C2340",
   fontSize: 14,
-  fontFamily: "Poppins, sans-serif",
+  fontFamily: "Inter, sans-serif",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

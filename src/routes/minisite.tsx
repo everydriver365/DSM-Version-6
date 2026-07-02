@@ -27,7 +27,7 @@ export const Route = createFileRoute("/minisite")({
   component: MiniSitePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const SITE_BASE = "everydriver.co.uk/i/";
 
 type Theme = "classic" | "modern" | "warm" | "bold";
@@ -35,7 +35,7 @@ type Font = "Poppins" | "Inter" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
-  { key: "classic", label: "Classic", swatch: ["#0F2044", "#1A52A0", "#FFFFFF"] },
+  { key: "classic", label: "Classic", swatch: ["#0C2340", "#1A4A6E", "#FFFFFF"] },
   { key: "modern", label: "Modern", swatch: ["#111111", "#2A2A2A", "#F5F5F5"] },
   { key: "warm", label: "Warm", swatch: ["#C2410C", "#FB923C", "#FFF7ED"] },
   { key: "bold", label: "Bold", swatch: ["#000000", "#DC2626", "#FFFFFF"] },
@@ -49,7 +49,7 @@ const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
 ];
 
 const COLOUR_SWATCHES = [
-  "#1A52A0", "#0F2044", "#16A34A", "#DC2626",
+  "#1A4A6E", "#0C2340", "#16A34A", "#DC2626",
   "#D97706", "#7C3AED", "#0EA5E9", "#111111",
 ];
 
@@ -90,7 +90,7 @@ function MiniSitePage() {
   const [theme, setTheme] = useState<Theme>("classic");
   const [font, setFont] = useState<Font>("Poppins");
   const [headerStyle, setHeaderStyle] = useState<HeaderStyle>("standard");
-  const [brandColour, setBrandColour] = useState<string>("#1A52A0");
+  const [brandColour, setBrandColour] = useState<string>("#1A4A6E");
 
   const heroInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -287,8 +287,8 @@ function MiniSitePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F2F4F8" }}>
-        <Loader2 className="animate-spin" color="#1A52A0" />
+      <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
+        <Loader2 className="animate-spin" color="#1A4A6E" />
       </div>
     );
   }
@@ -296,7 +296,7 @@ function MiniSitePage() {
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
 
   return (
-    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F2F4F8", paddingTop: 52 }}>
+    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: 52 }}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center"
@@ -318,17 +318,17 @@ function MiniSitePage() {
         {/* PREVIEW LINK CARD */}
         <div
           className="bg-white mb-3"
-          style={{ borderRadius: 12, padding: 16, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+          style={{ borderRadius: 12, padding: 16, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
         >
           <div className="text-[10px] uppercase mb-1" style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}>
             Your website
           </div>
           <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="text-[14px] truncate" style={{ color: "#1A52A0" }}>{displayUrl}</div>
+            <div className="text-[14px] truncate" style={{ color: "#1A4A6E" }}>{displayUrl}</div>
             <button
               onClick={copyUrl}
               aria-label="Copy URL"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#1A52A0", display: "flex" }}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#1A4A6E", display: "flex" }}
             >
               <Copy size={18} />
             </button>
@@ -366,7 +366,7 @@ function MiniSitePage() {
               onClick={() => togglePublished(!published)}
               style={{
                 width: 44, height: 26, borderRadius: 999,
-                background: published ? "#16A34A" : "#E2E6ED",
+                background: published ? "#16A34A" : "#EEF2F7",
                 border: "none", cursor: "pointer", position: "relative",
                 transition: "background 0.15s",
               }}
@@ -395,7 +395,7 @@ function MiniSitePage() {
               placeholder="your-name"
             />
             <div className="text-[12px] mt-2" style={{ color: "#6B7280" }}>
-              {SITE_BASE}<span style={{ color: "#1A52A0", fontWeight: 600 }}>{slug || "your-slug"}</span>
+              {SITE_BASE}<span style={{ color: "#1A4A6E", fontWeight: 600 }}>{slug || "your-slug"}</span>
             </div>
             <div className="text-[12px] mt-1 flex items-center gap-1" style={{ minHeight: 18 }}>
               {!slugValidFormat && slug && (
@@ -430,7 +430,7 @@ function MiniSitePage() {
         <Card className="mb-3" style={{ background: "#fff" }}>
           <label
             className="block mb-1 text-[12px] font-medium"
-            style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
+            style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
           >
             Website bio
           </label>
@@ -439,10 +439,10 @@ function MiniSitePage() {
             onChange={(e) => setWebsiteBio(e.target.value)}
             placeholder="Tell pupils about yourself, your teaching style, and why they should choose you"
             rows={5}
-            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
             style={{
-              fontFamily: "Poppins, sans-serif",
-              borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED",
+              fontFamily: "Inter, sans-serif",
+              borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
               resize: "vertical",
             }}
           />
@@ -477,12 +477,12 @@ function MiniSitePage() {
               onClick={() => heroInputRef.current?.click()}
               className="w-full flex flex-col items-center justify-center"
               style={{
-                borderWidth: "1px", borderStyle: "dashed", borderColor: "#E2E6ED",
+                borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
                 borderRadius: 12, padding: 24, background: "#FAFBFC", cursor: "pointer",
               }}
             >
               {uploadingHero ? (
-                <Loader2 className="animate-spin" color="#1A52A0" />
+                <Loader2 className="animate-spin" color="#1A4A6E" />
               ) : (
                 <>
                   <Camera size={28} color="#9CA3AF" />
@@ -532,12 +532,12 @@ function MiniSitePage() {
               onClick={() => galleryInputRef.current?.click()}
               className="w-full flex flex-col items-center justify-center"
               style={{
-                borderWidth: "1px", borderStyle: "dashed", borderColor: "#E2E6ED",
+                borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
                 borderRadius: 12, padding: 16, background: "#FAFBFC", cursor: "pointer",
               }}
             >
               {uploadingGallery ? (
-                <Loader2 className="animate-spin" color="#1A52A0" />
+                <Loader2 className="animate-spin" color="#1A4A6E" />
               ) : (
                 <>
                   <Camera size={22} color="#9CA3AF" />
@@ -564,14 +564,14 @@ function MiniSitePage() {
                   onClick={() => setTheme(t.key)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1A52A0" : "#E2E6ED",
+                    borderColor: selected ? "#1A4A6E" : "#EEF2F7",
                     borderRadius: 12, padding: 10, background: "#fff",
                     cursor: "pointer", textAlign: "left",
                   }}
                 >
                   <div className="flex gap-1 mb-2">
                     {t.swatch.map((c) => (
-                      <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #E2E6ED" }} />
+                      <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #EEF2F7" }} />
                     ))}
                   </div>
                   <div className="text-[13px] font-medium" style={{ color: "#1A1A2E" }}>{t.label}</div>
@@ -593,7 +593,7 @@ function MiniSitePage() {
                   onClick={() => setFont(f)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1A52A0" : "#E2E6ED",
+                    borderColor: selected ? "#1A4A6E" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 12px", background: "#fff",
                     cursor: "pointer", textAlign: "left",
                     fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#1A1A2E",
@@ -618,7 +618,7 @@ function MiniSitePage() {
                   onClick={() => setHeaderStyle(h.key)}
                   style={{
                     borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1A52A0" : "#E2E6ED",
+                    borderColor: selected ? "#1A4A6E" : "#EEF2F7",
                     borderRadius: 10, padding: "10px 8px", background: "#fff",
                     cursor: "pointer", textAlign: "center",
                     fontSize: 12, color: "#1A1A2E",
@@ -637,13 +637,13 @@ function MiniSitePage() {
             <span
               style={{
                 width: 32, height: 32, borderRadius: 8,
-                background: brandColour, border: "0.5px solid #E2E6ED",
+                background: brandColour, border: "0.5px solid #EEF2F7",
               }}
             />
             <Input
               value={brandColour}
               onChange={(e) => setBrandColour(e.target.value)}
-              placeholder="#1A52A0"
+              placeholder="#1A4A6E"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -656,7 +656,7 @@ function MiniSitePage() {
                 style={{
                   width: 28, height: 28, borderRadius: 999,
                   background: c, cursor: "pointer",
-                  border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #1A1A2E" : "0.5px solid #E2E6ED",
+                  border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #1A1A2E" : "0.5px solid #EEF2F7",
                 }}
               />
             ))}

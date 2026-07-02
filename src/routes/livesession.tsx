@@ -12,7 +12,7 @@ export const Route = createFileRoute("/livesession")({
   component: LiveSessionPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface LessonRow {
   id: string;
@@ -202,7 +202,7 @@ function LiveSessionPage() {
               width: 48,
               height: 48,
               borderRadius: 24,
-              background: "#1A52A0",
+              background: "#1A4A6E",
               color: "#fff",
               display: "flex",
               alignItems: "center",
@@ -214,7 +214,7 @@ function LiveSessionPage() {
             {initials(pupilName)}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: "#0F2044" }}>{pupilName}</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: "#0C2340" }}>{pupilName}</div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
               Start {startTimeLabel} · {lesson?.duration_minutes ?? 60} min
             </div>
@@ -238,7 +238,7 @@ function LiveSessionPage() {
           <button
             type="button"
             onClick={() => setNoteSheetOpen(true)}
-            style={actionBtn("#1A52A0")}
+            style={actionBtn("#1A4A6E")}
           >
             <StickyNote size={20} color="#fff" />
             <span>Add note</span>
@@ -275,11 +275,11 @@ function LiveSessionPage() {
               borderRadius: 12,
               padding: 12,
               background: "#ffffff",
-              color: "#0F2044",
+              color: "#0C2340",
               fontSize: 14,
               border: "none",
               resize: "vertical",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Inter, sans-serif",
             }}
           />
           <div
@@ -323,7 +323,7 @@ function LiveSessionPage() {
               padding: 16,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0F2044", marginBottom: 12 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340", marginBottom: 12 }}>
               Quick note
             </div>
             <textarea
@@ -336,9 +336,9 @@ function LiveSessionPage() {
                 minHeight: 100,
                 borderRadius: 8,
                 padding: 10,
-                border: "0.5px solid #E2E6ED",
+                border: "0.5px solid #EEF2F7",
                 fontSize: 14,
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             />
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
@@ -368,7 +368,7 @@ function actionBtn(bg: string): React.CSSProperties {
     gap: 6,
     fontSize: 14,
     fontWeight: 600,
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Inter, sans-serif",
     cursor: "pointer",
   };
 }

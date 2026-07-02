@@ -13,8 +13,8 @@ export const Route = createFileRoute("/month-to-date")({
   component: MonthToDatePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const BORDER = "0.5px solid #E2E6ED";
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const BORDER = "0.5px solid #EEF2F7";
 const CARD: React.CSSProperties = {
   background: "#fff",
   border: BORDER,
@@ -226,7 +226,7 @@ function MonthToDatePage() {
           <ArrowLeft size={22} color="#1A1A2E" />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <BarChart3 size={20} color="#1A52A0" />
+          <BarChart3 size={20} color="#1A4A6E" />
           <div>
             <div style={{ fontWeight: 700, fontSize: 16, color: "#1A1A2E" }}>Month to date</div>
             <div style={{ fontSize: 12, color: "#6B7280" }}>{monthLabel}</div>
@@ -266,7 +266,7 @@ function MonthToDatePage() {
         {/* Tax estimate */}
         <div style={CARD}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <Calculator size={18} color="#1A52A0" />
+            <Calculator size={18} color="#1A4A6E" />
             <div style={{ fontWeight: 700, color: "#1A1A2E" }}>Tax estimate</div>
           </div>
           <Row label="Projected annual" value={fmtGBP(projectedAnnual, { maximumFractionDigits: 0 })} />
@@ -303,7 +303,7 @@ function MonthToDatePage() {
                 <div style={{ flex: 1, background: "#F3F4F6", borderRadius: 6, overflow: "hidden" }}>
                   <div
                     style={{
-                      background: "#1A52A0",
+                      background: "#1A4A6E",
                       height: 24,
                       width: `${(w.total / maxWeek) * 100}%`,
                       minWidth: w.total > 0 ? 4 : 0,
@@ -365,7 +365,7 @@ function MonthToDatePage() {
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            background: "#1A52A0",
+            background: "#1A4A6E",
             color: "#fff",
             border: "none",
             borderRadius: 12,

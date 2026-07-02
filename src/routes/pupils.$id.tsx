@@ -16,7 +16,7 @@ export const Route = createFileRoute("/pupils/$id")({
   component: PupilDetailPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -96,7 +96,7 @@ function ymd(d: Date) {
 function statusBadge(status: string | null) {
   const s = (status ?? "active").toLowerCase();
   if (s === "active") return { bg: "#16A34A", label: "Active" };
-  if (s === "passed") return { bg: "#1A52A0", label: "Passed" };
+  if (s === "passed") return { bg: "#1A4A6E", label: "Passed" };
   return { bg: "#6B7280", label: s.charAt(0).toUpperCase() + s.slice(1) };
 }
 function lessonStatusColor(s: string) {
@@ -121,7 +121,7 @@ function accentColor(l: Lesson) {
   if (isLessonLive(l)) return "#CC2229";
   if (l.status === "completed") return "#16A34A";
   if (l.status === "cancelled") return "#9CA3AF";
-  return "#1A52A0";
+  return "#1A4A6E";
 }
 function daysBetween(a: string, b: string) {
   const d1 = new Date(`${a}T00:00:00`);
@@ -442,7 +442,7 @@ function PupilDetailPage() {
                 style={{
                   width: 56,
                   height: 56,
-                  backgroundColor: "#1A52A0",
+                  backgroundColor: "#1A4A6E",
                   color: "#FFFFFF",
                   ...POPPINS,
                 }}
@@ -466,15 +466,15 @@ function PupilDetailPage() {
                     width: 20,
                     height: 20,
                     backgroundColor: "#FFFFFF",
-                    border: "1px solid #E2E6ED",
+                    border: "1px solid #EEF2F7",
                   }}
                 >
-                  <Camera size={11} color="#1A52A0" />
+                  <Camera size={11} color="#1A4A6E" />
                 </span>
               </button>
               <div className="min-w-0 flex-1">
                 <div
-                  className="text-[18px] font-semibold text-[#0F2044] truncate"
+                  className="text-[18px] font-semibold text-[#0C2340] truncate"
                   style={POPPINS}
                 >
                   {pupil.name}
@@ -534,7 +534,7 @@ function PupilDetailPage() {
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
               let barColor = "#CC2229";
               if (score >= 100) barColor = "#16A34A";
-              else if (score >= 71) barColor = "#1A52A0";
+              else if (score >= 71) barColor = "#1A4A6E";
               else if (score >= 41) barColor = "#F59E0B";
               return (
                 <div className="mt-4">
@@ -547,7 +547,7 @@ function PupilDetailPage() {
                   <div className="flex items-center gap-3 mt-2">
                     <div
                       className="flex-1 h-2 rounded-full overflow-hidden"
-                      style={{ backgroundColor: "#E2E6ED" }}
+                      style={{ backgroundColor: "#EEF2F7" }}
                     >
                       <div
                         className="h-full rounded-full transition-all"
@@ -556,7 +556,7 @@ function PupilDetailPage() {
                     </div>
                     <div
                       className="text-[14px] font-bold"
-                      style={{ color: "#0F2044", ...POPPINS }}
+                      style={{ color: "#0C2340", ...POPPINS }}
                     >
                       {score}%
                     </div>
@@ -593,13 +593,13 @@ function PupilDetailPage() {
               borderRadius: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#E2E6ED",
+              borderColor: "#EEF2F7",
               padding: 16,
             }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <ClipboardList size={18} color="#1A52A0" />
-              <div className="text-[14px] font-semibold" style={{ color: "#0F2044", ...POPPINS }}>
+              <ClipboardList size={18} color="#1A4A6E" />
+              <div className="text-[14px] font-semibold" style={{ color: "#0C2340", ...POPPINS }}>
                 Intake answers
               </div>
             </div>
@@ -610,7 +610,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   className="text-[14px] font-semibold mt-0.5"
-                  style={{ color: "#0F2044", ...POPPINS }}
+                  style={{ color: "#0C2340", ...POPPINS }}
                 >
                   {a.answer ?? a.answer_text ?? String(a.value ?? "")}
                 </div>
@@ -642,7 +642,7 @@ function PupilDetailPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0F2044",
+              color: "#0C2340",
               ...POPPINS,
             }}
           >
@@ -655,7 +655,7 @@ function PupilDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#1A52A0",
+              backgroundColor: "#1A4A6E",
               border: "none",
               ...POPPINS,
             }}
@@ -703,16 +703,16 @@ function PupilDetailPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0F2044",
+              color: "#0C2340",
               border: "none",
               ...POPPINS,
             }}
           >
             <span className="inline-flex items-center gap-2 text-[13px] font-medium">
-              <BookOpen size={16} color="#0F2044" />
+              <BookOpen size={16} color="#0C2340" />
               Syllabus
             </span>
-            <span className="text-[12px] font-semibold" style={{ color: "#1A52A0" }}>
+            <span className="text-[12px] font-semibold" style={{ color: "#1A4A6E" }}>
               {syllabusPct == null ? "—" : `${syllabusPct}%`}
             </span>
           </button>
@@ -779,7 +779,7 @@ function PupilDetailPage() {
                       className="flex flex-col items-center justify-center shrink-0"
                       style={{ width: 40, padding: "8px 0" }}
                     >
-                      <span className="text-[12px] font-bold" style={{ color: "#0F2044", ...POPPINS }}>
+                      <span className="text-[12px] font-bold" style={{ color: "#0C2340", ...POPPINS }}>
                         {formatTime(l.lesson_time)}
                       </span>
                       <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
@@ -792,7 +792,7 @@ function PupilDetailPage() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
-                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0F2044", ...POPPINS }}>
+                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0C2340", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
                       {l.lesson_type && (
@@ -869,7 +869,7 @@ function PupilDetailPage() {
                 ...POPPINS,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
               }}
             >
               {pupil.lead_source}
@@ -900,19 +900,19 @@ function PupilDetailPage() {
                 borderRadius: 12,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#E2E6ED",
+                borderColor: "#EEF2F7",
               }}
             >
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEF4FB", color: "#1A52A0", ...POPPINS }}
+                  style={{ backgroundColor: "#EEF4FB", color: "#1A4A6E", ...POPPINS }}
                 >
                   National Intensive
                 </span>
                 <span
                   className="text-[13px] font-semibold"
-                  style={{ color: "#0F2044", ...POPPINS }}
+                  style={{ color: "#0C2340", ...POPPINS }}
                 >
                   Payment details
                 </span>
@@ -990,7 +990,7 @@ function PupilDetailPage() {
                   <>
                     <div
                       className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                      style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
+                      style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
                     >
                       Hours
                     </div>
@@ -1012,7 +1012,7 @@ function PupilDetailPage() {
                         marginTop: 10,
                         height: 8,
                         borderRadius: 4,
-                        backgroundColor: "#F2F4F8",
+                        backgroundColor: "#F3F8FF",
                         overflow: "hidden",
                       }}
                     >
@@ -1020,7 +1020,7 @@ function PupilDetailPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#1A52A0",
+                          backgroundColor: "#1A4A6E",
                           borderRadius: 4,
                         }}
                       />
@@ -1032,7 +1032,7 @@ function PupilDetailPage() {
 
               <div
                 className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
+                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
               >
                 Test details
               </div>
@@ -1045,7 +1045,7 @@ function PupilDetailPage() {
 
               <div
                 className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                style={{ color: "#6B7280", borderTop: "0.5px solid #E2E6ED", ...POPPINS }}
+                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
               >
                 EverySwap
               </div>
@@ -1080,7 +1080,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1A52A0", ...POPPINS }}
+                  style={{ color: "#1A4A6E", ...POPPINS }}
                 >
                   Edit payment details
                 </button>
@@ -1088,7 +1088,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1A52A0", ...POPPINS }}
+                  style={{ color: "#1A4A6E", ...POPPINS }}
                 >
                   Manage swap
                 </button>
@@ -1104,12 +1104,12 @@ function PupilDetailPage() {
           value={notesDraft}
           onChange={(e) => setNotesDraft(e.target.value)}
           placeholder="Add a note about this pupil…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none"
+          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#E2E6ED",
+            borderColor: "#EEF2F7",
             resize: "vertical",
           }}
         />
@@ -1144,7 +1144,7 @@ function PupilDetailPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Award size={20} color="#F59E0B" />
-                <div className="text-[16px] font-semibold text-[#0F2044]">Generate certificate</div>
+                <div className="text-[16px] font-semibold text-[#0C2340]">Generate certificate</div>
               </div>
               <button type="button" onClick={() => setCertOpen(false)} aria-label="Close">
                 <X size={20} color="#6B7280" />
@@ -1155,8 +1155,8 @@ function PupilDetailPage() {
             <select
               value={certMilestone}
               onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A52A0] focus:outline-none mb-4"
-              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#E2E6ED" }}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1A4A6E] focus:outline-none mb-4"
+              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <option value="first_lesson">First lesson complete</option>
               <option value="10_lessons">10 lessons complete</option>
@@ -1279,7 +1279,7 @@ function PupilDetailPage() {
 function StatChip({
   label,
   value,
-  valueColor = "#0F2044",
+  valueColor = "#0C2340",
 }: {
   label: string;
   value: string;
@@ -1292,7 +1292,7 @@ function StatChip({
         backgroundColor: "#F8F9FB",
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#E2E6ED",
+        borderColor: "#EEF2F7",
       }}
     >
       <div
@@ -1314,7 +1314,7 @@ function StatChip({
 function NIRow({
   label,
   value,
-  valueColor = "#0F2044",
+  valueColor = "#0C2340",
 }: {
   label: string;
   value: string;

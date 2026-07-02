@@ -206,7 +206,7 @@ function NewPupilPage() {
   return (
     <div
       className="min-h-screen bg-white"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
@@ -216,11 +216,11 @@ function NewPupilPage() {
             onClick={() => navigate({ to: "/pupils" })}
             className="flex items-center justify-center w-8 h-8 -ml-1"
           >
-            <ArrowLeft size={20} color="#0F2044" />
+            <ArrowLeft size={20} color="#0C2340" />
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0F2044", fontFamily: "Poppins, sans-serif" }}
+            style={{ color: "#0C2340", fontFamily: "Inter, sans-serif" }}
           >
             Add pupil
           </p>
@@ -293,8 +293,8 @@ function NewPupilPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label
-              className="text-[13px] font-medium text-[#0F2044]"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              className="text-[13px] font-medium text-[#0C2340]"
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
               How did they find you?
             </label>
@@ -304,14 +304,14 @@ function NewPupilPage() {
                 setLeadSource(e.target.value);
                 setLeadSourceDetail("");
               }}
-              className="text-[14px] text-[#0F2044]"
+              className="text-[14px] text-[#0C2340]"
               style={{
                 height: 44,
                 borderRadius: 8,
-                border: "1px solid #E2E6ED",
+                border: "1px solid #EEF2F7",
                 padding: "0 12px",
                 backgroundColor: "#fff",
-                fontFamily: "Poppins, sans-serif",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               <option value="">Select source</option>
@@ -337,9 +337,9 @@ function NewPupilPage() {
           {leadSource !== "National Intensive" && (
             <label
               className="flex items-center justify-between gap-3 mt-1"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <span className="text-[13px] font-medium text-[#0F2044]">
+              <span className="text-[13px] font-medium text-[#0C2340]">
                 Block booking / prepaid hours
               </span>
               <input
@@ -354,11 +354,11 @@ function NewPupilPage() {
           {(blockToggle || leadSource === "National Intensive") && (
             <div
               className="flex flex-col gap-3 p-3 rounded-lg"
-              style={{ border: "1px solid #E2E6ED", backgroundColor: "#F9FAFB" }}
+              style={{ border: "1px solid #EEF2F7", backgroundColor: "#F9FAFB" }}
             >
               <p
                 className="text-[12px] font-semibold tracking-wide"
-                style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
+                style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
               >
                 BLOCK BOOKING
               </p>
@@ -385,7 +385,7 @@ function NewPupilPage() {
                 return (
                   <p
                     className="text-[12px]"
-                    style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
+                    style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
                   >
                     Effective rate: £{(a / h).toFixed(2)}/hr
                   </p>
@@ -393,22 +393,22 @@ function NewPupilPage() {
               })()}
               <div className="flex flex-col gap-1">
                 <label
-                  className="text-[13px] font-medium text-[#0F2044]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  className="text-[13px] font-medium text-[#0C2340]"
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Payment method
                 </label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="text-[14px] text-[#0F2044]"
+                  className="text-[14px] text-[#0C2340]"
                   style={{
                     height: 44,
                     borderRadius: 8,
-                    border: "1px solid #E2E6ED",
+                    border: "1px solid #EEF2F7",
                     padding: "0 12px",
                     backgroundColor: "#fff",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   <option value="cash">Cash</option>
@@ -419,8 +419,8 @@ function NewPupilPage() {
               </div>
               <div className="flex flex-col gap-1">
                 <label
-                  className="text-[13px] font-medium text-[#0F2044]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
+                  className="text-[13px] font-medium text-[#0C2340]"
+                  style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   Notes (optional)
                 </label>
@@ -429,12 +429,12 @@ function NewPupilPage() {
                   value={blockNotes}
                   onChange={(e) => setBlockNotes(e.target.value)}
                   placeholder="e.g. Paid via National Intensive, transfer ref: xxx"
-                  className="text-[14px] text-[#0F2044] p-2"
+                  className="text-[14px] text-[#0C2340] p-2"
                   style={{
                     borderRadius: 8,
-                    border: "1px solid #E2E6ED",
+                    border: "1px solid #EEF2F7",
                     backgroundColor: "#fff",
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     resize: "vertical",
                   }}
                 />

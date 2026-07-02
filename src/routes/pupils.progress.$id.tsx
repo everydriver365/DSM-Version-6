@@ -10,7 +10,7 @@ export const Route = createFileRoute("/pupils/progress/$id")({
   component: PupilProgressPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type Status =
   | "not_started"
@@ -256,7 +256,7 @@ function PupilProgressPage() {
               cx={size / 2}
               cy={size / 2}
               r={r}
-              stroke="#E2E6ED"
+              stroke="#EEF2F7"
               strokeWidth={stroke}
               fill="none"
             />
@@ -278,7 +278,7 @@ function PupilProgressPage() {
             className="absolute inset-0 flex flex-col items-center justify-center"
             style={POPPINS}
           >
-            <div className="text-[28px] font-semibold text-[#0F2044] leading-none">
+            <div className="text-[28px] font-semibold text-[#0C2340] leading-none">
               {pct}%
             </div>
             <div className="text-[12px] text-[#6B7280] mt-1">
@@ -333,7 +333,7 @@ function PupilProgressPage() {
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
+                  borderColor: "#EEF2F7",
                 }}
               >
                 {section.items.map((it, idx) => {
@@ -345,7 +345,7 @@ function PupilProgressPage() {
                       style={{
                         borderTopWidth: idx === 0 ? 0 : "0.5px",
                         borderTopStyle: "solid",
-                        borderTopColor: "#E2E6ED",
+                        borderTopColor: "#EEF2F7",
                       }}
                     >
                       <button
@@ -354,7 +354,7 @@ function PupilProgressPage() {
                         className="w-full flex items-center justify-between px-3 py-3 text-left"
                       >
                         <span
-                          className="text-[14px] text-[#0F2044]"
+                          className="text-[14px] text-[#0C2340]"
                           style={POPPINS}
                         >
                           {it.label}
@@ -431,7 +431,7 @@ function PupilProgressPage() {
 
       <div
         className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white"
-        style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#E2E6ED" }}
+        style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
       >
         {saved && (
           <div

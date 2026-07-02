@@ -18,7 +18,7 @@ export const Route = createFileRoute("/testday")({
   component: TestDayPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 const CHECKLIST_ITEMS = [
   "Theory pass certificate checked",
@@ -250,7 +250,7 @@ function TestDayPage() {
           style={{ marginTop: 80, gap: 12 }}
         >
           <GraduationCap size={40} color="#6B7280" />
-          <div className="text-[15px] font-semibold" style={{ color: "#0F2044" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0C2340" }}>
             No upcoming tests
           </div>
           <div className="w-full max-w-[240px]">
@@ -263,7 +263,7 @@ function TestDayPage() {
           <div
             className="mx-4 mt-3"
             style={{
-              backgroundColor: "#0F2044",
+              backgroundColor: "#0C2340",
               borderRadius: 12,
               padding: 16,
               color: "#FFFFFF",
@@ -290,7 +290,7 @@ function TestDayPage() {
                 className="text-[14px] font-semibold"
                 style={{
                   backgroundColor: "#F59E0B",
-                  color: "#0F2044",
+                  color: "#0C2340",
                   borderRadius: 8,
                   padding: "8px 16px",
                 }}
@@ -321,12 +321,12 @@ function TestDayPage() {
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleCheck(item)}
-                        style={{ width: 18, height: 18, accentColor: "#1A52A0" }}
+                        style={{ width: 18, height: 18, accentColor: "#1A4A6E" }}
                       />
                       <span
                         className="text-[14px]"
                         style={{
-                          color: "#0F2044",
+                          color: "#0C2340",
                           textDecoration: checked ? "line-through" : "none",
                           opacity: checked ? 0.7 : 1,
                           ...POPPINS,
@@ -348,7 +348,7 @@ function TestDayPage() {
               >
                 Pre-test lesson
               </div>
-              <div className="text-[14px] mt-1" style={{ color: "#0F2044" }}>
+              <div className="text-[14px] mt-1" style={{ color: "#0C2340" }}>
                 {lesson
                   ? `${new Date(lesson.lesson_date).toLocaleTimeString("en-GB", {
                       hour: "2-digit",
@@ -368,12 +368,12 @@ function TestDayPage() {
                 onChange={(e) => updateFocus(e.target.value)}
                 placeholder="Roundabouts, parallel parking, dual carriageways…"
                 rows={4}
-                className="w-full mt-1 rounded-lg p-3 text-[14px] bg-white focus:border-[#1A52A0] focus:outline-none"
+                className="w-full mt-1 rounded-lg p-3 text-[14px] bg-white focus:border-[#1A4A6E] focus:outline-none"
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                  color: "#0F2044",
+                  borderColor: "#EEF2F7",
+                  color: "#0C2340",
                   ...POPPINS,
                 }}
               />
@@ -394,11 +394,11 @@ function TestDayPage() {
                       style={{
                         height: 52,
                         borderRadius: 10,
-                        backgroundColor: active ? activeBg : "#F2F4F8",
-                        color: active ? "#FFFFFF" : "#0F2044",
+                        backgroundColor: active ? activeBg : "#F3F8FF",
+                        color: active ? "#FFFFFF" : "#0C2340",
                         borderWidth: "0.5px",
                         borderStyle: "solid",
-                        borderColor: active ? activeBg : "#E2E6ED",
+                        borderColor: active ? activeBg : "#EEF2F7",
                         ...POPPINS,
                       }}
                     >
@@ -432,12 +432,12 @@ function TestDayPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
                   placeholder="Examiner comments, mistakes, follow-ups…"
-                  className="w-full rounded-lg p-3 text-[14px] bg-white focus:border-[#1A52A0] focus:outline-none"
+                  className="w-full rounded-lg p-3 text-[14px] bg-white focus:border-[#1A4A6E] focus:outline-none"
                   style={{
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#E2E6ED",
-                    color: "#0F2044",
+                    borderColor: "#EEF2F7",
+                    color: "#0C2340",
                     ...POPPINS,
                   }}
                 />
