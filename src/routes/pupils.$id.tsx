@@ -753,6 +753,23 @@ function PupilDetailPage() {
             Test day
           </button>
         </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
+            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
+            style={{
+              height: 40,
+              borderRadius: 8,
+              backgroundColor: "#7C3AED",
+              border: "none",
+              ...POPPINS,
+            }}
+          >
+            <BookOpen size={16} color="#FFFFFF" />
+            Reflective log
+          </button>
+        </div>
 
 
 
