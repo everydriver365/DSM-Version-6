@@ -2445,10 +2445,6 @@ function HomePage() {
 
               const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
 
-              let accent = lessonColour;
-              if (isCancelled) accent = "#9CA3AF";
-              else if (isCurrent) accent = lessonColour;
-              else if (isCompleted) accent = lessonColour;
 
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
