@@ -114,9 +114,15 @@ function NoShowPolicyPage() {
   const previewText =
     lateCancelFee === 0 && noShowFee === 0
       ? "Please give as much notice as possible if you need to cancel your lesson."
-      : `Lessons cancelled with less than ${lateCancelHours} hours notice will incur a £${lateCancelFee.toFixed(
-          2,
-        )} cancellation fee. Pupils who do not show up for their lesson will be charged £${noShowFee.toFixed(2)}.`;
+      : `${
+          lateCancelFee > 0
+            ? `Lessons cancelled with less than ${lateCancelHours} hours notice will incur a ${lateCancelFee}% cancellation charge. `
+            : ""
+        }${
+          noShowFee > 0
+            ? `Pupils who do not show up will be charged ${noShowFee}% of the lesson price.`
+            : ""
+        }`.trim();
 
   return (
     <div className="min-h-screen bg-white pb-24 pb-safe" style={FONT}>
