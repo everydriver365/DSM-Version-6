@@ -926,10 +926,6 @@ function QuestionSheet({
           >
             {saving ? "Saving…" : "Save question"}
           </button>
-
-          <div style={{ height: 80 }} />
-        </div>
-      </div>
     </div>
   );
 }
