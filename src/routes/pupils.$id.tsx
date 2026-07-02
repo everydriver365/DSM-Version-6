@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Palette, Pencil, Phone, PoundSterling, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -47,6 +47,7 @@ interface Pupil {
   ni_reference: string | null;
   test_time: string | null;
   test_centre: string | null;
+  test_centre_id: string | null;
   wants_swap: boolean | null;
   theory_pass: boolean | null;
   emergency_contact_name: string | null;
@@ -159,6 +160,10 @@ function PupilDetailPage() {
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
+  const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
+  const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
+  const [centrePickerOpen, setCentrePickerOpen] = useState(false);
+  const [centreSearch, setCentreSearch] = useState("");
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -168,6 +173,7 @@ function PupilDetailPage() {
         id, name, first_name, last_name, phone, email, status,
         lesson_count, balance_owed, account_balance,
         test_date, test_time, test_centre,
+        test_centre_id,
         prepaid_hours, prepaid_amount_paid,
         notes, profile_image_url, photo_url, photo_consent,
         address, postcode, lead_source, lead_source_detail,
