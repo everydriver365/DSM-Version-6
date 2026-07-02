@@ -389,7 +389,6 @@ function SchedulePage() {
       );
     }
 
-    const showActions = openActionsId === l.id;
 
     return (
       <div key={l.id}>
