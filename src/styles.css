@@ -249,3 +249,65 @@
     transform: scale(0.97);
   }
 }
+
+/* Two-tone navy header — subtle secondary band under primary navy */
+@utility cf-header-navy {
+  background-color: #0B1F3A;
+  border-bottom: 1px solid #132A4A;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+@utility cf-header-band {
+  background-color: #132A4A;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Icon-in-square-chip — Checkfront row leading element */
+@utility cf-icon-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: #EAF3FB;
+  color: #1877D6;
+  flex-shrink: 0;
+}
+@utility cf-icon-chip-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #EAF3FB;
+  color: #1877D6;
+  flex-shrink: 0;
+}
+
+/* Confirmed / paid success accent (used sparingly, not general UI) */
+@utility cf-chip-paid {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background-color: #E7F8EF;
+  color: #067647;
+  border: 1px solid #B8ECCF;
+}
+
+/* Checkfront focus ring — 2px blue outside the border at 25% opacity */
+.cf-focus-ring:focus-visible,
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(24, 119, 214, 0.4);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
