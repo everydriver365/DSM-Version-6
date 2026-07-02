@@ -58,9 +58,9 @@ const CATEGORIES = [
 const CAT_COLORS: Record<string, string> = {
   "Standards check": "#1877D6",
   "Business skills": "#1877D6",
-  "Pupil welfare": "#16A34A",
-  "Road safety": "#CC2229",
-  Specialist: "#D97706",
+  "Pupil welfare": "#1877D6",
+  "Road safety": "#1877D6",
+  Specialist: "#0B1F3A",
   Other: "#6B7280",
 };
 
@@ -255,7 +255,7 @@ function CpdPage() {
 
       {/* STATS */}
       <div className="px-4 pt-4 grid grid-cols-3 gap-2">
-        <StatCard label="This year" value={`${yearHours.toFixed(1)}h`} color="#16A34A" />
+        <StatCard label="This year" value={`${yearHours.toFixed(1)}h`} color="#1877D6" />
         <StatCard label="Entries" value={String(totalEntries)} color="#1877D6" />
         <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0B1F3A" small />
       </div>
@@ -269,12 +269,12 @@ function CpdPage() {
               padding: 14,
               backgroundColor:
                 renewalDaysLeft > 90
-                  ? "#ECFDF5"
+                  ? "#F3F8FF"
                   : renewalDaysLeft >= 30
                     ? "#FFFBEB"
                     : "#FEF2F2",
               border: `0.5px solid ${
-                renewalDaysLeft > 90 ? "#16A34A" : renewalDaysLeft >= 30 ? "#D97706" : "#CC2229"
+                renewalDaysLeft > 90 ? "#1877D6" : renewalDaysLeft >= 30 ? "#0B1F3A" : "#1877D6"
               }`,
             }}
           >
@@ -282,7 +282,7 @@ function CpdPage() {
               <GraduationCap
                 size={18}
                 color={
-                  renewalDaysLeft > 90 ? "#16A34A" : renewalDaysLeft >= 30 ? "#D97706" : "#CC2229"
+                  renewalDaysLeft > 90 ? "#1877D6" : renewalDaysLeft >= 30 ? "#0B1F3A" : "#1877D6"
                 }
               />
               <div
@@ -292,7 +292,7 @@ function CpdPage() {
                     renewalDaysLeft > 90
                       ? "#166534"
                       : renewalDaysLeft >= 30
-                        ? "#92400E"
+                        ? "#0B1F3A"
                         : "#991B1B",
                 }}
               >
@@ -537,7 +537,7 @@ function EntryCard({
               height: 34,
               borderRadius: 8,
               backgroundColor: "#FEF2F2",
-              color: "#CC2229",
+              color: "#1877D6",
             }}
           >
             <Trash2 size={13} /> Delete
@@ -782,7 +782,7 @@ function AddSheet({
                   width: 32,
                   height: 32,
                   borderRadius: 8,
-                  backgroundColor: listening ? "#CC2229" : "#F3F4F6",
+                  backgroundColor: listening ? "#1877D6" : "#F3F4F6",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -813,7 +813,7 @@ function AddSheet({
                   type="button"
                   onClick={() => setCertificateUrl(null)}
                   className="text-[12px]"
-                  style={{ color: "#CC2229" }}
+                  style={{ color: "#1877D6" }}
                 >
                   Remove
                 </button>

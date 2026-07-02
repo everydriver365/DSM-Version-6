@@ -239,7 +239,7 @@ function MonthToDatePage() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div style={CARD}>
             <div style={{ fontSize: 12, color: "#6B7280" }}>Earnings this month</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#16A34A", marginTop: 4 }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#1877D6", marginTop: 4 }}>
               {loading ? "…" : fmtGBP(earnings)}
             </div>
           </div>
@@ -257,7 +257,7 @@ function MonthToDatePage() {
           </div>
           <div style={CARD}>
             <div style={{ fontSize: 12, color: "#6B7280" }}>Outstanding</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#CC2229", marginTop: 4 }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#1877D6", marginTop: 4 }}>
               {loading ? "…" : fmtGBP(outstanding)}
             </div>
           </div>
@@ -282,7 +282,7 @@ function MonthToDatePage() {
             }}
           >
             <div style={{ fontWeight: 600, color: "#0B1F3A" }}>Total estimated tax</div>
-            <div style={{ fontWeight: 700, color: "#D97706" }}>
+            <div style={{ fontWeight: 700, color: "#0B1F3A" }}>
               {fmtGBP(totalTax, { maximumFractionDigits: 0 })}
             </div>
           </div>
@@ -348,7 +348,7 @@ function MonthToDatePage() {
                       {h.payment_method || "—"}
                     </div>
                   </div>
-                  <div style={{ fontWeight: 700, color: "#16A34A" }}>
+                  <div style={{ fontWeight: 700, color: "#1877D6" }}>
                     {fmtGBP(Number(h.amount_paid || 0))}
                   </div>
                 </div>

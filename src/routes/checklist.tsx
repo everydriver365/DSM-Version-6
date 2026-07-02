@@ -182,8 +182,8 @@ function ChecklistPage() {
                         width: 22,
                         height: 22,
                         borderRadius: 6,
-                        backgroundColor: on ? "#16A34A" : "#FFFFFF",
-                        border: on ? "1px solid #16A34A" : "1.5px solid #CBD5E1",
+                        backgroundColor: on ? "#1877D6" : "#FFFFFF",
+                        border: on ? "1px solid #1877D6" : "1.5px solid #CBD5E1",
                       }}
                     >
                       {on && <Check size={14} color="#FFFFFF" strokeWidth={3} />}

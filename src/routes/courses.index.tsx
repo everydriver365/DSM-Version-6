@@ -32,9 +32,9 @@ interface CourseRow {
 
 
 function typeColor(t: string) {
-  if (t === "intensive") return "#CC2229";
-  if (t === "semi-intensive") return "#F59E0B";
-  if (t === "weekly") return "#16A34A";
+  if (t === "intensive") return "#1877D6";
+  if (t === "semi-intensive") return "#1877D6";
+  if (t === "weekly") return "#1877D6";
   return "#1877D6";
 }
 function typeLabel(t: string) {
@@ -44,9 +44,9 @@ function typeLabel(t: string) {
   return "Custom";
 }
 function statusColor(s: string) {
-  if (s === "active") return "#16A34A";
-  if (s === "draft") return "#F59E0B";
-  if (s === "full") return "#CC2229";
+  if (s === "active") return "#1877D6";
+  if (s === "draft") return "#1877D6";
+  if (s === "full") return "#1877D6";
   return "#6B7280";
 }
 function formatDate(d: string | null) {

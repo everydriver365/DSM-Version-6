@@ -70,9 +70,9 @@ function formatDuration(m: number | null) {
   return `${mm}m`;
 }
 function statusColor(s: string) {
-  if (s === "confirmed") return "#16A34A";
-  if (s === "pending") return "#F59E0B";
-  if (s === "cancelled") return "#CC2229";
+  if (s === "confirmed") return "#1877D6";
+  if (s === "pending") return "#1877D6";
+  if (s === "cancelled") return "#1877D6";
   return "#6B7280";
 }
 
@@ -207,10 +207,10 @@ function BriefingPage() {
   }, []);
 
   const attentionRows = [
-    { icon: <PoundSterling size={18} color="#92400E" />, tint: "#FEF3C7", label: "Outstanding payments", count: outstandingCount, route: "/payments" as const },
+    { icon: <PoundSterling size={18} color="#0B1F3A" />, tint: "#EEF2F7", label: "Outstanding payments", count: outstandingCount, route: "/payments" as const },
     { icon: <GraduationCap size={18} color="#1E40AF" />, tint: "#DBEAFE", label: "Tests in next 7 days", count: upcomingTests, route: "/tests" as const },
     { icon: <Inbox size={18} color="#5B21B6" />, tint: "#EDE9FE", label: "New enquiries", count: newEnquiries, route: "/enquiries" as const },
-    { icon: <FileText size={18} color="#CC2229" />, tint: "#FEF2F2", label: "Documents expiring (30d)", count: expiringDocs, route: "/documents" as const },
+    { icon: <FileText size={18} color="#1877D6" />, tint: "#FEF2F2", label: "Documents expiring (30d)", count: expiringDocs, route: "/documents" as const },
   ];
 
   const W = weather ? weatherMeta(weather.code) : null;
@@ -382,7 +382,7 @@ function BriefingPage() {
               </div>
               <span style={{
                 minWidth: 24, height: 22, padding: "0 8px", borderRadius: 11,
-                background: r.count > 0 ? "#CC2229" : "#EEF2F7",
+                background: r.count > 0 ? "#1877D6" : "#EEF2F7",
                 color: r.count > 0 ? "#fff" : "#6B7280",
                 fontSize: 12, fontWeight: 700,
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -427,10 +427,10 @@ function BriefingPage() {
             padding: "12px 14px", borderTop: "0.5px solid #EEF2F7",
           }}>
             <div style={{
-              width: 32, height: 32, borderRadius: 8, background: "#FEF3C7",
+              width: 32, height: 32, borderRadius: 8, background: "#EEF2F7",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <Fuel size={18} color="#92400E" />
+              <Fuel size={18} color="#0B1F3A" />
             </div>
             <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A" }}>
               Remember to check fuel before lessons

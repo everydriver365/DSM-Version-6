@@ -130,7 +130,7 @@ function PayPage() {
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                background: "#16a34a",
+                background: "#1877D6",
                 color: "#fff",
                 fontSize: 40,
                 lineHeight: "72px",

@@ -146,13 +146,13 @@ function TaxPage() {
         <div className="text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
           GROSS INCOME
         </div>
-        <div className="text-[24px] font-bold" style={{ color: "#F59E0B" }}>
+        <div className="text-[24px] font-bold" style={{ color: "#1877D6" }}>
           £{fmt(income)}
         </div>
         <div className="mt-3 text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
           TOTAL EXPENSES
         </div>
-        <div className="text-[24px] font-bold" style={{ color: "#CC2229" }}>
+        <div className="text-[24px] font-bold" style={{ color: "#1877D6" }}>
           £{fmt(expenses)}
         </div>
         <div
@@ -168,19 +168,19 @@ function TaxPage() {
       <div className="mx-4">
         <SectionHeader>TAX BREAKDOWN</SectionHeader>
         <Card className="bg-white">
-          <Row label="Personal allowance" value={`£${fmt(PA)}`} color="#16A34A" />
+          <Row label="Personal allowance" value={`£${fmt(PA)}`} color="#1877D6" />
           <Row label="Taxable income" value={`£${fmt(taxable)}`} color="#0B1F3A" />
           <Row
             label="Income tax (20%)"
             value={`£${fmt(incomeTax)}`}
-            color="#CC2229"
+            color="#1877D6"
           />
-          <Row label="Class 2 NI (£3.45/wk)" value={`£${fmt(class2)}`} color="#CC2229" />
-          <Row label="Class 4 NI (9%)" value={`£${fmt(class4)}`} color="#CC2229" />
+          <Row label="Class 2 NI (£3.45/wk)" value={`£${fmt(class2)}`} color="#1877D6" />
+          <Row label="Class 4 NI (9%)" value={`£${fmt(class4)}`} color="#1877D6" />
           <div className="my-2" style={{ height: "0.5px", backgroundColor: "#EEF2F7" }} />
           <div className="flex items-center justify-between">
             <span className="text-[14px] font-bold text-[#0B1F3A]">ESTIMATED TAX BILL</span>
-            <span className="text-[20px] font-bold" style={{ color: "#CC2229" }}>
+            <span className="text-[20px] font-bold" style={{ color: "#1877D6" }}>
               £{fmt(totalTax)}
             </span>
           </div>

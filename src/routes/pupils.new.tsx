@@ -241,7 +241,7 @@ function NewPupilPage() {
               maxLength={100}
             />
             {errors.firstName && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.firstName}
               </p>
             )}
@@ -254,7 +254,7 @@ function NewPupilPage() {
               maxLength={100}
             />
             {errors.lastName && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.lastName}
               </p>
             )}
@@ -286,7 +286,7 @@ function NewPupilPage() {
               autoComplete="postal-code"
             />
             {errors.postcode && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.postcode}
               </p>
             )}
@@ -443,7 +443,7 @@ function NewPupilPage() {
           )}
 
           {errors.form && (
-            <p className="text-[12px]" style={{ color: "#CC2229" }}>
+            <p className="text-[12px]" style={{ color: "#1877D6" }}>
               {errors.form}
             </p>
           )}

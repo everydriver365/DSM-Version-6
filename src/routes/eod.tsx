@@ -48,10 +48,10 @@ function startOfDay(d: Date) {
   return x;
 }
 function statusColor(s: string) {
-  if (s === "confirmed") return "#16A34A";
+  if (s === "confirmed") return "#1877D6";
   if (s === "completed") return "#1877D6";
-  if (s === "pending") return "#F59E0B";
-  if (s === "cancelled") return "#CC2229";
+  if (s === "pending") return "#1877D6";
+  if (s === "cancelled") return "#1877D6";
   return "#6B7280";
 }
 function timeOnly(t: string) {
@@ -208,8 +208,8 @@ function EodPage() {
         <div className="grid grid-cols-2" style={{ gap: 12 }}>
           <StatBox value={String(completedCount)} label="Lessons completed" />
           <StatBox value={totalHours} label="Hours taught" />
-          <StatBox value={`£${earned.toFixed(0)}`} label="Earned today" color="#F59E0B" />
-          <StatBox value={`£${expenses.toFixed(0)}`} label="Expenses today" color="#CC2229" />
+          <StatBox value={`£${earned.toFixed(0)}`} label="Earned today" color="#1877D6" />
+          <StatBox value={`£${expenses.toFixed(0)}`} label="Expenses today" color="#1877D6" />
         </div>
       </div>
 
@@ -298,7 +298,7 @@ function EodPage() {
                     })}
                   </div>
                 </div>
-                <span className="text-[14px] font-semibold" style={{ color: "#F59E0B" }}>
+                <span className="text-[14px] font-semibold" style={{ color: "#1877D6" }}>
                   £{Number(p.amount ?? 0).toFixed(2)}
                 </span>
               </div>
@@ -359,11 +359,11 @@ function EodPage() {
         {dayComplete ? (
           <Card
             className="mt-6"
-            style={{ backgroundColor: "#ECFDF5", borderColor: "#A7F3D0" }}
+            style={{ backgroundColor: "#F3F8FF", borderColor: "#A7F3D0" }}
           >
             <div
               className="text-[15px] font-semibold text-center"
-              style={{ color: "#065F46" }}
+              style={{ color: "#0B1F3A" }}
             >
               Day complete! See you tomorrow.
             </div>

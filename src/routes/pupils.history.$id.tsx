@@ -35,10 +35,10 @@ function monthLabel(d: Date) {
 }
 function statusColor(s: string) {
   const x = (s ?? "").toLowerCase();
-  if (x === "completed") return "#16A34A";
+  if (x === "completed") return "#1877D6";
   if (x === "confirmed") return "#1877D6";
-  if (x === "cancelled") return "#CC2229";
-  if (x === "pending") return "#F59E0B";
+  if (x === "cancelled") return "#1877D6";
+  if (x === "pending") return "#1877D6";
   return "#6B7280";
 }
 

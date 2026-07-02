@@ -26,9 +26,9 @@ const LEVELS: {
 }[] = [
   { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
   { key: "talk_through", n: 2, label: "Talk-through", color: "#DC2626" },
-  { key: "prompted", n: 3, label: "Prompted", color: "#F59E0B" },
+  { key: "prompted", n: 3, label: "Prompted", color: "#1877D6" },
   { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
-  { key: "independent", n: 5, label: "Independent", color: "#16A34A" },
+  { key: "independent", n: 5, label: "Independent", color: "#1877D6" },
 ];
 
 function slugify(s: string) {
@@ -652,7 +652,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             flex: 1,
             height: 4,
             borderRadius: 999,
-            backgroundColor: n <= current ? "#16A34A" : "#EEF2F7",
+            backgroundColor: n <= current ? "#1877D6" : "#EEF2F7",
           }}
         />
       ))}
@@ -791,7 +791,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     <div
                       style={{
                         fontWeight: 600,
-                        color: route.overspeed_count > 0 ? "#CC2229" : "#16A34A",
+                        color: route.overspeed_count > 0 ? "#1877D6" : "#1877D6",
                       }}
                     >
                       {route.overspeed_count} event{route.overspeed_count === 1 ? "" : "s"}
@@ -807,7 +807,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               onClick={() => setStep(2)}
               className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
               style={{
-                backgroundColor: notes.trim() ? "#16A34A" : "#9CA3AF",
+                backgroundColor: notes.trim() ? "#1877D6" : "#9CA3AF",
                 border: "none",
               }}
             >
@@ -845,7 +845,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   <div className="mt-1" style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
                     <div>Base: £{baseCost.toFixed(2)}</div>
                     {pricing.adjustments.map((a, i) => (
-                      <div key={i} style={{ color: "#B45309" }}>
+                      <div key={i} style={{ color: "#0B1F3A" }}>
                         + £{a.amount.toFixed(2)} ({a.rule_name})
                       </div>
                     ))}
@@ -859,7 +859,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <div
                   className="text-[14px]"
                   style={{
-                    color: balance < 0 ? "#CC2229" : balance > 0 ? "#16A34A" : "#0B1F3A",
+                    color: balance < 0 ? "#1877D6" : balance > 0 ? "#1877D6" : "#0B1F3A",
                     fontWeight: 600,
                   }}
                 >
@@ -890,8 +890,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     style={{
                       borderRadius: 10,
                       backgroundColor: active ? "#F0FDF4" : "#F8F9FB",
-                      border: `1px solid ${active ? "#16A34A" : "#EEF2F7"}`,
-                      color: active ? "#16A34A" : "#0B1F3A",
+                      border: `1px solid ${active ? "#1877D6" : "#EEF2F7"}`,
+                      color: active ? "#1877D6" : "#0B1F3A",
                       minHeight: 72,
                     }}
                   >
@@ -931,7 +931,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               disabled={paymentSaving}
               className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
               style={{
-                backgroundColor: "#16A34A",
+                backgroundColor: "#1877D6",
                 border: "none",
                 opacity: paymentSaving ? 0.7 : 1,
               }}
@@ -1128,7 +1128,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               disabled={completing}
               className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
               style={{
-                backgroundColor: "#16A34A",
+                backgroundColor: "#1877D6",
                 border: "none",
                 opacity: completing ? 0.7 : 1,
               }}
@@ -1144,7 +1144,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             {courseComplete ? (
               <>
                 <div style={{ position: "relative" }}>
-                  <PartyPopper size={64} color="#16A34A" />
+                  <PartyPopper size={64} color="#1877D6" />
                   <div className="confetti-burst" aria-hidden />
                 </div>
                 <div
@@ -1162,7 +1162,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               </>
             ) : (
               <>
-                <CheckCircle2 size={64} color="#16A34A" />
+                <CheckCircle2 size={64} color="#1877D6" />
                 <div
                   className="text-[20px] mt-3"
                   style={{ color: "#0B1F3A", fontWeight: 700 }}
@@ -1207,7 +1207,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               type="button"
               onClick={finish}
               className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
-              style={{ backgroundColor: "#16A34A", border: "none" }}
+              style={{ backgroundColor: "#1877D6", border: "none" }}
             >
               Done
             </button>
@@ -1224,7 +1224,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             position: absolute;
             inset: -20px;
             border-radius: 999px;
-            background: radial-gradient(circle, #F59E0B 0%, transparent 30%), radial-gradient(circle at 70% 30%, #1D4ED8 0%, transparent 25%), radial-gradient(circle at 30% 70%, #CC2229 0%, transparent 25%);
+            background: radial-gradient(circle, #1877D6 0%, transparent 30%), radial-gradient(circle at 70% 30%, #1D4ED8 0%, transparent 25%), radial-gradient(circle at 30% 70%, #1877D6 0%, transparent 25%);
             animation: confetti-pop 1.2s ease-out infinite;
             pointer-events: none;
           }

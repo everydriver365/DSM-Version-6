@@ -292,7 +292,7 @@ function BulkMessagePage() {
                       <div className="text-[14px] text-[#0B1F3A] truncate" style={POPPINS}>{dn}</div>
                       <div
                         className="text-[13px] truncate"
-                        style={{ color: hasPhone ? "#6B7280" : "#CC2229", ...POPPINS }}
+                        style={{ color: hasPhone ? "#6B7280" : "#1877D6", ...POPPINS }}
                       >
                         {hasPhone ? p.phone : "No phone"}
                       </div>

@@ -233,10 +233,10 @@ function LocationsPage() {
                         width: 32,
                         height: 32,
                         flexShrink: 0,
-                        backgroundColor: copiedId === r.id ? "#ECFDF5" : "transparent",
+                        backgroundColor: copiedId === r.id ? "#F3F8FF" : "transparent",
                       }}
                     >
-                      <Copy size={16} color={copiedId === r.id ? "#059669" : "#6B7280"} />
+                      <Copy size={16} color={copiedId === r.id ? "#1877D6" : "#6B7280"} />
                     </button>
 
                     <button
@@ -316,7 +316,7 @@ function LocationsPage() {
               />
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}
@@ -330,7 +330,7 @@ function LocationsPage() {
                   type="button"
                   onClick={remove}
                   className="text-[13px] font-medium py-2"
-                  style={{ color: "#CC2229" }}
+                  style={{ color: "#1877D6" }}
                 >
                   Delete location
                 </button>

@@ -30,7 +30,7 @@ export const Route = createFileRoute("/expenses")({
 
 const NAVY = "#0B1F3A";
 const BORDER = "0.5px solid #EEF2F7";
-const GREEN = "#059669";
+const GREEN = "#1877D6";
 
 const CATEGORIES = [
   "Fuel",
@@ -81,7 +81,7 @@ const categoryIcon = (category: string, size: number = 16): ReactNode => {
 
 const categoryColour = (category: string) => {
   const colours: Record<string, string> = {
-    'Fuel': '#F59E0B',
+    'Fuel': '#1877D6',
     'Insurance': '#3B82F6',
     'Marketing': '#8B5CF6',
     'Equipment': '#6B7280',

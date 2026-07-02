@@ -163,7 +163,7 @@ function EarningsPage() {
                   </div>
                   <div
                     className="text-[14px] font-bold shrink-0"
-                    style={{ color: "#16A34A", ...POPPINS }}
+                    style={{ color: "#1877D6", ...POPPINS }}
                   >
                     {formatGBP(Number(row.amount))}
                   </div>
@@ -188,7 +188,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
       </div>
       <div
         className="text-[28px] font-bold mt-1 leading-none"
-        style={{ color: "#F59E0B", ...POPPINS }}
+        style={{ color: "#1877D6", ...POPPINS }}
       >
         {value}
       </div>

@@ -194,19 +194,19 @@ function HealthPage() {
               }
             />
             <QuickLog
-              icon={<Smile size={20} color="#16A34A" />}
-              tint="#ECFDF5"
+              icon={<Smile size={20} color="#1877D6" />}
+              tint="#F3F8FF"
               label="Log mood"
               onClick={() => setMoodOpen(true)}
             />
             <QuickLog
-              icon={<Activity size={20} color="#F59E0B" />}
-              tint="#FEF3C7"
+              icon={<Activity size={20} color="#1877D6" />}
+              tint="#EEF2F7"
               label="Log steps"
               onClick={() => setStepsOpen(true)}
             />
             <QuickLog
-              icon={<Coffee size={20} color="#CC2229" />}
+              icon={<Coffee size={20} color="#1877D6" />}
               tint="#FEE2E2"
               label="Log break"
               onClick={() =>

@@ -534,11 +534,11 @@ function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase();
   const color =
     s === "active" || s === "confirmed" || s === "converted"
-      ? "#16A34A"
+      ? "#1877D6"
       : s === "pending" || s === "new"
-        ? "#F59E0B"
+        ? "#1877D6"
         : s === "cancelled" || s === "lost"
-          ? "#CC2229"
+          ? "#1877D6"
           : "#6B7280";
   return (
     <span

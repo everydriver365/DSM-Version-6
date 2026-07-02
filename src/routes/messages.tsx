@@ -220,7 +220,7 @@ function MessagesPage() {
                             minWidth: 18,
                             height: 18,
                             padding: "0 5px",
-                            backgroundColor: "#CC2229",
+                            backgroundColor: "#1877D6",
                             ...POPPINS,
                           }}
                         >

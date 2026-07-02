@@ -53,11 +53,11 @@ function formatDate(d: string | null) {
 }
 
 function statusColor(s: TabKey | string) {
-  if (s === "accepted") return "#16A34A";
-  if (s === "declined") return "#CC2229";
+  if (s === "accepted") return "#1877D6";
+  if (s === "declined") return "#1877D6";
   if (s === "expired") return "#6B7280";
   if (s === "resent") return "#1877D6";
-  return "#F59E0B";
+  return "#1877D6";
 }
 
 
@@ -277,7 +277,7 @@ function QuotesPage() {
                         )}
                         {isResent && (
                           <span style={{
-                            background: "#16A34A", color: "#fff", fontSize: 10, fontWeight: 700,
+                            background: "#1877D6", color: "#fff", fontSize: 10, fontWeight: 700,
                             padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
                           }}>FOLLOWED UP ✓</span>
                         )}
@@ -318,7 +318,7 @@ function QuotesPage() {
                     }}>
                       {counter != null && (
                         <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
-                          Pupil suggested: <span style={{ color: "#CC2229" }}>£{counter.toFixed(2)}</span>
+                          Pupil suggested: <span style={{ color: "#1877D6" }}>£{counter.toFixed(2)}</span>
                         </div>
                       )}
                       {reason && (

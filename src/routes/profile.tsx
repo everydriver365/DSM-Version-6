@@ -53,12 +53,12 @@ const SECTION_META: {
   iconColor: string;
 }[] = [
   { key: "personal", label: "Personal", icon: User, iconColor: "#1877D6" },
-  { key: "business", label: "Business", icon: Briefcase, iconColor: "#16A34A" },
-  { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#F59E0B" },
+  { key: "business", label: "Business", icon: Briefcase, iconColor: "#1877D6" },
+  { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#1877D6" },
   { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#1877D6" },
-  { key: "security", label: "Security", icon: Shield, iconColor: "#CC2229" },
+  { key: "security", label: "Security", icon: Shield, iconColor: "#1877D6" },
   { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1877D6" },
-  { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#CC2229" },
+  { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#1877D6" },
 ];
 
 const NOTIF_EVENTS: { key: string; label: string }[] = [
@@ -254,9 +254,9 @@ function VerifiedPill() {
   return (
     <span
       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
-      style={{ backgroundColor: "#DCFCE7", color: "#15803D", ...POPPINS }}
+      style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}
     >
-      <Check size={11} color="#15803D" /> Verified
+      <Check size={11} color="#0B1F3A" /> Verified
     </span>
   );
 }
@@ -879,13 +879,13 @@ function ProfilePage() {
                 <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
                   {dbsUploaded ? (
                     <>
-                      <Check size={16} color="#15803D" />
-                      <span className="text-[#15803D] font-medium">Uploaded</span>
+                      <Check size={16} color="#0B1F3A" />
+                      <span className="text-[#0B1F3A] font-medium">Uploaded</span>
                     </>
                   ) : (
                     <>
-                      <AlertTriangle size={16} color="#D97706" />
-                      <span className="text-[#D97706]">Upload DBS certificate</span>
+                      <AlertTriangle size={16} color="#0B1F3A" />
+                      <span className="text-[#0B1F3A]">Upload DBS certificate</span>
                     </>
                   )}
                 </span>
@@ -966,7 +966,7 @@ function ProfilePage() {
                     onClick={removeVehiclePhoto}
                     disabled={uploadingVehicle}
                     className="text-[13px] disabled:opacity-50"
-                    style={{ color: "#CC2229", ...POPPINS }}
+                    style={{ color: "#1877D6", ...POPPINS }}
                   >
                     Remove photo
                   </button>
@@ -989,7 +989,7 @@ function ProfilePage() {
                 {uploadingVehicle ? (
                   <Loader2 size={24} color="#1877D6" className="animate-spin" />
                 ) : (
-                  <Car size={28} color="#F59E0B" />
+                  <Car size={28} color="#1877D6" />
                 )}
                 <span
                   className="mt-2 text-[13px]"
@@ -1038,8 +1038,8 @@ function ProfilePage() {
                   style={POPPINS}
                 />
                 {insuranceWarning ? (
-                  <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#D97706", ...POPPINS }}>
-                    <AlertTriangle size={14} color="#D97706" /> Expiring soon
+                  <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    <AlertTriangle size={14} color="#0B1F3A" /> Expiring soon
                   </span>
                 ) : null}
               </div>
@@ -1186,8 +1186,8 @@ function ProfilePage() {
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCD34D", backgroundColor: "#FFFBEB" }}
             >
               <div>
-                <div className="text-[14px] font-medium text-[#92400E]" style={POPPINS}>Deactivate account</div>
-                <div className="text-[12px] text-[#92400E]" style={POPPINS}>
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Deactivate account</div>
+                <div className="text-[12px] text-[#0B1F3A]" style={POPPINS}>
                   Temporarily disable your account. You can sign back in to reactivate.
                 </div>
               </div>
@@ -1195,7 +1195,7 @@ function ProfilePage() {
                 type="button"
                 onClick={deactivate}
                 className="text-[13px] font-medium px-3 py-2 rounded-lg"
-                style={{ backgroundColor: "#D97706", color: "#FFFFFF", ...POPPINS }}
+                style={{ backgroundColor: "#0B1F3A", color: "#FFFFFF", ...POPPINS }}
               >
                 Deactivate
               </button>

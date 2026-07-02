@@ -348,7 +348,7 @@ function DiaryPage() {
                     {hasEntry && (
                       <span
                         className="rounded-full"
-                        style={{ width: 4, height: 4, backgroundColor: "#F59E0B" }}
+                        style={{ width: 4, height: 4, backgroundColor: "#1877D6" }}
                       />
                     )}
                   </div>
@@ -372,7 +372,7 @@ function DiaryPage() {
             <div className="flex items-center" style={{ gap: 6 }}>
               <span
                 className="rounded-full"
-                style={{ width: 6, height: 6, backgroundColor: "#F59E0B" }}
+                style={{ width: 6, height: 6, backgroundColor: "#1877D6" }}
               />
               <span className="text-[11px] text-[#6B7280]">Diary</span>
             </div>
@@ -544,7 +544,7 @@ function DiaryPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}
@@ -608,7 +608,7 @@ function DiaryPage() {
               type="button"
               onClick={() => removeEntry(viewEntry.id)}
               className="text-[13px] font-medium py-2"
-              style={{ color: "#CC2229" }}
+              style={{ color: "#1877D6" }}
             >
               Delete entry
             </button>

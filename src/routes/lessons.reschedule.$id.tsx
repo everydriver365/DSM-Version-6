@@ -183,7 +183,7 @@ function RescheduleLessonPage() {
               <div className="text-[16px] font-semibold mt-1" style={{ color: "#0B1F3A" }}>
                 {pupilName}
               </div>
-              <div className="text-[14px] font-bold mt-1" style={{ color: "#CC2229" }}>
+              <div className="text-[14px] font-bold mt-1" style={{ color: "#1877D6" }}>
                 {formatDateLong(currentDateObj)} · {formatTime(lesson.lesson_time)}
               </div>
               <div className="text-[13px] mt-0.5" style={{ color: "#6B7280" }}>
@@ -271,7 +271,7 @@ function RescheduleLessonPage() {
                   width: 44,
                   height: 26,
                   borderRadius: 999,
-                  backgroundColor: notify ? "#16A34A" : "#EEF2F7",
+                  backgroundColor: notify ? "#1877D6" : "#EEF2F7",
                   transition: "background-color 0.15s",
                 }}
               >
@@ -312,7 +312,7 @@ function RescheduleLessonPage() {
                   }}
                 />
                 {!lesson.pupils?.phone && (
-                  <div className="text-[12px] mt-1" style={{ color: "#CC2229" }}>
+                  <div className="text-[12px] mt-1" style={{ color: "#1877D6" }}>
                     No phone number on file for this pupil — SMS will not be sent.
                   </div>
                 )}

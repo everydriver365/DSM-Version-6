@@ -69,7 +69,7 @@ function statusBadge(status: string | null) {
     return { label: "Confirmed", bg: "#E8F6EE", color: "#1B7F3A" };
   if (s === "cancelled" || s === "canceled")
     return { label: "Cancelled", bg: "#FDE7E7", color: "#B42318" };
-  return { label: "Pending", bg: "#FEF3C7", color: "#92400E" };
+  return { label: "Pending", bg: "#EEF2F7", color: "#0B1F3A" };
 }
 
 function Card({ children }: { children: React.ReactNode }) {

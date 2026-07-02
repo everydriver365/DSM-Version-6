@@ -27,9 +27,9 @@ interface Referral {
 }
 
 function statusColor(s: Status) {
-  if (s === "booked") return "#16A34A";
+  if (s === "booked") return "#1877D6";
   if (s === "paid") return "#1877D6";
-  return "#F59E0B";
+  return "#1877D6";
 }
 
 function statusLabel(s: Status) {
@@ -134,7 +134,7 @@ function ReferralsPage() {
         <div className="text-[11px] tracking-wider font-semibold mt-3" style={{ color: "#9CA3AF" }}>
           EARNED FROM REFERRALS
         </div>
-        <div className="font-bold mt-1" style={{ fontSize: 24, color: "#F59E0B", ...POPPINS }}>
+        <div className="font-bold mt-1" style={{ fontSize: 24, color: "#1877D6", ...POPPINS }}>
           £{earned.toFixed(2)}
         </div>
       </div>
@@ -214,7 +214,7 @@ function ReferralsPage() {
                   {r.status === "paid" && Number(r.reward_amount) > 0 && (
                     <div
                       className="shrink-0 text-[14px] font-bold"
-                      style={{ color: "#16A34A", ...POPPINS }}
+                      style={{ color: "#1877D6", ...POPPINS }}
                     >
                       £{Number(r.reward_amount).toFixed(2)}
                     </div>

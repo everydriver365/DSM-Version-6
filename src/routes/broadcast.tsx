@@ -369,13 +369,13 @@ function BroadcastPage() {
                         (p.status ?? "active").toLowerCase() === "passed"
                           ? "#DBEAFE"
                           : (p.status ?? "active").toLowerCase() === "active"
-                          ? "#DCFCE7"
+                          ? "#EEF2F7"
                           : "#F3F4F6",
                       color:
                         (p.status ?? "active").toLowerCase() === "passed"
                           ? "#1877D6"
                           : (p.status ?? "active").toLowerCase() === "active"
-                          ? "#16A34A"
+                          ? "#1877D6"
                           : "#6B7280",
                       ...POPPINS,
                     }}
@@ -468,7 +468,7 @@ function BroadcastPage() {
           </button>
           <span
             className="text-[12px]"
-            style={{ color: overLimit ? "#D97706" : "#6B7280", ...POPPINS }}
+            style={{ color: overLimit ? "#0B1F3A" : "#6B7280", ...POPPINS }}
           >
             {charCount} characters
           </span>

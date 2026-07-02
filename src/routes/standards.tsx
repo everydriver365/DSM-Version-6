@@ -30,10 +30,10 @@ interface Check {
 }
 
 const GRADE_COLORS: Record<string, string> = {
-  A: "#16A34A",
+  A: "#1877D6",
   B: "#1877D6",
-  C: "#F59E0B",
-  D: "#CC2229",
+  C: "#1877D6",
+  D: "#1877D6",
 };
 
 function gradeColor(g: string) {

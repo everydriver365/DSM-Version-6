@@ -39,7 +39,7 @@ function initials(name: string) {
 }
 
 function statusBadgeColor(status: StatusKey) {
-  if (status === "active") return "#16A34A";
+  if (status === "active") return "#1877D6";
   if (status === "passed") return "#1877D6";
   if (status === "archived") return "#9CA3AF";
   return "#6B7280";
@@ -47,7 +47,7 @@ function statusBadgeColor(status: StatusKey) {
 
 function accentColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
-  if (status === "passed") return "#16A34A";
+  if (status === "passed") return "#1877D6";
   if (status === "archived") return "#9CA3AF";
   return "#9CA3AF";
 }
@@ -390,7 +390,7 @@ function PupilsIndexPage() {
                               hoursRemaining <= 0 ? (
                                 <span
                                   className="text-[12px] font-medium"
-                                  style={{ color: "#16A34A", ...POPPINS }}
+                                  style={{ color: "#1877D6", ...POPPINS }}
                                 >
                                   Hours done
                                 </span>
@@ -398,7 +398,7 @@ function PupilsIndexPage() {
                                 <span
                                   className="text-[12px] font-medium"
                                   style={{
-                                    color: hoursRemaining > 5 ? "#1877D6" : "#F59E0B",
+                                    color: hoursRemaining > 5 ? "#1877D6" : "#1877D6",
                                     ...POPPINS,
                                   }}
                                 >
@@ -408,7 +408,7 @@ function PupilsIndexPage() {
                             ) : (
                               <span
                                 className="text-[12px] font-medium"
-                                style={{ color: "#16A34A", ...POPPINS }}
+                                style={{ color: "#1877D6", ...POPPINS }}
                               >
                                 Prepaid ✓
                               </span>
@@ -416,14 +416,14 @@ function PupilsIndexPage() {
                           ) : b && b.owed > 0 ? (
                             <span
                               className="text-[12px] font-medium"
-                              style={{ color: "#CC2229", ...POPPINS }}
+                              style={{ color: "#1877D6", ...POPPINS }}
                             >
                               £{b.owed.toFixed(2)} owed
                             </span>
                           ) : lessons > 0 && b && b.paid > 0 ? (
                             <span
                               className="text-[12px] font-medium"
-                              style={{ color: "#16A34A", ...POPPINS }}
+                              style={{ color: "#1877D6", ...POPPINS }}
                             >
                               All paid ✓
                             </span>
@@ -435,7 +435,7 @@ function PupilsIndexPage() {
                           return (
                             <span
                               className="text-[11px] font-medium"
-                              style={{ color: "#CC2229", ...POPPINS }}
+                              style={{ color: "#1877D6", ...POPPINS }}
                             >
                               £{niOwed.toFixed(2)} NI owed
                             </span>

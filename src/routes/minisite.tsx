@@ -49,8 +49,8 @@ const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
 ];
 
 const COLOUR_SWATCHES = [
-  "#1877D6", "#0B1F3A", "#16A34A", "#DC2626",
-  "#D97706", "#1877D6", "#0EA5E9", "#111111",
+  "#1877D6", "#0B1F3A", "#1877D6", "#DC2626",
+  "#0B1F3A", "#1877D6", "#0EA5E9", "#111111",
 ];
 
 function slugify(s: string) {
@@ -352,10 +352,10 @@ function MiniSitePage() {
                 className="rounded-full"
                 style={{
                   width: 8, height: 8,
-                  backgroundColor: published ? "#16A34A" : "#F59E0B",
+                  backgroundColor: published ? "#1877D6" : "#1877D6",
                 }}
               />
-              <span className="text-[13px]" style={{ color: published ? "#16A34A" : "#B45309", fontWeight: 600 }}>
+              <span className="text-[13px]" style={{ color: published ? "#1877D6" : "#0B1F3A", fontWeight: 600 }}>
                 {published ? "Live" : "Draft"}
               </span>
             </div>
@@ -366,7 +366,7 @@ function MiniSitePage() {
               onClick={() => togglePublished(!published)}
               style={{
                 width: 44, height: 26, borderRadius: 999,
-                background: published ? "#16A34A" : "#EEF2F7",
+                background: published ? "#1877D6" : "#EEF2F7",
                 border: "none", cursor: "pointer", position: "relative",
                 transition: "background 0.15s",
               }}
@@ -405,7 +405,7 @@ function MiniSitePage() {
                 <span style={{ color: "#6B7280" }}>Checking…</span>
               )}
               {slugValidFormat && !slugChecking && slugAvailable === true && (
-                <span style={{ color: "#16A34A", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <span style={{ color: "#1877D6", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   <Check size={14} /> Available
                 </span>
               )}

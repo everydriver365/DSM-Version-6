@@ -185,7 +185,7 @@ function SatNavPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "#16A34A" }}
+                style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6" }}
               >
                 <Navigation size={16} /> Navigate
               </a>

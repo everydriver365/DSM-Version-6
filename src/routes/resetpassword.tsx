@@ -67,7 +67,7 @@ function ResetPasswordPage() {
       >
         {done ? (
           <div className="flex flex-col items-center text-center">
-            <CheckCircle2 size={48} className="text-[#16A34A] mb-3" />
+            <CheckCircle2 size={48} className="text-[#1877D6] mb-3" />
             <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Password updated!</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">Redirecting to sign in…</p>
           </div>
@@ -136,7 +136,7 @@ function ResetPasswordPage() {
             </div>
 
             {error && (
-              <p className="text-[13px] text-[#CC2229] text-center mt-3" role="alert">
+              <p className="text-[13px] text-[#1877D6] text-center mt-3" role="alert">
                 {error}
               </p>
             )}

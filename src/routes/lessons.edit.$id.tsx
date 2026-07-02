@@ -281,7 +281,7 @@ function EditLessonPage() {
           </div>
 
           {error && (
-            <p className="text-[12px]" style={{ color: "#CC2229" }}>
+            <p className="text-[12px]" style={{ color: "#1877D6" }}>
               {error}
             </p>
           )}

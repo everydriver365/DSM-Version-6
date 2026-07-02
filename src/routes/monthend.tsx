@@ -343,8 +343,8 @@ function MonthEndPage() {
         <div className="grid grid-cols-2 gap-3 mt-3">
           <SummaryStat label="Lessons" value={String(stats.lessonsCount)} color="#FFFFFF" />
           <SummaryStat label="Hours" value={stats.hours.toFixed(1)} color="#FFFFFF" />
-          <SummaryStat label="Earned" value={fmtGBP(stats.earned)} color="#F59E0B" />
-          <SummaryStat label="Expenses" value={fmtGBP(stats.spent)} color="#CC2229" />
+          <SummaryStat label="Earned" value={fmtGBP(stats.earned)} color="#1877D6" />
+          <SummaryStat label="Expenses" value={fmtGBP(stats.spent)} color="#1877D6" />
         </div>
         <div
           className="mt-4 flex items-center justify-between"
@@ -370,9 +370,9 @@ function MonthEndPage() {
         {/* Lesson breakdown */}
         <SectionHeader>Lesson breakdown</SectionHeader>
         <PanelCard>
-          <BreakdownRow dot="#16A34A" label="Completed" value={String(stats.completed)} />
-          <BreakdownRow dot="#CC2229" label="Cancelled" value={String(stats.cancelled)} />
-          <BreakdownRow dot="#F59E0B" label="No-show" value={String(stats.noShow)} />
+          <BreakdownRow dot="#1877D6" label="Completed" value={String(stats.completed)} />
+          <BreakdownRow dot="#1877D6" label="Cancelled" value={String(stats.cancelled)} />
+          <BreakdownRow dot="#1877D6" label="No-show" value={String(stats.noShow)} />
           <BreakdownRow label="Cancellation rate" value={`${stats.cancellationRate.toFixed(1)}%`} />
         </PanelCard>
 

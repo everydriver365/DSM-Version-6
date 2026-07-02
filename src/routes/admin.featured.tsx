@@ -27,7 +27,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#CC2229",
+        background: "#1877D6",
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
         display: "flex",
@@ -101,7 +101,7 @@ function Toggle({ on, onChange, disabled }: { on: boolean; onChange: (v: boolean
         width: 44,
         height: 26,
         borderRadius: 999,
-        background: on ? "#CC2229" : "#D1D5DB",
+        background: on ? "#1877D6" : "#D1D5DB",
         border: "none",
         position: "relative",
         cursor: disabled ? "not-allowed" : "pointer",
@@ -214,7 +214,7 @@ function AdminFeatured() {
   if (status === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
+        <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
       </div>
     );

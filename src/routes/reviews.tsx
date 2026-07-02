@@ -37,8 +37,8 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
           <Star
             key={i}
             size={size}
-            color={filled ? "#F59E0B" : "#EEF2F7"}
-            fill={filled ? "#F59E0B" : "#EEF2F7"}
+            color={filled ? "#1877D6" : "#EEF2F7"}
+            fill={filled ? "#1877D6" : "#EEF2F7"}
           />
         );
       })}

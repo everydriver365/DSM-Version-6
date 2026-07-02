@@ -47,9 +47,9 @@ interface Doc {
 
 const TYPES: { value: DocType; label: string; color: string; tint: string }[] = [
   { value: "adi", label: "ADI Badge", color: "#1877D6", tint: "#DBEAFE" },
-  { value: "insurance", label: "Insurance", color: "#16A34A", tint: "#ECFDF5" },
-  { value: "mot", label: "MOT", color: "#F59E0B", tint: "#FEF3C7" },
-  { value: "dbs", label: "DBS Check", color: "#CC2229", tint: "#FEE2E2" },
+  { value: "insurance", label: "Insurance", color: "#1877D6", tint: "#F3F8FF" },
+  { value: "mot", label: "MOT", color: "#1877D6", tint: "#EEF2F7" },
+  { value: "dbs", label: "DBS Check", color: "#1877D6", tint: "#FEE2E2" },
   { value: "tax", label: "Tax", color: "#5B21B6", tint: "#EDE9FE" },
   { value: "other", label: "Other", color: "#6B7280", tint: "#F4F4F5" },
 ];
@@ -93,9 +93,9 @@ function formatShortDate(iso: string) {
 
 function expiryColor(days: number | null) {
   if (days == null) return "#6B7280";
-  if (days < 0) return "#CC2229";
-  if (days <= 30) return "#F59E0B";
-  return "#16A34A";
+  if (days < 0) return "#1877D6";
+  if (days <= 30) return "#1877D6";
+  return "#1877D6";
 }
 
 const docSchema = z.object({
@@ -183,14 +183,14 @@ function DocumentsPage() {
             gap: 10,
             padding: 12,
             borderRadius: 10,
-            backgroundColor: "#FEF3C7",
-            border: "0.5px solid #F59E0B",
+            backgroundColor: "#EEF2F7",
+            border: "0.5px solid #1877D6",
           }}
         >
-          <AlertTriangle size={18} color="#92400E" />
+          <AlertTriangle size={18} color="#0B1F3A" />
           <span
             className="text-[13px] font-semibold"
-            style={{ color: "#92400E" }}
+            style={{ color: "#0B1F3A" }}
           >
             {expiringSoon} document{expiringSoon === 1 ? "" : "s"} expiring soon
           </span>
@@ -613,9 +613,9 @@ function DocSheet({
             type="button"
             onClick={remove}
             className="flex items-center justify-center mt-1 text-[13px] font-semibold"
-            style={{ gap: 6, color: "#CC2229", padding: 10 }}
+            style={{ gap: 6, color: "#1877D6", padding: 10 }}
           >
-            <Trash2 size={14} color="#CC2229" /> Delete document
+            <Trash2 size={14} color="#1877D6" /> Delete document
           </button>
         )}
       </div>

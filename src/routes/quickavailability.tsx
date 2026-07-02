@@ -107,10 +107,10 @@ function QuickAvailabilityPage() {
             style={{
               borderRadius: 16,
               padding: 24,
-              backgroundColor: isActive ? "#ECFDF5" : "#FEF2F2",
+              backgroundColor: isActive ? "#F3F8FF" : "#FEF2F2",
               borderWidth: 1,
               borderStyle: "solid",
-              borderColor: isActive ? "#16A34A" : "#CC2229",
+              borderColor: isActive ? "#1877D6" : "#1877D6",
               textAlign: "center",
             }}
           >
@@ -119,7 +119,7 @@ function QuickAvailabilityPage() {
               style={{
                 width: 16,
                 height: 16,
-                backgroundColor: isActive ? "#16A34A" : "#CC2229",
+                backgroundColor: isActive ? "#1877D6" : "#1877D6",
                 marginBottom: 12,
               }}
             />
@@ -127,7 +127,7 @@ function QuickAvailabilityPage() {
               style={{
                 fontSize: 20,
                 fontWeight: 600,
-                color: isActive ? "#16A34A" : "#CC2229",
+                color: isActive ? "#1877D6" : "#1877D6",
               }}
             >
               {isActive ? "You are available" : "You are unavailable"}
@@ -144,7 +144,7 @@ function QuickAvailabilityPage() {
               style={{
                 height: 52,
                 fontSize: 15,
-                backgroundColor: isActive ? "#CC2229" : "#16A34A",
+                backgroundColor: isActive ? "#1877D6" : "#1877D6",
                 fontFamily: "Inter, sans-serif",
               }}
             >

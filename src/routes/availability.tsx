@@ -209,8 +209,8 @@ function AvailabilityPage() {
           />
         </Card>
 
-        {error && <div className="mt-3 text-[12px]" style={{ color: "#CC2229" }}>{error}</div>}
-        {savedMsg && <div className="mt-3 text-[12px]" style={{ color: "#16A34A" }}>{savedMsg}</div>}
+        {error && <div className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>{error}</div>}
+        {savedMsg && <div className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>{savedMsg}</div>}
 
         <div className="mt-6">
           <Button onClick={save} disabled={saving || !userId}>

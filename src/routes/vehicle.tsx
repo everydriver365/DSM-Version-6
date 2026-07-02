@@ -102,9 +102,9 @@ function fmtDate(ymd: string | null) {
 function expiryBadge(ymd: string | null) {
   const d = daysUntil(ymd);
   if (d == null) return { label: "Not set", bg: "#F3F4F6", fg: "#6B7280" };
-  if (d < 0) return { label: "EXPIRED", bg: "#FEE2E2", fg: "#CC2229" };
-  if (d <= 30) return { label: "Due soon", bg: "#FEF3C7", fg: "#B45309" };
-  return { label: "Valid", bg: "#DCFCE7", fg: "#15803D" };
+  if (d < 0) return { label: "EXPIRED", bg: "#FEE2E2", fg: "#1877D6" };
+  if (d <= 30) return { label: "Due soon", bg: "#EEF2F7", fg: "#0B1F3A" };
+  return { label: "Valid", bg: "#EEF2F7", fg: "#0B1F3A" };
 }
 
 function todayYmd() {
@@ -237,7 +237,7 @@ function VehiclePage() {
             padding: "10px 12px",
           }}
         >
-          <AlertTriangle size={16} color="#CC2229" />
+          <AlertTriangle size={16} color="#1877D6" />
           <div className="text-[13px]" style={{ color: "#991B1B" }}>
             <span className="font-semibold">{alerts.length} vehicle check{alerts.length === 1 ? "" : "s"} due soon</span>
             <span className="ml-1">— {alerts.join(", ")}</span>
@@ -294,7 +294,7 @@ function VehiclePage() {
           badge={(() => {
             const d = daysUntil(vh.next_service_due_date);
             if (d != null && d <= 30)
-              return { label: d < 0 ? "Overdue" : "Due soon", bg: "#FEF3C7", fg: "#B45309" };
+              return { label: d < 0 ? "Overdue" : "Due soon", bg: "#EEF2F7", fg: "#0B1F3A" };
             return undefined;
           })()}
           onClick={() => setEditField("next_service_due_date")}
@@ -393,7 +393,7 @@ function VehiclePage() {
                   </div>
                 </div>
                 {j.fuel_cost != null && (
-                  <div className="text-[12px] font-semibold" style={{ color: "#16A34A" }}>
+                  <div className="text-[12px] font-semibold" style={{ color: "#1877D6" }}>
                     £{Number(j.fuel_cost).toFixed(2)}
                   </div>
                 )}

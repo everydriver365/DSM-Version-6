@@ -246,7 +246,7 @@ function LoginPage() {
 
           {error && (
             <p
-              className="text-[13px] text-[#CC2229] text-center"
+              className="text-[13px] text-[#1877D6] text-center"
               role="alert"
               style={{ fontFamily: "Inter, sans-serif" }}
             >

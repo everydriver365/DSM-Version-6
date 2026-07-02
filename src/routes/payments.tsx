@@ -225,7 +225,7 @@ function PaymentsPage() {
               </div>
               <div
                 className="text-[24px] font-bold mt-1"
-                style={{ color: "#F59E0B", ...POPPINS }}
+                style={{ color: "#1877D6", ...POPPINS }}
               >
                 {formatGBP(weekTotal)}
               </div>
@@ -239,7 +239,7 @@ function PaymentsPage() {
               </div>
               <div
                 className="text-[24px] font-bold mt-1"
-                style={{ color: "#F59E0B", ...POPPINS }}
+                style={{ color: "#1877D6", ...POPPINS }}
               >
                 {formatGBP(monthTotal)}
               </div>
@@ -338,7 +338,7 @@ function PaymentsPage() {
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <div
                       className="text-[14px] font-bold"
-                      style={{ color: "#CC2229", ...POPPINS }}
+                      style={{ color: "#1877D6", ...POPPINS }}
                     >
                       {formatGBP(Number(p.balance_owed))}
                     </div>
@@ -346,7 +346,7 @@ function PaymentsPage() {
                       type="button"
                       onClick={() => markPaid(p)}
                       className="text-[12px] font-medium"
-                      style={{ color: "#16A34A", ...POPPINS }}
+                      style={{ color: "#1877D6", ...POPPINS }}
                     >
                       Mark paid
                     </button>
@@ -429,7 +429,7 @@ function PaymentsPage() {
                   </div>
                   <div
                     className="text-[14px] font-bold shrink-0"
-                    style={{ color: "#16A34A", ...POPPINS }}
+                    style={{ color: "#1877D6", ...POPPINS }}
                   >
                     {formatGBP(Number(row.amount))}
                   </div>
@@ -627,7 +627,7 @@ function RecordSheet({
           />
 
           {error && (
-            <div className="text-[12px]" style={{ color: "#CC2229", ...POPPINS }}>
+            <div className="text-[12px]" style={{ color: "#1877D6", ...POPPINS }}>
               {error}
             </div>
           )}

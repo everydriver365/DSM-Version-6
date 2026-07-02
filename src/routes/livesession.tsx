@@ -149,11 +149,11 @@ function LiveSessionPage() {
   const startTimeLabel = lesson ? (lesson.lesson_time ?? "").slice(0, 5) : "—";
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#CC2229", margin: -8 }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#1877D6", margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#CC2229" }}
+        style={{ backgroundColor: "#1877D6" }}
       >
         <div style={{ width: 28 }} />
         <div className="text-white text-[16px] font-semibold">Live session</div>
@@ -230,7 +230,7 @@ function LiveSessionPage() {
           <button
             type="button"
             onClick={endSession}
-            style={actionBtn("#CC2229")}
+            style={actionBtn("#1877D6")}
           >
             <CheckSquare size={20} color="#fff" />
             <span>End lesson</span>
@@ -246,7 +246,7 @@ function LiveSessionPage() {
           <button
             type="button"
             onClick={() => window.open("https://maps.google.com", "_blank")}
-            style={actionBtn("#16A34A")}
+            style={actionBtn("#1877D6")}
           >
             <NavIcon size={20} color="#fff" />
             <span>Navigate</span>
@@ -256,7 +256,7 @@ function LiveSessionPage() {
             onClick={() => {
               if (pupilPhone) window.location.href = `tel:${pupilPhone}`;
             }}
-            style={{ ...actionBtn("#F59E0B"), opacity: pupilPhone ? 1 : 0.6 }}
+            style={{ ...actionBtn("#1877D6"), opacity: pupilPhone ? 1 : 0.6 }}
           >
             <Phone size={20} color="#fff" />
             <span>Call pupil</span>

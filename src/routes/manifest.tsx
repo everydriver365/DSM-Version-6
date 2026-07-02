@@ -51,10 +51,10 @@ function lessonTime(l: Lesson) {
   return t;
 }
 function statusColor(s: string) {
-  if (s === "confirmed") return "#16A34A";
+  if (s === "confirmed") return "#1877D6";
   if (s === "completed") return "#1877D6";
-  if (s === "pending") return "#F59E0B";
-  if (s === "cancelled") return "#CC2229";
+  if (s === "pending") return "#1877D6";
+  if (s === "cancelled") return "#1877D6";
   return "#6B7280";
 }
 
@@ -182,7 +182,7 @@ function ManifestPage() {
       >
         <Stat value={String(lessons.length)} label="LESSONS" />
         <Stat value={totalHours} label="HOURS" />
-        <Stat value={`£${earned.toFixed(0)}`} label="EARNED" color="#F59E0B" />
+        <Stat value={`£${earned.toFixed(0)}`} label="EARNED" color="#1877D6" />
         <Stat value={miles.toFixed(0)} label="MILES" />
       </div>
 
@@ -253,7 +253,7 @@ function ManifestPage() {
                     <ActionBtn
                       icon={<Phone size={14} />}
                       label="Call"
-                      bg="#CC2229"
+                      bg="#1877D6"
                       href={l.pupils?.phone ? `tel:${l.pupils.phone}` : undefined}
                     />
                     <ActionBtn
@@ -266,7 +266,7 @@ function ManifestPage() {
                     <ActionBtn
                       icon={<Navigation size={14} />}
                       label="Navigate"
-                      bg="#16A34A"
+                      bg="#1877D6"
                     />
                   </div>
 
@@ -290,9 +290,9 @@ function ManifestPage() {
 
         <SectionHeader>END OF DAY</SectionHeader>
         <Card className="bg-white">
-          <SummaryRow label="Total earned today" value={`£${earned.toFixed(2)}`} color="#F59E0B" />
-          <SummaryRow label="Lessons completed" value={String(completedCount)} color="#16A34A" />
-          <SummaryRow label="Lessons cancelled" value={String(cancelledCount)} color="#CC2229" />
+          <SummaryRow label="Total earned today" value={`£${earned.toFixed(2)}`} color="#1877D6" />
+          <SummaryRow label="Lessons completed" value={String(completedCount)} color="#1877D6" />
+          <SummaryRow label="Lessons cancelled" value={String(cancelledCount)} color="#1877D6" />
 
           <div className="mt-3">
             <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
@@ -323,8 +323,8 @@ function ManifestPage() {
               style={{
                 padding: 10,
                 borderRadius: 8,
-                backgroundColor: "#ECFDF5",
-                color: "#065F46",
+                backgroundColor: "#F3F8FF",
+                color: "#0B1F3A",
               }}
             >
               {savedMsg}

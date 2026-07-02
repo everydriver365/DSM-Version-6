@@ -223,7 +223,7 @@ function DataImportPage() {
           {parseErrors.length > 0 && (
             <div
               className="mt-3 text-[12px]"
-              style={{ color: "#CC2229" }}
+              style={{ color: "#1877D6" }}
             >
               {parseErrors.map((er, i) => <div key={i}>{er}</div>)}
             </div>
@@ -302,16 +302,16 @@ function DataImportPage() {
               className="mt-4 flex items-center"
               style={{
                 gap: 10,
-                backgroundColor: "#ECFDF5",
+                backgroundColor: "#F3F8FF",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#059669",
+                borderColor: "#1877D6",
                 borderRadius: 12,
                 padding: 14,
               }}
             >
-              <CheckCircle2 size={20} color="#059669" />
-              <div className="text-[13px] text-[#065F46] font-medium">
+              <CheckCircle2 size={20} color="#1877D6" />
+              <div className="text-[13px] text-[#0B1F3A] font-medium">
                 {successCount} pupils imported successfully
               </div>
             </div>
@@ -325,13 +325,13 @@ function DataImportPage() {
                 backgroundColor: "#FEF2F2",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#CC2229",
+                borderColor: "#1877D6",
                 borderRadius: 12,
                 padding: 14,
               }}
             >
               <div className="flex items-center" style={{ gap: 8 }}>
-                <AlertCircle size={18} color="#CC2229" />
+                <AlertCircle size={18} color="#1877D6" />
                 <div className="text-[13px] font-semibold text-[#7F1D1D]">
                   {failures.length} row{failures.length === 1 ? "" : "s"} failed
                 </div>

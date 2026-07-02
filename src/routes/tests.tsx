@@ -228,7 +228,7 @@ function TestCard({
   const name = test.pupils?.name ?? "Unknown pupil";
   const days = daysUntil(test.test_date);
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days`;
-  const resultColor = test.result === "Pass" ? "#16A34A" : test.result === "Fail" ? "#CC2229" : null;
+  const resultColor = test.result === "Pass" ? "#1877D6" : test.result === "Fail" ? "#1877D6" : null;
 
   return (
     <Card>
@@ -514,7 +514,7 @@ function LogResultSheet({
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             {(["Pass", "Fail"] as const).map((r) => {
               const active = result === r;
-              const color = r === "Pass" ? "#16A34A" : "#CC2229";
+              const color = r === "Pass" ? "#1877D6" : "#1877D6";
               return (
                 <button
                   key={r}
