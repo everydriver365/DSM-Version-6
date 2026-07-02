@@ -317,6 +317,34 @@ function DrivingTestPage() {
     }
   }
 
+  async function addCentreByName(name: string) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const headers = await restHeaders();
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/test_centres`, {
+        method: "POST",
+        headers: { ...headers, Prefer: "return=representation" },
+        body: JSON.stringify({ name: trimmed, town: null, postcode: null }),
+      });
+      if (r.ok) {
+        const j = await r.json();
+        const c = Array.isArray(j) ? j[0] : j;
+        const centre = { id: c.id, name: c.name, town: c.town ?? null };
+        setCentres((cs) => [...cs, centre]);
+        setCentreId(c.id);
+        setCentreName(c.name);
+        setSelectedCentre({ id: c.id, name: c.name, town: c.town ?? "" });
+        setCentreSearch(c.name);
+        setShowCentreDropdown(false);
+      } else {
+        toast.error("Could not add centre");
+      }
+    } catch {
+      toast.error("Could not add centre");
+    }
+  }
+
   async function addExaminer() {
     if (!newExaminer.trim() || !userId) return;
     const headers = await restHeaders();
