@@ -315,8 +315,8 @@ function PublicQuotePage() {
   if (!accepted && isExpired(quote)) return <MessagePage title="This quote has expired" body="Please contact your instructor for a new quote." />;
 
   const badge = accepted
-    ? { label: "Accepted", bg: "#DCFCE7", color: "#15803D" }
-    : { label: "Awaiting response", bg: "#FEF3C7", color: "#92400E" };
+    ? { label: "Accepted", bg: "#EEF2F7", color: "#0B1F3A" }
+    : { label: "Awaiting response", bg: "#EEF2F7", color: "#0B1F3A" };
 
   const depositAmount = Number(quote.deposit_amount || 0);
   const needsDeposit = accepted && depositAmount > 0 && !depositPaid;
@@ -371,7 +371,7 @@ function PublicQuotePage() {
         <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {accepted ? (
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
-              <CheckCircle2 size={72} color="#16A34A" strokeWidth={2} />
+              <CheckCircle2 size={72} color="#1877D6" strokeWidth={2} />
               <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A" }}>Quote accepted! 🎉</div>
               <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
                 {depositPaid && !depositDoneNow
@@ -384,7 +384,7 @@ function PublicQuotePage() {
               </div>
 
               {depositAmount > 0 && depositPaid && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: "#DCFCE7", color: "#15803D", fontSize: 13, fontWeight: 700 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: "#EEF2F7", color: "#0B1F3A", fontSize: 13, fontWeight: 700 }}>
                   <CheckCircle2 size={16} /> Deposit paid
                 </span>
               )}
@@ -473,7 +473,7 @@ function PublicQuotePage() {
                     href="https://everydriver.co.uk/courses"
                     style={{
                       marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
-                      height: 52, width: "100%", borderRadius: 12, background: "#16A34A", color: "#fff",
+                      height: 52, width: "100%", borderRadius: 12, background: "#1877D6", color: "#fff",
                       fontWeight: 600, fontSize: 15, textDecoration: "none",
                     }}
                   >
@@ -491,7 +491,7 @@ function PublicQuotePage() {
               onClick={accept}
               style={{
                 height: 52, borderRadius: 12, border: "none",
-                background: "#16A34A", color: "#fff", fontWeight: 600, fontSize: 15,
+                background: "#1877D6", color: "#fff", fontWeight: 600, fontSize: 15,
                 fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
               }}
             >

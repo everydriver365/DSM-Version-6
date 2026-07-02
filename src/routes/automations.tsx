@@ -406,7 +406,7 @@ function AutomationsPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}
@@ -420,7 +420,7 @@ function AutomationsPage() {
                   type="button"
                   onClick={remove}
                   className="text-[13px] font-medium py-2"
-                  style={{ color: "#CC2229" }}
+                  style={{ color: "#1877D6" }}
                 >
                   Delete automation
                 </button>

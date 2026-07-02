@@ -250,8 +250,8 @@ function WaiversPage() {
                 <div
                   className="inline-block mt-2 text-[10px] font-medium"
                   style={{
-                    backgroundColor: s.status === "signed" ? "#ECFDF5" : "#FEF3C7",
-                    color: s.status === "signed" ? "#059669" : "#92400E",
+                    backgroundColor: s.status === "signed" ? "#F3F8FF" : "#EEF2F7",
+                    color: s.status === "signed" ? "#1877D6" : "#0B1F3A",
                     padding: "2px 8px",
                     borderRadius: 999,
                   }}

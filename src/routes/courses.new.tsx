@@ -54,9 +54,9 @@ const TYPE_META: Record<
   CourseType,
   { label: string; color: string; bg: string; desc: string }
 > = {
-  intensive: { label: "Intensive", color: "#CC2229", bg: "#fbe8e8", desc: "All hours in one week" },
-  "semi-intensive": { label: "Semi-intensive", color: "#F59E0B", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
-  weekly: { label: "Weekly lessons", color: "#16A34A", bg: "#e7f6ec", desc: "Regular weekly slots" },
+  intensive: { label: "Intensive", color: "#1877D6", bg: "#fbe8e8", desc: "All hours in one week" },
+  "semi-intensive": { label: "Semi-intensive", color: "#1877D6", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
+  weekly: { label: "Weekly lessons", color: "#1877D6", bg: "#e7f6ec", desc: "Regular weekly slots" },
   custom: { label: "Custom", color: "#1877D6", bg: "#e8eefb", desc: "You define the schedule" },
 };
 
@@ -607,7 +607,7 @@ function NewCoursePage() {
                 style={{
                   flex: 1.4,
                   height: 44,
-                  background: "#16A34A",
+                  background: "#1877D6",
                   color: "#fff",
                   border: "none",
                   borderRadius: 10,
@@ -629,7 +629,7 @@ function NewCoursePage() {
         </div>
 
         {error && (
-          <div style={{ marginTop: 12, color: "#CC2229", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
+          <div style={{ marginTop: 12, color: "#1877D6", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
             {error}
           </div>
         )}
@@ -1057,7 +1057,7 @@ function Step2(props: {
 
       <div>
         <FieldLabel>
-          Pickup postcode <span style={{ color: "#CC2229" }}>*</span>
+          Pickup postcode <span style={{ color: "#1877D6" }}>*</span>
         </FieldLabel>
         <PostcodeAutocomplete
           value={pickup}
@@ -1099,10 +1099,10 @@ function Step2(props: {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
             { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1877D6", full: false },
-            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
+            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#1877D6", full: false },
             { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
             { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#1877D6", full: false },
-            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
+            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#1877D6", full: false },
             { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1877D6", full: false },
             { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
           ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
@@ -1318,7 +1318,7 @@ function ToggleRow({
           width: 40,
           height: 24,
           borderRadius: 12,
-          background: value ? "#16A34A" : "#EEF2F7",
+          background: value ? "#1877D6" : "#EEF2F7",
           position: "relative",
           transition: "background 150ms",
           flexShrink: 0,
@@ -1547,7 +1547,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1877D6" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#1877D6" : focused ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
@@ -1560,7 +1560,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
+        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
           {error}
         </div>
       )}

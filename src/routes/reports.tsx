@@ -190,11 +190,11 @@ function ReportsPage() {
         <div className="mx-4">
           <SectionHeader>LESSON BREAKDOWN</SectionHeader>
           <Card>
-            <BreakdownRow color="#16A34A" label="Confirmed" count={counts.confirmed} />
+            <BreakdownRow color="#1877D6" label="Confirmed" count={counts.confirmed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
             <BreakdownRow color="#1877D6" label="Completed" count={counts.completed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
-            <BreakdownRow color="#CC2229" label="Cancelled" count={counts.cancelled} />
+            <BreakdownRow color="#1877D6" label="Cancelled" count={counts.cancelled} />
           </Card>
         </div>
 

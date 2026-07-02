@@ -44,9 +44,9 @@ function typeMeta(t: string | null) {
     case "adi_badge":
       return { color: "#1877D6", tint: "#EEF4FB", Icon: BadgeCheck, label: "ADI Badge" };
     case "dbs":
-      return { color: "#CC2229", tint: "#FEF2F2", Icon: ShieldCheck, label: "DBS Check" };
+      return { color: "#1877D6", tint: "#FEF2F2", Icon: ShieldCheck, label: "DBS Check" };
     case "first_aid":
-      return { color: "#16A34A", tint: "#ECFDF5", Icon: Heart, label: "First Aid" };
+      return { color: "#1877D6", tint: "#F3F8FF", Icon: Heart, label: "First Aid" };
     case "insurance":
       return { color: "#1877D6", tint: "#EEF4FB", Icon: FileText, label: "Insurance" };
     default:
@@ -210,10 +210,10 @@ function CertificationsPage() {
           {expiringCount > 0 && (
             <div
               className="mt-3 rounded-lg px-3 py-3 flex items-center"
-              style={{ backgroundColor: "#FEF3C7", gap: 10 }}
+              style={{ backgroundColor: "#EEF2F7", gap: 10 }}
             >
-              <AlertTriangle size={18} color="#92400E" />
-              <div className="text-[13px] font-medium" style={{ color: "#92400E" }}>
+              <AlertTriangle size={18} color="#0B1F3A" />
+              <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>
                 {expiringCount} certification{expiringCount === 1 ? "" : "s"} expiring soon
               </div>
             </div>
@@ -239,19 +239,19 @@ function CertificationsPage() {
               {rows.map((r) => {
                 const meta = typeMeta(r.cert_type);
                 const days = daysUntil(r.expiry_date);
-                let expColor = "#16A34A";
+                let expColor = "#1877D6";
                 let statusText = "";
                 if (days === null) {
                   expColor = "#6B7280";
                   statusText = "No expiry set";
                 } else if (days < 0) {
-                  expColor = "#CC2229";
+                  expColor = "#1877D6";
                   statusText = "Expired";
                 } else if (days <= 60) {
-                  expColor = "#92400E";
+                  expColor = "#0B1F3A";
                   statusText = `${days} day${days === 1 ? "" : "s"} remaining`;
                 } else {
-                  expColor = "#16A34A";
+                  expColor = "#1877D6";
                   statusText = `${days} days remaining`;
                 }
                 const Icon = meta.Icon;
@@ -385,7 +385,7 @@ function CertificationsPage() {
               />
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}
@@ -399,7 +399,7 @@ function CertificationsPage() {
                   type="button"
                   onClick={remove}
                   className="text-[13px] font-medium py-2"
-                  style={{ color: "#CC2229" }}
+                  style={{ color: "#1877D6" }}
                 >
                   Delete certification
                 </button>

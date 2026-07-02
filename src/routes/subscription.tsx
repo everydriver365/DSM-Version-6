@@ -70,7 +70,7 @@ function SubscriptionPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            backgroundColor: "#16A34A",
+            backgroundColor: "#1877D6",
             color: "#ffffff",
             fontSize: 11,
             fontWeight: 700,
@@ -126,7 +126,7 @@ function SubscriptionPage() {
             position: "absolute",
             top: 8,
             right: 8,
-            backgroundColor: "#F59E0B",
+            backgroundColor: "#1877D6",
             color: "#ffffff",
             fontSize: 10,
             fontWeight: 700,
@@ -168,7 +168,7 @@ function SubscriptionPage() {
 function Feature({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <Check size={16} color="#16A34A" strokeWidth={3} />
+      <Check size={16} color="#1877D6" strokeWidth={3} />
       <span style={{ fontSize: 14, color: "#0B1F3A" }}>{text}</span>
     </div>
   );

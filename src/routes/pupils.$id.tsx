@@ -95,14 +95,14 @@ function ymd(d: Date) {
 }
 function statusBadge(status: string | null) {
   const s = (status ?? "active").toLowerCase();
-  if (s === "active") return { bg: "#16A34A", label: "Active" };
+  if (s === "active") return { bg: "#1877D6", label: "Active" };
   if (s === "passed") return { bg: "#1877D6", label: "Passed" };
   return { bg: "#6B7280", label: s.charAt(0).toUpperCase() + s.slice(1) };
 }
 function lessonStatusColor(s: string) {
-  if (s === "confirmed") return "#16A34A";
-  if (s === "pending") return "#F59E0B";
-  if (s === "cancelled") return "#CC2229";
+  if (s === "confirmed") return "#1877D6";
+  if (s === "pending") return "#1877D6";
+  if (s === "cancelled") return "#1877D6";
   return "#6B7280";
 }
 function isLessonLive(l: Lesson) {
@@ -118,8 +118,8 @@ function isLessonPast(l: Lesson) {
   return now > end;
 }
 function accentColor(l: Lesson) {
-  if (isLessonLive(l)) return "#CC2229";
-  if (l.status === "completed") return "#16A34A";
+  if (isLessonLive(l)) return "#1877D6";
+  if (l.status === "completed") return "#1877D6";
   if (l.status === "cancelled") return "#9CA3AF";
   return "#1877D6";
 }
@@ -519,7 +519,7 @@ function PupilDetailPage() {
                       ? `Owes £${Math.abs(balance).toFixed(2)}`
                       : `In credit £${balance.toFixed(2)}`
                 }
-                valueColor={balance < 0 ? "#CC2229" : "#16A34A"}
+                valueColor={balance < 0 ? "#1877D6" : "#1877D6"}
               />
               <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
             </div>
@@ -532,10 +532,10 @@ function PupilDetailPage() {
               const theoryPoints = theoryPass ? 10 : 0;
               const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
-              let barColor = "#CC2229";
-              if (score >= 100) barColor = "#16A34A";
+              let barColor = "#1877D6";
+              if (score >= 100) barColor = "#1877D6";
               else if (score >= 71) barColor = "#1877D6";
-              else if (score >= 41) barColor = "#F59E0B";
+              else if (score >= 41) barColor = "#1877D6";
               return (
                 <div className="mt-4">
                   <div
@@ -630,7 +630,7 @@ function PupilDetailPage() {
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
             aria-label="Call"
             className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-            style={{ height: 40, borderRadius: 8, backgroundColor: "#CC2229", ...POPPINS }}
+            style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
           >
             Call
           </a>
@@ -669,7 +669,7 @@ function PupilDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#F59E0B",
+              backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
             }}
@@ -725,7 +725,7 @@ function PupilDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#CC2229",
+              backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
             }}
@@ -811,7 +811,7 @@ function PupilDetailPage() {
                         {live && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#CC2229", ...POPPINS }}
+                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
                           >
                             <span className="relative flex h-1.5 w-1.5">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
@@ -823,7 +823,7 @@ function PupilDetailPage() {
                         {past && l.status !== "cancelled" && !l.end_of_lesson_completed && (
                           <span
                             className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#F59E0B", ...POPPINS }}
+                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
                           >
                             EOL pending
                           </span>
@@ -831,7 +831,7 @@ function PupilDetailPage() {
                         {l.is_paid && (
                           <span
                             className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#16A34A", ...POPPINS }}
+                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
                           >
                             Paid
                           </span>
@@ -839,7 +839,7 @@ function PupilDetailPage() {
                         {unpaid && past && (
                           <span
                             className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#CC2229", ...POPPINS }}
+                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
                           >
                             £{price.toFixed(2)} due
                           </span>
@@ -882,9 +882,9 @@ function PupilDetailPage() {
           const total = Number(pupil.ni_amount_total ?? 0);
           const paid = Number(pupil.ni_amount_paid ?? 0);
           const outstanding = total - paid;
-          let paidColor = "#CC2229";
-          if (total > 0 && paid >= total) paidColor = "#16A34A";
-          else if (paid > 0) paidColor = "#F59E0B";
+          let paidColor = "#1877D6";
+          if (total > 0 && paid >= total) paidColor = "#1877D6";
+          else if (paid > 0) paidColor = "#1877D6";
           const payerLabel =
             pupil.ni_payer === "national_intensives"
               ? "National Intensives (agency)"
@@ -938,7 +938,7 @@ function PupilDetailPage() {
                       borderRadius: 8,
                       backgroundColor: "#FEF2F2",
                       border: "1px solid #FECACA",
-                      color: "#CC2229",
+                      color: "#1877D6",
                       fontSize: 13,
                       fontWeight: 600,
                       ...POPPINS,
@@ -953,8 +953,8 @@ function PupilDetailPage() {
                       padding: "10px 12px",
                       borderRadius: 8,
                       backgroundColor: "#F0FDF4",
-                      border: "1px solid #BBF7D0",
-                      color: "#16A34A",
+                      border: "1px solid #DBEAFE",
+                      color: "#1877D6",
                       fontSize: 13,
                       fontWeight: 600,
                       ...POPPINS,
@@ -979,9 +979,9 @@ function PupilDetailPage() {
                     ? total / effectiveRate
                     : 0;
                 const hoursRemaining = hoursPurchased - hoursCompleted;
-                let remainColor = "#CC2229";
-                if (hoursRemaining > 5) remainColor = "#16A34A";
-                else if (hoursRemaining >= 1) remainColor = "#F59E0B";
+                let remainColor = "#1877D6";
+                if (hoursRemaining > 5) remainColor = "#1877D6";
+                else if (hoursRemaining >= 1) remainColor = "#1877D6";
                 const pct =
                   hoursPurchased > 0
                     ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
@@ -1060,7 +1060,7 @@ function PupilDetailPage() {
                   <span className="flex items-center gap-2">
                     <span
                       className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: "#16A34A", ...POPPINS }}
+                      style={{ backgroundColor: "#1877D6", ...POPPINS }}
                     >
                       On EverySwap list
                     </span>
@@ -1115,7 +1115,7 @@ function PupilDetailPage() {
         />
         <div className="mt-2 flex items-center justify-end gap-3">
           {noteSaved && (
-            <span className="text-[12px]" style={{ color: "#16A34A", ...POPPINS }}>
+            <span className="text-[12px]" style={{ color: "#1877D6", ...POPPINS }}>
               Saved
             </span>
           )}
@@ -1143,7 +1143,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Award size={20} color="#F59E0B" />
+                <Award size={20} color="#1877D6" />
                 <div className="text-[16px] font-semibold text-[#0B1F3A]">Generate certificate</div>
               </div>
               <button type="button" onClick={() => setCertOpen(false)} aria-label="Close">
@@ -1262,7 +1262,7 @@ function PupilDetailPage() {
                 toast.success("Certificate downloaded. Send to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
-              style={{ height: 44, borderRadius: 8, backgroundColor: "#F59E0B", ...POPPINS }}
+              style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
             >
               <Award size={16} color="#FFFFFF" />
               Generate & download

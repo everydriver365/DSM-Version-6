@@ -251,8 +251,8 @@ function PerformancePage() {
             gap: 12,
           }}
         >
-          <ResultBar label="Pass" count={passCount} total={testsTotal} color="#16A34A" />
-          <ResultBar label="Fail" count={failCount} total={testsTotal} color="#CC2229" />
+          <ResultBar label="Pass" count={passCount} total={testsTotal} color="#1877D6" />
+          <ResultBar label="Fail" count={failCount} total={testsTotal} color="#1877D6" />
           <ResultBar label="Pending" count={pendingCount} total={testsTotal} color="#9CA3AF" />
           {testsTotal === 0 && (
             <div className="text-[13px] text-center" style={{ color: "#6B7280" }}>

@@ -508,8 +508,8 @@ function SettingsPage() {
 
 
           <MenuRow
-            icon={<Bell size={18} color="#92400E" />}
-            iconBg="#FEF3C7"
+            icon={<Bell size={18} color="#0B1F3A" />}
+            iconBg="#EEF2F7"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
           />
@@ -819,7 +819,7 @@ function SettingsPage() {
                 width: "100%",
                 height: 44,
                 padding: "0 36px 0 12px",
-                border: `0.5px solid ${postcodeShowError ? "#CC2229" : "#EEF2F7"}`,
+                border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
                 borderRadius: 10,
                 fontSize: 14,
                 background: "#fff",
@@ -831,13 +831,13 @@ function SettingsPage() {
             {postcodeValid && (
               <Check
                 size={18}
-                color="#16A34A"
+                color="#1877D6"
                 style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
               />
             )}
           </div>
           {postcodeShowError && (
-            <div style={{ fontSize: 12, color: "#CC2229", marginBottom: 14, ...POPPINS }}>
+            <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
               Please enter a valid UK postcode
             </div>
           )}
@@ -939,7 +939,7 @@ function SettingsPage() {
                       style={{
                         fontSize: 12,
                         fontWeight: 600,
-                        color: "#16A34A",
+                        color: "#1877D6",
                         ...POPPINS,
                       }}
                     >
@@ -969,7 +969,7 @@ function SettingsPage() {
                     border: "none",
                     cursor: "pointer",
                     padding: 4,
-                    color: "#CC2229",
+                    color: "#1877D6",
                   }}
                 >
                   <Trash2 size={18} />
@@ -1070,7 +1070,7 @@ function SettingsPage() {
                     placeholder="SO22, SO23 9AX"
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: `0.5px solid ${invalid.length ? "#CC2229" : "#EEF2F7"}`,
+                      border: `0.5px solid ${invalid.length ? "#1877D6" : "#EEF2F7"}`,
                       borderRadius: 10, fontSize: 14,
                       marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
                       background: "#fff", color: "#0B1F3A",
@@ -1078,7 +1078,7 @@ function SettingsPage() {
                     }}
                   />
                   {invalid.length > 0 && (
-                    <div style={{ color: "#CC2229", fontSize: 12, marginBottom: 8, ...POPPINS }}>
+                    <div style={{ color: "#1877D6", fontSize: 12, marginBottom: 8, ...POPPINS }}>
                       {invalid.map((v) => `Invalid postcode: ${v}`).join(" · ")}
                     </div>
                   )}
@@ -1181,7 +1181,7 @@ function SettingsPage() {
         <Card className="!p-0">
           <MenuRow
             icon={<Tag size={18} />}
-            iconBg="#FEF3C7"
+            iconBg="#EEF2F7"
             label="Discount codes"
             onClick={() => navigate({ to: "/discount-codes" })}
             isFirst
@@ -1212,7 +1212,7 @@ function SettingsPage() {
             }
           />
           <MenuRow
-            icon={<Shield size={18} color="#CC2229" />}
+            icon={<Shield size={18} color="#1877D6" />}
             iconBg="#FEECEE"
             label="Admin"
             onClick={() => navigate({ to: "/admin" })}

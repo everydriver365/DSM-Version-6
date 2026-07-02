@@ -289,7 +289,7 @@ function TestDayPage() {
               <span
                 className="text-[14px] font-semibold"
                 style={{
-                  backgroundColor: "#F59E0B",
+                  backgroundColor: "#1877D6",
                   color: "#0B1F3A",
                   borderRadius: 8,
                   padding: "8px 16px",
@@ -384,7 +384,7 @@ function TestDayPage() {
               <div className="flex" style={{ gap: 8 }}>
                 {(["Pass", "Fail"] as const).map((opt) => {
                   const active = result === opt;
-                  const activeBg = opt === "Pass" ? "#16A34A" : "#CC2229";
+                  const activeBg = opt === "Pass" ? "#1877D6" : "#1877D6";
                   return (
                     <button
                       key={opt}

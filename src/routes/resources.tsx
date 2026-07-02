@@ -43,21 +43,21 @@ const dvsaResources: ResourceItem[] = [
     description: "Verify a pupil's licence details",
     url: "https://www.gov.uk/check-driving-information",
     Icon: IdCard,
-    iconColor: "#16A34A",
+    iconColor: "#1877D6",
   },
   {
     title: "Book a theory test",
     description: "Help pupils book their theory test",
     url: "https://www.gov.uk/book-theory-test",
     Icon: Calendar,
-    iconColor: "#F59E0B",
+    iconColor: "#1877D6",
   },
   {
     title: "Book a driving test",
     description: "Help pupils book their practical test",
     url: "https://www.gov.uk/book-driving-test",
     Icon: Car,
-    iconColor: "#CC2229",
+    iconColor: "#1877D6",
   },
   {
     title: "ADI register",
@@ -81,7 +81,7 @@ const usefulTools: ResourceItem[] = [
     description: "Find precise pickup locations",
     url: "https://what3words.com",
     Icon: MapPin,
-    iconColor: "#CC2229",
+    iconColor: "#1877D6",
   },
   {
     title: "Google Maps",

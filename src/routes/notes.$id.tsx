@@ -92,7 +92,7 @@ function NoteEditPage() {
         <div className="flex items-center" style={{ gap: 8 }}>
           <div className="text-white text-[15px] font-semibold">Note</div>
           {savedFlag && (
-            <span className="text-[11px]" style={{ color: "#16A34A" }}>
+            <span className="text-[11px]" style={{ color: "#1877D6" }}>
               Saved
             </span>
           )}
@@ -104,7 +104,7 @@ function NoteEditPage() {
           className="flex items-center justify-center"
           style={{ width: 28, height: 28 }}
         >
-          <Trash2 size={20} color="#CC2229" />
+          <Trash2 size={20} color="#1877D6" />
         </button>
       </div>
 

@@ -18,7 +18,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#CC2229",
+        background: "#1877D6",
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
         display: "flex",
@@ -119,7 +119,7 @@ function AdminSectionTile({
           height: 36,
           borderRadius: 10,
           background: "#FEECEE",
-          color: "#CC2229",
+          color: "#1877D6",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
@@ -152,7 +152,7 @@ function AdminHub() {
   if (status === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: "#CC2229" }}>Access denied</div>
+        <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>
           Your account doesn't have admin access.
         </div>
@@ -184,8 +184,8 @@ function AdminHub() {
               height: 44,
               borderRadius: 10,
               background: "#fff",
-              color: "#CC2229",
-              border: "1px solid #CC2229",
+              color: "#1877D6",
+              border: "1px solid #1877D6",
               fontWeight: 600,
               cursor: "pointer",
             }}

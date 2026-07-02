@@ -145,12 +145,12 @@ function OutstandingPage() {
   }, []);
 
   const sections = useMemo(() => [
-    { key: "payments", label: "Payments", icon: <PoundSterling size={18} color="#92400E" />, tint: "#FEF3C7", count: debts.length },
+    { key: "payments", label: "Payments", icon: <PoundSterling size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: debts.length },
     { key: "tests", label: "Upcoming tests (7d)", icon: <GraduationCap size={18} color="#1E40AF" />, tint: "#DBEAFE", count: tests.length },
     { key: "enquiries", label: "Enquiries to follow up", icon: <Inbox size={18} color="#5B21B6" />, tint: "#EDE9FE", count: enquiries.length },
-    { key: "docs", label: "Expiring documents (30d)", icon: <FileText size={18} color="#CC2229" />, tint: "#FEF2F2", count: docs.length },
-    { key: "certs", label: "Expiring certifications (60d)", icon: <Award size={18} color="#CC2229" />, tint: "#FEF2F2", count: certs.length },
-    { key: "todos", label: "Overdue todos", icon: <CheckSquare size={18} color="#92400E" />, tint: "#FEF3C7", count: todos.length },
+    { key: "docs", label: "Expiring documents (30d)", icon: <FileText size={18} color="#1877D6" />, tint: "#FEF2F2", count: docs.length },
+    { key: "certs", label: "Expiring certifications (60d)", icon: <Award size={18} color="#1877D6" />, tint: "#FEF2F2", count: certs.length },
+    { key: "todos", label: "Overdue todos", icon: <CheckSquare size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: todos.length },
     { key: "stale", label: "Pupils with no recent lesson (30d)", icon: <UserX size={18} color="#5B21B6" />, tint: "#EDE9FE", count: stale.length },
   ], [debts, tests, enquiries, docs, certs, todos, stale]);
 
@@ -196,7 +196,7 @@ function OutstandingPage() {
           <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>Outstanding tasks</h1>
           {!loading && total > 0 && (
             <span style={{
-              background: "#CC2229", color: "#fff", fontSize: 11, fontWeight: 700,
+              background: "#1877D6", color: "#fff", fontSize: 11, fontWeight: 700,
               padding: "2px 7px", borderRadius: 10, minWidth: 22, textAlign: "center",
             }}>{total}</span>
           )}
@@ -212,7 +212,7 @@ function OutstandingPage() {
             textAlign: "center", padding: "64px 16px",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
           }}>
-            <CheckCircle2 size={64} color="#16A34A" />
+            <CheckCircle2 size={64} color="#1877D6" />
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
               All clear! Nothing needs attention
             </div>
@@ -245,7 +245,7 @@ function OutstandingPage() {
                     </div>
                     <span style={{
                       minWidth: 24, height: 22, padding: "0 8px", borderRadius: 11,
-                      background: "#CC2229", color: "#fff",
+                      background: "#1877D6", color: "#fff",
                       fontSize: 12, fontWeight: 700,
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
@@ -260,7 +260,7 @@ function OutstandingPage() {
                         <Row key={p.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{p.name}</div>
-                            <div style={{ ...rowSub, color: "#CC2229", fontWeight: 700 }}>
+                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 700 }}>
                               £{Number(p.balance_owed).toFixed(2)} owed
                             </div>
                           </div>
@@ -305,7 +305,7 @@ function OutstandingPage() {
                         <Row key={d.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{d.name}</div>
-                            <div style={{ ...rowSub, color: "#F59E0B", fontWeight: 600 }}>
+                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
                               Expires {formatDate(d.expiry_date)}
                             </div>
                           </div>
@@ -317,7 +317,7 @@ function OutstandingPage() {
                         <Row key={c.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{c.name}</div>
-                            <div style={{ ...rowSub, color: "#F59E0B", fontWeight: 600 }}>
+                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
                               Expires {formatDate(c.expiry_date)}
                             </div>
                           </div>
@@ -341,7 +341,7 @@ function OutstandingPage() {
                             </button>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={rowTitle}>{t.title}</div>
-                              <div style={{ ...rowSub, color: "#CC2229", fontWeight: 600 }}>
+                              <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
                                 {overdue} day{overdue === 1 ? "" : "s"} overdue
                               </div>
                             </div>

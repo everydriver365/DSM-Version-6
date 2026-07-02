@@ -61,9 +61,9 @@ function typeIcon(type: string | null) {
     case "lesson":
       return { bg: "#1877D6", node: <CalendarIcon size={18} color="#FFFFFF" /> };
     case "payment":
-      return { bg: "#16A34A", node: <PoundSterling size={18} color="#FFFFFF" /> };
+      return { bg: "#1877D6", node: <PoundSterling size={18} color="#FFFFFF" /> };
     case "pupil":
-      return { bg: "#F59E0B", node: <Users size={18} color="#FFFFFF" /> };
+      return { bg: "#1877D6", node: <Users size={18} color="#FFFFFF" /> };
     default:
       return { bg: "#6B7280", node: <Bell size={18} color="#FFFFFF" /> };
   }

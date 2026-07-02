@@ -25,7 +25,7 @@ export function Button({
   if (variant === "primary") {
     variantClasses = "bg-[#1877D6] text-white hover:bg-[#163d7a]";
   } else if (variant === "destructive") {
-    variantClasses = "bg-[#CC2229] text-white hover:bg-[#a81b21]";
+    variantClasses = "bg-[#1877D6] text-white hover:bg-[#a81b21]";
   } else {
     variantClasses = "bg-transparent text-[#1877D6] hover:bg-[#f0f4ff]";
     extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#1877D6" };

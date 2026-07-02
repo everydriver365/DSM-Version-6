@@ -383,7 +383,7 @@ function OnboardingPage() {
             <h2 className="text-[24px] font-semibold text-[#0B1F3A] text-center">You&apos;re all set!</h2>
             <p className="text-[14px] text-[#6B7280] text-center">Your DSM account is ready</p>
             {error && (
-              <p className="text-[13px] text-[#CC2229] text-center" role="alert">{error}</p>
+              <p className="text-[13px] text-[#1877D6] text-center" role="alert">{error}</p>
             )}
             <div className="w-full mt-2">
               <Button onClick={finish} disabled={saving} className="h-12">

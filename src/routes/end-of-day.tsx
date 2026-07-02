@@ -263,14 +263,14 @@ function EndOfDayPage() {
       <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <Stat label="Lessons today" value={String(stats.count)} />
         <Stat label="Hours taught" value={stats.hours.toFixed(1)} />
-        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
+        <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#1877D6" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
         <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0B1F3A"} />
       </div>
 
       {/* Section 2: Outstanding actions */}
       {(outstandingEols.length > 0 || unpaidLessons.length > 0) && (
         <Card>
-          <Heading icon={<AlertTriangle size={16} color="#D97706" />} title="Actions needed" />
+          <Heading icon={<AlertTriangle size={16} color="#0B1F3A" />} title="Actions needed" />
           {outstandingEols.map((l) => (
             <Row key={`eol-${l.id}`}>
               <span>{pupilName(l.pupils) || "Pupil"} — EOL pending</span>
@@ -316,12 +316,12 @@ function EndOfDayPage() {
                 {pupilName(l.pupils) || "Pupil"}
               </span>
               {!l.eol_completed && (
-                <Badge bg="#FEF3C7" color="#92400E">EOL</Badge>
+                <Badge bg="#EEF2F7" color="#0B1F3A">EOL</Badge>
               )}
               {prepaidPupilIds.has(l.pupil_id) ? (
                 <Badge bg="#DBEAFE" color="#1E3A8A">Prepaid</Badge>
               ) : l.payment_status === "paid" ? (
-                <Badge bg="#DCFCE7" color="#166534">Paid ✓</Badge>
+                <Badge bg="#EEF2F7" color="#166534">Paid ✓</Badge>
               ) : l.payment_status === "unpaid" && (l.amount_due ?? 0) > 0 ? (
                 <Badge bg="#FEE2E2" color="#991B1B">£{(l.amount_due ?? 0).toFixed(0)} unpaid</Badge>
               ) : null}

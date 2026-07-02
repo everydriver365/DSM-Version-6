@@ -215,9 +215,9 @@ function formatDuration(mins: number | null) {
   return `${m}m`;
 }
 function statusColor(status: string) {
-  if (status === "confirmed") return "#16A34A";
-  if (status === "pending") return "#F59E0B";
-  if (status === "cancelled") return "#CC2229";
+  if (status === "confirmed") return "#1877D6";
+  if (status === "pending") return "#1877D6";
+  if (status === "cancelled") return "#1877D6";
   return "#6B7280";
 }
 
@@ -740,10 +740,10 @@ function HomePage() {
     glanceTier === "Platinum"
       ? "#0EA5E9"
       : glanceTier === "Gold"
-      ? "#D97706"
+      ? "#0B1F3A"
       : glanceTier === "Silver"
       ? "#6B7280"
-      : "#B45309";
+      : "#0B1F3A";
   const glanceNetProfit = Math.max(0, glancePaymentsTotal - glanceExpensesTotal);
   const glanceTaxBill = Math.max(0, (glanceNetProfit - 12570) * 0.2);
   const monthsElapsed = (() => {
@@ -1208,8 +1208,8 @@ function HomePage() {
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
     const accent =
-      isLive ? "#CC2229"
-      : status === "completed" ? "#16A34A"
+      isLive ? "#1877D6"
+      : status === "completed" ? "#1877D6"
       : status === "cancelled" ? "#9CA3AF"
       : "#1877D6";
     const balance = l.pupils?.balance_owed ?? 0;
@@ -1218,8 +1218,8 @@ function HomePage() {
     const notes = (l.notes ?? "").toLowerCase();
     const lessonType = (l.lesson_type ?? "").toLowerCase();
     let typeBadge: { label: string; bg: string; color: string } | null = null;
-    if (notes.includes("mock")) typeBadge = { label: "Mock test", bg: "#FEF3C7", color: "#92400E" };
-    else if (notes.includes("test") || lessonType.includes("test")) typeBadge = { label: "Test", bg: "#FEF3C7", color: "#92400E" };
+    if (notes.includes("mock")) typeBadge = { label: "Mock test", bg: "#EEF2F7", color: "#0B1F3A" };
+    else if (notes.includes("test") || lessonType.includes("test")) typeBadge = { label: "Test", bg: "#EEF2F7", color: "#0B1F3A" };
     else if ((l.notes ?? "").includes("Course")) typeBadge = { label: "Course", bg: "#DBEAFE", color: "#1E40AF" };
     const todayYmdStr = ymd(todayStart);
     const showEol = l.lesson_date < todayYmdStr || status === "completed";
@@ -1320,13 +1320,13 @@ function HomePage() {
               className="text-[12px] font-medium inline-flex items-center"
               style={{
                 gap: 6,
-                color: "#CC2229",
+                color: "#1877D6",
                 padding: "3px 8px",
                 borderRadius: 999,
                 backgroundColor: "#FFECEC",
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#CC2229" }} />
+              <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#1877D6" }} />
               In progress
             </span>
           ) : (
@@ -1383,9 +1383,9 @@ function HomePage() {
         <div style={{ position: "relative", width: 14, height: 14 }}>
           <span
             className="animate-ping"
-            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: "#16A34A", opacity: 0.6 }}
+            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: "#1877D6", opacity: 0.6 }}
           />
-          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: "#16A34A" }} />
+          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: "#1877D6" }} />
         </div>
       );
     } else if (state === "next") {
@@ -1419,7 +1419,7 @@ function HomePage() {
     };
     let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #EEF2F7" };
     if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #EEF2F7" };
-    else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #16A34A", boxShadow: "0 0 0 1px #16A34A20" };
+    else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #1877D6", boxShadow: "0 0 0 1px #1877D620" };
     else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0B1F3A", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
 
     const timeColor = isPast ? "#9CA3AF" : "#0B1F3A";
@@ -1430,7 +1430,7 @@ function HomePage() {
 
     type Badge = { label: string; bg: string; color: string };
     const badges: Badge[] = [];
-    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#FEF3C7", color: "#92400E" });
+    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#EEF2F7", color: "#0B1F3A" });
 
     const fmtAmt = (n: number) => {
       const v = Math.abs(n);
@@ -1591,51 +1591,51 @@ function HomePage() {
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "MTD", route: "/month-to-date" },
-    { icon: <Map size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Start tracking", route: "/live" },
+    { icon: <Map size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-    { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
+    { icon: <Users size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
-    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Earnings", route: "/earnings" },
-    { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#D97706", label: "Expenses", route: "/expenses" },
+    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
+    { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
-    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel costs", route: "/fuel" },
+    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel costs", route: "/fuel" },
     { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
-    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
-    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Test day", route: "/testday" },
-    { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Rewards", route: "/rewards" },
+    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
+    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
+    { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
-    { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
+    { icon: <Star size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
     { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
     { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
-    { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
+    { icon: <Gift size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD log", route: "/cpd" },
     { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
-    { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tax report", route: "/tax-report" },
+    { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tax report", route: "/tax-report" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Notes", route: "/notes" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
     { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
     { icon: <ClipboardList size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
-    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Checklist", route: "/checklist" },
+    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
-    { icon: <Heart size={20} color="#FFFFFF" />, bg: "#D97706", label: "Health", route: "/health" },
-    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Resources", route: "/resources" },
+    { icon: <Heart size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
+    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
     { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
     { icon: <LayoutGrid size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
     { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
     { icon: <Search size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Find gaps", route: "/gaps" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
-    { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Sat Nav", route: "/satnav" },
+    { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
     { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weekly-report" },
     { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
     { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
-    { icon: <Award size={20} color="#FFFFFF" />, bg: "#D97706", label: "Certifications", route: "/certifications" },
+    { icon: <Award size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
     { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
-    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#D97706", label: "EOD", route: "/eod" },
+    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "EOD", route: "/eod" },
     { icon: <Moon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "End of day", route: "/end-of-day" },
     { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
     { icon: <Zap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
@@ -1647,9 +1647,9 @@ function HomePage() {
     { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
     { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
     { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
-    { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#D97706", label: "MTD", route: "/mtd" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Quotes", route: "/quotes" },
-    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Briefing", route: "/briefing" },
+    { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
+    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
+    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
     { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
 
@@ -1687,7 +1687,7 @@ function HomePage() {
         statusDot={
           <span
             className="rounded-full"
-            style={{ width: 8, height: 8, backgroundColor: "#16A34A", marginLeft: 4 }}
+            style={{ width: 8, height: 8, backgroundColor: "#1877D6", marginLeft: 4 }}
           />
         }
       />
@@ -1779,7 +1779,7 @@ function HomePage() {
                   style={{
                     width: "100%", textAlign: "left", padding: "12px 0",
                     background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 600, color: "#CC2229",
+                    fontSize: 14, fontWeight: 600, color: "#1877D6",
                     fontFamily: "Inter, sans-serif",
                     display: "flex", alignItems: "center", gap: 10,
                   }}
@@ -2006,7 +2006,7 @@ function HomePage() {
                   URL.revokeObjectURL(url);
                   toast.success('Car position exported');
                 }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#16A34A', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Export
                 </button>
               </div>
@@ -2206,17 +2206,17 @@ function HomePage() {
               width: 32,
               height: 32,
               borderRadius: 999,
-              backgroundColor: "#FEF3C7",
+              backgroundColor: "#EEF2F7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <Bell size={16} color="#92400E" />
+            <Bell size={16} color="#0B1F3A" />
           </span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#92400E" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
               Enable lesson reminders?
             </div>
             <div style={{ fontSize: 11, color: "#78350F", marginTop: 2 }}>
@@ -2266,7 +2266,7 @@ function HomePage() {
               flexShrink: 0,
             }}
           >
-            <X size={16} color="#92400E" />
+            <X size={16} color="#0B1F3A" />
           </button>
         </div>
       )}
@@ -2422,8 +2422,8 @@ function HomePage() {
 
               let accent = "#1877D6";
               if (isCancelled) accent = "#9CA3AF";
-              else if (isCurrent) accent = "#CC2229";
-              else if (isCompleted) accent = "#16A34A";
+              else if (isCurrent) accent = "#1877D6";
+              else if (isCompleted) accent = "#1877D6";
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
               const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
@@ -2440,7 +2440,7 @@ function HomePage() {
                       padding: "1px 6px",
                       borderRadius: 999,
                       backgroundColor: "#FEE2E2",
-                      color: "#CC2229",
+                      color: "#1877D6",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
@@ -2451,7 +2451,7 @@ function HomePage() {
                         width: 5,
                         height: 5,
                         borderRadius: 999,
-                        backgroundColor: "#CC2229",
+                        backgroundColor: "#1877D6",
                       }}
                     />
                     Live
@@ -2473,8 +2473,8 @@ function HomePage() {
                         fontWeight: 700,
                         padding: "2px 8px",
                         borderRadius: 999,
-                        backgroundColor: "#FEF3C7",
-                        color: "#92400E",
+                        backgroundColor: "#EEF2F7",
+                        color: "#0B1F3A",
                         border: 0,
                         cursor: "pointer",
                         fontFamily: "Inter, sans-serif",
@@ -2490,7 +2490,7 @@ function HomePage() {
                       style={{
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#15803D",
+                        color: "#0B1F3A",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 3,
@@ -2510,7 +2510,7 @@ function HomePage() {
                       style={{
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#15803D",
+                        color: "#0B1F3A",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 3,
@@ -2535,7 +2535,7 @@ function HomePage() {
                         padding: "1px 6px",
                         borderRadius: 999,
                         backgroundColor: "#FEE2E2",
-                        color: "#CC2229",
+                        color: "#1877D6",
                       }}
                     >
                       £{amt.toFixed(2)} unpaid
@@ -2614,7 +2614,7 @@ function HomePage() {
                               width: 8,
                               height: 8,
                               borderRadius: 999,
-                              backgroundColor: "#F59E0B",
+                              backgroundColor: "#1877D6",
                             }}
                           />
                         )}
@@ -2994,9 +2994,9 @@ function HomePage() {
           >
             <div
               className="flex items-center justify-center mb-2.5"
-              style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: "#ECFDF5" }}
+              style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: "#F3F8FF" }}
             >
-              <FileSpreadsheet size={18} color="#059669" />
+              <FileSpreadsheet size={18} color="#1877D6" />
             </div>
             <p className="text-[12px] font-semibold mb-1" style={{ color: "#0B1F3A" }}>MTD Status</p>
             <div className="mt-auto">
@@ -3006,8 +3006,8 @@ function HomePage() {
               <span
                 className="inline-block px-2 py-0.5 text-[9px] font-bold rounded-full uppercase"
                 style={{
-                  backgroundColor: glanceMtdEnrolled ? "#ECFDF5" : "#FFFBEB",
-                  color: glanceMtdEnrolled ? "#047857" : "#B45309",
+                  backgroundColor: glanceMtdEnrolled ? "#F3F8FF" : "#FFFBEB",
+                  color: glanceMtdEnrolled ? "#0B1F3A" : "#0B1F3A",
                   letterSpacing: "-0.01em",
                 }}
               >
@@ -3178,7 +3178,7 @@ function HeroExpandedPanel({
           style={{
             ...statusBtn,
             background: goingActive ? '#fff8e8' : '#fff',
-            borderColor: goingActive ? '#f59e0b' : '#e3e6ec',
+            borderColor: goingActive ? '#1877D6' : '#e3e6ec',
           }}
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
@@ -3265,7 +3265,7 @@ function HeroExpandedPanel({
             >Mark paid</button>
           </div>
         ) : (
-          <div style={{ color: '#16A34A', fontWeight: 700, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>Paid up ✓</div>
+          <div style={{ color: '#1877D6', fontWeight: 700, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>Paid up ✓</div>
         )}
       </div>
 
@@ -3541,7 +3541,7 @@ function NeedsAttention({
     { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
     { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
     { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
-    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#16A34A' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
+    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#1877D6' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
   ];
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -3709,8 +3709,8 @@ function OutstandingBreakdownModal({
                         fontWeight: 600,
                         padding: "2px 6px",
                         borderRadius: 4,
-                        backgroundColor: r.type === "NI Course" ? "#FEF3C7" : "#DBEAFE",
-                        color: r.type === "NI Course" ? "#92400E" : "#1E40AF",
+                        backgroundColor: r.type === "NI Course" ? "#EEF2F7" : "#DBEAFE",
+                        color: r.type === "NI Course" ? "#0B1F3A" : "#1E40AF",
                       }}
                     >
                       {r.type}
@@ -3734,8 +3734,8 @@ function OutstandingBreakdownModal({
                       padding: "6px 8px",
                       fontSize: 11,
                       fontWeight: 600,
-                      backgroundColor: r.phone ? "#ECFDF5" : "#F3F4F6",
-                      color: r.phone ? "#047857" : "#9CA3AF",
+                      backgroundColor: r.phone ? "#F3F8FF" : "#F3F4F6",
+                      color: r.phone ? "#0B1F3A" : "#9CA3AF",
                       border: `1px solid ${r.phone ? "#A7F3D0" : "#E5E7EB"}`,
                       borderRadius: 6,
                       cursor: r.phone ? "pointer" : "not-allowed",
@@ -3856,7 +3856,7 @@ function EarningsBreakdownModal({
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>Earnings this week</span>
-            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+            <span style={{ color: "#0B1F3A" }}>£{total.toFixed(2)}</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -3888,7 +3888,7 @@ function EarningsBreakdownModal({
                 <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                   {r.method}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#047857", minWidth: 60, textAlign: "right" }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", minWidth: 60, textAlign: "right" }}>
                   £{r.amount.toFixed(2)}
                 </span>
               </div>
@@ -3899,7 +3899,7 @@ function EarningsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700, color: "#111827" }}>
             <span>Total</span>
-            <span style={{ color: "#047857" }}>£{total.toFixed(2)}</span>
+            <span style={{ color: "#0B1F3A" }}>£{total.toFixed(2)}</span>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -3945,7 +3945,7 @@ function LessonsBreakdownModal({
     return `${day} ${(time || "").slice(0, 5)}`;
   };
   const statusColors: Record<string, { bg: string; fg: string }> = {
-    completed: { bg: "#ECFDF5", fg: "#047857" },
+    completed: { bg: "#F3F8FF", fg: "#0B1F3A" },
     confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
     cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
   };
@@ -4158,8 +4158,8 @@ function TestsBreakdownModal({
   };
   const badgeColors = (days: number) => {
     if (days < 7) return { bg: "#FEE2E2", fg: "#991B1B" };
-    if (days <= 14) return { bg: "#FEF3C7", fg: "#92400E" };
-    return { bg: "#ECFDF5", fg: "#047857" };
+    if (days <= 14) return { bg: "#EEF2F7", fg: "#0B1F3A" };
+    return { bg: "#F3F8FF", fg: "#0B1F3A" };
   };
 
   return (
@@ -4271,8 +4271,8 @@ function TestsBreakdownModal({
                           fontWeight: 700,
                           padding: "3px 8px",
                           borderRadius: 999,
-                          backgroundColor: matched ? "#ECFDF5" : "#FEF3C7",
-                          color: matched ? "#047857" : "#92400E",
+                          backgroundColor: matched ? "#F3F8FF" : "#EEF2F7",
+                          color: matched ? "#0B1F3A" : "#0B1F3A",
                           whiteSpace: "nowrap",
                         }}
                       >

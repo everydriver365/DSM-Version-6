@@ -28,9 +28,9 @@ const LEVELS: {
 }[] = [
   { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
   { key: "talk_through", n: 2, label: "Under full talk-through", color: "#DC2626" },
-  { key: "prompted", n: 3, label: "Prompted", color: "#F59E0B" },
+  { key: "prompted", n: 3, label: "Prompted", color: "#1877D6" },
   { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
-  { key: "independent", n: 5, label: "Independent", color: "#16A34A" },
+  { key: "independent", n: 5, label: "Independent", color: "#1877D6" },
 ];
 
 const LEVEL_BY_KEY: Record<Exclude<Status, "not_started">, (typeof LEVELS)[number]> =
@@ -264,7 +264,7 @@ function PupilProgressPage() {
               cx={size / 2}
               cy={size / 2}
               r={r}
-              stroke="#16A34A"
+              stroke="#1877D6"
               strokeWidth={stroke}
               fill="none"
               strokeDasharray={c}
@@ -436,7 +436,7 @@ function PupilProgressPage() {
         {saved && (
           <div
             className="text-center text-[12px] mb-2"
-            style={{ color: "#16A34A", ...POPPINS }}
+            style={{ color: "#1877D6", ...POPPINS }}
           >
             Saved
           </div>

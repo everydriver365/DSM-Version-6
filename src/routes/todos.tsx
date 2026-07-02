@@ -40,9 +40,9 @@ function formatDateLabel(dateStr: string) {
 }
 
 function priorityColor(p: Priority) {
-  if (p === "high") return "#CC2229";
-  if (p === "medium") return "#F59E0B";
-  return "#16A34A";
+  if (p === "high") return "#1877D6";
+  if (p === "medium") return "#1877D6";
+  return "#1877D6";
 }
 
 function TodosPage() {
@@ -169,8 +169,8 @@ function TodosPage() {
             height: 22,
             borderWidth: "1px",
             borderStyle: "solid",
-            borderColor: t.completed ? "#16A34A" : "#EEF2F7",
-            backgroundColor: t.completed ? "#16A34A" : "#FFFFFF",
+            borderColor: t.completed ? "#1877D6" : "#EEF2F7",
+            backgroundColor: t.completed ? "#1877D6" : "#FFFFFF",
             flexShrink: 0,
           }}
         >
@@ -210,7 +210,7 @@ function TodosPage() {
           className="flex items-center justify-center"
           style={{ width: 28, height: 28, flexShrink: 0 }}
         >
-          <Trash2 size={16} color="#CC2229" />
+          <Trash2 size={16} color="#1877D6" />
         </button>
       </div>
     </Card>
@@ -368,7 +368,7 @@ function TodosPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}

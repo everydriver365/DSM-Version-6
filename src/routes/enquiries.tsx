@@ -323,7 +323,7 @@ function EnquiriesPage() {
                   style={{
                     padding: "10px 12px",
                     borderRadius: 8,
-                    backgroundColor: "#16A34A",
+                    backgroundColor: "#1877D6",
                     color: "#FFFFFF",
                     fontSize: 13,
                     fontWeight: 600,
@@ -415,7 +415,7 @@ function StatusBadge({ status }: { status: string }) {
     return (
       <span
         className="text-[11px] font-semibold text-white"
-        style={{ backgroundColor: "#16A34A", padding: "2px 8px", borderRadius: 999 }}
+        style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999 }}
       >
         Accepted ✓
       </span>
@@ -439,7 +439,7 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className="text-[11px] font-semibold text-white"
-      style={{ backgroundColor: "#F59E0B", padding: "2px 8px", borderRadius: 999 }}
+      style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999 }}
     >
       New
     </span>
@@ -531,7 +531,7 @@ function EnquiryCard({
                     style={{
                       height: 38,
                       borderRadius: 8,
-                      backgroundColor: "#16A34A",
+                      backgroundColor: "#1877D6",
                       opacity: enquiry && !busy && status !== "accepted" ? 1 : 0.5,
                       ...POPPINS,
                     }}

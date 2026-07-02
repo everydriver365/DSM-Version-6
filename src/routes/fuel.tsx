@@ -296,7 +296,7 @@ function FuelPage() {
           <Stat
             label="Profit vs HMRC"
             value={`${profitVsHmrc >= 0 ? "+" : "−"}£${Math.abs(profitVsHmrc).toFixed(2)}`}
-            color={profitVsHmrc >= 0 ? "#16A34A" : "#DC2626"}
+            color={profitVsHmrc >= 0 ? "#1877D6" : "#DC2626"}
           />
         </div>
         <div style={{ marginTop: 10, fontSize: 12, color: "#475569" }}>

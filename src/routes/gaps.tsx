@@ -303,9 +303,9 @@ function GapsPage() {
           <Card className="flex flex-col items-center justify-center py-8">
             <div
               className="flex items-center justify-center rounded-full mb-3"
-              style={{ width: 48, height: 48, backgroundColor: "#ECFDF5" }}
+              style={{ width: 48, height: 48, backgroundColor: "#F3F8FF" }}
             >
-              <Check size={24} color="#16A34A" />
+              <Check size={24} color="#1877D6" />
             </div>
             <div className="text-[14px] font-semibold text-[#0B1F3A]">
               No gaps found — fully booked!

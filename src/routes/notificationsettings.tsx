@@ -218,10 +218,10 @@ function NotificationSettingsPage() {
             const status = !supported
               ? { label: "Notifications: Not supported", color: "#6B7280", bg: "#F3F4F6" }
               : browserPerm === "granted"
-                ? { label: "Notifications: Enabled ✓", color: "#15803D", bg: "#DCFCE7" }
+                ? { label: "Notifications: Enabled ✓", color: "#0B1F3A", bg: "#EEF2F7" }
                 : browserPerm === "denied"
                   ? { label: "Notifications: Blocked ✗", color: "#B91C1C", bg: "#FEE2E2" }
-                  : { label: "Notifications: Not set up", color: "#92400E", bg: "#FEF3C7" };
+                  : { label: "Notifications: Not set up", color: "#0B1F3A", bg: "#EEF2F7" };
             return (
               <div className="flex items-center gap-3">
                 <span

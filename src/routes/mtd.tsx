@@ -230,12 +230,12 @@ function MtdPage() {
     dueColor: string;
   } {
     const submitted = row[`${q.key}_submitted` as const] as boolean;
-    if (submitted) return { label: "Submitted", color: "#065F46", bg: "#D1FAE5", dueColor: MUTED };
+    if (submitted) return { label: "Submitted", color: "#0B1F3A", bg: "#D1FAE5", dueColor: MUTED };
     const msToDue = q.due.getTime() - now.getTime();
     const daysToDue = msToDue / 86400000;
-    if (now > q.due) return { label: "Overdue", color: "#991B1B", bg: "#FEE2E2", dueColor: "#CC2229" };
+    if (now > q.due) return { label: "Overdue", color: "#991B1B", bg: "#FEE2E2", dueColor: "#1877D6" };
     if (now < q.periodEnd) return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };
-    if (daysToDue <= 30) return { label: "Due soon", color: "#92400E", bg: "#FEF3C7", dueColor: "#F59E0B" };
+    if (daysToDue <= 30) return { label: "Due soon", color: "#0B1F3A", bg: "#EEF2F7", dueColor: "#1877D6" };
     return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };
   }
 
@@ -335,7 +335,7 @@ function MtdPage() {
               <span
                 style={{
                   background: "#D1FAE5",
-                  color: "#065F46",
+                  color: "#0B1F3A",
                   fontSize: 11,
                   fontWeight: 600,
                   padding: "4px 10px",
@@ -347,8 +347,8 @@ function MtdPage() {
             ) : (
               <span
                 style={{
-                  background: "#FEF3C7",
-                  color: "#92400E",
+                  background: "#EEF2F7",
+                  color: "#0B1F3A",
                   fontSize: 11,
                   fontWeight: 600,
                   padding: "4px 10px",
@@ -450,7 +450,7 @@ function MtdPage() {
           <Row
             label="Net profit"
             value={fmtMoney(netProfit)}
-            valueColor={netProfit >= 0 ? "#16A34A" : "#CC2229"}
+            valueColor={netProfit >= 0 ? "#1877D6" : "#1877D6"}
             bold
           />
           <div className="mt-4">

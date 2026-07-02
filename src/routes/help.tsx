@@ -35,8 +35,8 @@ const contacts: ContactItem[] = [
   },
   {
     label: "WhatsApp",
-    icon: <MessageSquare size={18} color="#16A34A" />,
-    iconBg: "#DCFCE7",
+    icon: <MessageSquare size={18} color="#1877D6" />,
+    iconBg: "#EEF2F7",
     href: "https://wa.me/447700000000",
   },
 ];

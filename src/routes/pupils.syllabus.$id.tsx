@@ -89,7 +89,7 @@ const LEVEL_META: { n: 0 | 1 | 2 | 3 | 4 | 5; label: string; color: string }[] =
   { n: 2, label: "Under guidance", color: "#EA580C" },
   { n: 3, label: "Prompted", color: "#EAB308" },
   { n: 4, label: "Seldom prompted", color: "#1877D6" },
-  { n: 5, label: "Independent", color: "#16A34A" },
+  { n: 5, label: "Independent", color: "#1877D6" },
 ];
 
 function levelColor(n: number) {
@@ -141,10 +141,10 @@ function PupilSyllabusPage() {
   const totalPoints = earnedPoints;
   const pct = Math.round((earnedPoints / MAX_POINTS) * 100);
 
-  let pctColor = "#CC2229";
-  if (pct >= 80) pctColor = "#16A34A";
+  let pctColor = "#1877D6";
+  if (pct >= 80) pctColor = "#1877D6";
   else if (pct >= 60) pctColor = "#1877D6";
-  else if (pct >= 40) pctColor = "#F59E0B";
+  else if (pct >= 40) pctColor = "#1877D6";
 
   const dirty = useMemo(() => {
     const keys = new Set([...Object.keys(levels), ...Object.keys(initial)]);
@@ -218,13 +218,13 @@ function PupilSyllabusPage() {
       }
 
       setInitial({ ...levels });
-      toast.success("Progress saved ✓", { style: { background: "#16A34A", color: "#fff" } });
+      toast.success("Progress saved ✓", { style: { background: "#1877D6", color: "#fff" } });
       setJustSaved(true);
       setTimeout(() => setJustSaved(false), 2000);
     } catch (e) {
       console.error("[syllabus] save", e);
       toast.error("Failed to save — please try again", {
-        style: { background: "#CC2229", color: "#fff" },
+        style: { background: "#1877D6", color: "#fff" },
       });
     } finally {
       setSaving(false);
@@ -442,7 +442,7 @@ function PupilSyllabusPage() {
             height: 44,
             borderRadius: 10,
             backgroundColor: justSaved
-              ? "#16A34A"
+              ? "#1877D6"
               : !dirty || saving
                 ? "#9CA3AF"
                 : "#0B1F3A",

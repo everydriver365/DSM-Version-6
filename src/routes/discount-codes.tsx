@@ -266,8 +266,8 @@ function CodeCard({
   onDelete: () => void;
 }) {
   const isPct = code.type === "percentage";
-  const typeColor = isPct ? "#D97706" : "#1877D6";
-  const typeBg = isPct ? "#FEF3C7" : "#DBEAFE";
+  const typeColor = isPct ? "#0B1F3A" : "#1877D6";
+  const typeBg = isPct ? "#EEF2F7" : "#DBEAFE";
   const usesLabel = `${code.uses_count} / ${code.max_uses ?? "∞"} uses`;
   return (
     <div
@@ -331,7 +331,7 @@ function CodeCard({
               width: 36,
               height: 20,
               borderRadius: 999,
-              backgroundColor: code.active ? "#16A34A" : "#D1D5DB",
+              backgroundColor: code.active ? "#1877D6" : "#D1D5DB",
               position: "relative",
               transition: "background 0.15s",
             }}
@@ -384,7 +384,7 @@ function CodeCard({
             justifyContent: "center",
           }}
         >
-          <Trash2 size={14} color="#CC2229" />
+          <Trash2 size={14} color="#1877D6" />
         </button>
       </div>
     </div>

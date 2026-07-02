@@ -72,9 +72,9 @@ function formatDuration(mins: number | null) {
   return `${h}h ${rem}m`;
 }
 function statusColor(s: string) {
-  if (s === "confirmed") return "#16A34A";
-  if (s === "pending") return "#F59E0B";
-  if (s === "cancelled") return "#CC2229";
+  if (s === "confirmed") return "#1877D6";
+  if (s === "pending") return "#1877D6";
+  if (s === "cancelled") return "#1877D6";
   if (s === "completed") return "#1877D6";
   return "#6B7280";
 }
@@ -326,7 +326,7 @@ function LessonDetailPage() {
               href={phone ? `tel:${phone}` : undefined}
               aria-label="Call"
               className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-              style={{ height: 40, borderRadius: 8, backgroundColor: "#CC2229", ...POPPINS }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
             >
               Call
             </a>
@@ -351,7 +351,7 @@ function LessonDetailPage() {
               style={{
                 height: 40,
                 borderRadius: 8,
-                backgroundColor: "#16A34A",
+                backgroundColor: "#1877D6",
                 border: "none",
                 ...POPPINS,
               }}
@@ -446,10 +446,10 @@ function LessonDetailPage() {
                   {overspeedEvents.length > 0 && (
                     <div className="mb-3">
                       <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle size={16} color="#F59E0B" />
+                        <AlertTriangle size={16} color="#1877D6" />
                         <span
                           className="text-[12px] font-semibold"
-                          style={{ color: "#F59E0B", ...POPPINS }}
+                          style={{ color: "#1877D6", ...POPPINS }}
                         >
                           Overspeed events
                         </span>
@@ -501,14 +501,14 @@ function LessonDetailPage() {
                 label="Mark complete"
                 disabled={updating || lesson.status === "completed"}
                 onClick={() => setPendingComplete(true)}
-                color="#16A34A"
+                color="#1877D6"
                 isFirst
               />
               <ActionRow
                 label="Cancel lesson"
                 disabled={updating || lesson.status === "cancelled"}
                 onClick={() => setCancelOpen(true)}
-                color="#CC2229"
+                color="#1877D6"
               />
               <ActionRow
                 label="Feedback"
@@ -524,7 +524,7 @@ function LessonDetailPage() {
                 label="Delete lesson"
                 disabled={deleting}
                 onClick={() => setDeleteOpen(true)}
-                color="#CC2229"
+                color="#1877D6"
               />
             </Card>
           </div>
@@ -739,7 +739,7 @@ function CancelLessonSheet({
                 width: 44,
                 height: 26,
                 borderRadius: 999,
-                backgroundColor: charge ? "#16A34A" : "#EEF2F7",
+                backgroundColor: charge ? "#1877D6" : "#EEF2F7",
                 transition: "background-color 0.15s",
               }}
             >
@@ -822,7 +822,7 @@ function CancelLessonSheet({
             style={{
               height: 44,
               borderRadius: 8,
-              backgroundColor: "#CC2229",
+              backgroundColor: "#1877D6",
               ...POPPINS,
             }}
           >

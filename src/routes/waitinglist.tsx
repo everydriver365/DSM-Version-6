@@ -175,8 +175,8 @@ function WaitingListPage() {
                         <span
                           className="shrink-0 text-[11px] font-semibold px-2 py-[3px]"
                           style={{
-                            color: "#F59E0B",
-                            backgroundColor: "#FEF3C7",
+                            color: "#1877D6",
+                            backgroundColor: "#EEF2F7",
                             borderRadius: 6,
                           }}
                         >
@@ -192,7 +192,7 @@ function WaitingListPage() {
                           onClick={() => setConfirmRemove(e)}
                           className="w-full text-[13px] font-semibold py-2"
                           style={{
-                            color: "#CC2229",
+                            color: "#1877D6",
                             border: "0.5px solid #EEF2F7",
                             borderRadius: 8,
                             backgroundColor: "white",
@@ -390,7 +390,7 @@ function ConfirmSheet({
     <SheetShell title="REMOVE FROM WAITING LIST" onClose={onClose}>
       <div className="flex flex-col" style={{ gap: 16 }}>
         <div className="flex items-center justify-center" style={{ paddingTop: 8 }}>
-          <Hourglass size={28} color="#CC2229" />
+          <Hourglass size={28} color="#1877D6" />
         </div>
         <div className="text-[14px] text-center" style={{ color: "#0B1F3A" }}>
           Remove <span className="font-semibold">{name}</span> from the waiting list?
@@ -405,7 +405,7 @@ function ConfirmSheet({
             className="w-full text-[14px] font-semibold py-2"
             style={{
               color: "white",
-              backgroundColor: "#CC2229",
+              backgroundColor: "#1877D6",
               borderRadius: 8,
               ...POPPINS,
             }}

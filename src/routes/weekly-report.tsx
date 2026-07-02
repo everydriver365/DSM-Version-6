@@ -475,7 +475,7 @@ function WeeklyReportPage() {
                     let color = "#9CA3AF";
                     if (d.earningsPence > 0) {
                       text = gbp(d.earningsPence);
-                      color = "#15803D";
+                      color = "#0B1F3A";
                     } else if (hasLessons && d.amountDuePounds > 0) {
                       text = gbpFromPounds(d.amountDuePounds);
                       color = "#0B1F3A";
@@ -559,8 +559,8 @@ function WeeklyReportPage() {
                             ...POPPINS,
                             padding: "4px 8px",
                             borderRadius: 999,
-                            background: owes ? "#FEE2E2" : "#DCFCE7",
-                            color: owes ? "#DC2626" : "#15803D",
+                            background: owes ? "#FEE2E2" : "#EEF2F7",
+                            color: owes ? "#DC2626" : "#0B1F3A",
                           }}
                         >
                           {owes ? gbpFromPounds(owed) : "All paid ✓"}
@@ -574,8 +574,8 @@ function WeeklyReportPage() {
                           ...POPPINS,
                           padding: "3px 7px",
                           borderRadius: 999,
-                          background: "#DCFCE7",
-                          color: "#15803D",
+                          background: "#EEF2F7",
+                          color: "#0B1F3A",
                         }}
                       >
                         EOL ✓
@@ -607,8 +607,8 @@ function WeeklyReportPage() {
                           ...POPPINS,
                           padding: "3px 7px",
                           borderRadius: 999,
-                          background: "#FEF3C7",
-                          color: "#B45309",
+                          background: "#EEF2F7",
+                          color: "#0B1F3A",
                           cursor: "pointer",
                         }}
                       >

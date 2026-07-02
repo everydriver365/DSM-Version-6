@@ -132,8 +132,8 @@ function Checkbox({
           width: 22,
           height: 22,
           borderRadius: 6,
-          border: "1.5px solid #CC2229",
-          backgroundColor: checked ? "#CC2229" : "#FFFFFF",
+          border: "1.5px solid #1877D6",
+          backgroundColor: checked ? "#1877D6" : "#FFFFFF",
           color: "#FFFFFF",
           display: "inline-flex",
           alignItems: "center",
@@ -160,7 +160,7 @@ function Checkbox({
 
 function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string }) {
   const [open, setOpen] = useState(false);
-  const bg = type === "SHOW" ? "#1877D6" : "#CC2229";
+  const bg = type === "SHOW" ? "#1877D6" : "#1877D6";
   return (
     <div
       style={{
@@ -301,7 +301,7 @@ function TestDayPage() {
       {/* Top bar */}
       <div
         style={{
-          backgroundColor: "#CC2229",
+          backgroundColor: "#1877D6",
           color: "#FFFFFF",
           padding: "12px 16px",
           display: "flex",
@@ -326,7 +326,7 @@ function TestDayPage() {
       {/* Countdown banner */}
       <div
         style={{
-          backgroundColor: "#CC2229",
+          backgroundColor: "#1877D6",
           color: "#FFFFFF",
           padding: 16,
           textAlign: "center",
@@ -354,7 +354,7 @@ function TestDayPage() {
       {/* Documents */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <FileCheck size={18} color="#CC2229" />
+          <FileCheck size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Documents to bring
           </h2>
@@ -374,7 +374,7 @@ function TestDayPage() {
       {/* Preparation */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <Shield size={18} color="#CC2229" />
+          <Shield size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Pre-test preparation
           </h2>
@@ -399,7 +399,7 @@ function TestDayPage() {
           className="w-full flex items-center justify-between"
         >
           <span className="flex items-center gap-2">
-            <BookOpen size={18} color="#CC2229" />
+            <BookOpen size={18} color="#1877D6" />
             <span
               className="text-[15px] font-semibold"
               style={{ color: "#0B1F3A", ...POPPINS }}
@@ -433,7 +433,7 @@ function TestDayPage() {
       {/* Navigate */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <Navigation size={18} color="#CC2229" />
+          <Navigation size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Navigate to test centre
           </h2>
@@ -494,7 +494,7 @@ function TestDayPage() {
       {/* Post test */}
       <Card>
         <div className="flex items-center gap-2 mb-3">
-          <Trophy size={18} color="#CC2229" />
+          <Trophy size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Record test result
           </h2>
@@ -507,7 +507,7 @@ function TestDayPage() {
             style={{
               height: 56,
               borderRadius: 10,
-              backgroundColor: "#16A34A",
+              backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
             }}
@@ -521,7 +521,7 @@ function TestDayPage() {
             style={{
               height: 56,
               borderRadius: 10,
-              backgroundColor: "#CC2229",
+              backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
             }}
@@ -533,12 +533,12 @@ function TestDayPage() {
           <div
             className="mt-3 p-3"
             style={{
-              backgroundColor: "#FEF3C7",
+              backgroundColor: "#EEF2F7",
               borderRadius: 8,
               ...POPPINS,
             }}
           >
-            <p className="text-[13px]" style={{ color: "#92400E" }}>
+            <p className="text-[13px]" style={{ color: "#0B1F3A" }}>
               Would you like to claim the free re-test guarantee?
             </p>
             <div className="flex gap-2 mt-2">
@@ -579,7 +579,7 @@ function TestDayPage() {
 
 function Confetti() {
   const pieces = Array.from({ length: 60 });
-  const colors = ["#CC2229", "#1877D6", "#16A34A", "#F59E0B", "#1877D6"];
+  const colors = ["#1877D6", "#1877D6", "#1877D6", "#1877D6", "#1877D6"];
   return (
     <>
       <style>{`

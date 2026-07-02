@@ -297,8 +297,8 @@ function SchedulePage() {
 
     let accent = "#1877D6";
     if (isCancelled) accent = "#9CA3AF";
-    else if (isCurrent) accent = "#CC2229";
-    else if (isCompleted) accent = "#16A34A";
+    else if (isCurrent) accent = "#1877D6";
+    else if (isCompleted) accent = "#1877D6";
 
     const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
     const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
@@ -309,14 +309,14 @@ function SchedulePage() {
         <span
           key="live"
           className="text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse"
-          style={{ backgroundColor: "#FEE2E2", color: "#CC2229", ...POPPINS, fontWeight: 700 }}
+          style={{ backgroundColor: "#FEE2E2", color: "#1877D6", ...POPPINS, fontWeight: 700 }}
         >
           <span
             style={{
               width: 6,
               height: 6,
               borderRadius: 999,
-              backgroundColor: "#CC2229",
+              backgroundColor: "#1877D6",
               display: "inline-block",
             }}
           />
@@ -329,7 +329,7 @@ function SchedulePage() {
         <span
           key="eol"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#FEF3C7", color: "#92400E", ...POPPINS, fontWeight: 600 }}
+          style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS, fontWeight: 600 }}
         >
           EOL pending
         </span>,
@@ -340,7 +340,7 @@ function SchedulePage() {
         <span
           key="paid"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#DCFCE7", color: "#15803D", ...POPPINS, fontWeight: 600 }}
+          style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS, fontWeight: 600 }}
         >
           Paid
         </span>,
@@ -350,7 +350,7 @@ function SchedulePage() {
         <span
           key="due"
           className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#FEE2E2", color: "#CC2229", ...POPPINS, fontWeight: 700 }}
+          style={{ backgroundColor: "#FEE2E2", color: "#1877D6", ...POPPINS, fontWeight: 700 }}
         >
           £{Number(l.amount_due).toFixed(2)}
         </span>,
@@ -486,7 +486,7 @@ function SchedulePage() {
                 ...POPPINS,
                 fontSize: 12,
                 fontWeight: 600,
-                color: "#16A34A",
+                color: "#1877D6",
                 backgroundColor: "#FFFFFF",
                 border: "0.5px solid #E5E7EB",
               }}
@@ -523,7 +523,7 @@ function SchedulePage() {
                 ...POPPINS,
                 fontSize: 12,
                 fontWeight: 600,
-                color: "#CC2229",
+                color: "#1877D6",
                 backgroundColor: "#FFFFFF",
                 border: "0.5px solid #E5E7EB",
               }}

@@ -476,7 +476,7 @@ function IntakeQuestionsPage() {
                         padding: "2px 8px",
                         borderRadius: 6,
                         backgroundColor: "#FEECEE",
-                        color: "#CC2229",
+                        color: "#1877D6",
                         fontWeight: 500,
                       }}
                     >
@@ -515,7 +515,7 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#CC2229",
+                      color: "#1877D6",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -599,7 +599,7 @@ function IntakeQuestionsPage() {
                   padding: "8px 14px",
                   borderRadius: 8,
                   border: "none",
-                  background: "#CC2229",
+                  background: "#1877D6",
                   color: "#FFFFFF",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -790,7 +790,7 @@ function QuestionSheet({
         <div style={{ padding: 20 }}>
           {/* Question text */}
           <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
-            Question <span style={{ color: "#CC2229" }}>*</span>
+            Question <span style={{ color: "#1877D6" }}>*</span>
           </label>
           <div style={{ position: "relative", marginTop: 6, marginBottom: 16 }}>
             <textarea
@@ -818,7 +818,7 @@ function QuestionSheet({
                 position: "absolute",
                 right: 8,
                 top: 8,
-                background: listening ? "#CC2229" : "#F4F4F5",
+                background: listening ? "#1877D6" : "#F4F4F5",
                 color: listening ? "#FFFFFF" : "#374151",
                 border: "none",
                 borderRadius: 8,
@@ -890,7 +890,7 @@ function QuestionSheet({
                         style={{
                           background: "transparent",
                           border: "none",
-                          color: "#CC2229",
+                          color: "#1877D6",
                           cursor: "pointer",
                           padding: 4,
                         }}

@@ -516,7 +516,7 @@ function EditPupilPage() {
                 const delta = a - originalPrepaidAmount.current;
                 return (
                   <>
-                    <p className="text-[12px] font-medium" style={{ color: "#16A34A", ...POPPINS }}>
+                    <p className="text-[12px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>
                       New top-up: +£{delta.toFixed(2)} will be recorded
                     </p>
                     <div className="flex flex-col gap-1">
@@ -621,9 +621,9 @@ function EditPupilPage() {
                 const hoursPurchased =
                   prepaid > 0 ? prepaid : effectiveRate > 0 ? total / effectiveRate : 0;
                 const hoursRemaining = hoursPurchased - hoursCompleted;
-                let remainColor = "#CC2229";
-                if (hoursRemaining > 5) remainColor = "#16A34A";
-                else if (hoursRemaining >= 1) remainColor = "#F59E0B";
+                let remainColor = "#1877D6";
+                if (hoursRemaining > 5) remainColor = "#1877D6";
+                else if (hoursRemaining >= 1) remainColor = "#1877D6";
                 const pct =
                   hoursPurchased > 0
                     ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
@@ -818,7 +818,7 @@ function EditPupilPage() {
           </div>
 
           {error && (
-            <p className="text-[12px]" style={{ color: "#CC2229" }}>
+            <p className="text-[12px]" style={{ color: "#1877D6" }}>
               {error}
             </p>
           )}

@@ -276,8 +276,8 @@ function ReminderPage() {
             style={{
               padding: 12,
               borderRadius: 8,
-              backgroundColor: "#ECFDF5",
-              color: "#065F46",
+              backgroundColor: "#F3F8FF",
+              color: "#0B1F3A",
             }}
           >
             {confirmation}

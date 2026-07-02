@@ -274,7 +274,7 @@ function LessonFeedbackPage() {
           />
 
           {error && (
-            <p className="mt-3 text-[12px]" style={{ color: "#CC2229" }}>
+            <p className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>
               {error}
             </p>
           )}

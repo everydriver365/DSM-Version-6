@@ -85,7 +85,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
-            style={{ backgroundColor: "#CC2229", border: "none" }}
+            style={{ backgroundColor: "#1877D6", border: "none" }}
           >
             {confirmLabel}
           </button>

@@ -162,7 +162,7 @@ export default function InstructorTopBar({
                 minWidth: 14,
                 height: 14,
                 borderRadius: "50%",
-                background: "#CC2229",
+                background: "#1877D6",
                 color: "#ffffff",
                 fontSize: 7,
                 fontWeight: 700,

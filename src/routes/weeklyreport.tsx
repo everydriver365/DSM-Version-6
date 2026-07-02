@@ -249,19 +249,19 @@ function WeeklyReportPage() {
         <div className="grid grid-cols-2 gap-3">
           <SummaryStat label="Lessons" value={String(totalLessons)} color="#ffffff" />
           <SummaryStat label="Hours" value={totalHours.toFixed(1)} color="#ffffff" />
-          <SummaryStat label="Earned" value={formatGBP(totalEarned)} color="#F59E0B" />
-          <SummaryStat label="Expenses" value={formatGBP(expensesTotal)} color="#CC2229" />
+          <SummaryStat label="Earned" value={formatGBP(totalEarned)} color="#1877D6" />
+          <SummaryStat label="Expenses" value={formatGBP(expensesTotal)} color="#1877D6" />
         </div>
       </div>
 
       <div className="px-4">
         <SectionHeader>LESSON BREAKDOWN</SectionHeader>
         <Card>
-          <BreakdownRow label="Completed" count={completed.length} color="#16A34A" />
+          <BreakdownRow label="Completed" count={completed.length} color="#1877D6" />
           <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "10px 0" }} />
-          <BreakdownRow label="Cancelled" count={cancelled.length} color="#CC2229" />
+          <BreakdownRow label="Cancelled" count={cancelled.length} color="#1877D6" />
           <div style={{ height: 1, backgroundColor: "#EEF2F7", margin: "10px 0" }} />
-          <BreakdownRow label="No-show" count={noShow.length} color="#F59E0B" />
+          <BreakdownRow label="No-show" count={noShow.length} color="#1877D6" />
         </Card>
 
         <SectionHeader>TOP EARNERS THIS WEEK</SectionHeader>

@@ -628,7 +628,7 @@ function LivePage() {
             height: 64,
             borderRadius: 32,
             background: "#fff",
-            border: "5px solid #CC2229",
+            border: "5px solid #1877D6",
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           }}
         >
@@ -868,7 +868,7 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 10,
-              background: "#CC2229",
+              background: "#1877D6",
               border: "none",
               color: "#fff",
               fontSize: 15,
@@ -888,7 +888,7 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 10,
-              background: "#16A34A",
+              background: "#1877D6",
               border: "none",
               color: "#fff",
               fontSize: 15,

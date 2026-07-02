@@ -91,9 +91,9 @@ interface Booking {
 }
 
 function typeColor(t: string) {
-  if (t === "intensive") return "#CC2229";
-  if (t === "semi-intensive") return "#F59E0B";
-  if (t === "weekly") return "#16A34A";
+  if (t === "intensive") return "#1877D6";
+  if (t === "semi-intensive") return "#1877D6";
+  if (t === "weekly") return "#1877D6";
   return "#1877D6";
 }
 function typeLabel(t: string) {
@@ -103,9 +103,9 @@ function typeLabel(t: string) {
   return "Custom";
 }
 function statusColor(s: string) {
-  if (s === "active" || s === "confirmed") return "#16A34A";
-  if (s === "draft" || s === "pending") return "#F59E0B";
-  if (s === "full" || s === "cancelled" || s === "archived") return "#CC2229";
+  if (s === "active" || s === "confirmed") return "#1877D6";
+  if (s === "draft" || s === "pending") return "#1877D6";
+  if (s === "full" || s === "cancelled" || s === "archived") return "#1877D6";
   return "#6B7280";
 }
 function formatDate(d: string | null) {
@@ -321,7 +321,7 @@ function CourseDetailPage() {
         {loading ? (
           <div style={{ color: "#6B7280", padding: 24, textAlign: "center" }}>Loading…</div>
         ) : !course || !form ? (
-          <div style={{ color: "#CC2229", padding: 24, textAlign: "center" }}>
+          <div style={{ color: "#1877D6", padding: 24, textAlign: "center" }}>
             Course not found.
           </div>
         ) : (
@@ -425,7 +425,7 @@ function CourseDetailPage() {
                   />
                   <div>
                     <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
-                      Pickup postcode <span style={{ color: "#CC2229" }}>*</span>
+                      Pickup postcode <span style={{ color: "#1877D6" }}>*</span>
                     </div>
                     <PostcodeAutocomplete
                       value={
@@ -478,10 +478,10 @@ function CourseDetailPage() {
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
                         { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1877D6", full: false },
-                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
+                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#1877D6", full: false },
                         { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
                         { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#1877D6", full: false },
-                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
+                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#1877D6", full: false },
                         { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1877D6", full: false },
                         { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
                       ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
@@ -880,7 +880,7 @@ function CourseDetailPage() {
                       >
                         {b.status}
                       </span>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#16A34A", marginLeft: 4 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#1877D6", marginLeft: 4 }}>
                         £{Number(b.amount_paid).toFixed(0)}
                       </div>
                     </div>
@@ -955,7 +955,7 @@ function CourseDetailPage() {
               <div
                 style={{
                   marginTop: 12,
-                  color: "#CC2229",
+                  color: "#1877D6",
                   fontSize: 13,
                   fontWeight: 500,
                   textAlign: "center",
@@ -1032,7 +1032,7 @@ function ToggleRow({
           height: 26,
           borderRadius: 13,
           border: "none",
-          background: value ? "#16A34A" : "#cbd2dc",
+          background: value ? "#1877D6" : "#cbd2dc",
           position: "relative",
           cursor: "pointer",
         }}
@@ -1248,7 +1248,7 @@ function AddBookingSheet({
         </div>
 
         {err && (
-          <div style={{ marginTop: 10, color: "#CC2229", fontSize: 13, fontWeight: 500 }}>{err}</div>
+          <div style={{ marginTop: 10, color: "#1877D6", fontSize: 13, fontWeight: 500 }}>{err}</div>
         )}
 
         <div style={{ marginTop: 14 }}>
@@ -1421,7 +1421,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1877D6" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#1877D6" : focused ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
@@ -1434,7 +1434,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#CC2229", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
+        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
           {error}
         </div>
       )}

@@ -151,15 +151,15 @@ function CalendarSyncPage() {
         <div
           className="mt-3 flex items-start gap-3"
           style={{
-            backgroundColor: "#FEF3C7",
+            backgroundColor: "#EEF2F7",
             borderWidth: "1px",
             borderStyle: "solid",
-            borderColor: "#F59E0B",
+            borderColor: "#1877D6",
             borderRadius: 8,
             padding: 12,
           }}
         >
-          <AlertTriangle size={20} color="#F59E0B" className="shrink-0 mt-0.5" />
+          <AlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />
           <p className="text-[13px] text-[#0B1F3A] leading-[1.5]" style={POPPINS}>
             This is a one-way read feed. Your DSM lessons appear in your calendar app, but changes made in your calendar app will not sync back to DSM. Always manage your lessons in DSM.
           </p>
@@ -263,7 +263,7 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#CC2229" />
+                <Calendar size={20} color="#1877D6" />
                 Apple Calendar
               </span>
             </AccordionTrigger>
@@ -272,7 +272,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
                   >
                     1
                   </div>
@@ -283,7 +283,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
                   >
                     2
                   </div>
@@ -294,7 +294,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
                   >
                     3
                   </div>
@@ -305,7 +305,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#CC2229", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
                   >
                     4
                   </div>

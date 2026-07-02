@@ -219,7 +219,7 @@ function MileagePage() {
             >
               EST. TAX RELIEF
             </div>
-            <div className="text-[#F59E0B] text-[24px] font-bold mt-1">
+            <div className="text-[#1877D6] text-[24px] font-bold mt-1">
               £{taxRelief.toFixed(2)}
             </div>
           </div>
@@ -252,7 +252,7 @@ function MileagePage() {
                         className="flex items-center justify-center"
                         style={{ width: 24, height: 24 }}
                       >
-                        <Trash2 size={14} color="#CC2229" />
+                        <Trash2 size={14} color="#1877D6" />
                       </button>
                     </div>
                   </div>
@@ -382,7 +382,7 @@ function MileagePage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#CC2229" }}>
+                <div className="text-[12px]" style={{ color: "#1877D6" }}>
                   {sheetError}
                 </div>
               )}

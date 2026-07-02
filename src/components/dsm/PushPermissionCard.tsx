@@ -115,11 +115,11 @@ export function PushPermissionCard() {
             style={{
               width: 36,
               height: 36,
-              backgroundColor: isDenied ? "#FEF3C7" : "#EEF4FB",
+              backgroundColor: isDenied ? "#EEF2F7" : "#EEF4FB",
             }}
           >
             {isDenied ? (
-              <AlertTriangle size={18} color="#B45309" />
+              <AlertTriangle size={18} color="#0B1F3A" />
             ) : (
               <Bell size={18} color="#1877D6" />
             )}

@@ -52,7 +52,7 @@ function ForgotPasswordPage() {
       >
         {sent ? (
           <div className="flex flex-col items-center text-center">
-            <CheckCircle2 size={48} className="text-[#16A34A] mb-3" />
+            <CheckCircle2 size={48} className="text-[#1877D6] mb-3" />
             <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Check your email</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">
               We've sent a password reset link to <span className="text-[#0B1F3A]">{email}</span>.
@@ -94,7 +94,7 @@ function ForgotPasswordPage() {
             </div>
 
             {error && (
-              <p className="text-[13px] text-[#CC2229] text-center mt-3" role="alert">
+              <p className="text-[13px] text-[#1877D6] text-center mt-3" role="alert">
                 {error}
               </p>
             )}

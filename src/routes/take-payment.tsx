@@ -761,7 +761,7 @@ function TakePaymentPage() {
                     flex: 1.2,
                     height: 44,
                     borderRadius: 10,
-                    background: "#16A34A",
+                    background: "#1877D6",
                     color: "#fff",
                     border: "none",
                     fontSize: 14,
@@ -799,7 +799,7 @@ function TakePaymentPage() {
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                background: "#16A34A",
+                background: "#1877D6",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -822,7 +822,7 @@ function TakePaymentPage() {
               style={{
                 fontSize: 14,
                 fontWeight: 500,
-                color: "#16A34A",
+                color: "#1877D6",
                 textAlign: "center",
               }}
             >

@@ -269,10 +269,10 @@ function TaxReportPage() {
       {/* INCOME */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
         <div className="flex items-center gap-2">
-          <PoundSterling size={18} color="#16A34A" />
+          <PoundSterling size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Income</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#16A34A" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
           £{fmt(totalIncome)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -287,10 +287,10 @@ function TaxReportPage() {
       {/* EXPENSES */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <Receipt size={18} color="#CC2229" />
+          <Receipt size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Allowable expenses</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#CC2229" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
           £{fmt(expensesTotal)}
         </div>
         <div className="mt-3 space-y-1.5">

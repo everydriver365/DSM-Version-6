@@ -213,7 +213,7 @@ function NewLessonPage() {
               ))}
             </select>
             {errors.pupil && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.pupil}
               </p>
             )}
@@ -227,7 +227,7 @@ function NewLessonPage() {
               onChange={(e) => setDate(e.target.value)}
             />
             {errors.date && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.date}
               </p>
             )}
@@ -242,7 +242,7 @@ function NewLessonPage() {
               step={60}
             />
             {errors.time && (
-              <p className="mt-1 text-[12px]" style={{ color: "#CC2229" }}>
+              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
                 {errors.time}
               </p>
             )}
@@ -297,7 +297,7 @@ function NewLessonPage() {
           </div>
 
           {errors.form && (
-            <p className="text-[12px]" style={{ color: "#CC2229" }}>
+            <p className="text-[12px]" style={{ color: "#1877D6" }}>
               {errors.form}
             </p>
           )}
