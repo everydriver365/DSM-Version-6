@@ -710,53 +710,8 @@ function AddEditSheet({
 
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.4)",
-        zIndex: 60,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-      }}
-      onClick={onClose}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "#fff",
-          width: "100%",
-          maxWidth: 520,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          padding: 20,
-          maxHeight: "calc(90vh - 64px)",
-          overflowY: "auto",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 16,
-          }}
-        >
-          <div style={{ fontWeight: 800, fontSize: 18, color: NAVY }}>
-            {initial ? "Edit expense" : "Add expense"}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            style={{ background: "transparent", border: 0, cursor: "pointer", color: "#6B7280" }}
-          >
-            <X size={22} />
-          </button>
-        </div>
-
-        <Field label="Category">
+    <>
+      <Field label="Category">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as Category)}
