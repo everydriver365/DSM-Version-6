@@ -113,7 +113,6 @@ interface Pupil {
   theory_pass_date: string | null;
   theory_score: number | null;
   test_status: string | null;
-  examiner: string | null;
   lat: number | null;
   lng: number | null;
 }
@@ -124,11 +123,10 @@ interface Lesson {
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
-  price: number | null;
-  is_paid: boolean | null;
-  lesson_type: string | null;
+  amount_due: number | null;
+  payment_status: string | null;
   notes: string | null;
-  end_of_lesson_completed: boolean | null;
+  eol_completed: boolean | null;
 }
 
 function initials(name: string) {
@@ -342,7 +340,7 @@ function PupilDetailPage() {
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
         driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status, examiner
+        test_status
       `)
       .eq("id", id)
       .is("deleted_at", null)
@@ -395,7 +393,7 @@ function PupilDetailPage() {
 
     supabase
       .from("lessons")
-      .select("id, lesson_date, lesson_time, duration_minutes, status, price, is_paid, lesson_type, notes, end_of_lesson_completed")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
@@ -1254,8 +1252,9 @@ function PupilDetailPage() {
               const live = isLessonLive(l);
               const past = isLessonPast(l);
               const accent = accentColor(l);
-              const price = Number(l.price ?? 0);
-              const unpaid = !l.is_paid && price > 0;
+              const price = Number(l.amount_due ?? 0);
+              const isPaid = l.payment_status === "paid";
+              const unpaid = !isPaid && price > 0;
               const showGap = gapDays > 7;
 
               return (
@@ -1318,7 +1317,7 @@ function PupilDetailPage() {
                             Live
                           </span>
                         )}
-                        {past && l.status !== "cancelled" && !l.end_of_lesson_completed && (
+                       {past && l.status !== "cancelled" && !l.eol_completed && (
                           <span
                             className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
                             style={{ backgroundColor: "#1877D6", ...POPPINS }}
@@ -1326,7 +1325,7 @@ function PupilDetailPage() {
                             EOL pending
                           </span>
                         )}
-                        {l.is_paid && (
+                        {isPaid && (
                           <span
                             className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
                             style={{ backgroundColor: "#E7F8EF", color: "#067647", borderColor: "#B8ECCF", ...POPPINS }}
