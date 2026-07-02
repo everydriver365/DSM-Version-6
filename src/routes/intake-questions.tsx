@@ -745,59 +745,7 @@ function QuestionSheet({
   }
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0,0,0,0.4)",
-        zIndex: 50,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: "100%",
-          maxWidth: 520,
-          maxHeight: "calc(90vh - 64px)",
-          backgroundColor: "#FFFFFF",
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          overflowY: "auto",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "16px 20px",
-            borderBottom: "1px solid #F1F3F7",
-          }}
-        >
-          <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
-            {initial ? "Edit question" : "Add question"}
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "#6B7280",
-              cursor: "pointer",
-              padding: 4,
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <div style={{ padding: 20 }}>
+    <div>
           {/* Question text */}
           <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
             Question <span style={{ color: "#1877D6" }}>*</span>
