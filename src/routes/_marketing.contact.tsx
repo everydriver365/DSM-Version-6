@@ -123,7 +123,7 @@ function ContactPage() {
     <div style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* HERO */}
       <section className="bg-[#F7FAFC] py-16 px-6 text-center">
-        <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
+        <span className="inline-block bg-[#E6F7F6] text-[#1877D6] text-xs font-semibold px-3 py-1 rounded-full mb-4">
           Get in touch
         </span>
         <h1 className="text-4xl font-black text-[#133155] mb-4">
@@ -150,7 +150,7 @@ function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setStatus("idle")}
-                  className="mt-4 text-sm font-semibold text-[#00B5A5] hover:underline"
+                  className="mt-4 text-sm font-semibold text-[#1877D6] hover:underline"
                 >
                   Send another message
                 </button>
@@ -166,7 +166,7 @@ function ContactPage() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
                 <div>
@@ -178,7 +178,7 @@ function ContactPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
                 <div>
@@ -188,7 +188,7 @@ function ContactPage() {
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] bg-white focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] bg-white focus:outline-none focus:border-[#1877D6]"
                   >
                     {SUBJECTS.map((s) => (
                       <option key={s} value={s}>
@@ -206,7 +206,7 @@ function ContactPage() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#00B5A5]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
 
@@ -219,7 +219,7 @@ function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="bg-[#00B5A5] text-white font-semibold px-8 py-3 rounded-xl w-full hover:opacity-90 disabled:opacity-60 transition"
+                  className="bg-[#1877D6] text-white font-semibold px-8 py-3 rounded-xl w-full hover:opacity-90 disabled:opacity-60 transition"
                 >
                   {status === "sending" ? "Sending…" : "Send message →"}
                 </button>
@@ -234,12 +234,12 @@ function ContactPage() {
             </h2>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
-              <Mail className="text-[#00B5A5] shrink-0" size={24} />
+              <Mail className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Email</p>
                 <a
                   href="mailto:info@everydriver.co.uk"
-                  className="text-[#00B5A5] font-medium"
+                  className="text-[#1877D6] font-medium"
                 >
                   info@everydriver.co.uk
                 </a>
@@ -250,7 +250,7 @@ function ContactPage() {
             </div>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
-              <MapPin className="text-[#00B5A5] shrink-0" size={24} />
+              <MapPin className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Based in</p>
                 <p className="text-[#133155]">Winchester, Hampshire</p>
@@ -261,7 +261,7 @@ function ContactPage() {
             </div>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-6 flex gap-4">
-              <Clock className="text-[#00B5A5] shrink-0" size={24} />
+              <Clock className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Support hours</p>
                 <p className="text-[#133155]">Monday – Friday, 9am – 5pm</p>
@@ -278,7 +278,7 @@ function ContactPage() {
                   href="https://everydriver.co.uk"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#00B5A5] font-medium hover:underline"
+                  className="text-[#1877D6] font-medium hover:underline"
                 >
                   EveryDriver →
                 </a>
@@ -286,7 +286,7 @@ function ContactPage() {
                   href="https://drivingschoolmanager.co.uk"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#00B5A5] font-medium hover:underline"
+                  className="text-[#1877D6] font-medium hover:underline"
                 >
                   Driving School Manager →
                 </a>

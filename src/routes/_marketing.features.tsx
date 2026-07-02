@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, PoundSterling, MapPin, Users, BarChart3, Globe, Check } from "lucide-react";
 
 const NAVY = "#133155";
-const TEAL = "#00B5A5";
+const TEAL = "#1877D6";
 const LIGHT_BG = "#F7FAFC";
 const WHITE = "#FFFFFF";
 const TEXT = "#2D3748";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_marketing/features")({
 function FeatureItem({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-0.5 min-w-[20px] h-5 w-5 rounded-full bg-[#00B5A5]/10 flex items-center justify-center">
+      <div className="mt-0.5 min-w-[20px] h-5 w-5 rounded-full bg-[#1877D6]/10 flex items-center justify-center">
         <Check size={12} color={TEAL} strokeWidth={3} />
       </div>
       <span className="text-[#2D3748] text-base">{children}</span>
@@ -55,7 +55,7 @@ function FeatureSection({
           className={`grid md:grid-cols-2 gap-12 items-center ${reversed ? "md:grid-flow-dense" : ""}`}
         >
           <div className={reversed ? "md:col-start-2" : ""}>
-            <div className="w-12 h-12 rounded-xl bg-[#00B5A5]/10 flex items-center justify-center mb-5">
+            <div className="w-12 h-12 rounded-xl bg-[#1877D6]/10 flex items-center justify-center mb-5">
               <Icon size={24} color={TEAL} strokeWidth={2} />
             </div>
             <h3 className="text-3xl font-black text-[#133155] mb-4">{heading}</h3>
@@ -90,7 +90,7 @@ function FeaturesPage() {
       {/* Hero */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center">
         <div className="max-w-[1180px] mx-auto">
-          <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
+          <span className="inline-block bg-[#E6F7F6] text-[#1877D6] text-xs font-semibold px-3 py-1 rounded-full mb-4">
             Everything you need
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
@@ -230,7 +230,7 @@ function FeaturesPage() {
             href="https://everydriver.co.uk"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center bg-[#00B5A5] text-white font-semibold px-8 py-4 rounded-xl no-underline transition hover:bg-[#009E8F]"
+            className="inline-flex items-center bg-[#1877D6] text-white font-semibold px-8 py-4 rounded-xl no-underline transition hover:bg-[#009E8F]"
           >
             See EveryDriver →
           </a>
@@ -238,13 +238,13 @@ function FeaturesPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-[#00B5A5] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-4xl font-black text-white mb-4">Ready to try DSM?</h2>
           <p className="text-white/80 mb-8">Free forever. No card required.</p>
           <Link
             to="/register"
-            className="inline-flex items-center bg-white text-[#00B5A5] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
+            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
           >
             Get started free →
           </Link>

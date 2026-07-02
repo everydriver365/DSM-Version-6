@@ -164,7 +164,7 @@ function MarketplaceProductPage() {
           </p>
           <Link
             to="/marketplace"
-            style={{ color: "#00B5A5", fontWeight: 600, fontSize: 14 }}
+            style={{ color: "#1877D6", fontWeight: 600, fontSize: 14 }}
           >
             Back to marketplace
           </Link>
@@ -192,7 +192,7 @@ function MarketplaceProductPage() {
                   position: "absolute",
                   top: 12,
                   left: 12,
-                  background: "#00B5A5",
+                  background: "#1877D6",
                   color: "#fff",
                   fontSize: 11,
                   fontWeight: 700,
@@ -221,7 +221,7 @@ function MarketplaceProductPage() {
               style={{
                 fontSize: 18,
                 fontWeight: 700,
-                color: "#00B5A5",
+                color: "#1877D6",
                 marginBottom: 12,
               }}
             >
@@ -261,7 +261,7 @@ function MarketplaceProductPage() {
                       marginBottom: isLast ? 0 : 12,
                     }}
                   >
-                    <CheckCircle2 size={18} color="#00B5A5" />
+                    <CheckCircle2 size={18} color="#1877D6" />
                     <span style={{ fontSize: 13, color: "#374151" }}>
                       {feature}
                     </span>
@@ -314,7 +314,7 @@ function MarketplaceProductPage() {
                 }
                 style={{
                   width: "100%",
-                  background: "#00B5A5",
+                  background: "#1877D6",
                   color: "#fff",
                   border: "none",
                   padding: "14px",

@@ -579,7 +579,7 @@ function TestDayPage() {
 
 function Confetti() {
   const pieces = Array.from({ length: 60 });
-  const colors = ["#CC2229", "#1877D6", "#16A34A", "#F59E0B", "#7C3AED"];
+  const colors = ["#CC2229", "#1877D6", "#16A34A", "#F59E0B", "#1877D6"];
   return (
     <>
       <style>{`

@@ -27,7 +27,7 @@ function PricingPage() {
     <div className="bg-white">
       {/* HERO */}
       <section className="bg-[#F7FAFC] py-16 px-6 text-center">
-        <span className="bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4 inline-block">
+        <span className="bg-[#E6F7F6] text-[#1877D6] text-xs font-semibold px-3 py-1 rounded-full mb-4 inline-block">
           No confusion. No surprises.
         </span>
         <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
@@ -74,8 +74,8 @@ function PricingPage() {
           </div>
 
           {/* PLUS */}
-          <div className="border-2 border-[#00B5A5] rounded-2xl p-8 bg-white relative flex flex-col">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#00B5A5] text-white text-xs font-bold px-4 py-1 rounded-full">
+          <div className="border-2 border-[#1877D6] rounded-2xl p-8 bg-white relative flex flex-col">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1877D6] text-white text-xs font-bold px-4 py-1 rounded-full">
               Most popular
             </span>
             <h3 className="font-black text-[#133155] text-2xl mb-2">Plus</h3>
@@ -96,7 +96,7 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="bg-[#00B5A5] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
             >
               Start free trial →
             </Link>
@@ -122,7 +122,7 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="bg-[#00B5A5] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
             >
               Start free trial →
             </Link>
@@ -140,7 +140,7 @@ function PricingPage() {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
-            <MapPin className="text-[#00B5A5] w-8 h-8 mb-4" />
+            <MapPin className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">GPS Tracker</h3>
             <div className="text-2xl font-black text-[#133155]">£14.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
@@ -153,7 +153,7 @@ function PricingPage() {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
-            <Camera className="text-[#00B5A5] w-8 h-8 mb-4" />
+            <Camera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">Front Dashcam</h3>
             <div className="text-2xl font-black text-[#133155]">£19.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
@@ -166,7 +166,7 @@ function PricingPage() {
           </div>
 
           <div className="bg-[#133155] rounded-2xl p-6">
-            <Camera className="text-[#00B5A5] w-8 h-8 mb-4" />
+            <Camera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-white text-lg mb-1">Front &amp; Rear Dashcam</h3>
             <div className="text-2xl font-black text-white">£39.99/month</div>
             <p className="text-white/60 text-xs mb-4">per vehicle · 36-month minimum</p>
@@ -226,7 +226,7 @@ function PricingPage() {
       </section>
 
       {/* BOTTOM CTA */}
-      <section className="bg-[#00B5A5] py-16 px-6 text-center">
+      <section className="bg-[#1877D6] py-16 px-6 text-center">
         <h2 className="text-4xl font-black text-white mb-4">
           Ready to take control of your business?
         </h2>
@@ -235,7 +235,7 @@ function PricingPage() {
         </p>
         <Link
           to="/register"
-          className="bg-white text-[#00B5A5] font-black px-10 py-4 rounded-xl text-lg inline-block no-underline hover:bg-gray-50 transition-colors"
+          className="bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl text-lg inline-block no-underline hover:bg-gray-50 transition-colors"
         >
           Get started free →
         </Link>
@@ -247,7 +247,7 @@ function PricingPage() {
 function Feat({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2">
-      <CheckCircle2 className="text-[#00B5A5] w-4 h-4 mt-0.5 shrink-0" />
+      <CheckCircle2 className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
       <span>{children}</span>
     </li>
   );
@@ -256,7 +256,7 @@ function Feat({ children }: { children: React.ReactNode }) {
 function FeatDark({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2">
-      <CheckCircle2 className="text-[#00B5A5] w-4 h-4 mt-0.5 shrink-0" />
+      <CheckCircle2 className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
       <span>{children}</span>
     </li>
   );
@@ -278,7 +278,7 @@ function Row({
       {cells.map((c, i) => (
         <td key={i} className="p-4 text-center">
           {c ? (
-            <CheckCircle2 className="text-[#00B5A5] w-5 h-5 inline-block" />
+            <CheckCircle2 className="text-[#1877D6] w-5 h-5 inline-block" />
           ) : (
             <Minus className="text-gray-300 w-5 h-5 inline-block" />
           )}
