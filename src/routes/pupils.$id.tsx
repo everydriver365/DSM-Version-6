@@ -1402,7 +1402,9 @@ function PupilExtras({
   const [savingRates, setSavingRates] = useState(false);
 
   async function patchPupil(patch: Record<string, unknown>) {
-    const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+    console.log("[custom-rates] patchPupil url:", `pupils?id=eq.${pupil.id}`, "payload:", patch);
+    const { data, error, status } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
+    console.log("[custom-rates] result:", status, data, error);
     if (error) {
       console.error("[pupil] patch error", error);
       toast.error("Save failed");
@@ -1453,6 +1455,7 @@ function PupilExtras({
       custom_rate_90: r90 === "" ? null : Number(r90),
       custom_rate_120: r120 === "" ? null : Number(r120),
     };
+    console.log("[custom-rates] saving:", patch);
     const ok = await patchPupil(patch);
     setSavingRates(false);
     if (ok) {
