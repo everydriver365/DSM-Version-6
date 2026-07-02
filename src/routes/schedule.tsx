@@ -418,9 +418,11 @@ function SchedulePage() {
             display: "flex",
             gap: 12,
             padding: "12px 16px",
-            backgroundColor: "#FFFFFF",
             alignItems: "stretch",
+            borderLeft: `4px solid ${lessonColour}`,
+            background: `${lessonColour}15`,
           }}
+
         >
           <div
             style={{
