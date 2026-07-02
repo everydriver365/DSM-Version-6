@@ -3419,7 +3419,7 @@ function AccessTile({
       onClick={onClick}
       className="bg-white flex flex-col items-center justify-center"
       style={{
-        width: 80,
+        width: "100%",
         height: 80,
         borderWidth: "0.5px",
         borderStyle: "solid",
