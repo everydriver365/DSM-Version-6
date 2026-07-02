@@ -80,12 +80,13 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, name, address")
+        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
         .order("name", { ascending: true });
       setPupils((data as Pupil[]) ?? []);
+
     })();
   }, []);
 
