@@ -1399,7 +1399,16 @@ function PupilExtras({
   const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
   const [r90, setR90] = useState(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
   const [r120, setR120] = useState(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+  const [editRates, setEditRates] = useState(false);
   const [savingRates, setSavingRates] = useState(false);
+
+  useEffect(() => {
+    if (editRates) {
+      setR1(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
+      setR90(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
+      setR120(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+    }
+  }, [editRates, pupil.custom_rate, pupil.custom_rate_90, pupil.custom_rate_120]);
 
   async function patchPupil(patch: Record<string, unknown>) {
     console.log("[custom-rates] patchPupil url:", `pupils?id=eq.${pupil.id}`, "payload:", patch);
@@ -1460,6 +1469,10 @@ function PupilExtras({
     setSavingRates(false);
     if (ok) {
       onUpdated(patch);
+      setR1(patch.custom_rate != null ? String(patch.custom_rate) : "");
+      setR90(patch.custom_rate_90 != null ? String(patch.custom_rate_90) : "");
+      setR120(patch.custom_rate_120 != null ? String(patch.custom_rate_120) : "");
+      setEditRates(false);
       toast.success("Custom rates saved");
     }
   }
@@ -1470,6 +1483,7 @@ function PupilExtras({
     const ok = await patchPupil(patch);
     if (ok) {
       onUpdated(patch);
+      setEditRates(false);
       toast.success("Custom rates cleared");
     }
   }
@@ -1569,29 +1583,63 @@ function PupilExtras({
 
       {/* Custom rates */}
       <div style={EXTRAS_CARD}>
-        <div className="flex items-center gap-2 mb-2">
-          <PoundSterling size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Custom lesson rates</span>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <PoundSterling size={18} color="#1877D6" />
+            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Custom lesson rates</span>
+          </div>
+          {!editRates && (
+            <button type="button" onClick={() => setEditRates(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+              {pupil.custom_rate != null || pupil.custom_rate_90 != null || pupil.custom_rate_120 != null ? "Edit" : "Add"}
+            </button>
+          )}
         </div>
         <div className="text-[12px] mb-3" style={{ color: "#6B7280", ...POPPINS }}>
           Default: {instructorRate != null ? `£${instructorRate}/hr` : "not set"}
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>1 hour lesson (£)</label>
-          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate) : ""} value={r1} onChange={(e) => setR1(e.target.value)} />
-          <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>1.5 hour lesson (£)</label>
-          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 1.5) : ""} value={r90} onChange={(e) => setR90(e.target.value)} />
-          <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>2 hour lesson (£)</label>
-          <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 2) : ""} value={r120} onChange={(e) => setR120(e.target.value)} />
-        </div>
-        <div className="flex gap-2 mt-3">
-          <button type="button" onClick={saveRates} disabled={savingRates} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-            {savingRates ? "Saving…" : "Save rates"}
-          </button>
-        </div>
-        <button type="button" onClick={clearRates} className="mt-2 text-[12px] font-medium" style={{ color: "#CC2229", ...POPPINS }}>
-          Clear custom rates
-        </button>
+        {!editRates ? (
+          pupil.custom_rate != null || pupil.custom_rate_90 != null || pupil.custom_rate_120 != null ? (
+            <div className="flex flex-col gap-1">
+              {pupil.custom_rate != null && (
+                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  1 hour: <span className="font-semibold">£{pupil.custom_rate}</span>
+                </div>
+              )}
+              {pupil.custom_rate_90 != null && (
+                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  1.5 hour: <span className="font-semibold">£{pupil.custom_rate_90}</span>
+                </div>
+              )}
+              {pupil.custom_rate_120 != null && (
+                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  2 hour: <span className="font-semibold">£{pupil.custom_rate_120}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Using default instructor rate</div>
+          )
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>1 hour lesson (£)</label>
+            <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate) : ""} value={r1} onChange={(e) => setR1(e.target.value)} />
+            <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>1.5 hour lesson (£)</label>
+            <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 1.5) : ""} value={r90} onChange={(e) => setR90(e.target.value)} />
+            <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>2 hour lesson (£)</label>
+            <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 2) : ""} value={r120} onChange={(e) => setR120(e.target.value)} />
+            <div className="flex gap-2 mt-3">
+              <button type="button" onClick={saveRates} disabled={savingRates} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                {savingRates ? "Saving…" : "Save rates"}
+              </button>
+              <button type="button" onClick={() => setEditRates(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                Cancel
+              </button>
+            </div>
+            <button type="button" onClick={clearRates} className="mt-2 text-[12px] font-medium text-left" style={{ color: "#CC2229", ...POPPINS }}>
+              Clear custom rates
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Calendar colour */}
