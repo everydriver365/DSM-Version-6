@@ -223,6 +223,25 @@
   animation: cf-shimmer 1.6s ease-in-out infinite;
 }
 
+/* Legacy .skeleton-pulse: upgrade to Checkfront shimmer overlay app-wide */
+.skeleton-pulse {
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(24, 119, 214, 0.10) 50%,
+    transparent 100%
+  );
+  animation: cf-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Tap feedback for tiles and buttons */
 @utility cf-tap {
   transition: transform 0.12s ease, box-shadow 0.12s ease;
