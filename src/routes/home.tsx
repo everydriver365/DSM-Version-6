@@ -2620,7 +2620,10 @@ function HomePage() {
                     padding: "10px 16px",
                     alignItems: "stretch",
                     cursor: "pointer",
+                    borderLeft: `4px solid ${lessonColour}`,
+                    background: `${lessonColour}10`,
                   }}
+
                 >
                   {(() => {
                     const needsAttention =
