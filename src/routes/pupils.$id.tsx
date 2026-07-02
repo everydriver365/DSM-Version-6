@@ -344,9 +344,11 @@ function PupilDetailPage() {
     setSavingNotes(false);
     if (error) {
       console.error("[pupil] save notes error", error);
+      toast.error("Failed to save — please try again");
       return;
     }
     setNoteSaved(true);
+    toast.success("Notes saved");
     setTimeout(() => setNoteSaved(false), 2000);
   }
 
@@ -372,8 +374,10 @@ function PupilDetailPage() {
         .eq("id", id);
       if (error) throw error;
       setPupil((p) => (p ? { ...p, photo_url: publicUrl } : p));
+      toast.success("Photo uploaded");
     } catch (err) {
       console.error("[pupil] photo upload", err);
+      toast.error("Failed to save — please try again");
     } finally {
       setUploadingPhoto(false);
     }
@@ -387,7 +391,10 @@ function PupilDetailPage() {
       .eq("id", id);
     if (error) {
       console.error("[pupil] consent error", error);
+      toast.error("Failed to save — please try again");
       setPupil((p) => (p ? { ...p, photo_consent: !value } : p));
+    } else {
+      toast.success("Photo consent updated");
     }
   }
 
