@@ -18,6 +18,7 @@ import {
   Store,
   Tag,
   ClipboardList,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -1183,6 +1184,12 @@ function SettingsPage() {
             label="Intake questions"
             onClick={() => navigate({ to: "/intake-questions" })}
             isFirst
+          />
+          <MenuRow
+            icon={<AlertTriangle size={18} color="#D97706" />}
+            iconBg="#FEF3C7"
+            label="No-show policy"
+            onClick={() => navigate({ to: "/no-show-policy" })}
           />
         </Card>
 
