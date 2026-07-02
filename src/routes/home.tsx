@@ -331,7 +331,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 height: 180,
                 cursor: "pointer",
                 background:
-                  "linear-gradient(155deg, #0B1F3A 0%, #0F2A४F 55%, #14356A 100%)".replace("४", "4"),
+                  "linear-gradient(155deg, #0B1F3A 0%, #0F2A4F 55%, #14356A 100%)",
                 border: "1px solid rgba(255,255,255,0.06)",
                 boxShadow: "0 14px 28px -14px rgba(11, 31, 58, 0.55)",
                 userSelect: "none",
