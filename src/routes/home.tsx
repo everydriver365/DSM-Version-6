@@ -2863,12 +2863,15 @@ function HomePage() {
           )}
         </div>
         <div
-          className="quick-access-scroll flex"
+          className="quick-access-scroll"
           style={{
-            flexDirection: "column",
-            flexWrap: "wrap",
-            height: 168,
-            gap: 8,
+            marginTop: 10,
+            display: "grid",
+            gridTemplateRows: "repeat(2, 80px)",
+            gridAutoFlow: "column",
+            gridAutoColumns: "calc((100% - 16px) / 3)",
+            columnGap: 8,
+            rowGap: 8,
             overflowX: "auto",
             overflowY: "hidden",
             scrollSnapType: "x mandatory",
