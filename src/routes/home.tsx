@@ -1949,7 +1949,7 @@ function HomePage() {
                     </button>
                   )}
                   <button
-                    onClick={(e) => { stop(); e.stopPropagation(); if (!eolDone) setEolLesson(upcoming); }}
+                    onClick={(e) => { stop(e); if (!eolDone) setEolLesson(upcoming); }}
                     disabled={eolDone}
                     style={{ ...btnBase, background: eolDone ? '#9CA3AF' : '#CC2229', color: '#fff', border: 'none', opacity: eolDone ? 0.6 : 1, cursor: eolDone ? 'default' : 'pointer' }}
                   >
