@@ -1912,20 +1912,20 @@ function HomePage() {
               return (
                 <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
                   {phone ? (
-                    <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#CC2229', color: '#fff' }}>
+                    <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1877D6', color: '#fff' }}>
                       <Phone size={16} color="#ffffff" /> Call
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#CC2229', color: '#fff', border: 'none', opacity: 0.6 }}>
+                    <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1877D6', color: '#fff', border: 'none', opacity: 0.6 }}>
                       <Phone size={16} color="#ffffff" /> Call
                     </button>
                   )}
                   {phone ? (
-                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F4F6', color: '#0B1F3A' }}>
+                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)' }}>
                       <MessageSquare size={16} color="#0B1F3A" /> Text
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F4F6', color: '#0B1F3A', border: 'none', opacity: 0.6 }}>
+                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)', opacity: 0.6 }}>
                       <MessageSquare size={16} color="#0B1F3A" /> Text
                     </button>
                   )}
@@ -1935,12 +1935,12 @@ function HomePage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={stop}
-                      style={{ ...btnBase, background: '#16A34A', color: '#fff' }}
+                      style={{ ...btnBase, background: '#0B1F3A', color: '#fff' }}
                     >
                       <Navigation size={16} color="#ffffff" /> Go
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No pickup postcode set"); }} style={{ ...btnBase, background: '#16A34A', color: '#fff', border: 'none', opacity: 0.6 }}>
+                    <button onClick={(e) => { stop(e); toast("No pickup postcode set"); }} style={{ ...btnBase, background: '#0B1F3A', color: '#fff', border: 'none', opacity: 0.6 }}>
                       <Navigation size={16} color="#ffffff" /> Go
                     </button>
                   )}
