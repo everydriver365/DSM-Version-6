@@ -128,7 +128,7 @@ function TaxPage() {
               style={{
                 height: 36,
                 borderRadius: 8,
-                backgroundColor: active ? "#0B7DDA" : "#F3F4F6",
+                backgroundColor: active ? "#00A3B4" : "#F3F4F6",
                 color: active ? "#ffffff" : "#6B7280",
               }}
             >
@@ -199,7 +199,7 @@ function TaxPage() {
             className="mt-2 overflow-hidden"
             style={{ height: 6, borderRadius: 3, backgroundColor: "#F3F4F6" }}
           >
-            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#0B7DDA" }} />
+            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#00A3B4" }} />
           </div>
         </Card>
 

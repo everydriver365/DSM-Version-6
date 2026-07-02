@@ -159,7 +159,7 @@ function MessagesPage() {
               type="button"
               onClick={openCompose}
               className="rounded-lg px-4 py-2 text-[13px] font-semibold text-white"
-              style={{ backgroundColor: "#0B7DDA", ...POPPINS }}
+              style={{ backgroundColor: "#00A3B4", ...POPPINS }}
             >
               Start a conversation
             </button>
@@ -188,7 +188,7 @@ function MessagesPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        backgroundColor: "#0B7DDA",
+                        backgroundColor: "#00A3B4",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}
@@ -297,7 +297,7 @@ function MessagesPage() {
                       style={{
                         width: 36,
                         height: 36,
-                        backgroundColor: "#0B7DDA",
+                        backgroundColor: "#00A3B4",
                         color: "#FFFFFF",
                         ...POPPINS,
                       }}

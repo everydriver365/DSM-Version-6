@@ -163,7 +163,7 @@ function WaiversPage() {
         )}
         {!loading && templates.length === 0 && (
           <Card className="flex flex-col items-center justify-center text-center" style={{ padding: 24 }}>
-            <FileSignature size={36} color="#0B7DDA" />
+            <FileSignature size={36} color="#00A3B4" />
             <div className="mt-2 text-[13px]" style={{ color: "#6B7280" }}>
               No waiver templates yet
             </div>
@@ -182,7 +182,7 @@ function WaiversPage() {
                   className="flex items-center justify-center rounded-full flex-shrink-0"
                   style={{ width: 36, height: 36, backgroundColor: "#EEF4FB" }}
                 >
-                  <FileText size={18} color="#0B7DDA" />
+                  <FileText size={18} color="#00A3B4" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-semibold truncate" style={{ color: "#0A2540" }}>
@@ -231,7 +231,7 @@ function WaiversPage() {
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <div
                     className="flex items-center justify-center rounded-full flex-shrink-0 text-white text-[12px] font-semibold"
-                    style={{ width: 36, height: 36, backgroundColor: "#0B7DDA" }}
+                    style={{ width: 36, height: 36, backgroundColor: "#00A3B4" }}
                   >
                     {initials(pupilName)}
                   </div>
@@ -522,7 +522,7 @@ function SendToPupilSheet({
           <div
             style={{
               backgroundColor: "#EEF4FB",
-              border: "0.5px solid #0B7DDA",
+              border: "0.5px solid #00A3B4",
               borderRadius: 12,
               padding: 12,
             }}
@@ -530,13 +530,13 @@ function SendToPupilSheet({
             <div className="text-[12px] font-medium mb-1" style={{ color: "#0A2540" }}>
               Signing link
             </div>
-            <div className="text-[12px] break-all" style={{ color: "#0B7DDA" }}>
+            <div className="text-[12px] break-all" style={{ color: "#00A3B4" }}>
               {link}
             </div>
             <button
               type="button"
               className="mt-2 text-[12px] font-medium"
-              style={{ color: "#0B7DDA" }}
+              style={{ color: "#00A3B4" }}
               onClick={() => {
                 if (typeof navigator !== "undefined" && navigator.clipboard) {
                   navigator.clipboard.writeText(link);

@@ -348,7 +348,7 @@ function IntakeQuestionsPage() {
           alignItems: "flex-start",
         }}
       >
-        <ClipboardList size={20} color="#0B7DDA" style={{ flexShrink: 0, marginTop: 2 }} />
+        <ClipboardList size={20} color="#00A3B4" style={{ flexShrink: 0, marginTop: 2 }} />
         <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0A2540" }}>
           These questions are shown to new pupils when they register or book for the first
           time. Use them to gather important information upfront.
@@ -463,7 +463,7 @@ function IntakeQuestionsPage() {
                       padding: "2px 8px",
                       borderRadius: 6,
                       backgroundColor: "#EEF2FF",
-                      color: "#0B7DDA",
+                      color: "#00A3B4",
                       fontWeight: 500,
                     }}
                   >
@@ -498,7 +498,7 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#0B7DDA",
+                      color: "#00A3B4",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -632,7 +632,7 @@ function Toggle({
         height: 24,
         borderRadius: 12,
         border: "none",
-        backgroundColor: checked ? "#0B7DDA" : "#D1D5DB",
+        backgroundColor: checked ? "#00A3B4" : "#D1D5DB",
         position: "relative",
         cursor: "pointer",
         flexShrink: 0,
@@ -908,7 +908,7 @@ function QuestionSheet({
                     marginTop: 8,
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
-                    color: "#0B7DDA",
+                    color: "#00A3B4",
                     borderRadius: 10,
                     padding: "8px 12px",
                     fontSize: 13,

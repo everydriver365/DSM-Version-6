@@ -235,7 +235,7 @@ function TestCard({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#0B7DDA", ...POPPINS }}
+          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#00A3B4", ...POPPINS }}
         >
           {initials(name)}
         </div>
@@ -248,7 +248,7 @@ function TestCard({
               <span
                 className="text-[11px] font-medium shrink-0"
                 style={{
-                  color: "#0B7DDA",
+                  color: "#00A3B4",
                   backgroundColor: "#EEF4FB",
                   padding: "2px 8px",
                   borderRadius: 999,
@@ -307,8 +307,8 @@ function TestCard({
                       padding: "0 12px",
                       borderRadius: 8,
                       backgroundColor: "transparent",
-                      border: "1px solid #0B7DDA",
-                      color: "#0B7DDA",
+                      border: "1px solid #00A3B4",
+                      color: "#00A3B4",
                       ...POPPINS,
                     }}
                   >

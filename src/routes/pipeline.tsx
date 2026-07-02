@@ -202,7 +202,7 @@ function PipelinePage() {
                         className="inline-block mt-2 text-[10px] font-medium"
                         style={{
                           backgroundColor: "#EEF4FB",
-                          color: "#0B7DDA",
+                          color: "#00A3B4",
                           padding: "2px 8px",
                           borderRadius: 999,
                         }}

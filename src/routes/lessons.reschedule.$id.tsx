@@ -328,7 +328,7 @@ function RescheduleLessonPage() {
             style={{
               height: 52,
               borderRadius: 10,
-              backgroundColor: canSubmit ? "#0B7DDA" : "#9CA3AF",
+              backgroundColor: canSubmit ? "#00A3B4" : "#9CA3AF",
               fontSize: 15,
               ...POPPINS,
             }}

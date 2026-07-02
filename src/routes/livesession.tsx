@@ -202,7 +202,7 @@ function LiveSessionPage() {
               width: 48,
               height: 48,
               borderRadius: 24,
-              background: "#0B7DDA",
+              background: "#00A3B4",
               color: "#fff",
               display: "flex",
               alignItems: "center",
@@ -238,7 +238,7 @@ function LiveSessionPage() {
           <button
             type="button"
             onClick={() => setNoteSheetOpen(true)}
-            style={actionBtn("#0B7DDA")}
+            style={actionBtn("#00A3B4")}
           >
             <StickyNote size={20} color="#fff" />
             <span>Add note</span>

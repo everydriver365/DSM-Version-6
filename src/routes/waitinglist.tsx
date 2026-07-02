@@ -144,8 +144,8 @@ function WaitingListPage() {
                         width: 36,
                         height: 36,
                         borderRadius: 18,
-                        backgroundColor: "#0B7DDA14",
-                        color: "#0B7DDA",
+                        backgroundColor: "#00A3B414",
+                        color: "#00A3B4",
                         fontSize: 18,
                         ...POPPINS,
                       }}

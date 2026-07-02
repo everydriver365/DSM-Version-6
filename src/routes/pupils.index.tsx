@@ -40,13 +40,13 @@ function initials(name: string) {
 
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#16A34A";
-  if (status === "passed") return "#0B7DDA";
+  if (status === "passed") return "#00A3B4";
   if (status === "archived") return "#9CA3AF";
   return "#6B7280";
 }
 
 function accentColor(status: StatusKey) {
-  if (status === "active") return "#0B7DDA";
+  if (status === "active") return "#00A3B4";
   if (status === "passed") return "#16A34A";
   if (status === "archived") return "#9CA3AF";
   return "#9CA3AF";
@@ -246,7 +246,7 @@ function PupilsIndexPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
             style={{
               ...POPPINS,
               borderWidth: "0.5px",
@@ -365,7 +365,7 @@ function PupilsIndexPage() {
                         style={{
                           width: 40,
                           height: 40,
-                          backgroundColor: "#0B7DDA",
+                          backgroundColor: "#00A3B4",
                           color: "#FFFFFF",
                           ...POPPINS,
                         }}
@@ -398,7 +398,7 @@ function PupilsIndexPage() {
                                 <span
                                   className="text-[12px] font-medium"
                                   style={{
-                                    color: hoursRemaining > 5 ? "#0B7DDA" : "#F59E0B",
+                                    color: hoursRemaining > 5 ? "#00A3B4" : "#F59E0B",
                                     ...POPPINS,
                                   }}
                                 >
@@ -483,7 +483,7 @@ function PupilsIndexPage() {
         style={{
           width: 52,
           height: 52,
-          backgroundColor: "#0B7DDA",
+          backgroundColor: "#00A3B4",
           color: "#FFFFFF",
           right: 16,
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",

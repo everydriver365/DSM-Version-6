@@ -42,13 +42,13 @@ interface CertRow {
 function typeMeta(t: string | null) {
   switch (t) {
     case "adi_badge":
-      return { color: "#0B7DDA", tint: "#EEF4FB", Icon: BadgeCheck, label: "ADI Badge" };
+      return { color: "#00A3B4", tint: "#EEF4FB", Icon: BadgeCheck, label: "ADI Badge" };
     case "dbs":
       return { color: "#CC2229", tint: "#FEF2F2", Icon: ShieldCheck, label: "DBS Check" };
     case "first_aid":
       return { color: "#16A34A", tint: "#ECFDF5", Icon: Heart, label: "First Aid" };
     case "insurance":
-      return { color: "#0B7DDA", tint: "#EEF4FB", Icon: FileText, label: "Insurance" };
+      return { color: "#00A3B4", tint: "#EEF4FB", Icon: FileText, label: "Insurance" };
     default:
       return { color: "#6B7280", tint: "#F4F4F5", Icon: Award, label: "Other" };
   }
@@ -230,7 +230,7 @@ function CertificationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <Award size={28} color="#0B7DDA" />
+                <Award size={28} color="#00A3B4" />
               </div>
               <div className="text-[14px] text-[#6B7280]">No certifications added yet</div>
             </div>
@@ -343,7 +343,7 @@ function CertificationsPage() {
                 <select
                   value={certType}
                   onChange={(e) => setCertType(e.target.value as CertType)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",

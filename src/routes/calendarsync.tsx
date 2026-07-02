@@ -105,12 +105,12 @@ function CalendarSyncPage() {
             backgroundColor: "#EEF4FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#0B7DDA",
+            borderColor: "#00A3B4",
             borderRadius: 12,
             padding: 16,
           }}
         >
-          <Info size={20} color="#0B7DDA" className="shrink-0 mt-0.5" />
+          <Info size={20} color="#00A3B4" className="shrink-0 mt-0.5" />
           <p className="text-[13px] text-[#0A2540] leading-[1.5]" style={POPPINS}>
             Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
           </p>
@@ -181,7 +181,7 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0A2540]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#0B7DDA" />
+                <Calendar size={20} color="#00A3B4" />
                 Google Calendar
               </span>
             </AccordionTrigger>
@@ -190,7 +190,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     1
                   </div>
@@ -201,7 +201,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     2
                   </div>
@@ -212,7 +212,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     3
                   </div>
@@ -223,7 +223,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     4
                   </div>
@@ -234,7 +234,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     5
                   </div>
@@ -334,7 +334,7 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0A2540]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#0B7DDA" />
+                <Calendar size={20} color="#00A3B4" />
                 Outlook
               </span>
             </AccordionTrigger>
@@ -343,7 +343,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     1
                   </div>
@@ -354,7 +354,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     2
                   </div>
@@ -365,7 +365,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     3
                   </div>
@@ -376,7 +376,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#0B7DDA", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: "#00A3B4", ...POPPINS }}
                   >
                     4
                   </div>

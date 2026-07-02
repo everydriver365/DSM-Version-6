@@ -91,7 +91,7 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          border: "2px solid #0B7DDA",
+          border: "2px solid #00A3B4",
           borderRadius: 12,
           padding: 16,
           position: "relative",
@@ -99,7 +99,7 @@ function SubscriptionPage() {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#0A2540" }}>DSM Pro</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0B7DDA" }}>£19.99/month</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#00A3B4" }}>£19.99/month</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>

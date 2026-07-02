@@ -274,7 +274,7 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronLeft size={20} color="#0B7DDA" />
+            <ChevronLeft size={20} color="#00A3B4" />
           </button>
           <div className="text-[15px] font-semibold text-[#0A2540]">
             {monthLabel(month)}
@@ -286,7 +286,7 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronRight size={20} color="#0B7DDA" />
+            <ChevronRight size={20} color="#00A3B4" />
           </button>
         </div>
 
@@ -314,7 +314,7 @@ function DiaryPage() {
               const circleBg = isSelected
                 ? "#0A2540"
                 : isToday
-                  ? "#0B7DDA"
+                  ? "#00A3B4"
                   : "transparent";
               const textColor = isSelected || isToday ? "#FFFFFF" : "#0A2540";
               return (
@@ -342,7 +342,7 @@ function DiaryPage() {
                     {hasLesson && (
                       <span
                         className="rounded-full"
-                        style={{ width: 4, height: 4, backgroundColor: "#0B7DDA" }}
+                        style={{ width: 4, height: 4, backgroundColor: "#00A3B4" }}
                       />
                     )}
                     {hasEntry && (
@@ -365,7 +365,7 @@ function DiaryPage() {
             <div className="flex items-center" style={{ gap: 6 }}>
               <span
                 className="rounded-full"
-                style={{ width: 6, height: 6, backgroundColor: "#0B7DDA" }}
+                style={{ width: 6, height: 6, backgroundColor: "#00A3B4" }}
               />
               <span className="text-[11px] text-[#6B7280]">Lessons</span>
             </div>
@@ -405,7 +405,7 @@ function DiaryPage() {
                     </div>
                     <span
                       className="text-[11px] rounded-full px-2 py-1"
-                      style={{ backgroundColor: "#EEF4FB", color: "#0B7DDA" }}
+                      style={{ backgroundColor: "#EEF4FB", color: "#00A3B4" }}
                     >
                       Lesson
                     </span>
@@ -499,7 +499,7 @@ function DiaryPage() {
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={5}
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -527,7 +527,7 @@ function DiaryPage() {
                 <select
                   value={entryType}
                   onChange={(e) => setEntryType(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",

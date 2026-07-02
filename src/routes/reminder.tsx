@@ -131,7 +131,7 @@ function ReminderPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium mt-4"
-            style={{ color: "#0B7DDA" }}
+            style={{ color: "#00A3B4" }}
           >
             {allVisibleSelected ? "Deselect all" : "Select all"}
           </button>
@@ -148,7 +148,7 @@ function ReminderPage() {
             placeholder="Search pupils"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+            className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
             style={{
               fontFamily: "Inter, sans-serif",
               borderWidth: "0.5px",
@@ -178,7 +178,7 @@ function ReminderPage() {
                     gap: 10,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: isSel ? "#0B7DDA" : "#EEF2F7",
+                    borderColor: isSel ? "#00A3B4" : "#EEF2F7",
                   }}
                 >
                   <span
@@ -187,10 +187,10 @@ function ReminderPage() {
                       width: 18,
                       height: 18,
                       borderRadius: 4,
-                      backgroundColor: isSel ? "#0B7DDA" : "#ffffff",
+                      backgroundColor: isSel ? "#00A3B4" : "#ffffff",
                       borderWidth: "0.5px",
                       borderStyle: "solid",
-                      borderColor: isSel ? "#0B7DDA" : "#9CA3AF",
+                      borderColor: isSel ? "#00A3B4" : "#9CA3AF",
                       color: "#ffffff",
                       fontSize: 12,
                       lineHeight: 1,
@@ -204,7 +204,7 @@ function ReminderPage() {
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      backgroundColor: "#0B7DDA",
+                      backgroundColor: "#00A3B4",
                     }}
                   >
                     {initials(p.name)}
@@ -249,7 +249,7 @@ function ReminderPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
-          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none resize-none"
+          className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none resize-none"
           style={{
             fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",

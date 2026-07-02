@@ -46,7 +46,7 @@ interface Doc {
 }
 
 const TYPES: { value: DocType; label: string; color: string; tint: string }[] = [
-  { value: "adi", label: "ADI Badge", color: "#0B7DDA", tint: "#DBEAFE" },
+  { value: "adi", label: "ADI Badge", color: "#00A3B4", tint: "#DBEAFE" },
   { value: "insurance", label: "Insurance", color: "#16A34A", tint: "#ECFDF5" },
   { value: "mot", label: "MOT", color: "#F59E0B", tint: "#FEF3C7" },
   { value: "dbs", label: "DBS Check", color: "#CC2229", tint: "#FEE2E2" },
@@ -282,11 +282,11 @@ function DocumentsPage() {
                         padding: "0 12px",
                         borderRadius: 8,
                         backgroundColor: "#F1F5F9",
-                        color: "#0B7DDA",
+                        color: "#00A3B4",
                         border: "0.5px solid #CBD5E1",
                       }}
                     >
-                      <ExternalLink size={13} color="#0B7DDA" /> View file
+                      <ExternalLink size={13} color="#00A3B4" /> View file
                     </a>
                   )}
                 </Card>
@@ -573,11 +573,11 @@ function DocSheet({
               height: 44,
               borderRadius: 8,
               backgroundColor: "#F8F9FB",
-              color: "#0B7DDA",
-              border: "1px dashed #0B7DDA",
+              color: "#00A3B4",
+              border: "1px dashed #00A3B4",
             }}
           >
-            <Upload size={16} color="#0B7DDA" />
+            <Upload size={16} color="#00A3B4" />
             Upload file
             <input
               type="file"

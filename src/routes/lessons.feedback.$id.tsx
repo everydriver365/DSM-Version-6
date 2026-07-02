@@ -192,9 +192,9 @@ function LessonFeedbackPage() {
                     height: 32,
                     padding: "0 12px",
                     borderRadius: 16,
-                    backgroundColor: selected ? "#0B7DDA" : "#F8F9FB",
+                    backgroundColor: selected ? "#00A3B4" : "#F8F9FB",
                     color: selected ? "#FFFFFF" : "#0A2540",
-                    border: selected ? "0.5px solid #0B7DDA" : "0.5px solid #EEF2F7",
+                    border: selected ? "0.5px solid #00A3B4" : "0.5px solid #EEF2F7",
                     ...POPPINS,
                   }}
                 >
@@ -219,7 +219,7 @@ function LessonFeedbackPage() {
                     style={{
                       height: 40,
                       borderRadius: 8,
-                      backgroundColor: active ? "#0B7DDA" : "#FFFFFF",
+                      backgroundColor: active ? "#00A3B4" : "#FFFFFF",
                       color: active ? "#FFFFFF" : "#0A2540",
                       border: "0.5px solid #EEF2F7",
                       ...POPPINS,
@@ -246,7 +246,7 @@ function LessonFeedbackPage() {
             value={instructorNotes}
             onChange={(e) => setInstructorNotes(e.target.value)}
             placeholder="Private notes (not shared with pupil)"
-            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#00A3B4] focus:outline-none"
             style={{
               color: "#0A2540",
               borderWidth: "0.5px",
@@ -263,7 +263,7 @@ function LessonFeedbackPage() {
             value={pupilFeedback}
             onChange={(e) => setPupilFeedback(e.target.value)}
             placeholder="Shared with pupil"
-            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#00A3B4] focus:outline-none"
             style={{
               color: "#0A2540",
               borderWidth: "0.5px",

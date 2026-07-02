@@ -35,7 +35,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#0B7DDA";
+  return "#00A3B4";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -152,7 +152,7 @@ function CoursesPage() {
               onClick={() => navigate({ to: "/courses/new" })}
               style={{
                 marginTop: 8,
-                background: "#0B7DDA",
+                background: "#00A3B4",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
@@ -230,7 +230,7 @@ function CoursesPage() {
                     if (list.length === 0) return null;
                     return (
                       <div style={{ marginTop: 8, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-                        <MapPin size={12} color="#0B7DDA" />
+                        <MapPin size={12} color="#00A3B4" />
                         {list.slice(0, 3).map((pc, index) => (
                           <span key={`${pc}-${index}`} style={{
                             background: "#e8eefb", color: "#0A2540", fontWeight: 600,

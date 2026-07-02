@@ -192,7 +192,7 @@ function SatNavPage() {
               <a
                 href={pupilPhone ? `tel:${pupilPhone}` : "#"}
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "#0B7DDA" }}
+                style={{ height: 40, borderRadius: 8, backgroundColor: "#00A3B4" }}
               >
                 <Phone size={16} /> Call
               </a>

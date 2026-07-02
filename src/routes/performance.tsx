@@ -206,7 +206,7 @@ function PerformancePage() {
                 height: 32,
                 borderRadius: 8,
                 backgroundColor: active ? "#FFFFFF" : "transparent",
-                color: active ? "#0B7DDA" : "#6B7280",
+                color: active ? "#00A3B4" : "#6B7280",
                 boxShadow: active ? "0 1px 2px rgba(15,32,68,0.08)" : "none",
                 ...POPPINS,
               }}

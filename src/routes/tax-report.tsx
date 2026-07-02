@@ -327,10 +327,10 @@ function TaxReportPage() {
       {/* MILEAGE */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <Car size={18} color="#0B7DDA" />
+          <Car size={18} color="#00A3B4" />
           <div className="text-[15px] font-semibold text-[#0A2540]">Mileage allowance</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#0B7DDA" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: "#00A3B4" }}>
           £{fmt(mileageAllowance)}
         </div>
         <div className="mt-3 space-y-1.5">

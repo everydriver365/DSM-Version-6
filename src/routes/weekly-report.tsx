@@ -443,7 +443,7 @@ function WeeklyReportPage() {
       {/* Section 2 — Day by day */}
       <div style={{ margin: "0 16px" }}>
         <CardBox>
-          <SectionHead icon={<CalendarIcon size={16} color="#0B7DDA" />} title="Day by day" />
+          <SectionHead icon={<CalendarIcon size={16} color="#00A3B4" />} title="Day by day" />
           <div className="flex flex-col gap-2 mt-3">
             {dayRows.map((d) => {
               const pct = Math.min(100, (d.hours / maxDayHours) * 100);
@@ -462,7 +462,7 @@ function WeeklyReportPage() {
                         width: `${pct}%`,
                         height: 6,
                         borderRadius: 3,
-                        background: hasLessons ? "#0B7DDA" : "#E5E7EB",
+                        background: hasLessons ? "#00A3B4" : "#E5E7EB",
                         minWidth: hasLessons ? 8 : 0,
                       }}
                     />
@@ -481,7 +481,7 @@ function WeeklyReportPage() {
                       color = "#0A2540";
                     } else if (hasLessons && d.prepaidHours > 0) {
                       text = `${d.prepaidHours.toFixed(1)}h prepaid`;
-                      color = "#0B7DDA";
+                      color = "#00A3B4";
                     } else if (hasLessons) {
                       text = "—";
                       color = "#9CA3AF";
@@ -505,7 +505,7 @@ function WeeklyReportPage() {
       {/* Section 3 — Pupils this week */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Users size={16} color="#0B7DDA" />} title="Pupils this week" />
+          <SectionHead icon={<Users size={16} color="#00A3B4" />} title="Pupils this week" />
           {pupilRows.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No pupils taught this week.
@@ -543,7 +543,7 @@ function WeeklyReportPage() {
                               padding: "4px 8px",
                               borderRadius: 999,
                               background: "#DBEAFE",
-                              color: "#0B7DDA",
+                              color: "#00A3B4",
                             }}
                           >
                             {remaining.toFixed(1)}h remaining
@@ -626,7 +626,7 @@ function WeeklyReportPage() {
       {/* Section 4 — Highlights */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Star size={16} color="#0B7DDA" />} title="Week highlights" />
+          <SectionHead icon={<Star size={16} color="#00A3B4" />} title="Week highlights" />
           {highlights.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No highlights yet for this week.
@@ -653,8 +653,8 @@ function WeeklyReportPage() {
             ...POPPINS,
             padding: "12px",
             borderRadius: 10,
-            border: "0.5px solid #0B7DDA",
-            color: "#0B7DDA",
+            border: "0.5px solid #00A3B4",
+            color: "#00A3B4",
             background: "#FFFFFF",
             fontSize: 14,
             fontWeight: 600,

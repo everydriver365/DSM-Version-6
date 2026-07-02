@@ -264,7 +264,7 @@ function MileagePage() {
                       className="text-[10px] uppercase font-medium px-2 py-0.5 rounded-full"
                       style={{
                         color: log.purpose === "business" ? "#FFFFFF" : "#FFFFFF",
-                        backgroundColor: log.purpose === "business" ? "#0B7DDA" : "#6B7280",
+                        backgroundColor: log.purpose === "business" ? "#00A3B4" : "#6B7280",
                         letterSpacing: "0.05em",
                       }}
                     >
@@ -314,7 +314,7 @@ function MileagePage() {
                   type="date"
                   value={tripDate}
                   onChange={(e) => setTripDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -353,7 +353,7 @@ function MileagePage() {
                     onClick={() => setPurpose("business")}
                     className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
                     style={{
-                      backgroundColor: purpose === "business" ? "#0B7DDA" : "transparent",
+                      backgroundColor: purpose === "business" ? "#00A3B4" : "transparent",
                       color: purpose === "business" ? "#FFFFFF" : "#6B7280",
                       fontFamily: "Inter, sans-serif",
                       borderWidth: purpose === "business" ? 0 : "0.5px",

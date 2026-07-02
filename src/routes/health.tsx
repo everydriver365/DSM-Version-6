@@ -184,7 +184,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             <QuickLog
-              icon={<Droplets size={20} color="#0B7DDA" />}
+              icon={<Droplets size={20} color="#00A3B4" />}
               tint="#DBEAFE"
               label="Log water"
               onClick={() =>
@@ -242,7 +242,7 @@ function HealthPage() {
                   >
                     <Droplets
                       size={14}
-                      color={filled ? "#0B7DDA" : "#C7CCD3"}
+                      color={filled ? "#00A3B4" : "#C7CCD3"}
                     />
                   </div>
                 );
@@ -298,7 +298,7 @@ function HealthPage() {
                   width: 6,
                   height: 6,
                   borderRadius: 3,
-                  backgroundColor: i === tipIndex ? "#0B7DDA" : "#EEF2F7",
+                  backgroundColor: i === tipIndex ? "#00A3B4" : "#EEF2F7",
                 }}
               />
             ))}
@@ -327,7 +327,7 @@ function HealthPage() {
                     borderRadius: 28,
                     backgroundColor: active ? "#DBEAFE" : "#F8F9FB",
                     border: active
-                      ? "1px solid #0B7DDA"
+                      ? "1px solid #00A3B4"
                       : "0.5px solid #EEF2F7",
                     fontSize: 28,
                   }}

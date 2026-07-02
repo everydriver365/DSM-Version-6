@@ -318,7 +318,7 @@ function BroadcastPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium"
-            style={{ color: "#0B7DDA", ...POPPINS }}
+            style={{ color: "#00A3B4", ...POPPINS }}
           >
             {allSelectedInList ? "Deselect all" : "Select all"}
           </button>
@@ -373,7 +373,7 @@ function BroadcastPage() {
                           : "#F3F4F6",
                       color:
                         (p.status ?? "active").toLowerCase() === "passed"
-                          ? "#0B7DDA"
+                          ? "#00A3B4"
                           : (p.status ?? "active").toLowerCase() === "active"
                           ? "#16A34A"
                           : "#6B7280",
@@ -438,7 +438,7 @@ function BroadcastPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message…"
-          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#0B7DDA]"
+          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#00A3B4]"
           style={{
             minHeight: 120,
             borderWidth: "0.5px",

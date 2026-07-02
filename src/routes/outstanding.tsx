@@ -291,7 +291,7 @@ function OutstandingPage() {
                           </div>
                           {e.phone && (
                             <a href={`tel:${e.phone}`} style={{
-                              ...actionBase, background: "#0B7DDA", color: "#fff",
+                              ...actionBase, background: "#00A3B4", color: "#fff",
                               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4,
                             }}>
                               <Phone size={12} /> Call
@@ -334,7 +334,7 @@ function OutstandingPage() {
                               aria-label="Complete"
                               style={{
                                 background: "none", border: "none", cursor: "pointer",
-                                color: "#0B7DDA", display: "flex", padding: 0,
+                                color: "#00A3B4", display: "flex", padding: 0,
                               }}
                             >
                               <Square size={20} />
@@ -393,8 +393,8 @@ function ActionBtn({
   disabled?: boolean;
 }) {
   const styles = variant === "primary"
-    ? { background: disabled ? "#cbd5e1" : "#0B7DDA", color: "#fff", border: "none" as const }
-    : { background: "#fff", color: disabled ? "#9CA3AF" : "#0B7DDA", border: `1px solid ${disabled ? "#e3e6ec" : "#0B7DDA"}` };
+    ? { background: disabled ? "#cbd5e1" : "#00A3B4", color: "#fff", border: "none" as const }
+    : { background: "#fff", color: disabled ? "#9CA3AF" : "#00A3B4", border: `1px solid ${disabled ? "#e3e6ec" : "#00A3B4"}` };
   return (
     <button
       onClick={onClick}

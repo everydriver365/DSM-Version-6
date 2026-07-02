@@ -160,7 +160,7 @@ function Checkbox({
 
 function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string }) {
   const [open, setOpen] = useState(false);
-  const bg = type === "SHOW" ? "#0B7DDA" : "#CC2229";
+  const bg = type === "SHOW" ? "#00A3B4" : "#CC2229";
   return (
     <div
       style={{
@@ -459,7 +459,7 @@ function TestDayPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#0B7DDA",
+              backgroundColor: "#00A3B4",
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
               ...POPPINS,
@@ -549,7 +549,7 @@ function TestDayPage() {
                   setAskRetest(false);
                 }}
                 className="text-[12px] font-medium text-white px-3 py-1.5"
-                style={{ borderRadius: 6, backgroundColor: "#0B7DDA", border: "none" }}
+                style={{ borderRadius: 6, backgroundColor: "#00A3B4", border: "none" }}
               >
                 Yes, claim
               </button>
@@ -579,7 +579,7 @@ function TestDayPage() {
 
 function Confetti() {
   const pieces = Array.from({ length: 60 });
-  const colors = ["#CC2229", "#0B7DDA", "#16A34A", "#F59E0B", "#7C3AED"];
+  const colors = ["#CC2229", "#00A3B4", "#16A34A", "#F59E0B", "#7C3AED"];
   return (
     <>
       <style>{`

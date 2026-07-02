@@ -280,7 +280,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           className="font-medium"
           style={{
             fontSize: 12,
-            color: "#0B7DDA",
+            color: "#00A3B4",
             fontFamily: "Inter, sans-serif",
             background: "none",
             border: "none",
@@ -312,7 +312,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           const hasImage = Boolean(tile.image_url);
           const background = hasImage
             ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%), url(${tile.image_url}) center/cover no-repeat`
-            : tile.gradient || "linear-gradient(135deg, #0B7DDA, #0A2540)";
+            : tile.gradient || "linear-gradient(135deg, #00A3B4, #0A2540)";
           return (
             <div
               key={tile.id}
@@ -345,7 +345,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     left: 8,
                     fontSize: 9,
                     backgroundColor: "#FFFFFF",
-                    color: tile.color || "#0B7DDA",
+                    color: tile.color || "#00A3B4",
                     fontFamily: "Inter, sans-serif",
                     padding: "2px 8px",
                     zIndex: 2,
@@ -1194,7 +1194,7 @@ function HomePage() {
       isLive ? "#CC2229"
       : status === "completed" ? "#16A34A"
       : status === "cancelled" ? "#9CA3AF"
-      : "#0B7DDA";
+      : "#00A3B4";
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
@@ -1286,7 +1286,7 @@ function HomePage() {
               }}
               style={{
                 backgroundColor: "#EEF4FB",
-                color: "#0B7DDA",
+                color: "#00A3B4",
                 fontSize: 12,
                 fontWeight: 700,
                 textTransform: "uppercase",
@@ -1572,36 +1572,36 @@ function HomePage() {
   };
 
   const quickAccessTiles = [
-    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Schedule", route: "/schedule" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "MTD", route: "/month-to-date" },
+    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Schedule", route: "/schedule" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "MTD", route: "/month-to-date" },
     { icon: <Map size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Start tracking", route: "/live" },
     { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Month end", route: "/monthend" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Pupils", route: "/pupils" },
     { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Payments", route: "/payments" },
-    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Messages", route: "/messages" },
+    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Messages", route: "/messages" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Earnings", route: "/earnings" },
     { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#D97706", label: "Expenses", route: "/expenses" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
     { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#D97706", label: "Fuel costs", route: "/fuel" },
-    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Reports", route: "/reports" },
+    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tests", route: "/tests" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Test day", route: "/testday" },
     { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#F59E0B", label: "Rewards", route: "/rewards" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <Star size={20} color="#FFFFFF" />, bg: "#D97706", label: "Reviews", route: "/reviews" },
-    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Enquiries", route: "/enquiries" },
+    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Enquiries", route: "/enquiries" },
     { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
     { icon: <Gift size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Referrals", route: "/referrals" },
     { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
-    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "CPD", route: "/cpd" },
+    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "CPD", route: "/cpd" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "CPD log", route: "/cpd" },
     { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Standards", route: "/standards" },
     { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#D97706", label: "Tax", route: "/tax" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Tax report", route: "/tax-report" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Todos", route: "/todos" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Notes", route: "/notes" },
-    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Documents", route: "/documents" },
+    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Documents", route: "/documents" },
     { icon: <ClipboardList size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Manifest", route: "/manifest" },
     { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Checklist", route: "/checklist" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
@@ -1610,31 +1610,31 @@ function HomePage() {
     { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
     { icon: <LayoutGrid size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Pipeline", route: "/pipeline" },
     { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
-    { icon: <Search size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Find gaps", route: "/gaps" },
+    { icon: <Search size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Find gaps", route: "/gaps" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
     { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Sat Nav", route: "/satnav" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Weekly report", route: "/weekly-report" },
+    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Weekly report", route: "/weekly-report" },
     { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
     { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
     { icon: <Award size={20} color="#FFFFFF" />, bg: "#D97706", label: "Certifications", route: "/certifications" },
-    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Availability", route: "/availability" },
+    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Availability", route: "/availability" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#D97706", label: "EOD", route: "/eod" },
-    { icon: <Moon size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "End of day", route: "/end-of-day" },
+    { icon: <Moon size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "End of day", route: "/end-of-day" },
     { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
     { icon: <Zap size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Automations", route: "/automations" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Diary", route: "/diary" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Diary", route: "/diary" },
     { icon: <Crown size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "My plan", route: "/subscription" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
     { icon: <Search size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Availability", route: "/quickavailability" },
+    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Availability", route: "/quickavailability" },
     { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Calendar sync", route: "/calendarsync" },
-    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "Profile", route: "/profile" },
+    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "Profile", route: "/profile" },
     { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#D97706", label: "MTD", route: "/mtd" },
     { icon: <FileText size={20} color="#FFFFFF" />, bg: "#D97706", label: "Quotes", route: "/quotes" },
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#16A34A", label: "Briefing", route: "/briefing" },
     { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#0B7DDA", label: "My website", route: "/minisite" },
+    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#00A3B4", label: "My website", route: "/minisite" },
 
   ] as const;
 
@@ -1647,7 +1647,7 @@ function HomePage() {
         <div className="flex flex-col items-center gap-3">
           <div
             className="animate-spin rounded-full"
-            style={{ width: 32, height: 32, border: '3px solid #EEF2F7', borderTopColor: '#0B7DDA' }}
+            style={{ width: 32, height: 32, border: '3px solid #EEF2F7', borderTopColor: '#00A3B4' }}
           />
           <div style={{ fontSize: 14, color: '#6B7280' }}>Checking access…</div>
         </div>
@@ -1776,7 +1776,7 @@ function HomePage() {
                   style={{
                     width: "100%", textAlign: "left", padding: "12px 0",
                     background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 600, color: "#0B7DDA",
+                    fontSize: 14, fontWeight: 600, color: "#00A3B4",
                     fontFamily: "Inter, sans-serif",
                     display: "flex", alignItems: "center", gap: 10,
                   }}
@@ -1808,7 +1808,7 @@ function HomePage() {
               position: 'absolute', top: 6, right: 6, zIndex: 10,
               fontSize: 10, fontWeight: 700, fontFamily: 'Inter, sans-serif',
               padding: '4px 8px', borderRadius: 6, border: 'none',
-              background: carEditMode ? '#0B7DDA' : 'rgba(15,32,68,0.08)',
+              background: carEditMode ? '#00A3B4' : 'rgba(15,32,68,0.08)',
               color: carEditMode ? '#FFFFFF' : '#0A2540', cursor: 'pointer',
             }}
             title="Drag the car to reposition. Values are saved automatically."
@@ -1860,7 +1860,7 @@ function HomePage() {
                 zIndex: carEditMode ? 5 : 0,
                 pointerEvents: carEditMode ? 'auto' : 'none',
                 cursor: carEditMode ? 'move' : 'default',
-                outline: carEditMode ? '2px dashed #0B7DDA' : 'none',
+                outline: carEditMode ? '2px dashed #00A3B4' : 'none',
                 WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
                 maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
@@ -1974,7 +1974,7 @@ function HomePage() {
                   try { navigator.clipboard?.writeText(txt); toast.success("Car position copied to clipboard"); } catch {}
                   console.log('[car position]', txt);
                 }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#0B7DDA', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#00A3B4', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Copy
                 </button>
                 <button type="button" onClick={() => {
@@ -2000,7 +2000,7 @@ function HomePage() {
                 setCarEditMode(false);
                 toast.success('Car position saved');
               }}
-                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#0B7DDA', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#00A3B4', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                 Save position
               </button>
             </div>
@@ -2021,7 +2021,7 @@ function HomePage() {
                 fontFamily: 'Inter, sans-serif',
                 fontSize: 11,
                 fontWeight: 700,
-                color: '#0B7DDA',
+                color: '#00A3B4',
                 textTransform: 'uppercase',
                 letterSpacing: 0.6,
               }}
@@ -2029,7 +2029,7 @@ function HomePage() {
               {heroExpanded ? 'Hide details' : 'Tap for details'}
               <ChevronDown
                 size={16}
-                color="#0B7DDA"
+                color="#00A3B4"
                 style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
               />
             </div>
@@ -2217,7 +2217,7 @@ function HomePage() {
               }
             }}
             style={{
-              background: "#0B7DDA",
+              background: "#00A3B4",
               color: "#fff",
               border: "none",
               borderRadius: 8,
@@ -2297,7 +2297,7 @@ function HomePage() {
             style={{
               fontSize: 12,
               fontWeight: 600,
-              color: "#0B7DDA",
+              color: "#00A3B4",
               background: "transparent",
               cursor: "pointer",
               fontFamily: "Inter, sans-serif",
@@ -2403,7 +2403,7 @@ function HomePage() {
                 }
               }
 
-              let accent = "#0B7DDA";
+              let accent = "#00A3B4";
               if (isCancelled) accent = "#9CA3AF";
               else if (isCurrent) accent = "#CC2229";
               else if (isCompleted) accent = "#16A34A";
@@ -2535,7 +2535,7 @@ function HomePage() {
                       padding: "1px 6px",
                       borderRadius: 999,
                       backgroundColor: "#EEF4FB",
-                      color: "#0B7DDA",
+                      color: "#00A3B4",
                     }}
                   >
                     Prepaid
@@ -2725,7 +2725,7 @@ function HomePage() {
                     padding: "6px 0",
                     fontSize: 12,
                     fontWeight: 600,
-                    color: "#0B7DDA",
+                    color: "#00A3B4",
                     background: "transparent",
                     cursor: "pointer",
                     textAlign: "left",
@@ -2794,7 +2794,7 @@ function HomePage() {
                   type="button"
                   onClick={() => navigate({ to: "/quickaccess" as never })}
                   className="text-[13px]"
-                  style={{ color: "#0B7DDA", fontFamily: "Inter, sans-serif" }}
+                  style={{ color: "#00A3B4", fontFamily: "Inter, sans-serif" }}
                 >
                   See all
                 </button>
@@ -2802,7 +2802,7 @@ function HomePage() {
                   type="button"
                   onClick={() => alert("Coming soon")}
                   className="text-[13px]"
-                  style={{ color: "#0B7DDA", fontFamily: "Inter, sans-serif" }}
+                  style={{ color: "#00A3B4", fontFamily: "Inter, sans-serif" }}
                 >
                   Edit pins
                 </button>
@@ -2925,7 +2925,7 @@ function HomePage() {
                 className="flex items-center justify-center shrink-0"
                 style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "#DBEAFE" }}
               >
-                <Calculator size={18} color="#0B7DDA" />
+                <Calculator size={18} color="#00A3B4" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
@@ -2956,7 +2956,7 @@ function HomePage() {
                 style={{
                   height: "100%",
                   width: `${(monthsElapsed / 12) * 100}%`,
-                  backgroundColor: "#0B7DDA",
+                  backgroundColor: "#00A3B4",
                   borderRadius: 2,
                 }}
               />
@@ -3189,7 +3189,7 @@ function HeroExpandedPanel({
             height: 36,
             borderRadius: 10,
             border: 'none',
-            background: '#0B7DDA',
+            background: '#00A3B4',
             color: '#fff',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
@@ -3222,11 +3222,11 @@ function HeroExpandedPanel({
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: '#0B7DDA', fontWeight: 600, marginLeft: 'auto' }}
+                style={{ color: '#00A3B4', fontWeight: 600, marginLeft: 'auto' }}
               >Navigate</a>
               <button
                 onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
-                style={{ background: 'none', border: 'none', color: '#0B7DDA', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#00A3B4', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
               >Copy</button>
             </>
           ) : (
@@ -3417,7 +3417,7 @@ function EndOfDayBanner() {
         fontFamily: "Inter, sans-serif",
       }}
     >
-      <Moon size={16} color="#0B7DDA" />
+      <Moon size={16} color="#00A3B4" />
       <div style={{ fontSize: 13, color: "#0A2540", fontWeight: 600 }}>
         Ready to wrap up?
       </div>
@@ -3428,7 +3428,7 @@ function EndOfDayBanner() {
           marginLeft: "auto",
           fontSize: 12,
           fontWeight: 600,
-          color: "#0B7DDA",
+          color: "#00A3B4",
           background: "transparent",
           cursor: "pointer",
           fontFamily: "Inter, sans-serif",
@@ -3785,7 +3785,7 @@ function OutstandingBreakdownModal({
               padding: "10px 12px",
               fontSize: 13,
               fontWeight: 700,
-              backgroundColor: rows.length === 0 ? "#E5E7EB" : "#0B7DDA",
+              backgroundColor: rows.length === 0 ? "#E5E7EB" : "#00A3B4",
               color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
               border: "none",
               borderRadius: 8,
@@ -3853,7 +3853,7 @@ function EarningsBreakdownModal({
               <div style={{ marginTop: 8 }}>
                 <button
                   onClick={onRecord}
-                  style={{ background: "none", border: "none", color: "#0B7DDA", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
+                  style={{ background: "none", border: "none", color: "#00A3B4", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
                 >
                   Record payment →
                 </button>
@@ -3890,7 +3890,7 @@ function EarningsBreakdownModal({
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#0B7DDA", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#00A3B4", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
             >
               View MTD →
             </button>
@@ -4214,8 +4214,8 @@ function TestsBreakdownModal({
           })}
 
           <div style={{ padding: "16px 16px 8px", display: "flex", alignItems: "center", gap: 6 }}>
-            <ArrowLeftRight size={14} color="#0B7DDA" />
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#0B7DDA", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            <ArrowLeftRight size={14} color="#00A3B4" />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#00A3B4", textTransform: "uppercase", letterSpacing: 0.5 }}>
               EverySwap requests
             </span>
           </div>

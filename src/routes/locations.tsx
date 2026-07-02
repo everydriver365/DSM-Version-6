@@ -183,7 +183,7 @@ function LocationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <MapPin size={28} color="#0B7DDA" />
+                <MapPin size={28} color="#00A3B4" />
               </div>
               <div className="text-[14px] text-[#6B7280]">No saved locations yet</div>
             </div>
@@ -207,7 +207,7 @@ function LocationsPage() {
                           flexShrink: 0,
                         }}
                       >
-                        <MapPin size={18} color="#0B7DDA" />
+                        <MapPin size={18} color="#00A3B4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[14px] font-semibold text-[#0A2540] truncate">
@@ -251,10 +251,10 @@ function LocationsPage() {
                         height: 32,
                         gap: 4,
                         flexShrink: 0,
-                        color: "#0B7DDA",
+                        color: "#00A3B4",
                       }}
                     >
-                      <NavIcon size={14} color="#0B7DDA" />
+                      <NavIcon size={14} color="#00A3B4" />
                       <span className="text-[12px] font-medium">Navigate</span>
                     </button>
                   </div>

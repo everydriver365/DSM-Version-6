@@ -49,7 +49,7 @@ function ResetPasswordPage() {
 
   const inputStyle = { fontFamily: "Inter, sans-serif", border: "1.5px solid #CBD5E1" } as const;
   const inputCls =
-    "h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]";
+    "h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]";
 
   return (
     <div
