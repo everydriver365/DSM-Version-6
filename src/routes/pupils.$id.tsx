@@ -1215,7 +1215,7 @@ function PupilDetailPage() {
                             .from("pupils")
                             .update({ test_centre_id: null })
                             .eq("id", pupil.id);
-                          if (error) { toast.error("Could not clear centre"); return; }
+                          if (error) { toast.error("Failed to save — please try again"); return; }
                           setCentreInfo(null);
                           setPupil({ ...pupil, test_centre_id: null });
                           setCentrePickerOpen(false);
@@ -1250,7 +1250,7 @@ function PupilDetailPage() {
                                 .from("pupils")
                                 .update({ test_centre_id: c.id, test_centre: c.name })
                                 .eq("id", pupil.id);
-                              if (error) { toast.error("Could not update centre"); return; }
+                              if (error) { toast.error("Failed to save — please try again"); return; }
                               setCentreInfo(c);
                               setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
                               setCentrePickerOpen(false);
