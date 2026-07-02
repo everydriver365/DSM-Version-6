@@ -2581,9 +2581,8 @@ function HomePage() {
                 );
               }
 
-
-
               rows.push(
+
                 <div
                   key={l.id}
                   role="button"
