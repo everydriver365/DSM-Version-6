@@ -1,22 +1,19 @@
-## Why you see no changes
+## Findings
 
-The previous restyles replaced specific hex codes (`#0C2340`, `#0A2540`, etc.), but the app's most visible surfaces are hardcoded with **different** navy hexes that were never on the replacement list:
+- The 2-row horizontally scrollable marketplace grid is confirmed live in the preview on /home (verified against the running app: 2 rows, horizontal scroll, snap enabled).
+- One of your two open preview windows did not respond — it's likely showing stale code. A hard refresh fixes that; no code change needed for this.
+- The console shows duplicate React key warnings (`Availability` and `MTD`) on the home page. Duplicate keys can cause tiles to be duplicated, omitted, or not update visually — worth fixing.
 
-- `#072b47` — the top header bar on every logged-in screen (`InstructorTopBar` + ~70 route files)
-- `#1B2B4B` — secondary dark surfaces (66 occurrences)
-- `#1A1A2E` — near-black text/surfaces (147 occurrences)
-- `rgba(15, 32, 68, …)` — translucent navy overlays in inline styles
+## Plan
 
-I confirmed the live preview is rendering `#072b47` in the header right now — so it's not a caching issue; those elements genuinely still have the old colors.
+1. **Fix duplicate keys on the home page** (`src/routes/home.tsx` only)
+   - Locate the tile/list renders keyed by label (e.g. `key={tile.title}`) where "Availability" and "MTD" appear twice.
+   - Switch to a guaranteed-unique key (stable id, or `label + index` where no id exists).
+   - No visual or functional changes — purely a rendering-stability fix.
 
-## Fix
+2. **Verify**
+   - Reload /home in the preview and confirm the duplicate-key console warnings are gone and all tiles render correctly.
 
-Map every remaining legacy dark color to the Checkfront palette so the change is unmissable:
+## Not included
 
-1. Replace `#072b47` / `#072B47` → Checkfront deep navy `#0B1F3A` everywhere (header bars, borders, gradients).
-2. Replace `#1B2B4B` → `#0B1F3A` (or a slightly lighter Checkfront navy for hierarchy).
-3. Replace `#1A1A2E` → `#0B1F3A` where used as a surface, and Checkfront text navy where used as text.
-4. Replace lingering `rgba(15,32,68,…)` overlays with the `#0B1F3A` rgb equivalents.
-5. Verify visually with an automated screenshot of `/home` before handing back, confirming the header renders `#0B1F3A` and accents render `#1877D6`.
-
-Only color values change — no layout, functionality, or file structure changes.
+- No changes to the marketplace grid itself — it's already working as requested.
