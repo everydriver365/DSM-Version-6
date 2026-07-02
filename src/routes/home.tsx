@@ -851,6 +851,31 @@ function HomePage() {
       }
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
+      const pupilIds = [...new Set((lessonRows ?? []).map((l: any) => l.pupil_id).filter(Boolean))];
+
+      if (pupilIds.length > 0) {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+        const { data: { session } } = await supabase.auth.getSession();
+
+        const token = session?.access_token;
+
+        const colourRes = await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(',')})&select=id,calendar_colour`, {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+        });
+
+        const colourData = await colourRes.json();
+
+        const map: Record<string, string> = {};
+
+        (colourData || []).forEach((p: any) => { if (p.calendar_colour) map[p.id] = p.calendar_colour; });
+
+        setPupilColourMap(map);
+      }
+
+
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
