@@ -191,6 +191,16 @@ function PupilDetailPage() {
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
         console.log("[pupils.$id] pupil data:", p, "lesson_count:", p?.lesson_count, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+        if (p?.test_centre_id) {
+          supabase
+            .from("test_centres")
+            .select("id, name, town")
+            .eq("id", p.test_centre_id)
+            .maybeSingle()
+            .then(({ data: tc }) => setCentreInfo((tc as any) ?? null));
+        } else {
+          setCentreInfo(null);
+        }
       });
 
     supabase
