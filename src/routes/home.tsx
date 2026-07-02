@@ -425,6 +425,8 @@ function HomePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [pupilColourMap, setPupilColourMap] = useState<Record<string, string>>({});
+
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [outstandingOpen, setOutstandingOpen] = useState(false);
@@ -849,6 +851,31 @@ function HomePage() {
       }
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
+      const pupilIds = [...new Set((lessonRows ?? []).map((l: any) => l.pupil_id).filter(Boolean))];
+
+      if (pupilIds.length > 0) {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+        const { data: { session } } = await supabase.auth.getSession();
+
+        const token = session?.access_token;
+
+        const colourRes = await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(',')})&select=id,calendar_colour`, {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+        });
+
+        const colourData = await colourRes.json();
+
+        const map: Record<string, string> = {};
+
+        (colourData || []).forEach((p: any) => { if (p.calendar_colour) map[p.id] = p.calendar_colour; });
+
+        setPupilColourMap(map);
+      }
+
+
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
@@ -1208,11 +1235,13 @@ function HomePage() {
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
+    const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
     const accent =
-      isLive ? "#1877D6"
-      : status === "completed" ? "#1877D6"
+      isLive ? lessonColour
+      : status === "completed" ? lessonColour
       : status === "cancelled" ? "#9CA3AF"
-      : "#1877D6";
+      : lessonColour;
+
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
@@ -1246,24 +1275,14 @@ function HomePage() {
           borderWidth: "0.5px",
           borderStyle: "solid",
           borderColor: "#EEF2F7",
+          borderLeft: `4px solid ${lessonColour}`,
           marginBottom: 6,
-          backgroundColor: isLive ? "#FFF5F5" : "#FFFFFF",
+          background: `${lessonColour}10`,
           cursor: "pointer",
         }}
       >
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 10,
-            bottom: 10,
-            width: 3,
-            borderRadius: 2,
-            backgroundColor: accent,
-          }}
-        />
         <div className="flex items-center" style={{ gap: 12, minWidth: 0 }}>
+
           <span className="text-[14px] font-bold" style={{ color: accent }}>
             {formatTime(l)}
           </span>
@@ -2424,12 +2443,10 @@ function HomePage() {
                 }
               }
 
-              let accent = "#1877D6";
-              if (isCancelled) accent = "#9CA3AF";
-              else if (isCurrent) accent = "#1877D6";
-              else if (isCompleted) accent = "#1877D6";
+              const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+
               const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
               const badges: React.ReactNode[] = [];
@@ -2590,8 +2607,11 @@ function HomePage() {
                     padding: "10px 16px",
                     alignItems: "stretch",
                     cursor: "pointer",
+                    borderLeft: `4px solid ${lessonColour}`,
+                    background: `${lessonColour}10`,
                   }}
                 >
+
                   {(() => {
                     const needsAttention =
                       !isCancelled &&
@@ -2638,16 +2658,8 @@ function HomePage() {
                   </div>
                     );
                   })()}
-                  <div
-                    style={{
-                      width: 3,
-                      borderRadius: 2,
-                      backgroundColor: accent,
-                      flexShrink: 0,
-                      alignSelf: "stretch",
-                    }}
-                  />
                   <div style={{ flex: 1, minWidth: 0 }}>
+
                     <div
                       className="truncate"
                       style={{
