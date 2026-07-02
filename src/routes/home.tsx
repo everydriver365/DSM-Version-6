@@ -2445,9 +2445,8 @@ function HomePage() {
 
               const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
 
-
-
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+
               const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
               const badges: React.ReactNode[] = [];
