@@ -8,6 +8,9 @@ import {
   MapPin,
   Mic,
   MicOff,
+  Check,
+  Plus,
+  Search,
   Trophy,
   User,
 } from "lucide-react";
