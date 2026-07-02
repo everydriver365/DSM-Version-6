@@ -448,9 +448,9 @@ function ExpenseRow({
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
           <div
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
+              width: 36,
+              height: 36,
+              borderRadius: 8,
               background: categoryColour(row.category) + '26',
               display: 'flex',
               alignItems: 'center',
