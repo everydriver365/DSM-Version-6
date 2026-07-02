@@ -3372,6 +3372,9 @@ function iconTint(solid: string) {
     case "#EA580C": return "#FFF7ED";
     case "#16A34A": return "#F0FDF4";
     case "#7C3AED": return "#F5F3FF";
+    case "#EC4899": return "#FDF2F8";
+    case "#06B6D4": return "#ECFEFF";
+    case "#F59E0B": return "#FFFBEB";
     default: return "#F3F8FF";
   }
 }
