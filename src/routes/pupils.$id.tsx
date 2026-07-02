@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, Flag, Loader2, Pencil, Phone, Trash2, X } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, ChevronRight, ClipboardList, CreditCard, Flag, Heart, Loader2, Palette, Pencil, Phone, PoundSterling, Trash2, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -49,6 +49,14 @@ interface Pupil {
   test_centre: string | null;
   wants_swap: boolean | null;
   theory_pass: boolean | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  emergency_contact_relation: string | null;
+  driving_licence_number: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
+  calendar_colour: string | null;
 }
 
 interface Lesson {
@@ -164,7 +172,9 @@ function PupilDetailPage() {
         notes, profile_image_url, photo_url, photo_consent,
         address, postcode, lead_source, lead_source_detail,
         theory_pass, wants_swap,
-        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference
+        ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
+        emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
+        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour
       `)
       .eq("id", id)
       .is("deleted_at", null)
