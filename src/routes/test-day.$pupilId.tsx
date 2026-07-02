@@ -500,12 +500,95 @@ function TestDayPage() {
             Navigate to test centre
           </h2>
         </div>
-        <div className="text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-          {pupil?.test_centre ?? "No test centre set"}
+        <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          {centreDisplayName ?? "No test centre set"}
         </div>
-        {centreAddress && (
+        {centreFullAddress && (
           <div className="text-[13px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>
-            {centreAddress}
+            {centreFullAddress}
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            setShowCentrePicker((v) => !v);
+            setCentreSearch("");
+          }}
+          className="text-[12px] font-semibold mt-2"
+          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+        >
+          {showCentrePicker ? "Cancel" : "Change test centre"}
+        </button>
+        {showCentrePicker && (
+          <div className="mt-2" style={{ position: "relative" }}>
+            <div style={{ position: "relative" }}>
+              <Search
+                size={16}
+                color="#64748B"
+                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+              />
+              <input
+                type="text"
+                placeholder="Search test centres..."
+                value={centreSearch}
+                onChange={(e) => setCentreSearch(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  padding: "0 12px 0 36px",
+                  borderRadius: 8,
+                  border: "0.5px solid #E2E6ED",
+                  fontSize: 14,
+                  outline: "none",
+                  ...POPPINS,
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 8,
+                maxHeight: 220,
+                overflowY: "auto",
+                backgroundColor: "#FFFFFF",
+              }}
+            >
+              {(() => {
+                const q = centreSearch.trim().toLowerCase();
+                const filtered = q
+                  ? allCentres.filter(
+                      (c) =>
+                        (c.name || "").toLowerCase().includes(q) ||
+                        (c.town || "").toLowerCase().includes(q),
+                    )
+                  : allCentres;
+                if (filtered.length === 0) {
+                  return (
+                    <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>
+                      No centres found
+                    </div>
+                  );
+                }
+                return filtered.map((c) => (
+                  <div
+                    key={c.id}
+                    onClick={() => selectCentre(c)}
+                    className="cursor-pointer"
+                    style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                  >
+                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      {c.name}
+                    </div>
+                    {c.town ? (
+                      <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                        {c.town}
+                      </div>
+                    ) : null}
+                  </div>
+                ));
+              })()}
+            </div>
           </div>
         )}
         <div className="grid grid-cols-2 gap-2 mt-3">
