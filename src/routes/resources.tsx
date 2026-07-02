@@ -36,7 +36,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Official DVSA instructor guidance and updates",
     url: "https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency",
     Icon: BookOpen,
-    iconColor: "#1A4A6E",
+    iconColor: "#0B7DDA",
   },
   {
     title: "Check a driving licence",
@@ -64,7 +64,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Check the approved driving instructor register",
     url: "https://www.gov.uk/find-driving-instructor",
     Icon: Award,
-    iconColor: "#1A4A6E",
+    iconColor: "#0B7DDA",
   },
   {
     title: "Highway Code",
@@ -88,7 +88,7 @@ const usefulTools: ResourceItem[] = [
     description: "Navigate to your next lesson",
     url: "https://maps.google.com",
     Icon: Navigation,
-    iconColor: "#1A4A6E",
+    iconColor: "#0B7DDA",
   },
   {
     title: "Met Office",
@@ -170,7 +170,7 @@ function ResourceCard({ resource }: { resource: ResourceItem }) {
         <Icon size={18} color={iconColor} />
       </span>
       <div className="ml-3 flex-1 min-w-0">
-        <div className="text-[14px] font-semibold text-[#0C2340] truncate" style={POPPINS}>
+        <div className="text-[14px] font-semibold text-[#0A2540] truncate" style={POPPINS}>
           {title}
         </div>
         <div className="text-[13px] text-[#6B7280] truncate">{description}</div>

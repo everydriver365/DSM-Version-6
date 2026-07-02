@@ -173,11 +173,11 @@ function SatNavPage() {
             >
               NEXT LESSON
             </div>
-            <div className="text-[18px] font-semibold text-[#0C2340] mt-1">{pupilName}</div>
+            <div className="text-[18px] font-semibold text-[#0A2540] mt-1">{pupilName}</div>
             <div className="text-[14px] text-[#6B7280] mt-0.5">
               {pupilPhone ?? "No phone number"}
             </div>
-            <div className="text-[14px] font-bold text-[#0C2340] mt-1">{lessonTime}</div>
+            <div className="text-[14px] font-bold text-[#0A2540] mt-1">{lessonTime}</div>
 
             <div className="flex mt-4" style={{ gap: 8 }}>
               <a
@@ -192,7 +192,7 @@ function SatNavPage() {
               <a
                 href={pupilPhone ? `tel:${pupilPhone}` : "#"}
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "#1A4A6E" }}
+                style={{ height: 40, borderRadius: 8, backgroundColor: "#0B7DDA" }}
               >
                 <Phone size={16} /> Call
               </a>

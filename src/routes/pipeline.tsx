@@ -139,14 +139,14 @@ function PipelinePage() {
                     marginBottom: 8,
                   }}
                 >
-                  <span className="text-[13px] font-semibold" style={{ color: "#0C2340" }}>
+                  <span className="text-[13px] font-semibold" style={{ color: "#0A2540" }}>
                     {s.label}
                   </span>
                   <span
                     className="text-[11px] font-medium"
                     style={{
                       backgroundColor: "#EEF2F7",
-                      color: "#0C2340",
+                      color: "#0A2540",
                       padding: "2px 8px",
                       borderRadius: 999,
                     }}
@@ -185,7 +185,7 @@ function PipelinePage() {
                         padding: 12,
                       }}
                     >
-                      <div className="text-[14px] font-semibold" style={{ color: "#0C2340" }}>
+                      <div className="text-[14px] font-semibold" style={{ color: "#0A2540" }}>
                         {lead.name}
                       </div>
                       {lead.phone && (
@@ -194,7 +194,7 @@ function PipelinePage() {
                         </div>
                       )}
                       {lead.course_interest && (
-                        <div className="text-[12px] mt-1" style={{ color: "#0C2340" }}>
+                        <div className="text-[12px] mt-1" style={{ color: "#0A2540" }}>
                           {lead.course_interest}
                         </div>
                       )}
@@ -202,7 +202,7 @@ function PipelinePage() {
                         className="inline-block mt-2 text-[10px] font-medium"
                         style={{
                           backgroundColor: "#EEF4FB",
-                          color: "#1A4A6E",
+                          color: "#0B7DDA",
                           padding: "2px 8px",
                           borderRadius: 999,
                         }}
@@ -282,7 +282,7 @@ function SheetShell({
             borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0C2340" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0A2540" }}>
             {title}
           </div>
           <button
@@ -292,7 +292,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0C2340" />
+            <X size={20} color="#0A2540" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>

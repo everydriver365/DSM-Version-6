@@ -168,7 +168,7 @@ function LessonFeedbackPage() {
           {/* Header summary */}
           <div className="mt-3">
             <Card>
-              <div className="text-[16px] font-semibold" style={{ color: "#0C2340", ...POPPINS }}>
+              <div className="text-[16px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
                 {pupilName}
               </div>
               <div className="text-[13px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -192,9 +192,9 @@ function LessonFeedbackPage() {
                     height: 32,
                     padding: "0 12px",
                     borderRadius: 16,
-                    backgroundColor: selected ? "#1A4A6E" : "#F8F9FB",
-                    color: selected ? "#FFFFFF" : "#0C2340",
-                    border: selected ? "0.5px solid #1A4A6E" : "0.5px solid #EEF2F7",
+                    backgroundColor: selected ? "#0B7DDA" : "#F8F9FB",
+                    color: selected ? "#FFFFFF" : "#0A2540",
+                    border: selected ? "0.5px solid #0B7DDA" : "0.5px solid #EEF2F7",
                     ...POPPINS,
                   }}
                 >
@@ -219,8 +219,8 @@ function LessonFeedbackPage() {
                     style={{
                       height: 40,
                       borderRadius: 8,
-                      backgroundColor: active ? "#1A4A6E" : "#FFFFFF",
-                      color: active ? "#FFFFFF" : "#0C2340",
+                      backgroundColor: active ? "#0B7DDA" : "#FFFFFF",
+                      color: active ? "#FFFFFF" : "#0A2540",
                       border: "0.5px solid #EEF2F7",
                       ...POPPINS,
                     }}
@@ -234,7 +234,7 @@ function LessonFeedbackPage() {
               <span>Needs work</span>
               <span>Excellent</span>
             </div>
-            <div className="text-center text-[13px] font-medium mt-2" style={{ color: "#0C2340", ...POPPINS }}>
+            <div className="text-center text-[13px] font-medium mt-2" style={{ color: "#0A2540", ...POPPINS }}>
               {RATING_LABELS[rating - 1]}
             </div>
           </Card>
@@ -246,9 +246,9 @@ function LessonFeedbackPage() {
             value={instructorNotes}
             onChange={(e) => setInstructorNotes(e.target.value)}
             placeholder="Private notes (not shared with pupil)"
-            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#1A4A6E] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
             style={{
-              color: "#0C2340",
+              color: "#0A2540",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
@@ -263,9 +263,9 @@ function LessonFeedbackPage() {
             value={pupilFeedback}
             onChange={(e) => setPupilFeedback(e.target.value)}
             placeholder="Shared with pupil"
-            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#1A4A6E] focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
             style={{
-              color: "#0C2340",
+              color: "#0A2540",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",

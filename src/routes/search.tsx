@@ -256,7 +256,7 @@ function SearchPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F7F5EF" }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 flex items-center px-3"
@@ -289,7 +289,7 @@ function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search everything..."
-            className="flex-1 bg-transparent outline-none text-[14px] text-[#0C2340]"
+            className="flex-1 bg-transparent outline-none text-[14px] text-[#0A2540]"
             style={POPPINS}
           />
           {query && (
@@ -316,7 +316,7 @@ function SearchPage() {
               <div className="flex flex-col" style={{ gap: 8 }}>
                 {recents.map((r) => (
                   <Row key={r.route} onClick={() => go(r.route)} icon={<Clock size={16} color="#6B7280" />}>
-                    <div className="text-[14px] text-[#0C2340]">{r.label}</div>
+                    <div className="text-[14px] text-[#0A2540]">{r.label}</div>
                     <div className="text-[12px] text-[#6B7280]">{r.route}</div>
                   </Row>
                 ))}
@@ -356,7 +356,7 @@ function SearchPage() {
                     icon={<Avatar name={p.name} />}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="text-[14px] text-[#0C2340]">{p.name}</div>
+                      <div className="text-[14px] text-[#0A2540]">{p.name}</div>
                       {p.status && <StatusBadge status={p.status} />}
                     </div>
                   </Row>
@@ -372,7 +372,7 @@ function SearchPage() {
               >
                 {results.lessons.slice(0, 3).map((l) => (
                   <Row key={l.id} onClick={() => go("/schedule")}>
-                    <div className="text-[14px] text-[#0C2340]">
+                    <div className="text-[14px] text-[#0A2540]">
                       {formatTime(l.lesson_time)} · {l.pupilName}
                     </div>
                     <div className="text-[12px] text-[#6B7280]">{formatDate(l.lesson_date)}</div>
@@ -390,8 +390,8 @@ function SearchPage() {
                 {results.payments.slice(0, 3).map((p) => (
                   <Row key={p.id} onClick={() => go("/payments")}>
                     <div className="flex items-center justify-between">
-                      <div className="text-[14px] text-[#0C2340]">{p.pupilName}</div>
-                      <div className="text-[14px] font-semibold text-[#0C2340]">
+                      <div className="text-[14px] text-[#0A2540]">{p.pupilName}</div>
+                      <div className="text-[14px] font-semibold text-[#0A2540]">
                         £{p.amount.toFixed(0)}
                       </div>
                     </div>
@@ -412,7 +412,7 @@ function SearchPage() {
                     key={n.id}
                     onClick={() => navigate({ to: "/notes/$id", params: { id: n.id } })}
                   >
-                    <div className="text-[14px] text-[#0C2340]">
+                    <div className="text-[14px] text-[#0A2540]">
                       {n.title?.trim() || "Untitled"}
                     </div>
                     {n.body && (
@@ -441,7 +441,7 @@ function SearchPage() {
                 {results.enquiries.slice(0, 3).map((e) => (
                   <Row key={e.id} onClick={() => go("/enquiries")}>
                     <div className="flex items-center justify-between">
-                      <div className="text-[14px] text-[#0C2340]">{e.name ?? "Unnamed"}</div>
+                      <div className="text-[14px] text-[#0A2540]">{e.name ?? "Unnamed"}</div>
                       {e.status && <StatusBadge status={e.status} />}
                     </div>
                   </Row>
@@ -475,7 +475,7 @@ function ResultGroup({
             type="button"
             onClick={onSeeAll}
             className="text-[12px] font-medium"
-            style={{ color: "#1A4A6E", ...POPPINS }}
+            style={{ color: "#0B7DDA", ...POPPINS }}
           >
             See all {total}
           </button>
@@ -523,7 +523,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <span
       className="flex items-center justify-center rounded-full text-white text-[12px] font-semibold"
-      style={{ width: 32, height: 32, backgroundColor: "#1A4A6E" }}
+      style={{ width: 32, height: 32, backgroundColor: "#0B7DDA" }}
     >
       {initial}
     </span>

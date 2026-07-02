@@ -366,7 +366,7 @@ function WeeklyReportPage() {
       {/* Top bar */}
       <div
         style={{
-          background: "#0C2340",
+          background: "#0A2540",
           color: "#FFFFFF",
           padding: "12px 16px",
           display: "flex",
@@ -404,11 +404,11 @@ function WeeklyReportPage() {
           type="button"
           onClick={gotoPrevWeek}
           aria-label="Previous week"
-          style={{ background: "transparent", border: "none", padding: 4, cursor: "pointer", color: "#0C2340" }}
+          style={{ background: "transparent", border: "none", padding: 4, cursor: "pointer", color: "#0A2540" }}
         >
           <ChevronLeft size={22} />
         </button>
-        <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0C2340" }}>
+        <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0A2540" }}>
           Week of {DAY_LABELS[0]} {weekStart.getDate()} {MONTH_SHORT[weekStart.getMonth()]}
         </div>
         <button
@@ -421,7 +421,7 @@ function WeeklyReportPage() {
             border: "none",
             padding: 4,
             cursor: isCurrentWeek ? "not-allowed" : "pointer",
-            color: isCurrentWeek ? "#9CA3AF" : "#0C2340",
+            color: isCurrentWeek ? "#9CA3AF" : "#0A2540",
           }}
         >
           <ChevronRight size={22} />
@@ -436,14 +436,14 @@ function WeeklyReportPage() {
         <StatTile
           label="Outstanding"
           value={loading ? "…" : gbpFromPounds(outstandingPounds)}
-          valueColor={outstandingPounds > 0 ? "#DC2626" : "#0C2340"}
+          valueColor={outstandingPounds > 0 ? "#DC2626" : "#0A2540"}
         />
       </div>
 
       {/* Section 2 — Day by day */}
       <div style={{ margin: "0 16px" }}>
         <CardBox>
-          <SectionHead icon={<CalendarIcon size={16} color="#1A4A6E" />} title="Day by day" />
+          <SectionHead icon={<CalendarIcon size={16} color="#0B7DDA" />} title="Day by day" />
           <div className="flex flex-col gap-2 mt-3">
             {dayRows.map((d) => {
               const pct = Math.min(100, (d.hours / maxDayHours) * 100);
@@ -452,7 +452,7 @@ function WeeklyReportPage() {
                 <div key={d.key} className="flex items-center gap-3">
                   <div
                     className="text-[12px] font-medium"
-                    style={{ ...POPPINS, width: 56, color: hasLessons ? "#0C2340" : "#6B7280" }}
+                    style={{ ...POPPINS, width: 56, color: hasLessons ? "#0A2540" : "#6B7280" }}
                   >
                     {d.label} {d.dayNum}
                   </div>
@@ -462,7 +462,7 @@ function WeeklyReportPage() {
                         width: `${pct}%`,
                         height: 6,
                         borderRadius: 3,
-                        background: hasLessons ? "#1A4A6E" : "#E5E7EB",
+                        background: hasLessons ? "#0B7DDA" : "#E5E7EB",
                         minWidth: hasLessons ? 8 : 0,
                       }}
                     />
@@ -478,10 +478,10 @@ function WeeklyReportPage() {
                       color = "#15803D";
                     } else if (hasLessons && d.amountDuePounds > 0) {
                       text = gbpFromPounds(d.amountDuePounds);
-                      color = "#0C2340";
+                      color = "#0A2540";
                     } else if (hasLessons && d.prepaidHours > 0) {
                       text = `${d.prepaidHours.toFixed(1)}h prepaid`;
-                      color = "#1A4A6E";
+                      color = "#0B7DDA";
                     } else if (hasLessons) {
                       text = "—";
                       color = "#9CA3AF";
@@ -505,7 +505,7 @@ function WeeklyReportPage() {
       {/* Section 3 — Pupils this week */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Users size={16} color="#1A4A6E" />} title="Pupils this week" />
+          <SectionHead icon={<Users size={16} color="#0B7DDA" />} title="Pupils this week" />
           {pupilRows.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No pupils taught this week.
@@ -521,7 +521,7 @@ function WeeklyReportPage() {
                   style={{ borderTop: "0.5px solid #F1F3F7", background: "transparent", border: "none" }}
                 >
                   <div className="min-w-0">
-                    <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0C2340" }}>
+                    <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0A2540" }}>
                       {p.name}
                     </div>
                     <div className="text-[12px]" style={{ ...POPPINS, color: "#6B7280" }}>
@@ -543,7 +543,7 @@ function WeeklyReportPage() {
                               padding: "4px 8px",
                               borderRadius: 999,
                               background: "#DBEAFE",
-                              color: "#1A4A6E",
+                              color: "#0B7DDA",
                             }}
                           >
                             {remaining.toFixed(1)}h remaining
@@ -626,7 +626,7 @@ function WeeklyReportPage() {
       {/* Section 4 — Highlights */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Star size={16} color="#1A4A6E" />} title="Week highlights" />
+          <SectionHead icon={<Star size={16} color="#0B7DDA" />} title="Week highlights" />
           {highlights.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No highlights yet for this week.
@@ -634,7 +634,7 @@ function WeeklyReportPage() {
           ) : (
             <ul className="mt-2 flex flex-col gap-2">
               {highlights.map((h, i) => (
-                <li key={i} className="text-[13px]" style={{ ...POPPINS, color: "#0C2340" }}>
+                <li key={i} className="text-[13px]" style={{ ...POPPINS, color: "#0A2540" }}>
                   {h}
                 </li>
               ))}
@@ -653,8 +653,8 @@ function WeeklyReportPage() {
             ...POPPINS,
             padding: "12px",
             borderRadius: 10,
-            border: "0.5px solid #1A4A6E",
-            color: "#1A4A6E",
+            border: "0.5px solid #0B7DDA",
+            color: "#0B7DDA",
             background: "#FFFFFF",
             fontSize: 14,
             fontWeight: 600,
@@ -690,7 +690,7 @@ function WeeklyReportPage() {
 function StatTile({
   label,
   value,
-  valueColor = "#0C2340",
+  valueColor = "#0A2540",
 }: {
   label: string;
   value: string;
@@ -734,7 +734,7 @@ function SectionHead({ icon, title }: { icon: React.ReactNode; title: string }) 
   return (
     <div className="flex items-center gap-2">
       {icon}
-      <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0C2340" }}>
+      <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0A2540" }}>
         {title}
       </div>
     </div>

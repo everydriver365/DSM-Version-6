@@ -28,7 +28,7 @@ export function BottomNav({ active }: Props) {
     >
       {items.map(({ key, to, label, Icon }) => {
         const isActive = key === active;
-        const color = isActive ? "#1A4A6E" : "#6B7280";
+        const color = isActive ? "#0B7DDA" : "#6B7280";
         return (
           <Link
             key={key}

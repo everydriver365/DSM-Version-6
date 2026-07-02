@@ -197,7 +197,7 @@ function MarketplaceEditPage() {
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div
         style={{
-          background: "#0C2340",
+          background: "#0A2540",
           color: "#fff",
           padding: "14px 16px",
           display: "flex",
@@ -413,7 +413,7 @@ function MarketplaceEditPage() {
                       disabled={savingId === key}
                       style={{
                         flex: 1,
-                        background: "#0C2340",
+                        background: "#0A2540",
                         color: "#fff",
                         border: "none",
                         padding: "10px 14px",
@@ -448,8 +448,8 @@ function MarketplaceEditPage() {
               style={{
                 width: "100%",
                 background: "#fff",
-                color: "#0C2340",
-                border: "2px dashed #0C2340",
+                color: "#0A2540",
+                border: "2px dashed #0A2540",
                 padding: "14px",
                 borderRadius: 10,
                 fontWeight: 600,

@@ -57,7 +57,7 @@ const TYPE_META: Record<
   intensive: { label: "Intensive", color: "#CC2229", bg: "#fbe8e8", desc: "All hours in one week" },
   "semi-intensive": { label: "Semi-intensive", color: "#F59E0B", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
   weekly: { label: "Weekly lessons", color: "#16A34A", bg: "#e7f6ec", desc: "Regular weekly slots" },
-  custom: { label: "Custom", color: "#1A4A6E", bg: "#e8eefb", desc: "You define the schedule" },
+  custom: { label: "Custom", color: "#0B7DDA", bg: "#e8eefb", desc: "You define the schedule" },
 };
 
 function ymd(d: Date) {
@@ -400,7 +400,7 @@ function NewCoursePage() {
 
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 24 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F7F5EF", ...POPPINS, paddingBottom: 24 }}>
       {/* Top bar */}
       <div
         style={{
@@ -461,8 +461,8 @@ function NewCoursePage() {
               onClick={() => setStep(s.n as 1 | 2 | 3)}
               style={{
                 flex: 1,
-                background: active ? "#1A4A6E" : done ? "#e8eefb" : "#fff",
-                color: active ? "#fff" : "#1A4A6E",
+                background: active ? "#0B7DDA" : done ? "#e8eefb" : "#fff",
+                color: active ? "#fff" : "#0B7DDA",
                 border: "1px solid #e3e6ec",
                 borderRadius: 10,
                 padding: "8px 6px",
@@ -560,8 +560,8 @@ function NewCoursePage() {
                 flex: 1,
                 height: 44,
                 background: "#fff",
-                color: "#1A4A6E",
-                border: "1px solid #1A4A6E",
+                color: "#0B7DDA",
+                border: "1px solid #0B7DDA",
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -575,7 +575,7 @@ function NewCoursePage() {
               style={{
                 flex: 1,
                 height: 44,
-                background: "#1A4A6E",
+                background: "#0B7DDA",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
@@ -593,8 +593,8 @@ function NewCoursePage() {
                   flex: 1,
                   height: 44,
                   background: "#fff",
-                  color: "#1A4A6E",
-                  border: "1px solid #1A4A6E",
+                  color: "#0B7DDA",
+                  border: "1px solid #0B7DDA",
                   borderRadius: 10,
                   fontWeight: 600,
                   cursor: "pointer",
@@ -705,8 +705,8 @@ function Step1(props: {
                 style={{
                   padding: "8px 12px",
                   borderRadius: 8,
-                  border: `1px solid ${active ? "#1A4A6E" : "#e3e6ec"}`,
-                  background: active ? "#1A4A6E" : "#fff",
+                  border: `1px solid ${active ? "#0B7DDA" : "#e3e6ec"}`,
+                  background: active ? "#0B7DDA" : "#fff",
                   color: active ? "#fff" : "#1A1A2E",
                   fontWeight: 600,
                   fontSize: 13,
@@ -858,7 +858,7 @@ function Step2(props: {
             display: "flex",
             alignItems: "center",
             padding: "0 12px",
-            background: "#F3F8FF",
+            background: "#F7F5EF",
             border: "0.5px solid #EEF2F7",
             borderRadius: 10,
             color: "#1A1A2E",
@@ -893,15 +893,15 @@ function Step2(props: {
                   gap: 4,
                   padding: 12,
                   borderRadius: 12,
-                  border: `2px solid ${active ? "#0C2340" : "#e3e6ec"}`,
-                  background: active ? "#0C2340" : "#fff",
+                  border: `2px solid ${active ? "#0A2540" : "#e3e6ec"}`,
+                  background: active ? "#0A2540" : "#fff",
                   color: active ? "#fff" : "#1A1A2E",
                   cursor: "pointer",
                   textAlign: "left",
                   fontFamily: "Inter, sans-serif",
                 }}
               >
-                <Icon size={18} color={active ? "#fff" : "#0C2340"} />
+                <Icon size={18} color={active ? "#fff" : "#0A2540"} />
                 <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
                 <div style={{ fontSize: 11, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
               </button>
@@ -927,9 +927,9 @@ function Step2(props: {
                     minWidth: 44,
                     height: 40,
                     borderRadius: 20,
-                    border: `1.5px solid ${active ? "#0C2340" : "#EEF2F7"}`,
-                    background: active ? "#0C2340" : "#fff",
-                    color: active ? "#fff" : "#0C2340",
+                    border: `1.5px solid ${active ? "#0A2540" : "#EEF2F7"}`,
+                    background: active ? "#0A2540" : "#fff",
+                    color: active ? "#fff" : "#0A2540",
                     fontWeight: 600,
                     fontSize: 12,
                     cursor: "pointer",
@@ -953,12 +953,12 @@ function Step2(props: {
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
-                    ? "#0C2340"
+                    ? "#0A2540"
                     : "#fff",
                 color:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0C2340",
+                    : "#0A2540",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
@@ -977,12 +977,12 @@ function Step2(props: {
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
-                    ? "#0C2340"
+                    ? "#0A2540"
                     : "#fff",
                 color:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0C2340",
+                    : "#0A2540",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
@@ -1001,12 +1001,12 @@ function Step2(props: {
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
-                    ? "#0C2340"
+                    ? "#0A2540"
                     : "#fff",
                 color:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
-                    : "#0C2340",
+                    : "#0A2540",
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
@@ -1046,7 +1046,7 @@ function Step2(props: {
           border: "0.5px solid #EEF2F7",
           borderRadius: 10,
           fontSize: 13,
-          color: "#0C2340",
+          color: "#0A2540",
           fontFamily: "Inter, sans-serif",
           lineHeight: 1.4,
         }}
@@ -1098,12 +1098,12 @@ function Step2(props: {
         <FieldLabel>Lesson times</FieldLabel>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1A4A6E", full: false },
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#0B7DDA", full: false },
             { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
             { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
             { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
             { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1A4A6E", full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#0B7DDA", full: false },
             { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
           ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
             const active = timePref === key;
@@ -1375,8 +1375,8 @@ function CheckRow({
           width: 20,
           height: 20,
           borderRadius: 4,
-          border: `1.5px solid ${checked ? "#1A4A6E" : "#9CA3AF"}`,
-          background: checked ? "#1A4A6E" : "#fff",
+          border: `1.5px solid ${checked ? "#0B7DDA" : "#9CA3AF"}`,
+          background: checked ? "#0B7DDA" : "#fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1547,7 +1547,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#1A4A6E" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#0B7DDA" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",
@@ -1600,7 +1600,7 @@ function PostcodeAutocomplete(props: {
               }}
             >
               <MapPin size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0C2340", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: 700, color: "#0A2540", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

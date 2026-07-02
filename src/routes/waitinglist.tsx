@@ -144,8 +144,8 @@ function WaitingListPage() {
                         width: 36,
                         height: 36,
                         borderRadius: 18,
-                        backgroundColor: "#1A4A6E14",
-                        color: "#1A4A6E",
+                        backgroundColor: "#0B7DDA14",
+                        color: "#0B7DDA",
                         fontSize: 18,
                         ...POPPINS,
                       }}
@@ -157,7 +157,7 @@ function WaitingListPage() {
                         <div className="min-w-0">
                           <div
                             className="text-[14px] font-semibold truncate"
-                            style={{ color: "#0C2340", ...POPPINS }}
+                            style={{ color: "#0A2540", ...POPPINS }}
                           >
                             {e.name}
                           </div>
@@ -392,7 +392,7 @@ function ConfirmSheet({
         <div className="flex items-center justify-center" style={{ paddingTop: 8 }}>
           <Hourglass size={28} color="#CC2229" />
         </div>
-        <div className="text-[14px] text-center" style={{ color: "#0C2340" }}>
+        <div className="text-[14px] text-center" style={{ color: "#0A2540" }}>
           Remove <span className="font-semibold">{name}</span> from the waiting list?
         </div>
         <div className="grid grid-cols-2" style={{ gap: 8 }}>

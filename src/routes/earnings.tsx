@@ -119,7 +119,7 @@ function EarningsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
       >
         <SummaryRow label="THIS WEEK" value={formatGBP(week)} />
         <Divider />
@@ -144,7 +144,7 @@ function EarningsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div
-                      className="text-[14px] font-semibold text-[#0C2340] truncate"
+                      className="text-[14px] font-semibold text-[#0A2540] truncate"
                       style={POPPINS}
                     >
                       {row.pupils?.name ?? "Unknown pupil"}

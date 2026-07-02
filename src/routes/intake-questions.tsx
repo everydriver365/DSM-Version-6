@@ -284,7 +284,7 @@ function IntakeQuestionsPage() {
       {/* Top bar */}
       <div
         style={{
-          backgroundColor: "#0C2340",
+          backgroundColor: "#0A2540",
           color: "#FFFFFF",
           padding: "14px 16px",
           display: "flex",
@@ -321,7 +321,7 @@ function IntakeQuestionsPage() {
             alignItems: "center",
             gap: 6,
             backgroundColor: "#FFFFFF",
-            color: "#0C2340",
+            color: "#0A2540",
             border: "none",
             borderRadius: 8,
             padding: "8px 12px",
@@ -348,8 +348,8 @@ function IntakeQuestionsPage() {
           alignItems: "flex-start",
         }}
       >
-        <ClipboardList size={20} color="#1A4A6E" style={{ flexShrink: 0, marginTop: 2 }} />
-        <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0C2340" }}>
+        <ClipboardList size={20} color="#0B7DDA" style={{ flexShrink: 0, marginTop: 2 }} />
+        <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0A2540" }}>
           These questions are shown to new pupils when they register or book for the first
           time. Use them to gather important information upfront.
         </div>
@@ -383,14 +383,14 @@ function IntakeQuestionsPage() {
                 gap: 12,
               }}
             >
-              <div style={{ flex: 1, fontSize: 14, color: "#0C2340" }}>{s.text}</div>
+              <div style={{ flex: 1, fontSize: 14, color: "#0A2540" }}>{s.text}</div>
               <button
                 onClick={() => addStarter(s)}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 4,
-                  background: "#0C2340",
+                  background: "#0A2540",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: 8,
@@ -450,7 +450,7 @@ function IntakeQuestionsPage() {
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: "#0C2340",
+                    color: "#0A2540",
                     marginBottom: 6,
                   }}
                 >
@@ -463,7 +463,7 @@ function IntakeQuestionsPage() {
                       padding: "2px 8px",
                       borderRadius: 6,
                       backgroundColor: "#EEF2FF",
-                      color: "#1A4A6E",
+                      color: "#0B7DDA",
                       fontWeight: 500,
                     }}
                   >
@@ -498,7 +498,7 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#1A4A6E",
+                      color: "#0B7DDA",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -571,7 +571,7 @@ function IntakeQuestionsPage() {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340", marginBottom: 8 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#0A2540", marginBottom: 8 }}>
               Delete this question?
             </div>
             <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>
@@ -585,7 +585,7 @@ function IntakeQuestionsPage() {
                   borderRadius: 8,
                   border: "1px solid #EEF2F7",
                   background: "#FFFFFF",
-                  color: "#0C2340",
+                  color: "#0A2540",
                   fontWeight: 500,
                   cursor: "pointer",
                   ...POPPINS,
@@ -632,7 +632,7 @@ function Toggle({
         height: 24,
         borderRadius: 12,
         border: "none",
-        backgroundColor: checked ? "#1A4A6E" : "#D1D5DB",
+        backgroundColor: checked ? "#0B7DDA" : "#D1D5DB",
         position: "relative",
         cursor: "pointer",
         flexShrink: 0,
@@ -769,7 +769,7 @@ function QuestionSheet({
             borderBottom: "1px solid #F1F3F7",
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 600, color: "#0C2340" }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: "#0A2540" }}>
             {initial ? "Edit question" : "Add question"}
           </div>
           <button
@@ -806,7 +806,7 @@ function QuestionSheet({
                 fontSize: 14,
                 fontFamily: "Inter, sans-serif",
                 resize: "vertical",
-                color: "#0C2340",
+                color: "#0A2540",
                 outline: "none",
               }}
             />
@@ -845,7 +845,7 @@ function QuestionSheet({
               fontSize: 14,
               fontFamily: "Inter, sans-serif",
               backgroundColor: "#FFFFFF",
-              color: "#0C2340",
+              color: "#0A2540",
               outline: "none",
             }}
           >
@@ -879,7 +879,7 @@ function QuestionSheet({
                         padding: "8px 12px",
                         fontSize: 14,
                         fontFamily: "Inter, sans-serif",
-                        color: "#0C2340",
+                        color: "#0A2540",
                         outline: "none",
                       }}
                     />
@@ -908,7 +908,7 @@ function QuestionSheet({
                     marginTop: 8,
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
-                    color: "#1A4A6E",
+                    color: "#0B7DDA",
                     borderRadius: 10,
                     padding: "8px 12px",
                     fontSize: 13,
@@ -939,7 +939,7 @@ function QuestionSheet({
             }}
           >
             <div>
-              <div style={{ fontSize: 14, fontWeight: 500, color: "#0C2340" }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: "#0A2540" }}>
                 Required
               </div>
               <div style={{ fontSize: 12, color: "#6B7280" }}>
@@ -956,7 +956,7 @@ function QuestionSheet({
               width: "100%",
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0C2340",
+              backgroundColor: "#0A2540",
               color: "#FFFFFF",
               border: "none",
               fontSize: 15,

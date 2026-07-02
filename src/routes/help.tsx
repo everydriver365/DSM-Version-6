@@ -29,7 +29,7 @@ interface ContactItem {
 const contacts: ContactItem[] = [
   {
     label: "Email support",
-    icon: <Mail size={18} color="#1A4A6E" />,
+    icon: <Mail size={18} color="#0B7DDA" />,
     iconBg: "#DBEAFE",
     href: "mailto:support@everydriver.co.uk",
   },
@@ -128,7 +128,7 @@ function HelpPage() {
               >
                 {c.icon}
               </div>
-              <span className="flex-1 ml-3 text-[14px] font-semibold text-[#0C2340]">
+              <span className="flex-1 ml-3 text-[14px] font-semibold text-[#0A2540]">
                 {c.label}
               </span>
               <ChevronRight size={18} color="#6B7280" className="shrink-0" />
@@ -159,7 +159,7 @@ function HelpPage() {
                         }
                   }
                 >
-                  <span className="text-[14px] font-semibold text-[#0C2340] pr-2">
+                  <span className="text-[14px] font-semibold text-[#0A2540] pr-2">
                     {faq.question}
                   </span>
                   {isOpen ? (
@@ -191,7 +191,7 @@ function HelpPage() {
       <div className="px-4">
         <SectionHeader>ABOUT</SectionHeader>
         <Card className="flex flex-col items-center text-center" style={{ gap: 4 }}>
-          <div className="text-[16px] font-bold text-[#0C2340]">DSM by EveryDriver</div>
+          <div className="text-[16px] font-bold text-[#0A2540]">DSM by EveryDriver</div>
           <div className="text-[13px] text-[#6B7280]">Version 1.0.0</div>
           <div className="text-[13px] text-[#6B7280] mt-1">© 2026 EveryDriver Ltd</div>
         </Card>

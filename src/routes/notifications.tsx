@@ -59,7 +59,7 @@ function formatTime(iso: string) {
 function typeIcon(type: string | null) {
   switch (type) {
     case "lesson":
-      return { bg: "#1A4A6E", node: <CalendarIcon size={18} color="#FFFFFF" /> };
+      return { bg: "#0B7DDA", node: <CalendarIcon size={18} color="#FFFFFF" /> };
     case "payment":
       return { bg: "#16A34A", node: <PoundSterling size={18} color="#FFFFFF" /> };
     case "pupil":
@@ -253,7 +253,7 @@ function NotificationsPage() {
                         borderStyle: "solid",
                         borderColor: "#EEF2F7",
                         borderLeftWidth: n.read ? "0.5px" : "3px",
-                        borderLeftColor: n.read ? "#EEF2F7" : "#1A4A6E",
+                        borderLeftColor: n.read ? "#EEF2F7" : "#0B7DDA",
                       }}
                     >
                       <div className="flex items-start gap-3 p-3">
@@ -265,7 +265,7 @@ function NotificationsPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div
-                            className="text-[14px] font-semibold text-[#0C2340] truncate"
+                            className="text-[14px] font-semibold text-[#0A2540] truncate"
                             style={POPPINS}
                           >
                             {n.title}

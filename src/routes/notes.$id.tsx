@@ -113,7 +113,7 @@ function NoteEditPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
-          className="w-full text-[20px] font-semibold text-[#0C2340] bg-transparent outline-none border-0 placeholder-[#9CA3AF]"
+          className="w-full text-[20px] font-semibold text-[#0A2540] bg-transparent outline-none border-0 placeholder-[#9CA3AF]"
           style={{ fontFamily: "Inter, sans-serif" }}
         />
         <textarea

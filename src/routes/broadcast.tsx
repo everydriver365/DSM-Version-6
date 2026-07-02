@@ -15,7 +15,7 @@ export const Route = createFileRoute("/broadcast")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0C2340";
+const NAVY = "#0A2540";
 const BORDER = "#EEF2F7";
 
 type FilterKey = "all" | "week" | "outstanding" | "active" | "passed";
@@ -318,7 +318,7 @@ function BroadcastPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium"
-            style={{ color: "#1A4A6E", ...POPPINS }}
+            style={{ color: "#0B7DDA", ...POPPINS }}
           >
             {allSelectedInList ? "Deselect all" : "Select all"}
           </button>
@@ -373,7 +373,7 @@ function BroadcastPage() {
                           : "#F3F4F6",
                       color:
                         (p.status ?? "active").toLowerCase() === "passed"
-                          ? "#1A4A6E"
+                          ? "#0B7DDA"
                           : (p.status ?? "active").toLowerCase() === "active"
                           ? "#16A34A"
                           : "#6B7280",
@@ -438,7 +438,7 @@ function BroadcastPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message…"
-          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#1A4A6E]"
+          className="w-full rounded-lg p-3 text-[13px] focus:outline-none focus:border-[#0B7DDA]"
           style={{
             minHeight: 120,
             borderWidth: "0.5px",

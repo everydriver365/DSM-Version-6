@@ -216,7 +216,7 @@ function BriefingPage() {
   const W = weather ? weatherMeta(weather.code) : null;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F7F5EF", ...POPPINS, paddingBottom: 32 }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 10, backgroundColor: "#072b47",
         padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -232,7 +232,7 @@ function BriefingPage() {
 
       {/* Greeting */}
       <div style={{
-        backgroundColor: "#0C2340", margin: "12px 16px 0", borderRadius: 12, padding: 16,
+        backgroundColor: "#0A2540", margin: "12px 16px 0", borderRadius: 12, padding: 16,
       }}>
         <div style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
           {greetingFor(now)}, {firstName}
@@ -259,10 +259,10 @@ function BriefingPage() {
                   width: 44, height: 44, borderRadius: 10, background: "#EEF4FB",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  <W.Icon size={26} color="#1A4A6E" />
+                  <W.Icon size={26} color="#0B7DDA" />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#0C2340" }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#0A2540" }}>
                     {weather.temp}°C
                   </div>
                   <div style={{ fontSize: 13, color: "#6B7280" }}>{W.label}</div>
@@ -303,14 +303,14 @@ function BriefingPage() {
               <Card key={l.id} style={{ padding: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{
-                    fontSize: 16, fontWeight: 800, color: "#0C2340",
+                    fontSize: 16, fontWeight: 800, color: "#0A2540",
                     minWidth: 52,
                   }}>
                     {formatTime(l.lesson_time)}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: 14, fontWeight: 600, color: "#0C2340",
+                      fontSize: 14, fontWeight: 600, color: "#0A2540",
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     }}>
                       {l.pupils?.name ?? "Pupil"}
@@ -332,7 +332,7 @@ function BriefingPage() {
                     onClick={(e) => { if (!l.pupils?.phone) e.preventDefault(); }}
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
-                      background: l.pupils?.phone ? "#1A4A6E" : "#cbd5e1",
+                      background: l.pupils?.phone ? "#0B7DDA" : "#cbd5e1",
                       color: "#fff", fontSize: 13, fontWeight: 600,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       textDecoration: "none", pointerEvents: l.pupils?.phone ? "auto" : "none",
@@ -344,8 +344,8 @@ function BriefingPage() {
                     onClick={() => navigate({ to: "/satnav" })}
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
-                      background: "#fff", color: "#1A4A6E",
-                      border: "1px solid #1A4A6E", fontSize: 13, fontWeight: 600,
+                      background: "#fff", color: "#0B7DDA",
+                      border: "1px solid #0B7DDA", fontSize: 13, fontWeight: 600,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       cursor: "pointer", fontFamily: "Inter, sans-serif",
                     }}

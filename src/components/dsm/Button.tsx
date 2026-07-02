@@ -23,12 +23,12 @@ export function Button({
   let extraStyle: CSSProperties = {};
 
   if (variant === "primary") {
-    variantClasses = "bg-[#1A4A6E] text-white hover:bg-[#163d7a]";
+    variantClasses = "bg-[#0B7DDA] text-white hover:bg-[#163d7a]";
   } else if (variant === "destructive") {
     variantClasses = "bg-[#CC2229] text-white hover:bg-[#a81b21]";
   } else {
-    variantClasses = "bg-transparent text-[#1A4A6E] hover:bg-[#f0f4ff]";
-    extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#1A4A6E" };
+    variantClasses = "bg-transparent text-[#0B7DDA] hover:bg-[#f0f4ff]";
+    extraStyle = { borderWidth: "0.5px", borderStyle: "solid", borderColor: "#0B7DDA" };
   }
 
   return (

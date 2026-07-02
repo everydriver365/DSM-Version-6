@@ -724,7 +724,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 1 — SUMMARY */}
         {!done && step === 1 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0A2540" }}>
               How did it go?
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -819,7 +819,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 2 — PAYMENT */}
         {!done && step === 2 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0A2540" }}>
               Record payment
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -838,7 +838,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <div className="text-[11px]" style={{ color: "#6B7280" }}>
                   {pricing.adjustments.length > 0 ? "Total" : "Lesson cost"}
                 </div>
-                <div className="text-[18px]" style={{ color: "#0C2340", fontWeight: 700 }}>
+                <div className="text-[18px]" style={{ color: "#0A2540", fontWeight: 700 }}>
                   £{lessonCost.toFixed(2)}
                 </div>
                 {pricing.adjustments.length > 0 && (
@@ -859,7 +859,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <div
                   className="text-[14px]"
                   style={{
-                    color: balance < 0 ? "#CC2229" : balance > 0 ? "#16A34A" : "#0C2340",
+                    color: balance < 0 ? "#CC2229" : balance > 0 ? "#16A34A" : "#0A2540",
                     fontWeight: 600,
                   }}
                 >
@@ -944,7 +944,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               disabled={qrGenerating || paymentSaving || !!qrUrl}
               className="mt-2 w-full h-11 rounded-lg text-[14px] font-semibold flex items-center justify-center gap-2"
               style={{
-                backgroundColor: "#0C2340",
+                backgroundColor: "#0A2540",
                 color: "#fff",
                 border: "none",
                 opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
@@ -973,7 +973,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 >
                   <QRCodeSVG value={qrUrl} size={180} />
                 </div>
-                <div className="text-[13px] mt-3" style={{ color: "#0C2340", fontWeight: 600 }}>
+                <div className="text-[13px] mt-3" style={{ color: "#0A2540", fontWeight: 600 }}>
                   Pupil scans to pay £{(Number(amount) || lessonCost).toFixed(2)}
                 </div>
                 <div className="text-[11px] mt-1" style={{ color: "#6B7280" }}>
@@ -998,7 +998,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         {/* STEP 3 — SKILLS */}
         {!done && step === 3 && (
           <div>
-            <div className="text-[16px] font-semibold" style={{ color: "#0C2340" }}>
+            <div className="text-[16px] font-semibold" style={{ color: "#0A2540" }}>
               Pupil progress
             </div>
             <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
@@ -1149,7 +1149,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 </div>
                 <div
                   className="text-[20px] mt-3"
-                  style={{ color: "#0C2340", fontWeight: 700 }}
+                  style={{ color: "#0A2540", fontWeight: 700 }}
                 >
                   Course complete! 🎓
                 </div>
@@ -1165,7 +1165,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <CheckCircle2 size={64} color="#16A34A" />
                 <div
                   className="text-[20px] mt-3"
-                  style={{ color: "#0C2340", fontWeight: 700 }}
+                  style={{ color: "#0A2540", fontWeight: 700 }}
                 >
                   Lesson complete! 🎉
                 </div>

@@ -76,7 +76,7 @@ function QuickAvailabilityPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F7F5EF", margin: -8 }}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center"

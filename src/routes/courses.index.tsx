@@ -35,7 +35,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#1A4A6E";
+  return "#0B7DDA";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -96,7 +96,7 @@ function CoursesPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#F7F5EF", ...POPPINS }}>
       {/* Top bar */}
       <div
         style={{
@@ -152,7 +152,7 @@ function CoursesPage() {
               onClick={() => navigate({ to: "/courses/new" })}
               style={{
                 marginTop: 8,
-                background: "#1A4A6E",
+                background: "#0B7DDA",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
@@ -211,7 +211,7 @@ function CoursesPage() {
                         style={{
                           fontSize: 14,
                           fontWeight: 600,
-                          color: "#0C2340",
+                          color: "#0A2540",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
@@ -220,7 +220,7 @@ function CoursesPage() {
                         {c.name}
                       </div>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0C2340" }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0A2540" }}>
                       £{Number(c.price).toFixed(0)}
                     </div>
                   </div>
@@ -230,10 +230,10 @@ function CoursesPage() {
                     if (list.length === 0) return null;
                     return (
                       <div style={{ marginTop: 8, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-                        <MapPin size={12} color="#1A4A6E" />
+                        <MapPin size={12} color="#0B7DDA" />
                         {list.slice(0, 3).map((pc, index) => (
                           <span key={`${pc}-${index}`} style={{
-                            background: "#e8eefb", color: "#0C2340", fontWeight: 600,
+                            background: "#e8eefb", color: "#0A2540", fontWeight: 600,
                             fontSize: 11, padding: "2px 8px", borderRadius: 10,
                           }}>{pc}</span>
                         ))}
@@ -295,7 +295,7 @@ function CoursesPage() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 6,
-                        background: "#0C2340",
+                        background: "#0A2540",
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,

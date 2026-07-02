@@ -182,7 +182,7 @@ function MileagePage() {
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
-          style={{ backgroundColor: "#0C2340", borderRadius: 12, padding: 16 }}
+          style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
         >
           <div className="flex">
             <div className="flex-1 pr-3">
@@ -242,7 +242,7 @@ function MileagePage() {
                       {formatDateLabel(log.trip_date)}
                     </span>
                     <div className="flex items-center" style={{ gap: 8 }}>
-                      <span className="text-[14px] font-bold text-[#0C2340]">
+                      <span className="text-[14px] font-bold text-[#0A2540]">
                         {Number(log.miles).toFixed(1)} mi
                       </span>
                       <button
@@ -257,14 +257,14 @@ function MileagePage() {
                     </div>
                   </div>
                   <div className="mt-1 flex items-center justify-between">
-                    <span className="text-[14px] font-semibold text-[#0C2340]">
+                    <span className="text-[14px] font-semibold text-[#0A2540]">
                       {log.description || "Trip"}
                     </span>
                     <span
                       className="text-[10px] uppercase font-medium px-2 py-0.5 rounded-full"
                       style={{
                         color: log.purpose === "business" ? "#FFFFFF" : "#FFFFFF",
-                        backgroundColor: log.purpose === "business" ? "#1A4A6E" : "#6B7280",
+                        backgroundColor: log.purpose === "business" ? "#0B7DDA" : "#6B7280",
                         letterSpacing: "0.05em",
                       }}
                     >
@@ -292,7 +292,7 @@ function MileagePage() {
             }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0C2340]">Add mileage</div>
+              <div className="text-[16px] font-semibold text-[#0A2540]">Add mileage</div>
               <button
                 type="button"
                 onClick={() => setShowSheet(false)}
@@ -314,7 +314,7 @@ function MileagePage() {
                   type="date"
                   value={tripDate}
                   onChange={(e) => setTripDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0C2340] bg-white focus:border-[#1A4A6E] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#0B7DDA] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -353,7 +353,7 @@ function MileagePage() {
                     onClick={() => setPurpose("business")}
                     className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
                     style={{
-                      backgroundColor: purpose === "business" ? "#1A4A6E" : "transparent",
+                      backgroundColor: purpose === "business" ? "#0B7DDA" : "transparent",
                       color: purpose === "business" ? "#FFFFFF" : "#6B7280",
                       fontFamily: "Inter, sans-serif",
                       borderWidth: purpose === "business" ? 0 : "0.5px",

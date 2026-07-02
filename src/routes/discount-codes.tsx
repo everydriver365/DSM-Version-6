@@ -167,7 +167,7 @@ function DiscountCodesPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0C2340" }}
+        style={{ backgroundColor: "#0A2540" }}
       >
         <button
           type="button"
@@ -205,7 +205,7 @@ function DiscountCodesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <Tag size={20} color="#1A4A6E" />
+          <Tag size={20} color="#0B7DDA" />
           <div className="text-[13px] text-[#1E3A8A] leading-snug">
             Offer discounts to your pupils. Share a code and they'll get money off their
             booking.
@@ -219,7 +219,7 @@ function DiscountCodesPage() {
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : codes.length === 0 ? (
           <div className="text-center py-10 px-4">
-            <div className="text-[14px] font-semibold text-[#0C2340]">No discount codes yet</div>
+            <div className="text-[14px] font-semibold text-[#0A2540]">No discount codes yet</div>
             <div className="text-[12px] text-[#6B7280] mt-1">
               Tap "New code" to create your first offer.
             </div>
@@ -266,7 +266,7 @@ function CodeCard({
   onDelete: () => void;
 }) {
   const isPct = code.type === "percentage";
-  const typeColor = isPct ? "#D97706" : "#1A4A6E";
+  const typeColor = isPct ? "#D97706" : "#0B7DDA";
   const typeBg = isPct ? "#FEF3C7" : "#DBEAFE";
   const usesLabel = `${code.uses_count} / ${code.max_uses ?? "∞"} uses`;
   return (
@@ -284,7 +284,7 @@ function CodeCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div
-              className="text-[20px] font-bold text-[#0C2340] truncate"
+              className="text-[20px] font-bold text-[#0A2540] truncate"
               style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
             >
               {code.code}
@@ -303,7 +303,7 @@ function CodeCard({
                 justifyContent: "center",
               }}
             >
-              <Copy size={14} color="#0C2340" />
+              <Copy size={14} color="#0A2540" />
             </button>
           </div>
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -318,7 +318,7 @@ function CodeCard({
             >
               {isPct ? "% OFF" : "£ OFF"}
             </span>
-            <span className="text-[13px] font-semibold text-[#0C2340]">
+            <span className="text-[13px] font-semibold text-[#0A2540]">
               {isPct ? `${code.value}% off` : `£${Number(code.value).toFixed(2)} off`}
             </span>
           </div>
@@ -366,7 +366,7 @@ function CodeCard({
           type="button"
           onClick={onShare}
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
-          style={{ height: 34, borderRadius: 8, backgroundColor: "#1A4A6E" }}
+          style={{ height: 34, borderRadius: 8, backgroundColor: "#0B7DDA" }}
         >
           <Share2 size={13} /> Share
         </button>
@@ -489,9 +489,9 @@ function AddSheet({
             borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold text-[#0C2340]">New discount code</div>
+          <div className="text-[15px] font-semibold text-[#0A2540]">New discount code</div>
           <button type="button" onClick={onClose} aria-label="Close">
-            <X size={20} color="#0C2340" />
+            <X size={20} color="#0A2540" />
           </button>
         </div>
 
@@ -521,7 +521,7 @@ function AddSheet({
                       padding: "0 10px",
                       borderRadius: 999,
                       backgroundColor: "#F3F4F6",
-                      color: "#0C2340",
+                      color: "#0A2540",
                     }}
                   >
                     {s}
@@ -595,7 +595,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#1A4A6E",
+              backgroundColor: "#0B7DDA",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,
@@ -629,9 +629,9 @@ function TypeBtn({
       style={{
         height: 40,
         borderRadius: 8,
-        border: `0.5px solid ${active ? "#1A4A6E" : "#EEF2F7"}`,
+        border: `0.5px solid ${active ? "#0B7DDA" : "#EEF2F7"}`,
         backgroundColor: active ? "#EFF6FF" : "#FFFFFF",
-        color: active ? "#1A4A6E" : "#6B7280",
+        color: active ? "#0B7DDA" : "#6B7280",
       }}
     >
       {icon} {label}
@@ -646,7 +646,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "0.5px solid #EEF2F7",
   backgroundColor: "#FFFFFF",
-  color: "#0C2340",
+  color: "#0A2540",
   fontSize: 14,
   fontFamily: "Inter, sans-serif",
 };

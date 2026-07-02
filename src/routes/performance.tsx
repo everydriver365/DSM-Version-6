@@ -206,7 +206,7 @@ function PerformancePage() {
                 height: 32,
                 borderRadius: 8,
                 backgroundColor: active ? "#FFFFFF" : "transparent",
-                color: active ? "#1A4A6E" : "#6B7280",
+                color: active ? "#0B7DDA" : "#6B7280",
                 boxShadow: active ? "0 1px 2px rgba(15,32,68,0.08)" : "none",
                 ...POPPINS,
               }}
@@ -280,7 +280,7 @@ function ResultBar({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium" style={{ color: "#0C2340" }}>{label}</span>
+        <span className="text-[13px] font-medium" style={{ color: "#0A2540" }}>{label}</span>
         <span className="text-[13px]" style={{ color: "#6B7280" }}>{count}</span>
       </div>
       <div

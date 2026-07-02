@@ -95,7 +95,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "6px 0" }}>
       <span style={{ color: "#6B7280", fontSize: 13 }}>{label}</span>
-      <span style={{ color: "#0C2340", fontSize: 14, fontWeight: 500, textAlign: "right" }}>
+      <span style={{ color: "#0A2540", fontSize: 14, fontWeight: 500, textAlign: "right" }}>
         {value || "—"}
       </span>
     </div>
@@ -158,7 +158,7 @@ function BookingDetailPage() {
       {/* Top bar */}
       <div
         style={{
-          background: "#0C2340",
+          background: "#0A2540",
           color: "#fff",
           display: "flex",
           alignItems: "center",
@@ -186,7 +186,7 @@ function BookingDetailPage() {
         <>
           {/* Reference */}
           <div style={{ textAlign: "center", padding: 24 }}>
-            <div style={{ fontSize: 26, fontWeight: 700, color: "#0C2340", letterSpacing: 0.5 }}>
+            <div style={{ fontSize: 26, fontWeight: 700, color: "#0A2540", letterSpacing: 0.5 }}>
               ED-{booking.id.slice(0, 6).toUpperCase()}
             </div>
             <div style={{ marginTop: 10 }}>
@@ -209,8 +209,8 @@ function BookingDetailPage() {
           {/* Pupil details */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <UserIcon size={18} color="#0C2340" />
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0C2340" }}>
+              <UserIcon size={18} color="#0A2540" />
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0A2540" }}>
                 Pupil details
               </h2>
             </div>
@@ -237,7 +237,7 @@ function BookingDetailPage() {
                   padding: "10px 12px",
                   border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0C2340",
+                  color: "#0A2540",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -258,7 +258,7 @@ function BookingDetailPage() {
                   padding: "10px 12px",
                   border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0C2340",
+                  color: "#0A2540",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -279,7 +279,7 @@ function BookingDetailPage() {
                   padding: "10px 12px",
                   border: "1px solid #EEF2F7",
                   borderRadius: 10,
-                  color: "#0C2340",
+                  color: "#0A2540",
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
@@ -295,8 +295,8 @@ function BookingDetailPage() {
           {/* Course details */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <BookOpen size={18} color="#0C2340" />
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0C2340" }}>
+              <BookOpen size={18} color="#0A2540" />
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0A2540" }}>
                 Course details
               </h2>
             </div>
@@ -322,7 +322,7 @@ function BookingDetailPage() {
             <button
               onClick={goPupil}
               style={{
-                background: "#0C2340",
+                background: "#0A2540",
                 color: "#fff",
                 border: 0,
                 borderRadius: 10,
@@ -339,7 +339,7 @@ function BookingDetailPage() {
               onClick={() => navigate({ to: "/schedule" })}
               style={{
                 background: "transparent",
-                color: "#0C2340",
+                color: "#0A2540",
                 border: "1px solid #EEF2F7",
                 borderRadius: 10,
                 padding: "12px 14px",
