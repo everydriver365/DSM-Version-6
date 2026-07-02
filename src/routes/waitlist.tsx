@@ -15,7 +15,7 @@ export const Route = createFileRoute("/waitlist")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const NAVY = "#0A2540";
-const BLUE = "#0B7DDA";
+const BLUE = "#00A3B4";
 const RED = "#CC2229";
 const GREEN = "#16A34A";
 const AMBER = "#D97706";

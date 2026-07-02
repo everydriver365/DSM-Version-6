@@ -192,7 +192,7 @@ function ReportsPage() {
           <Card>
             <BreakdownRow color="#16A34A" label="Confirmed" count={counts.confirmed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
-            <BreakdownRow color="#0B7DDA" label="Completed" count={counts.completed} />
+            <BreakdownRow color="#00A3B4" label="Completed" count={counts.completed} />
             <div className="h-px bg-[#EEF2F7] my-2" />
             <BreakdownRow color="#CC2229" label="Cancelled" count={counts.cancelled} />
           </Card>
@@ -211,7 +211,7 @@ function ReportsPage() {
                 <div className="flex items-center px-3 py-3">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[12px] font-semibold"
-                    style={{ background: "#0B7DDA" }}
+                    style={{ background: "#00A3B4" }}
                   >
                     {initials(p.name)}
                   </div>

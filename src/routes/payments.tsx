@@ -320,7 +320,7 @@ function PaymentsPage() {
                     style={{
                       width: 40,
                       height: 40,
-                      backgroundColor: "#0B7DDA",
+                      backgroundColor: "#00A3B4",
                       color: "#FFFFFF",
                       ...POPPINS,
                     }}
@@ -449,7 +449,7 @@ function PaymentsPage() {
         style={{
           width: 52,
           height: 52,
-          backgroundColor: "#0B7DDA",
+          backgroundColor: "#00A3B4",
           color: "#FFFFFF",
           right: 16,
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
@@ -591,7 +591,7 @@ function RecordSheet({
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={{
                 ...POPPINS,
                 borderWidth: "0.5px",

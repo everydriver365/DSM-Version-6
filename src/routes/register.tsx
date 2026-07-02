@@ -134,7 +134,7 @@ function RegisterPage() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -158,7 +158,7 @@ function RegisterPage() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -182,7 +182,7 @@ function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -207,7 +207,7 @@ function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -240,7 +240,7 @@ function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -285,7 +285,7 @@ function RegisterPage() {
         style={{ fontFamily: "Inter, sans-serif" }}
       >
         Already have an account?{" "}
-        <Link to="/login" className="text-[#0B7DDA] hover:underline font-medium">
+        <Link to="/login" className="text-[#00A3B4] hover:underline font-medium">
           Sign in
         </Link>
       </p>

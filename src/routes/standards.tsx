@@ -31,7 +31,7 @@ interface Check {
 
 const GRADE_COLORS: Record<string, string> = {
   A: "#16A34A",
-  B: "#0B7DDA",
+  B: "#00A3B4",
   C: "#F59E0B",
   D: "#CC2229",
 };

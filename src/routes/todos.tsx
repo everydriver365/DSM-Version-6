@@ -325,7 +325,7 @@ function TodosPage() {
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",

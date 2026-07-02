@@ -202,7 +202,7 @@ function NewLessonPage() {
               id="pupil"
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select a pupil</option>
@@ -254,7 +254,7 @@ function NewLessonPage() {
               id="duration"
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             >
               {DURATIONS.map((m) => (
@@ -276,7 +276,7 @@ function NewLessonPage() {
                 setPickup(e.target.value);
               }}
               placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             />
             <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Inter, sans-serif" }}>
@@ -291,7 +291,7 @@ function NewLessonPage() {
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             />
           </div>

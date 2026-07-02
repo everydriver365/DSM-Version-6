@@ -343,7 +343,7 @@ function FuelPage() {
       <section style={cardStyle({ mt: 12 })}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <SectionHeading title="Journey log" />
-          <Link to="/vehicle" style={{ fontSize: 12, color: "#0B7DDA", textDecoration: "none", fontWeight: 600 }}>
+          <Link to="/vehicle" style={{ fontSize: 12, color: "#00A3B4", textDecoration: "none", fontWeight: 600 }}>
             View all →
           </Link>
         </div>

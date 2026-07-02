@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 const CAT_COLORS: Record<string, string> = {
   "Standards check": "#7C3AED",
-  "Business skills": "#0B7DDA",
+  "Business skills": "#00A3B4",
   "Pupil welfare": "#16A34A",
   "Road safety": "#CC2229",
   Specialist: "#D97706",
@@ -256,7 +256,7 @@ function CpdPage() {
       {/* STATS */}
       <div className="px-4 pt-4 grid grid-cols-3 gap-2">
         <StatCard label="This year" value={`${yearHours.toFixed(1)}h`} color="#16A34A" />
-        <StatCard label="Entries" value={String(totalEntries)} color="#0B7DDA" />
+        <StatCard label="Entries" value={String(totalEntries)} color="#00A3B4" />
         <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0A2540" small />
       </div>
 
@@ -507,7 +507,7 @@ function EntryCard({
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 mt-2 text-[12px] font-medium"
-            style={{ color: "#0B7DDA" }}
+            style={{ color: "#00A3B4" }}
           >
             <Paperclip size={12} /> Certificate
           </a>
@@ -805,7 +805,7 @@ function AddSheet({
                   target="_blank"
                   rel="noreferrer"
                   className="text-[12px] font-medium truncate"
-                  style={{ color: "#0B7DDA" }}
+                  style={{ color: "#00A3B4" }}
                 >
                   View uploaded certificate
                 </a>
@@ -845,7 +845,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#0B7DDA",
+              backgroundColor: "#00A3B4",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,

@@ -183,7 +183,7 @@ function OnboardingPage() {
         </div>
         <div className="h-2 w-full bg-[#1f2f55] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#0B7DDA] transition-all duration-300"
+            className="h-full bg-[#00A3B4] transition-all duration-300"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -235,7 +235,7 @@ function OnboardingPage() {
               <select
                 value={transmission}
                 onChange={(e) => setTransmission(e.target.value as "Manual" | "Automatic")}
-                className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:outline-none focus:border-[#0B7DDA]"
+                className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:outline-none focus:border-[#00A3B4]"
                 style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
               >
                 <option>Manual</option>
@@ -267,7 +267,7 @@ function OnboardingPage() {
                         onChange={(e) =>
                           setHours((prev) => ({ ...prev, [key]: { ...prev[key], enabled: e.target.checked } }))
                         }
-                        className="h-4 w-4 accent-[#0B7DDA]"
+                        className="h-4 w-4 accent-[#00A3B4]"
                       />
                       {label}
                     </label>
@@ -321,14 +321,14 @@ function OnboardingPage() {
                     type="checkbox"
                     checked={wantsCustomDomain}
                     onChange={(e) => setWantsCustomDomain(e.target.checked)}
-                    className="h-4 w-4 mt-0.5 accent-[#0B7DDA]"
+                    className="h-4 w-4 mt-0.5 accent-[#00A3B4]"
                   />
                   <span>
                     I&apos;d like a custom domain (e.g. www.myname.co.uk) — contact me about this
                   </span>
                 </label>
                 {wantsCustomDomain && (
-                  <p className="text-[12px] text-[#0B7DDA] bg-[#EEF3FB] rounded-md px-3 py-2">
+                  <p className="text-[12px] text-[#00A3B4] bg-[#EEF3FB] rounded-md px-3 py-2">
                     Our team will be in touch to help set this up
                   </p>
                 )}
@@ -336,7 +336,7 @@ function OnboardingPage() {
             )}
 
             <ChoiceCard
-              icon={<Globe size={22} color="#0B7DDA" />}
+              icon={<Globe size={22} color="#00A3B4" />}
               title="I already have a website"
               subtitle="Skip this — I'll link my existing site instead"
               selected={websiteChoice === "existing"}
@@ -352,7 +352,7 @@ function OnboardingPage() {
                   value={existingWebsiteUrl}
                   placeholder="https://www.mydrivingschool.co.uk"
                   onChange={(e) => setExistingWebsiteUrl(e.target.value)}
-                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
                   style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
                 />
               </div>
@@ -420,7 +420,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+        className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
         style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
       />
     </div>
@@ -447,7 +447,7 @@ function ChoiceCard({
       className="w-full flex items-start gap-3 rounded-xl p-3 text-left transition-colors"
       style={{
         ...POPPINS,
-        border: selected ? "1.5px solid #0B7DDA" : "1px solid #EEF2F7",
+        border: selected ? "1.5px solid #00A3B4" : "1px solid #EEF2F7",
         background: selected ? "#EEF3FB" : "#FFFFFF",
       }}
     >

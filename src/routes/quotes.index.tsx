@@ -56,7 +56,7 @@ function statusColor(s: TabKey | string) {
   if (s === "accepted") return "#16A34A";
   if (s === "declined") return "#CC2229";
   if (s === "expired") return "#6B7280";
-  if (s === "resent") return "#0B7DDA";
+  if (s === "resent") return "#00A3B4";
   return "#F59E0B";
 }
 
@@ -199,7 +199,7 @@ function QuotesPage() {
           style={{
             width: "100%",
             background: "#fff",
-            color: "#0B7DDA",
+            color: "#00A3B4",
             border: "1px solid #e3e6ec",
             borderRadius: 10,
             padding: "10px 12px",
@@ -240,7 +240,7 @@ function QuotesPage() {
             </div>
             <button onClick={() => navigate({ to: "/quotes/new" })}
               style={{
-                marginTop: 8, background: "#0B7DDA", color: "#fff", border: "none",
+                marginTop: 8, background: "#00A3B4", color: "#fff", border: "none",
                 borderRadius: 10, padding: "10px 16px", fontWeight: 600, fontSize: 14,
                 cursor: "pointer", fontFamily: "Inter, sans-serif",
               }}>
@@ -271,7 +271,7 @@ function QuotesPage() {
                         <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{q.recipient_name}</span>
                         {isRev && (
                           <span style={{
-                            background: "#0B7DDA", color: "#fff", fontSize: 10, fontWeight: 700,
+                            background: "#00A3B4", color: "#fff", fontSize: 10, fontWeight: 700,
                             padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
                           }}>REVISION</span>
                         )}
@@ -352,7 +352,7 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#0B7DDA", border: "1px solid #0B7DDA", color: "#fff",
+                          background: "#00A3B4", border: "1px solid #00A3B4", color: "#fff",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
                           cursor: "pointer", fontFamily: "Inter, sans-serif",
                         }}
@@ -371,7 +371,7 @@ function QuotesPage() {
                           toast.success(`Revision sent ${formatDate(revision.sent_at)} · £${Number(revision.price).toFixed(0)}`);
                         }}
                         style={{
-                          background: "none", border: "none", color: "#0B7DDA",
+                          background: "none", border: "none", color: "#00A3B4",
                           fontSize: 12, fontWeight: 600, cursor: "pointer",
                           fontFamily: "Inter, sans-serif", padding: 0,
                         }}
@@ -396,7 +396,7 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#fff", border: "1px solid #0B7DDA", color: "#0B7DDA",
+                          background: "#fff", border: "1px solid #00A3B4", color: "#00A3B4",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
                           cursor: "pointer", fontFamily: "Inter, sans-serif",
                         }}

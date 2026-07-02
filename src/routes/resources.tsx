@@ -36,7 +36,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Official DVSA instructor guidance and updates",
     url: "https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency",
     Icon: BookOpen,
-    iconColor: "#0B7DDA",
+    iconColor: "#00A3B4",
   },
   {
     title: "Check a driving licence",
@@ -64,7 +64,7 @@ const dvsaResources: ResourceItem[] = [
     description: "Check the approved driving instructor register",
     url: "https://www.gov.uk/find-driving-instructor",
     Icon: Award,
-    iconColor: "#0B7DDA",
+    iconColor: "#00A3B4",
   },
   {
     title: "Highway Code",
@@ -88,7 +88,7 @@ const usefulTools: ResourceItem[] = [
     description: "Navigate to your next lesson",
     url: "https://maps.google.com",
     Icon: Navigation,
-    iconColor: "#0B7DDA",
+    iconColor: "#00A3B4",
   },
   {
     title: "Met Office",

@@ -88,7 +88,7 @@ const LEVEL_META: { n: 0 | 1 | 2 | 3 | 4 | 5; label: string; color: string }[] =
   { n: 1, label: "Introduced", color: "#DC2626" },
   { n: 2, label: "Under guidance", color: "#EA580C" },
   { n: 3, label: "Prompted", color: "#EAB308" },
-  { n: 4, label: "Seldom prompted", color: "#0B7DDA" },
+  { n: 4, label: "Seldom prompted", color: "#00A3B4" },
   { n: 5, label: "Independent", color: "#16A34A" },
 ];
 
@@ -143,7 +143,7 @@ function PupilSyllabusPage() {
 
   let pctColor = "#CC2229";
   if (pct >= 80) pctColor = "#16A34A";
-  else if (pct >= 60) pctColor = "#0B7DDA";
+  else if (pct >= 60) pctColor = "#00A3B4";
   else if (pct >= 40) pctColor = "#F59E0B";
 
   const dirty = useMemo(() => {
@@ -352,7 +352,7 @@ function PupilSyllabusPage() {
                   >
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${catPct}%`, backgroundColor: "#0B7DDA" }}
+                      style={{ width: `${catPct}%`, backgroundColor: "#00A3B4" }}
                     />
                   </div>
                 </button>

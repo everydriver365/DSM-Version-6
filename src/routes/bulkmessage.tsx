@@ -231,11 +231,11 @@ function BulkMessagePage() {
                 onClick={() => setFilter(f.key)}
                 className="px-3 py-2 rounded-full text-[13px]"
                 style={{
-                  backgroundColor: active ? "#0B7DDA" : "#F8F9FB",
+                  backgroundColor: active ? "#00A3B4" : "#F8F9FB",
                   color: active ? "#FFFFFF" : "#0A2540",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#0B7DDA" : "#EEF2F7",
+                  borderColor: active ? "#00A3B4" : "#EEF2F7",
                   ...POPPINS,
                 }}
               >
@@ -270,10 +270,10 @@ function BulkMessagePage() {
                       style={{
                         width: 20,
                         height: 20,
-                        backgroundColor: checked ? "#0B7DDA" : "#FFFFFF",
+                        backgroundColor: checked ? "#00A3B4" : "#FFFFFF",
                         borderWidth: "1px",
                         borderStyle: "solid",
-                        borderColor: checked ? "#0B7DDA" : "#9CA3AF",
+                        borderColor: checked ? "#00A3B4" : "#9CA3AF",
                       }}
                     >
                       {checked && (
@@ -284,7 +284,7 @@ function BulkMessagePage() {
                     </div>
                     <div
                       className="flex items-center justify-center rounded-full shrink-0 text-[12px] font-semibold"
-                      style={{ width: 36, height: 36, backgroundColor: "#0B7DDA", color: "#FFFFFF", ...POPPINS }}
+                      style={{ width: 36, height: 36, backgroundColor: "#00A3B4", color: "#FFFFFF", ...POPPINS }}
                     >
                       {initials(dn)}
                     </div>
@@ -315,11 +315,11 @@ function BulkMessagePage() {
                 onClick={() => pickTemplate(k)}
                 className="px-3 py-2 rounded-full text-[13px]"
                 style={{
-                  backgroundColor: active ? "#0B7DDA" : "#F8F9FB",
+                  backgroundColor: active ? "#00A3B4" : "#F8F9FB",
                   color: active ? "#FFFFFF" : "#0A2540",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#0B7DDA" : "#EEF2F7",
+                  borderColor: active ? "#00A3B4" : "#EEF2F7",
                   ...POPPINS,
                 }}
               >
@@ -349,7 +349,7 @@ function BulkMessagePage() {
             onClick={() => setConfirmOpen(true)}
             disabled={sendCount === 0 || !message.trim() || sending}
             className="w-full rounded-lg text-white text-[14px] font-medium disabled:opacity-50"
-            style={{ height: 52, backgroundColor: "#0B7DDA", ...POPPINS }}
+            style={{ height: 52, backgroundColor: "#00A3B4", ...POPPINS }}
           >
             Send to {sendCount} pupils
           </button>

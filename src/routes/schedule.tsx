@@ -295,7 +295,7 @@ function SchedulePage() {
     const isCancelled = l.status === "cancelled";
     const isCompleted = l.status === "completed" || l.eol_completed === true;
 
-    let accent = "#0B7DDA";
+    let accent = "#00A3B4";
     if (isCancelled) accent = "#9CA3AF";
     else if (isCurrent) accent = "#CC2229";
     else if (isCompleted) accent = "#16A34A";
@@ -682,7 +682,7 @@ function SchedulePage() {
               ...POPPINS,
               fontSize: 13,
               fontWeight: 600,
-              color: "#0B7DDA",
+              color: "#00A3B4",
               backgroundColor: "transparent",
               padding: "8px 16px",
             }}

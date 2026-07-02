@@ -29,7 +29,7 @@ interface ContactItem {
 const contacts: ContactItem[] = [
   {
     label: "Email support",
-    icon: <Mail size={18} color="#0B7DDA" />,
+    icon: <Mail size={18} color="#00A3B4" />,
     iconBg: "#DBEAFE",
     href: "mailto:support@everydriver.co.uk",
   },

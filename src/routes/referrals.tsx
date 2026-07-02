@@ -28,7 +28,7 @@ interface Referral {
 
 function statusColor(s: Status) {
   if (s === "booked") return "#16A34A";
-  if (s === "paid") return "#0B7DDA";
+  if (s === "paid") return "#00A3B4";
   return "#F59E0B";
 }
 

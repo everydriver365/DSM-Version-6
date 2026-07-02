@@ -315,7 +315,7 @@ function MtdPage() {
             background: "#EEF4FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#0B7DDA",
+            borderColor: "#00A3B4",
             borderRadius: 12,
             padding: 16,
             fontSize: 13,
@@ -367,7 +367,7 @@ function MtdPage() {
               checked={row.is_enrolled}
               disabled={saving}
               onChange={(e) => persist({ is_enrolled: e.target.checked })}
-              style={{ width: 20, height: 20, accentColor: "#0B7DDA" }}
+              style={{ width: 20, height: 20, accentColor: "#00A3B4" }}
             />
           </label>
 

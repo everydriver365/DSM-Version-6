@@ -227,12 +227,12 @@ function RewardsPage() {
   const badges: BadgeDef[] = stats
     ? [
         { name: "First pupil", desc: "Add your first pupil", Icon: Users, color: "#16A34A", earned: stats.pupils >= 1 },
-        { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#0B7DDA", earned: stats.lessonsCompleted >= 10 },
+        { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#00A3B4", earned: stats.lessonsCompleted >= 10 },
         { name: "Money maker", desc: "Record £1000 in payments", Icon: PoundSterling, color: "#F59E0B", earned: stats.paymentsTotal >= 1000 },
         { name: "Record keeper", desc: "Log 30 expenses", Icon: Receipt, color: "#7C3AED", earned: stats.expenses >= 30 },
         { name: "Top rated", desc: "Get 5 reviews", Icon: Star, color: "#F59E0B", earned: stats.reviews >= 5 },
         { name: "Pass master", desc: "10 pupils passed test", Icon: GraduationCap, color: "#16A34A", earned: stats.passedCount >= 10 },
-        { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#0B7DDA", earned: stats.cpdHours >= 20 },
+        { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#00A3B4", earned: stats.cpdHours >= 20 },
         { name: "Mileage master", desc: "Log 1000 miles", Icon: Car, color: "#6B7280", earned: stats.mileageMiles >= 1000 },
         { name: "Perfect week", desc: "Complete all lessons in a week", Icon: CalendarIcon, color: "#16A34A", earned: stats.perfectWeek },
         { name: "Early bird", desc: "Add 5 lessons before 8am", Icon: Clock, color: "#F59E0B", earned: stats.earlyMornings >= 5 },
@@ -321,7 +321,7 @@ function RewardsPage() {
                   className="text-[12px] font-semibold shrink-0"
                   style={{
                     backgroundColor: "#EEF4FB",
-                    color: "#0B7DDA",
+                    color: "#00A3B4",
                     borderRadius: 999,
                     padding: "3px 10px",
                   }}

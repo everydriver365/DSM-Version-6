@@ -75,7 +75,7 @@ function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
-  if (s === "completed") return "#0B7DDA";
+  if (s === "completed") return "#00A3B4";
   return "#6B7280";
 }
 
@@ -275,7 +275,7 @@ function LessonDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#0B7DDA",
+              backgroundColor: "#00A3B4",
               padding: "0 24px",
               border: "none",
               ...POPPINS,
@@ -389,10 +389,10 @@ function LessonDetailPage() {
                   }}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <Map size={18} color="#0B7DDA" />
+                    <Map size={18} color="#00A3B4" />
                     <span
                       className="text-[11px] font-semibold tracking-wider"
-                      style={{ color: "#0B7DDA", ...POPPINS }}
+                      style={{ color: "#00A3B4", ...POPPINS }}
                     >
                       Route & tracking
                     </span>
@@ -483,7 +483,7 @@ function LessonDetailPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#0B7DDA",
+                      color: "#00A3B4",
                       padding: "10px 0",
                       cursor: "pointer",
                       ...POPPINS,
@@ -513,7 +513,7 @@ function LessonDetailPage() {
               <ActionRow
                 label="Feedback"
                 onClick={() => navigate({ to: "/lessons/feedback/$id", params: { id } })}
-                color="#0B7DDA"
+                color="#00A3B4"
               />
               <ActionRow
                 label="Reschedule"

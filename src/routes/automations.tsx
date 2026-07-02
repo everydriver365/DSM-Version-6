@@ -192,7 +192,7 @@ function AutomationsPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#0B7DDA",
+              borderColor: "#00A3B4",
               borderRadius: 12,
               padding: 16,
             }}
@@ -214,7 +214,7 @@ function AutomationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <Zap size={28} color="#0B7DDA" />
+                <Zap size={28} color="#00A3B4" />
               </div>
               <div className="text-[14px] text-[#6B7280]">
                 No automations set up yet
@@ -235,7 +235,7 @@ function AutomationsPage() {
                         width: 36,
                         height: 20,
                         flexShrink: 0,
-                        backgroundColor: r.is_active ? "#0B7DDA" : "#D1D5DB",
+                        backgroundColor: r.is_active ? "#00A3B4" : "#D1D5DB",
                       }}
                     >
                       <span
@@ -322,7 +322,7 @@ function AutomationsPage() {
                 <select
                   value={triggerType}
                   onChange={(e) => setTriggerType(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -350,7 +350,7 @@ function AutomationsPage() {
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
                   placeholder="Hi [name], reminder of your lesson on [date] at [time]."
-                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",
@@ -368,7 +368,7 @@ function AutomationsPage() {
                       className="text-[11px] rounded-md px-2 py-1"
                       style={{
                         backgroundColor: "#EEF4FB",
-                        color: "#0B7DDA",
+                        color: "#00A3B4",
                         fontFamily: "Inter, sans-serif",
                       }}
                     >
@@ -391,7 +391,7 @@ function AutomationsPage() {
                   style={{
                     width: 44,
                     height: 24,
-                    backgroundColor: active ? "#0B7DDA" : "#D1D5DB",
+                    backgroundColor: active ? "#00A3B4" : "#D1D5DB",
                   }}
                 >
                   <span

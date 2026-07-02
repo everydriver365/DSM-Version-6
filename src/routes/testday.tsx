@@ -321,7 +321,7 @@ function TestDayPage() {
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleCheck(item)}
-                        style={{ width: 18, height: 18, accentColor: "#0B7DDA" }}
+                        style={{ width: 18, height: 18, accentColor: "#00A3B4" }}
                       />
                       <span
                         className="text-[14px]"
@@ -368,7 +368,7 @@ function TestDayPage() {
                 onChange={(e) => updateFocus(e.target.value)}
                 placeholder="Roundabouts, parallel parking, dual carriageways…"
                 rows={4}
-                className="w-full mt-1 rounded-lg p-3 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                className="w-full mt-1 rounded-lg p-3 text-[14px] bg-white focus:border-[#00A3B4] focus:outline-none"
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
@@ -432,7 +432,7 @@ function TestDayPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
                   placeholder="Examiner comments, mistakes, follow-ups…"
-                  className="w-full rounded-lg p-3 text-[14px] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="w-full rounded-lg p-3 text-[14px] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={{
                     borderWidth: "0.5px",
                     borderStyle: "solid",

@@ -459,7 +459,7 @@ function SettingsPage() {
             ) : (
               <div
                 className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-                style={{ width: 56, height: 56, backgroundColor: "#0B7DDA", color: "#FFFFFF", ...POPPINS }}
+                style={{ width: 56, height: 56, backgroundColor: "#00A3B4", color: "#FFFFFF", ...POPPINS }}
               >
                 {initials(displayedName)}
               </div>
@@ -499,7 +499,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Clock size={18} color="#0B7DDA" />}
+            icon={<Clock size={18} color="#00A3B4" />}
             iconBg="#DBEAFE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
@@ -515,7 +515,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Calendar size={18} color="#0B7DDA" />}
+            icon={<Calendar size={18} color="#00A3B4" />}
             iconBg="#DBEAFE"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
@@ -551,7 +551,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: passBookingFee ? "#0B7DDA" : "#D1D5DB",
+                background: passBookingFee ? "#00A3B4" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -586,7 +586,7 @@ function SettingsPage() {
           }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <Bell size={18} color="#0B7DDA" />
+            <Bell size={18} color="#00A3B4" />
             <div className="text-[15px] font-semibold text-[#0A2540]" style={POPPINS}>
               Lesson reminders
             </div>
@@ -611,7 +611,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: sendLessonReminders ? "#0B7DDA" : "#D1D5DB",
+                background: sendLessonReminders ? "#00A3B4" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -799,7 +799,7 @@ function SettingsPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <MapPin size={18} color="#0B7DDA" />
+            <MapPin size={18} color="#00A3B4" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Coverage area
             </span>
@@ -889,7 +889,7 @@ function SettingsPage() {
         <SectionHeader>PRICING RULES</SectionHeader>
         <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <PoundSterling size={18} color="#0B7DDA" />
+            <PoundSterling size={18} color="#00A3B4" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Pricing rules
             </span>
@@ -929,7 +929,7 @@ function SettingsPage() {
                         padding: "2px 8px",
                         borderRadius: 999,
                         background: "#EEF2FF",
-                        color: "#0B7DDA",
+                        color: "#00A3B4",
                         ...POPPINS,
                       }}
                     >
@@ -957,7 +957,7 @@ function SettingsPage() {
                     type="checkbox"
                     checked={r.is_active}
                     onChange={(e) => toggleRule(r.id, e.target.checked)}
-                    style={{ width: 18, height: 18, accentColor: "#0B7DDA" }}
+                    style={{ width: 18, height: 18, accentColor: "#00A3B4" }}
                   />
                 </label>
                 <button
@@ -1045,7 +1045,7 @@ function SettingsPage() {
                         type="checkbox"
                         checked={ruleDays[d.key]}
                         onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
-                        style={{ accentColor: "#0B7DDA" }}
+                        style={{ accentColor: "#00A3B4" }}
                       />
                       {d.label.slice(0, 3)}
                     </label>
@@ -1169,7 +1169,7 @@ function SettingsPage() {
         <SectionHeader>PUPILS</SectionHeader>
         <Card className="!p-0">
           <MenuRow
-            icon={<ClipboardList size={18} color="#0B7DDA" />}
+            icon={<ClipboardList size={18} color="#00A3B4" />}
             iconBg="#E0F2FE"
             label="Intake questions"
             onClick={() => navigate({ to: "/intake-questions" })}

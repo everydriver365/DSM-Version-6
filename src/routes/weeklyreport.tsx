@@ -281,7 +281,7 @@ function WeeklyReportPage() {
                       width: 36,
                       height: 36,
                       borderRadius: 18,
-                      backgroundColor: "#0B7DDA",
+                      backgroundColor: "#00A3B4",
                     }}
                   >
                     {p.name.charAt(0).toUpperCase()}

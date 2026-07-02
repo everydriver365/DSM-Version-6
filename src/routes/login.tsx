@@ -142,7 +142,7 @@ function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -166,7 +166,7 @@ function LoginPage() {
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{
                 fontFamily: "Inter, sans-serif",
                 border: "1.5px solid #CBD5E1",
@@ -194,13 +194,13 @@ function LoginPage() {
                   setRemember(on);
                   persistRemember(email, on);
                 }}
-                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#0B7DDA]"
+                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#00A3B4]"
               />
               Remember me
             </label>
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#0B7DDA] hover:underline"
+              className="text-[13px] text-[#00A3B4] hover:underline"
             >
               Forgot password?
             </Link>
@@ -218,7 +218,7 @@ function LoginPage() {
 
           <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Inter, sans-serif" }}>
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-[#0B7DDA] hover:underline font-medium">
+            <Link to="/register" className="text-[#00A3B4] hover:underline font-medium">
               Create account
             </Link>
           </p>
@@ -238,7 +238,7 @@ function LoginPage() {
           {webauthnSupported && (
             <Link
               to="/forgotpassword"
-              className="text-[13px] text-[#0B7DDA] hover:underline text-center"
+              className="text-[13px] text-[#00A3B4] hover:underline text-center"
             >
               Forgot password?
             </Link>

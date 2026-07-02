@@ -441,7 +441,7 @@ function EditPupilPage() {
                 setLeadSource(e.target.value);
                 setLeadSourceDetail("");
               }}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             >
               <option value="">Select…</option>
@@ -525,7 +525,7 @@ function EditPupilPage() {
                         id="payment_method"
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="cash">Cash</option>
@@ -542,7 +542,7 @@ function EditPupilPage() {
                         value={topUpNotes}
                         onChange={(e) => setTopUpNotes(e.target.value)}
                         placeholder="e.g. Top-up paid by bank transfer, ref: xxx"
-                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                        className="w-full rounded-lg p-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                         style={{ ...fieldBorder, resize: "vertical" }}
                       />
                     </div>
@@ -583,7 +583,7 @@ function EditPupilPage() {
                   id="ni_payer"
                   value={niPayer}
                   onChange={(e) => setNiPayer(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                   style={fieldBorder}
                 >
                   <option value="pupil">Pupil pays directly</option>
@@ -670,7 +670,7 @@ function EditPupilPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#0B7DDA",
+                          backgroundColor: "#00A3B4",
                           borderRadius: 4,
                         }}
                       />
@@ -747,7 +747,7 @@ function EditPupilPage() {
                         id="swap_preferred_time"
                         value={swapPreferredTime}
                         onChange={(e) => setSwapPreferredTime(e.target.value)}
-                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                         style={fieldBorder}
                       >
                         <option value="any">Any</option>
@@ -786,7 +786,7 @@ function EditPupilPage() {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             >
               {STATUSES.map((s) => (
@@ -812,7 +812,7 @@ function EditPupilPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this pupil…"
-              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+              className="w-full rounded-lg px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
               style={fieldBorder}
             />
           </div>
@@ -890,7 +890,7 @@ function CentreSearch({
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder="Search test centres…"
-        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+        className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
         style={fieldBorder}
       />
       {open && (results.length > 0 || loading) && (

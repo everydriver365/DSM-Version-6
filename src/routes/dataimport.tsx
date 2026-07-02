@@ -173,14 +173,14 @@ function DataImportPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#0B7DDA",
+              borderColor: "#00A3B4",
               borderRadius: 12,
               padding: 16,
               display: "flex",
               gap: 12,
             }}
           >
-            <Info size={20} color="#0B7DDA" style={{ flexShrink: 0, marginTop: 2 }} />
+            <Info size={20} color="#00A3B4" style={{ flexShrink: 0, marginTop: 2 }} />
             <div className="text-[13px] text-[#0A2540]">
               Upload a CSV file to import pupils in bulk. Download the template below to get started.
             </div>
@@ -287,7 +287,7 @@ function DataImportPage() {
                     style={{
                       width: `${progress}%`,
                       height: "100%",
-                      backgroundColor: "#0B7DDA",
+                      backgroundColor: "#00A3B4",
                       transition: "width 0.2s",
                     }}
                   />

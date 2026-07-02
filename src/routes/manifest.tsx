@@ -52,7 +52,7 @@ function lessonTime(l: Lesson) {
 }
 function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
-  if (s === "completed") return "#0B7DDA";
+  if (s === "completed") return "#00A3B4";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
@@ -303,7 +303,7 @@ function ManifestPage() {
               value={notes}
               onChange={(e) => saveNotes(e.target.value)}
               placeholder="How did the day go?"
-              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none resize-none"
+              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none resize-none"
               style={{
                 fontFamily: "Inter, sans-serif",
                 borderWidth: "0.5px",

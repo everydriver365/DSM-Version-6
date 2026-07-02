@@ -440,7 +440,7 @@ function MonthEndPage() {
               >
                 <div
                   className="flex items-center justify-center text-white text-[12px] font-semibold"
-                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: "#0B7DDA" }}
+                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: "#00A3B4" }}
                 >
                   {initials(p.name)}
                 </div>
@@ -461,7 +461,7 @@ function MonthEndPage() {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Reflections on the month, wins, things to improve…"
           rows={5}
-          className="w-full rounded-xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+          className="w-full rounded-xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
           style={{
             fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",

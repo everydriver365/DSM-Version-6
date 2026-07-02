@@ -695,7 +695,7 @@ function LivePage() {
           }}
         >
           <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
-            <MapIcon size={44} color="#0B7DDA" strokeWidth={1.8} />
+            <MapIcon size={44} color="#00A3B4" strokeWidth={1.8} />
           </div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#0A2540", marginBottom: 6 }}>
             No active lesson
@@ -710,7 +710,7 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 10,
-              background: "#0B7DDA",
+              background: "#00A3B4",
               border: "none",
               color: "#fff",
               fontSize: 15,

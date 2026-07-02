@@ -475,7 +475,7 @@ function ResultGroup({
             type="button"
             onClick={onSeeAll}
             className="text-[12px] font-medium"
-            style={{ color: "#0B7DDA", ...POPPINS }}
+            style={{ color: "#00A3B4", ...POPPINS }}
           >
             See all {total}
           </button>
@@ -523,7 +523,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <span
       className="flex items-center justify-center rounded-full text-white text-[12px] font-semibold"
-      style={{ width: 32, height: 32, backgroundColor: "#0B7DDA" }}
+      style={{ width: 32, height: 32, backgroundColor: "#00A3B4" }}
     >
       {initial}
     </span>

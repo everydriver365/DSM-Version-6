@@ -165,7 +165,7 @@ function NotificationSettingsPage() {
               className="flex items-center justify-center rounded-full"
               style={{ width: 32, height: 32, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
-              <Bell size={16} color="#0B7DDA" />
+              <Bell size={16} color="#00A3B4" />
             </span>
             <div className="flex-1">
               <div className="text-[14px] font-semibold text-[#0A2540]" style={POPPINS}>
@@ -189,7 +189,7 @@ function NotificationSettingsPage() {
               style={{
                 width: 44,
                 height: 26,
-                backgroundColor: pushStatus === "enabled" ? "#0B7DDA" : "#EEF2F7",
+                backgroundColor: pushStatus === "enabled" ? "#00A3B4" : "#EEF2F7",
                 opacity: pushStatus === "unsupported" || pushBusy ? 0.5 : 1,
               }}
             >
@@ -245,7 +245,7 @@ function NotificationSettingsPage() {
                     }}
                     className="text-white text-[12px] font-semibold rounded-lg"
                     style={{
-                      backgroundColor: "#0B7DDA",
+                      backgroundColor: "#00A3B4",
                       padding: "8px 12px",
                       ...POPPINS,
                     }}
@@ -350,7 +350,7 @@ function ToggleRow({
         style={{
           width: 44,
           height: 26,
-          backgroundColor: value ? "#0B7DDA" : "#EEF2F7",
+          backgroundColor: value ? "#00A3B4" : "#EEF2F7",
         }}
       >
         <span

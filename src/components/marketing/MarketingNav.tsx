@@ -20,7 +20,7 @@ import {
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
 const NAVY = "#0A2540";
-const ACCENT = "#0B7DDA";
+const ACCENT = "#00A3B4";
 const PANEL_BG = "#F7F5EF";
 const ICON_BG = "#EAF3FB";
 const BORDER = "#EEF2F7";

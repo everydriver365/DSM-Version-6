@@ -205,7 +205,7 @@ function DiscountCodesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <Tag size={20} color="#0B7DDA" />
+          <Tag size={20} color="#00A3B4" />
           <div className="text-[13px] text-[#1E3A8A] leading-snug">
             Offer discounts to your pupils. Share a code and they'll get money off their
             booking.
@@ -266,7 +266,7 @@ function CodeCard({
   onDelete: () => void;
 }) {
   const isPct = code.type === "percentage";
-  const typeColor = isPct ? "#D97706" : "#0B7DDA";
+  const typeColor = isPct ? "#D97706" : "#00A3B4";
   const typeBg = isPct ? "#FEF3C7" : "#DBEAFE";
   const usesLabel = `${code.uses_count} / ${code.max_uses ?? "∞"} uses`;
   return (
@@ -366,7 +366,7 @@ function CodeCard({
           type="button"
           onClick={onShare}
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
-          style={{ height: 34, borderRadius: 8, backgroundColor: "#0B7DDA" }}
+          style={{ height: 34, borderRadius: 8, backgroundColor: "#00A3B4" }}
         >
           <Share2 size={13} /> Share
         </button>
@@ -595,7 +595,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#0B7DDA",
+              backgroundColor: "#00A3B4",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,
@@ -629,9 +629,9 @@ function TypeBtn({
       style={{
         height: 40,
         borderRadius: 8,
-        border: `0.5px solid ${active ? "#0B7DDA" : "#EEF2F7"}`,
+        border: `0.5px solid ${active ? "#00A3B4" : "#EEF2F7"}`,
         backgroundColor: active ? "#EFF6FF" : "#FFFFFF",
-        color: active ? "#0B7DDA" : "#6B7280",
+        color: active ? "#00A3B4" : "#6B7280",
       }}
     >
       {icon} {label}

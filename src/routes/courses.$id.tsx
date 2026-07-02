@@ -94,7 +94,7 @@ function typeColor(t: string) {
   if (t === "intensive") return "#CC2229";
   if (t === "semi-intensive") return "#F59E0B";
   if (t === "weekly") return "#16A34A";
-  return "#0B7DDA";
+  return "#00A3B4";
 }
 function typeLabel(t: string) {
   if (t === "intensive") return "Intensive";
@@ -477,12 +477,12 @@ function CourseDetailPage() {
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
-                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#0B7DDA", full: false },
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#00A3B4", full: false },
                         { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
                         { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
                         { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
                         { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#0B7DDA", full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#00A3B4", full: false },
                         { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
                       ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
                         const active = (form.lesson_time_preference || "flexible") === key;
@@ -1421,7 +1421,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#0B7DDA" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#00A3B4" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",

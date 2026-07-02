@@ -274,7 +274,7 @@ function EndOfDayPage() {
           {outstandingEols.map((l) => (
             <Row key={`eol-${l.id}`}>
               <span>{pupilName(l.pupils) || "Pupil"} — EOL pending</span>
-              <SmallBtn color="#0B7DDA" onClick={() => setEolLesson(l)}>Complete EOL</SmallBtn>
+              <SmallBtn color="#00A3B4" onClick={() => setEolLesson(l)}>Complete EOL</SmallBtn>
             </Row>
           ))}
           {unpaidLessons.map((l) => (
@@ -332,7 +332,7 @@ function EndOfDayPage() {
 
       {/* Section 4: Tomorrow */}
       <Card>
-        <Heading icon={<CalendarIcon size={16} color="#0B7DDA" />} title="Tomorrow" />
+        <Heading icon={<CalendarIcon size={16} color="#00A3B4" />} title="Tomorrow" />
         {tomorrowLessons.length === 0 ? (
           <div style={{ fontSize: 13, color: "#6B7280" }}>No lessons booked for tomorrow.</div>
         ) : (
@@ -354,7 +354,7 @@ function EndOfDayPage() {
                 marginTop: 10,
                 padding: "8px 12px",
                 borderRadius: 8,
-                background: "#0B7DDA",
+                background: "#00A3B4",
                 color: "#FFFFFF",
                 fontSize: 12,
                 fontWeight: 600,

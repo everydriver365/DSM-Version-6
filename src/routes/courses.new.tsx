@@ -57,7 +57,7 @@ const TYPE_META: Record<
   intensive: { label: "Intensive", color: "#CC2229", bg: "#fbe8e8", desc: "All hours in one week" },
   "semi-intensive": { label: "Semi-intensive", color: "#F59E0B", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
   weekly: { label: "Weekly lessons", color: "#16A34A", bg: "#e7f6ec", desc: "Regular weekly slots" },
-  custom: { label: "Custom", color: "#0B7DDA", bg: "#e8eefb", desc: "You define the schedule" },
+  custom: { label: "Custom", color: "#00A3B4", bg: "#e8eefb", desc: "You define the schedule" },
 };
 
 function ymd(d: Date) {
@@ -461,8 +461,8 @@ function NewCoursePage() {
               onClick={() => setStep(s.n as 1 | 2 | 3)}
               style={{
                 flex: 1,
-                background: active ? "#0B7DDA" : done ? "#e8eefb" : "#fff",
-                color: active ? "#fff" : "#0B7DDA",
+                background: active ? "#00A3B4" : done ? "#e8eefb" : "#fff",
+                color: active ? "#fff" : "#00A3B4",
                 border: "1px solid #e3e6ec",
                 borderRadius: 10,
                 padding: "8px 6px",
@@ -560,8 +560,8 @@ function NewCoursePage() {
                 flex: 1,
                 height: 44,
                 background: "#fff",
-                color: "#0B7DDA",
-                border: "1px solid #0B7DDA",
+                color: "#00A3B4",
+                border: "1px solid #00A3B4",
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -575,7 +575,7 @@ function NewCoursePage() {
               style={{
                 flex: 1,
                 height: 44,
-                background: "#0B7DDA",
+                background: "#00A3B4",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
@@ -593,8 +593,8 @@ function NewCoursePage() {
                   flex: 1,
                   height: 44,
                   background: "#fff",
-                  color: "#0B7DDA",
-                  border: "1px solid #0B7DDA",
+                  color: "#00A3B4",
+                  border: "1px solid #00A3B4",
                   borderRadius: 10,
                   fontWeight: 600,
                   cursor: "pointer",
@@ -705,8 +705,8 @@ function Step1(props: {
                 style={{
                   padding: "8px 12px",
                   borderRadius: 8,
-                  border: `1px solid ${active ? "#0B7DDA" : "#e3e6ec"}`,
-                  background: active ? "#0B7DDA" : "#fff",
+                  border: `1px solid ${active ? "#00A3B4" : "#e3e6ec"}`,
+                  background: active ? "#00A3B4" : "#fff",
                   color: active ? "#fff" : "#1A1A2E",
                   fontWeight: 600,
                   fontSize: 13,
@@ -1098,12 +1098,12 @@ function Step2(props: {
         <FieldLabel>Lesson times</FieldLabel>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#0B7DDA", full: false },
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#00A3B4", full: false },
             { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#F59E0B", full: false },
             { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
             { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#7C3AED", full: false },
             { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#16A34A", full: false },
-            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#0B7DDA", full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#00A3B4", full: false },
             { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
           ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
             const active = timePref === key;
@@ -1375,8 +1375,8 @@ function CheckRow({
           width: 20,
           height: 20,
           borderRadius: 4,
-          border: `1.5px solid ${checked ? "#0B7DDA" : "#9CA3AF"}`,
-          background: checked ? "#0B7DDA" : "#fff",
+          border: `1.5px solid ${checked ? "#00A3B4" : "#9CA3AF"}`,
+          background: checked ? "#00A3B4" : "#fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1547,7 +1547,7 @@ function PostcodeAutocomplete(props: {
           style={{
             width: "100%",
             height: 44,
-            border: `1.5px solid ${error ? "#CC2229" : focused ? "#0B7DDA" : "#EEF2F7"}`,
+            border: `1.5px solid ${error ? "#CC2229" : focused ? "#00A3B4" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Inter, sans-serif",

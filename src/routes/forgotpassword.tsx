@@ -61,7 +61,7 @@ function ForgotPasswordPage() {
               Check your spam folder too. The link will take you to the reset password page.
             </p>
 
-            <Link to="/login" className="text-[13px] text-[#0B7DDA] hover:underline mt-6">
+            <Link to="/login" className="text-[13px] text-[#00A3B4] hover:underline mt-6">
               Back to sign in
             </Link>
           </div>
@@ -83,7 +83,7 @@ function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0B7DDA]"
+              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]"
               style={{ fontFamily: "Inter, sans-serif", border: "1.5px solid #CBD5E1" }}
             />
 
@@ -99,7 +99,7 @@ function ForgotPasswordPage() {
               </p>
             )}
 
-            <Link to="/login" className="text-[13px] text-[#0B7DDA] hover:underline text-center mt-4">
+            <Link to="/login" className="text-[13px] text-[#00A3B4] hover:underline text-center mt-4">
               Back to sign in
             </Link>
           </form>

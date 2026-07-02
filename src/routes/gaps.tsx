@@ -206,11 +206,11 @@ function GapsPage() {
                 style={{
                   width: 52,
                   height: 64,
-                  backgroundColor: active ? "#0B7DDA" : "#F8F9FB",
+                  backgroundColor: active ? "#00A3B4" : "#F8F9FB",
                   color: active ? "#FFFFFF" : "#0A2540",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: active ? "#0B7DDA" : "#EEF2F7",
+                  borderColor: active ? "#00A3B4" : "#EEF2F7",
                 }}
               >
                 <span className="text-[10px] uppercase font-medium">
@@ -241,11 +241,11 @@ function GapsPage() {
                   onClick={() => setMinGapMins(o.mins)}
                   className="flex-1 h-10 rounded-lg text-[13px] font-medium"
                   style={{
-                    backgroundColor: active ? "#0B7DDA" : "#FFFFFF",
+                    backgroundColor: active ? "#00A3B4" : "#FFFFFF",
                     color: active ? "#FFFFFF" : "#0A2540",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: active ? "#0B7DDA" : "#EEF2F7",
+                    borderColor: active ? "#00A3B4" : "#EEF2F7",
                   }}
                 >
                   {o.label}
@@ -264,7 +264,7 @@ function GapsPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -279,7 +279,7 @@ function GapsPage() {
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   borderWidth: "0.5px",
@@ -321,7 +321,7 @@ function GapsPage() {
                   </div>
                   <span
                     className="inline-block mt-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#EEF4FB", color: "#0B7DDA" }}
+                    style={{ backgroundColor: "#EEF4FB", color: "#00A3B4" }}
                   >
                     {fmtDuration(g.minutes)}
                   </span>

@@ -259,7 +259,7 @@ function BriefingPage() {
                   width: 44, height: 44, borderRadius: 10, background: "#EEF4FB",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  <W.Icon size={26} color="#0B7DDA" />
+                  <W.Icon size={26} color="#00A3B4" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 22, fontWeight: 700, color: "#0A2540" }}>
@@ -332,7 +332,7 @@ function BriefingPage() {
                     onClick={(e) => { if (!l.pupils?.phone) e.preventDefault(); }}
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
-                      background: l.pupils?.phone ? "#0B7DDA" : "#cbd5e1",
+                      background: l.pupils?.phone ? "#00A3B4" : "#cbd5e1",
                       color: "#fff", fontSize: 13, fontWeight: 600,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       textDecoration: "none", pointerEvents: l.pupils?.phone ? "auto" : "none",
@@ -344,8 +344,8 @@ function BriefingPage() {
                     onClick={() => navigate({ to: "/satnav" })}
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
-                      background: "#fff", color: "#0B7DDA",
-                      border: "1px solid #0B7DDA", fontSize: 13, fontWeight: 600,
+                      background: "#fff", color: "#00A3B4",
+                      border: "1px solid #00A3B4", fontSize: 13, fontWeight: 600,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       cursor: "pointer", fontFamily: "Inter, sans-serif",
                     }}

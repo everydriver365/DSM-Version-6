@@ -96,7 +96,7 @@ function ymd(d: Date) {
 function statusBadge(status: string | null) {
   const s = (status ?? "active").toLowerCase();
   if (s === "active") return { bg: "#16A34A", label: "Active" };
-  if (s === "passed") return { bg: "#0B7DDA", label: "Passed" };
+  if (s === "passed") return { bg: "#00A3B4", label: "Passed" };
   return { bg: "#6B7280", label: s.charAt(0).toUpperCase() + s.slice(1) };
 }
 function lessonStatusColor(s: string) {
@@ -121,7 +121,7 @@ function accentColor(l: Lesson) {
   if (isLessonLive(l)) return "#CC2229";
   if (l.status === "completed") return "#16A34A";
   if (l.status === "cancelled") return "#9CA3AF";
-  return "#0B7DDA";
+  return "#00A3B4";
 }
 function daysBetween(a: string, b: string) {
   const d1 = new Date(`${a}T00:00:00`);
@@ -442,7 +442,7 @@ function PupilDetailPage() {
                 style={{
                   width: 56,
                   height: 56,
-                  backgroundColor: "#0B7DDA",
+                  backgroundColor: "#00A3B4",
                   color: "#FFFFFF",
                   ...POPPINS,
                 }}
@@ -469,7 +469,7 @@ function PupilDetailPage() {
                     border: "1px solid #EEF2F7",
                   }}
                 >
-                  <Camera size={11} color="#0B7DDA" />
+                  <Camera size={11} color="#00A3B4" />
                 </span>
               </button>
               <div className="min-w-0 flex-1">
@@ -534,7 +534,7 @@ function PupilDetailPage() {
               console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
               let barColor = "#CC2229";
               if (score >= 100) barColor = "#16A34A";
-              else if (score >= 71) barColor = "#0B7DDA";
+              else if (score >= 71) barColor = "#00A3B4";
               else if (score >= 41) barColor = "#F59E0B";
               return (
                 <div className="mt-4">
@@ -598,7 +598,7 @@ function PupilDetailPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <ClipboardList size={18} color="#0B7DDA" />
+              <ClipboardList size={18} color="#00A3B4" />
               <div className="text-[14px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
                 Intake answers
               </div>
@@ -655,7 +655,7 @@ function PupilDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#0B7DDA",
+              backgroundColor: "#00A3B4",
               border: "none",
               ...POPPINS,
             }}
@@ -712,7 +712,7 @@ function PupilDetailPage() {
               <BookOpen size={16} color="#0A2540" />
               Syllabus
             </span>
-            <span className="text-[12px] font-semibold" style={{ color: "#0B7DDA" }}>
+            <span className="text-[12px] font-semibold" style={{ color: "#00A3B4" }}>
               {syllabusPct == null ? "—" : `${syllabusPct}%`}
             </span>
           </button>
@@ -906,7 +906,7 @@ function PupilDetailPage() {
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEF4FB", color: "#0B7DDA", ...POPPINS }}
+                  style={{ backgroundColor: "#EEF4FB", color: "#00A3B4", ...POPPINS }}
                 >
                   National Intensive
                 </span>
@@ -1020,7 +1020,7 @@ function PupilDetailPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#0B7DDA",
+                          backgroundColor: "#00A3B4",
                           borderRadius: 4,
                         }}
                       />
@@ -1080,7 +1080,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#0B7DDA", ...POPPINS }}
+                  style={{ color: "#00A3B4", ...POPPINS }}
                 >
                   Edit payment details
                 </button>
@@ -1088,7 +1088,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
                   className="text-[13px] font-medium"
-                  style={{ color: "#0B7DDA", ...POPPINS }}
+                  style={{ color: "#00A3B4", ...POPPINS }}
                 >
                   Manage swap
                 </button>
@@ -1104,7 +1104,7 @@ function PupilDetailPage() {
           value={notesDraft}
           onChange={(e) => setNotesDraft(e.target.value)}
           placeholder="Add a note about this pupil…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none"
+          className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
@@ -1155,7 +1155,7 @@ function PupilDetailPage() {
             <select
               value={certMilestone}
               onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#0B7DDA] focus:outline-none mb-4"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none mb-4"
               style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
               <option value="first_lesson">First lesson complete</option>
