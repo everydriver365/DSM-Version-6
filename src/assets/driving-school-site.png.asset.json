@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "4a549ce2-19f5-49b0-aa41-728f7ae8f5cd",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/4a549ce2-19f5-49b0-aa41-728f7ae8f5cd/driving-school-site.png",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/4a549ce2-19f5-49b0-aa41-728f7ae8f5cd/driving-school-site.png",
-  "original_filename": "driving-school-site.png",
-  "size": 2110854,
   "content_type": "image/png",
-  "created_at": "2026-06-27T13:32:19Z"
+  "created_at": "2026-06-27T13:32:19Z",
+  "original_filename": "driving-school-site.png",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/4a549ce2-19f5-49b0-aa41-728f7ae8f5cd/driving-school-site.png",
+  "size": 2110854,
+  "url": "/__l5e/assets-v1/4a549ce2-19f5-49b0-aa41-728f7ae8f5cd/driving-school-site.png",
+  "version": 1
 }

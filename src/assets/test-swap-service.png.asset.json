@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "c0e0ae99-ee1f-42b1-b664-df49f613f6d4",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/c0e0ae99-ee1f-42b1-b664-df49f613f6d4/test-swap-service.png",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/c0e0ae99-ee1f-42b1-b664-df49f613f6d4/test-swap-service.png",
-  "original_filename": "test-swap-service.png",
-  "size": 2185668,
   "content_type": "image/png",
-  "created_at": "2026-06-28T06:53:06Z"
+  "created_at": "2026-06-28T06:53:06Z",
+  "original_filename": "test-swap-service.png",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/c0e0ae99-ee1f-42b1-b664-df49f613f6d4/test-swap-service.png",
+  "size": 2185668,
+  "url": "/__l5e/assets-v1/c0e0ae99-ee1f-42b1-b664-df49f613f6d4/test-swap-service.png",
+  "version": 1
 }

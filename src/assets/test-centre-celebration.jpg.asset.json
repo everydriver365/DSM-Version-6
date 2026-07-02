@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "8e35d2fd-6289-48d5-a371-bf99f48c0b0c",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/8e35d2fd-6289-48d5-a371-bf99f48c0b0c/test-centre-celebration.jpg",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/8e35d2fd-6289-48d5-a371-bf99f48c0b0c/test-centre-celebration.jpg",
-  "original_filename": "test-centre-celebration.jpg",
-  "size": 285551,
   "content_type": "image/jpeg",
-  "created_at": "2026-06-27T14:16:08Z"
+  "created_at": "2026-06-27T14:16:08Z",
+  "original_filename": "test-centre-celebration.jpg",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/8e35d2fd-6289-48d5-a371-bf99f48c0b0c/test-centre-celebration.jpg",
+  "size": 285551,
+  "url": "/__l5e/assets-v1/8e35d2fd-6289-48d5-a371-bf99f48c0b0c/test-centre-celebration.jpg",
+  "version": 1
 }

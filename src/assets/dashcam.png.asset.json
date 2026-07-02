@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "0a6a4259-cfd4-424c-b251-13ac13d836e1",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/0a6a4259-cfd4-424c-b251-13ac13d836e1/dashcam.png",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/0a6a4259-cfd4-424c-b251-13ac13d836e1/dashcam.png",
-  "original_filename": "dashcam.png",
-  "size": 2075804,
   "content_type": "image/png",
-  "created_at": "2026-06-27T13:19:10Z"
+  "created_at": "2026-06-27T13:19:10Z",
+  "original_filename": "dashcam.png",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/0a6a4259-cfd4-424c-b251-13ac13d836e1/dashcam.png",
+  "size": 2075804,
+  "url": "/__l5e/assets-v1/0a6a4259-cfd4-424c-b251-13ac13d836e1/dashcam.png",
+  "version": 1
 }

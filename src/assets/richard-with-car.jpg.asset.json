@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "b2d43bb4-9e59-4a51-a871-d468e76c50f5",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/b2d43bb4-9e59-4a51-a871-d468e76c50f5/richard-with-car.jpg",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/b2d43bb4-9e59-4a51-a871-d468e76c50f5/richard-with-car.jpg",
-  "original_filename": "richard-with-car.jpg",
-  "size": 65535,
   "content_type": "image/jpeg",
-  "created_at": "2026-06-27T14:26:57Z"
+  "created_at": "2026-06-27T14:26:57Z",
+  "original_filename": "richard-with-car.jpg",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/b2d43bb4-9e59-4a51-a871-d468e76c50f5/richard-with-car.jpg",
+  "size": 65535,
+  "url": "/__l5e/assets-v1/b2d43bb4-9e59-4a51-a871-d468e76c50f5/richard-with-car.jpg",
+  "version": 1
 }

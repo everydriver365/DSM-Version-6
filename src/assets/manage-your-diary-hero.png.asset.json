@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "b204f1c4-7af7-4bd0-9423-7944bd4690ec",
-  "project_id": "5fc26c2a-cf6f-4462-b261-e8da9a01767e",
-  "url": "/__l5e/assets-v1/b204f1c4-7af7-4bd0-9423-7944bd4690ec/manage-your-diary-hero.png",
-  "r2_key": "a/v1/5fc26c2a-cf6f-4462-b261-e8da9a01767e/b204f1c4-7af7-4bd0-9423-7944bd4690ec/manage-your-diary-hero.png",
-  "original_filename": "manage-your-diary-hero.png",
-  "size": 2406430,
   "content_type": "image/png",
-  "created_at": "2026-06-28T07:48:39Z"
+  "created_at": "2026-06-28T07:48:39Z",
+  "original_filename": "manage-your-diary-hero.png",
+  "project_id": "d8fa4382-c611-4c44-974f-91e31efdf0f0",
+  "r2_key": "a/v1/d8fa4382-c611-4c44-974f-91e31efdf0f0/b204f1c4-7af7-4bd0-9423-7944bd4690ec/manage-your-diary-hero.png",
+  "size": 2406430,
+  "url": "/__l5e/assets-v1/b204f1c4-7af7-4bd0-9423-7944bd4690ec/manage-your-diary-hero.png",
+  "version": 1
 }
