@@ -239,16 +239,22 @@ function DiscountCodesPage() {
         )}
       </div>
 
-      {showAdd && userId && (
-        <AddSheet
-          userId={userId}
-          onClose={() => setShowAdd(false)}
-          onSaved={() => {
-            setShowAdd(false);
-            fetchCodes();
-          }}
-        />
-      )}
+      <BottomSheet
+        open={showAdd}
+        onOpenChange={setShowAdd}
+        title="New discount code"
+      >
+        {showAdd && userId && (
+          <AddSheet
+            userId={userId}
+            onClose={() => setShowAdd(false)}
+            onSaved={() => {
+              setShowAdd(false);
+              fetchCodes();
+            }}
+          />
+        )}
+      </BottomSheet>
     </div>
   );
 }
