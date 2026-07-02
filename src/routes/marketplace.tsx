@@ -261,8 +261,115 @@ function MarketplacePage() {
               })}
             </div>
 
-            {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 pb-10">
+            {/* Product grid — 2x2 horizontally scrollable on mobile */}
+            <div
+              className="sm:hidden"
+              style={{
+                display: "grid",
+                gridTemplateRows: "repeat(2, minmax(180px, auto))",
+                gridAutoFlow: "column",
+                gridAutoColumns: "calc((100% - 12px) / 2)",
+                gap: 12,
+                padding: "16px",
+                paddingBottom: 40,
+                overflowX: "auto",
+                overflowY: "hidden",
+                scrollSnapType: "x mandatory",
+                scrollbarWidth: "none",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
+              {filteredItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      position: "relative",
+                      minHeight: 180,
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      background: item.gradient,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-end",
+                      scrollSnapAlign: "start",
+                    }}
+                  >
+                    {item.badge && (
+                      <span
+                        className="font-bold px-2 py-1 rounded-full"
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          left: 12,
+                          fontSize: 10,
+                          backgroundColor: item.badgeBg,
+                          color: item.badgeColor,
+                          fontFamily: "Inter, sans-serif",
+                          zIndex: 2,
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                    <Icon
+                      size={64}
+                      color="#FFFFFF"
+                      style={{ position: "absolute", top: 12, right: 12, opacity: 0.2 }}
+                      strokeWidth={1.5}
+                    />
+                    <div style={{ padding: 16, zIndex: 2 }}>
+                      <div
+                        className="font-bold"
+                        style={{ fontSize: 15, color: "#FFFFFF", fontFamily: "Inter, sans-serif", lineHeight: 1.3 }}
+                      >
+                        {item.title}
+                      </div>
+                      <div
+                        style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", fontFamily: "Inter, sans-serif", marginTop: 2 }}
+                      >
+                        {item.subtitle}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.7)",
+                          fontFamily: "Inter, sans-serif",
+                          marginTop: 6,
+                          lineHeight: 1.35,
+                          minHeight: 42,
+                        }}
+                      >
+                        {item.description}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAction(item)}
+                        className="font-semibold w-full text-left"
+                        style={{
+                          marginTop: 10,
+                          fontSize: 12,
+                          color: "#FFFFFF",
+                          fontFamily: "Inter, sans-serif",
+                          background: "rgba(255,255,255,0.2)",
+                          border: "none",
+                          borderRadius: 8,
+                          padding: "8px 10px",
+                          cursor: "pointer",
+                          transition: "background 0.15s ease",
+                        }}
+                      >
+                        {item.buttonText}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Product grid — tablet/desktop unchanged */}
+            <div className="hidden sm:grid sm:grid-cols-2 gap-3 p-4 pb-10">
               {filteredItems.map((item) => {
                 const Icon = item.icon;
                 return (
