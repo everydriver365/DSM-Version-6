@@ -774,6 +774,91 @@ function PupilDetailPage() {
         </div>
       )}
 
+      {/* Test status strips */}
+      {pupil && (() => {
+        const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
+        const showPractical = !!pupil.test_date;
+        if (!showTheory && !showPractical) return null;
+        const theoryBadge = statusColour(pupil.theory_status);
+        const practBadge = statusColour(pupil.test_status);
+        const centreName = centreInfo?.name || pupil.test_centre || "";
+        return (
+          <div className="mx-4 mt-3">
+            <div
+              className="flex gap-2 overflow-x-auto"
+              style={{ scrollbarWidth: "none" as any }}
+            >
+              {showTheory && (
+                <div
+                  className="flex items-center gap-2 shrink-0 bg-white"
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 12,
+                    border: "0.5px solid #E2E6ED",
+                    ...POPPINS,
+                  }}
+                >
+                  <BookOpen size={16} color="#1A52A0" />
+                  <span
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: theoryBadge.bg, color: theoryBadge.fg }}
+                  >
+                    {pupil.theory_status}
+                  </span>
+                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                    {pupil.theory_status === "Passed"
+                      ? `Theory ✓ passed ${fmtUKDate(pupil.theory_pass_date)}`
+                      : pupil.theory_test_date
+                        ? `Theory test: ${fmtUKDate(pupil.theory_test_date)}`
+                        : ""}
+                  </span>
+                </div>
+              )}
+              {showPractical && (
+                <div
+                  className="flex items-center gap-2 shrink-0 bg-white"
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 12,
+                    border: "0.5px solid #E2E6ED",
+                    ...POPPINS,
+                  }}
+                >
+                  <Car size={16} color="#0F2044" />
+                  <span
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: practBadge.bg, color: practBadge.fg }}
+                  >
+                    {pupil.test_status || "Booked"}
+                  </span>
+                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                    Test: {fmtUKDate(pupil.test_date)}
+                    {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
+                    {centreName ? ` — ${centreName}` : ""}
+                  </span>
+                  {pupil.test_status === "Passed" && (
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#16A34A", color: "#FFFFFF" }}
+                    >
+                      PASSED ✓
+                    </span>
+                  )}
+                  {pupil.test_status === "Failed" && (
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#DC2626", color: "#FFFFFF" }}
+                    >
+                      FAILED
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Emergency contact, licence, custom rates, calendar colour */}
       {pupil && (
         <PupilExtras
@@ -781,6 +866,164 @@ function PupilDetailPage() {
           instructorRate={instructorRate}
           onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
+      )}
+
+      {/* Address (Google Places autocomplete) */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              border: "0.5px solid #E2E6ED",
+              padding: 16,
+            }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <MapPin size={16} color="#1A52A0" /> Address
+              </span>
+              <button
+                type="button"
+                onClick={() => setAddressEditing((v) => !v)}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {addressEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {addressEditing ? (
+              <AddressEditor
+                initialAddress={pupil.address ?? ""}
+                initialPostcode={pupil.postcode ?? ""}
+                inputRef={addressInputRef}
+                onSave={saveAddressManual}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+                {pupil.address || "No address on file"}
+                {pupil.postcode ? (
+                  <span className="ml-2" style={{ color: "#6B7280" }}>{pupil.postcode}</span>
+                ) : null}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Theory test card */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <BookOpen size={16} color="#1A52A0" /> Theory test
+              </span>
+              <button
+                type="button"
+                onClick={() => setTheoryEditing((v) => !v)}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {theoryEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {theoryEditing ? (
+              <TheoryEditor
+                pupil={pupil}
+                onSave={async (patch) => {
+                  const ok = await savePupilFields(patch, "Theory test saved");
+                  if (ok) setTheoryEditing(false);
+                }}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div>Status: <b>{pupil.theory_status || "Not started"}</b></div>
+                {pupil.theory_test_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Test date: {fmtUKDate(pupil.theory_test_date)}</div>
+                )}
+                {pupil.theory_pass_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Pass date: {fmtUKDate(pupil.theory_pass_date)}</div>
+                )}
+                {typeof pupil.theory_score === "number" && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Score: {pupil.theory_score}</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Practical test card */}
+      {pupil && (
+        <div style={{ margin: "12px 16px 0" }}>
+          <div
+            className="bg-white"
+            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <Car size={16} color="#0F2044" /> Practical test
+              </span>
+              <button
+                type="button"
+                onClick={async () => {
+                  const next = !practicalEditing;
+                  setPracticalEditing(next);
+                  if (next && allCentres.length === 0) {
+                    const { data } = await supabase
+                      .from("test_centres")
+                      .select("id, name, town")
+                      .order("name", { ascending: true });
+                    setAllCentres((data as any) ?? []);
+                  }
+                }}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+              >
+                {practicalEditing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+            {practicalEditing ? (
+              <PracticalEditor
+                pupil={pupil}
+                centreInfo={centreInfo}
+                allCentres={allCentres}
+                pickerOpen={practicalCentrePickerOpen}
+                setPickerOpen={setPracticalCentrePickerOpen}
+                search={practicalCentreSearch}
+                setSearch={setPracticalCentreSearch}
+                onCentreSelect={(c) => setCentreInfo(c)}
+                onSave={async (patch) => {
+                  const ok = await savePupilFields(patch, "Practical test saved");
+                  if (ok) setPracticalEditing(false);
+                }}
+              />
+            ) : (
+              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div>Status: <b>{pupil.test_status || "Not booked"}</b></div>
+                {pupil.test_date && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Date: {fmtUKDate(pupil.test_date)}</div>
+                )}
+                {pupil.test_time && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Time: {pupil.test_time.slice(0, 5)}</div>
+                )}
+                {(centreInfo || pupil.test_centre) && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>
+                    Centre: {centreInfo?.name || pupil.test_centre}
+                    {centreInfo?.town ? `, ${centreInfo.town}` : ""}
+                  </div>
+                )}
+                {pupil.examiner && (
+                  <div style={{ color: "#6B7280", marginTop: 2 }}>Examiner: {pupil.examiner}</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Intake answers */}
