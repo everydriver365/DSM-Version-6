@@ -1907,7 +1907,10 @@ function HomePage() {
             {/* Action buttons - raised above the car image */}
             {upcoming && (() => {
               const phone = upcoming?.pupils?.phone ?? "";
+              const address = upcoming?.pupils?.address ?? "";
               const postcode = upcoming?.pupils?.postcode ?? "";
+              const navQuery = [address, postcode].filter(Boolean).join(", ");
+              const eolDone = !!upcoming?.eol_completed;
               const stop = (e: React.MouseEvent) => e.stopPropagation();
               const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
               return (
@@ -1930,9 +1933,9 @@ function HomePage() {
                       <MessageSquare size={16} color="#0B1F3A" /> Text
                     </button>
                   )}
-                  {postcode ? (
+                  {navQuery ? (
                     <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(postcode)}`}
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={stop}
@@ -1941,10 +1944,17 @@ function HomePage() {
                       <Navigation size={16} color="#ffffff" /> Go
                     </a>
                   ) : (
-                    <button onClick={(e) => { stop(e); toast("No pickup postcode set"); }} style={{ ...btnBase, background: '#0B1F3A', color: '#fff', border: 'none', opacity: 0.6 }}>
+                    <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#0B1F3A', color: '#fff', border: 'none', opacity: 0.6 }}>
                       <Navigation size={16} color="#ffffff" /> Go
                     </button>
                   )}
+                  <button
+                    onClick={(e) => { stop(); e.stopPropagation(); if (!eolDone) setEolLesson(upcoming); }}
+                    disabled={eolDone}
+                    style={{ ...btnBase, background: eolDone ? '#9CA3AF' : '#CC2229', color: '#fff', border: 'none', opacity: eolDone ? 0.6 : 1, cursor: eolDone ? 'default' : 'pointer' }}
+                  >
+                    <CheckCircle2 size={16} color="#ffffff" /> {eolDone ? 'Done' : 'EOL'}
+                  </button>
                 </div>
               );
             })()}
