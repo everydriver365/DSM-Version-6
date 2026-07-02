@@ -148,7 +148,7 @@ function Checkbox({
       <span
         className="text-[14px]"
         style={{
-          color: checked ? "#6B7280" : "#0A2540",
+          color: checked ? "#6B7280" : "#0B1F3A",
           textDecoration: checked ? "line-through" : "none",
         }}
       >
@@ -160,7 +160,7 @@ function Checkbox({
 
 function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string }) {
   const [open, setOpen] = useState(false);
-  const bg = type === "SHOW" ? "#00A3B4" : "#CC2229";
+  const bg = type === "SHOW" ? "#1877D6" : "#CC2229";
   return (
     <div
       style={{
@@ -189,7 +189,7 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
         >
           {type}
         </span>
-        <span className="flex-1 text-[13px]" style={{ color: "#0A2540", ...POPPINS }}>
+        <span className="flex-1 text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
           {q}
         </span>
         {open ? (
@@ -355,7 +355,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <FileCheck size={18} color="#CC2229" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Documents to bring
           </h2>
         </div>
@@ -375,7 +375,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <Shield size={18} color="#CC2229" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Pre-test preparation
           </h2>
         </div>
@@ -402,7 +402,7 @@ function TestDayPage() {
             <BookOpen size={18} color="#CC2229" />
             <span
               className="text-[15px] font-semibold"
-              style={{ color: "#0A2540", ...POPPINS }}
+              style={{ color: "#0B1F3A", ...POPPINS }}
             >
               Show Me / Tell Me
             </span>
@@ -434,11 +434,11 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <Navigation size={18} color="#CC2229" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Navigate to test centre
           </h2>
         </div>
-        <div className="text-[14px]" style={{ color: "#0A2540", ...POPPINS }}>
+        <div className="text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
           {pupil?.test_centre ?? "No test centre set"}
         </div>
         {centreAddress && (
@@ -459,7 +459,7 @@ function TestDayPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#00A3B4",
+              backgroundColor: "#1877D6",
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
               ...POPPINS,
@@ -480,7 +480,7 @@ function TestDayPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0A2540",
+              color: "#0B1F3A",
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
               ...POPPINS,
@@ -495,7 +495,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-3">
           <Trophy size={18} color="#CC2229" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0A2540", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Record test result
           </h2>
         </div>
@@ -549,7 +549,7 @@ function TestDayPage() {
                   setAskRetest(false);
                 }}
                 className="text-[12px] font-medium text-white px-3 py-1.5"
-                style={{ borderRadius: 6, backgroundColor: "#00A3B4", border: "none" }}
+                style={{ borderRadius: 6, backgroundColor: "#1877D6", border: "none" }}
               >
                 Yes, claim
               </button>
@@ -560,7 +560,7 @@ function TestDayPage() {
                 style={{
                   borderRadius: 6,
                   backgroundColor: "#FFFFFF",
-                  color: "#0A2540",
+                  color: "#0B1F3A",
                   border: "1px solid #EEF2F7",
                 }}
               >
@@ -579,7 +579,7 @@ function TestDayPage() {
 
 function Confetti() {
   const pieces = Array.from({ length: 60 });
-  const colors = ["#CC2229", "#00A3B4", "#16A34A", "#F59E0B", "#7C3AED"];
+  const colors = ["#CC2229", "#1877D6", "#16A34A", "#F59E0B", "#7C3AED"];
   return (
     <>
       <style>{`

@@ -49,11 +49,11 @@ function ResetPasswordPage() {
 
   const inputStyle = { fontFamily: "Inter, sans-serif", border: "1.5px solid #CBD5E1" } as const;
   const inputCls =
-    "h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0A2540] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00A3B4]";
+    "h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]";
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0A2540] px-4"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A] px-4"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div className="flex flex-col items-center mb-8">
@@ -68,12 +68,12 @@ function ResetPasswordPage() {
         {done ? (
           <div className="flex flex-col items-center text-center">
             <CheckCircle2 size={48} className="text-[#16A34A] mb-3" />
-            <h2 className="text-[20px] font-semibold text-[#0A2540]">Password updated!</h2>
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Password updated!</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">Redirecting to sign in…</p>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="flex flex-col">
-            <h2 className="text-[20px] font-semibold text-[#0A2540] text-center mb-6">New password</h2>
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A] text-center mb-6">New password</h2>
 
             <div className="flex flex-col gap-4">
               <div className="relative w-full">

@@ -117,7 +117,7 @@ function NotesListPage() {
             >
               <div className="flex items-start justify-between" style={{ gap: 8 }}>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[14px] font-semibold text-[#0A2540] truncate">
+                  <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">
                     {n.title?.trim() || "Untitled"}
                   </div>
                   <div

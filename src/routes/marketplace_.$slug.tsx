@@ -109,7 +109,7 @@ function MarketplaceProductPage() {
       {/* TOP BAR */}
       <div
         style={{
-          background: "#0A2540",
+          background: "#0B1F3A",
           color: "#fff",
           height: TOP_BAR_HEIGHT,
           padding: "0 16px",
@@ -177,8 +177,8 @@ function MarketplaceProductPage() {
               width: "100%",
               height: 200,
               background: tile.image_url
-                ? `#F7F5EF url(${tile.image_url}) center/cover`
-                : tile.gradient || "#F7F5EF",
+                ? `#F3F8FF url(${tile.image_url}) center/cover`
+                : tile.gradient || "#F3F8FF",
               position: "relative",
               display: "flex",
               alignItems: "center",
@@ -211,7 +211,7 @@ function MarketplaceProductPage() {
               style={{
                 fontSize: 22,
                 fontWeight: 700,
-                color: "#0A2540",
+                color: "#0B1F3A",
                 marginBottom: 6,
               }}
             >
@@ -291,7 +291,7 @@ function MarketplaceProductPage() {
                 }
                 style={{
                   width: "100%",
-                  background: "#0A2540",
+                  background: "#0B1F3A",
                   color: "#fff",
                   border: "none",
                   padding: "14px",
@@ -337,5 +337,5 @@ function MarketplaceProductPage() {
 
 function CategoryIcon({ category }: { category: string }) {
   const Icon = CATEGORY_ICONS[category] || Star;
-  return <Icon size={64} color="#0A2540" style={{ opacity: 0.3 }} />;
+  return <Icon size={64} color="#0B1F3A" style={{ opacity: 0.3 }} />;
 }

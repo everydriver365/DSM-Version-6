@@ -180,7 +180,7 @@ function TodosPage() {
           <div
             className="text-[14px] font-semibold truncate"
             style={{
-              color: t.completed ? "#6B7280" : "#0A2540",
+              color: t.completed ? "#6B7280" : "#0B1F3A",
               textDecoration: t.completed ? "line-through" : "none",
             }}
           >
@@ -296,7 +296,7 @@ function TodosPage() {
             style={{ animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0A2540]">Add to-do</div>
+              <div className="text-[16px] font-semibold text-[#0B1F3A]">Add to-do</div>
               <button
                 type="button"
                 onClick={() => setShowSheet(false)}
@@ -325,7 +325,7 @@ function TodosPage() {
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0A2540] bg-white focus:border-[#00A3B4] focus:outline-none"
+                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     borderWidth: "0.5px",

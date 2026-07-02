@@ -19,9 +19,9 @@ import {
 } from "lucide-react";
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
-const NAVY = "#0A2540";
-const ACCENT = "#00A3B4";
-const PANEL_BG = "#F7F5EF";
+const NAVY = "#0B1F3A";
+const ACCENT = "#1877D6";
+const PANEL_BG = "#F3F8FF";
 const ICON_BG = "#EAF3FB";
 const BORDER = "#EEF2F7";
 

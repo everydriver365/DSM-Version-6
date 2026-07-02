@@ -167,7 +167,7 @@ function ThreadPage() {
               <div
                 className="max-w-[78%] px-3 py-2 text-[14px]"
                 style={{
-                  backgroundColor: mine ? "#00A3B4" : "#F3F4F6",
+                  backgroundColor: mine ? "#1877D6" : "#F3F4F6",
                   color: mine ? "#FFFFFF" : "#1A1A2E",
                   borderRadius: mine ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                   ...POPPINS,
@@ -209,7 +209,7 @@ function ThreadPage() {
           }}
           rows={1}
           placeholder="Message"
-          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
           style={{
             ...POPPINS,
             borderWidth: "0.5px",
@@ -227,7 +227,7 @@ function ThreadPage() {
           style={{
             width: 40,
             height: 40,
-            backgroundColor: "#00A3B4",
+            backgroundColor: "#1877D6",
             color: "#FFFFFF",
             border: "none",
           }}

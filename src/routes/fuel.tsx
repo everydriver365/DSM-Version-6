@@ -10,7 +10,7 @@ export const Route = createFileRoute("/fuel")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0A2540";
+const NAVY = "#0B1F3A";
 const BORDER = "0.5px solid #EEF2F7";
 const LITRES_PER_GALLON = 4.546;
 const LESSON_AVG_SPEED_MPH = 20;
@@ -343,7 +343,7 @@ function FuelPage() {
       <section style={cardStyle({ mt: 12 })}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <SectionHeading title="Journey log" />
-          <Link to="/vehicle" style={{ fontSize: 12, color: "#00A3B4", textDecoration: "none", fontWeight: 600 }}>
+          <Link to="/vehicle" style={{ fontSize: 12, color: "#1877D6", textDecoration: "none", fontWeight: 600 }}>
             View all →
           </Link>
         </div>

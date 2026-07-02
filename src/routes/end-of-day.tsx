@@ -249,7 +249,7 @@ function EndOfDayPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
       {/* Top bar */}
-      <div style={{ backgroundColor: "#0A2540", color: "#FFFFFF", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ backgroundColor: "#0B1F3A", color: "#FFFFFF", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
         <button type="button" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent", color: "#FFFFFF", cursor: "pointer" }} aria-label="Back">
           <ArrowLeft size={20} />
         </button>
@@ -264,7 +264,7 @@ function EndOfDayPage() {
         <Stat label="Lessons today" value={String(stats.count)} />
         <Stat label="Hours taught" value={stats.hours.toFixed(1)} />
         <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#16A34A" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
-        <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0A2540"} />
+        <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0B1F3A"} />
       </div>
 
       {/* Section 2: Outstanding actions */}
@@ -274,7 +274,7 @@ function EndOfDayPage() {
           {outstandingEols.map((l) => (
             <Row key={`eol-${l.id}`}>
               <span>{pupilName(l.pupils) || "Pupil"} — EOL pending</span>
-              <SmallBtn color="#00A3B4" onClick={() => setEolLesson(l)}>Complete EOL</SmallBtn>
+              <SmallBtn color="#1877D6" onClick={() => setEolLesson(l)}>Complete EOL</SmallBtn>
             </Row>
           ))}
           {unpaidLessons.map((l) => (
@@ -309,10 +309,10 @@ function EndOfDayPage() {
                 gap: 10,
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#0A2540", minWidth: 50 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", minWidth: 50 }}>
                 {l.lesson_time?.slice(0, 5) ?? "--:--"}
               </span>
-              <span style={{ fontSize: 13, color: "#0A2540", flex: 1 }}>
+              <span style={{ fontSize: 13, color: "#0B1F3A", flex: 1 }}>
                 {pupilName(l.pupils) || "Pupil"}
               </span>
               {!l.eol_completed && (
@@ -332,17 +332,17 @@ function EndOfDayPage() {
 
       {/* Section 4: Tomorrow */}
       <Card>
-        <Heading icon={<CalendarIcon size={16} color="#00A3B4" />} title="Tomorrow" />
+        <Heading icon={<CalendarIcon size={16} color="#1877D6" />} title="Tomorrow" />
         {tomorrowLessons.length === 0 ? (
           <div style={{ fontSize: 13, color: "#6B7280" }}>No lessons booked for tomorrow.</div>
         ) : (
           <>
-            <div style={{ fontSize: 13, color: "#0A2540", marginBottom: 8 }}>
+            <div style={{ fontSize: 13, color: "#0B1F3A", marginBottom: 8 }}>
               {tomorrowLessons.length} lesson{tomorrowLessons.length === 1 ? "" : "s"} tomorrow
               {earliestTomorrow ? ` starting at ${earliestTomorrow}` : ""}
             </div>
             {tomorrowLessons.slice(0, 3).map((l) => (
-              <div key={l.id} style={{ display: "flex", gap: 10, padding: "6px 0", fontSize: 13, color: "#0A2540" }}>
+              <div key={l.id} style={{ display: "flex", gap: 10, padding: "6px 0", fontSize: 13, color: "#0B1F3A" }}>
                 <span style={{ minWidth: 50, fontWeight: 600 }}>{l.lesson_time?.slice(0, 5) ?? "--:--"}</span>
                 <span>{pupilName(l.pupils) || "Pupil"}</span>
               </div>
@@ -354,7 +354,7 @@ function EndOfDayPage() {
                 marginTop: 10,
                 padding: "8px 12px",
                 borderRadius: 8,
-                background: "#00A3B4",
+                background: "#1877D6",
                 color: "#FFFFFF",
                 fontSize: 12,
                 fontWeight: 600,
@@ -387,7 +387,7 @@ function EndOfDayPage() {
               borderRadius: 10,
               resize: "vertical",
               outline: "none",
-              color: "#0A2540",
+              color: "#0B1F3A",
               backgroundColor: "#FFFFFF",
             }}
           />
@@ -406,7 +406,7 @@ function EndOfDayPage() {
               animation: listening ? "eod-pulse 1s infinite" : undefined,
             }}
           >
-            {listening ? <MicOff size={16} color="#FFFFFF" /> : <Mic size={16} color="#0A2540" />}
+            {listening ? <MicOff size={16} color="#FFFFFF" /> : <Mic size={16} color="#0B1F3A" />}
           </button>
         </div>
         <div style={{ marginTop: 6, fontSize: 11, color: "#6B7280" }}>
@@ -458,7 +458,7 @@ function Heading({ icon, title }: { icon?: React.ReactNode; title: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
       {icon}
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#0A2540" }}>{title}</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{title}</div>
     </div>
   );
 }
@@ -474,7 +474,7 @@ function Row({ children }: { children: React.ReactNode }) {
         padding: "8px 0",
         borderBottom: "1px solid #F3F4F6",
         fontSize: 13,
-        color: "#0A2540",
+        color: "#0B1F3A",
       }}
     >
       {children}
@@ -521,7 +521,7 @@ function Stat({ label, value, color, hint }: { label: string; value: string; col
         backgroundColor: "#FFFFFF",
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0A2540" }}>
+      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0B1F3A" }}>
         {value}
         {hint && <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginLeft: 4 }}>{hint}</span>}
       </div>

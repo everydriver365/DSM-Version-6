@@ -31,7 +31,7 @@ interface Check {
 
 const GRADE_COLORS: Record<string, string> = {
   A: "#16A34A",
-  B: "#00A3B4",
+  B: "#1877D6",
   C: "#F59E0B",
   D: "#CC2229",
 };
@@ -138,7 +138,7 @@ function StandardsPage() {
         <div
           className="mx-4 mt-3 flex items-center"
           style={{
-            backgroundColor: "#0A2540",
+            backgroundColor: "#0B1F3A",
             borderRadius: 12,
             padding: 16,
             gap: 16,
@@ -216,7 +216,7 @@ function StandardsPage() {
                       <div className="flex-1 min-w-0">
                         <div
                           className="text-[14px] font-bold"
-                          style={{ color: "#0A2540" }}
+                          style={{ color: "#0B1F3A" }}
                         >
                           {formatShortDate(c.check_date)}
                         </div>
@@ -439,7 +439,7 @@ function AddCheckSheet({
               border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0A2540",
+              color: "#0B1F3A",
               outline: "none",
               resize: "vertical",
             }}

@@ -480,7 +480,7 @@ function EnquiryCard({
             <div className="min-w-0 flex-1">
               <div
                 className="text-[14px] font-semibold truncate"
-                style={{ color: "#0A2540" }}
+                style={{ color: "#0B1F3A" }}
               >
                 {n.title ?? "Enquiry"}
               </div>

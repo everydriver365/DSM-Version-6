@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 const CAT_COLORS: Record<string, string> = {
   "Standards check": "#7C3AED",
-  "Business skills": "#00A3B4",
+  "Business skills": "#1877D6",
   "Pupil welfare": "#16A34A",
   "Road safety": "#CC2229",
   Specialist: "#D97706",
@@ -223,7 +223,7 @@ function CpdPage() {
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0A2540" }}
+        style={{ backgroundColor: "#0B1F3A" }}
       >
         <button
           type="button"
@@ -256,8 +256,8 @@ function CpdPage() {
       {/* STATS */}
       <div className="px-4 pt-4 grid grid-cols-3 gap-2">
         <StatCard label="This year" value={`${yearHours.toFixed(1)}h`} color="#16A34A" />
-        <StatCard label="Entries" value={String(totalEntries)} color="#00A3B4" />
-        <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0A2540" small />
+        <StatCard label="Entries" value={String(totalEntries)} color="#1877D6" />
+        <StatCard label="Last entry" value={lastEntry ? fmtDate(lastEntry) : "—"} color="#0B1F3A" small />
       </div>
 
       {/* ADI RENEWAL BANNER */}
@@ -321,7 +321,7 @@ function CpdPage() {
                   height: 32,
                   padding: "0 12px",
                   borderRadius: 16,
-                  backgroundColor: active ? "#0A2540" : "#F3F4F6",
+                  backgroundColor: active ? "#0B1F3A" : "#F3F4F6",
                   color: active ? "#FFFFFF" : "#6B7280",
                 }}
               >
@@ -338,7 +338,7 @@ function CpdPage() {
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : grouped.length === 0 ? (
           <div className="text-center py-10">
-            <div className="text-[14px] font-semibold text-[#0A2540]">No CPD entries yet</div>
+            <div className="text-[14px] font-semibold text-[#0B1F3A]">No CPD entries yet</div>
             <div className="text-[12px] text-[#6B7280] mt-1">
               Tap "Add CPD" to record your first activity.
             </div>
@@ -346,7 +346,7 @@ function CpdPage() {
         ) : (
           grouped.map(([year, entries]) => (
             <div key={year} className="mb-4">
-              <div className="text-[15px] font-bold text-[#0A2540] mb-2">{year}</div>
+              <div className="text-[15px] font-bold text-[#0B1F3A] mb-2">{year}</div>
               {entries.map((l) => (
                 <EntryCard
                   key={l.id}
@@ -466,7 +466,7 @@ function EntryCard({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="text-[14px] font-semibold text-[#0A2540] truncate">{log.title}</div>
+            <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">{log.title}</div>
             {log.provider && (
               <div className="text-[12px] text-[#6B7280] truncate">{log.provider}</div>
             )}
@@ -485,7 +485,7 @@ function EntryCard({
               <span
                 className="text-[10px] font-semibold"
                 style={{
-                  color: "#0A2540",
+                  color: "#0B1F3A",
                   backgroundColor: "#F3F4F6",
                   padding: "3px 8px",
                   borderRadius: 6,
@@ -507,7 +507,7 @@ function EntryCard({
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 mt-2 text-[12px] font-medium"
-            style={{ color: "#00A3B4" }}
+            style={{ color: "#1877D6" }}
           >
             <Paperclip size={12} /> Certificate
           </a>
@@ -524,7 +524,7 @@ function EntryCard({
               height: 34,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0A2540",
+              color: "#0B1F3A",
             }}
           >
             <Pencil size={13} /> Edit
@@ -700,11 +700,11 @@ function AddSheet({
             borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold text-[#0A2540]">
+          <div className="text-[15px] font-semibold text-[#0B1F3A]">
             {editing ? "Edit CPD" : "Add CPD"}
           </div>
           <button type="button" onClick={onClose} aria-label="Close">
-            <X size={20} color="#0A2540" />
+            <X size={20} color="#0B1F3A" />
           </button>
         </div>
 
@@ -791,7 +791,7 @@ function AddSheet({
                 {listening ? (
                   <MicOff size={16} color="#FFFFFF" />
                 ) : (
-                  <Mic size={16} color="#0A2540" />
+                  <Mic size={16} color="#0B1F3A" />
                 )}
               </button>
             </div>
@@ -805,7 +805,7 @@ function AddSheet({
                   target="_blank"
                   rel="noreferrer"
                   className="text-[12px] font-medium truncate"
-                  style={{ color: "#00A3B4" }}
+                  style={{ color: "#1877D6" }}
                 >
                   View uploaded certificate
                 </a>
@@ -825,7 +825,7 @@ function AddSheet({
                   height: 40,
                   borderRadius: 8,
                   border: "0.5px dashed #EEF2F7",
-                  color: "#0A2540",
+                  color: "#0B1F3A",
                 }}
               >
                 <Upload size={14} /> {uploading ? "Uploading…" : "Upload certificate"}
@@ -845,7 +845,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#00A3B4",
+              backgroundColor: "#1877D6",
               height: 46,
               borderRadius: 10,
               opacity: saving ? 0.6 : 1,
@@ -867,7 +867,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "0.5px solid #EEF2F7",
   backgroundColor: "#FFFFFF",
-  color: "#0A2540",
+  color: "#0B1F3A",
   fontSize: 14,
   fontFamily: "Inter, sans-serif",
 };

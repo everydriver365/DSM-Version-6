@@ -127,7 +127,7 @@ function AdminSectionTile({
       >
         {icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0A2540" }}>{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
     </button>
   );
 }
@@ -164,7 +164,7 @@ function AdminHub() {
               flex: 1,
               height: 44,
               borderRadius: 10,
-              background: "#0A2540",
+              background: "#0B1F3A",
               color: "#fff",
               border: "none",
               fontWeight: 600,

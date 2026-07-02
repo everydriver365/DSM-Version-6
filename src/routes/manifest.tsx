@@ -52,7 +52,7 @@ function lessonTime(l: Lesson) {
 }
 function statusColor(s: string) {
   if (s === "confirmed") return "#16A34A";
-  if (s === "completed") return "#00A3B4";
+  if (s === "completed") return "#1877D6";
   if (s === "pending") return "#F59E0B";
   if (s === "cancelled") return "#CC2229";
   return "#6B7280";
@@ -178,7 +178,7 @@ function ManifestPage() {
       {/* SUMMARY STRIP */}
       <div
         className="px-4 py-3 flex"
-        style={{ backgroundColor: "#0A2540", gap: 8 }}
+        style={{ backgroundColor: "#0B1F3A", gap: 8 }}
       >
         <Stat value={String(lessons.length)} label="LESSONS" />
         <Stat value={totalHours} label="HOURS" />
@@ -210,11 +210,11 @@ function ManifestPage() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start" style={{ gap: 12 }}>
-                      <span className="text-[14px] font-bold text-[#0A2540]">
+                      <span className="text-[14px] font-bold text-[#0B1F3A]">
                         {lessonTime(l)}
                       </span>
                       <div>
-                        <div className="text-[14px] text-[#0A2540]">
+                        <div className="text-[14px] text-[#0B1F3A]">
                           {l.pupils?.name ?? "Pupil"}
                         </div>
                         <div className="text-[13px] text-[#6B7280]">
@@ -303,7 +303,7 @@ function ManifestPage() {
               value={notes}
               onChange={(e) => saveNotes(e.target.value)}
               placeholder="How did the day go?"
-              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none resize-none"
+              className="w-full rounded-lg p-3 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
               style={{
                 fontFamily: "Inter, sans-serif",
                 borderWidth: "0.5px",
@@ -413,7 +413,7 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-[13px] text-[#0A2540]">{label}</span>
+      <span className="text-[13px] text-[#0B1F3A]">{label}</span>
       <span className="text-[13px] font-semibold" style={{ color }}>
         {value}
       </span>

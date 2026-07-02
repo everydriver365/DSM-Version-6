@@ -315,9 +315,9 @@ function MonthEndPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8 }}
         >
-          <ChevronLeft size={20} color="#0A2540" />
+          <ChevronLeft size={20} color="#0B1F3A" />
         </button>
-        <div className="text-[16px] font-semibold text-[#0A2540]">{monthLabel}</div>
+        <div className="text-[16px] font-semibold text-[#0B1F3A]">{monthLabel}</div>
         <button
           type="button"
           aria-label="Next month"
@@ -325,14 +325,14 @@ function MonthEndPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8 }}
         >
-          <ChevronRight size={20} color="#0A2540" />
+          <ChevronRight size={20} color="#0B1F3A" />
         </button>
       </div>
 
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0A2540", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
       >
         <div
           className="text-[10px] uppercase"
@@ -440,15 +440,15 @@ function MonthEndPage() {
               >
                 <div
                   className="flex items-center justify-center text-white text-[12px] font-semibold"
-                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: "#00A3B4" }}
+                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: "#1877D6" }}
                 >
                   {initials(p.name)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="text-[14px] font-semibold text-[#0A2540] truncate">{p.name}</div>
+                  <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">{p.name}</div>
                   <div className="text-[12px] text-[#6B7280]">{p.lessons} lesson{p.lessons === 1 ? "" : "s"}</div>
                 </div>
-                <div className="text-[14px] font-semibold text-[#0A2540]">{fmtGBP(p.paid)}</div>
+                <div className="text-[14px] font-semibold text-[#0B1F3A]">{fmtGBP(p.paid)}</div>
               </div>
             ))
           )}
@@ -461,7 +461,7 @@ function MonthEndPage() {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Reflections on the month, wins, things to improve…"
           rows={5}
-          className="w-full rounded-xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#00A3B4] focus:outline-none"
+          className="w-full rounded-xl px-3 py-2 text-[14px] text-[#1A1A2E] bg-white focus:border-[#1877D6] focus:outline-none"
           style={{
             fontFamily: "Inter, sans-serif",
             borderWidth: "0.5px",
@@ -518,9 +518,9 @@ function BreakdownRow({ dot, label, value }: { dot?: string; label: string; valu
     <div className="flex items-center justify-between" style={{ paddingTop: 8, paddingBottom: 8 }}>
       <div className="flex items-center" style={{ gap: 8 }}>
         {dot && <span style={{ width: 8, height: 8, borderRadius: 999, backgroundColor: dot }} />}
-        <span className="text-[14px] text-[#0A2540]">{label}</span>
+        <span className="text-[14px] text-[#0B1F3A]">{label}</span>
       </div>
-      <span className="text-[14px] font-semibold text-[#0A2540]">{value}</span>
+      <span className="text-[14px] font-semibold text-[#0B1F3A]">{value}</span>
     </div>
   );
 }
@@ -532,10 +532,10 @@ function ListRow({ primary, secondary, right }: { primary: string; secondary: st
       style={{ paddingTop: 10, paddingBottom: 10, borderTop: "0.5px solid #EEF2F7" }}
     >
       <div style={{ minWidth: 0 }}>
-        <div className="text-[14px] font-semibold text-[#0A2540] truncate">{primary}</div>
+        <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">{primary}</div>
         <div className="text-[12px] text-[#6B7280] truncate">{secondary}</div>
       </div>
-      <div className="text-[14px] font-semibold text-[#0A2540]">{right}</div>
+      <div className="text-[14px] font-semibold text-[#0B1F3A]">{right}</div>
     </div>
   );
 }
@@ -546,8 +546,8 @@ function TotalRow({ label, value }: { label: string; value: string }) {
       className="flex items-center justify-between"
       style={{ paddingTop: 10, paddingBottom: 4, borderTop: "0.5px solid #EEF2F7", marginTop: 4 }}
     >
-      <span className="text-[14px] font-bold text-[#0A2540]">{label}</span>
-      <span className="text-[14px] font-bold text-[#0A2540]">{value}</span>
+      <span className="text-[14px] font-bold text-[#0B1F3A]">{label}</span>
+      <span className="text-[14px] font-bold text-[#0B1F3A]">{value}</span>
     </div>
   );
 }

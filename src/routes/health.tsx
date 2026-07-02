@@ -184,7 +184,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             <QuickLog
-              icon={<Droplets size={20} color="#00A3B4" />}
+              icon={<Droplets size={20} color="#1877D6" />}
               tint="#DBEAFE"
               label="Log water"
               onClick={() =>
@@ -221,7 +221,7 @@ function HealthPage() {
               style={{ color: "#6B7280" }}
             >
               <span>Water today</span>
-              <span style={{ color: "#0A2540", fontWeight: 600 }}>
+              <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
                 {today.water_glasses} / 8 glasses
               </span>
             </div>
@@ -242,7 +242,7 @@ function HealthPage() {
                   >
                     <Droplets
                       size={14}
-                      color={filled ? "#00A3B4" : "#C7CCD3"}
+                      color={filled ? "#1877D6" : "#C7CCD3"}
                     />
                   </div>
                 );
@@ -283,7 +283,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div
             className="text-[14px]"
-            style={{ color: "#0A2540", lineHeight: 1.5 }}
+            style={{ color: "#0B1F3A", lineHeight: 1.5 }}
           >
             {TIPS[tipIndex]}
           </div>
@@ -298,7 +298,7 @@ function HealthPage() {
                   width: 6,
                   height: 6,
                   borderRadius: 3,
-                  backgroundColor: i === tipIndex ? "#00A3B4" : "#EEF2F7",
+                  backgroundColor: i === tipIndex ? "#1877D6" : "#EEF2F7",
                 }}
               />
             ))}
@@ -327,7 +327,7 @@ function HealthPage() {
                     borderRadius: 28,
                     backgroundColor: active ? "#DBEAFE" : "#F8F9FB",
                     border: active
-                      ? "1px solid #00A3B4"
+                      ? "1px solid #1877D6"
                       : "0.5px solid #EEF2F7",
                     fontSize: 28,
                   }}
@@ -391,7 +391,7 @@ function QuickLog({
       </div>
       <span
         className="text-[13px] font-semibold text-left"
-        style={{ color: "#0A2540" }}
+        style={{ color: "#0B1F3A" }}
       >
         {label}
       </span>
@@ -417,7 +417,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
       </div>
       <div
         className="mt-0.5 font-bold"
-        style={{ color: "#0A2540", fontSize: 16 }}
+        style={{ color: "#0B1F3A", fontSize: 16 }}
       >
         {value}
       </div>

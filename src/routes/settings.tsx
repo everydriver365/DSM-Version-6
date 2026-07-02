@@ -459,13 +459,13 @@ function SettingsPage() {
             ) : (
               <div
                 className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-                style={{ width: 56, height: 56, backgroundColor: "#00A3B4", color: "#FFFFFF", ...POPPINS }}
+                style={{ width: 56, height: 56, backgroundColor: "#1877D6", color: "#FFFFFF", ...POPPINS }}
               >
                 {initials(displayedName)}
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <div className="text-[18px] font-semibold text-[#0A2540] truncate" style={POPPINS}>
+              <div className="text-[18px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
                 {displayedName}
               </div>
               <div className="text-[13px] text-[#6B7280] truncate" style={POPPINS}>
@@ -499,7 +499,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Clock size={18} color="#00A3B4" />}
+            icon={<Clock size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
@@ -515,7 +515,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Calendar size={18} color="#00A3B4" />}
+            icon={<Calendar size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
@@ -534,7 +534,7 @@ function SettingsPage() {
         <Card>
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                 Pass booking fee to pupil
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -551,7 +551,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: passBookingFee ? "#00A3B4" : "#D1D5DB",
+                background: passBookingFee ? "#1877D6" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -586,15 +586,15 @@ function SettingsPage() {
           }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <Bell size={18} color="#00A3B4" />
-            <div className="text-[15px] font-semibold text-[#0A2540]" style={POPPINS}>
+            <Bell size={18} color="#1877D6" />
+            <div className="text-[15px] font-semibold text-[#0B1F3A]" style={POPPINS}>
               Lesson reminders
             </div>
           </div>
 
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                 Send pupils lesson reminders
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -611,7 +611,7 @@ function SettingsPage() {
                 width: 44,
                 height: 26,
                 borderRadius: 13,
-                background: sendLessonReminders ? "#00A3B4" : "#D1D5DB",
+                background: sendLessonReminders ? "#1877D6" : "#D1D5DB",
                 border: "none",
                 position: "relative",
                 cursor: "pointer",
@@ -637,13 +637,13 @@ function SettingsPage() {
 
           {sendLessonReminders && (
             <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-              <div className="text-[14px] font-medium text-[#0A2540] mb-2" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A] mb-2" style={POPPINS}>
                 Reminder timing
               </div>
               <select
                 value={reminderTiming}
                 onChange={(e) => updateReminderTiming(e.target.value as "evening" | "morning" | "both")}
-                className="w-full text-[14px] text-[#0A2540]"
+                className="w-full text-[14px] text-[#0B1F3A]"
                 style={{
                   ...POPPINS,
                   padding: "10px 12px",
@@ -666,7 +666,7 @@ function SettingsPage() {
           {/* Hourly rate */}
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                 Hourly rate
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -686,7 +686,7 @@ function SettingsPage() {
                     setHourlyRate(val);
                   }
                 }}
-                className="text-[14px] font-medium text-[#0A2540] text-right"
+                className="text-[14px] font-medium text-[#0B1F3A] text-right"
                 style={{
                   width: 72,
                   height: 36,
@@ -705,14 +705,14 @@ function SettingsPage() {
             style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
           >
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                 Default lesson duration
               </div>
             </div>
             <select
               value={defaultDuration}
               onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0A2540]"
+              className="text-[13px] text-[#0B1F3A]"
               style={{
                 height: 36,
                 borderRadius: 8,
@@ -739,7 +739,7 @@ function SettingsPage() {
             style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
           >
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0A2540]" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
                 Buffer between lessons
               </div>
               <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -749,7 +749,7 @@ function SettingsPage() {
             <select
               value={bufferMinutes}
               onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0A2540]"
+              className="text-[13px] text-[#0B1F3A]"
               style={{
                 height: 36,
                 borderRadius: 8,
@@ -778,7 +778,7 @@ function SettingsPage() {
             style={{
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0A2540",
+              backgroundColor: "#0B1F3A",
               border: "none",
               opacity: savingRates ? 0.7 : 1,
               cursor: savingRates ? "not-allowed" : "pointer",
@@ -799,7 +799,7 @@ function SettingsPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <MapPin size={18} color="#00A3B4" />
+            <MapPin size={18} color="#1877D6" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Coverage area
             </span>
@@ -875,7 +875,7 @@ function SettingsPage() {
             style={{
               height: 48,
               borderRadius: 10,
-              backgroundColor: "#0A2540",
+              backgroundColor: "#0B1F3A",
               border: "none",
               opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
               cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
@@ -889,7 +889,7 @@ function SettingsPage() {
         <SectionHeader>PRICING RULES</SectionHeader>
         <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <PoundSterling size={18} color="#00A3B4" />
+            <PoundSterling size={18} color="#1877D6" />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A2E", ...POPPINS }}>
               Pricing rules
             </span>
@@ -929,7 +929,7 @@ function SettingsPage() {
                         padding: "2px 8px",
                         borderRadius: 999,
                         background: "#EEF2FF",
-                        color: "#00A3B4",
+                        color: "#1877D6",
                         ...POPPINS,
                       }}
                     >
@@ -957,7 +957,7 @@ function SettingsPage() {
                     type="checkbox"
                     checked={r.is_active}
                     onChange={(e) => toggleRule(r.id, e.target.checked)}
-                    style={{ width: 18, height: 18, accentColor: "#00A3B4" }}
+                    style={{ width: 18, height: 18, accentColor: "#1877D6" }}
                   />
                 </label>
                 <button
@@ -1045,7 +1045,7 @@ function SettingsPage() {
                         type="checkbox"
                         checked={ruleDays[d.key]}
                         onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
-                        style={{ accentColor: "#00A3B4" }}
+                        style={{ accentColor: "#1877D6" }}
                       />
                       {d.label.slice(0, 3)}
                     </label>
@@ -1154,7 +1154,7 @@ function SettingsPage() {
               disabled={savingRule || hasInvalidPostcodes}
               className="w-full text-[14px] font-semibold text-white mt-4"
               style={{
-                height: 48, borderRadius: 10, backgroundColor: "#0A2540", border: "none",
+                height: 48, borderRadius: 10, backgroundColor: "#0B1F3A", border: "none",
                 opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
                 cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -1169,7 +1169,7 @@ function SettingsPage() {
         <SectionHeader>PUPILS</SectionHeader>
         <Card className="!p-0">
           <MenuRow
-            icon={<ClipboardList size={18} color="#00A3B4" />}
+            icon={<ClipboardList size={18} color="#1877D6" />}
             iconBg="#E0F2FE"
             label="Intake questions"
             onClick={() => navigate({ to: "/intake-questions" })}
@@ -1266,7 +1266,7 @@ function MenuRow({
       >
         {icon}
       </div>
-      <span className="flex-1 text-[14px] text-[#0A2540]" style={POPPINS}>{label}</span>
+      <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>
       {value ? (
         <span className="text-[13px] text-[#6B7280]" style={POPPINS}>{value}</span>
       ) : null}

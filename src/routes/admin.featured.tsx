@@ -72,7 +72,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
         padding: 14,
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 600, color: "#0A2540" }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A" }}>{value}</div>
       <div
         style={{
           fontSize: 11,
@@ -254,7 +254,7 @@ function AdminFeatured() {
                 outline: "none",
                 background: "transparent",
                 fontSize: 14,
-                color: "#0A2540",
+                color: "#0B1F3A",
               }}
             />
           </div>
@@ -284,7 +284,7 @@ function AdminFeatured() {
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0A2540" }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
                       {inst.name ?? "Unnamed"}
                     </div>
                     {inst.featured_listing && (

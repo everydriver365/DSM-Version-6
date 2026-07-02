@@ -295,13 +295,13 @@ function SchedulePage() {
     const isCancelled = l.status === "cancelled";
     const isCompleted = l.status === "completed" || l.eol_completed === true;
 
-    let accent = "#00A3B4";
+    let accent = "#1877D6";
     if (isCancelled) accent = "#9CA3AF";
     else if (isCurrent) accent = "#CC2229";
     else if (isCompleted) accent = "#16A34A";
 
-    const timeColor = isCancelled ? "#9CA3AF" : "#0A2540";
-    const nameColor = isCancelled ? "#9CA3AF" : "#0A2540";
+    const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+    const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
     const badges: React.ReactNode[] = [];
     if (isCurrent) {
@@ -614,7 +614,7 @@ function SchedulePage() {
             ...POPPINS,
             fontSize: 13,
             fontWeight: 600,
-            color: "#0A2540",
+            color: "#0B1F3A",
             marginTop: isFirst ? 0 : 0,
           }}
         >
@@ -682,7 +682,7 @@ function SchedulePage() {
               ...POPPINS,
               fontSize: 13,
               fontWeight: 600,
-              color: "#00A3B4",
+              color: "#1877D6",
               backgroundColor: "transparent",
               padding: "8px 16px",
             }}
@@ -704,7 +704,7 @@ function SchedulePage() {
           width: 52,
           height: 52,
           borderRadius: 999,
-          backgroundColor: "#0A2540",
+          backgroundColor: "#0B1F3A",
           color: "#FFFFFF",
           display: "flex",
           alignItems: "center",
