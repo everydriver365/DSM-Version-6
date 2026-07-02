@@ -1275,24 +1275,14 @@ function HomePage() {
           borderWidth: "0.5px",
           borderStyle: "solid",
           borderColor: "#EEF2F7",
+          borderLeft: `4px solid ${lessonColour}`,
           marginBottom: 6,
-          backgroundColor: isLive ? "#FFF5F5" : "#FFFFFF",
+          background: `${lessonColour}10`,
           cursor: "pointer",
         }}
       >
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 10,
-            bottom: 10,
-            width: 3,
-            borderRadius: 2,
-            backgroundColor: accent,
-          }}
-        />
         <div className="flex items-center" style={{ gap: 12, minWidth: 0 }}>
+
           <span className="text-[14px] font-bold" style={{ color: accent }}>
             {formatTime(l)}
           </span>
