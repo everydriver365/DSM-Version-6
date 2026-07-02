@@ -188,7 +188,9 @@ function PupilDetailPage() {
         theory_pass, wants_swap,
         ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
-        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour
+        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
+        theory_status, theory_test_date, theory_pass_date, theory_score,
+        test_status, examiner, lat, lng
       `)
       .eq("id", id)
       .is("deleted_at", null)
