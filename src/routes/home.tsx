@@ -2063,6 +2063,7 @@ function HomePage() {
               setGoingActive={setGoingActive}
               onOpenLate={() => setLateOpen(true)}
               navigateTo={(to) => navigate({ to })}
+              onEol={() => setEolLesson(upcoming)}
             />
           )}
         </div>
