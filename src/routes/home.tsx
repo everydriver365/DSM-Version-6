@@ -2451,10 +2451,13 @@ function HomePage() {
                 }
               }
 
-              let accent = "#1877D6";
+              const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
+
+              let accent = lessonColour;
               if (isCancelled) accent = "#9CA3AF";
-              else if (isCurrent) accent = "#1877D6";
-              else if (isCompleted) accent = "#1877D6";
+              else if (isCurrent) accent = lessonColour;
+              else if (isCompleted) accent = lessonColour;
+
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
               const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
