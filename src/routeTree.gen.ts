@@ -106,6 +106,7 @@ import { Route as MarketplaceSlugRouteImport } from './routes/marketplace_.$slug
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
+import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$pupilId'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
@@ -607,6 +608,11 @@ const ISlugRoute = ISlugRouteImport.update({
   path: '/i/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DrivingTestPupilIdRoute = DrivingTestPupilIdRouteImport.update({
+  id: '/driving-test/$pupilId',
+  path: '/driving-test/$pupilId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoursesNewRoute = CoursesNewRouteImport.update({
   id: '/courses/new',
   path: '/courses/new',
@@ -776,6 +782,7 @@ export interface FileRoutesByFullPath {
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -889,6 +896,7 @@ export interface FileRoutesByTo {
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -1005,6 +1013,7 @@ export interface FileRoutesById {
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
+  '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -1121,6 +1130,7 @@ export interface FileRouteTypes {
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
+    | '/driving-test/$pupilId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1234,6 +1244,7 @@ export interface FileRouteTypes {
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
+    | '/driving-test/$pupilId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1349,6 +1360,7 @@ export interface FileRouteTypes {
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
+    | '/driving-test/$pupilId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1459,6 +1471,7 @@ export interface RootRouteChildren {
   BookingsIdRoute: typeof BookingsIdRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
+  DrivingTestPupilIdRoute: typeof DrivingTestPupilIdRoute
   ISlugRoute: typeof ISlugRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
@@ -2164,6 +2177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ISlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/driving-test/$pupilId': {
+      id: '/driving-test/$pupilId'
+      path: '/driving-test/$pupilId'
+      fullPath: '/driving-test/$pupilId'
+      preLoaderRoute: typeof DrivingTestPupilIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/courses/new': {
       id: '/courses/new'
       path: '/courses/new'
@@ -2417,6 +2437,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookingsIdRoute: BookingsIdRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
+  DrivingTestPupilIdRoute: DrivingTestPupilIdRoute,
   ISlugRoute: ISlugRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,

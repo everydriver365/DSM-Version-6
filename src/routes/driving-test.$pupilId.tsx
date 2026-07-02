@@ -266,7 +266,7 @@ function DrivingTestPage() {
   function bump(catId: string, subKey: string, col: "d" | "s" | "dn", delta: number) {
     setFaults((prev) => {
       const cat = { ...(prev[catId] ?? {}) };
-      const cell = { d: 0, s: 0, dn: 0, ...(cat[subKey] ?? {}) };
+      const cell: FaultCell = { d: 0, s: 0, dn: 0, ...(cat[subKey] ?? {}) } as FaultCell;
       const next = Math.max(0, cell[col] + delta);
       cat[subKey] = { ...cell, [col]: next };
       return { ...prev, [catId]: cat };
