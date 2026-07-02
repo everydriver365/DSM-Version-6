@@ -1912,48 +1912,52 @@ function HomePage() {
               const navQuery = [address, postcode].filter(Boolean).join(", ");
               const eolDone = !!upcoming?.eol_completed;
               const stop = (e: React.MouseEvent) => e.stopPropagation();
-              const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none' };
+              const btnBase: React.CSSProperties = { height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none', border: 'none' };
               return (
-                <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
-                  {phone ? (
-                    <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1877D6', color: '#fff' }}>
-                      <Phone size={16} color="#ffffff" /> Call
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1877D6', color: '#fff', border: 'none', opacity: 0.6 }}>
-                      <Phone size={16} color="#ffffff" /> Call
-                    </button>
-                  )}
-                  {phone ? (
-                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)' }}>
-                      <MessageSquare size={16} color="#0B1F3A" /> Text
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)', opacity: 0.6 }}>
-                      <MessageSquare size={16} color="#0B1F3A" /> Text
-                    </button>
-                  )}
-                  {navQuery ? (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={stop}
-                      style={{ ...btnBase, background: '#0B1F3A', color: '#fff' }}
-                    >
-                      <Navigation size={16} color="#ffffff" /> Go
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#0B1F3A', color: '#fff', border: 'none', opacity: 0.6 }}>
-                      <Navigation size={16} color="#ffffff" /> Go
-                    </button>
-                  )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
+                  {/* Row 1: Call | Text | Go */}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {phone ? (
+                      <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, flex: 1, background: '#1877D6', color: '#fff' }}>
+                        <Phone size={16} color="#ffffff" /> Call
+                      </a>
+                    ) : (
+                      <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, flex: 1, background: '#1877D6', color: '#fff', opacity: 0.6 }}>
+                        <Phone size={16} color="#ffffff" /> Call
+                      </button>
+                    )}
+                    {phone ? (
+                      <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, flex: 1, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)' }}>
+                        <MessageSquare size={16} color="#0B1F3A" /> Text
+                      </a>
+                    ) : (
+                      <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, flex: 1, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)', opacity: 0.6 }}>
+                        <MessageSquare size={16} color="#0B1F3A" /> Text
+                      </button>
+                    )}
+                    {navQuery ? (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={stop}
+                        style={{ ...btnBase, flex: 1, background: '#0B1F3A', color: '#fff' }}
+                      >
+                        <Navigation size={16} color="#ffffff" /> Go
+                      </a>
+                    ) : (
+                      <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, flex: 1, background: '#0B1F3A', color: '#fff', opacity: 0.6 }}>
+                        <Navigation size={16} color="#ffffff" /> Go
+                      </button>
+                    )}
+                  </div>
+                  {/* Row 2: EOL full width */}
                   <button
                     onClick={(e) => { stop(e); if (!eolDone) setEolLesson(upcoming); }}
                     disabled={eolDone}
-                    style={{ ...btnBase, background: eolDone ? '#9CA3AF' : '#CC2229', color: '#fff', border: 'none', opacity: eolDone ? 0.6 : 1, cursor: eolDone ? 'default' : 'pointer' }}
+                    style={{ ...btnBase, width: '100%', background: eolDone ? '#9CA3AF' : '#CC2229', color: '#fff', opacity: eolDone ? 0.6 : 1, cursor: eolDone ? 'default' : 'pointer' }}
                   >
-                    <CheckCircle2 size={16} color="#ffffff" /> {eolDone ? 'Done' : 'EOL'}
+                    <CheckCircle2 size={16} color="#ffffff" /> {eolDone ? 'Done' : 'End of lesson'}
                   </button>
                 </div>
               );
