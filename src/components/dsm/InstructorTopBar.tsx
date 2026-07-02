@@ -75,6 +75,9 @@ export default function InstructorTopBar({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        borderBottom: "1px solid #132A4A",
+        boxShadow:
+          "inset 0 -1px 0 rgba(255,255,255,0.04), 0 6px 0 0 #132A4A, 0 7px 0 0 rgba(11,31,58,0.10)",
       }}
     >
       {/* LEFT */}

@@ -321,7 +321,7 @@ function EndOfDayPage() {
               {prepaidPupilIds.has(l.pupil_id) ? (
                 <Badge bg="#DBEAFE" color="#1E3A8A">Prepaid</Badge>
               ) : l.payment_status === "paid" ? (
-                <Badge bg="#EEF2F7" color="#166534">Paid ✓</Badge>
+                <Badge bg="#E7F8EF" color="#067647">Paid ✓</Badge>
               ) : l.payment_status === "unpaid" && (l.amount_due ?? 0) > 0 ? (
                 <Badge bg="#FEE2E2" color="#991B1B">£{(l.amount_due ?? 0).toFixed(0)} unpaid</Badge>
               ) : null}
