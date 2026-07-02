@@ -3225,7 +3225,7 @@ function HeroExpandedPanel({
             fontFamily: 'Inter, sans-serif',
           }}
         >
-          <CheckCircle2 size={14} color="#ffffff" /> End of lesson
+          <CheckCircle2 size={14} color="#ffffff" /> EOL
         </button>
         <button
           style={{
