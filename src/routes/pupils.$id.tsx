@@ -1399,7 +1399,16 @@ function PupilExtras({
   const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
   const [r90, setR90] = useState(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
   const [r120, setR120] = useState(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+  const [editRates, setEditRates] = useState(false);
   const [savingRates, setSavingRates] = useState(false);
+
+  useEffect(() => {
+    if (editRates) {
+      setR1(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
+      setR90(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
+      setR120(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+    }
+  }, [editRates, pupil.custom_rate, pupil.custom_rate_90, pupil.custom_rate_120]);
 
   async function patchPupil(patch: Record<string, unknown>) {
     console.log("[custom-rates] patchPupil url:", `pupils?id=eq.${pupil.id}`, "payload:", patch);
