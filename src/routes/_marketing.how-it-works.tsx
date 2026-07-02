@@ -17,7 +17,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const TEAL = "#00B5A5";
+const TEAL = "#1877D6";
 const WHITE = "#FFFFFF";
 const LIGHT_BG = "#F7FAFC";
 const NAVY = "#133155";
@@ -119,16 +119,16 @@ function StepsRow({
 }) {
   return (
     <div className="relative max-w-5xl mx-auto">
-      <div className="hidden md:block absolute top-7 left-[12%] right-[12%] h-0.5 bg-[#00B5A5]/20" />
+      <div className="hidden md:block absolute top-7 left-[12%] right-[12%] h-0.5 bg-[#1877D6]/20" />
       <div className="flex flex-col md:flex-row gap-8 relative">
         {steps.map((step) => {
           const Icon = step.icon;
           return (
             <div key={step.n} className="flex-1 flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-[#00B5A5] text-white font-black text-xl flex items-center justify-center mb-6 z-10">
+              <div className="w-14 h-14 rounded-full bg-[#1877D6] text-white font-black text-xl flex items-center justify-center mb-6 z-10">
                 {step.n}
               </div>
-              <div className="mb-4 text-[#00B5A5]">
+              <div className="mb-4 text-[#1877D6]">
                 <Icon size={28} strokeWidth={2} />
               </div>
               <h3 className="font-bold text-[#133155] text-lg mb-3">{step.title}</h3>
@@ -147,7 +147,7 @@ function HowItWorksPage() {
       {/* Hero */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center">
         <div className="max-w-[1180px] mx-auto">
-          <span className="inline-block bg-[#E6F7F6] text-[#00B5A5] text-xs font-semibold px-3 py-1 rounded-full mb-4">
+          <span className="inline-block bg-[#E6F7F6] text-[#1877D6] text-xs font-semibold px-3 py-1 rounded-full mb-4">
             Simple by design
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-[#133155] mb-4">
@@ -185,13 +185,13 @@ function HowItWorksPage() {
             When an instructor creates a course in DSM and publishes it to EveryDriver, learners can find and book it instantly. The booking appears in DSM automatically — no manual work needed.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className="bg-[#00B5A5] text-white px-6 py-3 rounded-xl font-bold">DSM</span>
+            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">DSM</span>
             <ChevronRight className="text-white/50" size={24} />
             <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Course published</span>
             <ChevronRight className="text-white/50" size={24} />
             <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Learner books</span>
             <ChevronRight className="text-white/50" size={24} />
-            <span className="bg-[#00B5A5] text-white px-6 py-3 rounded-xl font-bold">Booking in DSM</span>
+            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">Booking in DSM</span>
           </div>
         </div>
       </section>
@@ -216,13 +216,13 @@ function HowItWorksPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-[#00B5A5] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-4xl font-black text-white mb-4">Ready to get started?</h2>
           <p className="text-white/80 mb-8">Join hundreds of driving instructors already using DSM.</p>
           <Link
             to="/register"
-            className="inline-flex items-center bg-white text-[#00B5A5] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
+            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
           >
             Create free account →
           </Link>

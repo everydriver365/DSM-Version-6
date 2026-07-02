@@ -55,7 +55,7 @@ const SECTION_META: {
   { key: "personal", label: "Personal", icon: User, iconColor: "#1877D6" },
   { key: "business", label: "Business", icon: Briefcase, iconColor: "#16A34A" },
   { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#F59E0B" },
-  { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#7C3AED" },
+  { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#1877D6" },
   { key: "security", label: "Security", icon: Shield, iconColor: "#CC2229" },
   { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1877D6" },
   { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#CC2229" },

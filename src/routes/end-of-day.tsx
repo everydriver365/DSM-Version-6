@@ -369,7 +369,7 @@ function EndOfDayPage() {
 
       {/* Section 5: Day notes */}
       <Card>
-        <Heading icon={<FileText size={16} color="#7C3AED" />} title="Day notes" />
+        <Heading icon={<FileText size={16} color="#1877D6" />} title="Day notes" />
         <div style={{ position: "relative" }}>
           <textarea
             value={notes}

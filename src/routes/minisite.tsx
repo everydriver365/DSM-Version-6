@@ -50,7 +50,7 @@ const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
 
 const COLOUR_SWATCHES = [
   "#1877D6", "#0B1F3A", "#16A34A", "#DC2626",
-  "#D97706", "#7C3AED", "#0EA5E9", "#111111",
+  "#D97706", "#1877D6", "#0EA5E9", "#111111",
 ];
 
 function slugify(s: string) {

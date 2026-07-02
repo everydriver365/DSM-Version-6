@@ -373,7 +373,7 @@ function TaxReportPage() {
           type="button"
           onClick={downloadSummary}
           className="mt-4 w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
-          style={{ backgroundColor: "#00B5A5", height: 44, borderRadius: 10 }}
+          style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 10 }}
         >
           <Download size={16} /> Download summary
         </button>

@@ -229,7 +229,7 @@ function RewardsPage() {
         { name: "First pupil", desc: "Add your first pupil", Icon: Users, color: "#16A34A", earned: stats.pupils >= 1 },
         { name: "Road to success", desc: "Complete 10 lessons", Icon: Car, color: "#1877D6", earned: stats.lessonsCompleted >= 10 },
         { name: "Money maker", desc: "Record £1000 in payments", Icon: PoundSterling, color: "#F59E0B", earned: stats.paymentsTotal >= 1000 },
-        { name: "Record keeper", desc: "Log 30 expenses", Icon: Receipt, color: "#7C3AED", earned: stats.expenses >= 30 },
+        { name: "Record keeper", desc: "Log 30 expenses", Icon: Receipt, color: "#1877D6", earned: stats.expenses >= 30 },
         { name: "Top rated", desc: "Get 5 reviews", Icon: Star, color: "#F59E0B", earned: stats.reviews >= 5 },
         { name: "Pass master", desc: "10 pupils passed test", Icon: GraduationCap, color: "#16A34A", earned: stats.passedCount >= 10 },
         { name: "CPD champion", desc: "Log 20 CPD hours", Icon: BookOpen, color: "#1877D6", earned: stats.cpdHours >= 20 },
