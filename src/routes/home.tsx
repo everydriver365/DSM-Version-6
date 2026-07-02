@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
@@ -3363,6 +3363,19 @@ function TabBtn({
   );
 }
 
+function iconTint(solid: string) {
+  switch (solid.toUpperCase()) {
+    case "#1877D6": return "#F3F8FF";
+    case "#0B1F3A": return "#EEF2F7";
+    case "#DC2626": return "#FEF2F2";
+    case "#6B7280": return "#F3F4F6";
+    case "#EA580C": return "#FFF7ED";
+    case "#16A34A": return "#F0FDF4";
+    case "#7C3AED": return "#F5F3FF";
+    default: return "#F3F8FF";
+  }
+}
+
 function AccessTile({
   icon,
   bg,
@@ -3374,6 +3387,9 @@ function AccessTile({
   label: string;
   onClick: () => void;
 }) {
+  const coloredIcon = isValidElement(icon)
+    ? cloneElement(icon as React.ReactElement<{ color?: string }>, { color: bg })
+    : icon;
   return (
     <button
       onClick={onClick}
@@ -3393,9 +3409,9 @@ function AccessTile({
     >
       <span
         className="flex items-center justify-center"
-        style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: bg }}
+        style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: iconTint(bg) }}
       >
-        {icon}
+        {coloredIcon}
       </span>
       <span className="text-[10px] text-[#0B1F3A] text-center leading-tight" style={{ maxWidth: '100%', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{label}</span>
     </button>
