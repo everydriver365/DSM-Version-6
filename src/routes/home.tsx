@@ -425,8 +425,6 @@ function HomePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
-  const [pupilColourMap, setPupilColourMap] = useState<Record<string, string>>({});
-
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [outstandingOpen, setOutstandingOpen] = useState(false);
@@ -851,29 +849,6 @@ function HomePage() {
       }
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
-      const pupilIds = [...new Set((lessonRows ?? []).map((l: any) => l.pupil_id).filter(Boolean))];
-
-      if (pupilIds.length > 0) {
-        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-
-        const { data: { session } } = await supabase.auth.getSession();
-
-        const token = session?.access_token;
-
-        const colourRes = await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(',')})&select=id,calendar_colour`, {
-          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
-        });
-
-        const colourData = await colourRes.json();
-
-        const map: Record<string, string> = {};
-
-        (colourData || []).forEach((p: any) => { if (p.calendar_colour) map[p.id] = p.calendar_colour; });
-
-        setPupilColourMap(map);
-      }
 
 
 
@@ -1235,12 +1210,7 @@ function HomePage() {
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
-    const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
-    const accent =
-      isLive ? lessonColour
-      : status === "completed" ? lessonColour
-      : status === "cancelled" ? "#9CA3AF"
-      : lessonColour;
+    const accent = status === "cancelled" ? "#9CA3AF" : "#1A52A0";
 
     const balance = l.pupils?.balance_owed ?? 0;
     const paid = balance <= 0;
@@ -1275,9 +1245,8 @@ function HomePage() {
           borderWidth: "0.5px",
           borderStyle: "solid",
           borderColor: "#EEF2F7",
-          borderLeft: `4px solid ${lessonColour}`,
+          borderLeft: `4px solid ${accent}`,
           marginBottom: 6,
-          background: `${lessonColour}10`,
           cursor: "pointer",
         }}
       >
@@ -2443,7 +2412,7 @@ function HomePage() {
                 }
               }
 
-              const lessonColour = l.pupil_id ? (pupilColourMap[l.pupil_id] || '#1A52A0') : '#1A52A0';
+              
 
               const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
 
@@ -2603,8 +2572,8 @@ function HomePage() {
                   className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
                   style={{
                     padding: "10px 16px",
-                    borderLeft: `4px solid ${lessonColour}`,
-                    background: `${lessonColour}10`,
+                    borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                    background: "#fff",
                   }}
                 >
                   {(() => {
