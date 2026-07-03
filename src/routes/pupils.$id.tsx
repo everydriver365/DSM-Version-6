@@ -559,7 +559,7 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] intake answers error", error);
         setIntakeAnswers(data ?? []);
       });
-  }, [id]);
+  }, [id, paymentHistoryRefresh]);
 
   // Recompute live "owed" from the pupil's CURRENT rates.
   // Priority (per resolveHourlyRate): pupil custom rate (per-duration) >
