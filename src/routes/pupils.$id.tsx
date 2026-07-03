@@ -2206,8 +2206,6 @@ const EXTRAS_CARD: React.CSSProperties = {
   borderRadius: 12,
   border: "0.5px solid #E2E6ED",
   padding: 16,
-  marginLeft: 16,
-  marginRight: 16,
   marginTop: 12,
   background: "#fff",
 };
