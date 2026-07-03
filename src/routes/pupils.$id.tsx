@@ -781,11 +781,10 @@ function PupilDetailPage() {
           </button>
         </div>
       </div>
-      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
       {/* Profile header card */}
       {pupil && (
-        <div className="mt-3">
-          <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
+        <div className="mt-0">
+          <Card className="p-0 overflow-hidden bg-transparent shadow-none rounded-none" style={{ border: "none" }}>
             {/* Blue hero band */}
             <div
               className="relative px-4 rounded-b-[28px]"
@@ -1163,7 +1162,8 @@ function PupilDetailPage() {
           </Card>
         </div>
       )}
-      <div className="px-4">
+      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
+        <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
         <div className="grid grid-cols-3 gap-2">
           <ActionTile
