@@ -57,7 +57,7 @@ const DEFAULT_HOURS: WorkingHours = {
   mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
 };
 
-type ExpandKey = "profile" | "working_hours" | "notifications" | null;
+type ExpandKey = "payments" | "lessons" | "rates" | "coverage" | "pricing" | null;
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
