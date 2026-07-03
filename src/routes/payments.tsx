@@ -240,20 +240,14 @@ function PaymentsPage() {
       notes: "Marked paid",
     });
 
-    const { data: inserted, error: insErr } = await supabase
-      .from("payments")
-      .insert({
-        pupil_id: pupil.id,
-        instructor_id: userId,
-        amount,
-        paid_at: new Date().toISOString(),
-      })
-      .select("id, pupil_id, amount, paid_at")
-      .single();
-    if (insErr) {
-      console.error("[payments] mark paid insert error", insErr);
-      return;
-    }
+    const paymentRow: PaymentRow = {
+      id: crypto.randomUUID(),
+      pupil_id: pupil.id,
+      amount,
+      paid_at: new Date().toISOString(),
+      pupils: { name: pupil.name },
+    };
+    setPayments((prev) => [paymentRow, ...(prev ?? [])]);
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
@@ -268,12 +262,7 @@ function PaymentsPage() {
     setAllPupils((prev) =>
       prev.map((p) => (p.id === pupil.id ? { ...p, balance_owed: 0 } : p)),
     );
-    if (inserted) {
-      setPayments((prev) => [
-        { ...inserted, pupils: { name: pupil.name } } as PaymentRow,
-        ...(prev ?? []),
-      ]);
-    }
+
   }
 
   return (
