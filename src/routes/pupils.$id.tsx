@@ -325,6 +325,16 @@ function PupilDetailPage() {
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
+  const pastCollapsedInit = useRef(false);
+
+  // Auto-collapse past lessons if more than 5 entries
+  useEffect(() => {
+    if (pastCollapsedInit.current || !pastLessons) return;
+    if (pastLessons.length > 5) {
+      setPastExpanded(false);
+    }
+    pastCollapsedInit.current = true;
+  }, [pastLessons]);
 
   // Preload Google Maps Places on mount so autocomplete is ready when user taps Edit.
   useEffect(() => {
