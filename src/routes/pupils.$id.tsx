@@ -751,7 +751,7 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const lessonCount = totalLessonsCount ?? pupil?.lesson_count ?? actualLessonCount ?? 0;
+  const lessonCount = pupil?.lesson_count ?? 0;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
@@ -881,7 +881,7 @@ function PupilDetailPage() {
                     className="text-[10px] font-semibold uppercase tracking-widest"
                     style={{ color: "rgba(255,255,255,0.6)", ...POPPINS }}
                   >
-                    Total lessons
+                    Lessons bought
                   </p>
                   <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
                     {lessonCount}
