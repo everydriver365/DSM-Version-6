@@ -1400,7 +1400,17 @@ function PupilDetailPage() {
               const live = isLessonLive(l);
               const past = isLessonPast(l);
               const accent = accentColor(l);
-              const price = Number(l.amount_due ?? 0);
+              const stored = Number(l.amount_due ?? 0);
+              const computed = resolveHourlyRate({
+                pupilCustomRate: pupil?.custom_rate ?? null,
+                pupilCustomRate90: pupil?.custom_rate_90 ?? null,
+                pupilCustomRate120: pupil?.custom_rate_120 ?? null,
+                pupilPostcode: pupil?.postcode ?? null,
+                instructorDefaultRate: instructorRate ?? null,
+                postcodeRates,
+                durationMinutes: Number(l.duration_minutes) || 60,
+              });
+              const price = computed > 0 ? computed : stored;
               const isPaid = l.payment_status === "paid";
               const unpaid = !isPaid && price > 0;
               const showGap = gapDays > 7;
