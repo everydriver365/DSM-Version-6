@@ -1,41 +1,27 @@
-## Problem
+## Why the numbers differ
 
-The "Owes" figure on Jasmine's pupil record shows £60, but her rate is £50/hour and the booked lesson is 90 minutes (should be £75). The balance is currently summing the `amount_due` value that was stored on the lesson row when it was created — which was based on an older/default hourly rate, not her current £50 rate.
+- **Pupils list (`pupils.index.tsx`)** sums the stored `lessons.amount_due` for unpaid lessons. Jasmine's booking has £60 saved on the row (an old rate, or a rate captured before her custom/postcode rate changed).
+- **Pupil card (`pupils.$id.tsx`)** ignores the stored `amount_due` and recomputes live: `resolveHourlyRate(pupil, postcodeRates, defaults) × (duration_minutes / 60)`. For Jasmine that's £50 × 1.5h = £75.
 
-## Fix (single file: `src/routes/pupils.$id.tsx`)
+So the list is showing stale stored values, and the card is showing the correct live value.
 
-Replace the live-owed calculation (lines ~401–419) so it **recomputes each unpaid lesson's cost from the pupil's current rates**, instead of trusting the stored `amount_due`.
+## Fix
 
-### New live-owed logic
+Only touch `src/routes/pupils.index.tsx`. Make the list use the same live recomputation as the pupil card so the two pages always agree.
 
-1. Fetch unpaid lessons with `duration_minutes` included:
-   ```
-   .select("duration_minutes, amount_due, payment_status, status")
-   ```
-2. Load the instructor's postcode rates once (via `fetchPostcodeRates`) using the already-known `instructor_id` and current session token. Cache in a ref/state so it doesn't refetch on every render.
-3. For each unpaid, non-cancelled lesson, compute the expected cost using `resolveHourlyRate` from `src/lib/pricing/resolveRate.ts` with:
-   - `pupilCustomRate` = `pupil.custom_rate`
-   - `pupilCustomRate90` = `pupil.custom_rate_90`
-   - `pupilCustomRate120` = `pupil.custom_rate_120`
-   - `pupilPostcode` = `pupil.postcode`
-   - `instructorDefaultRate` = `instructorRate` (already in state)
-   - `postcodeRates` = fetched list
-   - `durationMinutes` = lesson's `duration_minutes`
-4. Sum those computed values → `setLiveOwed(total)`.
-5. Fall back to `amount_due` only if all rate inputs are missing (so we never show 0 by mistake).
+1. Import `resolveHourlyRate` from `@/lib/pricing/resolveRate`.
+2. In the balance-loading effect, also fetch what the resolver needs:
+   - From `pupils` (already loaded): `id`, `postcode`, `custom_hourly_rate`, `custom_rate_60`, `custom_rate_90`, `custom_rate_120` (add any missing columns to the select).
+   - From `instructors` for the current `uid`: `default_hourly_rate` (+ any 60/90/120 defaults already used by the pupil card).
+   - From `instructor_postcode_rates` for the current `uid`: outward-code overrides.
+3. Change the unpaid-lessons query to also select `duration_minutes` (and any pupil-linking fields already used).
+4. Build `balanceMap` by iterating unpaid lessons and, for each one, computing:
+   `rate = resolveHourlyRate({ pupil, postcodeRates, instructorDefaults }); amount = rate * (duration_minutes / 60);`
+   then summing per `pupil_id`. Do not read `amount_due` from the row.
+5. Leave the rest of the list rendering (credit / prepaid / "All paid ✓") unchanged — only the sum feeding `balanceMap` changes.
 
-### Where else this needs to be consistent
+### Technical notes
 
-The lessons history list on the same page (line 1344, `price = Number(l.amount_due ?? 0)`) will still show old stored `amount_due`. For this task I will **also** display each unpaid future lesson using the recomputed value, so the balance and the visible lesson prices match.
-
-Completed/past lessons keep their historical `amount_due` untouched — those are actuals, not estimates.
-
-### Out of scope
-
-- Not backfilling/rewriting stored `amount_due` in the database.
-- Not changing any other file.
-- Not changing how new lessons are priced at creation time (already handled by `resolveHourlyRate` in `lessons.new.tsx`).
-
-### Result
-
-For Jasmine: 90 min × £50/hr = £75 → "Owes £75" instead of £60.
+- Reuse the exact resolver call shape used in `pupils.$id.tsx` so both pages stay in lockstep. If that page passes extra fields (e.g. lesson `duration_minutes`, postcode overrides keyed by outward code), mirror them here.
+- No schema changes; no writes; no other files touched.
+- After the change, Jasmine will read £75 on both the list and her card.
