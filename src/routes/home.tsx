@@ -126,8 +126,34 @@ interface PrevLessonRow {
 }
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const WEEKLY_LESSON_GOAL = 30;
-const WEEKLY_EARNINGS_GOAL = 1000;
+// Default weekly goals — should come from instructor settings
+// (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
+// these defaults if the columns don't exist or the row hasn't been populated.
+const DEFAULT_WEEKLY_LESSON_GOAL = 20;
+const DEFAULT_WEEKLY_EARNINGS_GOAL = 800;
+
+// Tier thresholds — must mirror the /rewards page.
+const TIER_THRESHOLDS = {
+  bronze: 0,
+  silver: 500,
+  gold: 1500,
+  platinum: 3000,
+  elite: 6000,
+} as const;
+const TIER_COLORS: Record<keyof typeof TIER_THRESHOLDS, string> = {
+  bronze: "#CD7F32",
+  silver: "#9CA3AF",
+  gold: "#D97706",
+  platinum: "#6366F1",
+  elite: "#0F2044",
+};
+function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
+  if (pts >= TIER_THRESHOLDS.elite) return "elite";
+  if (pts >= TIER_THRESHOLDS.platinum) return "platinum";
+  if (pts >= TIER_THRESHOLDS.gold) return "gold";
+  if (pts >= TIER_THRESHOLDS.silver) return "silver";
+  return "bronze";
+}
 
 function CircleIconBtn({
   children, onClick, ariaLabel,
