@@ -723,19 +723,41 @@ function PupilDetailPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-4">
-              <StatChip label="Lessons" value={String(lessonCount)} />
               <StatChip
-                label="Balance"
-                value={
-                  balance === 0
-                    ? "All paid"
-                    : balance < 0
-                      ? `Owes £${Math.abs(balance).toFixed(2)}`
-                      : `In credit £${balance.toFixed(2)}`
-                }
-                valueColor={balance < 0 ? "#1877D6" : "#1877D6"}
+                label="Lessons"
+                value={String(lessonCount)}
+                onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
               />
-              <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
+              {(() => {
+                const owed = Number(pupil.balance_owed ?? 0);
+                const value =
+                  owed > 0
+                    ? `Owes £${owed.toFixed(2)}`
+                    : owed < 0
+                      ? `In credit £${Math.abs(owed).toFixed(2)}`
+                      : "All paid";
+                return (
+                  <StatChip
+                    label="Balance"
+                    value={value}
+                    valueColor="#1877D6"
+                    onClick={() => navigate({ to: "/payments" })}
+                  />
+                );
+              })()}
+              <StatChip
+                label="Test"
+                value={
+                  pupil.test_date
+                    ? `${formatTestDate(pupil.test_date)}${pupil.test_time ? ` · ${formatTime(pupil.test_time)}` : ""}`
+                    : "No test"
+                }
+                subValue={
+                  pupil.test_date
+                    ? centreInfo?.name || pupil.test_centre || undefined
+                    : undefined
+                }
+              />
             </div>
 
             {(() => {
@@ -1930,19 +1952,27 @@ function StatChip({
   label,
   value,
   valueColor = "#0B1F3A",
+  subValue,
+  onClick,
 }: {
   label: string;
   value: string;
   valueColor?: string;
+  subValue?: string;
+  onClick?: () => void;
 }) {
+  const Comp: any = onClick ? "button" : "div";
   return (
-    <div
-      className="rounded-lg px-2 py-2 text-center"
+    <Comp
+      onClick={onClick}
+      type={onClick ? "button" : undefined}
+      className="rounded-lg px-2 py-2 text-center w-full"
       style={{
         backgroundColor: "#F8F9FB",
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
+        cursor: onClick ? "pointer" : undefined,
       }}
     >
       <div
@@ -1951,13 +1981,22 @@ function StatChip({
       >
         {value}
       </div>
+      {subValue ? (
+        <div
+          className="text-[10px] truncate mt-0.5"
+          style={{ color: "#0B1F3A", ...POPPINS }}
+          title={subValue}
+        >
+          {subValue}
+        </div>
+      ) : null}
       <div
         className="text-[10px] font-medium uppercase mt-0.5"
         style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
       >
         {label}
       </div>
-    </div>
+    </Comp>
   );
 }
 
