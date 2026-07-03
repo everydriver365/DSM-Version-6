@@ -38,6 +38,22 @@ async function restHeaders() {
   };
 }
 
+async function awardPoints(instructorId: string, event: string, token: string, metadata?: any) {
+  try {
+    await fetch(`${SUPABASE_URL}/functions/v1/award-points`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ instructorId, event, metadata }),
+    });
+  } catch (err) {
+    console.warn("[rewards] award-points failed:", err);
+  }
+}
+
 function todayISO() {
   const d = new Date();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -405,7 +421,7 @@ function DrivingTestPage() {
     try {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/driving_test_results`, {
         method: "POST",
-        headers,
+        headers: { ...headers, Prefer: "return=representation" },
         body: JSON.stringify(payload),
       });
       if (!r.ok) {
@@ -413,6 +429,11 @@ function DrivingTestPage() {
         setSaving(false);
         return;
       }
+      let testResultId: string | null = null;
+      try {
+        const rows = await r.json();
+        testResultId = Array.isArray(rows) ? rows[0]?.id ?? null : rows?.id ?? null;
+      } catch {}
       // If passed and practical, mark pupil status
       if (result === "pass" && testType === "practical") {
         try {
@@ -422,6 +443,18 @@ function DrivingTestPage() {
             body: JSON.stringify({ status: "passed", test_date: testDate }),
           });
         } catch {}
+        try {
+          const { data: sess } = await supabase.auth.getSession();
+          const token = sess.session?.access_token;
+          if (token && userId) {
+            await awardPoints(userId, "LESSON_PUPIL_PASS", token, {
+              referenceId: testResultId,
+              referenceType: "driving_test",
+            });
+          }
+        } catch (e) {
+          console.warn("[rewards] pass award skipped", e);
+        }
       }
       toast.success("Test result saved");
       // reset

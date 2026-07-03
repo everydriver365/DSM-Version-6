@@ -43,6 +43,24 @@ import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
+async function awardPoints(instructorId: string, event: string, token: string, metadata?: any) {
+  try {
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    await fetch(`${SUPABASE_URL}/functions/v1/award-points`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ instructorId, event, metadata }),
+    });
+  } catch (err) {
+    console.warn("[rewards] award-points failed:", err);
+  }
+}
+
 export interface EndLessonWizardProps {
   open: boolean;
   onClose: () => void;
@@ -632,6 +650,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       }
     } catch {
       /* ignore */
+    }
+
+    // Award rewards points
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (token && instructorId) {
+        const event = updatedEntries.length > 0 ? "LESSON_WITH_EOL" : "LESSON_WITHOUT_EOL";
+        await awardPoints(instructorId, event, token, {
+          referenceId: lessonId,
+          referenceType: "lesson",
+        });
+      }
+    } catch (e) {
+      console.warn("[rewards] EOL award skipped", e);
     }
 
     setCompleting(false);
