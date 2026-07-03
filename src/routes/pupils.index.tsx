@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone, Users } from "lucide-react";
+import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "../components/dsm/EmptyState";
 
