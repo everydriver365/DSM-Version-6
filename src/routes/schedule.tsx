@@ -683,6 +683,24 @@ function SchedulePage() {
             >
               <X size={14} /> Cancel
             </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                markNoShow(l);
+              }}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
+              style={{
+                ...POPPINS,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#B91C1C",
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E5E7EB",
+              }}
+            >
+              <X size={14} /> No-show
+            </button>
           </div>
         )}
       </div>
