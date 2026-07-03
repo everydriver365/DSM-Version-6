@@ -378,89 +378,16 @@ function PaymentsPage() {
 
   async function deletePayment(row: HistoryRow) {
     if (!userId) return;
-    if (!window.confirm("Delete this payment record?")) return;
+    if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
 
-    const amount = Number(row.lesson_cost ?? 0);
-    const nowIso = new Date().toISOString();
-
-    // 1) Soft-delete the audit row via REST.
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     if (!token) {
       console.error("[payments] no token for delete");
       return;
     }
-    const SUPABASE_URL = (supabase as any).supabaseUrl as string;
-    const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
-    const patchRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/lesson_history?id=eq.${row.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({ deleted_at: nowIso }),
-      },
-    );
-    if (!patchRes.ok) {
-      console.error("[payments] soft delete failed", patchRes.status, await patchRes.text());
-      return;
-    }
-
-    // 2) Reverse the effect on lessons (most-recently paid first).
-    let toReverse = amount;
-    const { data: paidLessons, error: lErr } = await supabase
-      .from("lessons")
-      .select("id, paid_amount, amount_due, payment_status")
-      .eq("pupil_id", row.pupil_id)
-      .in("payment_status", ["paid", "partial"])
-      .is("deleted_at", null)
-      .order("paid_at", { ascending: false });
-    if (lErr) console.error("[payments] fetch paid lessons error", lErr);
-
-    for (const lesson of (paidLessons ?? []) as {
-      id: string;
-      paid_amount: number | null;
-      amount_due: number | null;
-      payment_status: string;
-    }[]) {
-      if (toReverse <= 0) break;
-      const paid = Number(lesson.paid_amount ?? 0);
-      if (paid <= 0) continue;
-      const restore = Math.min(paid, toReverse);
-      const remainingPaid = paid - restore;
-      const newAmountDue = Number(lesson.amount_due ?? 0) + restore;
-      const { error: uErr } = await supabase
-        .from("lessons")
-        .update({
-          payment_status: remainingPaid > 0 ? "partial" : "unpaid",
-          paid_amount: remainingPaid,
-          amount_due: newAmountDue,
-          ...(remainingPaid === 0 ? { paid_at: null, payment_method: null } : {}),
-        })
-        .eq("id", lesson.id);
-      if (uErr) console.error("[payments] reverse lesson update error", uErr);
-      toReverse -= restore;
-    }
-
-    // 3) Any remainder came from account_balance credit — subtract it.
-    if (toReverse > 0) {
-      const { data: pRow } = await supabase
-        .from("pupils")
-        .select("account_balance")
-        .eq("id", row.pupil_id)
-        .maybeSingle();
-      const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-      const next = Math.max(0, current - toReverse);
-      const { error: bErr } = await supabase
-        .from("pupils")
-        .update({ account_balance: next })
-        .eq("id", row.pupil_id);
-      if (bErr) console.error("[payments] reverse account_balance error", bErr);
-    }
+    const ok = await deletePaymentRecord(row.id, token, userId);
+    if (!ok) return;
 
     // 4) Refetch history + outstanding.
     const { data: historyData } = await supabase
