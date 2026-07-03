@@ -750,7 +750,7 @@ function PupilDetailPage() {
                 onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
               />
               {(() => {
-                const owed = Number(pupil.balance_owed ?? 0);
+                const owed = liveOwed ?? Number(pupil.balance_owed ?? 0);
                 const value =
                   owed > 0
                     ? `Owes £${owed.toFixed(2)}`
