@@ -794,18 +794,20 @@ function PupilDetailPage() {
                 onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
               />
               {(() => {
-                const owed = liveOwed ?? Number(pupil.balance_owed ?? 0);
+                const outstanding = liveOwed ?? 0;
+                const credit = Number(pupil.account_balance ?? 0);
+                const net = outstanding - credit;
                 const value =
-                  owed > 0
-                    ? `Owes £${owed.toFixed(2)}`
-                    : owed < 0
-                      ? `In credit £${Math.abs(owed).toFixed(2)}`
+                  net > 0
+                    ? `Owes £${net.toFixed(2)}`
+                    : net < 0
+                      ? `In credit £${Math.abs(net).toFixed(2)}`
                       : "All paid";
                 return (
                   <StatChip
                     label="Balance"
                     value={value}
-                    valueColor="#1877D6"
+                    valueColor={net > 0 ? "#DC2626" : "#16A34A"}
                     onClick={() => navigate({ to: "/payments" })}
                   />
                 );
