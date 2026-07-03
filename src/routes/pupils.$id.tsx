@@ -1393,7 +1393,7 @@ function PupilDetailPage() {
         )}
       {/* Address (Google Places autocomplete) */}
       {pupil && (
-        <div style={{ margin: "12px 16px 0" }}>
+        <div style={{ margin: "12px 0 0" }}>
           <div
             className="bg-white"
             style={{
@@ -1445,7 +1445,7 @@ function PupilDetailPage() {
       )}
       {/* Theory test card */}
       {pupil && (
-        <div style={{ margin: "12px 16px 0" }}>
+        <div style={{ margin: "12px 0 0" }}>
           <div
             className="bg-white"
             style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
@@ -1490,7 +1490,7 @@ function PupilDetailPage() {
       )}
       {/* Practical test card */}
       {pupil && (
-        <div style={{ margin: "12px 16px 0" }}>
+        <div style={{ margin: "12px 0 0" }}>
           <div
             className="bg-white"
             style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
