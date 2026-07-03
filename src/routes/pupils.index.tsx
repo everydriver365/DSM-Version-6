@@ -178,12 +178,41 @@ function PupilsIndexPage() {
           },
           {} as Record<string, number>,
         );
-        setHoursMap(hMap);
-      } catch (e) {
-        console.error("[pupils] hours fetch crashed", e);
-        setHoursMap({});
+      setHoursMap(hMap);
+    } catch (e) {
+      console.error("[pupils] hours fetch crashed", e);
+      setHoursMap({});
+    }
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (token && pupilIds.length > 0) {
+        const pupilIdList = pupilIds.join(",");
+        const SUPABASE_URL = (supabase as any).supabaseUrl;
+        const SUPABASE_ANON_KEY = (supabase as any).supabaseKey;
+        const histRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/lesson_history?pupil_id=in.(${pupilIdList})&payment_status=eq.paid&deleted_at=is.null&order=created_at.desc&select=pupil_id,lesson_cost,payment_method,created_at`,
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+        );
+        const histData = await histRes.json();
+        const map: Record<string, { amount: number; method: string; date: string }> = {};
+        for (const row of histData || []) {
+          if (!map[row.pupil_id]) {
+            map[row.pupil_id] = {
+              amount: Number(row.lesson_cost),
+              method: row.payment_method,
+              date: row.created_at,
+            };
+          }
+        }
+        setLastPaymentMap(map);
       }
-    })();
+    } catch (e) {
+      console.error("[pupils] recent payments fetch crashed", e);
+      setLastPaymentMap({});
+    }
+  })();
   }, [tab]);
 
 
