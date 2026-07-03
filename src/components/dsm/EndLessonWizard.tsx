@@ -652,6 +652,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       /* ignore */
     }
 
+    // Award rewards points
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (token && instructorId) {
+        const event = updatedEntries.length > 0 ? "LESSON_WITH_EOL" : "LESSON_WITHOUT_EOL";
+        await awardPoints(instructorId, event, token, {
+          referenceId: lessonId,
+          referenceType: "lesson",
+        });
+      }
+    } catch (e) {
+      console.warn("[rewards] EOL award skipped", e);
+    }
+
     setCompleting(false);
     setDone(true);
   };
