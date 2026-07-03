@@ -751,7 +751,7 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const lessonCount = pupil?.lesson_count ?? actualLessonCount ?? 0;
+  const lessonCount = totalLessonsCount ?? pupil?.lesson_count ?? actualLessonCount ?? 0;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
