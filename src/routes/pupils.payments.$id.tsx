@@ -121,20 +121,46 @@ function PupilPaymentsPage() {
           </div>
         )}
 
-        <div
-          className="rounded-xl p-4 mb-4"
-          style={{ backgroundColor: "#0F2044" }}
-        >
-          <p
-            className="text-[10px] font-bold uppercase tracking-widest"
-            style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
-          >
-            Total paid
-          </p>
-          <p className="text-[24px] font-bold text-white mt-1" style={POPPINS}>
-            {formatGBP(totalPaid)}
-          </p>
-        </div>
+        {(() => {
+          const { net, owed } = balanceValue(accountBalance, balanceOwed);
+          return (
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#0F2044" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
+                >
+                  {balanceLabel(net)}
+                </p>
+                <p className="text-[22px] font-bold text-white mt-1" style={POPPINS}>
+                  {formatGBP(Math.abs(net))}
+                </p>
+              </div>
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "#64748B", ...POPPINS }}
+                >
+                  Total paid
+                </p>
+                <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
+                  {formatGBP(totalPaid)}
+                </p>
+              </div>
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "#64748B", ...POPPINS }}
+                >
+                  Owed
+                </p>
+                <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
+                  {formatGBP(owed)}
+                </p>
+              </div>
+            </div>
+          );
+        })()}
 
         {payments === null ? null : payments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
