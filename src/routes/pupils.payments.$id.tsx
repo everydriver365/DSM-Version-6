@@ -498,6 +498,116 @@ function PupilPaymentsPage() {
       </div>
 
       {showRecord && (
+        null
+      )}
+      {editing && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 overflow-y-auto"
+          onClick={() => !editSaving && setEditing(null)}
+        >
+          <div
+            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
+            style={{ ...POPPINS, maxHeight: "85dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[16px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                Edit payment
+              </h2>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => !editSaving && setEditing(null)}
+                className="p-1"
+              >
+                <X size={20} color="#0B1F3A" />
+              </button>
+            </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Amount (£)
+            </label>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              value={editAmount}
+              onChange={(e) => setEditAmount(e.target.value)}
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-2" style={POPPINS}>
+              Payment method
+            </label>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {([
+                { k: "cash", label: "Cash" },
+                { k: "bank_transfer", label: "Bank" },
+                { k: "card", label: "Card" },
+              ] as const).map((opt) => {
+                const active = editMethod === opt.k;
+                return (
+                  <button
+                    key={opt.k}
+                    type="button"
+                    onClick={() => setEditMethod(opt.k)}
+                    className="rounded-xl py-2 text-[13px] font-semibold border"
+                    style={{
+                      backgroundColor: active ? "#0F2044" : "#FFFFFF",
+                      color: active ? "#FFFFFF" : "#0B1F3A",
+                      borderColor: active ? "#0F2044" : "#E2E8F0",
+                      ...POPPINS,
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Notes
+            </label>
+            <input
+              type="text"
+              value={editBaseNotes}
+              onChange={(e) => setEditBaseNotes(e.target.value)}
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Reason for change (optional)
+            </label>
+            <input
+              type="text"
+              value={editReason}
+              onChange={(e) => setEditReason(e.target.value)}
+              placeholder="e.g. corrected amount"
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <p className="text-[11px] text-[#64748B] mb-4" style={POPPINS}>
+              An entry will be added to this payment's edit history.
+            </p>
+
+            <button
+              type="button"
+              disabled={editSaving}
+              onClick={submitEditPayment}
+              className="w-full rounded-xl py-3 text-[14px] font-semibold text-white"
+              style={{ backgroundColor: "#1877D6", opacity: editSaving ? 0.6 : 1, ...POPPINS }}
+            >
+              {editSaving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {false && showRecord && (
         <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 overflow-y-auto"
           onClick={() => !recSaving && setShowRecord(false)}
