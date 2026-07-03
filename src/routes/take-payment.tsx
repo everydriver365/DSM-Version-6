@@ -10,6 +10,10 @@ const RYFT_PUBLIC_KEY =
 
 export const Route = createFileRoute("/take-payment")({
   head: () => ({ meta: [{ title: "Take payment" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    lessonId: typeof search.lessonId === "string" ? (search.lessonId as string) : undefined,
+    pupilId: typeof search.pupilId === "string" ? (search.pupilId as string) : undefined,
+  }),
   component: TakePaymentPage,
 });
 
@@ -18,6 +22,8 @@ type CashMethod = "cash" | "bank";
 
 function TakePaymentPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const lessonId = search.lessonId ?? null;
   const [amount, setAmount] = useState<string>("0");
   const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
   const [pupilId, setPupilId] = useState<string>("");
