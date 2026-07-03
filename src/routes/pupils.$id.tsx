@@ -213,6 +213,7 @@ function PupilDetailPage() {
   const [notesDraft, setNotesDraft] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
@@ -1343,30 +1344,54 @@ function PupilDetailPage() {
         )}
 
         <SectionHeader>NOTES</SectionHeader>
-        <textarea
-          rows={3}
-          value={notesDraft}
-          onChange={(e) => setNotesDraft(e.target.value)}
-          placeholder="Add a note about this pupil…"
-          className="w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+        <button
+          type="button"
+          onClick={() => setNotesOpen((v) => !v)}
+          className="w-full flex items-center justify-between gap-2 rounded-lg p-3 text-left bg-white focus:outline-none focus:border-[#1877D6]"
           style={{
-            ...POPPINS,
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#EEF2F7",
-            resize: "vertical",
+            ...POPPINS,
           }}
-        />
-        <div className="mt-2 flex items-center justify-end gap-3">
-          {noteSaved && (
-            <span className="text-[12px]" style={{ color: "#1877D6", ...POPPINS }}>
-              Saved
-            </span>
-          )}
-          <Button onClick={saveNotes} disabled={savingNotes} inline>
-            {savingNotes ? "Saving…" : "Save note"}
-          </Button>
-        </div>
+        >
+          <span className="text-[13px] truncate" style={{ color: notesDraft ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+            {notesDraft ? notesDraft : "Add a note…"}
+          </span>
+          <ChevronRight
+            size={16}
+            color="#9CA3AF"
+            style={{ transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+          />
+        </button>
+        {notesOpen && (
+          <div className="mt-2">
+            <textarea
+              rows={2}
+              value={notesDraft}
+              onChange={(e) => setNotesDraft(e.target.value)}
+              placeholder="Add a note about this pupil…"
+              className="w-full rounded-lg p-3 text-[13px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+              style={{
+                ...POPPINS,
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#EEF2F7",
+                resize: "vertical",
+              }}
+            />
+            <div className="mt-2 flex items-center justify-end gap-3">
+              {noteSaved && (
+                <span className="text-[12px]" style={{ color: "#1877D6", ...POPPINS }}>
+                  Saved
+                </span>
+              )}
+              <Button onClick={saveNotes} disabled={savingNotes} inline className="h-8 px-3 text-[12px]">
+                {savingNotes ? "Saving…" : "Save"}
+              </Button>
+            </div>
+          </div>
+        )}
       {/* Address (Google Places autocomplete) */}
       {pupil && (
         <div style={{ margin: "12px 16px 0" }}>
