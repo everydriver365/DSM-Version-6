@@ -915,16 +915,16 @@ function PupilDetailPage() {
 
             {(() => {
               const readiness = (() => {
-                const lessonCount = lessons?.length || 0;
-                const syllabusCompleted = syllabus?.filter(s => s.status === 'achieved')?.length || 0;
-                const theoryDone = pupil?.theory_status === 'Passed';
+                const lessonCount = actualLessonCount ?? 0;
+                const syllabusAchieved = syllabus?.filter(s => s.status === 'achieved')?.length || 0;
+                const theoryPassed = pupil?.theory_status === 'Passed';
                 // If no lessons and no syllabus progress and theory not passed — show Not Started
-                if (lessonCount === 0 && syllabusCompleted === 0 && !theoryDone) {
+                if (lessonCount === 0 && syllabusAchieved === 0 && !theoryPassed) {
                   return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
                 }
                 const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
                 const lessonPoints = lessonCount === 0 ? 0 : Math.min((lessonCount / 40) * 30, 30);
-                const theoryPoints = theoryDone ? 10 : 0;
+                const theoryPoints = theoryPassed ? 10 : 0;
                 const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
                 return { score, label: `${score}%`, color: "#0B1F3A", showRing: true, syllabusPoints, lessonPoints, theoryPoints };
               })();
