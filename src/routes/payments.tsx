@@ -142,10 +142,13 @@ export async function recordPayment(args: {
     console.error("[payments] no auth token for lesson_history insert");
     return;
   }
-  const response = await fetch(`${supabase.supabaseUrl}/rest/v1/lesson_history`, {
+  const SUPABASE_URL = (supabase as any).supabaseUrl as string;
+  const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/lesson_history`, {
     method: "POST",
     headers: {
-      apikey: supabase.supabaseKey,
+      apikey: SUPABASE_ANON_KEY,
+
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       Prefer: "return=minimal",
