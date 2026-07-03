@@ -401,24 +401,23 @@ function PupilDetailPage() {
         console.log("[pupils.$id] lesson count (confirmed+completed):", count);
       });
 
-    // Live outstanding balance: sum of unpaid amounts across non-cancelled lessons
+    // Fetch unpaid, non-cancelled lessons — the "owed" balance is computed
+    // from the pupil's CURRENT rates in a separate effect below, so it
+    // stays correct even if the stored amount_due was written when the
+    // pupil's rate or postcode pricing was different.
     supabase
       .from("lessons")
-      .select("amount_due, payment_status, status")
+      .select("duration_minutes, amount_due, payment_status, status")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
       .then(({ data, error }) => {
         if (error) {
-          console.error("[pupil] live owed error", error);
+          console.error("[pupil] unpaid lessons error", error);
           return;
         }
-        const rows = (data as { amount_due: number | null; payment_status: string | null }[]) ?? [];
-        const owed = rows
-          .filter((r) => r.payment_status !== "paid")
-          .reduce((s, r) => s + (Number(r.amount_due) || 0), 0);
-        setLiveOwed(owed);
-        console.log("[pupils.$id] live owed (unpaid lessons):", owed);
+        const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[]) ?? [];
+        setUnpaidLessons(rows.filter((r) => r.payment_status !== "paid"));
       });
 
     supabase
