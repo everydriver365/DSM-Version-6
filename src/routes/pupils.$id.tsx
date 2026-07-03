@@ -137,6 +137,7 @@ interface Lesson {
   payment_status: string | null;
   notes: string | null;
   eol_completed: boolean | null;
+  cancellation_reason: string | null;
 }
 
 function initials(name: string) {
@@ -582,11 +583,10 @@ function PupilDetailPage() {
 
     supabase
       .from("lessons")
-      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed, cancellation_reason")
       .eq("pupil_id", id)
       .is("deleted_at", null)
-      .neq("status", "cancelled")
-      .or(`status.eq.completed,lesson_date.lt.${ymd(new Date())}`)
+      .or(`status.eq.completed,status.eq.cancelled,lesson_date.lt.${ymd(new Date())}`)
       .order("lesson_date", { ascending: false })
       .order("lesson_time", { ascending: false })
       .limit(50)
@@ -1494,6 +1494,7 @@ function PupilDetailPage() {
                 {pastLessons.map((l) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isPaid = l.payment_status === "paid";
+                  const isCancelled = l.status === "cancelled";
                   return (
                     <Fragment key={l.id}>
                       <div
@@ -1515,14 +1516,19 @@ function PupilDetailPage() {
                         </div>
 
                         {/* Accent bar */}
-                        <div className="shrink-0" style={{ width: 3, backgroundColor: "#9CA3AF", borderRadius: 2 }} />
+                        <div className="shrink-0" style={{ width: 3, backgroundColor: accentColor(l), borderRadius: 2 }} />
 
                         {/* Content */}
                         <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
                           <div className="text-[13px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
                             {formatDateShort(d)}
                           </div>
-                          {l.notes && (
+                          {isCancelled && l.cancellation_reason && (
+                            <div className="text-[11px] truncate" style={{ color: "#DC2626", ...POPPINS }}>
+                              {l.cancellation_reason}
+                            </div>
+                          )}
+                          {!isCancelled && l.notes && (
                             <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
                               {l.notes}
                             </div>
@@ -1530,12 +1536,21 @@ function PupilDetailPage() {
 
                           {/* Badges */}
                           <div className="flex flex-wrap items-center gap-1 mt-1">
-                            <span
-                              className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                              style={{ backgroundColor: "#E5E7EB", color: "#374151", ...POPPINS }}
-                            >
-                              {l.status}
-                            </span>
+                            {isCancelled ? (
+                              <span
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                                style={{ backgroundColor: "#FEE2E2", color: "#991B1B", ...POPPINS }}
+                              >
+                                Cancelled
+                              </span>
+                            ) : (
+                              <span
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                                style={{ backgroundColor: "#E5E7EB", color: "#374151", ...POPPINS }}
+                              >
+                                {l.status}
+                              </span>
+                            )}
                             {isPaid && (
                               <span
                                 className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
