@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Mail, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, ExternalLink, Flag, Heart, Loader2, Mail, MapPin, MessageSquare, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -112,6 +112,7 @@ interface Pupil {
   emergency_contact_phone: string | null;
   emergency_contact_relation: string | null;
   driving_licence_number: string | null;
+  driving_licence_checked: boolean | null;
   custom_rate: number | null;
   custom_rate_90: number | null;
   custom_rate_120: number | null;
@@ -370,7 +371,7 @@ function PupilDetailPage() {
         theory_pass, wants_swap,
         ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
-        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
+        driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
         test_status, test_examiner
       `)
@@ -1432,6 +1433,7 @@ function PupilDetailPage() {
         <PupilExtras
         pupil={pupil}
         instructorRate={instructorRate}
+        instructorName={instructorName}
         onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
@@ -2217,10 +2219,12 @@ const EXTRAS_INPUT: React.CSSProperties = {
 function PupilExtras({
   pupil,
   instructorRate,
+  instructorName,
   onUpdated,
 }: {
   pupil: Pupil;
   instructorRate: number | null;
+  instructorName: string;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
   const [editEmg, setEditEmg] = useState(false);
@@ -2232,6 +2236,8 @@ function PupilExtras({
   const [editLic, setEditLic] = useState(false);
   const [licence, setLicence] = useState(pupil.driving_licence_number ?? "");
   const [savingLic, setSavingLic] = useState(false);
+  const [savingChecked, setSavingChecked] = useState(false);
+  const [requestSheetOpen, setRequestSheetOpen] = useState(false);
 
   async function patchPupil(patch: Record<string, unknown>) {
     const { data, error, status } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
@@ -2278,6 +2284,20 @@ function PupilExtras({
       toast.success("Driving licence saved");
     }
   }
+
+  async function toggleLicenceChecked(next: boolean) {
+    setSavingChecked(true);
+    const ok = await patchPupil({ driving_licence_checked: next });
+    setSavingChecked(false);
+    if (ok) {
+      onUpdated({ driving_licence_checked: next });
+      toast.success(next ? "Licence marked as verified" : "Verification removed");
+    }
+  }
+
+  const smsBody = `Hi ${pupil.name}, could you please share your DVLA licence check code with me? You can get it at https://www.gov.uk/view-driving-licence — tap 'Share your licence information' and send me the code. Thanks, ${instructorName || "your instructor"}`;
+  const emailSubject = "DVLA Licence Check Code Request";
+  const emailBody = `Hi ${pupil.name},\n\nAs part of your driving lessons, I need to verify your driving licence details.\n\nCould you please get your DVLA check code by visiting:\nhttps://www.gov.uk/view-driving-licence\n\nTap 'Share your licence information' and send me the 8-character code.\n\nMany thanks,\n${instructorName || "your instructor"}`;
 
   return (
     <>
@@ -2346,10 +2366,44 @@ function PupilExtras({
         </div>
         {!editLic ? (
           <div>
-            <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-              {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+              </div>
+              {pupil.driving_licence_number && (
+                pupil.driving_licence_checked ? (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
+                    Verified ✓
+                  </span>
+                ) : (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
+                    Unverified
+                  </span>
+                )
+              )}
             </div>
-            <div className="text-[11px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>Verify with DVLA (coming soon)</div>
+            <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!pupil.driving_licence_checked}
+                onChange={(e) => toggleLicenceChecked(e.target.checked)}
+                disabled={savingChecked}
+                className="w-4 h-4"
+                style={{ accentColor: "#1A52A0" }}
+              />
+              <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                Licence checked and verified ✓
+              </span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setRequestSheetOpen(true)}
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
+              style={{ color: "#1A52A0", ...POPPINS }}
+            >
+              Request DVLA check code
+              <ExternalLink size={14} />
+            </button>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -2365,6 +2419,59 @@ function PupilExtras({
           </div>
         )}
       </div>
+      {requestSheetOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ background: "rgba(11,31,58,0.5)" }}
+          onClick={() => setRequestSheetOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white"
+            style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20, paddingBottom: 32 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                Request DVLA check code
+              </span>
+              <button type="button" onClick={() => setRequestSheetOpen(false)} aria-label="Close">
+                <X size={20} color="#0B1F3A" />
+              </button>
+            </div>
+            <p className="text-[13px] mb-4" style={{ color: "#6B7280", ...POPPINS }}>
+              How would you like to ask {pupil.name} for their check code?
+            </p>
+            <a
+              href={pupil.phone ? `sms:${pupil.phone}?&body=${encodeURIComponent(smsBody)}` : `sms:?&body=${encodeURIComponent(smsBody)}`}
+              onClick={() => setRequestSheetOpen(false)}
+              className="flex items-center gap-3 w-full mb-2 rounded-lg"
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+            >
+              <MessageSquare size={18} color="#1A52A0" />
+              <div className="flex-1">
+                <div className="text-[14px] font-semibold">Send SMS</div>
+                <div className="text-[12px]" style={{ color: "#6B7280" }}>
+                  {pupil.phone ?? "No phone on file"}
+                </div>
+              </div>
+            </a>
+            <a
+              href={pupil.email ? `mailto:${pupil.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}` : `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
+              onClick={() => setRequestSheetOpen(false)}
+              className="flex items-center gap-3 w-full rounded-lg"
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+            >
+              <Mail size={18} color="#1A52A0" />
+              <div className="flex-1">
+                <div className="text-[14px] font-semibold">Send email</div>
+                <div className="text-[12px]" style={{ color: "#6B7280" }}>
+                  {pupil.email ?? "No email on file"}
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      )}
     </>
   );
 }
