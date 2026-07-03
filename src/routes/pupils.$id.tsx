@@ -291,6 +291,8 @@ function PupilDetailPage() {
   const navigate = useNavigate();
   const [pupil, setPupil] = useState<Pupil | null>(null);
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [pastLessons, setPastLessons] = useState<Lesson[] | null>(null);
+  const [pastExpanded, setPastExpanded] = useState(false);
   const [notesDraft, setNotesDraft] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
