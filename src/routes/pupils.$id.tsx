@@ -917,6 +917,7 @@ function PupilDetailPage() {
                     Test: {fmtUKDate(pupil.test_date)}
                     {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
                     {centreName ? ` — ${centreName}` : ""}
+                    {pupil.test_examiner ? ` · Examiner: ${pupil.test_examiner}` : ""}
                   </span>
                   {pupil.test_status === "Passed" && (
                     <span
