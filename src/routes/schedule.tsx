@@ -487,13 +487,18 @@ function SchedulePage() {
     }
     if (pastEnd && !l.eol_completed && !isCancelled) {
       badges.push(
-        <span
+        <button
           key="eol"
-          className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600 }}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setEolLesson(l);
+          }}
+          className="text-[10px] px-2 py-0.5 rounded-full cursor-pointer"
+          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600, border: 0 }}
         >
           EOL pending
-        </span>,
+        </button>,
       );
     }
     if (l.payment_status === "paid") {
