@@ -3317,6 +3317,48 @@ function HomePage() {
         rows={earningsRows}
         onRecord={() => { setEarningsOpen(false); navigate({ to: "/schedule" }); }}
         onViewMTD={() => { setEarningsOpen(false); navigate({ to: "/month-to-date" }); }}
+        onEdit={async (row, updates) => {
+          const iso = updates.date ? new Date(updates.date + "T12:00:00").toISOString() : row.date;
+          const { error } = await supabase
+            .from("lesson_history")
+            .update({
+              lesson_cost: updates.amount,
+              payment_method: updates.method,
+              created_at: iso,
+            })
+            .eq("id", row.id);
+          if (error) {
+            console.error("[home] earnings edit failed", error);
+            toast.error("Couldn't update payment");
+            return;
+          }
+          const delta = updates.amount - row.amount;
+          setEarningsRows((rs) =>
+            rs
+              .map((r) =>
+                r.id === row.id && r.source === row.source
+                  ? { ...r, amount: updates.amount, method: updates.method, date: iso }
+                  : r,
+              )
+              .sort((a, b) => (a.date < b.date ? 1 : -1)),
+          );
+          setWeekEarnings((n) => n + delta);
+          toast.success("Payment updated");
+        }}
+        onDelete={async (row) => {
+          const { error } = await supabase
+            .from("lesson_history")
+            .update({ deleted_at: new Date().toISOString() })
+            .eq("id", row.id);
+          if (error) {
+            console.error("[home] earnings delete failed", error);
+            toast.error("Couldn't delete payment");
+            return;
+          }
+          setEarningsRows((rs) => rs.filter((r) => !(r.id === row.id && r.source === row.source)));
+          setWeekEarnings((n) => Math.max(0, n - row.amount));
+          toast.success("Payment deleted");
+        }}
       />
 
       <LessonsBreakdownModal
