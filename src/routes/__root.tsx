@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
-import { supabase } from "../integrations/supabase/client";
+import { supabase } from "../lib/supabaseClient";
 
 function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "course_booking") return `/bookings/${notification.reference_id}`;
@@ -222,10 +222,10 @@ function RootComponent() {
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(({ data }: any) => {
       if (mounted) setUserId(data.user?.id ?? null);
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setUserId(session?.user?.id ?? null);
     });
     return () => {
@@ -247,7 +247,7 @@ function RootComponent() {
           table: "instructor_notifications",
           filter: `instructor_id=eq.${userId}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           console.log("[push] new notification received:", payload.new);
           if (
             typeof Notification !== "undefined" &&
