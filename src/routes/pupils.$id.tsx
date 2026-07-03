@@ -787,7 +787,7 @@ function PupilDetailPage() {
             {/* Blue hero band */}
             <div
               className="relative px-4 rounded-b-[28px]"
-              style={{ backgroundColor: "#1877D6", paddingTop: 32, paddingBottom: 66 }}
+              style={{ backgroundColor: "#1877D6", paddingTop: 22, paddingBottom: 76 }}
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
                 <div className="flex items-start gap-3 min-w-0">
