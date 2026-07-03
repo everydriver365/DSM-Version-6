@@ -9,6 +9,7 @@ import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
+import { deletePaymentRecord } from "./payments";
 
 export const Route = createFileRoute("/pupils/$id")({
   head: () => ({
@@ -220,6 +221,10 @@ function PupilDetailPage() {
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
+  const [paymentHistory, setPaymentHistory] = useState<
+    { id: string; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
+  >([]);
+  const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
@@ -425,6 +430,7 @@ function PupilDetailPage() {
       .from("lesson_history")
       .select("lesson_cost, payment_status")
       .eq("pupil_id", id)
+      .is("deleted_at", null)
       .then(({ data, error }) => {
         if (error) console.error("[pupil] lesson_history error", error);
         const rows = (data as { lesson_cost: number | null; payment_status: string | null }[]) ?? [];
@@ -435,6 +441,19 @@ function PupilDetailPage() {
         const bal = totalPaid - totalCost;
         setBalance(bal);
         console.log("[pupils.$id] balance:", bal, "totalCost:", totalCost, "totalPaid:", totalPaid);
+      });
+
+    supabase
+      .from("lesson_history")
+      .select("id, lesson_cost, payment_method, created_at, notes")
+      .eq("pupil_id", id)
+      .eq("payment_status", "paid")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] payment history error", error);
+        setPaymentHistory((data as any[]) ?? []);
       });
 
     supabase
@@ -540,7 +559,7 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] intake answers error", error);
         setIntakeAnswers(data ?? []);
       });
-  }, [id]);
+  }, [id, paymentHistoryRefresh]);
 
   // Recompute live "owed" from the pupil's CURRENT rates.
   // Priority (per resolveHourlyRate): pupil custom rate (per-duration) >
@@ -831,6 +850,68 @@ function PupilDetailPage() {
                 }
               />
             </div>
+
+            {paymentHistory.length > 0 && (
+              <div className="mt-4">
+                <div
+                  className="text-[11px] font-medium uppercase mb-2"
+                  style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+                >
+                  Recent payments
+                </div>
+                <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                  {paymentHistory.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between py-2"
+                      style={{ borderBottom: "0.5px solid #EEF2F7" }}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                          £{Number(p.lesson_cost ?? 0).toFixed(2)}
+                        </span>
+                        <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                          {new Date(p.created_at).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          {p.payment_method ? ` · ${p.payment_method}` : ""}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Delete payment"
+                        onClick={async () => {
+                          if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
+                          const { data: { session } } = await supabase.auth.getSession();
+                          const token = session?.access_token;
+                          if (!token) {
+                            toast.error("Not authenticated");
+                            return;
+                          }
+                          const { data: userData } = await supabase.auth.getUser();
+                          const uid = userData.user?.id;
+                          if (!uid) return;
+                          const ok = await deletePaymentRecord(p.id, token, uid);
+                          if (ok) setPaymentHistoryRefresh((n) => n + 1);
+                        }}
+                        className="inline-flex items-center justify-center rounded-full"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          background: "#F3F4F6",
+                          border: "0.5px solid #E2E6ED",
+                          color: "#6B7280",
+                        }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {(() => {
               const readiness = (() => {
