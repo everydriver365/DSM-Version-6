@@ -659,22 +659,22 @@ function PupilDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
-      {/* Top bar */}
+      {/* Top bar — Structured clarity: white sticky header */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="sticky top-0 z-40 flex items-center justify-between px-2 bg-white border-b border-slate-200"
+        style={{ height: 52 }}
       >
         <button
           type="button"
           aria-label="Back"
           onClick={() => navigate({ to: "/pupils" })}
-          className="flex items-center justify-center"
+          className="flex items-center justify-center text-slate-600"
           style={{ width: 40, height: 40 }}
         >
-          <ArrowLeft size={22} color="#FFFFFF" />
+          <ArrowLeft size={22} />
         </button>
         <div
-          className="flex-1 text-center text-[15px] font-semibold text-white truncate px-2"
+          className="flex-1 text-center text-[15px] font-semibold text-slate-900 truncate px-2"
           style={POPPINS}
         >
           {pupil?.name ?? ""}
@@ -683,19 +683,19 @@ function PupilDetailPage() {
           <a
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
             aria-label="Call pupil"
-            className="flex items-center justify-center"
+            className="flex items-center justify-center text-blue-600"
             style={{ width: 40, height: 40 }}
           >
-            <Phone size={18} color="#FFFFFF" />
+            <Phone size={18} />
           </a>
           <button
             type="button"
             aria-label="Remove pupil"
             onClick={() => setRemoveOpen(true)}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center text-slate-400 hover:text-red-600"
             style={{ width: 40, height: 40 }}
           >
-            <Trash2 size={18} color="#FFFFFF" />
+            <Trash2 size={18} />
           </button>
         </div>
       </div>
