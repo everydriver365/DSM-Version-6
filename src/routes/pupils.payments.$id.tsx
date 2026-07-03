@@ -66,6 +66,8 @@ function PupilPaymentsPage() {
   const [showRecord, setShowRecord] = useState(false);
   const [recAmount, setRecAmount] = useState<string>("");
   const [recMethod, setRecMethod] = useState<"cash" | "bank_transfer" | "card">("cash");
+  const [recHours, setRecHours] = useState<string>("");
+  const [recNotes, setRecNotes] = useState<string>("");
   const [recSaving, setRecSaving] = useState(false);
   const [reloadTick, setReloadTick] = useState(0);
 
@@ -124,6 +126,7 @@ function PupilPaymentsPage() {
       toast.error("Enter an amount");
       return;
     }
+    const hoursBought = Number(recHours) || 0;
     setRecSaving(true);
     try {
       const { data: u } = await supabase.auth.getUser();
@@ -185,6 +188,7 @@ function PupilPaymentsPage() {
           lesson_cost: amt,
           payment_status: "paid",
           payment_method: recMethod,
+          notes: recNotes.trim() || (hoursBought > 0 ? `${hoursBought}h package` : null),
           created_at: now,
         });
         if (hErr) console.error("[pupil-payments] history insert", hErr);
@@ -198,12 +202,34 @@ function PupilPaymentsPage() {
         payment_method: recMethod,
         payment_date: today,
         status: "completed",
+        notes: recNotes.trim() || (hoursBought > 0 ? `${hoursBought}h package` : null),
       });
       if (payErr) console.error("[pupil-payments] payments insert", payErr);
+
+      // Increment pupil's bought lesson count / prepaid hours
+      if (hoursBought > 0) {
+        const { data: pRow } = await supabase
+          .from("pupils")
+          .select("lesson_count, prepaid_hours")
+          .eq("id", id)
+          .maybeSingle();
+        const curLessons = Number((pRow as { lesson_count?: number | null } | null)?.lesson_count ?? 0);
+        const curPrepaid = Number((pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0);
+        const { error: puErr } = await supabase
+          .from("pupils")
+          .update({
+            lesson_count: curLessons + hoursBought,
+            prepaid_hours: curPrepaid + hoursBought,
+          })
+          .eq("id", id);
+        if (puErr) console.error("[pupil-payments] pupil hours update", puErr);
+      }
 
       toast.success("Payment recorded");
       setShowRecord(false);
       setRecAmount("");
+      setRecHours("");
+      setRecNotes("");
       setRecMethod("cash");
       setReloadTick((n) => n + 1);
     } catch (e) {
