@@ -1083,7 +1083,7 @@ function HomePage() {
         (lessonRows ?? []).forEach((l) => {
           const amt = Number(l.amount_due ?? 0);
           lessonEarnings += amt;
-          if (l.lesson_date && l.lesson_date >= todayYmd) lessonToday += amt;
+          if (l.lesson_date && l.lesson_date === todayYmd) lessonToday += amt;
         });
         if (lessonEarnings > 0) {
           wk = lessonEarnings;
