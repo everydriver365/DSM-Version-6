@@ -466,6 +466,30 @@ function MtdPage() {
 
         <SectionHeader>DIGITAL RECORDS</SectionHeader>
         <Card>
+          <div
+            className="flex items-center justify-between py-1.5"
+            style={{ borderBottom: "1px dashed #EEF2F7", marginBottom: 6, paddingBottom: 8 }}
+          >
+            <span
+              style={{
+                fontSize: 13,
+                color: VALUE,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Car size={14} color="#1877D6" /> Miles this month
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>
+              {mtdMiles.toLocaleString("en-GB", { maximumFractionDigits: 1 })}
+            </span>
+          </div>
+          <Row
+            label="Mileage allowance (this month)"
+            value={fmtMoney(mtdMileageAllowance)}
+          />
           <Row label="Income (payments)" value={fmtMoney(income)} />
           <div className="flex items-start gap-1.5 text-[11px] text-[#6B7280] mt-1 mb-2">
             <span style={{ color: "#1877D6" }}>ⓘ</span>
