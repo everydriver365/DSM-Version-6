@@ -2192,9 +2192,22 @@ function HomePage() {
             style={{ margin: '10px 16px 0', height: 78, borderRadius: 12, backgroundColor: '#F3F8FF' }}
           />
         ) : (
+          <>
+          <div style={{ margin: '10px 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+              Weekly goals
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/settings' })}
+              style={{ fontSize: 11, fontWeight: 600, color: '#1877D6', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Set goals
+            </button>
+          </div>
           <div
             style={{
-              margin: '10px 16px 0',
+              margin: '6px 16px 0',
               backgroundColor: '#FFFFFF',
               border: '1px solid rgba(11,31,58,0.08)',
               borderRadius: 12,
@@ -2265,6 +2278,7 @@ function HomePage() {
               </div>
             </div>
           </div>
+          </>
         )}
       </div>
 
