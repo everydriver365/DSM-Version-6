@@ -94,6 +94,7 @@ function PupilPaymentsPage() {
   const [editMethod, setEditMethod] = useState<"cash" | "bank_transfer" | "card">("cash");
   const [editBaseNotes, setEditBaseNotes] = useState<string>("");
   const [editReason, setEditReason] = useState<string>("");
+  const [editDate, setEditDate] = useState<string>("");
   const [editSaving, setEditSaving] = useState(false);
 
   useEffect(() => {
@@ -286,6 +287,11 @@ function PupilPaymentsPage() {
     setEditMethod(m === "cash" || m === "bank_transfer" || m === "card" ? m : "cash");
     setEditBaseNotes(base);
     setEditReason("");
+    const d = p.created_at ? new Date(p.created_at) : new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    setEditDate(`${yyyy}-${mm}-${dd}`);
   }
 
   async function submitEditPayment() {
@@ -307,6 +313,28 @@ function PupilPaymentsPage() {
       const oldMethod = editing.payment_method ?? "cash";
       if (oldMethod !== editMethod) changes.push(`method ${formatMethod(oldMethod)}→${formatMethod(editMethod)}`);
       if (oldBase.trim() !== editBaseNotes.trim()) changes.push("notes updated");
+      let newCreatedAt: string | null = null;
+      if (editDate) {
+        const oldD = editing.created_at ? new Date(editing.created_at) : null;
+        const oldKey = oldD
+          ? `${oldD.getFullYear()}-${String(oldD.getMonth() + 1).padStart(2, "0")}-${String(oldD.getDate()).padStart(2, "0")}`
+          : "";
+        if (editDate !== oldKey) {
+          const [y, m, dd] = editDate.split("-").map((n) => Number(n));
+          const preserved = oldD ?? new Date();
+          const nd = new Date(
+            y,
+            (m || 1) - 1,
+            dd || 1,
+            preserved.getHours(),
+            preserved.getMinutes(),
+            preserved.getSeconds(),
+          );
+          newCreatedAt = nd.toISOString();
+          const fmt = (s: string) => s;
+          changes.push(`date ${fmt(oldKey)}→${fmt(editDate)}`);
+        }
+      }
       if (changes.length === 0) {
         toast.info("No changes");
         setEditSaving(false);
@@ -315,9 +343,15 @@ function PupilPaymentsPage() {
       const reasonSuffix = editReason.trim() ? ` — ${editReason.trim()}` : "";
       const auditLine = `[${stamp} by ${editorEmail}] ${changes.join(", ")}${reasonSuffix}`;
       const newNotes = joinNotes(editBaseNotes, [...audit, auditLine]);
+      const updatePayload: Record<string, unknown> = {
+        lesson_cost: amt,
+        payment_method: editMethod,
+        notes: newNotes,
+      };
+      if (newCreatedAt) updatePayload.created_at = newCreatedAt;
       const { error: upErr } = await supabase
         .from("lesson_history")
-        .update({ lesson_cost: amt, payment_method: editMethod, notes: newNotes })
+        .update(updatePayload)
         .eq("id", editing.id);
       if (upErr) throw upErr;
       toast.success("Payment updated");
@@ -531,6 +565,17 @@ function PupilPaymentsPage() {
               min="0"
               value={editAmount}
               onChange={(e) => setEditAmount(e.target.value)}
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Date
+            </label>
+            <input
+              type="date"
+              value={editDate}
+              onChange={(e) => setEditDate(e.target.value)}
               className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
