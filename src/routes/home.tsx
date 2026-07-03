@@ -126,8 +126,34 @@ interface PrevLessonRow {
 }
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const WEEKLY_LESSON_GOAL = 30;
-const WEEKLY_EARNINGS_GOAL = 1000;
+// Default weekly goals — should come from instructor settings
+// (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
+// these defaults if the columns don't exist or the row hasn't been populated.
+const DEFAULT_WEEKLY_LESSON_GOAL = 20;
+const DEFAULT_WEEKLY_EARNINGS_GOAL = 800;
+
+// Tier thresholds — must mirror the /rewards page.
+const TIER_THRESHOLDS = {
+  bronze: 0,
+  silver: 500,
+  gold: 1500,
+  platinum: 3000,
+  elite: 6000,
+} as const;
+const TIER_COLORS: Record<keyof typeof TIER_THRESHOLDS, string> = {
+  bronze: "#CD7F32",
+  silver: "#9CA3AF",
+  gold: "#D97706",
+  platinum: "#6366F1",
+  elite: "#0F2044",
+};
+function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
+  if (pts >= TIER_THRESHOLDS.elite) return "elite";
+  if (pts >= TIER_THRESHOLDS.platinum) return "platinum";
+  if (pts >= TIER_THRESHOLDS.gold) return "gold";
+  if (pts >= TIER_THRESHOLDS.silver) return "silver";
+  return "bronze";
+}
 
 function CircleIconBtn({
   children, onClick, ariaLabel,
@@ -684,6 +710,9 @@ function HomePage() {
   const [glancePaymentsTotal, setGlancePaymentsTotal] = useState(0);
   const [glanceExpensesTotal, setGlanceExpensesTotal] = useState(0);
   const [glanceMtdEnrolled, setGlanceMtdEnrolled] = useState<boolean | null>(null);
+  const [weeklyLessonGoal, setWeeklyLessonGoal] = useState<number>(DEFAULT_WEEKLY_LESSON_GOAL);
+  const [weeklyEarningsGoal, setWeeklyEarningsGoal] = useState<number>(DEFAULT_WEEKLY_EARNINGS_GOAL);
+  const [glancePoints, setGlancePoints] = useState<number>(0);
 
   useEffect(() => {
     if (!userId) return;
@@ -693,7 +722,8 @@ function HomePage() {
         3,
         6,
       );
-      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes] = await Promise.all([
+      const currentYear = new Date().getFullYear();
+      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes, instructorRes, pointsRes] = await Promise.all([
         supabase
           .from("pupils")
           .select("id", { count: "exact", head: true })
@@ -722,6 +752,17 @@ function HomePage() {
           .select("enrolled")
           .eq("instructor_id", userId)
           .maybeSingle(),
+        supabase
+          .from("instructors")
+          .select("weekly_lesson_goal, weekly_earnings_goal")
+          .eq("id", userId)
+          .maybeSingle(),
+        supabase
+          .from("instructor_points")
+          .select("total_points")
+          .eq("instructor_id", userId)
+          .eq("season_year", currentYear)
+          .maybeSingle(),
       ]);
       setGlancePupilCount(pupilsRes.count ?? 0);
       setGlanceCompletedLessons(lessonsRes.count ?? 0);
@@ -732,22 +773,37 @@ function HomePage() {
         (expensesRes.data ?? []).reduce((s, e: any) => s + Number(e.amount ?? 0), 0),
       );
       setGlanceMtdEnrolled(mtdRes.data ? Boolean((mtdRes.data as any).enrolled) : false);
+      const instructorRow = (instructorRes as any)?.data ?? null;
+      if (instructorRow) {
+        const wl = Number(instructorRow.weekly_lesson_goal);
+        const we = Number(instructorRow.weekly_earnings_goal);
+        if (Number.isFinite(wl) && wl > 0) setWeeklyLessonGoal(wl);
+        if (Number.isFinite(we) && we > 0) setWeeklyEarningsGoal(we);
+      }
+      const pointsRow = (pointsRes as any)?.data ?? null;
+      setGlancePoints(Number(pointsRow?.total_points ?? 0));
     })();
   }, [userId]);
 
-  const glancePoints = glancePupilCount * 10 + glanceCompletedLessons * 5 + glancePaymentsCount * 2;
-  const glanceTier =
-    glancePoints >= 1000 ? "Platinum" : glancePoints >= 500 ? "Gold" : glancePoints >= 200 ? "Silver" : "Bronze";
-  const glanceTierColor =
-    glanceTier === "Platinum"
-      ? "#0EA5E9"
-      : glanceTier === "Gold"
-      ? "#0B1F3A"
-      : glanceTier === "Silver"
-      ? "#6B7280"
-      : "#0B1F3A";
+  const glanceTierKey = tierFromPoints(glancePoints);
+  const glanceTier = glanceTierKey.charAt(0).toUpperCase() + glanceTierKey.slice(1);
+  const glanceTierColor = TIER_COLORS[glanceTierKey];
   const glanceNetProfit = Math.max(0, glancePaymentsTotal - glanceExpensesTotal);
-  const glanceTaxBill = Math.max(0, (glanceNetProfit - 12570) * 0.2);
+  // UK Self-Employed estimate for 2024/25 tax year — Income Tax + Class 4 NI.
+  // Personal allowance £12,570; basic-rate band up to £50,270 (20% tax, 9% NI);
+  // above £50,270 (40% tax, 2% NI). Rough guide only — does not include Class 2
+  // NI, PA taper (>£100k), higher/additional-rate band, Scottish rates, or
+  // dividend/other income.
+  const glanceTaxAndNi = (() => {
+    const profit = glanceNetProfit;
+    const PA = 12570;
+    const BASIC_TOP = 50270;
+    const basicSlice = Math.max(0, Math.min(profit, BASIC_TOP) - PA);
+    const higherSlice = Math.max(0, profit - BASIC_TOP);
+    const incomeTax = basicSlice * 0.2 + higherSlice * 0.4;
+    const class4Ni = basicSlice * 0.09 + higherSlice * 0.02;
+    return Math.max(0, incomeTax + class4Ni);
+  })();
   const monthsElapsed = (() => {
     const now = new Date();
     const startMonth = now.getMonth() >= 3 ? 3 : -9; // April = 3
@@ -1201,8 +1257,8 @@ function HomePage() {
     return null;
   })();
 
-  const earningsPct = Math.min(100, (weekEarnings / WEEKLY_EARNINGS_GOAL) * 100);
-  const lessonsPct = Math.min(100, (weekLessonsTotal / WEEKLY_LESSON_GOAL) * 100);
+  const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
+  const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
@@ -1246,7 +1302,10 @@ function HomePage() {
       return;
     }
     const amount = l.amount_due ?? 0;
-    const message = `Hi ${l.pupils?.name ?? "there"}, you have an outstanding lesson payment of £${amount.toFixed(2)}. Please pay here: [payment link placeholder]`;
+    const amountPence = Math.round(amount * 100);
+    const desc = encodeURIComponent("Lesson payment");
+    const payUrl = `https://everydriver.co.uk/pay?amount=${amountPence}&desc=${desc}&ref=${l.id}`;
+    const message = `Hi ${l.pupils?.name ?? "there"}, you have an outstanding lesson payment of £${amount.toFixed(2)}. Please pay here: ${payUrl}`;
     window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
   }
 
@@ -3091,7 +3150,7 @@ function HomePage() {
                   <Calculator size={18} color="#1877D6" />
                 </div>
                 <div>
-                  <p className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>Tax Estimate</p>
+                  <p className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>Est. tax + NI</p>
                   <p className="text-[10px] font-medium" style={{ color: "rgba(11,31,58,0.5)" }}>Tax Year {taxYearLabel}</p>
                 </div>
               </div>
@@ -3101,12 +3160,12 @@ function HomePage() {
             <div className="mb-3">
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-bold" style={{ color: "#0B1F3A" }}>
-                  £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
+                  £{glanceTaxAndNi.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
                 </span>
                 <span className="text-[11px] font-medium" style={{ color: "rgba(11,31,58,0.4)" }}>projected</span>
               </div>
               <p className="text-[11px] mt-0.5" style={{ color: "rgba(11,31,58,0.6)" }}>
-                Full-year estimate based on current data
+                Income Tax + Class 4 NI. Estimate only — consult an accountant.
               </p>
             </div>
 
