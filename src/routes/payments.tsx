@@ -753,7 +753,7 @@ function RecordSheet({
 }: {
   pupils: PupilLite[];
   onClose: () => void;
-  onSaved: (payment: PaymentRow, pupilId: string, newBalance: number) => void;
+  onSaved: (payment: HistoryRow, pupilId: string, newBalance: number) => void;
   userId: string | null;
 }) {
   const [pupilId, setPupilId] = useState("");
@@ -790,11 +790,12 @@ function RecordSheet({
       notes: note || null,
     });
 
-    const payment: PaymentRow = {
+    const payment: HistoryRow = {
       id: crypto.randomUUID(),
       pupil_id: pupilId,
-      amount: amt,
-      paid_at: new Date().toISOString(),
+      lesson_cost: amt,
+      created_at: new Date().toISOString(),
+      payment_method: method,
       pupils: { name: pupil?.name ?? "Unknown pupil" },
     };
 
