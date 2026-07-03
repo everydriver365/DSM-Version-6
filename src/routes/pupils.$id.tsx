@@ -1930,19 +1930,27 @@ function StatChip({
   label,
   value,
   valueColor = "#0B1F3A",
+  subValue,
+  onClick,
 }: {
   label: string;
   value: string;
   valueColor?: string;
+  subValue?: string;
+  onClick?: () => void;
 }) {
+  const Comp: any = onClick ? "button" : "div";
   return (
-    <div
-      className="rounded-lg px-2 py-2 text-center"
+    <Comp
+      onClick={onClick}
+      type={onClick ? "button" : undefined}
+      className="rounded-lg px-2 py-2 text-center w-full"
       style={{
         backgroundColor: "#F8F9FB",
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
+        cursor: onClick ? "pointer" : undefined,
       }}
     >
       <div
@@ -1951,13 +1959,22 @@ function StatChip({
       >
         {value}
       </div>
+      {subValue ? (
+        <div
+          className="text-[10px] truncate mt-0.5"
+          style={{ color: "#0B1F3A", ...POPPINS }}
+          title={subValue}
+        >
+          {subValue}
+        </div>
+      ) : null}
       <div
         className="text-[10px] font-medium uppercase mt-0.5"
         style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
       >
         {label}
       </div>
-    </div>
+    </Comp>
   );
 }
 
