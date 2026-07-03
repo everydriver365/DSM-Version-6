@@ -182,6 +182,80 @@ export async function recordPayment(args: {
 
 }
 
+export async function deletePaymentRecord(
+  historyId: string,
+  token: string,
+  _userId: string,
+): Promise<boolean> {
+  const SUPABASE_URL = (supabase as any).supabaseUrl as string;
+  const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
+
+  // 1. Fetch the payment record
+  const histRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/lesson_history?id=eq.${historyId}&select=*`,
+    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+  );
+  const histData = await histRes.json();
+  const record = histData?.[0];
+  if (!record) {
+    toast.error("Payment record not found");
+    return false;
+  }
+
+  // 2. Soft delete the lesson_history record
+  await fetch(`${SUPABASE_URL}/rest/v1/lesson_history?id=eq.${historyId}`, {
+    method: "PATCH",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ deleted_at: new Date().toISOString() }),
+  });
+
+  // 3. Restore associated lesson if lesson_id present
+  if (record.lesson_id) {
+    await fetch(`${SUPABASE_URL}/rest/v1/lessons?id=eq.${record.lesson_id}`, {
+      method: "PATCH",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        payment_status: "unpaid",
+        amount_due: record.lesson_cost,
+        paid_at: null,
+        paid_amount: null,
+        payment_method: null,
+      }),
+    });
+  }
+
+  // 4. If payment went to account_balance, reverse it
+  if (!record.lesson_id && record.pupil_id) {
+    const pupilRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/pupils?id=eq.${record.pupil_id}&select=account_balance`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+    );
+    const pupilData = await pupilRes.json();
+    const currentBalance = Number(pupilData?.[0]?.account_balance || 0);
+    const newBalance = Math.max(0, currentBalance - Number(record.lesson_cost));
+    await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=eq.${record.pupil_id}`, {
+      method: "PATCH",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ account_balance: newBalance }),
+    });
+  }
+
+  toast.success("Payment deleted");
+  return true;
+}
+
 function PaymentsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [outstanding, setOutstanding] = useState<OutstandingPupil[] | null>(null);
