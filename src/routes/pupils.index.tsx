@@ -56,7 +56,7 @@ function accentColor(status: StatusKey) {
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
-  const [balanceMap, setBalanceMap] = useState<Record<string, { owed: number; paid: number }>>({});
+  const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
   const [hoursMap, setHoursMap] = useState<Record<string, number>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -142,28 +142,34 @@ function PupilsIndexPage() {
       try {
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due, payment_status, duration_minutes")
+          .select("pupil_id, amount_due")
           .eq("instructor_id", uid)
+          .eq("payment_status", "unpaid")
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
-        console.log("[pupils] lesson balances:", lessonBalances);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null; duration_minutes: number | null }[]).reduce(
+        console.log("[pupils] unpaid lesson balances:", lessonBalances);
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
-            if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
-            const amount = Number(row.amount_due) || 0;
-            if (row.payment_status === "paid") {
-              acc[row.pupil_id].paid += amount;
-            } else {
-              acc[row.pupil_id].owed += amount;
-            }
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.amount_due) || 0);
             return acc;
           },
-          {} as Record<string, { owed: number; paid: number }>,
+          {} as Record<string, number>,
         );
         setBalanceMap(bMap);
+      } catch (e) {
+        console.error("[pupils] balance fetch crashed", e);
+        setBalanceMap({});
+      }
 
-        const hMap = ((lessonBalances ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
+      try {
+        const { data: hourRows, error: hErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, duration_minutes")
+          .eq("instructor_id", uid)
+          .is("deleted_at", null);
+        if (hErr) console.error("[pupils] hours error", hErr);
+        const hMap = ((hourRows ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
             acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.duration_minutes) || 0) / 60;
@@ -173,8 +179,7 @@ function PupilsIndexPage() {
         );
         setHoursMap(hMap);
       } catch (e) {
-        console.error("[pupils] balance fetch crashed", e);
-        setBalanceMap({});
+        console.error("[pupils] hours fetch crashed", e);
         setHoursMap({});
       }
     })();
@@ -351,7 +356,8 @@ function PupilsIndexPage() {
           <div className="flex flex-col">
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
-              const b = balanceMap[p.id];
+              const b = balanceMap[p.id] || 0;
+              const balanceOwed = b - (Number(p.balance_owed) || 0);
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               const prepaid = Number(p.prepaid_hours) || 0;
@@ -425,14 +431,21 @@ function PupilsIndexPage() {
                                 Prepaid ✓
                               </span>
                             )
-                          ) : b && b.owed > 0 ? (
+                          ) : balanceOwed > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#1877D6", ...POPPINS }}
                             >
-                              £{b.owed.toFixed(2)} owed
+                              £{balanceOwed.toFixed(2)} owed
                             </span>
-                          ) : lessons > 0 && b && b.paid > 0 ? (
+                          ) : balanceOwed < 0 ? (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#16A34A", ...POPPINS }}
+                            >
+                              In credit £{Math.abs(balanceOwed).toFixed(2)}
+                            </span>
+                          ) : lessons > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#1877D6", ...POPPINS }}
