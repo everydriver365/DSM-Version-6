@@ -294,7 +294,7 @@ function PupilPaymentsPage() {
                 >
                   {balanceLabel(net)}
                 </p>
-                <p className="text-[22px] font-bold text-white mt-1" style={POPPINS}>
+                <p className="text-[22px] font-bold mt-1" style={{ color: balanceColor, ...POPPINS }}>
                   {formatGBP(Math.abs(net))}
                 </p>
               </div>
