@@ -88,23 +88,23 @@ export async function recordPayment(args: {
 
   let remaining = Number(amount);
   for (const lesson of unpaidLessons ?? []) {
-    if (remaining <= 0) break;
-    const due = Number(lesson.amount_due ?? 0);
-    if (due <= 0) continue;
-    if (due <= remaining) {
+    if (remaining === 0) break;
+    const lessonCost = Number(lesson.amount_due ?? 0);
+    if (lessonCost <= 0) continue;
+    if (remaining >= lessonCost) {
       const { error: uErr } = await supabase
         .from("lessons")
         .update({
           payment_status: "paid",
           payment_method: method,
           paid_at: now,
-          paid_amount: due,
+          paid_amount: lessonCost,
           amount_due: 0,
         })
         .eq("id", lesson.id);
       if (uErr) console.error("[payments] full lesson update error", uErr);
-      remaining -= due;
-    } else {
+      remaining -= lessonCost;
+    } else if (remaining > 0) {
       const { error: uErr } = await supabase
         .from("lessons")
         .update({
@@ -112,7 +112,7 @@ export async function recordPayment(args: {
           payment_method: method,
           paid_at: now,
           paid_amount: remaining,
-          amount_due: due - remaining,
+          amount_due: lessonCost - remaining,
         })
         .eq("id", lesson.id);
       if (uErr) console.error("[payments] partial lesson update error", uErr);
