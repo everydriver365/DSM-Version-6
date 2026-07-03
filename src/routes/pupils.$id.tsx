@@ -8,6 +8,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
+import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 
 export const Route = createFileRoute("/pupils/$id")({
   head: () => ({
@@ -221,6 +222,8 @@ function PupilDetailPage() {
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
+  const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
+  const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
@@ -398,24 +401,23 @@ function PupilDetailPage() {
         console.log("[pupils.$id] lesson count (confirmed+completed):", count);
       });
 
-    // Live outstanding balance: sum of unpaid amounts across non-cancelled lessons
+    // Fetch unpaid, non-cancelled lessons — the "owed" balance is computed
+    // from the pupil's CURRENT rates in a separate effect below, so it
+    // stays correct even if the stored amount_due was written when the
+    // pupil's rate or postcode pricing was different.
     supabase
       .from("lessons")
-      .select("amount_due, payment_status, status")
+      .select("duration_minutes, amount_due, payment_status, status")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
       .then(({ data, error }) => {
         if (error) {
-          console.error("[pupil] live owed error", error);
+          console.error("[pupil] unpaid lessons error", error);
           return;
         }
-        const rows = (data as { amount_due: number | null; payment_status: string | null }[]) ?? [];
-        const owed = rows
-          .filter((r) => r.payment_status !== "paid")
-          .reduce((s, r) => s + (Number(r.amount_due) || 0), 0);
-        setLiveOwed(owed);
-        console.log("[pupils.$id] live owed (unpaid lessons):", owed);
+        const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[]) ?? [];
+        setUnpaidLessons(rows.filter((r) => r.payment_status !== "paid"));
       });
 
     supabase
@@ -480,6 +482,20 @@ function PupilDetailPage() {
           const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
           setInstructorName(nm);
         });
+      supabase
+        .from("instructor_postcode_rates")
+        .select("outward_code, hourly_rate")
+        .eq("instructor_id", uid)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("[pupil] postcode rates error", error);
+            return;
+          }
+          setPostcodeRates(((data as any[]) ?? []).map((r) => ({
+            outward_code: String(r.outward_code || "").toUpperCase(),
+            hourly_rate: Number(r.hourly_rate) || 0,
+          })));
+        });
     });
 
     supabase
@@ -523,6 +539,49 @@ function PupilDetailPage() {
         setIntakeAnswers(data ?? []);
       });
   }, [id]);
+
+  // Recompute live "owed" from the pupil's CURRENT rates.
+  // Priority (per resolveHourlyRate): pupil custom rate (per-duration) >
+  // postcode rate > instructor default. Falls back to stored amount_due
+  // only if no rate inputs are available at all.
+  useEffect(() => {
+    if (unpaidLessons === null) return;
+    if (unpaidLessons.length === 0) {
+      setLiveOwed(0);
+      return;
+    }
+    const haveAnyRate =
+      (pupil?.custom_rate ?? null) != null ||
+      (pupil?.custom_rate_90 ?? null) != null ||
+      (pupil?.custom_rate_120 ?? null) != null ||
+      (instructorRate ?? null) != null ||
+      postcodeRates.length > 0;
+    const owed = unpaidLessons.reduce((sum, l) => {
+      const dur = Number(l.duration_minutes) || 60;
+      if (!haveAnyRate) return sum + (Number(l.amount_due) || 0);
+      const computed = resolveHourlyRate({
+        pupilCustomRate: pupil?.custom_rate ?? null,
+        pupilCustomRate90: pupil?.custom_rate_90 ?? null,
+        pupilCustomRate120: pupil?.custom_rate_120 ?? null,
+        pupilPostcode: pupil?.postcode ?? null,
+        instructorDefaultRate: instructorRate ?? null,
+        postcodeRates,
+        durationMinutes: dur,
+      });
+      const val = computed > 0 ? computed : Number(l.amount_due) || 0;
+      return sum + val;
+    }, 0);
+    setLiveOwed(Math.round(owed * 100) / 100);
+    console.log("[pupils.$id] live owed (recomputed):", owed);
+  }, [
+    unpaidLessons,
+    pupil?.custom_rate,
+    pupil?.custom_rate_90,
+    pupil?.custom_rate_120,
+    pupil?.postcode,
+    instructorRate,
+    postcodeRates,
+  ]);
 
   async function removePupil() {
     setRemoveOpen(false);
@@ -1341,7 +1400,17 @@ function PupilDetailPage() {
               const live = isLessonLive(l);
               const past = isLessonPast(l);
               const accent = accentColor(l);
-              const price = Number(l.amount_due ?? 0);
+              const stored = Number(l.amount_due ?? 0);
+              const computed = resolveHourlyRate({
+                pupilCustomRate: pupil?.custom_rate ?? null,
+                pupilCustomRate90: pupil?.custom_rate_90 ?? null,
+                pupilCustomRate120: pupil?.custom_rate_120 ?? null,
+                pupilPostcode: pupil?.postcode ?? null,
+                instructorDefaultRate: instructorRate ?? null,
+                postcodeRates,
+                durationMinutes: Number(l.duration_minutes) || 60,
+              });
+              const price = computed > 0 ? computed : stored;
               const isPaid = l.payment_status === "paid";
               const unpaid = !isPaid && price > 0;
               const showGap = gapDays > 7;
