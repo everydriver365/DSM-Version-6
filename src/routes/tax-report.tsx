@@ -57,6 +57,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   marketing: "Marketing",
   office: "Office",
   subscriptions: "Subscriptions",
+  recurring: "Recurring subscriptions",
   other: "Other",
 };
 
@@ -147,18 +148,58 @@ function TaxReportPage() {
         const cat = String((r as any).category ?? "other");
         bc[cat] = (bc[cat] ?? 0) + amt;
       }
+
+      // Recurring expenses — annualise and add to total
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      if (token) {
+        try {
+          const recurringRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/expenses?instructor_id=eq.${userId}&is_recurring=eq.true&deleted_at=is.null&tax_deductible=eq.true&select=amount,recurring_frequency`,
+            { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+          );
+          const recurring = await recurringRes.json();
+          let recurringTotal = 0;
+          for (const exp of recurring || []) {
+            const freq = (exp as any).recurring_frequency;
+            const amount = Number((exp as any).amount || 0);
+            if (freq === "Weekly") recurringTotal += amount * 52;
+            else if (freq === "Monthly") recurringTotal += amount * 12;
+            else if (freq === "Quarterly") recurringTotal += amount * 4;
+            else if (freq === "Annually") recurringTotal += amount;
+          }
+          if (recurringTotal > 0) {
+            et += recurringTotal;
+            bc["recurring"] = (bc["recurring"] ?? 0) + recurringTotal;
+          }
+        } catch (err) {
+          console.warn("[tax-report] recurring expenses fetch failed:", err);
+        }
+      }
+
       setExpensesTotal(et);
       setExpensesByCat(bc);
 
-      // Mileage
-      const { data: ml } = await supabase
-        .from("mileage_logs")
-        .select("miles, trip_date, deleted_at")
-        .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .gte("trip_date", startYmd)
-        .lt("trip_date", endYmd);
-      setMiles((ml ?? []).reduce((s, r: any) => s + Number(r.miles ?? 0), 0));
+      // Mileage — REST fetch on mileage_logs.distance_miles by date
+      let totalMiles = 0;
+      if (token) {
+        try {
+          const mileageRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/mileage_logs?instructor_id=eq.${userId}&deleted_at=is.null&date=gte.${startYmd}&date=lte.${endYmd}&select=distance_miles`,
+            { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+          );
+          const mileageData = await mileageRes.json();
+          totalMiles = (mileageData || []).reduce(
+            (sum: number, r: any) => sum + Number(r.distance_miles || 0),
+            0,
+          );
+        } catch (err) {
+          console.warn("[tax-report] mileage fetch failed:", err);
+        }
+      }
+      setMiles(totalMiles);
 
       setLoading(false);
     })();

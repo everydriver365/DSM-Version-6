@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Car } from "lucide-react";
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
@@ -123,6 +123,7 @@ function MtdPage() {
     { amount: number; category: string | null; description: string | null; expense_date: string }[]
   >([]);
   const [mileageRows, setMileageRows] = useState<{ miles: number; created_at: string }[]>([]);
+  const [mtdMiles, setMtdMiles] = useState(0);
 
   const now = useMemo(() => new Date(), []);
   const taxYearStart = useMemo(() => currentTaxYearStart(now), [now]);
@@ -199,10 +200,40 @@ function MtdPage() {
       const milArr = (mil ?? []) as { miles: number | null; created_at: string }[];
       setMileageRows(milArr.map((m) => ({ miles: Number(m.miles ?? 0), created_at: m.created_at })));
       setMiles(milArr.reduce((s, m) => s + Number(m.miles ?? 0), 0));
+
+      // Miles THIS MONTH — REST fetch on mileage_logs.distance_miles by date
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      if (token) {
+        const nowD = new Date();
+        const monthStart = new Date(Date.UTC(nowD.getUTCFullYear(), nowD.getUTCMonth(), 1))
+          .toISOString()
+          .slice(0, 10);
+        const monthEnd = new Date(Date.UTC(nowD.getUTCFullYear(), nowD.getUTCMonth() + 1, 0))
+          .toISOString()
+          .slice(0, 10);
+        try {
+          const mtdMileageRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/mileage_logs?instructor_id=eq.${uid}&deleted_at=is.null&date=gte.${monthStart}&date=lte.${monthEnd}&select=distance_miles`,
+            { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+          );
+          const mtdMileageData = await mtdMileageRes.json();
+          const m = (mtdMileageData || []).reduce(
+            (sum: number, r: any) => sum + Number(r.distance_miles || 0),
+            0,
+          );
+          setMtdMiles(m);
+        } catch (err) {
+          console.warn("[mtd] monthly mileage fetch failed:", err);
+        }
+      }
     })();
   }, [taxYearStart, taxYearEnd]);
 
   const mileageAllowance = miles * MILEAGE_RATE;
+  const mtdMileageAllowance = mtdMiles * MILEAGE_RATE;
   const netProfit = income - expenses - mileageAllowance;
 
   async function persist(patch: Partial<MtdRow>) {
@@ -435,6 +466,30 @@ function MtdPage() {
 
         <SectionHeader>DIGITAL RECORDS</SectionHeader>
         <Card>
+          <div
+            className="flex items-center justify-between py-1.5"
+            style={{ borderBottom: "1px dashed #EEF2F7", marginBottom: 6, paddingBottom: 8 }}
+          >
+            <span
+              style={{
+                fontSize: 13,
+                color: VALUE,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Car size={14} color="#1877D6" /> Miles this month
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>
+              {mtdMiles.toLocaleString("en-GB", { maximumFractionDigits: 1 })}
+            </span>
+          </div>
+          <Row
+            label="Mileage allowance (this month)"
+            value={fmtMoney(mtdMileageAllowance)}
+          />
           <Row label="Income (payments)" value={fmtMoney(income)} />
           <div className="flex items-start gap-1.5 text-[11px] text-[#6B7280] mt-1 mb-2">
             <span style={{ color: "#1877D6" }}>ⓘ</span>
