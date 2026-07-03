@@ -918,6 +918,7 @@ function PupilDetailPage() {
                 const lessonCount = actualLessonCount ?? 0;
                 const syllabusAchieved = syllabus?.filter(s => s.status === 'achieved')?.length || 0;
                 const theoryPassed = pupil?.theory_status === 'Passed';
+                console.log("[readiness] guard check:", { lessonCount: actualLessonCount, syllabusAchieved, theoryPassed });
                 // If no lessons and no syllabus progress and theory not passed — show Not Started
                 if (lessonCount === 0 && syllabusAchieved === 0 && !theoryPassed) {
                   return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
