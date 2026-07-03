@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "../components/dsm/EmptyState";
-import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -141,58 +140,17 @@ function PupilsIndexPage() {
       }
 
       try {
-        const [{ data: instructorRow }, { data: postcodeRows }] = await Promise.all([
-          supabase.from("instructors").select("hourly_rate").eq("id", uid).maybeSingle(),
-          supabase
-            .from("instructor_postcode_rates")
-            .select("outward_code, hourly_rate")
-            .eq("instructor_id", uid),
-        ]);
-        const instructorRate =
-          (instructorRow as { hourly_rate: number | null } | null)?.hourly_rate ?? null;
-        const postcodeRates = ((postcodeRows as any[]) ?? []).map((r) => ({
-          outward_code: String(r.outward_code || "").toUpperCase(),
-          hourly_rate: Number(r.hourly_rate) || 0,
-        }));
-        const pupilById = new Map(
-          normalized.map((p) => [p.id, p as Pupil & { postcode?: string | null; custom_rate?: number | null; custom_rate_90?: number | null; custom_rate_120?: number | null }]),
-        );
-
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due, duration_minutes")
+          .select("pupil_id, amount_due")
           .eq("instructor_id", uid)
           .eq("payment_status", "unpaid")
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
-        console.log("[pupils] unpaid lesson balances:", lessonBalances);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; duration_minutes: number | null }[]).reduce(
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
-            const p = pupilById.get(row.pupil_id);
-            const dur = Number(row.duration_minutes) || 60;
-            const haveAnyRate =
-              (p?.custom_rate ?? null) != null ||
-              (p?.custom_rate_90 ?? null) != null ||
-              (p?.custom_rate_120 ?? null) != null ||
-              instructorRate != null ||
-              postcodeRates.length > 0;
-            let val = 0;
-            if (haveAnyRate) {
-              const computed = resolveHourlyRate({
-                pupilCustomRate: p?.custom_rate ?? null,
-                pupilCustomRate90: p?.custom_rate_90 ?? null,
-                pupilCustomRate120: p?.custom_rate_120 ?? null,
-                pupilPostcode: p?.postcode ?? null,
-                instructorDefaultRate: instructorRate,
-                postcodeRates,
-                durationMinutes: dur,
-              });
-              val = computed > 0 ? computed : Number(row.amount_due) || 0;
-            } else {
-              val = Number(row.amount_due) || 0;
-            }
-            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + val;
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + Number(row.amount_due || 0);
             return acc;
           },
           {} as Record<string, number>,
