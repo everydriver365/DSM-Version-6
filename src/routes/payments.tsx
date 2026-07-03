@@ -31,6 +31,14 @@ interface PaymentRow {
   paid_at: string;
   pupils: { name: string } | null;
 }
+interface HistoryRow {
+  id: string;
+  pupil_id: string;
+  lesson_cost: number | null;
+  created_at: string;
+  payment_method: string | null;
+  pupils: { name: string } | null;
+}
 interface PupilLite {
   id: string;
   name: string;
