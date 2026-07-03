@@ -185,7 +185,7 @@ export async function recordPayment(args: {
 function PaymentsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [outstanding, setOutstanding] = useState<OutstandingPupil[] | null>(null);
-  const [payments, setPayments] = useState<PaymentRow[] | null>(null);
+  const [payments, setPayments] = useState<HistoryRow[] | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -234,14 +234,15 @@ function PaymentsPage() {
     })();
 
     supabase
-      .from("payments")
-      .select("id, pupil_id, amount, paid_at, pupils(name)")
+      .from("lesson_history")
+      .select("id, pupil_id, lesson_cost, created_at, payment_method, pupils(name)")
       .eq("instructor_id", userId)
+      .eq("payment_status", "paid")
       .is("deleted_at", null)
-      .order("paid_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .then(({ data, error }) => {
-        if (error) console.error("[payments] payments error", error);
-        setPayments((data as unknown as PaymentRow[]) ?? []);
+        if (error) console.error("[payments] lesson_history error", error);
+        setPayments((data as unknown as HistoryRow[]) ?? []);
         setLoading(false);
       });
   }, [userId]);
@@ -254,8 +255,8 @@ function PaymentsPage() {
     let m = 0;
     let a = 0;
     (payments ?? []).forEach((p) => {
-      const amt = Number(p.amount ?? 0);
-      const t = new Date(p.paid_at).getTime();
+      const amt = Number(p.lesson_cost ?? 0);
+      const t = new Date(p.created_at).getTime();
       a += amt;
       if (t >= ws) w += amt;
       if (t >= ms) m += amt;
