@@ -278,6 +278,59 @@ function PupilPaymentsPage() {
 
   const totalPaid = (payments ?? []).reduce((sum, p) => sum + Number(p.lesson_cost ?? 0), 0);
 
+  function openEdit(p: PaymentRow) {
+    const { base } = splitNotes(p.notes);
+    setEditing(p);
+    setEditAmount(String(Number(p.lesson_cost ?? 0).toFixed(2)));
+    const m = (p.payment_method ?? "cash") as "cash" | "bank_transfer" | "card";
+    setEditMethod(m === "cash" || m === "bank_transfer" || m === "card" ? m : "cash");
+    setEditBaseNotes(base);
+    setEditReason("");
+  }
+
+  async function submitEditPayment() {
+    if (!editing) return;
+    const amt = Number(editAmount);
+    if (!amt || amt <= 0) {
+      toast.error("Enter an amount");
+      return;
+    }
+    setEditSaving(true);
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      const editorEmail = u?.user?.email ?? u?.user?.id ?? "instructor";
+      const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const { base: oldBase, audit } = splitNotes(editing.notes);
+      const changes: string[] = [];
+      const oldAmt = Number(editing.lesson_cost ?? 0);
+      if (Math.abs(oldAmt - amt) > 0.005) changes.push(`amount £${oldAmt.toFixed(2)}→£${amt.toFixed(2)}`);
+      const oldMethod = editing.payment_method ?? "cash";
+      if (oldMethod !== editMethod) changes.push(`method ${formatMethod(oldMethod)}→${formatMethod(editMethod)}`);
+      if (oldBase.trim() !== editBaseNotes.trim()) changes.push("notes updated");
+      if (changes.length === 0) {
+        toast.info("No changes");
+        setEditSaving(false);
+        return;
+      }
+      const reasonSuffix = editReason.trim() ? ` — ${editReason.trim()}` : "";
+      const auditLine = `[${stamp} by ${editorEmail}] ${changes.join(", ")}${reasonSuffix}`;
+      const newNotes = joinNotes(editBaseNotes, [...audit, auditLine]);
+      const { error: upErr } = await supabase
+        .from("lesson_history")
+        .update({ lesson_cost: amt, payment_method: editMethod, notes: newNotes })
+        .eq("id", editing.id);
+      if (upErr) throw upErr;
+      toast.success("Payment updated");
+      setEditing(null);
+      setReloadTick((n) => n + 1);
+    } catch (e) {
+      console.error("[pupil-payments] edit failed", e);
+      toast.error("Couldn't update payment");
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
