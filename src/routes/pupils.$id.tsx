@@ -1163,7 +1163,7 @@ function PupilDetailPage() {
         </div>
       )}
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
-      <div className="px-4">
+        <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
         <div className="grid grid-cols-3 gap-2">
           <ActionTile
