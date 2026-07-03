@@ -627,25 +627,13 @@ function RecordSheet({
       notes: note || null,
     });
 
-    const { data: inserted, error: insErr } = await supabase
-      .from("payments")
-      .insert({
-        pupil_id: pupilId,
-        instructor_id: userId,
-        amount: amt,
-        paid_at: new Date().toISOString(),
-        payment_method: method,
-        note: note || null,
-      })
-      .select("id, pupil_id, amount, paid_at")
-      .single();
-
-    if (insErr) {
-      console.error("[payments] record insert error", insErr);
-      setError(insErr.message);
-      setSaving(false);
-      return;
-    }
+    const payment: PaymentRow = {
+      id: crypto.randomUUID(),
+      pupil_id: pupilId,
+      amount: amt,
+      paid_at: new Date().toISOString(),
+      pupils: { name: pupil?.name ?? "Unknown pupil" },
+    };
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
@@ -656,13 +644,10 @@ function RecordSheet({
     });
     if (notifErr) console.error("[payments] record notification error", notifErr);
 
-    const payment: PaymentRow = {
-      ...inserted!,
-      pupils: { name: pupil?.name ?? "Unknown pupil" },
-    };
     onSaved(payment, pupilId, 0);
     setSaving(false);
     onClose();
+
   }
 
   return (
