@@ -1144,79 +1144,74 @@ function PupilDetailPage() {
         const practBadge = statusColour(pupil.test_status);
         const centreName = centreInfo?.name || pupil.test_centre || "";
         return (
-          <div className="mx-4 mt-3">
-            <div
-              className="flex gap-2 overflow-x-auto"
-              style={{ scrollbarWidth: "none" as any }}
-            >
-              {showTheory && (
-                <div
-                  className="flex items-center gap-2 shrink-0 bg-white"
-                  style={{
-                    padding: "10px 16px",
-                    borderRadius: 12,
-                    border: "0.5px solid #E2E6ED",
-                    ...POPPINS,
-                  }}
+          <div className="mx-4 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {showTheory && (
+              <div
+                className="flex flex-wrap items-center gap-2 bg-white"
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: 12,
+                  border: "0.5px solid #E2E6ED",
+                  ...POPPINS,
+                }}
+              >
+                <BookOpen size={16} color="#1A52A0" className="shrink-0" />
+                <span
+                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: theoryBadge.bg, color: theoryBadge.fg }}
                 >
-                  <BookOpen size={16} color="#1A52A0" />
-                  <span
-                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: theoryBadge.bg, color: theoryBadge.fg }}
-                  >
-                    {pupil.theory_status}
-                  </span>
-                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
-                    {pupil.theory_status === "Passed"
-                      ? `Theory ✓ passed ${fmtUKDate(pupil.theory_pass_date)}`
-                      : pupil.theory_test_date
-                        ? `Theory test: ${fmtUKDate(pupil.theory_test_date)}`
-                        : ""}
-                  </span>
-                </div>
-              )}
-              {showPractical && (
-                <div
-                  className="flex items-center gap-2 shrink-0 bg-white"
-                  style={{
-                    padding: "10px 16px",
-                    borderRadius: 12,
-                    border: "0.5px solid #E2E6ED",
-                    ...POPPINS,
-                  }}
+                  {pupil.theory_status}
+                </span>
+                <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                  {pupil.theory_status === "Passed"
+                    ? `Theory ✓ passed ${fmtUKDate(pupil.theory_pass_date)}`
+                    : pupil.theory_test_date
+                      ? `Theory test: ${fmtUKDate(pupil.theory_test_date)}`
+                      : ""}
+                </span>
+              </div>
+            )}
+            {showPractical && (
+              <div
+                className="flex flex-wrap items-center gap-2 bg-white"
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: 12,
+                  border: "0.5px solid #E2E6ED",
+                  ...POPPINS,
+                }}
+              >
+                <Car size={16} color="#0F2044" className="shrink-0" />
+                <span
+                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: practBadge.bg, color: practBadge.fg }}
                 >
-                  <Car size={16} color="#0F2044" />
+                  {pupil.test_status || "Booked"}
+                </span>
+                <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
+                  Test: {fmtUKDate(pupil.test_date)}
+                  {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
+                  {centreName ? ` — ${centreName}` : ""}
+                  {pupil.test_examiner ? ` · Examiner: ${pupil.test_examiner}` : ""}
+                </span>
+                {pupil.test_status === "Passed" && (
                   <span
-                    className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: practBadge.bg, color: practBadge.fg }}
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: "#16A34A", color: "#FFFFFF" }}
                   >
-                    {pupil.test_status || "Booked"}
+                    PASSED ✓
                   </span>
-                  <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
-                    Test: {fmtUKDate(pupil.test_date)}
-                    {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
-                    {centreName ? ` — ${centreName}` : ""}
-                    {pupil.test_examiner ? ` · Examiner: ${pupil.test_examiner}` : ""}
+                )}
+                {pupil.test_status === "Failed" && (
+                  <span
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: "#DC2626", color: "#FFFFFF" }}
+                  >
+                    FAILED
                   </span>
-                  {pupil.test_status === "Passed" && (
-                    <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: "#16A34A", color: "#FFFFFF" }}
-                    >
-                      PASSED ✓
-                    </span>
-                  )}
-                  {pupil.test_status === "Failed" && (
-                    <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: "#DC2626", color: "#FFFFFF" }}
-                    >
-                      FAILED
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         );
       })()}
