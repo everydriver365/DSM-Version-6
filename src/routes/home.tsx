@@ -477,7 +477,7 @@ function HomePage() {
     pupilName: string;
     amount: number;
     method: string;
-    source: "lesson" | "booking";
+    source: "lesson" | "booking" | "lesson-earned";
   }>>([]);
   const [weekLessonRows, setWeekLessonRows] = useState<Array<{
     id: string;
