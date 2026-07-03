@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, PoundSterling, Plus, MessageSquare, Mail, X } from "lucide-react";
+import { ArrowLeft, PoundSterling, Plus, MessageSquare, Mail, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -20,6 +20,7 @@ interface PaymentRow {
   lesson_cost: number | null;
   created_at: string;
   payment_method: string | null;
+  notes: string | null;
 }
 
 function formatGBP(amount: number | null) {
@@ -54,6 +55,24 @@ function formatMethod(method: string | null) {
   return method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const AUDIT_MARKER = "--- Edit history ---";
+
+function splitNotes(notes: string | null): { base: string; audit: string[] } {
+  if (!notes) return { base: "", audit: [] };
+  const idx = notes.indexOf(AUDIT_MARKER);
+  if (idx === -1) return { base: notes, audit: [] };
+  const base = notes.slice(0, idx).trim();
+  const auditRaw = notes.slice(idx + AUDIT_MARKER.length).trim();
+  const audit = auditRaw ? auditRaw.split("\n").map((l) => l.trim()).filter(Boolean) : [];
+  return { base, audit };
+}
+
+function joinNotes(base: string, audit: string[]): string | null {
+  const b = base.trim();
+  if (audit.length === 0) return b || null;
+  return `${b}\n\n${AUDIT_MARKER}\n${audit.join("\n")}`.trim();
+}
+
 function PupilPaymentsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
@@ -70,6 +89,12 @@ function PupilPaymentsPage() {
   const [recNotes, setRecNotes] = useState<string>("");
   const [recSaving, setRecSaving] = useState(false);
   const [reloadTick, setReloadTick] = useState(0);
+  const [editing, setEditing] = useState<PaymentRow | null>(null);
+  const [editAmount, setEditAmount] = useState<string>("");
+  const [editMethod, setEditMethod] = useState<"cash" | "bank_transfer" | "card">("cash");
+  const [editBaseNotes, setEditBaseNotes] = useState<string>("");
+  const [editReason, setEditReason] = useState<string>("");
+  const [editSaving, setEditSaving] = useState(false);
 
   useEffect(() => {
     supabase
@@ -107,7 +132,7 @@ function PupilPaymentsPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_cost, created_at, payment_method")
+      .select("id, lesson_cost, created_at, payment_method, notes")
       .eq("pupil_id", id)
       .eq("payment_status", "paid")
       .is("deleted_at", null)
@@ -253,6 +278,59 @@ function PupilPaymentsPage() {
 
   const totalPaid = (payments ?? []).reduce((sum, p) => sum + Number(p.lesson_cost ?? 0), 0);
 
+  function openEdit(p: PaymentRow) {
+    const { base } = splitNotes(p.notes);
+    setEditing(p);
+    setEditAmount(String(Number(p.lesson_cost ?? 0).toFixed(2)));
+    const m = (p.payment_method ?? "cash") as "cash" | "bank_transfer" | "card";
+    setEditMethod(m === "cash" || m === "bank_transfer" || m === "card" ? m : "cash");
+    setEditBaseNotes(base);
+    setEditReason("");
+  }
+
+  async function submitEditPayment() {
+    if (!editing) return;
+    const amt = Number(editAmount);
+    if (!amt || amt <= 0) {
+      toast.error("Enter an amount");
+      return;
+    }
+    setEditSaving(true);
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      const editorEmail = u?.user?.email ?? u?.user?.id ?? "instructor";
+      const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const { base: oldBase, audit } = splitNotes(editing.notes);
+      const changes: string[] = [];
+      const oldAmt = Number(editing.lesson_cost ?? 0);
+      if (Math.abs(oldAmt - amt) > 0.005) changes.push(`amount £${oldAmt.toFixed(2)}→£${amt.toFixed(2)}`);
+      const oldMethod = editing.payment_method ?? "cash";
+      if (oldMethod !== editMethod) changes.push(`method ${formatMethod(oldMethod)}→${formatMethod(editMethod)}`);
+      if (oldBase.trim() !== editBaseNotes.trim()) changes.push("notes updated");
+      if (changes.length === 0) {
+        toast.info("No changes");
+        setEditSaving(false);
+        return;
+      }
+      const reasonSuffix = editReason.trim() ? ` — ${editReason.trim()}` : "";
+      const auditLine = `[${stamp} by ${editorEmail}] ${changes.join(", ")}${reasonSuffix}`;
+      const newNotes = joinNotes(editBaseNotes, [...audit, auditLine]);
+      const { error: upErr } = await supabase
+        .from("lesson_history")
+        .update({ lesson_cost: amt, payment_method: editMethod, notes: newNotes })
+        .eq("id", editing.id);
+      if (upErr) throw upErr;
+      toast.success("Payment updated");
+      setEditing(null);
+      setReloadTick((n) => n + 1);
+    } catch (e) {
+      console.error("[pupil-payments] edit failed", e);
+      toast.error("Couldn't update payment");
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       <div
@@ -364,30 +442,167 @@ function PupilPaymentsPage() {
             <SectionHeader>Payments</SectionHeader>
             {payments.map((p) => (
               <Card key={p.id}>
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div
-                      className="text-[14px] font-semibold text-[#0B1F3A]"
-                      style={POPPINS}
-                    >
-                      {formatDate(new Date(p.created_at))}
+                {(() => {
+                  const { audit } = splitNotes(p.notes);
+                  return (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                            {formatDate(new Date(p.created_at))}
+                          </div>
+                          <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                            {formatMethod(p.payment_method)}
+                            {audit.length > 0 && (
+                              <span className="ml-2 text-[11px] font-semibold text-[#B45309]" style={POPPINS}>
+                                Edited
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="text-[16px] font-bold text-[#0B1F3A]" style={POPPINS}>
+                            {formatGBP(p.lesson_cost)}
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Edit payment"
+                            onClick={() => openEdit(p)}
+                            className="rounded-lg border border-[#E2E8F0] p-2"
+                          >
+                            <Pencil size={14} color="#0B1F3A" />
+                          </button>
+                        </div>
+                      </div>
+                      {audit.length > 0 && (
+                        <details className="rounded-lg bg-[#F8FAFC] px-3 py-2">
+                          <summary className="text-[11px] font-semibold text-[#64748B] cursor-pointer" style={POPPINS}>
+                            Edit history ({audit.length})
+                          </summary>
+                          <ul className="mt-2 flex flex-col gap-1">
+                            {audit.map((line, i) => (
+                              <li key={i} className="text-[11px] text-[#475569] leading-snug" style={POPPINS}>
+                                {line}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
                     </div>
-                    <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                      {formatMethod(p.payment_method)}
-                    </div>
-                  </div>
-                  <div
-                    className="text-[16px] font-bold text-[#0B1F3A] shrink-0"
-                    style={POPPINS}
-                  >
-                    {formatGBP(p.lesson_cost)}
-                  </div>
-                </div>
+                  );
+                })()}
               </Card>
             ))}
           </div>
         )}
       </div>
+
+      {editing && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 overflow-y-auto"
+          onClick={() => !editSaving && setEditing(null)}
+        >
+          <div
+            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
+            style={{ ...POPPINS, maxHeight: "85dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[16px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                Edit payment
+              </h2>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => !editSaving && setEditing(null)}
+                className="p-1"
+              >
+                <X size={20} color="#0B1F3A" />
+              </button>
+            </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Amount (£)
+            </label>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              value={editAmount}
+              onChange={(e) => setEditAmount(e.target.value)}
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-2" style={POPPINS}>
+              Payment method
+            </label>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {([
+                { k: "cash", label: "Cash" },
+                { k: "bank_transfer", label: "Bank" },
+                { k: "card", label: "Card" },
+              ] as const).map((opt) => {
+                const active = editMethod === opt.k;
+                return (
+                  <button
+                    key={opt.k}
+                    type="button"
+                    onClick={() => setEditMethod(opt.k)}
+                    className="rounded-xl py-2 text-[13px] font-semibold border"
+                    style={{
+                      backgroundColor: active ? "#0F2044" : "#FFFFFF",
+                      color: active ? "#FFFFFF" : "#0B1F3A",
+                      borderColor: active ? "#0F2044" : "#E2E8F0",
+                      ...POPPINS,
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Notes
+            </label>
+            <input
+              type="text"
+              value={editBaseNotes}
+              onChange={(e) => setEditBaseNotes(e.target.value)}
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Reason for change (optional)
+            </label>
+            <input
+              type="text"
+              value={editReason}
+              onChange={(e) => setEditReason(e.target.value)}
+              placeholder="e.g. corrected amount"
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <p className="text-[11px] text-[#64748B] mb-4" style={POPPINS}>
+              An entry will be added to this payment's edit history.
+            </p>
+
+            <button
+              type="button"
+              disabled={editSaving}
+              onClick={submitEditPayment}
+              className="w-full rounded-xl py-3 text-[14px] font-semibold text-white"
+              style={{ backgroundColor: "#1877D6", opacity: editSaving ? 0.6 : 1, ...POPPINS }}
+            >
+              {editSaving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {showRecord && (
         <div
