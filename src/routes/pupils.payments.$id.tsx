@@ -202,7 +202,6 @@ function PupilPaymentsPage() {
         payment_method: recMethod,
         payment_date: today,
         status: "completed",
-        notes: recNotes.trim() || (hoursBought > 0 ? `${hoursBought}h package` : null),
       });
       if (payErr) console.error("[pupil-payments] payments insert", payErr);
 
