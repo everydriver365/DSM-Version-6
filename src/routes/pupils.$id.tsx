@@ -1434,22 +1434,13 @@ function PupilDetailPage() {
           </div>
         )}
 
-        {pupil?.lead_source && (
-          <>
-            <SectionHeader>LEAD SOURCE</SectionHeader>
-            <div
-              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#0B1F3A]"
-              style={{
-                ...POPPINS,
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#EEF2F7",
-              }}
-            >
-              {pupil.lead_source}
-              {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
-            </div>
-          </>
+        {pupil && (
+          <LeadSourceSection
+            pupil={pupil}
+            onSave={async (patch) => {
+              await savePupilFields(patch, "Lead source updated");
+            }}
+          />
         )}
 
         {pupil?.lead_source === "National Intensive" && (() => {
