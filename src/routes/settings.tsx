@@ -532,49 +532,61 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>PAYMENTS</SectionHeader>
-        <Card>
-          <div className="flex items-start gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Pass booking fee to pupil
-              </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                A £1 booking fee is charged per payment. Toggle on to pass this to the pupil, off to absorb it yourself.
+        <Card className="!p-0">
+          <MenuRow
+            icon={<PoundSterling size={18} color="#5B21B6" />}
+            iconBg="#EDE9FE"
+            label="Pass booking fee to pupil"
+            expanded={expanded === "payments"}
+            onClick={() => setExpanded(expanded === "payments" ? null : "payments")}
+            isFirst
+          />
+          {expanded === "payments" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <div className="flex items-start gap-3 pt-3">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                    A £1 booking fee is charged per payment. Toggle on to pass this to the pupil, off to absorb it yourself.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={passBookingFee}
+                  aria-label="Pass booking fee to pupil"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePassBookingFee();
+                  }}
+                  style={{
+                    width: 44,
+                    height: 26,
+                    borderRadius: 13,
+                    background: passBookingFee ? "#1877D6" : "#D1D5DB",
+                    border: "none",
+                    position: "relative",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                    transition: "background 0.2s",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 3,
+                      left: passBookingFee ? 21 : 3,
+                      width: 20,
+                      height: 20,
+                      borderRadius: "50%",
+                      background: "#fff",
+                      transition: "left 0.2s",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                    }}
+                  />
+                </button>
               </div>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={passBookingFee}
-              aria-label="Pass booking fee to pupil"
-              onClick={togglePassBookingFee}
-              style={{
-                width: 44,
-                height: 26,
-                borderRadius: 13,
-                background: passBookingFee ? "#1877D6" : "#D1D5DB",
-                border: "none",
-                position: "relative",
-                cursor: "pointer",
-                flexShrink: 0,
-                transition: "background 0.2s",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  top: 3,
-                  left: passBookingFee ? 21 : 3,
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  transition: "left 0.2s",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                }}
-              />
-            </button>
-          </div>
+          )}
         </Card>
 
         <SectionHeader>LESSON REMINDERS</SectionHeader>
