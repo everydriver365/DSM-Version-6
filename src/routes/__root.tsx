@@ -7,12 +7,21 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
+import { supabase } from "../lib/supabaseClient";
+
+function getNotificationUrl(notification: any): string {
+  if (notification.reference_type === "course_booking") return `/bookings/${notification.reference_id}`;
+  if (notification.reference_type === "quote") return "/quotes";
+  if (notification.reference_type === "reflective_log") return `/reflective-log/${notification.reference_id}`;
+  if (notification.type === "rewards") return "/rewards";
+  return "/notifications";
+}
 
 function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname === "/" || pathname === "/home") return "home";
@@ -208,6 +217,65 @@ function RootComponent() {
       .then(() => console.log("[push] service worker registered"))
       .catch((err) => console.warn("[push] sw register failed:", err));
   }, []);
+
+  // Track current user id for realtime notification subscription.
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getUser().then(({ data }: any) => {
+      if (mounted) setUserId(data.user?.id ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+      setUserId(session?.user?.id ?? null);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Show a browser notification for every new instructor_notifications row.
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel("instructor-notifications")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "instructor_notifications",
+          filter: `instructor_id=eq.${userId}`,
+        },
+        async (payload: any) => {
+          console.log("[push] new notification received:", payload.new);
+          if (
+            typeof Notification !== "undefined" &&
+            Notification.permission === "granted" &&
+            "serviceWorker" in navigator
+          ) {
+            try {
+              const registration = await navigator.serviceWorker.ready;
+              const n: any = payload.new;
+              registration.showNotification(n.title || "DSM", {
+                body: n.body || "",
+                icon: "/icon-192.png",
+                badge: "/icon-72.png",
+                tag: n.type || "dsm-notification",
+                data: { url: getNotificationUrl(n) },
+              });
+            } catch (err) {
+              console.warn("[push] showNotification failed:", err);
+            }
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
   return (
     <QueryClientProvider client={queryClient}>
