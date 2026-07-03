@@ -627,15 +627,6 @@ function PupilDetailPage() {
           {pupil?.name ?? ""}
         </div>
         <div className="flex items-center">
-          <button
-            type="button"
-            aria-label="Edit pupil"
-            onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
-            className="flex items-center justify-center"
-            style={{ width: 40, height: 40 }}
-          >
-            <Pencil size={18} color="#FFFFFF" />
-          </button>
           <a
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
             aria-label="Call pupil"
