@@ -64,6 +64,41 @@ function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
+async function applyPaymentToLessons(pupilId: string, paymentAmount: number) {
+  const { data: unpaidLessons, error } = await supabase
+    .from("lessons")
+    .select("id, amount_due")
+    .eq("pupil_id", pupilId)
+    .eq("payment_status", "unpaid")
+    .is("deleted_at", null)
+    .order("lesson_date", { ascending: true });
+  if (error) {
+    console.error("[payments] fetch unpaid lessons error", error);
+    return;
+  }
+  let remaining = paymentAmount;
+  for (const lesson of unpaidLessons ?? []) {
+    if (remaining <= 0) break;
+    const due = Number(lesson.amount_due ?? 0);
+    if (due <= 0) continue;
+    if (due <= remaining) {
+      const { error: uErr } = await supabase
+        .from("lessons")
+        .update({ payment_status: "paid", amount_due: 0 })
+        .eq("id", lesson.id);
+      if (uErr) console.error("[payments] mark lesson paid error", uErr);
+      remaining -= due;
+    } else {
+      const { error: uErr } = await supabase
+        .from("lessons")
+        .update({ amount_due: due - remaining })
+        .eq("id", lesson.id);
+      if (uErr) console.error("[payments] partial lesson payment error", uErr);
+      remaining = 0;
+    }
+  }
+}
+
 function PaymentsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [outstanding, setOutstanding] = useState<OutstandingPupil[] | null>(null);
@@ -141,6 +176,8 @@ function PaymentsPage() {
       console.error("[payments] mark paid update error", updErr);
       return;
     }
+
+    await applyPaymentToLessons(pupil.id, amount);
 
     const { data: inserted, error: insErr } = await supabase
       .from("payments")
@@ -546,6 +583,8 @@ function RecordSheet({
       .update({ balance_owed: newBalance })
       .eq("id", pupilId);
     if (updErr) console.error("[payments] record update balance error", updErr);
+
+    await applyPaymentToLessons(pupilId, amt);
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
