@@ -929,6 +929,7 @@ function PupilDetailPage() {
                   const outstanding = liveOwed ?? 0;
                   const credit = Number(pupil.account_balance ?? 0);
                   const net = outstanding - credit;
+                  const balanceColor = net > 0 ? "#EF4444" : net < 0 ? "#22C55E" : "#FFFFFF";
                   const balanceValue =
                     net > 0
                       ? `£${net.toFixed(2)}`
@@ -960,7 +961,7 @@ function PupilDetailPage() {
                         </p>
                         <p
                           className="text-[20px] font-bold mt-1"
-                          style={{ color: "#FFFFFF", ...POPPINS }}
+                          style={{ color: balanceColor, ...POPPINS }}
                         >
                           {balanceValue}
                         </p>
