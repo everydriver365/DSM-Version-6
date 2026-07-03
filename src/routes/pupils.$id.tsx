@@ -2219,10 +2219,12 @@ const EXTRAS_INPUT: React.CSSProperties = {
 function PupilExtras({
   pupil,
   instructorRate,
+  instructorName,
   onUpdated,
 }: {
   pupil: Pupil;
   instructorRate: number | null;
+  instructorName: string;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
   const [editEmg, setEditEmg] = useState(false);
@@ -2234,6 +2236,8 @@ function PupilExtras({
   const [editLic, setEditLic] = useState(false);
   const [licence, setLicence] = useState(pupil.driving_licence_number ?? "");
   const [savingLic, setSavingLic] = useState(false);
+  const [savingChecked, setSavingChecked] = useState(false);
+  const [requestSheetOpen, setRequestSheetOpen] = useState(false);
 
   async function patchPupil(patch: Record<string, unknown>) {
     const { data, error, status } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
@@ -2280,6 +2284,20 @@ function PupilExtras({
       toast.success("Driving licence saved");
     }
   }
+
+  async function toggleLicenceChecked(next: boolean) {
+    setSavingChecked(true);
+    const ok = await patchPupil({ driving_licence_checked: next });
+    setSavingChecked(false);
+    if (ok) {
+      onUpdated({ driving_licence_checked: next });
+      toast.success(next ? "Licence marked as verified" : "Verification removed");
+    }
+  }
+
+  const smsBody = `Hi ${pupil.name}, could you please share your DVLA licence check code with me? You can get it at https://www.gov.uk/view-driving-licence — tap 'Share your licence information' and send me the code. Thanks, ${instructorName || "your instructor"}`;
+  const emailSubject = "DVLA Licence Check Code Request";
+  const emailBody = `Hi ${pupil.name},\n\nAs part of your driving lessons, I need to verify your driving licence details.\n\nCould you please get your DVLA check code by visiting:\nhttps://www.gov.uk/view-driving-licence\n\nTap 'Share your licence information' and send me the 8-character code.\n\nMany thanks,\n${instructorName || "your instructor"}`;
 
   return (
     <>
