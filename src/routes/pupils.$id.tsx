@@ -8,6 +8,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
+import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 
 export const Route = createFileRoute("/pupils/$id")({
   head: () => ({
