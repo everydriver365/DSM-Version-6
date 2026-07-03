@@ -657,6 +657,7 @@ function PupilDetailPage() {
   const lessonCount = actualLessonCount ?? 0;
 
   return (
+    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
