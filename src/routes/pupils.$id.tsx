@@ -784,15 +784,15 @@ function PupilDetailPage() {
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
       {/* Profile header card */}
       {pupil && (
-        <div className="mt-3 px-4">
+        <div className="mt-3">
           <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
-            {/* Blue header band */}
+            {/* Blue hero band */}
             <div
-              className="relative pt-8 pb-48 px-4"
-              style={{ backgroundColor: "#1877D6" }}
+              className="relative px-4"
+              style={{ backgroundColor: "#1877D6", paddingTop: 32, paddingBottom: 96 }}
             >
-              <div className="flex justify-between items-start relative z-10">
-                <div className="flex items-center space-x-3 min-w-0">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
+                <div className="flex items-start gap-3 min-w-0">
                   <input
                     ref={photoRef}
                     type="file"
@@ -808,11 +808,10 @@ function PupilDetailPage() {
                     aria-label="Upload pupil photo"
                     className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden"
                     style={{
-                      width: 72,
-                      height: 72,
-                      border: "4px solid #FFFFFF",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-                      backgroundColor: "#1877D6",
+                      width: 80,
+                      height: 80,
+                      border: "4px solid rgba(255,255,255,0.25)",
+                      backgroundColor: "rgba(255,255,255,0.08)",
                       color: "#FFFFFF",
                       ...POPPINS,
                     }}
@@ -820,7 +819,7 @@ function PupilDetailPage() {
                     {pupil.photo_url ? (
                       <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-[22px] font-semibold">{initials(pupil.name)}</span>
+                      <span className="text-[24px] font-semibold">{initials(pupil.name)}</span>
                     )}
                     {uploadingPhoto && (
                       <span
@@ -835,29 +834,26 @@ function PupilDetailPage() {
                       style={{
                         width: 24,
                         height: 24,
-                        backgroundColor: "#FFFFFF",
+                        backgroundColor: "#00B5A5",
                         border: "2px solid #1877D6",
                       }}
                     >
-                      <Camera size={13} color="#1877D6" />
+                      <Camera size={13} color="#FFFFFF" />
                     </span>
                   </button>
-                  <div className="text-white min-w-0 flex-1">
-                    <h1
-                      className="text-[20px] font-extrabold tracking-tight truncate"
-                      style={POPPINS}
-                    >
+                  <div className="text-white min-w-0 flex-1 pt-1">
+                    <h1 className="text-[20px] font-bold leading-tight truncate" style={POPPINS}>
                       {pupil.name}
                     </h1>
                     <p
-                      className="text-[12px] font-medium truncate"
+                      className="text-[13px] font-medium truncate mt-0.5"
                       style={{ color: "rgba(255,255,255,0.85)", ...POPPINS }}
                     >
                       {pupil.email || "No email set"}
                     </p>
                     <span
-                      className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
-                      style={{ backgroundColor: "rgba(255,255,255,0.2)", ...POPPINS }}
+                      className="mt-2 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                      style={{ backgroundColor: "#00B5A5", color: "#0F2044", ...POPPINS }}
                     >
                       {badge.label}
                     </span>
@@ -866,70 +862,36 @@ function PupilDetailPage() {
                 <button
                   type="button"
                   onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
-                  className="text-right text-white shrink-0 pl-3 cursor-pointer"
+                  className="text-right text-white shrink-0 cursor-pointer pt-1"
                   style={{ background: "none", border: "none", padding: 0 }}
                 >
                   <p
-                    className="text-[10px] font-bold opacity-70 uppercase tracking-widest"
-                    style={POPPINS}
+                    className="text-[10px] font-semibold uppercase tracking-widest"
+                    style={{ color: "rgba(255,255,255,0.6)", ...POPPINS }}
                   >
-                    Total Lessons
+                    Total lessons
                   </p>
-                  <p
-                    className="text-[36px] font-black leading-none mt-1"
-                    style={POPPINS}
-                  >
+                  <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
                     {lessonCount}
-                  </p>
-                  <p
-                    className="text-[10px] font-medium opacity-70"
-                    style={POPPINS}
-                  >
-                    completed
                   </p>
                 </button>
               </div>
-              {/* Decorative background element */}
-              <div
-                className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl"
-                style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-              />
             </div>
 
             {/* Floating white information card */}
-            <div className="px-4 -mt-10 pb-4 relative z-20">
+            <div className="mx-4 -mt-16 relative z-20">
               <div
-                className="rounded-3xl p-4 space-y-4"
+                className="rounded-2xl p-5 space-y-5"
                 style={{
                   backgroundColor: "#FFFFFF",
-                  border: "1px solid #F1F5F9",
-                  boxShadow: "0 10px 30px -10px rgba(15,32,68,0.12)",
+                  boxShadow: "0 10px 40px -15px rgba(15,32,68,0.18)",
                 }}
               >
                 {/* Photo consent row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: "#F8FAFC", color: "#1877D6" }}
-                    >
-                      <Camera size={20} />
-                    </div>
-                    <div className="min-w-0">
-                      <p
-                        className="text-[13px] font-bold text-[#0B1F3A]"
-                        style={POPPINS}
-                      >
-                        Photo Consent
-                      </p>
-                      <p
-                        className="text-[10px] text-[#94A3B8] font-medium uppercase"
-                        style={POPPINS}
-                      >
-                        Used on EveryDriver website
-                      </p>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                  <span className="text-[14px] font-medium text-slate-700" style={POPPINS}>
+                    Photo consent
+                  </span>
                   <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input
                       type="checkbox"
@@ -939,7 +901,7 @@ function PupilDetailPage() {
                     />
                     <div
                       className="w-11 h-6 rounded-full transition-colors"
-                      style={{ backgroundColor: pupil.photo_consent ? "#1877D6" : "#CBD5E1" }}
+                      style={{ backgroundColor: pupil.photo_consent ? "#00B5A5" : "#CBD5E1" }}
                     />
                     <div
                       className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
@@ -950,7 +912,7 @@ function PupilDetailPage() {
                   </label>
                 </div>
 
-                {/* Dashboard stats grid */}
+                {/* Balance + Practical test tiles */}
                 {(() => {
                   const outstanding = liveOwed ?? 0;
                   const credit = Number(pupil.account_balance ?? 0);
@@ -961,7 +923,6 @@ function PupilDetailPage() {
                       : net < 0
                         ? `£${Math.abs(net).toFixed(2)}`
                         : "All paid";
-                  const balanceColor = net > 0 ? "#DC2626" : net < 0 ? "#16A34A" : "#0B1F3A";
                   const testValue = pupil.test_date ? formatTestDate(pupil.test_date) : "No test";
                   const testSub = pupil.test_date
                     ? [
@@ -976,14 +937,14 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => navigate({ to: "/payments" })}
-                        className="text-left rounded-2xl p-4"
+                        className="text-left rounded-xl p-4"
                         style={{ backgroundColor: "#0F2044" }}
                       >
                         <p
-                          className="text-[10px] font-bold opacity-60 uppercase tracking-widest"
-                          style={{ color: "rgba(255,255,255,0.7)", ...POPPINS }}
+                          className="text-[10px] font-bold uppercase tracking-widest"
+                          style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
                         >
-                          Balance
+                          Account balance
                         </p>
                         <p
                           className="text-[20px] font-bold mt-1"
@@ -993,24 +954,24 @@ function PupilDetailPage() {
                         </p>
                       </button>
                       <div
-                        className="rounded-2xl p-4 border"
-                        style={{ backgroundColor: "#F8FAFC", borderColor: "#E2E8F0" }}
+                        className="rounded-xl p-4 border"
+                        style={{ backgroundColor: "#F9FAFB", borderColor: "#F1F5F9" }}
                       >
                         <p
-                          className="text-[10px] text-[#94A3B8] font-bold uppercase tracking-widest"
+                          className="text-[10px] text-slate-400 font-bold uppercase tracking-widest"
                           style={POPPINS}
                         >
-                          Practical Test
+                          Practical test
                         </p>
                         <p
-                          className="text-[16px] font-extrabold text-[#0B1F3A] mt-1"
+                          className="text-[14px] font-semibold text-[#0F2044] mt-1 leading-tight"
                           style={POPPINS}
                         >
                           {testValue}
                         </p>
                         {testSub && (
                           <p
-                            className="text-[11px] text-[#64748B] truncate mt-0.5"
+                            className="text-[11px] text-slate-500 truncate mt-0.5"
                             style={POPPINS}
                             title={testSub}
                           >
@@ -1022,126 +983,118 @@ function PupilDetailPage() {
                   );
                 })()}
 
-                {/* Test readiness strip */}
+                {/* Readiness dashboard */}
                 {(() => {
                   const readiness = (() => {
                     const lessonCount = actualLessonCount ?? 0;
                     const syllabusAchieved = syllabus?.filter((s) => s.status === "achieved")?.length || 0;
                     const theoryPassed = pupil?.theory_status === "Passed";
                     if (lessonCount === 0 && theoryPassed) {
-                      return { score: 10, label: "Theory ✓ — start lessons", color: "#1A52A0", showRing: true, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 10 };
+                      return { score: 10, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 10 };
                     }
                     if (lessonCount === 0 && !theoryPassed && syllabusAchieved === 0) {
-                      return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
+                      return { score: 0, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
                     }
                     const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
                     const lessonPoints = lessonCount === 0 ? 0 : Math.min((lessonCount / 40) * 30, 30);
                     const theoryPoints = theoryPassed ? 10 : 0;
                     const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
-                    return { score, label: `${score}%`, color: "#0B1F3A", showRing: true, syllabusPoints, lessonPoints, theoryPoints };
+                    return { score, syllabusPoints, lessonPoints, theoryPoints };
                   })();
-                  const theoryBadge = statusColour(pupil.theory_status);
-                  const practBadge = statusColour(pupil.test_status);
+                  const theoryPassed = pupil.theory_status === "Passed";
+                  const practBooked = Boolean(pupil.test_date);
+                  const segments = 5;
+                  const filled = Math.round((readiness.score / 100) * segments);
                   return (
-                    <div className="pt-2 border-t border-slate-100">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3
-                          className="text-[11px] font-extrabold text-[#0B1F3A] uppercase tracking-widest"
-                          style={POPPINS}
-                        >
-                          Readiness Dashboard
-                        </h3>
-                        <button
-                          type="button"
-                          onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
-                          className="text-[11px] font-semibold"
-                          style={{ color: "#1877D6", ...POPPINS }}
-                        >
-                          View
-                        </button>
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex justify-between text-xs font-bold mb-2">
-                            <span className="text-[#64748B]" style={POPPINS}>
-                              Syllabus Mastery
-                            </span>
-                            <span style={{ color: "#1877D6", ...POPPINS }}>
-                              {readiness.score}%
-                            </span>
-                          </div>
-                          <div
-                            className="h-2 w-full rounded-full overflow-hidden"
-                            style={{ backgroundColor: "#F1F5F9" }}
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex items-end justify-between mb-2">
+                          <h3
+                            className="text-[11px] font-bold text-slate-400 uppercase tracking-widest"
+                            style={POPPINS}
                           >
+                            Readiness dashboard
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
+                            className="text-[18px] font-bold leading-none"
+                            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                          >
+                            {readiness.score}%
+                          </button>
+                        </div>
+                        <div className="flex gap-1 h-2 mb-3">
+                          {Array.from({ length: segments }).map((_, i) => (
                             <div
-                              className="h-full rounded-full transition-all"
-                              style={{ width: `${readiness.score}%`, backgroundColor: "#1877D6" }}
+                              key={i}
+                              className={"flex-1 " + (i === 0 ? "rounded-l-full " : "") + (i === segments - 1 ? "rounded-r-full" : "")}
+                              style={{ backgroundColor: i < filled ? "#00B5A5" : "#E5E7EB" }}
                             />
-                          </div>
+                          ))}
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {[
+                            { label: "Syllabus", value: Math.round(readiness.syllabusPoints), max: 60 },
+                            { label: "Lessons", value: Math.round(readiness.lessonPoints), max: 30 },
+                            { label: "Theory", value: readiness.theoryPoints, max: 10 },
+                          ].map((s) => (
+                            <div key={s.label} className="flex flex-col">
+                              <span className="text-[10px] font-medium text-slate-500" style={POPPINS}>{s.label}</span>
+                              <span className="text-[12px] font-bold text-[#0F2044]" style={POPPINS}>
+                                {s.value}
+                                <span className="text-slate-400 font-medium">/{s.max}</span>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div
+                          className="flex items-center gap-3 p-3 rounded-xl border"
+                          style={{
+                            backgroundColor: theoryPassed ? "rgba(0,181,165,0.05)" : "#F9FAFB",
+                            borderColor: theoryPassed ? "rgba(0,181,165,0.2)" : "#F1F5F9",
+                          }}
+                        >
                           <div
-                            className="mt-1.5 text-[11px]"
-                            style={{ color: "#64748B", ...POPPINS }}
+                            className="p-2 rounded-lg shrink-0 flex items-center justify-center"
+                            style={{ backgroundColor: theoryPassed ? "#00B5A5" : "#94A3B8" }}
                           >
-                            Syllabus {Math.round(readiness.syllabusPoints)}/60 · Lessons {Math.round(readiness.lessonPoints)}/30 · Theory {readiness.theoryPoints}/10
+                            {theoryPassed ? <Check size={14} color="#FFFFFF" /> : <BookOpen size={14} color="#FFFFFF" />}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Theory</p>
+                            <p className="text-[12px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+                              {pupil.theory_status || "Not started"}
+                            </p>
                           </div>
                         </div>
-                        <div className="flex gap-3">
+                        <div
+                          className="flex items-center gap-3 p-3 rounded-xl border"
+                          style={{
+                            backgroundColor: practBooked ? "rgba(204,34,41,0.05)" : "#F9FAFB",
+                            borderColor: practBooked ? "rgba(204,34,41,0.2)" : "#F1F5F9",
+                          }}
+                        >
                           <div
-                            className="flex-1 flex flex-col items-center p-3 rounded-2xl border"
-                            style={{ backgroundColor: "#F0FDF4", borderColor: "#DCFCE7" }}
+                            className="p-2 rounded-lg shrink-0 flex items-center justify-center"
+                            style={{ backgroundColor: practBooked ? "#CC2229" : "#94A3B8" }}
                           >
-                            <div
-                              className="w-6 h-6 rounded-full flex items-center justify-center text-white mb-2"
-                              style={{ backgroundColor: theoryBadge.bg }}
-                            >
-                              {pupil.theory_status === "Passed" ? (
-                                <Check size={14} color={theoryBadge.fg} />
-                              ) : (
-                                <BookOpen size={14} color={theoryBadge.fg} />
-                              )}
-                            </div>
-                            <span
-                              className="text-[10px] font-bold uppercase"
-                              style={{ color: "#15803D", ...POPPINS }}
-                            >
-                              Theory
-                            </span>
-                            <span
-                              className="text-[11px] font-semibold mt-0.5"
-                              style={{ color: theoryBadge.fg, ...POPPINS }}
-                            >
-                              {pupil.theory_status || "Not started"}
-                            </span>
+                            <Car size={14} color="#FFFFFF" />
                           </div>
-                          <div
-                            className="flex-1 flex flex-col items-center p-3 rounded-2xl border"
-                            style={{ backgroundColor: "#FFFBEB", borderColor: "#FEF3C7" }}
-                          >
-                            <div
-                              className="w-6 h-6 rounded-full flex items-center justify-center text-white mb-2"
-                              style={{ backgroundColor: practBadge.bg }}
-                            >
-                              <Car size={14} color={practBadge.fg} />
-                            </div>
-                            <span
-                              className="text-[10px] font-bold uppercase"
-                              style={{ color: "#B45309", ...POPPINS }}
-                            >
-                              Practical
-                            </span>
-                            <span
-                              className="text-[11px] font-semibold mt-0.5"
-                              style={{ color: practBadge.fg, ...POPPINS }}
-                            >
-                              {pupil.test_status || "Not booked"}
-                            </span>
+                          <div className="min-w-0">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
+                            <p className="text-[12px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+                              {pupil.test_status || (practBooked ? "Booked" : "Not booked")}
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
                   );
                 })()}
+
 
                 {/* Recent payments */}
                 {paymentHistory.length > 0 && (
