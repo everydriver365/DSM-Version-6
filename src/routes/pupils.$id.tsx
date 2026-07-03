@@ -397,6 +397,26 @@ function PupilDetailPage() {
         console.log("[pupils.$id] lesson count (confirmed+completed):", count);
       });
 
+    // Live outstanding balance: sum of unpaid amounts across non-cancelled lessons
+    supabase
+      .from("lessons")
+      .select("amount_due, payment_status, status")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[pupil] live owed error", error);
+          return;
+        }
+        const rows = (data as { amount_due: number | null; payment_status: string | null }[]) ?? [];
+        const owed = rows
+          .filter((r) => r.payment_status !== "paid")
+          .reduce((s, r) => s + (Number(r.amount_due) || 0), 0);
+        setLiveOwed(owed);
+        console.log("[pupils.$id] live owed (unpaid lessons):", owed);
+      });
+
     supabase
       .from("lesson_history")
       .select("lesson_cost, payment_status")
