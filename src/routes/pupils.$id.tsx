@@ -859,17 +859,21 @@ function PupilDetailPage() {
             </div>
 
             {(() => {
-              const lc = actualLessonCount ?? 0;
-              const theoryPass = !!pupil?.theory_pass;
-              const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
-              const lessonPoints = lc > 0 ? Math.min((lc / 40) * 30, 30) : 0;
-              const theoryPoints = theoryPass ? 10 : 0;
-              const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
-              const hasLessons = lc > 0;
-              const hasSyllabus = syllabusSum > 0;
-              const theoryStarted = pupil.theory_status && pupil.theory_status !== "Not started";
-              const notStarted = !hasLessons && !hasSyllabus && !theoryStarted;
-              console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints, "notStarted:", notStarted);
+              const readiness = (() => {
+                const lessonCount = lessons?.length || 0;
+                const syllabusCompleted = syllabus?.filter(s => s.status === 'achieved')?.length || 0;
+                const theoryDone = pupil?.theory_status === 'Passed';
+                // If no lessons and no syllabus progress and theory not passed — show Not Started
+                if (lessonCount === 0 && syllabusCompleted === 0 && !theoryDone) {
+                  return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
+                }
+                const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
+                const lessonPoints = lessonCount === 0 ? 0 : Math.min((lessonCount / 40) * 30, 30);
+                const theoryPoints = theoryDone ? 10 : 0;
+                const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
+                return { score, label: `${score}%`, color: "#0B1F3A", showRing: true, syllabusPoints, lessonPoints, theoryPoints };
+              })();
+              console.log("[test-readiness]", readiness);
               return (
                 <div className="mt-4">
                   <div
@@ -878,7 +882,7 @@ function PupilDetailPage() {
                   >
                     TEST READINESS
                   </div>
-                  {notStarted ? (
+                  {readiness.showRing === false || readiness.score === 0 ? (
                     <div className="mt-2">
                       <span
                         className="text-[14px] font-medium"
@@ -895,20 +899,20 @@ function PupilDetailPage() {
                       >
                         <div
                           className="h-full rounded-full transition-all"
-                          style={{ width: `${score}%`, backgroundColor: "#1877D6" }}
+                          style={{ width: `${readiness.score}%`, backgroundColor: "#1877D6" }}
                         />
                       </div>
                       <div
                         className="text-[14px] font-bold"
-                        style={{ color: "#0B1F3A", ...POPPINS }}
+                        style={{ color: readiness.color, ...POPPINS }}
                       >
-                        {score}%
+                        {readiness.label}
                       </div>
                     </div>
                   )}
                   <div className="flex items-center justify-between mt-2 gap-2">
                     <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                      Syllabus {Math.round(syllabusPoints)}/60 · Lessons {Math.round(lessonPoints)}/30 · Theory {theoryPoints}/10
+                      Syllabus {Math.round(readiness.syllabusPoints)}/60 · Lessons {Math.round(readiness.lessonPoints)}/30 · Theory {readiness.theoryPoints}/10
                     </div>
                     <Button
                       variant="ghost"
