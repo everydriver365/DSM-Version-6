@@ -356,7 +356,8 @@ function PupilsIndexPage() {
           <div className="flex flex-col">
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
-              const b = balanceMap[p.id];
+              const b = balanceMap[p.id] || 0;
+              const balanceOwed = b - (Number(p.balance_owed) || 0);
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               const prepaid = Number(p.prepaid_hours) || 0;
