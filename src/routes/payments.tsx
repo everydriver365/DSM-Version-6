@@ -64,8 +64,28 @@ function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
-async function applyPaymentToLessons(pupilId: string, paymentAmount: number) {
+async function applyPaymentToLessons(pupilId: string, paymentAmount: number, instructorId?: string | null) {
   console.log("[payments] applyPaymentToLessons called:", { pupilId, paymentAmount });
+  console.log("[payments] querying lessons for pupil_id:", pupilId, "instructor_id:", instructorId);
+  console.log(
+    "[payments] REST query equivalent:",
+    `/rest/v1/lessons?select=id,amount_due&pupil_id=eq.${pupilId}&payment_status=eq.unpaid&deleted_at=is.null&order=lesson_date.asc`,
+  );
+
+  // Diagnostic: fetch ALL non-deleted lessons for this pupil to inspect their payment_status values
+  const { data: allLessons, error: allErr } = await supabase
+    .from("lessons")
+    .select("id, amount_due, payment_status, lesson_date, pupil_id")
+    .eq("pupil_id", pupilId)
+    .is("deleted_at", null)
+    .order("lesson_date", { ascending: true });
+  if (allErr) console.error("[payments] diagnostic all-lessons error", allErr);
+  console.log(
+    "[payments] ALL non-deleted lessons for this pupil:",
+    allLessons?.length,
+    allLessons?.map((l) => ({ id: l.id, payment_status: l.payment_status, amount_due: l.amount_due, lesson_date: l.lesson_date })),
+  );
+
   const { data: unpaidLessons, error } = await supabase
     .from("lessons")
     .select("id, amount_due")
