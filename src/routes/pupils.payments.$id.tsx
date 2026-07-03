@@ -89,6 +89,12 @@ function PupilPaymentsPage() {
   const [recNotes, setRecNotes] = useState<string>("");
   const [recSaving, setRecSaving] = useState(false);
   const [reloadTick, setReloadTick] = useState(0);
+  const [editing, setEditing] = useState<PaymentRow | null>(null);
+  const [editAmount, setEditAmount] = useState<string>("");
+  const [editMethod, setEditMethod] = useState<"cash" | "bank_transfer" | "card">("cash");
+  const [editBaseNotes, setEditBaseNotes] = useState<string>("");
+  const [editReason, setEditReason] = useState<string>("");
+  const [editSaving, setEditSaving] = useState(false);
 
   useEffect(() => {
     supabase
@@ -126,7 +132,7 @@ function PupilPaymentsPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_cost, created_at, payment_method")
+      .select("id, lesson_cost, created_at, payment_method, notes")
       .eq("pupil_id", id)
       .eq("payment_status", "paid")
       .is("deleted_at", null)
