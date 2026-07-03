@@ -808,7 +808,7 @@ function PupilDetailPage() {
               </label>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
+            <div className="grid grid-cols-2 gap-2 mt-4">
               <StatChip
                 label="Lessons"
                 value={String(lessonCount)}
@@ -833,6 +833,9 @@ function PupilDetailPage() {
                   />
                 );
               })()}
+            </div>
+
+            <div className="mt-2">
               <StatChip
                 label="Test"
                 value={
