@@ -215,6 +215,7 @@ function PupilDetailPage() {
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
+  const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
@@ -394,6 +395,26 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] lesson count error", error);
         setActualLessonCount(count ?? 0);
         console.log("[pupils.$id] lesson count (confirmed+completed):", count);
+      });
+
+    // Live outstanding balance: sum of unpaid amounts across non-cancelled lessons
+    supabase
+      .from("lessons")
+      .select("amount_due, payment_status, status")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[pupil] live owed error", error);
+          return;
+        }
+        const rows = (data as { amount_due: number | null; payment_status: string | null }[]) ?? [];
+        const owed = rows
+          .filter((r) => r.payment_status !== "paid")
+          .reduce((s, r) => s + (Number(r.amount_due) || 0), 0);
+        setLiveOwed(owed);
+        console.log("[pupils.$id] live owed (unpaid lessons):", owed);
       });
 
     supabase
@@ -729,7 +750,7 @@ function PupilDetailPage() {
                 onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
               />
               {(() => {
-                const owed = Number(pupil.balance_owed ?? 0);
+                const owed = liveOwed ?? Number(pupil.balance_owed ?? 0);
                 const value =
                   owed > 0
                     ? `Owes £${owed.toFixed(2)}`
@@ -2591,13 +2612,10 @@ function PracticalEditor({
               test_centre_id: centreId,
               test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
             };
-            // examiner column may not exist — attempt with, fall back without
-            const withExaminer = { ...patch, examiner: examiner.trim() || null };
-            try {
-              await onSave(withExaminer);
-            } catch {
-              await onSave(patch);
-            }
+            // NOTE: pupils.examiner column does not exist — never include it,
+            // or the whole update fails and test time/centre silently don't save.
+            void examiner;
+            await onSave(patch);
           }}
         >
           Save
