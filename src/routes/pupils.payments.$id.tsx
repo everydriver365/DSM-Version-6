@@ -57,17 +57,22 @@ function PupilPaymentsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const [pupilName, setPupilName] = useState<string>("");
+  const [accountBalance, setAccountBalance] = useState<number | null>(null);
+  const [balanceOwed, setBalanceOwed] = useState<number | null>(null);
   const [payments, setPayments] = useState<PaymentRow[] | null>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("name")
+      .select("name, account_balance, balance_owed")
       .eq("id", id)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil-payments] pupil fetch error", error);
-        setPupilName((data as { name?: string | null } | null)?.name ?? "");
+        const p = (data as { name?: string | null; account_balance?: number | null; balance_owed?: number | null } | null) ?? null;
+        setPupilName(p?.name ?? "");
+        setAccountBalance(p?.account_balance ?? null);
+        setBalanceOwed(p?.balance_owed ?? null);
       });
 
     supabase
