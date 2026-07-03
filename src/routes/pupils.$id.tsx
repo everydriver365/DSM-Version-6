@@ -1150,7 +1150,7 @@ function PupilDetailPage() {
             onClick={() => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } })}
           />
         </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
           <ActionTile
             label="Reflective log"
             icon={<BookOpen size={20} />}
