@@ -302,6 +302,7 @@ function PupilDetailPage() {
   const [syllabus, setSyllabus] = useState<{ status: string }[] | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
+  const [totalLessonsCount, setTotalLessonsCount] = useState<number | null>(null);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [paymentHistory, setPaymentHistory] = useState<
@@ -488,6 +489,19 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] lesson count error", error);
         setActualLessonCount(count ?? 0);
         console.log("[pupils.$id] lesson count (completed):", count);
+      });
+
+    // Total lessons figure: count all non-cancelled lessons
+    supabase
+      .from("lessons")
+      .select("id", { count: "exact", head: true })
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .then(({ count, error }) => {
+        if (error) console.error("[pupil] total lessons count error", error);
+        setTotalLessonsCount(count ?? 0);
+        console.log("[pupils.$id] total lessons count:", count);
       });
 
     // Fetch unpaid, non-cancelled lessons — the "owed" balance is computed
@@ -737,7 +751,7 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const lessonCount = actualLessonCount ?? 0;
+  const lessonCount = totalLessonsCount ?? pupil?.lesson_count ?? actualLessonCount ?? 0;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
