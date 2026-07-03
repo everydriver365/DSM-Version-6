@@ -1462,6 +1462,105 @@ function PupilDetailPage() {
           </div>
         )}
 
+        <SectionHeader>LAST LESSONS</SectionHeader>
+        {pastLessons === null ? null : pastLessons.length === 0 ? (
+          <div className="flex items-center justify-center py-8">
+            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
+              No past lessons
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col bg-white rounded-xl border border-[#E2E6ED] overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setPastExpanded((v) => !v)}
+              className="flex items-center justify-between w-full py-3 px-3 text-left active:bg-slate-50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <History size={16} color="#6B7280" />
+                <span className="text-[13px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                  {pastLessons.length} past lesson{pastLessons.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              <ChevronDown
+                size={16}
+                color="#9CA3AF"
+                style={{ transform: pastExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+              />
+            </button>
+            {pastExpanded && (
+              <div className="flex flex-col">
+                {pastLessons.map((l) => {
+                  const d = new Date(`${l.lesson_date}T00:00:00`);
+                  const isPaid = l.payment_status === "paid";
+                  return (
+                    <Fragment key={l.id}>
+                      <div
+                        className="flex items-stretch cursor-pointer"
+                        style={{ minHeight: 56 }}
+                        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                      >
+                        {/* Left time column */}
+                        <div
+                          className="flex flex-col items-center justify-center shrink-0"
+                          style={{ width: 40, padding: "8px 0" }}
+                        >
+                          <span className="text-[12px] font-bold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                            {formatTime(l.lesson_time)}
+                          </span>
+                          <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                            {l.duration_minutes ?? 60}m
+                          </span>
+                        </div>
+
+                        {/* Accent bar */}
+                        <div className="shrink-0" style={{ width: 3, backgroundColor: "#9CA3AF", borderRadius: 2 }} />
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
+                          <div className="text-[13px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+                            {formatDateShort(d)}
+                          </div>
+                          {l.notes && (
+                            <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
+                              {l.notes}
+                            </div>
+                          )}
+
+                          {/* Badges */}
+                          <div className="flex flex-wrap items-center gap-1 mt-1">
+                            <span
+                              className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                              style={{ backgroundColor: "#E5E7EB", color: "#374151", ...POPPINS }}
+                            >
+                              {l.status}
+                            </span>
+                            {isPaid && (
+                              <span
+                                className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
+                                style={{ backgroundColor: "#E7F8EF", color: "#067647", borderColor: "#B8ECCF", ...POPPINS }}
+                              >
+                                Paid ✓
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Chevron */}
+                        <div className="flex items-center justify-center shrink-0 px-2">
+                          <ChevronRight size={14} color="#9CA3AF" />
+                        </div>
+                      </div>
+                      {/* Hairline divider */}
+                      <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
+                    </Fragment>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         <SectionHeader>NOTES</SectionHeader>
         <button
           type="button"
