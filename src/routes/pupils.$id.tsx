@@ -1081,138 +1081,88 @@ function PupilDetailPage() {
       )}
       <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
-        {(() => {
-          const tile = (opts: {
-            label: string;
-            icon: React.ReactNode;
-            iconBg: string;
-            iconColor: string;
-            onClick?: () => void;
-            href?: string;
-            badge?: string;
-          }) => {
-            const inner = (
-              <>
-                <div
-                  className="flex items-center justify-center rounded-full"
-                  style={{ width: 40, height: 40, backgroundColor: opts.iconBg, color: opts.iconColor }}
-                >
-                  {opts.icon}
-                </div>
-                <span className="text-[11px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                  {opts.label}
-                </span>
-                {opts.badge && (
-                  <span className="absolute top-1.5 right-2 text-[10px] font-semibold" style={{ color: "#1877D6" }}>
-                    {opts.badge}
-                  </span>
-                )}
-              </>
-            );
-            const cls =
-              "relative bg-white p-3 rounded-xl border border-[#E2E6ED] flex flex-col items-center gap-2 active:scale-[0.98] transition-transform";
-            if (opts.href) {
-              return (
-                <a href={opts.href} className={cls}>
-                  {inner}
-                </a>
-              );
-            }
-            return (
-              <button type="button" onClick={opts.onClick} className={cls}>
-                {inner}
-              </button>
-            );
-          };
-          return (
-            <>
-              <div className="grid grid-cols-3 gap-2">
-                {tile({
-                  label: "Call",
-                  icon: <Phone size={20} />,
-                  iconBg: "#EAF3FB",
-                  iconColor: "#1877D6",
-                  href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
-                })}
-                {tile({
-                  label: "Text",
-                  icon: <MessageSquare size={20} />,
-                  iconBg: "#EAF3FB",
-                  iconColor: "#1877D6",
-                  href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
-                })}
-                {tile({
-                  label: "Add lesson",
-                  icon: <Plus size={22} />,
-                  iconBg: "#DCFCE7",
-                  iconColor: "#16A34A",
-                  onClick: () => navigate({ to: "/lessons/new" }),
-                })}
-                {tile({
-                  label: "Certificate",
-                  icon: <Award size={20} />,
-                  iconBg: "#FEF3C7",
-                  iconColor: "#B45309",
-                  onClick: () => setCertOpen(true),
-                })}
-                {tile({
-                  label: "History",
-                  icon: <Clock size={20} />,
-                  iconBg: "#F3E8FF",
-                  iconColor: "#7C3AED",
-                  onClick: () => navigate({ to: "/pupils/history/$id", params: { id } }),
-                })}
-                {tile({
-                  label: "Progress",
-                  icon: <BarChart3 size={20} />,
-                  iconBg: "#E0F2FE",
-                  iconColor: "#0369A1",
-                  onClick: () => navigate({ to: "/pupils/progress/$id", params: { id } }),
-                })}
-                {tile({
-                  label: "Syllabus",
-                  icon: <BookOpen size={20} />,
-                  iconBg: "#F1F5F9",
-                  iconColor: "#0B1F3A",
-                  onClick: () => navigate({ to: "/pupils/syllabus/$id", params: { id } }),
-                  badge: syllabusPct == null ? undefined : `${syllabusPct}%`,
-                })}
-                {tile({
-                  label: "Test day",
-                  icon: <Flag size={20} />,
-                  iconBg: "#FEF3C7",
-                  iconColor: "#B45309",
-                  onClick: () => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } }),
-                })}
-                {tile({
-                  label: "Mock test",
-                  icon: <ClipboardCheck size={20} />,
-                  iconBg: "#CFFAFE",
-                  iconColor: "#0891B2",
-                  onClick: () => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } }),
-                })}
-              </div>
-              <div className="flex gap-2 mt-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" as any }}>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
-                  className="whitespace-nowrap bg-white px-3 py-2 rounded-lg border border-[#E2E6ED] text-[12px] font-medium inline-flex items-center gap-1.5"
-                  style={{ color: "#7C3AED", ...POPPINS }}
-                >
-                  <BookOpen size={14} /> Reflective log
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
-                  className="whitespace-nowrap bg-white px-3 py-2 rounded-lg border border-[#E2E6ED] text-[12px] font-medium inline-flex items-center gap-1.5"
-                  style={{ color: "#D97706", ...POPPINS }}
-                >
-                  <Trophy size={14} /> Test result
-                </button>
-              </div>
-            </>
-          );
-        })()}
+        <div className="grid grid-cols-3 gap-2">
+          <ActionTile
+            label="Call"
+            icon={<Phone size={20} />}
+            iconBg="#EAF3FB"
+            iconColor="#1877D6"
+            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
+          />
+          <ActionTile
+            label="Text"
+            icon={<MessageSquare size={20} />}
+            iconBg="#EAF3FB"
+            iconColor="#1877D6"
+            href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
+          />
+          <ActionTile
+            label="Add lesson"
+            icon={<Plus size={22} />}
+            iconBg="#DCFCE7"
+            iconColor="#16A34A"
+            onClick={() => navigate({ to: "/lessons/new" })}
+          />
+          <ActionTile
+            label="Certificate"
+            icon={<Award size={20} />}
+            iconBg="#FEF3C7"
+            iconColor="#B45309"
+            onClick={() => setCertOpen(true)}
+          />
+          <ActionTile
+            label="History"
+            icon={<Clock size={20} />}
+            iconBg="#F3E8FF"
+            iconColor="#7C3AED"
+            onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+          />
+          <ActionTile
+            label="Progress"
+            icon={<BarChart3 size={20} />}
+            iconBg="#E0F2FE"
+            iconColor="#0369A1"
+            onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
+          />
+          <ActionTile
+            label="Syllabus"
+            icon={<BookOpen size={20} />}
+            iconBg="#F1F5F9"
+            iconColor="#0B1F3A"
+            onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
+            badge={syllabusPct == null ? undefined : `${syllabusPct}%`}
+          />
+          <ActionTile
+            label="Test day"
+            icon={<Flag size={20} />}
+            iconBg="#FEF3C7"
+            iconColor="#B45309"
+            onClick={() => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } })}
+          />
+          <ActionTile
+            label="Mock test"
+            icon={<ClipboardCheck size={20} />}
+            iconBg="#CFFAFE"
+            iconColor="#0891B2"
+            onClick={() => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } })}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <ActionTile
+            label="Reflective log"
+            icon={<BookOpen size={20} />}
+            iconBg="#F3E8FF"
+            iconColor="#7C3AED"
+            onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
+          />
+          <ActionTile
+            label="Test result"
+            icon={<Trophy size={20} />}
+            iconBg="#FEF3C7"
+            iconColor="#B45309"
+            onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
+          />
+        </div>
       {/* Test status strips */}
       {pupil && (() => {
         const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
