@@ -274,7 +274,15 @@ function TakePaymentPage() {
         const status = (data as { status?: string })?.status;
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
-          toast.success("Payment received");
+          const { data: u } = await supabase.auth.getUser();
+          const instructorId = u?.user?.id ?? null;
+          await recordPaymentSideEffects({
+            instructorId,
+            pupilIdForPayment: pupilId || null,
+            amountPaid: totalNum,
+            method: "card",
+          });
+          toast.success("Payment recorded — balance updated");
           setRecorded(`£${totalNum.toFixed(2)} received via card (QR)`);
           setQrPaymentId(null);
         }
