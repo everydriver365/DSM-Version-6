@@ -800,15 +800,15 @@ function PupilDetailPage() {
             {(() => {
               const lc = actualLessonCount ?? 0;
               const theoryPass = !!pupil?.theory_pass;
-              const syllabusPoints = Math.min((syllabusSum / 135) * 60, 60);
-              const lessonPoints = Math.min((lc / 40) * 30, 30);
+              const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
+              const lessonPoints = lc > 0 ? Math.min((lc / 40) * 30, 30) : 0;
               const theoryPoints = theoryPass ? 10 : 0;
               const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
-              console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints);
-              let barColor = "#1877D6";
-              if (score >= 100) barColor = "#1877D6";
-              else if (score >= 71) barColor = "#1877D6";
-              else if (score >= 41) barColor = "#1877D6";
+              const hasLessons = lc > 0;
+              const hasSyllabus = syllabusSum > 0;
+              const theoryStarted = pupil.theory_status && pupil.theory_status !== "Not started";
+              const notStarted = !hasLessons && !hasSyllabus && !theoryStarted;
+              console.log("[test-readiness] score:", score, "syllabus:", syllabusPoints, "lessons:", lessonPoints, "theory:", theoryPoints, "notStarted:", notStarted);
               return (
                 <div className="mt-4">
                   <div
@@ -817,23 +817,34 @@ function PupilDetailPage() {
                   >
                     TEST READINESS
                   </div>
-                  <div className="flex items-center gap-3 mt-2">
-                    <div
-                      className="flex-1 h-2 rounded-full overflow-hidden"
-                      style={{ backgroundColor: "#EEF2F7" }}
-                    >
+                  {notStarted ? (
+                    <div className="mt-2">
+                      <span
+                        className="text-[14px] font-medium"
+                        style={{ color: "#9CA3AF", ...POPPINS }}
+                      >
+                        Not started
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 mt-2">
                       <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${score}%`, backgroundColor: barColor }}
-                      />
+                        className="flex-1 h-2 rounded-full overflow-hidden"
+                        style={{ backgroundColor: "#EEF2F7" }}
+                      >
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${score}%`, backgroundColor: "#1877D6" }}
+                        />
+                      </div>
+                      <div
+                        className="text-[14px] font-bold"
+                        style={{ color: "#0B1F3A", ...POPPINS }}
+                      >
+                        {score}%
+                      </div>
                     </div>
-                    <div
-                      className="text-[14px] font-bold"
-                      style={{ color: "#0B1F3A", ...POPPINS }}
-                    >
-                      {score}%
-                    </div>
-                  </div>
+                  )}
                   <div className="flex items-center justify-between mt-2 gap-2">
                     <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
                       Syllabus {Math.round(syllabusPoints)}/60 · Lessons {Math.round(lessonPoints)}/30 · Theory {theoryPoints}/10
