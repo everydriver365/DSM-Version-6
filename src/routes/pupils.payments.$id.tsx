@@ -442,25 +442,55 @@ function PupilPaymentsPage() {
             <SectionHeader>Payments</SectionHeader>
             {payments.map((p) => (
               <Card key={p.id}>
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div
-                      className="text-[14px] font-semibold text-[#0B1F3A]"
-                      style={POPPINS}
-                    >
-                      {formatDate(new Date(p.created_at))}
+                {(() => {
+                  const { audit } = splitNotes(p.notes);
+                  return (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                            {formatDate(new Date(p.created_at))}
+                          </div>
+                          <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                            {formatMethod(p.payment_method)}
+                            {audit.length > 0 && (
+                              <span className="ml-2 text-[11px] font-semibold text-[#B45309]" style={POPPINS}>
+                                Edited
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="text-[16px] font-bold text-[#0B1F3A]" style={POPPINS}>
+                            {formatGBP(p.lesson_cost)}
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Edit payment"
+                            onClick={() => openEdit(p)}
+                            className="rounded-lg border border-[#E2E8F0] p-2"
+                          >
+                            <Pencil size={14} color="#0B1F3A" />
+                          </button>
+                        </div>
+                      </div>
+                      {audit.length > 0 && (
+                        <details className="rounded-lg bg-[#F8FAFC] px-3 py-2">
+                          <summary className="text-[11px] font-semibold text-[#64748B] cursor-pointer" style={POPPINS}>
+                            Edit history ({audit.length})
+                          </summary>
+                          <ul className="mt-2 flex flex-col gap-1">
+                            {audit.map((line, i) => (
+                              <li key={i} className="text-[11px] text-[#475569] leading-snug" style={POPPINS}>
+                                {line}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
                     </div>
-                    <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                      {formatMethod(p.payment_method)}
-                    </div>
-                  </div>
-                  <div
-                    className="text-[16px] font-bold text-[#0B1F3A] shrink-0"
-                    style={POPPINS}
-                  >
-                    {formatGBP(p.lesson_cost)}
-                  </div>
-                </div>
+                  );
+                })()}
               </Card>
             ))}
           </div>
