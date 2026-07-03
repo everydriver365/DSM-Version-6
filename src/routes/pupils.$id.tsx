@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Mail, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -119,6 +119,7 @@ interface Pupil {
   theory_pass_date: string | null;
   theory_score: number | null;
   test_status: string | null;
+  test_examiner: string | null;
   lat: number | null;
   lng: number | null;
 }
@@ -362,7 +363,7 @@ function PupilDetailPage() {
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
         driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status
+        test_status, test_examiner
       `)
       .eq("id", id)
       .is("deleted_at", null)
@@ -720,6 +721,25 @@ function PupilDetailPage() {
                 >
                   {badge.label}
                 </span>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <Mail size={12} color="#6B7280" />
+                  {pupil.email ? (
+                    <a
+                      href={`mailto:${pupil.email}`}
+                      className="text-[12px] truncate"
+                      style={{ color: "#1877D6", ...POPPINS }}
+                    >
+                      {pupil.email}
+                    </a>
+                  ) : (
+                    <span
+                      className="text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      No email set
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -897,6 +917,7 @@ function PupilDetailPage() {
                     Test: {fmtUKDate(pupil.test_date)}
                     {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
                     {centreName ? ` — ${centreName}` : ""}
+                    {pupil.test_examiner ? ` · Examiner: ${pupil.test_examiner}` : ""}
                   </span>
                   {pupil.test_status === "Passed" && (
                     <span
@@ -1413,22 +1434,13 @@ function PupilDetailPage() {
           </div>
         )}
 
-        {pupil?.lead_source && (
-          <>
-            <SectionHeader>LEAD SOURCE</SectionHeader>
-            <div
-              className="rounded-lg bg-white px-3 py-2 text-[14px] text-[#0B1F3A]"
-              style={{
-                ...POPPINS,
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#EEF2F7",
-              }}
-            >
-              {pupil.lead_source}
-              {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
-            </div>
-          </>
+        {pupil && (
+          <LeadSourceSection
+            pupil={pupil}
+            onSave={async (patch) => {
+              await savePupilFields(patch, "Lead source updated");
+            }}
+          />
         )}
 
         {pupil?.lead_source === "National Intensive" && (() => {
@@ -2420,6 +2432,104 @@ function AddressEditor({
   );
 }
 
+const PUPIL_LEAD_SOURCES = [
+  "Referral",
+  "EveryDriver",
+  "National Intensive",
+  "Online",
+  "Walk-in / Local",
+  "Social media",
+  "Driving school",
+  "Returning pupil",
+  "Other",
+];
+
+function LeadSourceSection({
+  pupil,
+  onSave,
+}: {
+  pupil: Pupil;
+  onSave: (patch: Record<string, unknown>) => void | Promise<void>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [source, setSource] = useState<string>(pupil.lead_source ?? "");
+  const [detail, setDetail] = useState<string>(pupil.lead_source_detail ?? "");
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+  };
+  return (
+    <>
+      <div className="mx-4 mt-4 mb-1 flex items-center justify-between">
+        <SectionHeader>LEAD SOURCE</SectionHeader>
+        {!editing && (
+          <button
+            type="button"
+            onClick={() => {
+              setSource(pupil.lead_source ?? "");
+              setDetail(pupil.lead_source_detail ?? "");
+              setEditing(true);
+            }}
+            className="text-[12px] font-semibold flex items-center gap-1"
+            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+          >
+            <Pencil size={12} /> Edit
+          </button>
+        )}
+      </div>
+      <div
+        className="mx-4 rounded-lg bg-white px-3 py-2 text-[14px] text-[#0B1F3A]"
+        style={{
+          ...POPPINS,
+          borderWidth: "0.5px",
+          borderStyle: "solid",
+          borderColor: "#EEF2F7",
+        }}
+      >
+        {editing ? (
+          <div className="flex flex-col gap-2">
+            <select value={source} onChange={(e) => setSource(e.target.value)} style={inputStyle}>
+              <option value="">Select…</option>
+              {PUPIL_LEAD_SOURCES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Detail (e.g. who referred them)"
+              value={detail}
+              onChange={(e) => setDetail(e.target.value.slice(0, 255))}
+              style={inputStyle}
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>
+              <Button
+                variant="primary"
+                onClick={async () => {
+                  await onSave({
+                    lead_source: source || null,
+                    lead_source_detail: detail.trim() || null,
+                  });
+                  setEditing(false);
+                }}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        ) : pupil.lead_source ? (
+          <>
+            {pupil.lead_source}
+            {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
+          </>
+        ) : (
+          <span style={{ color: "#9CA3AF" }}>Not set</span>
+        )}
+      </div>
+    </>
+  );
+}
+
 function TheoryEditor({
   pupil,
   onSave,
@@ -2508,7 +2618,7 @@ function PracticalEditor({
   const [centreLabel, setCentreLabel] = useState<string>(
     centreInfo ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}` : (pupil.test_centre ?? ""),
   );
-  const [examiner, setExaminer] = useState<string>("");
+  const [examiner, setExaminer] = useState<string>(pupil.test_examiner ?? "");
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
     border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
@@ -2598,7 +2708,7 @@ function PracticalEditor({
         )}
       </div>
       <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-        Examiner (optional)
+        Examiner name (optional)
         <input type="text" value={examiner} onChange={(e) => setExaminer(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
       </label>
       <div className="flex justify-end">
@@ -2611,10 +2721,8 @@ function PracticalEditor({
               test_time: testTime ? `${testTime}:00` : null,
               test_centre_id: centreId,
               test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
+              test_examiner: examiner.trim() || null,
             };
-            // NOTE: pupils.examiner column does not exist — never include it,
-            // or the whole update fails and test time/centre silently don't save.
-            void examiner;
             await onSave(patch);
           }}
         >
