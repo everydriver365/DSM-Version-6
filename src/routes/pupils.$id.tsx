@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Mail, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -119,6 +119,7 @@ interface Pupil {
   theory_pass_date: string | null;
   theory_score: number | null;
   test_status: string | null;
+  test_examiner: string | null;
   lat: number | null;
   lng: number | null;
 }
