@@ -54,6 +54,19 @@ function accentColor(status: StatusKey) {
   return "#9CA3AF";
 }
 
+function formatRelativeDate(dateString: string) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  const days = Math.floor(seconds / 86400);
+  if (days < 1) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days} days ago`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 4) return `${weeks} week${weeks === 1 ? "" : "s"} ago`;
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
 function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
