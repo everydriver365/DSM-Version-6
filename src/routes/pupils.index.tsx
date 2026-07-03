@@ -157,8 +157,19 @@ function PupilsIndexPage() {
           {} as Record<string, number>,
         );
         setBalanceMap(bMap);
+      } catch (e) {
+        console.error("[pupils] balance fetch crashed", e);
+        setBalanceMap({});
+      }
 
-        const hMap = ((lessonBalances ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
+      try {
+        const { data: hourRows, error: hErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, duration_minutes")
+          .eq("instructor_id", uid)
+          .is("deleted_at", null);
+        if (hErr) console.error("[pupils] hours error", hErr);
+        const hMap = ((hourRows ?? []) as { pupil_id: string; duration_minutes: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
             acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.duration_minutes) || 0) / 60;
@@ -168,8 +179,7 @@ function PupilsIndexPage() {
         );
         setHoursMap(hMap);
       } catch (e) {
-        console.error("[pupils] balance fetch crashed", e);
-        setBalanceMap({});
+        console.error("[pupils] hours fetch crashed", e);
         setHoursMap({});
       }
     })();
