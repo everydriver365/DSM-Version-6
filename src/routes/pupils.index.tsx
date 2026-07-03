@@ -399,6 +399,12 @@ function PupilsIndexPage() {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const b = balanceMap[p.id] || 0;
               const balanceOwed = b - (Number(p.balance_owed) || 0);
+              console.log("[pupils] balance for", p.name, ":", {
+                pupilId: p.id,
+                balanceFromLessons: balanceMap[p.id],
+                creditFromBalanceOwed: p.balance_owed,
+                net: b - (Number(p.balance_owed) || 0),
+              });
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
               const prepaid = Number(p.prepaid_hours) || 0;
