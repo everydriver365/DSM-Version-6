@@ -2366,10 +2366,44 @@ function PupilExtras({
         </div>
         {!editLic ? (
           <div>
-            <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-              {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+              </div>
+              {pupil.driving_licence_number && (
+                pupil.driving_licence_checked ? (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
+                    Verified ✓
+                  </span>
+                ) : (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
+                    Unverified
+                  </span>
+                )
+              )}
             </div>
-            <div className="text-[11px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>Verify with DVLA (coming soon)</div>
+            <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!pupil.driving_licence_checked}
+                onChange={(e) => toggleLicenceChecked(e.target.checked)}
+                disabled={savingChecked}
+                className="w-4 h-4"
+                style={{ accentColor: "#1A52A0" }}
+              />
+              <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                Licence checked and verified ✓
+              </span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setRequestSheetOpen(true)}
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
+              style={{ color: "#1A52A0", ...POPPINS }}
+            >
+              Request DVLA check code
+              <ExternalLink size={14} />
+            </button>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -2385,6 +2419,59 @@ function PupilExtras({
           </div>
         )}
       </div>
+      {requestSheetOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ background: "rgba(11,31,58,0.5)" }}
+          onClick={() => setRequestSheetOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white"
+            style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20, paddingBottom: 32 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                Request DVLA check code
+              </span>
+              <button type="button" onClick={() => setRequestSheetOpen(false)} aria-label="Close">
+                <X size={20} color="#0B1F3A" />
+              </button>
+            </div>
+            <p className="text-[13px] mb-4" style={{ color: "#6B7280", ...POPPINS }}>
+              How would you like to ask {pupil.name} for their check code?
+            </p>
+            <a
+              href={pupil.phone ? `sms:${pupil.phone}?&body=${encodeURIComponent(smsBody)}` : `sms:?&body=${encodeURIComponent(smsBody)}`}
+              onClick={() => setRequestSheetOpen(false)}
+              className="flex items-center gap-3 w-full mb-2 rounded-lg"
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+            >
+              <MessageSquare size={18} color="#1A52A0" />
+              <div className="flex-1">
+                <div className="text-[14px] font-semibold">Send SMS</div>
+                <div className="text-[12px]" style={{ color: "#6B7280" }}>
+                  {pupil.phone ?? "No phone on file"}
+                </div>
+              </div>
+            </a>
+            <a
+              href={pupil.email ? `mailto:${pupil.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}` : `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
+              onClick={() => setRequestSheetOpen(false)}
+              className="flex items-center gap-3 w-full rounded-lg"
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+            >
+              <Mail size={18} color="#1A52A0" />
+              <div className="flex-1">
+                <div className="text-[14px] font-semibold">Send email</div>
+                <div className="text-[12px]" style={{ color: "#6B7280" }}>
+                  {pupil.email ?? "No email on file"}
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      )}
     </>
   );
 }
