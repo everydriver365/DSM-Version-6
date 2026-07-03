@@ -168,10 +168,20 @@ function TaxReportPage() {
   const mileageAllowance =
     Math.min(miles, 10000) * 0.45 + Math.max(0, miles - 10000) * 0.25;
   const netProfit = Math.max(0, totalIncome - expensesTotal - mileageAllowance);
+  // HMRC 2024/25 bands (accurate)
   const PA = 12570;
-  const taxableIncome = Math.max(0, netProfit - PA);
-  const taxEstimate = taxableIncome * 0.2;
-  const niEstimate = Math.max(0, netProfit - PA) * 0.09;
+  const BRL = 50270; // upper basic-rate limit
+  let taxEstimate = 0;
+  if (netProfit > PA) {
+    const basic = Math.min(netProfit - PA, BRL - PA);
+    taxEstimate += basic * 0.2;
+    if (netProfit > BRL) taxEstimate += (netProfit - BRL) * 0.4;
+  }
+  let niEstimate = 0;
+  if (netProfit > PA) {
+    niEstimate += Math.min(netProfit - PA, BRL - PA) * 0.09;
+    if (netProfit > BRL) niEstimate += (netProfit - BRL) * 0.02;
+  }
 
   function downloadSummary() {
     const rows = [
