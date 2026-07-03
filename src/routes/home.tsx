@@ -2596,105 +2596,282 @@ function HomePage() {
               }
 
               rows.push(
-
-                <div
-                  key={l.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() =>
-                    navigate({
-                      to: "/lessons/$id" as never,
-                      params: { id: l.id } as never,
-                    })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter")
-                      navigate({
-                        to: "/lessons/$id" as never,
-                        params: { id: l.id } as never,
-                      });
-                  }}
-                  className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
-                  style={{
-                    padding: "10px 16px",
-                    borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
-                    background: "#fff",
-                  }}
-                >
-                  {(() => {
-                    const needsAttention =
-                      !isCancelled &&
-                      ((pastEnd && !l.eol_completed) ||
-                        (l.payment_status === "unpaid" || !l.payment_status));
-                    return (
-                      <div
-                        className="relative shrink-0 text-right"
-                        style={{ width: 40 }}
-                      >
-                        {needsAttention && (
-                          <span
-                            aria-label="Needs attention"
-                            style={{
-                              position: "absolute",
-                              top: -2,
-                              left: -2,
-                              width: 8,
-                              height: 8,
-                              borderRadius: 999,
-                              backgroundColor: "#1877D6",
-                            }}
-                          />
-                        )}
+                <Fragment key={l.id}>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setExpandedLessonId((prev) =>
+                        prev === l.id ? null : l.id,
+                      )
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setExpandedLessonId((prev) =>
+                          prev === l.id ? null : l.id,
+                        );
+                      }
+                    }}
+                    className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
+                    style={{
+                      padding: "10px 16px",
+                      borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                      background: "#fff",
+                    }}
+                  >
+                    {(() => {
+                      const needsAttention =
+                        !isCancelled &&
+                        ((pastEnd && !l.eol_completed) ||
+                          (l.payment_status === "unpaid" || !l.payment_status));
+                      return (
                         <div
-                          className="truncate text-xs font-bold"
-                          style={{
-                            color: timeColor,
-                            textDecoration: isCancelled ? "line-through" : "none",
-                          }}
+                          className="relative shrink-0 text-right"
+                          style={{ width: 40 }}
                         >
-                          {fmtT(startD)}
+                          {needsAttention && (
+                            <span
+                              aria-label="Needs attention"
+                              style={{
+                                position: "absolute",
+                                top: -2,
+                                left: -2,
+                                width: 8,
+                                height: 8,
+                                borderRadius: 999,
+                                backgroundColor: "#1877D6",
+                              }}
+                            />
+                          )}
+                          <div
+                            className="truncate text-xs font-bold"
+                            style={{
+                              color: timeColor,
+                              textDecoration: isCancelled ? "line-through" : "none",
+                            }}
+                          >
+                            {fmtT(startD)}
+                          </div>
+                          <div
+                            className="truncate text-[10px] text-[#9CA3AF]"
+                            style={{ marginTop: 2 }}
+                          >
+                            {durShort(l.duration_minutes)}
+                          </div>
                         </div>
+                      );
+                    })()}
+                    <div className="min-w-0">
+                      <div
+                        className="truncate text-[13px] font-semibold"
+                        style={{
+                          color: nameColor,
+                          textDecoration: isCancelled ? "line-through" : "none",
+                        }}
+                      >
+                        {l.pupils?.name ?? "Pupil"}
+                      </div>
+                      {l.pickup_location && (
                         <div
-                          className="truncate text-[10px] text-[#9CA3AF]"
+                          className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
                           style={{ marginTop: 2 }}
                         >
-                          {durShort(l.duration_minutes)}
+                          <MapPin size={10} color="#6B7280" />
+                          <span className="truncate">{l.pickup_location}</span>
                         </div>
-                      </div>
-                    );
-                  })()}
-                  <div className="min-w-0">
-                    <div
-                      className="truncate text-[13px] font-semibold"
-                      style={{
-                        color: nameColor,
-                        textDecoration: isCancelled ? "line-through" : "none",
-                      }}
-                    >
-                      {l.pupils?.name ?? "Pupil"}
+                      )}
+                      {badges.length > 0 && (
+                        <div
+                          className="flex flex-wrap gap-1.5"
+                          style={{ marginTop: 4 }}
+                        >
+                          {badges}
+                        </div>
+                      )}
                     </div>
-                    {l.pickup_location && (
-                      <div
-                        className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
-                        style={{ marginTop: 2 }}
-                      >
-                        <MapPin size={10} color="#6B7280" />
-                        <span className="truncate">{l.pickup_location}</span>
-                      </div>
-                    )}
-                    {badges.length > 0 && (
-                      <div
-                        className="flex flex-wrap gap-1.5"
-                        style={{ marginTop: 4 }}
-                      >
-                        {badges}
-                      </div>
-                    )}
+                    <div className="flex shrink-0 items-center">
+                      <ChevronRight
+                        size={14}
+                        color="#D1D5DB"
+                        style={{
+                          transform:
+                            expandedLessonId === l.id
+                              ? "rotate(90deg)"
+                              : "rotate(0deg)",
+                          transition: "transform 200ms ease",
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="flex shrink-0 items-center">
-                    <ChevronRight size={14} color="#D1D5DB" />
-                  </div>
-                </div>,
+
+                  {expandedLessonId === l.id && (
+                    <div
+                      style={{
+                        padding: "12px 16px",
+                        background: "#fff",
+                        borderTop: "1px solid #F3F4F6",
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {(() => {
+                        const amount = l.amount_due ?? 0;
+                        const isPrepaid =
+                          Number(l.pupils?.prepaid_hours ?? 0) > 0;
+                        let statusBadge: React.ReactNode;
+                        if (l.payment_status === "paid") {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#DCFCE7",
+                                color: "#16A34A",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 4,
+                              }}
+                            >
+                              <span>✓</span> Paid
+                            </span>
+                          );
+                        } else if (isPrepaid) {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#DBEAFE",
+                                color: "#1D4ED8",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              Prepaid
+                            </span>
+                          );
+                        } else if (amount === 0) {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#F3F4F6",
+                                color: "#6B7280",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              No charge
+                            </span>
+                          );
+                        } else {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#FEE2E2",
+                                color: "#DC2626",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              Unpaid £{amount.toFixed(2)}
+                            </span>
+                          );
+                        }
+                        return (
+                          <>
+                            <div className="flex items-center gap-2">
+                              {statusBadge}
+                              {l.payment_status === "paid" && amount > 0 && (
+                                <span
+                                  className="text-sm font-semibold"
+                                  style={{ color: "#0B1F3A" }}
+                                >
+                                  £{amount.toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                            <div
+                              className="flex gap-2 flex-wrap"
+                              style={{ marginTop: 8 }}
+                            >
+                              {l.payment_status !== "paid" &&
+                                amount > 0 &&
+                                !isPrepaid && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      sendPaymentLink(l);
+                                    }}
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      flex: "1 1 auto",
+                                      padding: "8px 12px",
+                                      borderRadius: 8,
+                                      background: "#16A34A",
+                                      color: "#fff",
+                                      minWidth: 120,
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Send payment link
+                                  </button>
+                                )}
+                              {l.payment_status !== "paid" &&
+                                amount > 0 &&
+                                !isPrepaid && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markLessonPaid(l);
+                                    }}
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      flex: "1 1 auto",
+                                      padding: "8px 12px",
+                                      borderRadius: 8,
+                                      background: "#0F2044",
+                                      color: "#fff",
+                                      minWidth: 120,
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Mark paid
+                                  </button>
+                                )}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate({
+                                    to: "/lessons/$id",
+                                    params: { id: l.id },
+                                  });
+                                }}
+                                className="text-sm font-semibold"
+                                style={{
+                                  padding: "8px 12px",
+                                  color: "#1A52A0",
+                                  background: "transparent",
+                                  textAlign: "center",
+                                }}
+                              >
+                                View lesson
+                              </button>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </Fragment>,
               );
               const next = shown[i + 1];
 
