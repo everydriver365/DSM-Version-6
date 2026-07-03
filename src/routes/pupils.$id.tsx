@@ -945,17 +945,26 @@ function PupilDetailPage() {
                   </div>
                   {readiness.showRing === false || readiness.score === 0 ? (
                     <div className="mt-2">
-                      <span
-                        className="text-[14px] font-medium"
+                      <div
+                        className="h-2 rounded-full overflow-hidden"
+                        style={{ backgroundColor: "#EEF2F7" }}
+                      >
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: "0%", backgroundColor: "#1877D6" }}
+                        />
+                      </div>
+                      <div
+                        className="mt-2 text-[14px] font-bold"
                         style={{ color: "#9CA3AF", ...POPPINS }}
                       >
                         Not started
-                      </span>
+                      </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 mt-2">
+                    <div className="mt-2">
                       <div
-                        className="flex-1 h-2 rounded-full overflow-hidden"
+                        className="h-2 rounded-full overflow-hidden"
                         style={{ backgroundColor: "#EEF2F7" }}
                       >
                         <div
@@ -964,7 +973,7 @@ function PupilDetailPage() {
                         />
                       </div>
                       <div
-                        className="text-[14px] font-bold"
+                        className="mt-2 text-[14px] font-bold"
                         style={{ color: readiness.color, ...POPPINS }}
                       >
                         {readiness.label}
