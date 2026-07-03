@@ -28,6 +28,82 @@ export const Route = createFileRoute("/schedule")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+async function awardPoints(
+  instructorId: string,
+  event: string,
+  token: string,
+  metadata?: any,
+) {
+  try {
+    await fetch(`${SUPABASE_URL}/functions/v1/award-points`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ instructorId, event, metadata }),
+    });
+  } catch (err) {
+    console.warn("[rewards] award-points failed:", err);
+  }
+}
+
+async function applyNoShowFee(
+  lesson: Lesson,
+  pupilName: string,
+  token: string,
+): Promise<number | null> {
+  if (!lesson.instructor_id || !lesson.pupil_id) return null;
+  try {
+    const prefsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/instructor_reminder_preferences?instructor_id=eq.${lesson.instructor_id}&select=no_show_fee,auto_charge_no_show,late_cancel_hours&limit=1`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+    );
+    const prefs = (await prefsRes.json())?.[0];
+    if (!prefs || !prefs.auto_charge_no_show || !(prefs.no_show_fee > 0)) return null;
+    const fee = (lesson.amount_due ?? 0) * (prefs.no_show_fee / 100);
+    if (fee <= 0) return null;
+    const pupilRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/pupils?id=eq.${lesson.pupil_id}&select=account_balance`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+    );
+    const current = (await pupilRes.json())?.[0]?.account_balance ?? 0;
+    await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=eq.${lesson.pupil_id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${token}`,
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ account_balance: Number(current) + fee }),
+    });
+    toast.success(`No-show fee of £${fee.toFixed(2)} added to ${pupilName}'s balance`);
+    return fee;
+  } catch (err) {
+    console.warn("[schedule] no-show fee failed:", err);
+    return null;
+  }
+}
+
+async function getLateCancelHours(instructorId: string, token: string): Promise<number | null> {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/instructor_reminder_preferences?instructor_id=eq.${instructorId}&select=late_cancel_hours&limit=1`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+    );
+    const row = (await res.json())?.[0];
+    return row?.late_cancel_hours ?? null;
+  } catch {
+    return null;
+  }
+}
+
 interface Pupil {
   id?: string;
   name: string | null;
@@ -273,6 +349,7 @@ function SchedulePage() {
   const cancelLessonNow = async () => {
     if (!cancelLesson) return;
     const id = cancelLesson.id;
+    const lessonSnapshot = cancelLesson;
     const prev = lessons;
     setLessons((cur) =>
       cur
@@ -296,6 +373,58 @@ function SchedulePage() {
       return;
     }
     toast.success("Lesson cancelled");
+    // Late cancellation → negative points
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const instructorId = lessonSnapshot.instructor_id ?? undefined;
+      if (token && instructorId) {
+        const lateHours = await getLateCancelHours(instructorId, token);
+        if (lateHours != null) {
+          const hoursUntil =
+            (lessonStart(lessonSnapshot).getTime() - Date.now()) / 3600000;
+          if (hoursUntil <= lateHours) {
+            await awardPoints(instructorId, "LATE_CANCELLATION", token, {
+              referenceId: id,
+              referenceType: "lesson",
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[schedule] late-cancel points failed:", err);
+    }
+  };
+
+  const markNoShow = async (l: Lesson) => {
+    const id = l.id;
+    const prev = lessons;
+    setLessons((cur) =>
+      cur ? cur.map((x) => (x.id === id ? { ...x, status: "no_show" } : x)) : cur,
+    );
+    setOpenActionsId(null);
+    const { error } = await supabase
+      .from("lessons")
+      .update({ status: "no_show" })
+      .eq("id", id);
+    if (error) {
+      console.error("[schedule] no-show error", error);
+      setLessons(prev);
+      toast.error("Couldn't mark no-show");
+      return;
+    }
+    toast.success(`Marked no-show for ${pupilDisplayName(l.pupil)}`);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      if (token && l.instructor_id) {
+        await awardPoints(l.instructor_id, "NO_SHOW", token, {
+          referenceId: id,
+          referenceType: "lesson",
+        });
+        await applyNoShowFee(l, pupilDisplayName(l.pupil), token);
+      }
+    } catch (err) {
+      console.warn("[schedule] no-show side effects failed:", err);
+    }
   };
 
   const goToLesson = (id: string) => {
@@ -553,6 +682,24 @@ function SchedulePage() {
               }}
             >
               <X size={14} /> Cancel
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                markNoShow(l);
+              }}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
+              style={{
+                ...POPPINS,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#B91C1C",
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E5E7EB",
+              }}
+            >
+              <X size={14} /> No-show
             </button>
           </div>
         )}
