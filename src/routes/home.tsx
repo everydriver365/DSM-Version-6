@@ -1206,6 +1206,50 @@ function HomePage() {
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
 
+  async function markLessonPaid(l: LessonRow) {
+    if (!userId) {
+      toast.error("Not authenticated");
+      return;
+    }
+    const { error } = await supabase
+      .from("lessons")
+      .update({ payment_status: "paid" })
+      .eq("id", l.id);
+    if (error) {
+      console.error("[mark paid] error", error);
+      toast.error("Could not mark lesson as paid");
+      return;
+    }
+    const { error: histErr } = await supabase.from("lesson_history").insert({
+      instructor_id: userId,
+      pupil_id: l.pupil_id,
+      lesson_id: l.id,
+      lesson_cost: l.amount_due ?? 0,
+      payment_status: "paid",
+      payment_method: "manual",
+    });
+    if (histErr) {
+      console.error("[lesson_history] insert error", histErr);
+    }
+    setLessons((prev) =>
+      prev.map((lesson) =>
+        lesson.id === l.id ? { ...lesson, payment_status: "paid" } : lesson,
+      ),
+    );
+    toast.success("Lesson marked as paid");
+  }
+
+  function sendPaymentLink(l: LessonRow) {
+    const phone = l.pupils?.phone;
+    if (!phone) {
+      toast.error("No phone number for this pupil");
+      return;
+    }
+    const amount = l.amount_due ?? 0;
+    const message = `Hi ${l.pupils?.name ?? "there"}, you have an outstanding lesson payment of £${amount.toFixed(2)}. Please pay here: [payment link placeholder]`;
+    window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
+  }
+
   const renderLessonCard = (l: LessonRow) => {
     const start = lessonDateTime(l);
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
