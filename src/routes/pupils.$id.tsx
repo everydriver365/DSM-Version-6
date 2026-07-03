@@ -703,7 +703,9 @@ function PupilDetailPage() {
       {/* Profile header card */}
       {pupil && (
         <div className="mx-4 mt-3">
-          <Card>
+          <div className="rounded-2xl overflow-hidden bg-white border border-[#EEF2F7] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            {/* Hero (navy) */}
+            <div className="px-5 pt-5 pb-6" style={{ backgroundColor: "#0B1528", color: "#FFFFFF" }}>
             <div className="flex items-center gap-3">
               <input
                 ref={photoRef}
@@ -754,7 +756,7 @@ function PupilDetailPage() {
               </button>
               <div className="min-w-0 flex-1">
                 <div
-                  className="text-[18px] font-semibold text-[#0B1F3A] truncate"
+                  className="text-[20px] font-bold text-white truncate"
                   style={POPPINS}
                 >
                   {pupil.name}
@@ -766,19 +768,19 @@ function PupilDetailPage() {
                   {badge.label}
                 </span>
                 <div className="mt-1.5 flex items-center gap-1.5">
-                  <Mail size={12} color="#6B7280" />
+                  <Mail size={12} color="#94A3B8" />
                   {pupil.email ? (
                     <a
                       href={`mailto:${pupil.email}`}
                       className="text-[12px] truncate"
-                      style={{ color: "#1877D6", ...POPPINS }}
+                      style={{ color: "#93C5FD", ...POPPINS }}
                     >
                       {pupil.email}
                     </a>
                   ) : (
                     <span
                       className="text-[12px]"
-                      style={{ color: "#9CA3AF", ...POPPINS }}
+                      style={{ color: "#94A3B8", ...POPPINS }}
                     >
                       No email set
                     </span>
@@ -788,7 +790,7 @@ function PupilDetailPage() {
             </div>
 
             <div className="mt-2">
-              <div className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+              <div className="text-[11px]" style={{ color: "#94A3B8", ...POPPINS }}>
                 Used on EveryDriver website with pupil consent
               </div>
               <label
@@ -801,12 +803,34 @@ function PupilDetailPage() {
                   onChange={(e) => togglePhotoConsent(e.target.checked)}
                   style={{ marginTop: 2 }}
                 />
-                <span className="text-[12px] text-[#0B1F3A]">
+                <span className="text-[12px] text-white/90">
                   I have consent to use this pupil&apos;s photo publicly
                 </span>
               </label>
             </div>
 
+            {/* Hero CTAs */}
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/lessons/new" })}
+                className="flex-1 h-11 rounded-xl text-[13px] font-bold"
+                style={{ backgroundColor: "#1877D6", color: "#FFFFFF", boxShadow: "0 8px 20px -4px rgba(24,119,214,0.4)", ...POPPINS }}
+              >
+                Start lesson
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/schedule" })}
+                className="px-5 h-11 rounded-xl text-[13px] font-bold"
+                style={{ backgroundColor: "#FFFFFF", color: "#0B1528", ...POPPINS }}
+              >
+                Book
+              </button>
+            </div>
+            </div>
+            {/* Body (light) */}
+            <div className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
               <StatChip
                 label="Lessons"
@@ -994,7 +1018,8 @@ function PupilDetailPage() {
                 </div>
               );
             })()}
-          </Card>
+            </div>
+          </div>
         </div>
       )}
       <div className="px-4">
