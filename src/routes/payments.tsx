@@ -135,17 +135,36 @@ export async function recordPayment(args: {
     if (bErr) console.error("[payments] account_balance update error", bErr);
   }
 
-  // Audit row (one per payment, not per lesson).
-  const { error: hErr } = await supabase.from("lesson_history").insert({
-    instructor_id: instructorId,
-    pupil_id: pupilId,
-    lesson_cost: Number(amount),
-    payment_status: "paid",
-    payment_method: method,
-    created_at: now,
-    notes: notes ?? null,
+  // Audit row (one per payment, not per lesson) via REST.
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) {
+    console.error("[payments] no auth token for lesson_history insert");
+    return;
+  }
+  const response = await fetch(`${supabase.supabaseUrl}/rest/v1/lesson_history`, {
+    method: "POST",
+    headers: {
+      apikey: supabase.supabaseKey,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      instructor_id: instructorId,
+      pupil_id: pupilId,
+      lesson_cost: Number(amount),
+      payment_status: "paid",
+      payment_method: method,
+      created_at: now,
+      notes: notes || null,
+    }),
   });
-  if (hErr) console.error("[payments] lesson_history insert error", hErr);
+  if (!response.ok) {
+    const text = await response.text();
+    console.error("[payments] lesson_history insert error", response.status, text);
+  }
+
 }
 
 function PaymentsPage() {
