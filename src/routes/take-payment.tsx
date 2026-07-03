@@ -381,8 +381,18 @@ function TakePaymentPage() {
           if (w.Ryft.applePay) w.Ryft.applePay.mount("#apple-pay-container");
         } catch (e) { console.warn("Apple Pay not available:", e); }
         w.Ryft.addEventHandler("paymentSuccess", () => {
-          toast.success("Payment received");
-          setRecorded(`£${totalNum.toFixed(2)} received via card`);
+          (async () => {
+            const { data: u } = await supabase.auth.getUser();
+            const instructorId = u?.user?.id ?? null;
+            await recordPaymentSideEffects({
+              instructorId,
+              pupilIdForPayment: pupilId || null,
+              amountPaid: totalNum,
+              method: "card",
+            });
+            toast.success("Payment recorded — balance updated");
+            setRecorded(`£${totalNum.toFixed(2)} received via card`);
+          })();
         });
         w.Ryft.addEventHandler("paymentError", (err: any) => {
           console.error("[take-payment] ryft error", err);
