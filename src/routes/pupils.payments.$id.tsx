@@ -390,12 +390,12 @@ function PupilPaymentsPage() {
 
       {showRecord && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 overflow-y-auto"
           onClick={() => !recSaving && setShowRecord(false)}
         >
           <div
-            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5"
-            style={POPPINS}
+            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
+            style={{ ...POPPINS, maxHeight: "90dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
