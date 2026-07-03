@@ -6,6 +6,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
