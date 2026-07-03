@@ -26,6 +26,19 @@ function formatGBP(amount: number | null) {
   return `£${Number(amount).toFixed(2)}`;
 }
 
+function balanceLabel(net: number) {
+  if (net > 0) return "Balance owed";
+  if (net < 0) return "Account credit";
+  return "All paid";
+}
+
+function balanceValue(accountBalance: number | null, balanceOwed: number | null) {
+  const credit = Number(accountBalance ?? 0);
+  const owed = Number(balanceOwed ?? 0);
+  const net = owed - credit;
+  return { net, credit, owed };
+}
+
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-GB", {
     weekday: "short",
