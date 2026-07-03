@@ -65,26 +65,17 @@ function startOfMonth(d: Date) {
 }
 
 async function applyPaymentToLessons(pupilId: string, paymentAmount: number, instructorId?: string | null) {
-  console.log("[payments] applyPaymentToLessons called:", { pupilId, paymentAmount });
-  console.log("[payments] querying lessons for pupil_id:", pupilId, "instructor_id:", instructorId);
-  console.log(
-    "[payments] REST query equivalent:",
-    `/rest/v1/lessons?select=id,amount_due&pupil_id=eq.${pupilId}&payment_status=eq.unpaid&deleted_at=is.null&order=lesson_date.asc`,
-  );
-
-  // Diagnostic: fetch ALL non-deleted lessons for this pupil to inspect their payment_status values
-  const { data: allLessons, error: allErr } = await supabase
-    .from("lessons")
-    .select("id, amount_due, payment_status, lesson_date, pupil_id")
-    .eq("pupil_id", pupilId)
-    .is("deleted_at", null)
-    .order("lesson_date", { ascending: true });
-  if (allErr) console.error("[payments] diagnostic all-lessons error", allErr);
-  console.log(
-    "[payments] ALL non-deleted lessons for this pupil:",
-    allLessons?.length,
-    allLessons?.map((l) => ({ id: l.id, payment_status: l.payment_status, amount_due: l.amount_due, lesson_date: l.lesson_date })),
-  );
+// Unified payment recorder: writes to lessons (oldest first), any leftover
+// to pupils.account_balance as credit, and a single lesson_history audit row.
+export async function recordPayment(args: {
+  instructorId: string;
+  pupilId: string;
+  amount: number;
+  method: string;
+  notes?: string | null;
+}) {
+  const { instructorId, pupilId, amount, method, notes } = args;
+  const now = new Date().toISOString();
 
   const { data: unpaidLessons, error } = await supabase
     .from("lessons")
@@ -93,35 +84,68 @@ async function applyPaymentToLessons(pupilId: string, paymentAmount: number, ins
     .eq("payment_status", "unpaid")
     .is("deleted_at", null)
     .order("lesson_date", { ascending: true });
-  if (error) {
-    console.error("[payments] fetch unpaid lessons error", error);
-    return;
-  }
-  console.log("[payments] unpaid lessons found:", unpaidLessons?.length, unpaidLessons);
-  let remaining = paymentAmount;
+  if (error) console.error("[payments] fetch unpaid lessons error", error);
+
+  let remaining = Number(amount);
   for (const lesson of unpaidLessons ?? []) {
     if (remaining <= 0) break;
     const due = Number(lesson.amount_due ?? 0);
     if (due <= 0) continue;
     if (due <= remaining) {
-      const updateResult = await supabase
+      const { error: uErr } = await supabase
         .from("lessons")
-        .update({ payment_status: "paid", amount_due: 0 })
+        .update({
+          payment_status: "paid",
+          payment_method: method,
+          paid_at: now,
+          paid_amount: due,
+          amount_due: 0,
+        })
         .eq("id", lesson.id);
-      console.log("[payments] lesson update result (full):", lesson.id, updateResult);
-      if (updateResult.error) console.error("[payments] mark lesson paid error", updateResult.error);
+      if (uErr) console.error("[payments] full lesson update error", uErr);
       remaining -= due;
     } else {
-      const updateResult = await supabase
+      const { error: uErr } = await supabase
         .from("lessons")
-        .update({ amount_due: due - remaining })
+        .update({
+          payment_status: "partial",
+          payment_method: method,
+          paid_at: now,
+          paid_amount: remaining,
+          amount_due: due - remaining,
+        })
         .eq("id", lesson.id);
-      console.log("[payments] lesson update result (partial):", lesson.id, updateResult);
-      if (updateResult.error) console.error("[payments] partial lesson payment error", updateResult.error);
+      if (uErr) console.error("[payments] partial lesson update error", uErr);
       remaining = 0;
     }
   }
-  console.log("[payments] applyPaymentToLessons finished, remaining:", remaining);
+
+  // Overpayment / no lessons → add remainder to pupil credit.
+  if (remaining > 0) {
+    const { data: pRow } = await supabase
+      .from("pupils")
+      .select("account_balance")
+      .eq("id", pupilId)
+      .maybeSingle();
+    const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
+    const { error: bErr } = await supabase
+      .from("pupils")
+      .update({ account_balance: current + remaining })
+      .eq("id", pupilId);
+    if (bErr) console.error("[payments] account_balance update error", bErr);
+  }
+
+  // Audit row (one per payment, not per lesson).
+  const { error: hErr } = await supabase.from("lesson_history").insert({
+    instructor_id: instructorId,
+    pupil_id: pupilId,
+    lesson_cost: Number(amount),
+    payment_status: "paid",
+    payment_method: method,
+    created_at: now,
+    notes: notes ?? null,
+  });
+  if (hErr) console.error("[payments] lesson_history insert error", hErr);
 }
 
 function PaymentsPage() {
