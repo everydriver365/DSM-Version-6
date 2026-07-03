@@ -415,10 +415,16 @@ function TakePaymentPage() {
         payment_method: cashMethod,
         amount: amountNum,
       });
+      await recordPaymentSideEffects({
+        instructorId,
+        pupilIdForPayment: pupilId || null,
+        amountPaid: amountNum,
+        method: cashMethod,
+      });
       setRecorded(
         `£${amountNum.toFixed(2)} recorded as ${cashMethod === "cash" ? "cash" : "bank transfer"}`,
       );
-      toast.success("Payment recorded");
+      toast.success("Payment recorded — balance updated");
     } catch (e) {
       console.error("[take-payment] recordCash", e);
       toast.error("Couldn't record payment");
