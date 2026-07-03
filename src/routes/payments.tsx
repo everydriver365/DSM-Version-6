@@ -64,7 +64,6 @@ function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
-async function applyPaymentToLessons(pupilId: string, paymentAmount: number, instructorId?: string | null) {
 // Unified payment recorder: writes to lessons (oldest first), any leftover
 // to pupils.account_balance as credit, and a single lesson_history audit row.
 export async function recordPayment(args: {
