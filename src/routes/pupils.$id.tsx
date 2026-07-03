@@ -426,6 +426,7 @@ function PupilDetailPage() {
       .from("lesson_history")
       .select("lesson_cost, payment_status")
       .eq("pupil_id", id)
+      .is("deleted_at", null)
       .then(({ data, error }) => {
         if (error) console.error("[pupil] lesson_history error", error);
         const rows = (data as { lesson_cost: number | null; payment_status: string | null }[]) ?? [];
