@@ -363,7 +363,7 @@ function PupilDetailPage() {
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
         driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status
+        test_status, test_examiner
       `)
       .eq("id", id)
       .is("deleted_at", null)
