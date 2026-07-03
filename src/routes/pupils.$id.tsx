@@ -788,7 +788,7 @@ function PupilDetailPage() {
           <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
             {/* Blue header band */}
             <div
-              className="relative pt-6 pb-24 px-4"
+              className="relative pt-8 pb-48 px-4"
               style={{ backgroundColor: "#1877D6" }}
             >
               <div className="flex justify-between items-start relative z-10">
