@@ -784,7 +784,7 @@ function PupilDetailPage() {
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
       {/* Profile header card */}
       {pupil && (
-        <div className="mx-4 mt-3">
+        <div className="mt-3 px-4">
           <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
             {/* Blue header band */}
             <div
