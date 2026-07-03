@@ -815,100 +815,97 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>COVERAGE AREA</SectionHeader>
-        <Card
-          style={{
-            background: "#fff",
-            border: "0.5px solid #EEF2F7",
-            borderRadius: 12,
-            padding: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <MapPin size={18} color="#1877D6" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
-              Coverage area
-            </span>
-          </div>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<MapPin size={18} color="#1877D6" />}
+            iconBg="#DBEAFE"
+            label="Coverage area"
+            expanded={expanded === "coverage"}
+            onClick={() => setExpanded(expanded === "coverage" ? null : "coverage")}
+            isFirst
+          />
+          {expanded === "coverage" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <label className="block pt-4" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
+              <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
+                <input
+                  type="text"
+                  value={homePostcode}
+                  onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
+                  onBlur={() => setPostcodeBlurred(true)}
+                  placeholder="e.g. SO23 9AX"
+                  autoCapitalize="characters"
+                  maxLength={10}
+                  style={{
+                    width: "100%",
+                    height: 44,
+                    padding: "0 36px 0 12px",
+                    border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
+                    borderRadius: 10,
+                    fontSize: 14,
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    textTransform: "uppercase",
+                    ...POPPINS,
+                  }}
+                />
+                {postcodeValid && (
+                  <Check
+                    size={18}
+                    color="#1877D6"
+                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
+                  />
+                )}
+              </div>
+              {postcodeShowError && (
+                <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
+                  Please enter a valid UK postcode
+                </div>
+              )}
 
-          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
-          <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
-            <input
-              type="text"
-              value={homePostcode}
-              onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
-              onBlur={() => setPostcodeBlurred(true)}
-              placeholder="e.g. SO23 9AX"
-              autoCapitalize="characters"
-              maxLength={10}
-              style={{
-                width: "100%",
-                height: 44,
-                padding: "0 36px 0 12px",
-                border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
-                borderRadius: 10,
-                fontSize: 14,
-                background: "#fff",
-                color: "#0B1F3A",
-                textTransform: "uppercase",
-                ...POPPINS,
-              }}
-            />
-            {postcodeValid && (
-              <Check
-                size={18}
-                color="#1877D6"
-                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
-              />
-            )}
-          </div>
-          {postcodeShowError && (
-            <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
-              Please enter a valid UK postcode
+              <label className="block" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
+              <select
+                value={coverageRadius}
+                onChange={(e) => setCoverageRadius(Number(e.target.value))}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  padding: "0 12px",
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 10,
+                  fontSize: 14,
+                  marginTop: 6,
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                {[5, 10, 15, 20, 25, 30].map((m) => (
+                  <option key={m} value={m}>
+                    {m} miles
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={saveCoverage}
+                disabled={savingCoverage || !postcodeValid}
+                className="w-full text-[14px] font-semibold text-white mt-5"
+                style={{
+                  height: 48,
+                  borderRadius: 10,
+                  backgroundColor: "#0B1F3A",
+                  border: "none",
+                  opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
+                  cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {savingCoverage ? "Saving…" : "Save coverage"}
+              </button>
             </div>
           )}
-
-
-          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
-          <select
-            value={coverageRadius}
-            onChange={(e) => setCoverageRadius(Number(e.target.value))}
-            style={{
-              width: "100%",
-              height: 44,
-              padding: "0 12px",
-              border: "0.5px solid #EEF2F7",
-              borderRadius: 10,
-              fontSize: 14,
-              marginTop: 6,
-              background: "#fff",
-              color: "#0B1F3A",
-              ...POPPINS,
-            }}
-          >
-            {[5, 10, 15, 20, 25, 30].map((m) => (
-              <option key={m} value={m}>
-                {m} miles
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="button"
-            onClick={saveCoverage}
-            disabled={savingCoverage || !postcodeValid}
-            className="w-full text-[14px] font-semibold text-white mt-5"
-            style={{
-              height: 48,
-              borderRadius: 10,
-              backgroundColor: "#0B1F3A",
-              border: "none",
-              opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
-              cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
-              ...POPPINS,
-            }}
-          >
-            {savingCoverage ? "Saving…" : "Save coverage"}
-          </button>
         </Card>
 
         <SectionHeader>PRICING RULES</SectionHeader>
