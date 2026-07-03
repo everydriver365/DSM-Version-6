@@ -785,300 +785,428 @@ function PupilDetailPage() {
       {/* Profile header card */}
       {pupil && (
         <div className="mx-4 mt-3">
-          <Card>
-            <div className="flex items-center gap-3">
-              <input
-                ref={photoRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={onPickPupilPhoto}
+          <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
+            {/* Blue header band */}
+            <div
+              className="relative pt-6 pb-16 px-4"
+              style={{ backgroundColor: "#1877D6" }}
+            >
+              <div className="flex justify-between items-start relative z-10">
+                <div className="flex items-center space-x-3 min-w-0">
+                  <input
+                    ref={photoRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={onPickPupilPhoto}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => !uploadingPhoto && photoRef.current?.click()}
+                    disabled={uploadingPhoto}
+                    aria-label="Upload pupil photo"
+                    className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden"
+                    style={{
+                      width: 72,
+                      height: 72,
+                      border: "4px solid #FFFFFF",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                      backgroundColor: "#1877D6",
+                      color: "#FFFFFF",
+                      ...POPPINS,
+                    }}
+                  >
+                    {pupil.photo_url ? (
+                      <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[22px] font-semibold">{initials(pupil.name)}</span>
+                    )}
+                    {uploadingPhoto && (
+                      <span
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+                      >
+                        <Loader2 size={22} color="#FFFFFF" className="animate-spin" />
+                      </span>
+                    )}
+                    <span
+                      className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "#FFFFFF",
+                        border: "2px solid #1877D6",
+                      }}
+                    >
+                      <Camera size={13} color="#1877D6" />
+                    </span>
+                  </button>
+                  <div className="text-white min-w-0 flex-1">
+                    <h1
+                      className="text-[20px] font-extrabold tracking-tight truncate"
+                      style={POPPINS}
+                    >
+                      {pupil.name}
+                    </h1>
+                    <p
+                      className="text-[12px] font-medium truncate"
+                      style={{ color: "rgba(255,255,255,0.85)", ...POPPINS }}
+                    >
+                      {pupil.email || "No email set"}
+                    </p>
+                    <span
+                      className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                      style={{ backgroundColor: "rgba(255,255,255,0.2)", ...POPPINS }}
+                    >
+                      {badge.label}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+                  className="text-right text-white shrink-0 pl-3 cursor-pointer"
+                  style={{ background: "none", border: "none", padding: 0 }}
+                >
+                  <p
+                    className="text-[10px] font-bold opacity-70 uppercase tracking-widest"
+                    style={POPPINS}
+                  >
+                    Total Lessons
+                  </p>
+                  <p
+                    className="text-[36px] font-black leading-none mt-1"
+                    style={POPPINS}
+                  >
+                    {lessonCount}
+                  </p>
+                  <p
+                    className="text-[10px] font-medium opacity-70"
+                    style={POPPINS}
+                  >
+                    completed
+                  </p>
+                </button>
+              </div>
+              {/* Decorative background element */}
+              <div
+                className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl"
+                style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
               />
-              <button
-                type="button"
-                onClick={() => !uploadingPhoto && photoRef.current?.click()}
-                disabled={uploadingPhoto}
-                aria-label="Upload pupil photo"
-                className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden text-[18px] font-semibold"
+            </div>
+
+            {/* Floating white information card */}
+            <div className="px-4 -mt-10 pb-4 relative z-20">
+              <div
+                className="rounded-3xl p-4 space-y-4"
                 style={{
-                  width: 56,
-                  height: 56,
-                  backgroundColor: "#1877D6",
-                  color: "#FFFFFF",
-                  ...POPPINS,
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #F1F5F9",
+                  boxShadow: "0 10px 30px -10px rgba(15,32,68,0.12)",
                 }}
               >
-                {pupil.photo_url ? (
-                  <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span>{initials(pupil.name)}</span>
-                )}
-                {uploadingPhoto && (
-                  <span
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
-                  >
-                    <Loader2 size={18} color="#FFFFFF" className="animate-spin" />
-                  </span>
-                )}
-                <span
-                  className="absolute bottom-0 right-0 flex items-center justify-center rounded-full"
-                  style={{
-                    width: 20,
-                    height: 20,
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EEF2F7",
-                  }}
-                >
-                  <Camera size={11} color="#1877D6" />
-                </span>
-              </button>
-              <div className="min-w-0 flex-1">
-                <div
-                  className="text-[18px] font-semibold text-[#0B1F3A] truncate"
-                  style={POPPINS}
-                >
-                  {pupil.name}
-                </div>
-                <span
-                  className="inline-block mt-1 text-[11px] text-white px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: badge.bg, ...POPPINS }}
-                >
-                  {badge.label}
-                </span>
-                <div className="mt-1.5 flex items-center gap-1.5">
-                  <Mail size={12} color="#6B7280" />
-                  {pupil.email ? (
-                    <a
-                      href={`mailto:${pupil.email}`}
-                      className="text-[12px] truncate"
-                      style={{ color: "#1877D6", ...POPPINS }}
+                {/* Photo consent row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: "#F8FAFC", color: "#1877D6" }}
                     >
-                      {pupil.email}
-                    </a>
-                  ) : (
-                    <span
-                      className="text-[12px]"
-                      style={{ color: "#9CA3AF", ...POPPINS }}
-                    >
-                      No email set
-                    </span>
-                  )}
+                      <Camera size={20} />
+                    </div>
+                    <div className="min-w-0">
+                      <p
+                        className="text-[13px] font-bold text-[#0B1F3A]"
+                        style={POPPINS}
+                      >
+                        Photo Consent
+                      </p>
+                      <p
+                        className="text-[10px] text-[#94A3B8] font-medium uppercase"
+                        style={POPPINS}
+                      >
+                        Used on EveryDriver website
+                      </p>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(pupil.photo_consent)}
+                      onChange={(e) => togglePhotoConsent(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div
+                      className="w-11 h-6 rounded-full transition-colors"
+                      style={{ backgroundColor: pupil.photo_consent ? "#1877D6" : "#CBD5E1" }}
+                    />
+                    <div
+                      className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                      style={{
+                        transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
+                      }}
+                    />
+                  </label>
                 </div>
-              </div>
-            </div>
 
-            <div className="mt-2">
-              <div className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
-                Used on EveryDriver website with pupil consent
-              </div>
-              <label
-                className="mt-2 flex items-start gap-2 cursor-pointer"
-                style={POPPINS}
-              >
-                <input
-                  type="checkbox"
-                  checked={Boolean(pupil.photo_consent)}
-                  onChange={(e) => togglePhotoConsent(e.target.checked)}
-                  style={{ marginTop: 2 }}
-                />
-                <span className="text-[12px] text-[#0B1F3A]">
-                  I have consent to use this pupil&apos;s photo publicly
-                </span>
-              </label>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              <StatChip
-                label="Lessons"
-                value={String(lessonCount)}
-                onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
-              />
-              {(() => {
-                const outstanding = liveOwed ?? 0;
-                const credit = Number(pupil.account_balance ?? 0);
-                const net = outstanding - credit;
-                const value =
-                  net > 0
-                    ? `Owes £${net.toFixed(2)}`
-                    : net < 0
-                      ? `In credit £${Math.abs(net).toFixed(2)}`
-                      : "All paid";
-                return (
-                  <StatChip
-                    label="Balance"
-                    value={value}
-                    valueColor={net > 0 ? "#DC2626" : "#16A34A"}
-                    onClick={() => navigate({ to: "/payments" })}
-                  />
-                );
-              })()}
-            </div>
-
-            <div className="mt-2">
-              <StatChip
-                label="Test"
-                value={
-                  pupil.test_date
-                    ? formatTestDate(pupil.test_date)
-                    : "No test"
-                }
-                subValue={
-                  pupil.test_date
+                {/* Dashboard stats grid */}
+                {(() => {
+                  const outstanding = liveOwed ?? 0;
+                  const credit = Number(pupil.account_balance ?? 0);
+                  const net = outstanding - credit;
+                  const balanceValue =
+                    net > 0
+                      ? `£${net.toFixed(2)}`
+                      : net < 0
+                        ? `£${Math.abs(net).toFixed(2)}`
+                        : "All paid";
+                  const balanceColor = net > 0 ? "#DC2626" : net < 0 ? "#16A34A" : "#0B1F3A";
+                  const testValue = pupil.test_date ? formatTestDate(pupil.test_date) : "No test";
+                  const testSub = pupil.test_date
                     ? [
                         pupil.test_time ? formatTime(pupil.test_time) : null,
                         centreInfo?.name || pupil.test_centre || null,
                       ]
                         .filter(Boolean)
                         .join(" · ") || undefined
-                    : undefined
-                }
-              />
-            </div>
-
-            {paymentHistory.length > 0 && (
-              <div className="mt-4">
-                <div
-                  className="text-[11px] font-medium uppercase mb-2"
-                  style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
-                >
-                  Recent payments
-                </div>
-                <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-                  {paymentHistory.map((p) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center justify-between py-2"
-                      style={{ borderBottom: "0.5px solid #EEF2F7" }}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                          £{Number(p.lesson_cost ?? 0).toFixed(2)}
-                        </span>
-                        <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
-                          {new Date(p.created_at).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                          {p.payment_method ? ` · ${p.payment_method}` : ""}
-                        </span>
-                      </div>
+                    : undefined;
+                  return (
+                    <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        aria-label="Delete payment"
-                        onClick={async () => {
-                          if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
-                          const { data: { session } } = await supabase.auth.getSession();
-                          const token = session?.access_token;
-                          if (!token) {
-                            toast.error("Not authenticated");
-                            return;
-                          }
-                          const { data: userData } = await supabase.auth.getUser();
-                          const uid = userData.user?.id;
-                          if (!uid) return;
-                          const ok = await deletePaymentRecord(p.id, token, uid);
-                          if (ok) setPaymentHistoryRefresh((n) => n + 1);
-                        }}
-                        className="inline-flex items-center justify-center rounded-full"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          background: "#F3F4F6",
-                          border: "0.5px solid #E2E6ED",
-                          color: "#6B7280",
-                        }}
+                        onClick={() => navigate({ to: "/payments" })}
+                        className="text-left rounded-2xl p-4"
+                        style={{ backgroundColor: "#0F2044" }}
                       >
-                        <X size={14} />
+                        <p
+                          className="text-[10px] font-bold opacity-60 uppercase tracking-widest"
+                          style={{ color: "rgba(255,255,255,0.7)", ...POPPINS }}
+                        >
+                          Balance
+                        </p>
+                        <p
+                          className="text-[20px] font-bold mt-1"
+                          style={{ color: "#FFFFFF", ...POPPINS }}
+                        >
+                          {balanceValue}
+                        </p>
                       </button>
+                      <div
+                        className="rounded-2xl p-4 border"
+                        style={{ backgroundColor: "#F8FAFC", borderColor: "#E2E8F0" }}
+                      >
+                        <p
+                          className="text-[10px] text-[#94A3B8] font-bold uppercase tracking-widest"
+                          style={POPPINS}
+                        >
+                          Practical Test
+                        </p>
+                        <p
+                          className="text-[16px] font-extrabold text-[#0B1F3A] mt-1"
+                          style={POPPINS}
+                        >
+                          {testValue}
+                        </p>
+                        {testSub && (
+                          <p
+                            className="text-[11px] text-[#64748B] truncate mt-0.5"
+                            style={POPPINS}
+                            title={testSub}
+                          >
+                            {testSub}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  );
+                })()}
 
-            {(() => {
-              const readiness = (() => {
-                const lessonCount = actualLessonCount ?? 0;
-                const syllabusAchieved = syllabus?.filter(s => s.status === 'achieved')?.length || 0;
-                const theoryPassed = pupil?.theory_status === 'Passed';
-                console.log("[readiness] guard check:", { lessonCount: actualLessonCount, syllabusAchieved, theoryPassed });
-                // If no lessons but theory passed — show theory readiness with prompt to start lessons
-                if (lessonCount === 0 && theoryPassed) {
-                  return { score: 10, label: "Theory ✓ — start lessons", color: "#1A52A0", showRing: true, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 10 };
-                }
-                // If no lessons and no syllabus progress and theory not passed — show Not Started
-                if (lessonCount === 0 && !theoryPassed && syllabusAchieved === 0) {
-                  return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
-                }
-                const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
-                const lessonPoints = lessonCount === 0 ? 0 : Math.min((lessonCount / 40) * 30, 30);
-                const theoryPoints = theoryPassed ? 10 : 0;
-                const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
-                return { score, label: `${score}%`, color: "#0B1F3A", showRing: true, syllabusPoints, lessonPoints, theoryPoints };
-              })();
-              console.log("[test-readiness]", readiness);
-              return (
-                <div className="mt-4">
-                  <div
-                    className="text-[11px] font-medium uppercase"
-                    style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
-                  >
-                    TEST READINESS
-                  </div>
-                  {readiness.showRing === false || readiness.score === 0 ? (
-                    <div className="mt-2">
-                      <div
-                        className="h-2 rounded-full overflow-hidden"
-                        style={{ backgroundColor: "#EEF2F7" }}
-                      >
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{ width: "0%", backgroundColor: "#1877D6" }}
-                        />
+                {/* Test readiness strip */}
+                {(() => {
+                  const readiness = (() => {
+                    const lessonCount = actualLessonCount ?? 0;
+                    const syllabusAchieved = syllabus?.filter((s) => s.status === "achieved")?.length || 0;
+                    const theoryPassed = pupil?.theory_status === "Passed";
+                    if (lessonCount === 0 && theoryPassed) {
+                      return { score: 10, label: "Theory ✓ — start lessons", color: "#1A52A0", showRing: true, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 10 };
+                    }
+                    if (lessonCount === 0 && !theoryPassed && syllabusAchieved === 0) {
+                      return { score: 0, label: "Not started", color: "#9CA3AF", showRing: false, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 0 };
+                    }
+                    const syllabusPoints = syllabusSum > 0 ? Math.min((syllabusSum / 135) * 60, 60) : 0;
+                    const lessonPoints = lessonCount === 0 ? 0 : Math.min((lessonCount / 40) * 30, 30);
+                    const theoryPoints = theoryPassed ? 10 : 0;
+                    const score = Math.round(syllabusPoints + lessonPoints + theoryPoints);
+                    return { score, label: `${score}%`, color: "#0B1F3A", showRing: true, syllabusPoints, lessonPoints, theoryPoints };
+                  })();
+                  const theoryBadge = statusColour(pupil.theory_status);
+                  const practBadge = statusColour(pupil.test_status);
+                  return (
+                    <div className="pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3
+                          className="text-[11px] font-extrabold text-[#0B1F3A] uppercase tracking-widest"
+                          style={POPPINS}
+                        >
+                          Readiness Dashboard
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
+                          className="text-[11px] font-semibold"
+                          style={{ color: "#1877D6", ...POPPINS }}
+                        >
+                          View
+                        </button>
                       </div>
-                      <div
-                        className="mt-2 text-[14px] font-bold"
-                        style={{ color: "#9CA3AF", ...POPPINS }}
-                      >
-                        Not started
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-xs font-bold mb-2">
+                            <span className="text-[#64748B]" style={POPPINS}>
+                              Syllabus Mastery
+                            </span>
+                            <span style={{ color: "#1877D6", ...POPPINS }}>
+                              {readiness.score}%
+                            </span>
+                          </div>
+                          <div
+                            className="h-2 w-full rounded-full overflow-hidden"
+                            style={{ backgroundColor: "#F1F5F9" }}
+                          >
+                            <div
+                              className="h-full rounded-full transition-all"
+                              style={{ width: `${readiness.score}%`, backgroundColor: "#1877D6" }}
+                            />
+                          </div>
+                          <div
+                            className="mt-1.5 text-[11px]"
+                            style={{ color: "#64748B", ...POPPINS }}
+                          >
+                            Syllabus {Math.round(readiness.syllabusPoints)}/60 · Lessons {Math.round(readiness.lessonPoints)}/30 · Theory {readiness.theoryPoints}/10
+                          </div>
+                        </div>
+                        <div className="flex gap-3">
+                          <div
+                            className="flex-1 flex flex-col items-center p-3 rounded-2xl border"
+                            style={{ backgroundColor: "#F0FDF4", borderColor: "#DCFCE7" }}
+                          >
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-white mb-2"
+                              style={{ backgroundColor: theoryBadge.bg }}
+                            >
+                              {pupil.theory_status === "Passed" ? (
+                                <Check size={14} color={theoryBadge.fg} />
+                              ) : (
+                                <BookOpen size={14} color={theoryBadge.fg} />
+                              )}
+                            </div>
+                            <span
+                              className="text-[10px] font-bold uppercase"
+                              style={{ color: "#15803D", ...POPPINS }}
+                            >
+                              Theory
+                            </span>
+                            <span
+                              className="text-[11px] font-semibold mt-0.5"
+                              style={{ color: theoryBadge.fg, ...POPPINS }}
+                            >
+                              {pupil.theory_status || "Not started"}
+                            </span>
+                          </div>
+                          <div
+                            className="flex-1 flex flex-col items-center p-3 rounded-2xl border"
+                            style={{ backgroundColor: "#FFFBEB", borderColor: "#FEF3C7" }}
+                          >
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-white mb-2"
+                              style={{ backgroundColor: practBadge.bg }}
+                            >
+                              <Car size={14} color={practBadge.fg} />
+                            </div>
+                            <span
+                              className="text-[10px] font-bold uppercase"
+                              style={{ color: "#B45309", ...POPPINS }}
+                            >
+                              Practical
+                            </span>
+                            <span
+                              className="text-[11px] font-semibold mt-0.5"
+                              style={{ color: practBadge.fg, ...POPPINS }}
+                            >
+                              {pupil.test_status || "Not booked"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  ) : (
-                    <div className="mt-2">
-                      <div
-                        className="h-2 rounded-full overflow-hidden"
-                        style={{ backgroundColor: "#EEF2F7" }}
-                      >
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{ width: `${readiness.score}%`, backgroundColor: "#1877D6" }}
-                        />
-                      </div>
-                      <div
-                        className="mt-2 text-[14px] font-bold"
-                        style={{ color: readiness.color, ...POPPINS }}
-                      >
-                        {readiness.label}
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between mt-2 gap-2">
-                    <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                      Syllabus {Math.round(readiness.syllabusPoints)}/60 · Lessons {Math.round(readiness.lessonPoints)}/30 · Theory {readiness.theoryPoints}/10
-                    </div>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
+                  );
+                })()}
+
+                {/* Recent payments */}
+                {paymentHistory.length > 0 && (
+                  <div className="pt-2 border-t border-slate-100">
+                    <div
+                      className="text-[11px] font-medium uppercase mb-2"
+                      style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
                     >
-                      View
-                    </Button>
+                      Recent payments
+                    </div>
+                    <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                      {paymentHistory.map((p) => (
+                        <div
+                          key={p.id}
+                          className="flex items-center justify-between py-2"
+                          style={{ borderBottom: "0.5px solid #EEF2F7" }}
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                              £{Number(p.lesson_cost ?? 0).toFixed(2)}
+                            </span>
+                            <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                              {new Date(p.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                              {p.payment_method ? ` · ${p.payment_method}` : ""}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Delete payment"
+                            onClick={async () => {
+                              if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
+                              const { data: { session } } = await supabase.auth.getSession();
+                              const token = session?.access_token;
+                              if (!token) {
+                                toast.error("Not authenticated");
+                                return;
+                              }
+                              const { data: userData } = await supabase.auth.getUser();
+                              const uid = userData.user?.id;
+                              if (!uid) return;
+                              const ok = await deletePaymentRecord(p.id, token, uid);
+                              if (ok) setPaymentHistoryRefresh((n) => n + 1);
+                            }}
+                            className="inline-flex items-center justify-center rounded-full"
+                            style={{
+                              width: 28,
+                              height: 28,
+                              background: "#F3F4F6",
+                              border: "0.5px solid #E2E6ED",
+                              color: "#6B7280",
+                            }}
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })()}
+                )}
+              </div>
+            </div>
           </Card>
         </div>
       )}
