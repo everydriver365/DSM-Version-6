@@ -428,6 +428,21 @@ function PupilPaymentsPage() {
               style={POPPINS}
             />
 
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Hours bought (optional)
+            </label>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0"
+              value={recHours}
+              onChange={(e) => setRecHours(e.target.value)}
+              placeholder="e.g. 10"
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
             <label className="block text-[12px] font-semibold text-[#64748B] mb-2" style={POPPINS}>
               Payment method
             </label>
@@ -456,6 +471,18 @@ function PupilPaymentsPage() {
                 );
               })}
             </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Notes (optional)
+            </label>
+            <input
+              type="text"
+              value={recNotes}
+              onChange={(e) => setRecNotes(e.target.value)}
+              placeholder="e.g. 10-hour package"
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-5"
+              style={POPPINS}
+            />
 
             <button
               type="button"
