@@ -721,6 +721,25 @@ function PupilDetailPage() {
                 >
                   {badge.label}
                 </span>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <Mail size={12} color="#6B7280" />
+                  {pupil.email ? (
+                    <a
+                      href={`mailto:${pupil.email}`}
+                      className="text-[12px] truncate"
+                      style={{ color: "#1877D6", ...POPPINS }}
+                    >
+                      {pupil.email}
+                    </a>
+                  ) : (
+                    <span
+                      className="text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      No email set
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
