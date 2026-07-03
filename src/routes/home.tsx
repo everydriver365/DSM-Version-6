@@ -1302,7 +1302,10 @@ function HomePage() {
       return;
     }
     const amount = l.amount_due ?? 0;
-    const message = `Hi ${l.pupils?.name ?? "there"}, you have an outstanding lesson payment of £${amount.toFixed(2)}. Please pay here: [payment link placeholder]`;
+    const amountPence = Math.round(amount * 100);
+    const desc = encodeURIComponent("Lesson payment");
+    const payUrl = `https://everydriver.co.uk/pay?amount=${amountPence}&desc=${desc}&ref=${l.id}`;
+    const message = `Hi ${l.pupils?.name ?? "there"}, you have an outstanding lesson payment of £${amount.toFixed(2)}. Please pay here: ${payUrl}`;
     window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
   }
 
