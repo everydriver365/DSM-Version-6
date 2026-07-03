@@ -26,6 +26,19 @@ function formatGBP(amount: number | null) {
   return `£${Number(amount).toFixed(2)}`;
 }
 
+function balanceLabel(net: number) {
+  if (net > 0) return "Balance owed";
+  if (net < 0) return "Account credit";
+  return "All paid";
+}
+
+function balanceValue(accountBalance: number | null, balanceOwed: number | null) {
+  const credit = Number(accountBalance ?? 0);
+  const owed = Number(balanceOwed ?? 0);
+  const net = owed - credit;
+  return { net, credit, owed };
+}
+
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-GB", {
     weekday: "short",
@@ -44,17 +57,40 @@ function PupilPaymentsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const [pupilName, setPupilName] = useState<string>("");
+  const [accountBalance, setAccountBalance] = useState<number | null>(null);
+  const [balanceOwed, setBalanceOwed] = useState<number | null>(null);
   const [payments, setPayments] = useState<PaymentRow[] | null>(null);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("name")
+      .select("name, account_balance")
       .eq("id", id)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil-payments] pupil fetch error", error);
-        setPupilName((data as { name?: string | null } | null)?.name ?? "");
+        const p = (data as { name?: string | null; account_balance?: number | null } | null) ?? null;
+        setPupilName(p?.name ?? "");
+        setAccountBalance(p?.account_balance ?? null);
+      });
+
+    // Live owed amount from unpaid lessons (matches pupil profile calculation)
+    supabase
+      .from("lessons")
+      .select("duration_minutes, amount_due, payment_status, status")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[pupil-payments] unpaid lessons error", error);
+          return;
+        }
+        const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[] | null) ?? [];
+        const owed = rows
+          .filter((r) => r.payment_status !== "paid")
+          .reduce((sum, r) => sum + Number(r.amount_due || 0), 0);
+        setBalanceOwed(Math.round(owed * 100) / 100);
       });
 
     supabase
@@ -103,20 +139,46 @@ function PupilPaymentsPage() {
           </div>
         )}
 
-        <div
-          className="rounded-xl p-4 mb-4"
-          style={{ backgroundColor: "#0F2044" }}
-        >
-          <p
-            className="text-[10px] font-bold uppercase tracking-widest"
-            style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
-          >
-            Total paid
-          </p>
-          <p className="text-[24px] font-bold text-white mt-1" style={POPPINS}>
-            {formatGBP(totalPaid)}
-          </p>
-        </div>
+        {(() => {
+          const { net, owed } = balanceValue(accountBalance, balanceOwed);
+          return (
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#0F2044" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
+                >
+                  {balanceLabel(net)}
+                </p>
+                <p className="text-[22px] font-bold text-white mt-1" style={POPPINS}>
+                  {formatGBP(Math.abs(net))}
+                </p>
+              </div>
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "#64748B", ...POPPINS }}
+                >
+                  Total paid
+                </p>
+                <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
+                  {formatGBP(totalPaid)}
+                </p>
+              </div>
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "#64748B", ...POPPINS }}
+                >
+                  Owed
+                </p>
+                <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
+                  {formatGBP(owed)}
+                </p>
+              </div>
+            </div>
+          );
+        })()}
 
         {payments === null ? null : payments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
