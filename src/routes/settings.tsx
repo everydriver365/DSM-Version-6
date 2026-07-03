@@ -675,132 +675,143 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>RATES & SCHEDULING</SectionHeader>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<PoundSterling size={18} color="#1877D6" />}
+            iconBg="#DBEAFE"
+            label="Rates & scheduling"
+            expanded={expanded === "rates"}
+            onClick={() => setExpanded(expanded === "rates" ? null : "rates")}
+            isFirst
+          />
+          {expanded === "rates" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              {/* Hourly rate */}
+              <div className="flex items-start gap-3 pt-4">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Hourly rate
+                  </div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                    Used to calculate lesson costs in the EOL wizard
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.5}
+                    value={hourlyRate}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      if (!isNaN(val) && val >= 0) {
+                        setHourlyRate(val);
+                      }
+                    }}
+                    className="text-[14px] font-medium text-[#0B1F3A] text-right"
+                    style={{
+                      width: 72,
+                      height: 36,
+                      borderRadius: 8,
+                      border: "1px solid #EEF2F7",
+                      padding: "0 8px",
+                      ...POPPINS,
+                    }}
+                  />
+                </div>
+              </div>
 
-        <Card>
-          {/* Hourly rate */}
-          <div className="flex items-start gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Hourly rate
+              {/* Default lesson duration */}
+              <div
+                className="flex items-center gap-3 pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Default lesson duration
+                  </div>
+                </div>
+                <select
+                  value={defaultDuration}
+                  onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
+                  className="text-[13px] text-[#0B1F3A]"
+                  style={{
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    padding: "0 8px",
+                    backgroundColor: "#fff",
+                    ...POPPINS,
+                  }}
+                >
+                  <option value={60}>1 hour</option>
+                  <option value={120}>2 hours</option>
+                  <option value={180}>3 hours</option>
+                  <option value={240}>4 hours</option>
+                  <option value={300}>5 hours</option>
+                  <option value={360}>6 hours</option>
+                  <option value={420}>7 hours</option>
+                  <option value={480}>8 hours</option>
+                </select>
               </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                Used to calculate lesson costs in the EOL wizard
+
+              {/* Buffer between lessons */}
+              <div
+                className="flex items-center gap-3 pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Buffer between lessons
+                  </div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                    Travel time added between lessons
+                  </div>
+                </div>
+                <select
+                  value={bufferMinutes}
+                  onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
+                  className="text-[13px] text-[#0B1F3A]"
+                  style={{
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    padding: "0 8px",
+                    backgroundColor: "#fff",
+                    ...POPPINS,
+                  }}
+                >
+                  <option value={0}>None</option>
+                  <option value={15}>15 mins</option>
+                  <option value={30}>30 mins</option>
+                  <option value={45}>45 mins</option>
+                  <option value={60}>1 hour</option>
+                  <option value={90}>1.5 hours</option>
+                  <option value={120}>2 hours</option>
+                </select>
               </div>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
-              <input
-                type="number"
-                min={0}
-                step={0.5}
-                value={hourlyRate}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val) && val >= 0) {
-                    setHourlyRate(val);
-                  }
-                }}
-                className="text-[14px] font-medium text-[#0B1F3A] text-right"
+
+              {/* Save button */}
+              <button
+                type="button"
+                onClick={saveRates}
+                disabled={savingRates}
+                className="w-full text-[14px] font-semibold text-white mt-5"
                 style={{
-                  width: 72,
-                  height: 36,
-                  borderRadius: 8,
-                  border: "1px solid #EEF2F7",
-                  padding: "0 8px",
+                  height: 48,
+                  borderRadius: 10,
+                  backgroundColor: "#0B1F3A",
+                  border: "none",
+                  opacity: savingRates ? 0.7 : 1,
+                  cursor: savingRates ? "not-allowed" : "pointer",
                   ...POPPINS,
                 }}
-              />
+              >
+                {savingRates ? "Saving…" : "Save rates"}
+              </button>
             </div>
-          </div>
-
-          {/* Default lesson duration */}
-          <div
-            className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Default lesson duration
-              </div>
-            </div>
-            <select
-              value={defaultDuration}
-              onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0B1F3A]"
-              style={{
-                height: 36,
-                borderRadius: 8,
-                border: "1px solid #EEF2F7",
-                padding: "0 8px",
-                backgroundColor: "#fff",
-                ...POPPINS,
-              }}
-            >
-              <option value={60}>1 hour</option>
-              <option value={120}>2 hours</option>
-              <option value={180}>3 hours</option>
-              <option value={240}>4 hours</option>
-              <option value={300}>5 hours</option>
-              <option value={360}>6 hours</option>
-              <option value={420}>7 hours</option>
-              <option value={480}>8 hours</option>
-            </select>
-          </div>
-
-          {/* Buffer between lessons */}
-          <div
-            className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Buffer between lessons
-              </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                Travel time added between lessons
-              </div>
-            </div>
-            <select
-              value={bufferMinutes}
-              onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0B1F3A]"
-              style={{
-                height: 36,
-                borderRadius: 8,
-                border: "1px solid #EEF2F7",
-                padding: "0 8px",
-                backgroundColor: "#fff",
-                ...POPPINS,
-              }}
-            >
-              <option value={0}>None</option>
-              <option value={15}>15 mins</option>
-              <option value={30}>30 mins</option>
-              <option value={45}>45 mins</option>
-              <option value={60}>1 hour</option>
-              <option value={90}>1.5 hours</option>
-              <option value={120}>2 hours</option>
-            </select>
-          </div>
-
-          {/* Save button */}
-          <button
-            type="button"
-            onClick={saveRates}
-            disabled={savingRates}
-            className="w-full text-[14px] font-semibold text-white mt-5"
-            style={{
-              height: 48,
-              borderRadius: 10,
-              backgroundColor: "#0B1F3A",
-              border: "none",
-              opacity: savingRates ? 0.7 : 1,
-              cursor: savingRates ? "not-allowed" : "pointer",
-              ...POPPINS,
-            }}
-          >
-            {savingRates ? "Saving…" : "Save rates"}
-          </button>
+          )}
         </Card>
 
         <SectionHeader>COVERAGE AREA</SectionHeader>
