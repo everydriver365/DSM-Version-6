@@ -658,7 +658,7 @@ function PupilDetailPage() {
   const lessonCount = actualLessonCount ?? 0;
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -699,6 +699,7 @@ function PupilDetailPage() {
           </button>
         </div>
       </div>
+      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
       {/* Profile header card */}
       {pupil && (
         <div className="mx-4 mt-3">
@@ -2112,6 +2113,7 @@ function PupilDetailPage() {
       )}
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
+      </div>
     </div>
     </div>
   );
