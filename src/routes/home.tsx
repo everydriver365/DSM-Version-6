@@ -4193,6 +4193,8 @@ function EarningsBreakdownModal({
   rows,
   onRecord,
   onViewMTD,
+  onEdit,
+  onDelete,
 }: {
   open: boolean;
   onClose: () => void;
@@ -4200,10 +4202,37 @@ function EarningsBreakdownModal({
   rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }>;
   onRecord: () => void;
   onViewMTD: () => void;
+  onEdit: (
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+    updates: { amount: number; method: string; date: string },
+  ) => Promise<void>;
+  onDelete: (
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+  ) => Promise<void>;
 }) {
   const fmtDate = (iso: string) => {
     const d = new Date(iso);
     return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  };
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editAmount, setEditAmount] = useState("");
+  const [editMethod, setEditMethod] = useState("cash");
+  const [editDate, setEditDate] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const startEdit = (r: { id: string; amount: number; method: string; date: string }) => {
+    setEditingId(r.id);
+    setEditAmount(r.amount.toFixed(2));
+    setEditMethod(r.method || "cash");
+    const d = new Date(r.date);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    setEditDate(`${yyyy}-${mm}-${dd}`);
+  };
+  const cancelEdit = () => {
+    setEditingId(null);
   };
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
@@ -4231,25 +4260,151 @@ function EarningsBreakdownModal({
               </div>
             </div>
           ) : (
-            rows.map((r) => (
-              <div
-                key={`${r.source}-${r.id}`}
-                style={{ padding: 12, borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {r.pupilName}
+            rows.map((r) => {
+              const isEditing = editingId === r.id;
+              const editable = r.source === "lesson";
+              const isBusy = busyId === r.id;
+              return (
+                <div key={`${r.source}-${r.id}`} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                  <div style={{ padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {r.pupilName}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                    </div>
+                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                      {r.method}
+                    </span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", minWidth: 60, textAlign: "right" }}>
+                      £{r.amount.toFixed(2)}
+                    </span>
+                    {editable && !isEditing && (
+                      <div style={{ display: "flex", gap: 4 }}>
+                        <button
+                          type="button"
+                          onClick={() => startEdit(r)}
+                          aria-label="Edit payment"
+                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: 6, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId(r.id)}
+                          aria-label="Delete payment"
+                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: 6, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                  {isEditing && (
+                    <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <label style={{ flex: 1, fontSize: 11, color: "#6B7280" }}>
+                          Amount (£)
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={editAmount}
+                            onChange={(e) => setEditAmount(e.target.value)}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13 }}
+                          />
+                        </label>
+                        <label style={{ flex: 1, fontSize: 11, color: "#6B7280" }}>
+                          Date
+                          <input
+                            type="date"
+                            value={editDate}
+                            onChange={(e) => setEditDate(e.target.value)}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13 }}
+                          />
+                        </label>
+                      </div>
+                      <label style={{ fontSize: 11, color: "#6B7280" }}>
+                        Method
+                        <select
+                          value={editMethod}
+                          onChange={(e) => setEditMethod(e.target.value)}
+                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13, backgroundColor: "#fff" }}
+                        >
+                          <option value="cash">Cash</option>
+                          <option value="bank_transfer">Bank transfer</option>
+                          <option value="card">Card</option>
+                        </select>
+                      </label>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                        <button
+                          type="button"
+                          onClick={cancelEdit}
+                          disabled={isBusy}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isBusy}
+                          onClick={async () => {
+                            const amt = Number(editAmount);
+                            if (!amt || amt <= 0) {
+                              toast.error("Enter a valid amount");
+                              return;
+                            }
+                            setBusyId(r.id);
+                            try {
+                              await onEdit(r, { amount: amt, method: editMethod, date: editDate });
+                              setEditingId(null);
+                            } finally {
+                              setBusyId(null);
+                            }
+                          }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#1877D6", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                        >
+                          {isBusy ? "Saving..." : "Save"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {confirmDeleteId === r.id && (
+                    <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                      <div style={{ fontSize: 12, color: "#374151" }}>
+                        Delete this payment? It will be soft-deleted and removed from totals.
+                      </div>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId(null)}
+                          disabled={isBusy}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isBusy}
+                          onClick={async () => {
+                            setBusyId(r.id);
+                            try {
+                              await onDelete(r);
+                              setConfirmDeleteId(null);
+                            } finally {
+                              setBusyId(null);
+                            }
+                          }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#DC2626", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                        >
+                          {isBusy ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
-                  {r.method}
-                </span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", minWidth: 60, textAlign: "right" }}>
-                  £{r.amount.toFixed(2)}
-                </span>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
