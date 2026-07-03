@@ -215,6 +215,7 @@ function PupilDetailPage() {
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
+  const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
@@ -2591,13 +2592,10 @@ function PracticalEditor({
               test_centre_id: centreId,
               test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
             };
-            // examiner column may not exist — attempt with, fall back without
-            const withExaminer = { ...patch, examiner: examiner.trim() || null };
-            try {
-              await onSave(withExaminer);
-            } catch {
-              await onSave(patch);
-            }
+            // NOTE: pupils.examiner column does not exist — never include it,
+            // or the whole update fails and test time/centre silently don't save.
+            void examiner;
+            await onSave(patch);
           }}
         >
           Save
