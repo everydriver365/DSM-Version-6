@@ -700,6 +700,26 @@ function TakePaymentPage() {
               color: NAVY,
             }}
           />
+          <input
+            type="number"
+            inputMode="decimal"
+            step="0.5"
+            min="0"
+            value={hoursBought}
+            onChange={(e) => setHoursBought(e.target.value)}
+            placeholder="Hrs"
+            title="Hours bought (optional)"
+            style={{
+              width: 56,
+              minWidth: 0,
+              padding: "6px 8px",
+              borderRadius: 8,
+              border: "0.5px solid #EEF2F7",
+              fontSize: 13,
+              color: NAVY,
+              textAlign: "center",
+            }}
+          />
         </div>
 
         {/* Tabs */}
