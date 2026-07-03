@@ -137,6 +137,7 @@ interface Lesson {
   payment_status: string | null;
   notes: string | null;
   eol_completed: boolean | null;
+  cancellation_reason: string | null;
 }
 
 function initials(name: string) {
