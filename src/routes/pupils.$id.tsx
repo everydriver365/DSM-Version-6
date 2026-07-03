@@ -583,11 +583,10 @@ function PupilDetailPage() {
 
     supabase
       .from("lessons")
-      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed, cancellation_reason")
       .eq("pupil_id", id)
       .is("deleted_at", null)
-      .neq("status", "cancelled")
-      .or(`status.eq.completed,lesson_date.lt.${ymd(new Date())}`)
+      .or(`status.eq.completed,status.eq.cancelled,lesson_date.lt.${ymd(new Date())}`)
       .order("lesson_date", { ascending: false })
       .order("lesson_time", { ascending: false })
       .limit(50)
