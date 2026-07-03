@@ -710,6 +710,9 @@ function HomePage() {
   const [glancePaymentsTotal, setGlancePaymentsTotal] = useState(0);
   const [glanceExpensesTotal, setGlanceExpensesTotal] = useState(0);
   const [glanceMtdEnrolled, setGlanceMtdEnrolled] = useState<boolean | null>(null);
+  const [weeklyLessonGoal, setWeeklyLessonGoal] = useState<number>(DEFAULT_WEEKLY_LESSON_GOAL);
+  const [weeklyEarningsGoal, setWeeklyEarningsGoal] = useState<number>(DEFAULT_WEEKLY_EARNINGS_GOAL);
+  const [glancePoints, setGlancePoints] = useState<number>(0);
 
   useEffect(() => {
     if (!userId) return;
@@ -719,7 +722,8 @@ function HomePage() {
         3,
         6,
       );
-      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes] = await Promise.all([
+      const currentYear = new Date().getFullYear();
+      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes, instructorRes, pointsRes] = await Promise.all([
         supabase
           .from("pupils")
           .select("id", { count: "exact", head: true })
@@ -748,6 +752,17 @@ function HomePage() {
           .select("enrolled")
           .eq("instructor_id", userId)
           .maybeSingle(),
+        supabase
+          .from("instructors")
+          .select("weekly_lesson_goal, weekly_earnings_goal")
+          .eq("id", userId)
+          .maybeSingle(),
+        supabase
+          .from("instructor_points")
+          .select("total_points")
+          .eq("instructor_id", userId)
+          .eq("season_year", currentYear)
+          .maybeSingle(),
       ]);
       setGlancePupilCount(pupilsRes.count ?? 0);
       setGlanceCompletedLessons(lessonsRes.count ?? 0);
@@ -758,22 +773,37 @@ function HomePage() {
         (expensesRes.data ?? []).reduce((s, e: any) => s + Number(e.amount ?? 0), 0),
       );
       setGlanceMtdEnrolled(mtdRes.data ? Boolean((mtdRes.data as any).enrolled) : false);
+      const instructorRow = (instructorRes as any)?.data ?? null;
+      if (instructorRow) {
+        const wl = Number(instructorRow.weekly_lesson_goal);
+        const we = Number(instructorRow.weekly_earnings_goal);
+        if (Number.isFinite(wl) && wl > 0) setWeeklyLessonGoal(wl);
+        if (Number.isFinite(we) && we > 0) setWeeklyEarningsGoal(we);
+      }
+      const pointsRow = (pointsRes as any)?.data ?? null;
+      setGlancePoints(Number(pointsRow?.total_points ?? 0));
     })();
   }, [userId]);
 
-  const glancePoints = glancePupilCount * 10 + glanceCompletedLessons * 5 + glancePaymentsCount * 2;
-  const glanceTier =
-    glancePoints >= 1000 ? "Platinum" : glancePoints >= 500 ? "Gold" : glancePoints >= 200 ? "Silver" : "Bronze";
-  const glanceTierColor =
-    glanceTier === "Platinum"
-      ? "#0EA5E9"
-      : glanceTier === "Gold"
-      ? "#0B1F3A"
-      : glanceTier === "Silver"
-      ? "#6B7280"
-      : "#0B1F3A";
+  const glanceTierKey = tierFromPoints(glancePoints);
+  const glanceTier = glanceTierKey.charAt(0).toUpperCase() + glanceTierKey.slice(1);
+  const glanceTierColor = TIER_COLORS[glanceTierKey];
   const glanceNetProfit = Math.max(0, glancePaymentsTotal - glanceExpensesTotal);
-  const glanceTaxBill = Math.max(0, (glanceNetProfit - 12570) * 0.2);
+  // UK Self-Employed estimate for 2024/25 tax year — Income Tax + Class 4 NI.
+  // Personal allowance £12,570; basic-rate band up to £50,270 (20% tax, 9% NI);
+  // above £50,270 (40% tax, 2% NI). Rough guide only — does not include Class 2
+  // NI, PA taper (>£100k), higher/additional-rate band, Scottish rates, or
+  // dividend/other income.
+  const glanceTaxAndNi = (() => {
+    const profit = glanceNetProfit;
+    const PA = 12570;
+    const BASIC_TOP = 50270;
+    const basicSlice = Math.max(0, Math.min(profit, BASIC_TOP) - PA);
+    const higherSlice = Math.max(0, profit - BASIC_TOP);
+    const incomeTax = basicSlice * 0.2 + higherSlice * 0.4;
+    const class4Ni = basicSlice * 0.09 + higherSlice * 0.02;
+    return Math.max(0, incomeTax + class4Ni);
+  })();
   const monthsElapsed = (() => {
     const now = new Date();
     const startMonth = now.getMonth() >= 3 ? 3 : -9; // April = 3
