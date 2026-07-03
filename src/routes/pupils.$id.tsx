@@ -881,7 +881,7 @@ function PupilDetailPage() {
                     className="text-[10px] font-semibold uppercase tracking-widest"
                     style={{ color: "rgba(255,255,255,0.6)", ...POPPINS }}
                   >
-                    Total lessons
+                    Lessons bought
                   </p>
                   <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
                     {lessonCount}
