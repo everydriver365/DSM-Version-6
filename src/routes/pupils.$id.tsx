@@ -1048,7 +1048,7 @@ function PupilDetailPage() {
                         <div className="grid grid-cols-3 gap-2">
                           {[
                             { label: "Syllabus", value: Math.round(readiness.syllabusPoints), max: 60 },
-                            { label: "Lessons", value: Math.round(readiness.lessonPoints), max: 30 },
+                            { label: "Lessons", value: actualLessonCount ?? 0, max: pupil?.lesson_count ?? 0 },
                             { label: "Theory", value: readiness.theoryPoints, max: 10 },
                           ].map((s) => (
                             <div key={s.label} className="flex flex-col">
