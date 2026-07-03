@@ -1192,7 +1192,7 @@ function PupilDetailPage() {
           .filter(Boolean)
           .join(" · ");
         return (
-          <div className="mx-4 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
             {showTheory && (
               <ActionTile
                 label="Theory test"
