@@ -790,12 +790,17 @@ function PupilDetailPage() {
                 label="Test"
                 value={
                   pupil.test_date
-                    ? `${formatTestDate(pupil.test_date)}${pupil.test_time ? ` · ${formatTime(pupil.test_time)}` : ""}`
+                    ? formatTestDate(pupil.test_date)
                     : "No test"
                 }
                 subValue={
                   pupil.test_date
-                    ? centreInfo?.name || pupil.test_centre || undefined
+                    ? [
+                        pupil.test_time ? formatTime(pupil.test_time) : null,
+                        centreInfo?.name || pupil.test_centre || null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ") || undefined
                     : undefined
                 }
               />
