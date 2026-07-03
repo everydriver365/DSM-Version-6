@@ -675,518 +675,533 @@ function SettingsPage() {
         </Card>
 
         <SectionHeader>RATES & SCHEDULING</SectionHeader>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<PoundSterling size={18} color="#1877D6" />}
+            iconBg="#DBEAFE"
+            label="Rates & scheduling"
+            expanded={expanded === "rates"}
+            onClick={() => setExpanded(expanded === "rates" ? null : "rates")}
+            isFirst
+          />
+          {expanded === "rates" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              {/* Hourly rate */}
+              <div className="flex items-start gap-3 pt-4">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Hourly rate
+                  </div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                    Used to calculate lesson costs in the EOL wizard
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.5}
+                    value={hourlyRate}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      if (!isNaN(val) && val >= 0) {
+                        setHourlyRate(val);
+                      }
+                    }}
+                    className="text-[14px] font-medium text-[#0B1F3A] text-right"
+                    style={{
+                      width: 72,
+                      height: 36,
+                      borderRadius: 8,
+                      border: "1px solid #EEF2F7",
+                      padding: "0 8px",
+                      ...POPPINS,
+                    }}
+                  />
+                </div>
+              </div>
 
-        <Card>
-          {/* Hourly rate */}
-          <div className="flex items-start gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Hourly rate
+              {/* Default lesson duration */}
+              <div
+                className="flex items-center gap-3 pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Default lesson duration
+                  </div>
+                </div>
+                <select
+                  value={defaultDuration}
+                  onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
+                  className="text-[13px] text-[#0B1F3A]"
+                  style={{
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    padding: "0 8px",
+                    backgroundColor: "#fff",
+                    ...POPPINS,
+                  }}
+                >
+                  <option value={60}>1 hour</option>
+                  <option value={120}>2 hours</option>
+                  <option value={180}>3 hours</option>
+                  <option value={240}>4 hours</option>
+                  <option value={300}>5 hours</option>
+                  <option value={360}>6 hours</option>
+                  <option value={420}>7 hours</option>
+                  <option value={480}>8 hours</option>
+                </select>
               </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                Used to calculate lesson costs in the EOL wizard
+
+              {/* Buffer between lessons */}
+              <div
+                className="flex items-center gap-3 pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Buffer between lessons
+                  </div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                    Travel time added between lessons
+                  </div>
+                </div>
+                <select
+                  value={bufferMinutes}
+                  onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
+                  className="text-[13px] text-[#0B1F3A]"
+                  style={{
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    padding: "0 8px",
+                    backgroundColor: "#fff",
+                    ...POPPINS,
+                  }}
+                >
+                  <option value={0}>None</option>
+                  <option value={15}>15 mins</option>
+                  <option value={30}>30 mins</option>
+                  <option value={45}>45 mins</option>
+                  <option value={60}>1 hour</option>
+                  <option value={90}>1.5 hours</option>
+                  <option value={120}>2 hours</option>
+                </select>
               </div>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
-              <input
-                type="number"
-                min={0}
-                step={0.5}
-                value={hourlyRate}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val) && val >= 0) {
-                    setHourlyRate(val);
-                  }
-                }}
-                className="text-[14px] font-medium text-[#0B1F3A] text-right"
+
+              {/* Save button */}
+              <button
+                type="button"
+                onClick={saveRates}
+                disabled={savingRates}
+                className="w-full text-[14px] font-semibold text-white mt-5"
                 style={{
-                  width: 72,
-                  height: 36,
-                  borderRadius: 8,
-                  border: "1px solid #EEF2F7",
-                  padding: "0 8px",
+                  height: 48,
+                  borderRadius: 10,
+                  backgroundColor: "#0B1F3A",
+                  border: "none",
+                  opacity: savingRates ? 0.7 : 1,
+                  cursor: savingRates ? "not-allowed" : "pointer",
                   ...POPPINS,
                 }}
-              />
+              >
+                {savingRates ? "Saving…" : "Save rates"}
+              </button>
             </div>
-          </div>
-
-          {/* Default lesson duration */}
-          <div
-            className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Default lesson duration
-              </div>
-            </div>
-            <select
-              value={defaultDuration}
-              onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0B1F3A]"
-              style={{
-                height: 36,
-                borderRadius: 8,
-                border: "1px solid #EEF2F7",
-                padding: "0 8px",
-                backgroundColor: "#fff",
-                ...POPPINS,
-              }}
-            >
-              <option value={60}>1 hour</option>
-              <option value={120}>2 hours</option>
-              <option value={180}>3 hours</option>
-              <option value={240}>4 hours</option>
-              <option value={300}>5 hours</option>
-              <option value={360}>6 hours</option>
-              <option value={420}>7 hours</option>
-              <option value={480}>8 hours</option>
-            </select>
-          </div>
-
-          {/* Buffer between lessons */}
-          <div
-            className="flex items-center gap-3 pt-4 mt-4"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Buffer between lessons
-              </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                Travel time added between lessons
-              </div>
-            </div>
-            <select
-              value={bufferMinutes}
-              onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
-              className="text-[13px] text-[#0B1F3A]"
-              style={{
-                height: 36,
-                borderRadius: 8,
-                border: "1px solid #EEF2F7",
-                padding: "0 8px",
-                backgroundColor: "#fff",
-                ...POPPINS,
-              }}
-            >
-              <option value={0}>None</option>
-              <option value={15}>15 mins</option>
-              <option value={30}>30 mins</option>
-              <option value={45}>45 mins</option>
-              <option value={60}>1 hour</option>
-              <option value={90}>1.5 hours</option>
-              <option value={120}>2 hours</option>
-            </select>
-          </div>
-
-          {/* Save button */}
-          <button
-            type="button"
-            onClick={saveRates}
-            disabled={savingRates}
-            className="w-full text-[14px] font-semibold text-white mt-5"
-            style={{
-              height: 48,
-              borderRadius: 10,
-              backgroundColor: "#0B1F3A",
-              border: "none",
-              opacity: savingRates ? 0.7 : 1,
-              cursor: savingRates ? "not-allowed" : "pointer",
-              ...POPPINS,
-            }}
-          >
-            {savingRates ? "Saving…" : "Save rates"}
-          </button>
+          )}
         </Card>
 
         <SectionHeader>COVERAGE AREA</SectionHeader>
-        <Card
-          style={{
-            background: "#fff",
-            border: "0.5px solid #EEF2F7",
-            borderRadius: 12,
-            padding: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <MapPin size={18} color="#1877D6" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
-              Coverage area
-            </span>
-          </div>
+        <Card className="!p-0">
+          <MenuRow
+            icon={<MapPin size={18} color="#1877D6" />}
+            iconBg="#DBEAFE"
+            label="Coverage area"
+            expanded={expanded === "coverage"}
+            onClick={() => setExpanded(expanded === "coverage" ? null : "coverage")}
+            isFirst
+          />
+          {expanded === "coverage" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <label className="block pt-4" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
+              <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
+                <input
+                  type="text"
+                  value={homePostcode}
+                  onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
+                  onBlur={() => setPostcodeBlurred(true)}
+                  placeholder="e.g. SO23 9AX"
+                  autoCapitalize="characters"
+                  maxLength={10}
+                  style={{
+                    width: "100%",
+                    height: 44,
+                    padding: "0 36px 0 12px",
+                    border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
+                    borderRadius: 10,
+                    fontSize: 14,
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    textTransform: "uppercase",
+                    ...POPPINS,
+                  }}
+                />
+                {postcodeValid && (
+                  <Check
+                    size={18}
+                    color="#1877D6"
+                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
+                  />
+                )}
+              </div>
+              {postcodeShowError && (
+                <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
+                  Please enter a valid UK postcode
+                </div>
+              )}
 
-          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
-          <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
-            <input
-              type="text"
-              value={homePostcode}
-              onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
-              onBlur={() => setPostcodeBlurred(true)}
-              placeholder="e.g. SO23 9AX"
-              autoCapitalize="characters"
-              maxLength={10}
-              style={{
-                width: "100%",
-                height: 44,
-                padding: "0 36px 0 12px",
-                border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
-                borderRadius: 10,
-                fontSize: 14,
-                background: "#fff",
-                color: "#0B1F3A",
-                textTransform: "uppercase",
-                ...POPPINS,
-              }}
-            />
-            {postcodeValid && (
-              <Check
-                size={18}
-                color="#1877D6"
-                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
-              />
-            )}
-          </div>
-          {postcodeShowError && (
-            <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
-              Please enter a valid UK postcode
+              <label className="block" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
+              <select
+                value={coverageRadius}
+                onChange={(e) => setCoverageRadius(Number(e.target.value))}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  padding: "0 12px",
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 10,
+                  fontSize: 14,
+                  marginTop: 6,
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                {[5, 10, 15, 20, 25, 30].map((m) => (
+                  <option key={m} value={m}>
+                    {m} miles
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={saveCoverage}
+                disabled={savingCoverage || !postcodeValid}
+                className="w-full text-[14px] font-semibold text-white mt-5"
+                style={{
+                  height: 48,
+                  borderRadius: 10,
+                  backgroundColor: "#0B1F3A",
+                  border: "none",
+                  opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
+                  cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {savingCoverage ? "Saving…" : "Save coverage"}
+              </button>
             </div>
           )}
-
-
-          <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
-          <select
-            value={coverageRadius}
-            onChange={(e) => setCoverageRadius(Number(e.target.value))}
-            style={{
-              width: "100%",
-              height: 44,
-              padding: "0 12px",
-              border: "0.5px solid #EEF2F7",
-              borderRadius: 10,
-              fontSize: 14,
-              marginTop: 6,
-              background: "#fff",
-              color: "#0B1F3A",
-              ...POPPINS,
-            }}
-          >
-            {[5, 10, 15, 20, 25, 30].map((m) => (
-              <option key={m} value={m}>
-                {m} miles
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="button"
-            onClick={saveCoverage}
-            disabled={savingCoverage || !postcodeValid}
-            className="w-full text-[14px] font-semibold text-white mt-5"
-            style={{
-              height: 48,
-              borderRadius: 10,
-              backgroundColor: "#0B1F3A",
-              border: "none",
-              opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
-              cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
-              ...POPPINS,
-            }}
-          >
-            {savingCoverage ? "Saving…" : "Save coverage"}
-          </button>
         </Card>
 
         <SectionHeader>PRICING RULES</SectionHeader>
-        <Card className="!p-0" style={{ marginBottom: 12 }}>
+        <Card className="!p-0">
           <MenuRow
-            icon={<MapPin size={18} color="#0369A1" />}
-            iconBg="#E0F2FE"
-            label="Postcode rates"
-            onClick={() => navigate({ to: "/postcode-rates" })}
+            icon={<PoundSterling size={18} color="#1877D6" />}
+            iconBg="#DBEAFE"
+            label="Pricing rules"
+            expanded={expanded === "pricing"}
+            onClick={() => setExpanded(expanded === "pricing" ? null : "pricing")}
             isFirst
           />
-        </Card>
-        <Card style={{ background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, padding: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <PoundSterling size={18} color="#1877D6" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
-              Pricing rules
-            </span>
-          </div>
-          <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
-            Automatically adjust lesson prices based on time, day, location, or booking notice.
-          </p>
+          {expanded === "pricing" && (
+            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <MenuRow
+                icon={<MapPin size={18} color="#0369A1" />}
+                iconBg="#E0F2FE"
+                label="Postcode rates"
+                onClick={() => navigate({ to: "/postcode-rates" })}
+                isFirst
+              />
 
-          {pricingRules.length === 0 && (
-            <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
-              No pricing rules yet. Add one below.
-            </p>
-          )}
+              <div className="pt-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
+                  Automatically adjust lesson prices based on time, day, location, or booking notice.
+                </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-            {pricingRules.map((r) => (
-              <div
-                key={r.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  border: "0.5px solid #EEF2F7",
-                  borderRadius: 10,
-                  padding: 12,
-                  background: "#fff",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                    <span style={{ fontWeight: 600, fontSize: 14, color: "#0B1F3A", ...POPPINS }}>
-                      {r.rule_name}
-                    </span>
-                    <span
+                {pricingRules.length === 0 && (
+                  <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
+                    No pricing rules yet. Add one below.
+                  </p>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+                  {pricingRules.map((r) => (
+                    <div
+                      key={r.id}
                       style={{
-                        fontSize: 11,
-                        padding: "2px 8px",
-                        borderRadius: 999,
-                        background: "#EEF2FF",
-                        color: "#1877D6",
-                        ...POPPINS,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        border: "0.5px solid #EEF2F7",
+                        borderRadius: 10,
+                        padding: 12,
+                        background: "#fff",
                       }}
                     >
-                      {RULE_TYPE_LABEL[r.rule_type]}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: "#1877D6",
-                        ...POPPINS,
-                      }}
-                    >
-                      {r.adjustment_type === "flat"
-                        ? `+£${Number(r.adjustment_value).toFixed(2)}`
-                        : `+${r.adjustment_value}%`}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, ...POPPINS }}>
-                    {describeRule(r)}
-                  </div>
-                </div>
-                <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    checked={r.is_active}
-                    onChange={(e) => toggleRule(r.id, e.target.checked)}
-                    style={{ width: 18, height: 18, accentColor: "#1877D6" }}
-                  />
-                </label>
-                <button
-                  type="button"
-                  onClick={() => deleteRule(r.id)}
-                  aria-label="Delete rule"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 4,
-                    color: "#1877D6",
-                  }}
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginBottom: 10, ...POPPINS }}>
-              Add new rule
-            </div>
-
-            <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule name</label>
-            <input
-              type="text"
-              value={ruleName}
-              onChange={(e) => setRuleName(e.target.value)}
-              placeholder="e.g. Evening Surcharge"
-              style={{
-                width: "100%", height: 44, padding: "0 12px",
-                border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
-              }}
-            />
-
-            <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule type</label>
-            <select
-              value={ruleType}
-              onChange={(e) => setRuleType(e.target.value as RuleType)}
-              style={{
-                width: "100%", height: 44, padding: "0 12px",
-                border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
-              }}
-            >
-              <option value="time_of_day">Time of Day</option>
-              <option value="day_of_week">Day of Week</option>
-              <option value="postcode_zone">Postcode Zone</option>
-              <option value="advance_notice">Advance Notice</option>
-            </select>
-
-            {ruleType === "time_of_day" && (
-              <>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>After time</label>
-                <input
-                  type="time"
-                  value={ruleTime}
-                  onChange={(e) => setRuleTime(e.target.value)}
-                  style={{
-                    width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
-                  }}
-                />
-              </>
-            )}
-
-            {ruleType === "day_of_week" && (
-              <div style={{ marginTop: 6, marginBottom: 12 }}>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Days</label>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-                  {DAYS.map((d) => (
-                    <label
-                      key={d.key}
-                      style={{
-                        display: "inline-flex", alignItems: "center", gap: 6,
-                        padding: "6px 10px", border: "0.5px solid #EEF2F7",
-                        borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={ruleDays[d.key]}
-                        onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
-                        style={{ accentColor: "#1877D6" }}
-                      />
-                      {d.label.slice(0, 3)}
-                    </label>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                          <span style={{ fontWeight: 600, fontSize: 14, color: "#0B1F3A", ...POPPINS }}>
+                            {r.rule_name}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 11,
+                              padding: "2px 8px",
+                              borderRadius: 999,
+                              background: "#EEF2FF",
+                              color: "#1877D6",
+                              ...POPPINS,
+                            }}
+                          >
+                            {RULE_TYPE_LABEL[r.rule_type]}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 600,
+                              color: "#1877D6",
+                              ...POPPINS,
+                            }}
+                          >
+                            {r.adjustment_type === "flat"
+                              ? `+£${Number(r.adjustment_value).toFixed(2)}`
+                              : `+${r.adjustment_value}%`}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, ...POPPINS }}>
+                          {describeRule(r)}
+                        </div>
+                      </div>
+                      <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
+                        <input
+                          type="checkbox"
+                          checked={r.is_active}
+                          onChange={(e) => toggleRule(r.id, e.target.checked)}
+                          style={{ width: 18, height: 18, accentColor: "#1877D6" }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => deleteRule(r.id)}
+                        aria-label="Delete rule"
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: 4,
+                          color: "#1877D6",
+                        }}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
 
-            {ruleType === "postcode_zone" && (() => {
-              const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
-              const entries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
-              const invalid = entries.filter((e) => !POSTCODE_RE.test(e));
-              return (
-                <>
-                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                    Postcodes (comma separated)
-                  </label>
+                <div style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginBottom: 10, ...POPPINS }}>
+                    Add new rule
+                  </div>
+
+                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule name</label>
                   <input
                     type="text"
-                    value={rulePostcodes}
-                    onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
-                    placeholder="SO22, SO23 9AX"
+                    value={ruleName}
+                    onChange={(e) => setRuleName(e.target.value)}
+                    placeholder="e.g. Evening Surcharge"
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: `0.5px solid ${invalid.length ? "#1877D6" : "#EEF2F7"}`,
-                      borderRadius: 10, fontSize: 14,
-                      marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
-                      background: "#fff", color: "#0B1F3A",
-                      textTransform: "uppercase", ...POPPINS,
+                      border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                      marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                     }}
                   />
-                  {invalid.length > 0 && (
-                    <div style={{ color: "#1877D6", fontSize: 12, marginBottom: 8, ...POPPINS }}>
-                      {invalid.map((v) => `Invalid postcode: ${v}`).join(" · ")}
+
+                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule type</label>
+                  <select
+                    value={ruleType}
+                    onChange={(e) => setRuleType(e.target.value as RuleType)}
+                    style={{
+                      width: "100%", height: 44, padding: "0 12px",
+                      border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                      marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
+                    }}
+                  >
+                    <option value="time_of_day">Time of Day</option>
+                    <option value="day_of_week">Day of Week</option>
+                    <option value="postcode_zone">Postcode Zone</option>
+                    <option value="advance_notice">Advance Notice</option>
+                  </select>
+
+                  {ruleType === "time_of_day" && (
+                    <>
+                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>After time</label>
+                      <input
+                        type="time"
+                        value={ruleTime}
+                        onChange={(e) => setRuleTime(e.target.value)}
+                        style={{
+                          width: "100%", height: 44, padding: "0 12px",
+                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
+                        }}
+                      />
+                    </>
+                  )}
+
+                  {ruleType === "day_of_week" && (
+                    <div style={{ marginTop: 6, marginBottom: 12 }}>
+                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Days</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
+                        {DAYS.map((d) => (
+                          <label
+                            key={d.key}
+                            style={{
+                              display: "inline-flex", alignItems: "center", gap: 6,
+                              padding: "6px 10px", border: "0.5px solid #EEF2F7",
+                              borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={ruleDays[d.key]}
+                              onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
+                              style={{ accentColor: "#1877D6" }}
+                            />
+                            {d.label.slice(0, 3)}
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   )}
-                  {entries.length > 0 && invalid.length === 0 && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-                      {entries.map((v) => (
-                        <span key={v} style={{
-                          display: "inline-flex", alignItems: "center", gap: 4,
-                          fontSize: 12, color: "#0F7B3F", background: "#E8F5EC",
-                          padding: "2px 8px", borderRadius: 999, ...POPPINS,
-                        }}>
-                          <Check size={12} /> {v}
-                        </span>
-                      ))}
-                    </div>
+
+                  {ruleType === "postcode_zone" && (() => {
+                    const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
+                    const entries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
+                    const invalid = entries.filter((e) => !POSTCODE_RE.test(e));
+                    return (
+                      <>
+                        <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
+                          Postcodes (comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={rulePostcodes}
+                          onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
+                          placeholder="SO22, SO23 9AX"
+                          style={{
+                            width: "100%", height: 44, padding: "0 12px",
+                            border: `0.5px solid ${invalid.length ? "#1877D6" : "#EEF2F7"}`,
+                            borderRadius: 10, fontSize: 14,
+                            marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
+                            background: "#fff", color: "#0B1F3A",
+                            textTransform: "uppercase", ...POPPINS,
+                          }}
+                        />
+                        {invalid.length > 0 && (
+                          <div style={{ color: "#1877D6", fontSize: 12, marginBottom: 8, ...POPPINS }}>
+                            {invalid.map((v) => `Invalid postcode: ${v}`).join(" · ")}
+                          </div>
+                        )}
+                        {entries.length > 0 && invalid.length === 0 && (
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
+                            {entries.map((v) => (
+                              <span key={v} style={{
+                                display: "inline-flex", alignItems: "center", gap: 4,
+                                fontSize: 12, color: "#0F7B3F", background: "#E8F5EC",
+                                padding: "2px 8px", borderRadius: 999, ...POPPINS,
+                              }}>
+                                <Check size={12} /> {v}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+
+                  {ruleType === "advance_notice" && (
+                    <>
+                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Within X hours</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={ruleHours}
+                        onChange={(e) => setRuleHours(Number(e.target.value))}
+                        style={{
+                          width: "100%", height: 44, padding: "0 12px",
+                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
+                        }}
+                      />
+                    </>
                   )}
-                </>
-              );
-            })()}
 
-            {ruleType === "advance_notice" && (
-              <>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Within X hours</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={ruleHours}
-                  onChange={(e) => setRuleHours(Number(e.target.value))}
-                  style={{
-                    width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
-                  }}
-                />
-              </>
-            )}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment type</label>
+                      <select
+                        value={ruleAdjType}
+                        onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
+                        style={{
+                          width: "100%", height: 44, padding: "0 12px",
+                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
+                        }}
+                      >
+                        <option value="flat">Flat amount (£)</option>
+                        <option value="percent">Percentage (%)</option>
+                      </select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment value</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={ruleAdjValue}
+                        onChange={(e) => setRuleAdjValue(Number(e.target.value))}
+                        style={{
+                          width: "100%", height: 44, padding: "0 12px",
+                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
+                        }}
+                      />
+                    </div>
+                  </div>
 
-            <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment type</label>
-                <select
-                  value={ruleAdjType}
-                  onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
-                  style={{
-                    width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
-                  }}
-                >
-                  <option value="flat">Flat amount (£)</option>
-                  <option value="percent">Percentage (%)</option>
-                </select>
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment value</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={ruleAdjValue}
-                  onChange={(e) => setRuleAdjValue(Number(e.target.value))}
-                  style={{
-                    width: "100%", height: 44, padding: "0 12px",
-                    border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
-                    marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
-                  }}
-                />
+                  <button
+                    type="button"
+                    onClick={addPricingRule}
+                    disabled={savingRule || hasInvalidPostcodes}
+                    className="w-full text-[14px] font-semibold text-white mt-4"
+                    style={{
+                      height: 48, borderRadius: 10, backgroundColor: "#0B1F3A", border: "none",
+                      opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
+                      cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    <Plus size={16} /> {savingRule ? "Adding…" : "Add rule"}
+                  </button>
+                </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              onClick={addPricingRule}
-              disabled={savingRule || hasInvalidPostcodes}
-              className="w-full text-[14px] font-semibold text-white mt-4"
-              style={{
-                height: 48, borderRadius: 10, backgroundColor: "#0B1F3A", border: "none",
-                opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
-                cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-                ...POPPINS,
-              }}
-            >
-              <Plus size={16} /> {savingRule ? "Adding…" : "Add rule"}
-            </button>
-          </div>
+          )}
         </Card>
 
         <SectionHeader>PUPILS</SectionHeader>
