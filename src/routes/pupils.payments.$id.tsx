@@ -140,7 +140,7 @@ function PupilPaymentsPage() {
         )}
 
         {(() => {
-          const { net, owed } = balanceValue(accountBalance, balanceOwed);
+          const { net } = balanceValue(accountBalance, balanceOwed);
           return (
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="rounded-xl p-4" style={{ backgroundColor: "#0F2044" }}>
@@ -163,17 +163,6 @@ function PupilPaymentsPage() {
                 </p>
                 <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
                   {formatGBP(totalPaid)}
-                </p>
-              </div>
-              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
-                <p
-                  className="text-[10px] font-bold uppercase tracking-widest"
-                  style={{ color: "#64748B", ...POPPINS }}
-                >
-                  Owed
-                </p>
-                <p className="text-[22px] font-bold text-[#0B1F3A] mt-1" style={POPPINS}>
-                  {formatGBP(owed)}
                 </p>
               </div>
             </div>
