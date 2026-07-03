@@ -477,7 +477,7 @@ function HomePage() {
     pupilName: string;
     amount: number;
     method: string;
-    source: "lesson" | "booking";
+    source: "lesson" | "booking" | "lesson-earned";
   }>>([]);
   const [weekLessonRows, setWeekLessonRows] = useState<Array<{
     id: string;
@@ -1016,15 +1016,19 @@ function HomePage() {
 
 
 
-      // Source 1: EOL payments recorded in lesson_history
-      const { data: historyRows } = await supabase
-        .from("lesson_history")
-        .select("id, lesson_cost, payment_status, payment_method, created_at, pupil_id, pupils(name)")
+      // Source 1: lessons delivered this week (completed or past end time),
+      // valued at each lesson's amount_due (reflects custom / postcode /
+      // default rate at creation). Covers prepaid pupils where no
+      // lesson_history row is written per lesson.
+      const nowMs = Date.now();
+      const { data: weekLessonRowsForEarnings } = await supabase
+        .from("lessons")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, pupil_id, payment_status, pupils(name, custom_rate, custom_rate_90, custom_rate_120)")
         .eq("instructor_id", userId)
-        .eq("payment_status", "paid")
         .is("deleted_at", null)
-        .gte("created_at", weekStart.toISOString())
-        .lt("created_at", weekEnd.toISOString());
+        .neq("status", "cancelled")
+        .gte("lesson_date", ymd(weekStart))
+        .lt("lesson_date", ymd(weekEnd));
 
       // Source 2: Course booking deposits from public site
       const { data: bookingRows } = await supabase
@@ -1038,18 +1042,33 @@ function HomePage() {
       // Combine all sources
       let wk = 0;
       let td = 0;
-      const earningsList: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }> = [];
-      (historyRows ?? []).forEach((p: any) => {
-        const amt = Number(p.lesson_cost ?? 0);
+      const earningsList: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" }> = [];
+      const todayYmdStr = ymd(todayStart);
+      (weekLessonRowsForEarnings ?? []).forEach((l: any) => {
+        const dur = Number(l.duration_minutes) || 60;
+        // Only recognise revenue once lesson has actually taken place
+        const endMs = new Date(`${l.lesson_date}T${(l.lesson_time || "00:00:00").slice(0, 8)}`).getTime() + dur * 60_000;
+        const delivered = l.status === "completed" || endMs <= nowMs;
+        if (!delivered) return;
+        // Prefer per-duration custom rate, then general custom rate, then amount_due
+        const p = l.pupils ?? {};
+        let amt = 0;
+        if (dur === 90 && Number(p.custom_rate_90) > 0) amt = Number(p.custom_rate_90);
+        else if (dur === 120 && Number(p.custom_rate_120) > 0) amt = Number(p.custom_rate_120);
+        else if (Number(p.custom_rate) > 0) amt = Math.round(Number(p.custom_rate) * (dur / 60) * 100) / 100;
+        else amt = Number(l.amount_due ?? 0);
+        if (amt <= 0) return;
         wk += amt;
-        if (new Date(p.created_at) >= todayStart) td += amt;
+        if (l.lesson_date === todayYmdStr) td += amt;
+        const iso = new Date(`${l.lesson_date}T${(l.lesson_time || "00:00:00").slice(0, 8)}`).toISOString();
+        const method = l.payment_status === "paid" ? "Paid" : "Prepaid";
         earningsList.push({
-          id: String(p.id),
-          date: p.created_at,
-          pupilName: p.pupils?.name ?? "Pupil",
+          id: String(l.id),
+          date: iso,
+          pupilName: p.name ?? "Pupil",
           amount: amt,
-          method: p.payment_method ?? "—",
-          source: "lesson",
+          method,
+          source: "lesson-earned",
         });
       });
       (bookingRows ?? []).forEach((p: any) => {
@@ -4174,15 +4193,15 @@ function EarningsBreakdownModal({
   open: boolean;
   onClose: () => void;
   total: number;
-  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }>;
+  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" }>;
   onRecord: () => void;
   onViewMTD: () => void;
   onEdit: (
-    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" },
     updates: { amount: number; method: string; date: string },
   ) => Promise<void>;
   onDelete: (
-    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" },
   ) => Promise<void>;
 }) {
   const fmtDate = (iso: string) => {
