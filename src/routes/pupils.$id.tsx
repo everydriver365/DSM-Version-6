@@ -215,6 +215,7 @@ function PupilDetailPage() {
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
+  const [syllabus, setSyllabus] = useState<{ status: string }[] | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
