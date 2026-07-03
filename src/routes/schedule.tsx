@@ -349,6 +349,7 @@ function SchedulePage() {
   const cancelLessonNow = async () => {
     if (!cancelLesson) return;
     const id = cancelLesson.id;
+    const lessonSnapshot = cancelLesson;
     const prev = lessons;
     setLessons((cur) =>
       cur
@@ -372,6 +373,58 @@ function SchedulePage() {
       return;
     }
     toast.success("Lesson cancelled");
+    // Late cancellation → negative points
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const instructorId = lessonSnapshot.instructor_id ?? undefined;
+      if (token && instructorId) {
+        const lateHours = await getLateCancelHours(instructorId, token);
+        if (lateHours != null) {
+          const hoursUntil =
+            (lessonStart(lessonSnapshot).getTime() - Date.now()) / 3600000;
+          if (hoursUntil <= lateHours) {
+            await awardPoints(instructorId, "LATE_CANCELLATION", token, {
+              referenceId: id,
+              referenceType: "lesson",
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[schedule] late-cancel points failed:", err);
+    }
+  };
+
+  const markNoShow = async (l: Lesson) => {
+    const id = l.id;
+    const prev = lessons;
+    setLessons((cur) =>
+      cur ? cur.map((x) => (x.id === id ? { ...x, status: "no_show" } : x)) : cur,
+    );
+    setOpenActionsId(null);
+    const { error } = await supabase
+      .from("lessons")
+      .update({ status: "no_show" })
+      .eq("id", id);
+    if (error) {
+      console.error("[schedule] no-show error", error);
+      setLessons(prev);
+      toast.error("Couldn't mark no-show");
+      return;
+    }
+    toast.success(`Marked no-show for ${pupilDisplayName(l.pupil)}`);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      if (token && l.instructor_id) {
+        await awardPoints(l.instructor_id, "NO_SHOW", token, {
+          referenceId: id,
+          referenceType: "lesson",
+        });
+        await applyNoShowFee(l, pupilDisplayName(l.pupil), token);
+      }
+    } catch (err) {
+      console.warn("[schedule] no-show side effects failed:", err);
+    }
   };
 
   const goToLesson = (id: string) => {
