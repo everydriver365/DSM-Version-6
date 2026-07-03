@@ -863,7 +863,12 @@ function PupilDetailPage() {
                     </span>
                   </div>
                 </div>
-                <div className="text-right text-white shrink-0 pl-3">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+                  className="text-right text-white shrink-0 pl-3 cursor-pointer"
+                  style={{ background: "none", border: "none", padding: 0 }}
+                >
                   <p
                     className="text-[10px] font-bold opacity-70 uppercase tracking-widest"
                     style={POPPINS}
@@ -882,7 +887,7 @@ function PupilDetailPage() {
                   >
                     completed
                   </p>
-                </div>
+                </button>
               </div>
               {/* Decorative background element */}
               <div
