@@ -570,6 +570,20 @@ function PupilDetailPage() {
         setLessons((data as Lesson[]) ?? []);
       });
 
+    supabase
+      .from("lessons")
+      .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .or(`status.eq.completed,lesson_date.lt.${ymd(new Date())}`)
+      .order("lesson_date", { ascending: false })
+      .order("lesson_time", { ascending: false })
+      .limit(50)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] past lessons error", error);
+        setPastLessons((data as Lesson[]) ?? []);
+      });
+
     // Hours completed: sum duration_minutes for confirmed/completed lessons
     supabase
       .from("lessons")
