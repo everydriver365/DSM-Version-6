@@ -851,6 +851,68 @@ function PupilDetailPage() {
               />
             </div>
 
+            {paymentHistory.length > 0 && (
+              <div className="mt-4">
+                <div
+                  className="text-[11px] font-medium uppercase mb-2"
+                  style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+                >
+                  Recent payments
+                </div>
+                <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                  {paymentHistory.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between py-2"
+                      style={{ borderBottom: "0.5px solid #EEF2F7" }}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                          £{Number(p.lesson_cost ?? 0).toFixed(2)}
+                        </span>
+                        <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                          {new Date(p.created_at).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          {p.payment_method ? ` · ${p.payment_method}` : ""}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Delete payment"
+                        onClick={async () => {
+                          if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
+                          const { data: { session } } = await supabase.auth.getSession();
+                          const token = session?.access_token;
+                          if (!token) {
+                            toast.error("Not authenticated");
+                            return;
+                          }
+                          const { data: userData } = await supabase.auth.getUser();
+                          const uid = userData.user?.id;
+                          if (!uid) return;
+                          const ok = await deletePaymentRecord(p.id, token, uid);
+                          if (ok) setPaymentHistoryRefresh((n) => n + 1);
+                        }}
+                        className="inline-flex items-center justify-center rounded-full"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          background: "#F3F4F6",
+                          border: "0.5px solid #E2E6ED",
+                          color: "#6B7280",
+                        }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {(() => {
               const readiness = (() => {
                 const lessonCount = lessons?.length || 0;
