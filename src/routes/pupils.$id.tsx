@@ -1471,32 +1471,27 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col bg-white rounded-xl border border-[#E2E6ED] overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setPastExpanded((v) => !v)}
-              className="flex items-center justify-between w-full py-3 px-3 text-left active:bg-slate-50 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <History size={16} color="#6B7280" />
-                <span className="text-[13px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                  {pastLessons.length} past lesson{pastLessons.length === 1 ? "" : "s"}
-                </span>
-              </div>
-              <ChevronDown
-                size={16}
-                color="#9CA3AF"
-                style={{ transform: pastExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
-              />
-            </button>
-            {pastExpanded && (
-              <div className="flex flex-col">
-                {pastLessons.map((l) => {
+          <div className="flex flex-col">
+            {(() => {
+              const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
+              return (
+                <>
+                  {visible.map((l, idx) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isPaid = l.payment_status === "paid";
                   const isCancelled = l.status === "cancelled";
+                  const prev = idx > 0 ? visible[idx - 1] : null;
+                  const gapDays = prev ? daysBetween(l.lesson_date, prev.lesson_date) : 0;
+                  const showGap = gapDays > 7;
                   return (
                     <Fragment key={l.id}>
+                      {showGap && (
+                        <div className="flex items-center justify-center py-3">
+                          <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                            {gapDays} day{gapDays > 1 ? "s" : ""} gap
+                          </span>
+                        </div>
+                      )}
                       <div
                         className="flex items-stretch cursor-pointer"
                         style={{ minHeight: 56 }}
@@ -1571,9 +1566,27 @@ function PupilDetailPage() {
                       <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
                     </Fragment>
                   );
-                })}
-              </div>
-            )}
+                  })}
+                  {pastLessons.length > 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setPastExpanded((v) => !v)}
+                      className="flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
+                      style={POPPINS}
+                    >
+                      {pastExpanded
+                        ? "Show less"
+                        : `Show ${pastLessons.length - 5} more`}
+                      <ChevronDown
+                        size={14}
+                        color="#1877D6"
+                        style={{ transform: pastExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                      />
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
