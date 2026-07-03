@@ -540,6 +540,49 @@ function PupilDetailPage() {
       });
   }, [id]);
 
+  // Recompute live "owed" from the pupil's CURRENT rates.
+  // Priority (per resolveHourlyRate): pupil custom rate (per-duration) >
+  // postcode rate > instructor default. Falls back to stored amount_due
+  // only if no rate inputs are available at all.
+  useEffect(() => {
+    if (unpaidLessons === null) return;
+    if (unpaidLessons.length === 0) {
+      setLiveOwed(0);
+      return;
+    }
+    const haveAnyRate =
+      (pupil?.custom_rate ?? null) != null ||
+      (pupil?.custom_rate_90 ?? null) != null ||
+      (pupil?.custom_rate_120 ?? null) != null ||
+      (instructorRate ?? null) != null ||
+      postcodeRates.length > 0;
+    const owed = unpaidLessons.reduce((sum, l) => {
+      const dur = Number(l.duration_minutes) || 60;
+      if (!haveAnyRate) return sum + (Number(l.amount_due) || 0);
+      const computed = resolveHourlyRate({
+        pupilCustomRate: pupil?.custom_rate ?? null,
+        pupilCustomRate90: pupil?.custom_rate_90 ?? null,
+        pupilCustomRate120: pupil?.custom_rate_120 ?? null,
+        pupilPostcode: pupil?.postcode ?? null,
+        instructorDefaultRate: instructorRate ?? null,
+        postcodeRates,
+        durationMinutes: dur,
+      });
+      const val = computed > 0 ? computed : Number(l.amount_due) || 0;
+      return sum + val;
+    }, 0);
+    setLiveOwed(Math.round(owed * 100) / 100);
+    console.log("[pupils.$id] live owed (recomputed):", owed);
+  }, [
+    unpaidLessons,
+    pupil?.custom_rate,
+    pupil?.custom_rate_90,
+    pupil?.custom_rate_120,
+    pupil?.postcode,
+    instructorRate,
+    postcodeRates,
+  ]);
+
   async function removePupil() {
     setRemoveOpen(false);
     const { error } = await supabase
