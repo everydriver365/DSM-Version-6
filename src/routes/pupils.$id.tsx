@@ -1166,7 +1166,7 @@ function PupilDetailPage() {
             onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
           />
         </div>
-      {/* Test status strips */}
+      {/* Test status tiles */}
       {pupil && (() => {
         const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
         const showPractical = !!pupil.test_date;
@@ -1174,74 +1174,44 @@ function PupilDetailPage() {
         const theoryBadge = statusColour(pupil.theory_status);
         const practBadge = statusColour(pupil.test_status);
         const centreName = centreInfo?.name || pupil.test_centre || "";
+        const theoryDescription =
+          pupil.theory_status === "Passed"
+            ? `Passed${pupil.theory_pass_date ? ` on ${fmtUKDate(pupil.theory_pass_date)}` : ""}`
+            : pupil.theory_status === "Failed"
+              ? `Failed${pupil.theory_test_date ? ` on ${fmtUKDate(pupil.theory_test_date)}` : ""}`
+              : pupil.theory_test_date
+                ? `Booked for ${fmtUKDate(pupil.theory_test_date)}`
+                : pupil.theory_status || "Studying";
+        const practicalDescription = [
+          pupil.test_status || "Booked",
+          pupil.test_date ? fmtUKDate(pupil.test_date) : null,
+          pupil.test_time ? pupil.test_time.slice(0, 5) : null,
+          centreName || null,
+          pupil.test_examiner || null,
+        ]
+          .filter(Boolean)
+          .join(" · ");
         return (
           <div className="mx-4 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
             {showTheory && (
-              <div
-                className="flex flex-wrap items-center gap-2 bg-white"
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: 12,
-                  border: "0.5px solid #E2E6ED",
-                  ...POPPINS,
-                }}
-              >
-                <BookOpen size={16} color="#1A52A0" className="shrink-0" />
-                <span
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: theoryBadge.bg, color: theoryBadge.fg }}
-                >
-                  {pupil.theory_status}
-                </span>
-                <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
-                  {pupil.theory_status === "Passed"
-                    ? `Theory ✓ passed ${fmtUKDate(pupil.theory_pass_date)}`
-                    : pupil.theory_test_date
-                      ? `Theory test: ${fmtUKDate(pupil.theory_test_date)}`
-                      : ""}
-                </span>
-              </div>
+              <ActionTile
+                label="Theory test"
+                icon={<BookOpen size={20} />}
+                iconBg={theoryBadge.bg}
+                iconColor={theoryBadge.fg}
+                description={theoryDescription}
+                orientation="horizontal"
+              />
             )}
             {showPractical && (
-              <div
-                className="flex flex-wrap items-center gap-2 bg-white"
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: 12,
-                  border: "0.5px solid #E2E6ED",
-                  ...POPPINS,
-                }}
-              >
-                <Car size={16} color="#0F2044" className="shrink-0" />
-                <span
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: practBadge.bg, color: practBadge.fg }}
-                >
-                  {pupil.test_status || "Booked"}
-                </span>
-                <span className="text-[12px]" style={{ color: "#0B1F3A" }}>
-                  Test: {fmtUKDate(pupil.test_date)}
-                  {pupil.test_time ? ` at ${pupil.test_time.slice(0, 5)}` : ""}
-                  {centreName ? ` — ${centreName}` : ""}
-                  {pupil.test_examiner ? ` · Examiner: ${pupil.test_examiner}` : ""}
-                </span>
-                {pupil.test_status === "Passed" && (
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#16A34A", color: "#FFFFFF" }}
-                  >
-                    PASSED ✓
-                  </span>
-                )}
-                {pupil.test_status === "Failed" && (
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#DC2626", color: "#FFFFFF" }}
-                  >
-                    FAILED
-                  </span>
-                )}
-              </div>
+              <ActionTile
+                label="Practical test"
+                icon={<Car size={20} />}
+                iconBg={practBadge.bg}
+                iconColor={practBadge.fg}
+                description={practicalDescription}
+                orientation="horizontal"
+              />
             )}
           </div>
         );
