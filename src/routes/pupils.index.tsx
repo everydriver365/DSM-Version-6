@@ -58,6 +58,7 @@ function PupilsIndexPage() {
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
   const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
+  const [hoursMap, setHoursMap] = useState<Record<string, number>>({});
   const [lastPaymentMap, setLastPaymentMap] = useState<Record<string, { amount: number; method: string; date: string }>>({});
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
