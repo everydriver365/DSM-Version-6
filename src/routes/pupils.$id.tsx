@@ -999,166 +999,138 @@ function PupilDetailPage() {
       )}
       <div className="px-4">
         <SectionHeader>QUICK ACTIONS</SectionHeader>
-        <div className="grid grid-cols-3 gap-2">
-          <a
-            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
-            aria-label="Call"
-            className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-            style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
-          >
-            Call
-          </a>
-          <a
-            href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
-            aria-label="Text"
-            className="inline-flex items-center justify-center text-[13px] font-medium"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#F3F4F6",
-              color: "#0B1F3A",
-              ...POPPINS,
-            }}
-          >
-            Text
-          </a>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/lessons/new" })}
-            className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#1877D6",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            Add lesson
-          </button>
-          <button
-            type="button"
-            onClick={() => setCertOpen(true)}
-            className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white col-span-3"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#1877D6",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <Award size={16} color="#FFFFFF" />
-            Certificate
-          </button>
-        </div>
-        <div className="mt-2">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
-          >
-            History
-          </Button>
-        </div>
-        <div className="mt-2">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
-          >
-            Progress
-          </Button>
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
-            className="w-full inline-flex items-center justify-between px-3"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#F3F4F6",
-              color: "#0B1F3A",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <span className="inline-flex items-center gap-2 text-[13px] font-medium">
-              <BookOpen size={16} color="#0B1F3A" />
-              Syllabus
-            </span>
-            <span className="text-[12px] font-semibold" style={{ color: "#1877D6" }}>
-              {syllabusPct == null ? "—" : `${syllabusPct}%`}
-            </span>
-          </button>
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } })}
-            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#1877D6",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <Flag size={16} color="#FFFFFF" />
-            Test day
-          </button>
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
-            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#7C3AED",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <BookOpen size={16} color="#FFFFFF" />
-            Reflective log
-          </button>
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } })}
-            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#0891B2",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <ClipboardCheck size={16} color="#FFFFFF" />
-            Mock test
-          </button>
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
-            className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white"
-            style={{
-              height: 40,
-              borderRadius: 8,
-              backgroundColor: "#D97706",
-              border: "none",
-              ...POPPINS,
-            }}
-          >
-            <Trophy size={16} color="#FFFFFF" />
-            Test result
-          </button>
-        </div>
+        {(() => {
+          const tile = (opts: {
+            label: string;
+            icon: React.ReactNode;
+            iconBg: string;
+            iconColor: string;
+            onClick?: () => void;
+            href?: string;
+            badge?: string;
+          }) => {
+            const inner = (
+              <>
+                <div
+                  className="flex items-center justify-center rounded-full"
+                  style={{ width: 40, height: 40, backgroundColor: opts.iconBg, color: opts.iconColor }}
+                >
+                  {opts.icon}
+                </div>
+                <span className="text-[11px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                  {opts.label}
+                </span>
+                {opts.badge && (
+                  <span className="absolute top-1.5 right-2 text-[10px] font-semibold" style={{ color: "#1877D6" }}>
+                    {opts.badge}
+                  </span>
+                )}
+              </>
+            );
+            const cls =
+              "relative bg-white p-3 rounded-xl border border-[#E2E6ED] flex flex-col items-center gap-2 active:scale-[0.98] transition-transform";
+            if (opts.href) {
+              return (
+                <a href={opts.href} className={cls}>
+                  {inner}
+                </a>
+              );
+            }
+            return (
+              <button type="button" onClick={opts.onClick} className={cls}>
+                {inner}
+              </button>
+            );
+          };
+          return (
+            <>
+              <div className="grid grid-cols-3 gap-2">
+                {tile({
+                  label: "Call",
+                  icon: <Phone size={20} />,
+                  iconBg: "#EAF3FB",
+                  iconColor: "#1877D6",
+                  href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
+                })}
+                {tile({
+                  label: "Text",
+                  icon: <MessageSquare size={20} />,
+                  iconBg: "#EAF3FB",
+                  iconColor: "#1877D6",
+                  href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
+                })}
+                {tile({
+                  label: "Add lesson",
+                  icon: <Plus size={22} />,
+                  iconBg: "#DCFCE7",
+                  iconColor: "#16A34A",
+                  onClick: () => navigate({ to: "/lessons/new" }),
+                })}
+                {tile({
+                  label: "Certificate",
+                  icon: <Award size={20} />,
+                  iconBg: "#FEF3C7",
+                  iconColor: "#B45309",
+                  onClick: () => setCertOpen(true),
+                })}
+                {tile({
+                  label: "History",
+                  icon: <Clock size={20} />,
+                  iconBg: "#F3E8FF",
+                  iconColor: "#7C3AED",
+                  onClick: () => navigate({ to: "/pupils/history/$id", params: { id } }),
+                })}
+                {tile({
+                  label: "Progress",
+                  icon: <BarChart3 size={20} />,
+                  iconBg: "#E0F2FE",
+                  iconColor: "#0369A1",
+                  onClick: () => navigate({ to: "/pupils/progress/$id", params: { id } }),
+                })}
+                {tile({
+                  label: "Syllabus",
+                  icon: <BookOpen size={20} />,
+                  iconBg: "#F1F5F9",
+                  iconColor: "#0B1F3A",
+                  onClick: () => navigate({ to: "/pupils/syllabus/$id", params: { id } }),
+                  badge: syllabusPct == null ? undefined : `${syllabusPct}%`,
+                })}
+                {tile({
+                  label: "Test day",
+                  icon: <Flag size={20} />,
+                  iconBg: "#FEF3C7",
+                  iconColor: "#B45309",
+                  onClick: () => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } }),
+                })}
+                {tile({
+                  label: "Mock test",
+                  icon: <ClipboardCheck size={20} />,
+                  iconBg: "#CFFAFE",
+                  iconColor: "#0891B2",
+                  onClick: () => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } }),
+                })}
+              </div>
+              <div className="flex gap-2 mt-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" as any }}>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
+                  className="whitespace-nowrap bg-white px-3 py-2 rounded-lg border border-[#E2E6ED] text-[12px] font-medium inline-flex items-center gap-1.5"
+                  style={{ color: "#7C3AED", ...POPPINS }}
+                >
+                  <BookOpen size={14} /> Reflective log
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
+                  className="whitespace-nowrap bg-white px-3 py-2 rounded-lg border border-[#E2E6ED] text-[12px] font-medium inline-flex items-center gap-1.5"
+                  style={{ color: "#D97706", ...POPPINS }}
+                >
+                  <Trophy size={14} /> Test result
+                </button>
+              </div>
+            </>
+          );
+        })()}
       {/* Test status strips */}
       {pupil && (() => {
         const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
