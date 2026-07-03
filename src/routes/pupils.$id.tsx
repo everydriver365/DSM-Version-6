@@ -1158,7 +1158,7 @@ function PupilDetailPage() {
                 )}
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       )}
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
