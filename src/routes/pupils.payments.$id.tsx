@@ -395,7 +395,7 @@ function PupilPaymentsPage() {
         >
           <div
             className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
-            style={{ ...POPPINS, maxHeight: "90dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)" }}
+            style={{ ...POPPINS, maxHeight: "85dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
