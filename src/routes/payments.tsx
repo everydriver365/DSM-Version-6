@@ -275,11 +275,12 @@ function PaymentsPage() {
       notes: "Marked paid",
     });
 
-    const paymentRow: PaymentRow = {
+    const paymentRow: HistoryRow = {
       id: crypto.randomUUID(),
       pupil_id: pupil.id,
-      amount,
-      paid_at: new Date().toISOString(),
+      lesson_cost: amount,
+      created_at: new Date().toISOString(),
+      payment_method: "other",
       pupils: { name: pupil.name },
     };
     setPayments((prev) => [paymentRow, ...(prev ?? [])]);
@@ -546,14 +547,31 @@ function PaymentsPage() {
                       {row.pupils?.name ?? "Unknown pupil"}
                     </div>
                     <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                      {formatDate(row.paid_at)}
+                      {formatDate(row.created_at)}
                     </div>
                   </div>
-                  <div
-                    className="text-[14px] font-bold shrink-0"
-                    style={{ color: "#1877D6", ...POPPINS }}
-                  >
-                    {formatGBP(Number(row.amount))}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div
+                      className="text-[14px] font-bold"
+                      style={{ color: "#1877D6", ...POPPINS }}
+                    >
+                      {formatGBP(Number(row.lesson_cost ?? 0))}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label="Delete payment"
+                      onClick={() => deletePayment(row)}
+                      className="flex items-center justify-center rounded-full"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "#F3F4F6",
+                        color: "#6B7280",
+                        border: "none",
+                      }}
+                    >
+                      <X size={14} color="#6B7280" />
+                    </button>
                   </div>
                 </div>
               </Card>
