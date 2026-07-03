@@ -1022,6 +1022,7 @@ function HomePage() {
         .select("id, lesson_cost, payment_status, payment_method, created_at, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .eq("payment_status", "paid")
+        .is("deleted_at", null)
         .gte("created_at", weekStart.toISOString())
         .lt("created_at", weekEnd.toISOString());
 
