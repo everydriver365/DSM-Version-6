@@ -399,12 +399,12 @@ function PupilDetailPage() {
       .from("lessons")
       .select("id", { count: "exact", head: true })
       .eq("pupil_id", id)
-      .in("status", ["confirmed", "completed"])
+      .in("status", ["completed"])
       .is("deleted_at", null)
       .then(({ count, error }) => {
         if (error) console.error("[pupil] lesson count error", error);
         setActualLessonCount(count ?? 0);
-        console.log("[pupils.$id] lesson count (confirmed+completed):", count);
+        console.log("[pupils.$id] lesson count (completed):", count);
       });
 
     // Fetch unpaid, non-cancelled lessons — the "owed" balance is computed
