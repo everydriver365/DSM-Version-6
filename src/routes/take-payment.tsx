@@ -28,6 +28,7 @@ function TakePaymentPage() {
   const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
   const [pupilId, setPupilId] = useState<string>("");
   const [description, setDescription] = useState("");
+  const [hoursBought, setHoursBought] = useState<string>("");
   const [tab, setTab] = useState<Tab>("qr");
   const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
   const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
@@ -120,6 +121,7 @@ function TakePaymentPage() {
     const now = new Date().toISOString();
     const today = now.slice(0, 10);
     const methodNorm = method === "bank" ? "bank_transfer" : method;
+    const hours = Number(hoursBought) || 0;
 
     let remaining = amountPaid;
 
@@ -218,6 +220,7 @@ function TakePaymentPage() {
         lesson_cost: amountPaid,
         payment_status: "paid",
         payment_method: methodNorm,
+        notes: description.trim() || (hours > 0 ? `${hours}h package` : null),
         created_at: now,
       });
       if (hErr) console.error("[take-payment] lesson_history insert", hErr);
@@ -234,6 +237,25 @@ function TakePaymentPage() {
       status: "completed",
     });
     if (payErr) console.error("[take-payment] payments insert", payErr);
+
+    // Add bought hours to the pupil's package totals
+    if (pupilIdForPayment && hours > 0) {
+      const { data: pRow } = await supabase
+        .from("pupils")
+        .select("lesson_count, prepaid_hours")
+        .eq("id", pupilIdForPayment)
+        .maybeSingle();
+      const curLessons = Number((pRow as { lesson_count?: number | null } | null)?.lesson_count ?? 0);
+      const curPrepaid = Number((pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0);
+      const { error: puErr } = await supabase
+        .from("pupils")
+        .update({
+          lesson_count: curLessons + hours,
+          prepaid_hours: curPrepaid + hours,
+        })
+        .eq("id", pupilIdForPayment);
+      if (puErr) console.error("[take-payment] pupil hours update", puErr);
+    }
   }
 
   // Responsive QR size — fits within viewport so layout never looks squashed
