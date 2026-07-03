@@ -788,7 +788,7 @@ function PupilDetailPage() {
           <Card className="p-0 overflow-hidden" style={{ border: "none" }}>
             {/* Blue hero band */}
             <div
-              className="relative px-4"
+              className="relative px-4 rounded-b-[28px]"
               style={{ backgroundColor: "#1877D6", paddingTop: 32, paddingBottom: 96 }}
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
