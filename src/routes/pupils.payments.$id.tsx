@@ -75,6 +75,25 @@ function PupilPaymentsPage() {
         setBalanceOwed(p?.balance_owed ?? null);
       });
 
+    // Live owed amount from unpaid lessons (matches pupil profile calculation)
+    supabase
+      .from("lessons")
+      .select("duration_minutes, amount_due, payment_status, status")
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .neq("status", "cancelled")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[pupil-payments] unpaid lessons error", error);
+          return;
+        }
+        const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[] | null) ?? [];
+        const owed = rows
+          .filter((r) => r.payment_status !== "paid")
+          .reduce((sum, r) => sum + Number(r.amount_due || 0), 0);
+        setBalanceOwed(Math.round(owed * 100) / 100);
+      });
+
     supabase
       .from("lesson_history")
       .select("id, lesson_cost, created_at, payment_method")
