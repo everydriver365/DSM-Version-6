@@ -23,6 +23,7 @@ interface Pupil {
   email: string | null;
   lesson_count: number | null;
   balance_owed: number | null;
+  account_balance: number | null;
   prepaid_hours: number | null;
   ni_amount_total: number | null;
   ni_amount_paid: number | null;
@@ -75,7 +76,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -356,12 +357,13 @@ function PupilsIndexPage() {
             {filtered.map((p, idx) => {
               const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const b = balanceMap[p.id] || 0;
-              const balanceOwed = b - (Number(p.balance_owed) || 0);
+              const credit = Number(p.account_balance) || 0;
+              const balanceOwed = b - credit;
               console.log("[pupils] balance for", p.name, ":", {
                 pupilId: p.id,
                 balanceFromLessons: balanceMap[p.id],
-                creditFromBalanceOwed: p.balance_owed,
-                net: b - (Number(p.balance_owed) || 0),
+                creditFromAccountBalance: p.account_balance,
+                net: balanceOwed,
               });
               const lessons = lessonCountMap[p.id] || 0;
               const accent = accentColor(status);
