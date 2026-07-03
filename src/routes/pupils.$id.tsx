@@ -2529,7 +2529,7 @@ function PracticalEditor({
   const [centreLabel, setCentreLabel] = useState<string>(
     centreInfo ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}` : (pupil.test_centre ?? ""),
   );
-  const [examiner, setExaminer] = useState<string>("");
+  const [examiner, setExaminer] = useState<string>(pupil.test_examiner ?? "");
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
     border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
@@ -2619,7 +2619,7 @@ function PracticalEditor({
         )}
       </div>
       <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-        Examiner (optional)
+        Examiner name (optional)
         <input type="text" value={examiner} onChange={(e) => setExaminer(e.target.value)} style={{ ...inputStyle, marginTop: 4 }} />
       </label>
       <div className="flex justify-end">
@@ -2632,10 +2632,8 @@ function PracticalEditor({
               test_time: testTime ? `${testTime}:00` : null,
               test_centre_id: centreId,
               test_centre: centreLabel ? centreLabel.split(",")[0].trim() : null,
+              test_examiner: examiner.trim() || null,
             };
-            // NOTE: pupils.examiner column does not exist — never include it,
-            // or the whole update fails and test time/centre silently don't save.
-            void examiner;
             await onSave(patch);
           }}
         >
