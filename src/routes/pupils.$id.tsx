@@ -40,8 +40,14 @@ function loadGoogleMapsPlaces(): Promise<void> {
     s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
     s.async = true;
     s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    s.onload = () => {
+      console.log("[pupil] Google Maps script loaded, places available:", !!w.google?.maps?.places);
+      resolve();
+    };
+    s.onerror = (e) => {
+      console.error("[pupil] Google Maps script failed to load", e);
+      reject(new Error("Failed to load Google Maps"));
+    };
     document.head.appendChild(s);
   });
 }
