@@ -64,15 +64,14 @@ function PupilPaymentsPage() {
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("name, account_balance, balance_owed")
+      .select("name, account_balance")
       .eq("id", id)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil-payments] pupil fetch error", error);
-        const p = (data as { name?: string | null; account_balance?: number | null; balance_owed?: number | null } | null) ?? null;
+        const p = (data as { name?: string | null; account_balance?: number | null } | null) ?? null;
         setPupilName(p?.name ?? "");
         setAccountBalance(p?.account_balance ?? null);
-        setBalanceOwed(p?.balance_owed ?? null);
       });
 
     // Live owed amount from unpaid lessons (matches pupil profile calculation)
