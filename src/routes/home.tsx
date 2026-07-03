@@ -1022,7 +1022,8 @@ function HomePage() {
         .select("id, lesson_cost, payment_status, payment_method, created_at, pupil_id, pupils(name)")
         .eq("instructor_id", userId)
         .eq("payment_status", "paid")
-        .gte("created_at", weekStart.toISOString());
+        .gte("created_at", weekStart.toISOString())
+        .lt("created_at", weekEnd.toISOString());
 
       // Source 2: Course booking deposits from public site
       const { data: bookingRows } = await supabase
@@ -1030,7 +1031,8 @@ function HomePage() {
         .select("id, amount_paid, booked_at, pupil_name, payment_method")
         .eq("instructor_id", userId)
         .eq("status", "confirmed")
-        .gte("booked_at", weekStart.toISOString());
+        .gte("booked_at", weekStart.toISOString())
+        .lt("booked_at", weekEnd.toISOString());
 
       // Combine all sources
       let wk = 0;
@@ -1073,14 +1075,15 @@ function HomePage() {
           .eq("instructor_id", userId)
           .in("status", ["confirmed", "completed"])
           .is("deleted_at", null)
-          .gte("lesson_date", ymd(weekStart));
+          .gte("lesson_date", ymd(weekStart))
+          .lt("lesson_date", ymd(weekEnd));
         let lessonEarnings = 0;
         let lessonToday = 0;
         const todayYmd = ymd(todayStart);
         (lessonRows ?? []).forEach((l) => {
           const amt = Number(l.amount_due ?? 0);
           lessonEarnings += amt;
-          if (l.lesson_date && l.lesson_date >= todayYmd) lessonToday += amt;
+          if (l.lesson_date && l.lesson_date === todayYmd) lessonToday += amt;
         });
         if (lessonEarnings > 0) {
           wk = lessonEarnings;
