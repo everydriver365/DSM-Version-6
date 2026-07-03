@@ -961,7 +961,7 @@ function PupilDetailPage() {
                         </p>
                         <p
                           className="text-[20px] font-bold mt-1"
-                          style={{ color: "#FFFFFF", ...POPPINS }}
+                          style={{ color: balanceColor, ...POPPINS }}
                         >
                           {balanceValue}
                         </p>
