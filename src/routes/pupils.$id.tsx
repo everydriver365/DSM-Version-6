@@ -205,6 +205,84 @@ function daysBetween(a: string, b: string) {
   return Math.round(ms / (1000 * 60 * 60 * 24));
 }
 
+function ActionTile({
+  label,
+  icon,
+  iconBg,
+  iconColor,
+  onClick,
+  href,
+  badge,
+  description,
+  orientation = "vertical",
+}: {
+  label: string;
+  icon: ReactNode;
+  iconBg: string;
+  iconColor: string;
+  onClick?: () => void;
+  href?: string;
+  badge?: string;
+  description?: string;
+  orientation?: "vertical" | "horizontal";
+}) {
+  const horizontal = orientation === "horizontal";
+  const iconCircle = (
+    <div
+      className="flex items-center justify-center rounded-full shrink-0"
+      style={{ width: 40, height: 40, backgroundColor: iconBg, color: iconColor }}
+    >
+      {icon}
+    </div>
+  );
+  const inner = horizontal ? (
+    <div className="flex items-center gap-3 w-full min-w-0">
+      {iconCircle}
+      <div className="flex-1 min-w-0 text-left">
+        <div className="text-[13px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
+          {label}
+        </div>
+        {description ? (
+          <div className="text-[11px] text-[#6B7280] truncate" style={POPPINS} title={description}>
+            {description}
+          </div>
+        ) : null}
+      </div>
+      {badge ? (
+        <span className="text-[10px] font-semibold" style={{ color: "#1877D6" }}>
+          {badge}
+        </span>
+      ) : null}
+    </div>
+  ) : (
+    <div className="flex flex-col items-center gap-2 w-full relative">
+      {iconCircle}
+      <span className="text-[11px] font-medium text-[#0B1F3A]" style={POPPINS}>
+        {label}
+      </span>
+      {badge ? (
+        <span className="absolute top-1.5 right-2 text-[10px] font-semibold" style={{ color: "#1877D6" }}>
+          {badge}
+        </span>
+      ) : null}
+    </div>
+  );
+  const cls =
+    "bg-white p-3 rounded-xl border border-[#E2E6ED] active:scale-[0.98] transition-transform";
+  if (href) {
+    return (
+      <a href={href} className={cls}>
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={onClick} className={cls}>
+      {inner}
+    </button>
+  );
+}
+
 function PupilDetailPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
