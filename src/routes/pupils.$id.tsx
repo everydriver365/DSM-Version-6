@@ -482,6 +482,20 @@ function PupilDetailPage() {
           const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
           setInstructorName(nm);
         });
+      supabase
+        .from("instructor_postcode_rates")
+        .select("outward_code, hourly_rate")
+        .eq("instructor_id", uid)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("[pupil] postcode rates error", error);
+            return;
+          }
+          setPostcodeRates(((data as any[]) ?? []).map((r) => ({
+            outward_code: String(r.outward_code || "").toUpperCase(),
+            hourly_rate: Number(r.hourly_rate) || 0,
+          })));
+        });
     });
 
     supabase
