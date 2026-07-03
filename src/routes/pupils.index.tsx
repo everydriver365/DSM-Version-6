@@ -431,14 +431,21 @@ function PupilsIndexPage() {
                                 Prepaid ✓
                               </span>
                             )
-                          ) : b && b.owed > 0 ? (
+                          ) : balanceOwed > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#1877D6", ...POPPINS }}
                             >
-                              £{b.owed.toFixed(2)} owed
+                              £{balanceOwed.toFixed(2)} owed
                             </span>
-                          ) : lessons > 0 && b && b.paid > 0 ? (
+                          ) : balanceOwed < 0 ? (
+                            <span
+                              className="text-[12px] font-medium"
+                              style={{ color: "#16A34A", ...POPPINS }}
+                            >
+                              In credit £{Math.abs(balanceOwed).toFixed(2)}
+                            </span>
+                          ) : lessons > 0 ? (
                             <span
                               className="text-[12px] font-medium"
                               style={{ color: "#1877D6", ...POPPINS }}
