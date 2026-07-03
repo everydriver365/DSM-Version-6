@@ -102,6 +102,61 @@ function TakePaymentPage() {
   const [cashSaving, setCashSaving] = useState(false);
   const [recorded, setRecorded] = useState<string | null>(null);
 
+  // Preselect pupil if passed via query
+  useEffect(() => {
+    if (search.pupilId) setPupilId(search.pupilId);
+  }, [search.pupilId]);
+
+  // Shared: after a successful payment, mark the lesson paid, reduce
+  // pupils.balance_owed, and insert into payments. Best-effort — each
+  // step's error is logged but does not abort the others.
+  async function recordPaymentSideEffects(args: {
+    instructorId: string | null;
+    pupilIdForPayment: string | null;
+    amountPaid: number;
+    method: "cash" | "bank" | "card";
+  }) {
+    const { instructorId, pupilIdForPayment, amountPaid, method } = args;
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (lessonId) {
+      const { error: lessonErr } = await supabase
+        .from("lessons")
+        .update({ payment_status: "paid", amount_due: 0 })
+        .eq("id", lessonId);
+      if (lessonErr) console.error("[take-payment] lesson update", lessonErr);
+    }
+
+    if (pupilIdForPayment) {
+      const { data: pupilRow, error: pupilFetchErr } = await supabase
+        .from("pupils")
+        .select("balance_owed")
+        .eq("id", pupilIdForPayment)
+        .maybeSingle();
+      if (pupilFetchErr) console.error("[take-payment] pupil fetch", pupilFetchErr);
+      const current = Number((pupilRow as { balance_owed?: number | null } | null)?.balance_owed ?? 0);
+      if (current > 0) {
+        const next = Math.max(0, current - amountPaid);
+        const { error: pupilUpdErr } = await supabase
+          .from("pupils")
+          .update({ balance_owed: next })
+          .eq("id", pupilIdForPayment);
+        if (pupilUpdErr) console.error("[take-payment] pupil update", pupilUpdErr);
+      }
+    }
+
+    const { error: payErr } = await supabase.from("payments").insert({
+      instructor_id: instructorId,
+      pupil_id: pupilIdForPayment,
+      lesson_id: lessonId,
+      amount: amountPaid,
+      payment_method: method,
+      payment_date: today,
+      status: "completed",
+    });
+    if (payErr) console.error("[take-payment] payments insert", payErr);
+  }
+
   // Responsive QR size — fits within viewport so layout never looks squashed
   const [qrSize, setQrSize] = useState<number>(220);
   useEffect(() => {
