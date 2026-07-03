@@ -663,9 +663,26 @@ function AddSheet({
         if (error) throw error;
         toast.success("CPD entry updated");
       } else {
-        const { error } = await supabase.from("cpd_logs").insert(payload);
+        const { data: inserted, error } = await supabase
+          .from("cpd_logs")
+          .insert(payload)
+          .select("id")
+          .single();
         if (error) throw error;
         toast.success("CPD entry added");
+        try {
+          const { data: sess } = await supabase.auth.getSession();
+          const token = sess.session?.access_token;
+          if (token && userId) {
+            await awardPoints(userId, "CPD_HOUR_LOGGED", token, {
+              hours: h,
+              referenceId: (inserted as { id: string } | null)?.id ?? null,
+              referenceType: "cpd_log",
+            });
+          }
+        } catch (e) {
+          console.warn("[rewards] CPD award skipped", e);
+        }
       }
       onSaved();
     } catch (err: any) {
