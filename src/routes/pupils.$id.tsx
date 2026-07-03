@@ -40,8 +40,14 @@ function loadGoogleMapsPlaces(): Promise<void> {
     s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
     s.async = true;
     s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    s.onload = () => {
+      console.log("[pupil] Google Maps script loaded, places available:", !!w.google?.maps?.places);
+      resolve();
+    };
+    s.onerror = (e) => {
+      console.error("[pupil] Google Maps script failed to load", e);
+      reject(new Error("Failed to load Google Maps"));
+    };
     document.head.appendChild(s);
   });
 }
@@ -223,6 +229,11 @@ function PupilDetailPage() {
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
 
+  // Preload Google Maps Places on mount so autocomplete is ready when user taps Edit.
+  useEffect(() => {
+    loadGoogleMapsPlaces().catch((e) => console.error("[pupil] preload Google Maps failed", e));
+  }, []);
+
   // Bind Google Places Autocomplete to the address input when editing
   useEffect(() => {
     if (!addressEditing) return;
@@ -232,7 +243,16 @@ function PupilDetailPage() {
         if (cancelled) return;
         const input = addressInputRef.current;
         const g = (window as any).google;
-        if (!input || !g?.maps?.places) return;
+        if (!input) {
+          console.warn("[pupil] address input ref not attached");
+          return;
+        }
+        if (!g?.maps?.places) {
+          console.warn("[pupil] Google Places library not available — check API key / referrer / billing");
+          toast.error("Address autocomplete unavailable — you can still type manually");
+          return;
+        }
+        console.log("[pupil] binding autocomplete to address input");
         const ac = new g.maps.places.Autocomplete(input, {
           componentRestrictions: { country: "gb" },
           types: ["address"],
@@ -240,6 +260,7 @@ function PupilDetailPage() {
         });
         ac.addListener("place_changed", async () => {
           const place = ac.getPlace();
+          console.log("[pupil] place_changed", place);
           const formatted: string = place.formatted_address ?? "";
           const comps: any[] = place.address_components ?? [];
           const pc = comps.find((c: any) => c.types.includes("postal_code"))?.long_name ?? "";
