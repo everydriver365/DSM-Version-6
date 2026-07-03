@@ -119,6 +119,7 @@ function PupilPaymentsPage() {
   }, [id, reloadTick]);
 
   const { net } = balanceValue(accountBalance, balanceOwed);
+  const balanceColor = net > 0 ? "#EF4444" : net < 0 ? "#22C55E" : "#FFFFFF";
 
   async function submitRecordPayment() {
     const amt = Number(recAmount);
