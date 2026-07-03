@@ -135,17 +135,39 @@ export async function recordPayment(args: {
     if (bErr) console.error("[payments] account_balance update error", bErr);
   }
 
-  // Audit row (one per payment, not per lesson).
-  const { error: hErr } = await supabase.from("lesson_history").insert({
-    instructor_id: instructorId,
-    pupil_id: pupilId,
-    lesson_cost: Number(amount),
-    payment_status: "paid",
-    payment_method: method,
-    created_at: now,
-    notes: notes ?? null,
+  // Audit row (one per payment, not per lesson) via REST.
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) {
+    console.error("[payments] no auth token for lesson_history insert");
+    return;
+  }
+  const SUPABASE_URL = (supabase as any).supabaseUrl as string;
+  const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/lesson_history`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      instructor_id: instructorId,
+      pupil_id: pupilId,
+      lesson_cost: Number(amount),
+      payment_status: "paid",
+      payment_method: method,
+      created_at: now,
+      notes: notes || null,
+    }),
   });
-  if (hErr) console.error("[payments] lesson_history insert error", hErr);
+  if (!response.ok) {
+    const text = await response.text();
+    console.error("[payments] lesson_history insert error", response.status, text);
+  }
+
 }
 
 function PaymentsPage() {
@@ -240,20 +262,14 @@ function PaymentsPage() {
       notes: "Marked paid",
     });
 
-    const { data: inserted, error: insErr } = await supabase
-      .from("payments")
-      .insert({
-        pupil_id: pupil.id,
-        instructor_id: userId,
-        amount,
-        paid_at: new Date().toISOString(),
-      })
-      .select("id, pupil_id, amount, paid_at")
-      .single();
-    if (insErr) {
-      console.error("[payments] mark paid insert error", insErr);
-      return;
-    }
+    const paymentRow: PaymentRow = {
+      id: crypto.randomUUID(),
+      pupil_id: pupil.id,
+      amount,
+      paid_at: new Date().toISOString(),
+      pupils: { name: pupil.name },
+    };
+    setPayments((prev) => [paymentRow, ...(prev ?? [])]);
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
@@ -268,12 +284,7 @@ function PaymentsPage() {
     setAllPupils((prev) =>
       prev.map((p) => (p.id === pupil.id ? { ...p, balance_owed: 0 } : p)),
     );
-    if (inserted) {
-      setPayments((prev) => [
-        { ...inserted, pupils: { name: pupil.name } } as PaymentRow,
-        ...(prev ?? []),
-      ]);
-    }
+
   }
 
   return (
@@ -627,25 +638,13 @@ function RecordSheet({
       notes: note || null,
     });
 
-    const { data: inserted, error: insErr } = await supabase
-      .from("payments")
-      .insert({
-        pupil_id: pupilId,
-        instructor_id: userId,
-        amount: amt,
-        paid_at: new Date().toISOString(),
-        payment_method: method,
-        note: note || null,
-      })
-      .select("id, pupil_id, amount, paid_at")
-      .single();
-
-    if (insErr) {
-      console.error("[payments] record insert error", insErr);
-      setError(insErr.message);
-      setSaving(false);
-      return;
-    }
+    const payment: PaymentRow = {
+      id: crypto.randomUUID(),
+      pupil_id: pupilId,
+      amount: amt,
+      paid_at: new Date().toISOString(),
+      pupils: { name: pupil?.name ?? "Unknown pupil" },
+    };
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
@@ -656,13 +655,10 @@ function RecordSheet({
     });
     if (notifErr) console.error("[payments] record notification error", notifErr);
 
-    const payment: PaymentRow = {
-      ...inserted!,
-      pupils: { name: pupil?.name ?? "Unknown pupil" },
-    };
     onSaved(payment, pupilId, 0);
     setSaving(false);
     onClose();
+
   }
 
   return (
