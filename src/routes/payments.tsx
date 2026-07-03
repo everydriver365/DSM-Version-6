@@ -184,18 +184,6 @@ export async function recordPayment(args: {
 
 function PaymentsPage() {
   const [userId, setUserId] = useState<string | null>(null);
-  // shared util below (deletePaymentRecord) is exported for use in other screens
-  void 0;
-  const [_forceUpdate, _setForceUpdate] = useState(0);
-  void _forceUpdate; void _setForceUpdate;
-  const _unused = 0;
-  void _unused;
-  // begin state
-  // (existing state continues)
-  // eslint-disable-next-line
-  // NB: retained for compatibility with in-file consumers
-  const [userIdShim] = useState<string | null>(null);
-  void userIdShim;
   const [outstanding, setOutstanding] = useState<OutstandingPupil[] | null>(null);
   const [payments, setPayments] = useState<HistoryRow[] | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
