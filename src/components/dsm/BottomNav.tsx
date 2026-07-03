@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Users, Calendar, MessageSquare, Settings } from "lucide-react";
+import { Home, Users, Calendar, MessageSquare, CreditCard, Settings } from "lucide-react";
 
-export type NavKey = "home" | "pupils" | "schedule" | "messages" | "settings";
+export type NavKey = "home" | "pupils" | "schedule" | "messages" | "payments" | "settings";
 
 interface Props {
   active?: NavKey;
@@ -12,8 +12,10 @@ const items: { key: NavKey; to: string; label: string; Icon: typeof Home }[] = [
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: Calendar },
   { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
+  { key: "payments", to: "/payments", label: "Payments", Icon: CreditCard },
   { key: "settings", to: "/settings", label: "Settings", Icon: Settings },
 ];
+
 
 export function BottomNav({ active }: Props) {
   return (
