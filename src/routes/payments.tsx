@@ -144,6 +144,16 @@ export async function recordPayment(args: {
   }
   const SUPABASE_URL = (supabase as any).supabaseUrl as string;
   const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
+  const payload = {
+    instructor_id: instructorId,
+    pupil_id: pupilId,
+    lesson_cost: Number(amount),
+    payment_status: "paid",
+    payment_method: method,
+    created_at: now,
+    notes: notes || null,
+  };
+  console.log("[payments] lesson_history POST payload", payload);
   const response = await fetch(`${SUPABASE_URL}/rest/v1/lesson_history`, {
     method: "POST",
     headers: {
@@ -153,20 +163,14 @@ export async function recordPayment(args: {
       "Content-Type": "application/json",
       Prefer: "return=minimal",
     },
-    body: JSON.stringify({
-      instructor_id: instructorId,
-      pupil_id: pupilId,
-      lesson_cost: Number(amount),
-      payment_status: "paid",
-      payment_method: method,
-      created_at: now,
-      notes: notes || null,
-    }),
+    body: JSON.stringify(payload),
   });
+  const responseText = await response.text();
+  console.log("[payments] lesson_history POST response", { status: response.status, ok: response.ok, text: responseText });
   if (!response.ok) {
-    const text = await response.text();
-    console.error("[payments] lesson_history insert error", response.status, text);
+    console.error("[payments] lesson_history insert error", response.status, responseText);
   }
+
 
 }
 
