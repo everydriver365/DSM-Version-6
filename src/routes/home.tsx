@@ -3147,7 +3147,7 @@ function HomePage() {
                   <Calculator size={18} color="#1877D6" />
                 </div>
                 <div>
-                  <p className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>Tax Estimate</p>
+                  <p className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>Est. tax + NI</p>
                   <p className="text-[10px] font-medium" style={{ color: "rgba(11,31,58,0.5)" }}>Tax Year {taxYearLabel}</p>
                 </div>
               </div>
@@ -3157,12 +3157,12 @@ function HomePage() {
             <div className="mb-3">
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-bold" style={{ color: "#0B1F3A" }}>
-                  £{glanceTaxBill.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
+                  £{glanceTaxAndNi.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
                 </span>
                 <span className="text-[11px] font-medium" style={{ color: "rgba(11,31,58,0.4)" }}>projected</span>
               </div>
               <p className="text-[11px] mt-0.5" style={{ color: "rgba(11,31,58,0.6)" }}>
-                Full-year estimate based on current data
+                Income Tax + Class 4 NI. Estimate only — consult an accountant.
               </p>
             </div>
 
