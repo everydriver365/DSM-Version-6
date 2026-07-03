@@ -515,7 +515,7 @@ function PupilDetailPage() {
 
     supabase
       .from("pupil_syllabus_progress")
-      .select("level")
+      .select("level, status")
       .eq("pupil_id", id)
       .then(({ data, error }) => {
         if (error) {
@@ -523,7 +523,8 @@ function PupilDetailPage() {
           setSyllabusPct(0);
           return;
         }
-        const rows = (data as { level: number }[]) ?? [];
+        const rows = (data as { level: number; status: string }[]) ?? [];
+        setSyllabus(rows);
         const total = rows.reduce((s, r) => s + (Number(r.level) || 0), 0);
         setSyllabusSum(total);
         // 27 competencies × 5 max
