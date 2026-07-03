@@ -222,6 +222,8 @@ function PupilDetailPage() {
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
+  const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
+  const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
   const [certOpen, setCertOpen] = useState(false);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
