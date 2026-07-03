@@ -723,19 +723,41 @@ function PupilDetailPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-4">
-              <StatChip label="Lessons" value={String(lessonCount)} />
               <StatChip
-                label="Balance"
-                value={
-                  balance === 0
-                    ? "All paid"
-                    : balance < 0
-                      ? `Owes £${Math.abs(balance).toFixed(2)}`
-                      : `In credit £${balance.toFixed(2)}`
-                }
-                valueColor={balance < 0 ? "#1877D6" : "#1877D6"}
+                label="Lessons"
+                value={String(lessonCount)}
+                onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
               />
-              <StatChip label="Test" value={formatTestDate(pupil.test_date)} />
+              {(() => {
+                const owed = Number(pupil.balance_owed ?? 0);
+                const value =
+                  owed > 0
+                    ? `Owes £${owed.toFixed(2)}`
+                    : owed < 0
+                      ? `In credit £${Math.abs(owed).toFixed(2)}`
+                      : "All paid";
+                return (
+                  <StatChip
+                    label="Balance"
+                    value={value}
+                    valueColor="#1877D6"
+                    onClick={() => navigate({ to: "/payments" })}
+                  />
+                );
+              })()}
+              <StatChip
+                label="Test"
+                value={
+                  pupil.test_date
+                    ? `${formatTestDate(pupil.test_date)}${pupil.test_time ? ` · ${formatTime(pupil.test_time)}` : ""}`
+                    : "No test"
+                }
+                subValue={
+                  pupil.test_date
+                    ? centreInfo?.name || pupil.test_centre || undefined
+                    : undefined
+                }
+              />
             </div>
 
             {(() => {
