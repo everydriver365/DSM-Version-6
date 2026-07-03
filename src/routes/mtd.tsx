@@ -154,16 +154,17 @@ function MtdPage() {
       const startYmd = taxYearStart.toISOString().slice(0, 10);
       const endYmd = taxYearEnd.toISOString().slice(0, 10);
 
+      // Income = SUM of lesson_history.lesson_cost where payment_status = 'paid'
       const { data: pays } = await supabase
-        .from("payments")
-        .select("amount, created_at")
+        .from("lesson_history")
+        .select("lesson_cost, created_at")
         .eq("instructor_id", uid)
-        .is("deleted_at", null)
+        .eq("payment_status", "paid")
         .gte("created_at", startIso)
         .lt("created_at", endIso);
-      const payArr = (pays ?? []) as { amount: number | null; created_at: string }[];
-      setPayments(payArr.map((p) => ({ amount: Number(p.amount ?? 0), created_at: p.created_at })));
-      setIncome(payArr.reduce((s, p) => s + Number(p.amount ?? 0), 0));
+      const payArr = (pays ?? []) as { lesson_cost: number | null; created_at: string }[];
+      setPayments(payArr.map((p) => ({ amount: Number(p.lesson_cost ?? 0), created_at: p.created_at })));
+      setIncome(payArr.reduce((s, p) => s + Number(p.lesson_cost ?? 0), 0));
 
       const { data: exps } = await supabase
         .from("expenses")
