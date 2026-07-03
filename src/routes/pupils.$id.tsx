@@ -444,6 +444,19 @@ function PupilDetailPage() {
       });
 
     supabase
+      .from("lesson_history")
+      .select("id, lesson_cost, payment_method, created_at, notes")
+      .eq("pupil_id", id)
+      .eq("payment_status", "paid")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data, error }) => {
+        if (error) console.error("[pupil] payment history error", error);
+        setPaymentHistory((data as any[]) ?? []);
+      });
+
+    supabase
       .from("lessons")
       .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, payment_status, notes, eol_completed")
       .eq("pupil_id", id)
