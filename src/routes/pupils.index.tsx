@@ -504,6 +504,14 @@ function PupilsIndexPage() {
                             </span>
                           ) : null}
                         </div>
+                        {lastPaymentMap[p.id] && (
+                          <div className="flex items-center gap-1">
+                            <CreditCard size={10} color="#6B7280" />
+                            <span className="text-xs text-[#6B7280]" style={POPPINS}>
+                              Last payment: £{lastPaymentMap[p.id].amount.toFixed(2)} ({lastPaymentMap[p.id].method}) {formatRelativeDate(lastPaymentMap[p.id].date)}
+                            </span>
+                          </div>
+                        )}
                         {prepaid > 0 && Number(p.ni_amount_total) > 0 && (() => {
                           const niOwed = Number(p.ni_amount_total ?? 0) - Number(p.ni_amount_paid ?? 0);
                           if (niOwed <= 0) return null;
