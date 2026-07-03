@@ -31,6 +31,14 @@ interface PaymentRow {
   paid_at: string;
   pupils: { name: string } | null;
 }
+interface HistoryRow {
+  id: string;
+  pupil_id: string;
+  lesson_cost: number | null;
+  created_at: string;
+  payment_method: string | null;
+  pupils: { name: string } | null;
+}
 interface PupilLite {
   id: string;
   name: string;
@@ -88,23 +96,23 @@ export async function recordPayment(args: {
 
   let remaining = Number(amount);
   for (const lesson of unpaidLessons ?? []) {
-    if (remaining <= 0) break;
-    const due = Number(lesson.amount_due ?? 0);
-    if (due <= 0) continue;
-    if (due <= remaining) {
+    if (remaining === 0) break;
+    const lessonCost = Number(lesson.amount_due ?? 0);
+    if (lessonCost <= 0) continue;
+    if (remaining >= lessonCost) {
       const { error: uErr } = await supabase
         .from("lessons")
         .update({
           payment_status: "paid",
           payment_method: method,
           paid_at: now,
-          paid_amount: due,
+          paid_amount: lessonCost,
           amount_due: 0,
         })
         .eq("id", lesson.id);
       if (uErr) console.error("[payments] full lesson update error", uErr);
-      remaining -= due;
-    } else {
+      remaining -= lessonCost;
+    } else if (remaining > 0) {
       const { error: uErr } = await supabase
         .from("lessons")
         .update({
@@ -112,7 +120,7 @@ export async function recordPayment(args: {
           payment_method: method,
           paid_at: now,
           paid_amount: remaining,
-          amount_due: due - remaining,
+          amount_due: lessonCost - remaining,
         })
         .eq("id", lesson.id);
       if (uErr) console.error("[payments] partial lesson update error", uErr);
@@ -177,7 +185,7 @@ export async function recordPayment(args: {
 function PaymentsPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [outstanding, setOutstanding] = useState<OutstandingPupil[] | null>(null);
-  const [payments, setPayments] = useState<PaymentRow[] | null>(null);
+  const [payments, setPayments] = useState<HistoryRow[] | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -226,14 +234,15 @@ function PaymentsPage() {
     })();
 
     supabase
-      .from("payments")
-      .select("id, pupil_id, amount, paid_at, pupils(name)")
+      .from("lesson_history")
+      .select("id, pupil_id, lesson_cost, created_at, payment_method, pupils(name)")
       .eq("instructor_id", userId)
+      .eq("payment_status", "paid")
       .is("deleted_at", null)
-      .order("paid_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .then(({ data, error }) => {
-        if (error) console.error("[payments] payments error", error);
-        setPayments((data as unknown as PaymentRow[]) ?? []);
+        if (error) console.error("[payments] lesson_history error", error);
+        setPayments((data as unknown as HistoryRow[]) ?? []);
         setLoading(false);
       });
   }, [userId]);
@@ -246,8 +255,8 @@ function PaymentsPage() {
     let m = 0;
     let a = 0;
     (payments ?? []).forEach((p) => {
-      const amt = Number(p.amount ?? 0);
-      const t = new Date(p.paid_at).getTime();
+      const amt = Number(p.lesson_cost ?? 0);
+      const t = new Date(p.created_at).getTime();
       a += amt;
       if (t >= ws) w += amt;
       if (t >= ms) m += amt;
@@ -266,11 +275,12 @@ function PaymentsPage() {
       notes: "Marked paid",
     });
 
-    const paymentRow: PaymentRow = {
+    const paymentRow: HistoryRow = {
       id: crypto.randomUUID(),
       pupil_id: pupil.id,
-      amount,
-      paid_at: new Date().toISOString(),
+      lesson_cost: amount,
+      created_at: new Date().toISOString(),
+      payment_method: "other",
       pupils: { name: pupil.name },
     };
     setPayments((prev) => [paymentRow, ...(prev ?? [])]);
@@ -289,6 +299,127 @@ function PaymentsPage() {
       prev.map((p) => (p.id === pupil.id ? { ...p, balance_owed: 0 } : p)),
     );
 
+  }
+
+  async function deletePayment(row: HistoryRow) {
+    if (!userId) return;
+    if (!window.confirm("Delete this payment record?")) return;
+
+    const amount = Number(row.lesson_cost ?? 0);
+    const nowIso = new Date().toISOString();
+
+    // 1) Soft-delete the audit row via REST.
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    if (!token) {
+      console.error("[payments] no token for delete");
+      return;
+    }
+    const SUPABASE_URL = (supabase as any).supabaseUrl as string;
+    const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
+    const patchRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/lesson_history?id=eq.${row.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({ deleted_at: nowIso }),
+      },
+    );
+    if (!patchRes.ok) {
+      console.error("[payments] soft delete failed", patchRes.status, await patchRes.text());
+      return;
+    }
+
+    // 2) Reverse the effect on lessons (most-recently paid first).
+    let toReverse = amount;
+    const { data: paidLessons, error: lErr } = await supabase
+      .from("lessons")
+      .select("id, paid_amount, amount_due, payment_status")
+      .eq("pupil_id", row.pupil_id)
+      .in("payment_status", ["paid", "partial"])
+      .is("deleted_at", null)
+      .order("paid_at", { ascending: false });
+    if (lErr) console.error("[payments] fetch paid lessons error", lErr);
+
+    for (const lesson of (paidLessons ?? []) as {
+      id: string;
+      paid_amount: number | null;
+      amount_due: number | null;
+      payment_status: string;
+    }[]) {
+      if (toReverse <= 0) break;
+      const paid = Number(lesson.paid_amount ?? 0);
+      if (paid <= 0) continue;
+      const restore = Math.min(paid, toReverse);
+      const remainingPaid = paid - restore;
+      const newAmountDue = Number(lesson.amount_due ?? 0) + restore;
+      const { error: uErr } = await supabase
+        .from("lessons")
+        .update({
+          payment_status: remainingPaid > 0 ? "partial" : "unpaid",
+          paid_amount: remainingPaid,
+          amount_due: newAmountDue,
+          ...(remainingPaid === 0 ? { paid_at: null, payment_method: null } : {}),
+        })
+        .eq("id", lesson.id);
+      if (uErr) console.error("[payments] reverse lesson update error", uErr);
+      toReverse -= restore;
+    }
+
+    // 3) Any remainder came from account_balance credit — subtract it.
+    if (toReverse > 0) {
+      const { data: pRow } = await supabase
+        .from("pupils")
+        .select("account_balance")
+        .eq("id", row.pupil_id)
+        .maybeSingle();
+      const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
+      const next = Math.max(0, current - toReverse);
+      const { error: bErr } = await supabase
+        .from("pupils")
+        .update({ account_balance: next })
+        .eq("id", row.pupil_id);
+      if (bErr) console.error("[payments] reverse account_balance error", bErr);
+    }
+
+    // 4) Refetch history + outstanding.
+    const { data: historyData } = await supabase
+      .from("lesson_history")
+      .select("id, pupil_id, lesson_cost, created_at, payment_method, pupils(name)")
+      .eq("instructor_id", userId)
+      .eq("payment_status", "paid")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false });
+    setPayments((historyData as unknown as HistoryRow[]) ?? []);
+
+    const { data: unpaid } = await supabase
+      .from("lessons")
+      .select("pupil_id, amount_due")
+      .eq("instructor_id", userId)
+      .eq("payment_status", "unpaid")
+      .is("deleted_at", null);
+    const owedByPupil: Record<string, number> = {};
+    for (const l of (unpaid ?? []) as { pupil_id: string; amount_due: number | null }[]) {
+      owedByPupil[l.pupil_id] = (owedByPupil[l.pupil_id] || 0) + Number(l.amount_due || 0);
+    }
+    const { data: pupilRows } = await supabase
+      .from("pupils")
+      .select("id, name, account_balance")
+      .eq("instructor_id", userId)
+      .is("deleted_at", null);
+    const list: OutstandingPupil[] = [];
+    for (const p of (pupilRows ?? []) as { id: string; name: string; account_balance: number | null }[]) {
+      const owed = owedByPupil[p.id] || 0;
+      const credit = Number(p.account_balance ?? 0);
+      const net = owed - credit;
+      if (net > 0) list.push({ id: p.id, name: p.name, balance_owed: net });
+    }
+    setOutstanding(list.sort((a, b) => a.name.localeCompare(b.name)));
   }
 
   return (
@@ -537,14 +668,31 @@ function PaymentsPage() {
                       {row.pupils?.name ?? "Unknown pupil"}
                     </div>
                     <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                      {formatDate(row.paid_at)}
+                      {formatDate(row.created_at)}
                     </div>
                   </div>
-                  <div
-                    className="text-[14px] font-bold shrink-0"
-                    style={{ color: "#1877D6", ...POPPINS }}
-                  >
-                    {formatGBP(Number(row.amount))}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div
+                      className="text-[14px] font-bold"
+                      style={{ color: "#1877D6", ...POPPINS }}
+                    >
+                      {formatGBP(Number(row.lesson_cost ?? 0))}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label="Delete payment"
+                      onClick={() => deletePayment(row)}
+                      className="flex items-center justify-center rounded-full"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "#F3F4F6",
+                        color: "#6B7280",
+                        border: "none",
+                      }}
+                    >
+                      <X size={14} color="#6B7280" />
+                    </button>
                   </div>
                 </div>
               </Card>
@@ -605,7 +753,7 @@ function RecordSheet({
 }: {
   pupils: PupilLite[];
   onClose: () => void;
-  onSaved: (payment: PaymentRow, pupilId: string, newBalance: number) => void;
+  onSaved: (payment: HistoryRow, pupilId: string, newBalance: number) => void;
   userId: string | null;
 }) {
   const [pupilId, setPupilId] = useState("");
@@ -642,11 +790,12 @@ function RecordSheet({
       notes: note || null,
     });
 
-    const payment: PaymentRow = {
+    const payment: HistoryRow = {
       id: crypto.randomUUID(),
       pupil_id: pupilId,
-      amount: amt,
-      paid_at: new Date().toISOString(),
+      lesson_cost: amt,
+      created_at: new Date().toISOString(),
+      payment_method: method,
       pupils: { name: pupil?.name ?? "Unknown pupil" },
     };
 
