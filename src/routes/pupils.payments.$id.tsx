@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, PoundSterling, Plus, MessageSquare, Mail, X } from "lucide-react";
+import { ArrowLeft, PoundSterling, Plus, MessageSquare, Mail, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -20,6 +20,7 @@ interface PaymentRow {
   lesson_cost: number | null;
   created_at: string;
   payment_method: string | null;
+  notes: string | null;
 }
 
 function formatGBP(amount: number | null) {
@@ -52,6 +53,24 @@ function formatDate(d: Date) {
 function formatMethod(method: string | null) {
   if (!method) return "Payment";
   return method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const AUDIT_MARKER = "--- Edit history ---";
+
+function splitNotes(notes: string | null): { base: string; audit: string[] } {
+  if (!notes) return { base: "", audit: [] };
+  const idx = notes.indexOf(AUDIT_MARKER);
+  if (idx === -1) return { base: notes, audit: [] };
+  const base = notes.slice(0, idx).trim();
+  const auditRaw = notes.slice(idx + AUDIT_MARKER.length).trim();
+  const audit = auditRaw ? auditRaw.split("\n").map((l) => l.trim()).filter(Boolean) : [];
+  return { base, audit };
+}
+
+function joinNotes(base: string, audit: string[]): string | null {
+  const b = base.trim();
+  if (audit.length === 0) return b || null;
+  return `${b}\n\n${AUDIT_MARKER}\n${audit.join("\n")}`.trim();
 }
 
 function PupilPaymentsPage() {
