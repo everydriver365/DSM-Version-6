@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment } from "react";
-import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, Flag, Heart, Loader2, Mail, MapPin, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Camera, Car, ChevronRight, ClipboardCheck, ClipboardList, CreditCard, ExternalLink, Flag, Heart, Loader2, Mail, MapPin, MessageSquare, Palette, Pencil, Phone, PoundSterling, Search, Trash2, Trophy, X, Check } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -112,6 +112,7 @@ interface Pupil {
   emergency_contact_phone: string | null;
   emergency_contact_relation: string | null;
   driving_licence_number: string | null;
+  driving_licence_checked: boolean | null;
   custom_rate: number | null;
   custom_rate_90: number | null;
   custom_rate_120: number | null;
@@ -370,7 +371,7 @@ function PupilDetailPage() {
         theory_pass, wants_swap,
         ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
-        driving_licence_number, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
+        driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
         test_status, test_examiner
       `)
@@ -1432,6 +1433,7 @@ function PupilDetailPage() {
         <PupilExtras
         pupil={pupil}
         instructorRate={instructorRate}
+        instructorName={instructorName}
         onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
