@@ -595,6 +595,7 @@ function RecordSheet({
 }) {
   const [pupilId, setPupilId] = useState("");
   const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState("cash");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -617,9 +618,14 @@ function RecordSheet({
     setSaving(true);
 
     const pupil = pupils.find((p) => p.id === pupilId);
-    const currentBalance = Number(pupil?.balance_owed ?? 0);
-    const newBalance = Math.max(0, currentBalance - amt);
-    console.log("[payments] recording payment:", { amount: amt, pupilId, paymentMethod: "record-sheet" });
+
+    await recordPayment({
+      instructorId: userId,
+      pupilId,
+      amount: amt,
+      method,
+      notes: note || null,
+    });
 
     const { data: inserted, error: insErr } = await supabase
       .from("payments")
@@ -628,6 +634,7 @@ function RecordSheet({
         instructor_id: userId,
         amount: amt,
         paid_at: new Date().toISOString(),
+        payment_method: method,
         note: note || null,
       })
       .select("id, pupil_id, amount, paid_at")
@@ -639,15 +646,6 @@ function RecordSheet({
       setSaving(false);
       return;
     }
-
-    const balanceResult = await supabase
-      .from("pupils")
-      .update({ balance_owed: newBalance })
-      .eq("id", pupilId);
-    console.log("[payments] pupils.balance_owed update result:", balanceResult);
-    if (balanceResult.error) console.error("[payments] record update balance error", balanceResult.error);
-
-    await applyPaymentToLessons(pupilId, amt, userId);
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
@@ -662,7 +660,7 @@ function RecordSheet({
       ...inserted!,
       pupils: { name: pupil?.name ?? "Unknown pupil" },
     };
-    onSaved(payment, pupilId, newBalance);
+    onSaved(payment, pupilId, 0);
     setSaving(false);
     onClose();
   }
@@ -720,6 +718,26 @@ function RecordSheet({
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"
           />
+
+          <div>
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              Method
+            </label>
+            <select
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <option value="cash">Cash</option>
+              <option value="card">Card (Ryft)</option>
+              <option value="bank_transfer">Bank transfer</option>
+              <option value="klarna">Klarna</option>
+              <option value="clearpay">Clearpay</option>
+              <option value="prepaid">Prepaid hours</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
 
           <Input
             label="Note (optional)"
