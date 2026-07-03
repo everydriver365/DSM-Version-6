@@ -4193,15 +4193,15 @@ function EarningsBreakdownModal({
   open: boolean;
   onClose: () => void;
   total: number;
-  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" }>;
+  rows: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" }>;
   onRecord: () => void;
   onViewMTD: () => void;
   onEdit: (
-    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" },
     updates: { amount: number; method: string; date: string },
   ) => Promise<void>;
   onDelete: (
-    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" },
+    row: { id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" },
   ) => Promise<void>;
 }) {
   const fmtDate = (iso: string) => {
