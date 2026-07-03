@@ -57,6 +57,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   marketing: "Marketing",
   office: "Office",
   subscriptions: "Subscriptions",
+  recurring: "Recurring subscriptions",
   other: "Other",
 };
 
