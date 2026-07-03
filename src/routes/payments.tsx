@@ -204,7 +204,7 @@ function PaymentsPage() {
       return;
     }
 
-    await applyPaymentToLessons(pupil.id, amount);
+    await applyPaymentToLessons(pupil.id, amount, userId);
 
     const { data: inserted, error: insErr } = await supabase
       .from("payments")
@@ -613,7 +613,7 @@ function RecordSheet({
     console.log("[payments] pupils.balance_owed update result:", balanceResult);
     if (balanceResult.error) console.error("[payments] record update balance error", balanceResult.error);
 
-    await applyPaymentToLessons(pupilId, amt);
+    await applyPaymentToLessons(pupilId, amt, userId);
 
     const { error: notifErr } = await supabase.from("instructor_notifications").insert({
       instructor_id: userId,
