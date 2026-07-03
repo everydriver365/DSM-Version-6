@@ -783,8 +783,7 @@ function PupilDetailPage() {
       </div>
       {/* Profile header card */}
       {pupil && (
-        <div className="mt-0">
-          <Card className="p-0 overflow-hidden bg-transparent shadow-none rounded-none" style={{ border: "none" }}>
+        <div className="mt-0 overflow-hidden rounded-b-[28px]">
             {/* Blue hero band */}
             <div
               className="relative px-4 rounded-b-[28px]"
