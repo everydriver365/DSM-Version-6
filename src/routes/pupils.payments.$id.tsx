@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, PoundSterling } from "lucide-react";
+import { ArrowLeft, PoundSterling, Plus, MessageSquare, Mail, X } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -57,21 +58,30 @@ function PupilPaymentsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const [pupilName, setPupilName] = useState<string>("");
+  const [pupilPhone, setPupilPhone] = useState<string | null>(null);
+  const [pupilEmail, setPupilEmail] = useState<string | null>(null);
   const [accountBalance, setAccountBalance] = useState<number | null>(null);
   const [balanceOwed, setBalanceOwed] = useState<number | null>(null);
   const [payments, setPayments] = useState<PaymentRow[] | null>(null);
+  const [showRecord, setShowRecord] = useState(false);
+  const [recAmount, setRecAmount] = useState<string>("");
+  const [recMethod, setRecMethod] = useState<"cash" | "bank_transfer" | "card">("cash");
+  const [recSaving, setRecSaving] = useState(false);
+  const [reloadTick, setReloadTick] = useState(0);
 
   useEffect(() => {
     supabase
       .from("pupils")
-      .select("name, account_balance")
+      .select("name, account_balance, phone, email")
       .eq("id", id)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil-payments] pupil fetch error", error);
-        const p = (data as { name?: string | null; account_balance?: number | null } | null) ?? null;
+        const p = (data as { name?: string | null; account_balance?: number | null; phone?: string | null; email?: string | null } | null) ?? null;
         setPupilName(p?.name ?? "");
         setAccountBalance(p?.account_balance ?? null);
+        setPupilPhone(p?.phone ?? null);
+        setPupilEmail(p?.email ?? null);
       });
 
     // Live owed amount from unpaid lessons (matches pupil profile calculation)
@@ -104,7 +114,116 @@ function PupilPaymentsPage() {
         if (error) console.error("[pupil-payments] history error", error);
         setPayments((data as PaymentRow[] | null) ?? []);
       });
-  }, [id]);
+  }, [id, reloadTick]);
+
+  const { net } = balanceValue(accountBalance, balanceOwed);
+
+  async function submitRecordPayment() {
+    const amt = Number(recAmount);
+    if (!amt || amt <= 0) {
+      toast.error("Enter an amount");
+      return;
+    }
+    setRecSaving(true);
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      const instructorId = u?.user?.id ?? null;
+      const now = new Date().toISOString();
+      const today = now.slice(0, 10);
+      let remaining = amt;
+
+      // Apply to oldest unpaid lessons
+      const { data: unpaid } = await supabase
+        .from("lessons")
+        .select("id, amount_due")
+        .eq("pupil_id", id)
+        .eq("payment_status", "unpaid")
+        .is("deleted_at", null)
+        .order("lesson_date", { ascending: true });
+      for (const l of (unpaid ?? []) as { id: string; amount_due: number | null }[]) {
+        if (remaining <= 0) break;
+        const due = Number(l.amount_due ?? 0);
+        if (due <= 0) continue;
+        if (due <= remaining) {
+          await supabase
+            .from("lessons")
+            .update({
+              payment_status: "paid",
+              payment_method: recMethod,
+              paid_at: now,
+              paid_amount: due,
+              amount_due: 0,
+            })
+            .eq("id", l.id);
+          remaining -= due;
+        } else {
+          await supabase
+            .from("lessons")
+            .update({
+              payment_status: "partial",
+              payment_method: recMethod,
+              paid_at: now,
+              paid_amount: remaining,
+              amount_due: due - remaining,
+            })
+            .eq("id", l.id);
+          remaining = 0;
+        }
+      }
+
+      // Overpayment → account credit
+      if (remaining > 0) {
+        const cur = Number(accountBalance ?? 0);
+        await supabase.from("pupils").update({ account_balance: cur + remaining }).eq("id", id);
+      }
+
+      // Audit row
+      if (instructorId) {
+        const { error: hErr } = await supabase.from("lesson_history").insert({
+          instructor_id: instructorId,
+          pupil_id: id,
+          lesson_cost: amt,
+          payment_status: "paid",
+          payment_method: recMethod,
+          created_at: now,
+        });
+        if (hErr) console.error("[pupil-payments] history insert", hErr);
+      }
+
+      // Legacy payments row
+      const { error: payErr } = await supabase.from("payments").insert({
+        instructor_id: instructorId,
+        pupil_id: id,
+        amount: amt,
+        payment_method: recMethod,
+        payment_date: today,
+        status: "completed",
+      });
+      if (payErr) console.error("[pupil-payments] payments insert", payErr);
+
+      toast.success("Payment recorded");
+      setShowRecord(false);
+      setRecAmount("");
+      setRecMethod("cash");
+      setReloadTick((n) => n + 1);
+    } catch (e) {
+      console.error("[pupil-payments] record failed", e);
+      toast.error("Couldn't record payment");
+    } finally {
+      setRecSaving(false);
+    }
+  }
+
+  const reminderMessage =
+    net > 0
+      ? `Hi${pupilName ? " " + pupilName.split(" ")[0] : ""}, a friendly reminder that £${net.toFixed(2)} is outstanding on your driving lesson account. Thanks!`
+      : "";
+  const smsHref = pupilPhone
+    ? `sms:${pupilPhone}?&body=${encodeURIComponent(reminderMessage)}`
+    : `sms:?&body=${encodeURIComponent(reminderMessage)}`;
+  const mailHref = pupilEmail
+    ? `mailto:${pupilEmail}?subject=${encodeURIComponent("Payment reminder")}&body=${encodeURIComponent(reminderMessage)}`
+    : `mailto:?subject=${encodeURIComponent("Payment reminder")}&body=${encodeURIComponent(reminderMessage)}`;
 
   const totalPaid = (payments ?? []).reduce((sum, p) => sum + Number(p.lesson_cost ?? 0), 0);
 
@@ -140,7 +259,6 @@ function PupilPaymentsPage() {
         )}
 
         {(() => {
-          const { net } = balanceValue(accountBalance, balanceOwed);
           return (
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="rounded-xl p-4" style={{ backgroundColor: "#0F2044" }}>
@@ -168,6 +286,45 @@ function PupilPaymentsPage() {
             </div>
           );
         })()}
+
+        {net > 0 && (pupilPhone || pupilEmail) && (
+          <div className="mb-3">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#64748B] mb-2" style={POPPINS}>
+              Send payment reminder
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href={smsHref}
+                className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
+                style={POPPINS}
+              >
+                <MessageSquare size={16} color="#1877D6" />
+                Text
+              </a>
+              <a
+                href={mailHref}
+                className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
+                style={POPPINS}
+              >
+                <Mail size={16} color="#1877D6" />
+                Email
+              </a>
+            </div>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setRecAmount(net > 0 ? net.toFixed(2) : "");
+            setShowRecord(true);
+          }}
+          className="w-full flex items-center justify-center gap-2 rounded-xl py-3 mb-4 text-[14px] font-semibold text-white"
+          style={{ backgroundColor: "#1877D6", ...POPPINS }}
+        >
+          <Plus size={18} color="#FFFFFF" />
+          Record payment
+        </button>
 
         {payments === null ? null : payments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
@@ -205,6 +362,87 @@ function PupilPaymentsPage() {
           </div>
         )}
       </div>
+
+      {showRecord && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40"
+          onClick={() => !recSaving && setShowRecord(false)}
+        >
+          <div
+            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5"
+            style={POPPINS}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[16px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                Record payment
+              </h2>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => !recSaving && setShowRecord(false)}
+                className="p-1"
+              >
+                <X size={20} color="#0B1F3A" />
+              </button>
+            </div>
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-1" style={POPPINS}>
+              Amount (£)
+            </label>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              value={recAmount}
+              onChange={(e) => setRecAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              style={POPPINS}
+            />
+
+            <label className="block text-[12px] font-semibold text-[#64748B] mb-2" style={POPPINS}>
+              Payment method
+            </label>
+            <div className="grid grid-cols-3 gap-2 mb-5">
+              {([
+                { k: "cash", label: "Cash" },
+                { k: "bank_transfer", label: "Bank" },
+                { k: "card", label: "Card" },
+              ] as const).map((opt) => {
+                const active = recMethod === opt.k;
+                return (
+                  <button
+                    key={opt.k}
+                    type="button"
+                    onClick={() => setRecMethod(opt.k)}
+                    className="rounded-xl py-2 text-[13px] font-semibold border"
+                    style={{
+                      backgroundColor: active ? "#0F2044" : "#FFFFFF",
+                      color: active ? "#FFFFFF" : "#0B1F3A",
+                      borderColor: active ? "#0F2044" : "#E2E8F0",
+                      ...POPPINS,
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              disabled={recSaving}
+              onClick={submitRecordPayment}
+              className="w-full rounded-xl py-3 text-[14px] font-semibold text-white"
+              style={{ backgroundColor: "#1877D6", opacity: recSaving ? 0.6 : 1, ...POPPINS }}
+            >
+              {recSaving ? "Saving..." : "Save payment"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
