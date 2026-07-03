@@ -142,24 +142,19 @@ function PupilsIndexPage() {
       try {
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due, payment_status, duration_minutes")
+          .select("pupil_id, amount_due")
           .eq("instructor_id", uid)
+          .eq("payment_status", "unpaid")
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
-        console.log("[pupils] lesson balances:", lessonBalances);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; payment_status: string | null; duration_minutes: number | null }[]).reduce(
+        console.log("[pupils] unpaid lesson balances:", lessonBalances);
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
-            if (!acc[row.pupil_id]) acc[row.pupil_id] = { owed: 0, paid: 0 };
-            const amount = Number(row.amount_due) || 0;
-            if (row.payment_status === "paid") {
-              acc[row.pupil_id].paid += amount;
-            } else {
-              acc[row.pupil_id].owed += amount;
-            }
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + (Number(row.amount_due) || 0);
             return acc;
           },
-          {} as Record<string, { owed: number; paid: number }>,
+          {} as Record<string, number>,
         );
         setBalanceMap(bMap);
 
