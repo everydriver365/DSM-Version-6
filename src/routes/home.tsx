@@ -1068,34 +1068,9 @@ function HomePage() {
       earningsList.sort((a, b) => (a.date < b.date ? 1 : -1));
       setEarningsRows(earningsList);
 
-      // Fallback: estimate from lessons taught when no formal payments recorded
-      if (wk === 0) {
-        const { data: lessonRows } = await supabase
-          .from("lessons")
-          .select("amount_due, lesson_date")
-          .eq("instructor_id", userId)
-          .in("status", ["confirmed", "completed"])
-          .is("deleted_at", null)
-          .gte("lesson_date", ymd(weekStart))
-          .lt("lesson_date", ymd(weekEnd));
-        let lessonEarnings = 0;
-        let lessonToday = 0;
-        const todayYmd = ymd(todayStart);
-        (lessonRows ?? []).forEach((l) => {
-          const amt = Number(l.amount_due ?? 0);
-          lessonEarnings += amt;
-          if (l.lesson_date && l.lesson_date === todayYmd) lessonToday += amt;
-        });
-        if (lessonEarnings > 0) {
-          wk = lessonEarnings;
-          td = lessonToday;
-          setEarningsEstimated(true);
-        } else {
-          setEarningsEstimated(false);
-        }
-      } else {
-        setEarningsEstimated(false);
-      }
+      // Earnings reflect actual paid records only — no estimates from
+      // scheduled/completed lessons, which would inflate the total.
+      setEarningsEstimated(false);
 
       setWeekEarnings(wk);
       setTodayEarnings(td);
