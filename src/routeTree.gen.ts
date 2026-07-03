@@ -119,6 +119,7 @@ import { Route as MarketingContactRouteImport } from './routes/_marketing.contac
 import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
 import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
+import { Route as PupilsPaymentsIdRouteImport } from './routes/pupils.payments.$id'
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.reschedule.$id'
@@ -674,6 +675,11 @@ const PupilsProgressIdRoute = PupilsProgressIdRouteImport.update({
   path: '/pupils/progress/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PupilsPaymentsIdRoute = PupilsPaymentsIdRouteImport.update({
+  id: '/pupils/payments/$id',
+  path: '/pupils/payments/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PupilsHistoryIdRoute = PupilsHistoryIdRouteImport.update({
   id: '/pupils/history/$id',
   path: '/pupils/history/$id',
@@ -813,6 +819,7 @@ export interface FileRoutesByFullPath {
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
+  '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
@@ -928,6 +935,7 @@ export interface FileRoutesByTo {
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
+  '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
@@ -1046,6 +1054,7 @@ export interface FileRoutesById {
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
+  '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
 }
@@ -1164,6 +1173,7 @@ export interface FileRouteTypes {
     | '/lessons/reschedule/$id'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
+    | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -1279,6 +1289,7 @@ export interface FileRouteTypes {
     | '/lessons/reschedule/$id'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
+    | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
   id:
@@ -1396,6 +1407,7 @@ export interface FileRouteTypes {
     | '/lessons/reschedule/$id'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
+    | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
   fileRoutesById: FileRoutesById
@@ -1505,6 +1517,7 @@ export interface RootRouteChildren {
   LessonsRescheduleIdRoute: typeof LessonsRescheduleIdRoute
   PupilsEditIdRoute: typeof PupilsEditIdRoute
   PupilsHistoryIdRoute: typeof PupilsHistoryIdRoute
+  PupilsPaymentsIdRoute: typeof PupilsPaymentsIdRoute
   PupilsProgressIdRoute: typeof PupilsProgressIdRoute
   PupilsSyllabusIdRoute: typeof PupilsSyllabusIdRoute
 }
@@ -2281,6 +2294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsProgressIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pupils/payments/$id': {
+      id: '/pupils/payments/$id'
+      path: '/pupils/payments/$id'
+      fullPath: '/pupils/payments/$id'
+      preLoaderRoute: typeof PupilsPaymentsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pupils/history/$id': {
       id: '/pupils/history/$id'
       path: '/pupils/history/$id'
@@ -2479,19 +2499,10 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsRescheduleIdRoute: LessonsRescheduleIdRoute,
   PupilsEditIdRoute: PupilsEditIdRoute,
   PupilsHistoryIdRoute: PupilsHistoryIdRoute,
+  PupilsPaymentsIdRoute: PupilsPaymentsIdRoute,
   PupilsProgressIdRoute: PupilsProgressIdRoute,
   PupilsSyllabusIdRoute: PupilsSyllabusIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

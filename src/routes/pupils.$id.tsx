@@ -948,7 +948,7 @@ function PupilDetailPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+                        onClick={() => navigate({ to: "/pupils/payments/$id", params: { id } })}
                         className="text-left rounded-xl p-4"
                         style={{ backgroundColor: "#0F2044" }}
                       >
