@@ -762,7 +762,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       }
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,duration_minutes,image_url,spotify_url,apple_url,audio_url`,
+          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,guest_title,duration_minutes,image_url,spotify_url,apple_url,audio_url,published_at`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
