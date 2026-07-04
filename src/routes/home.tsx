@@ -782,32 +782,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   return (
     <div style={{ padding: "0 16px", marginTop: 16, marginBottom: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
-        <span
-          style={{
-            width: 8,
-            height: 8,
-            background: "#EF4444",
-            borderRadius: 999,
-            marginRight: 8,
-            animation: "pulse 1.5s ease-in-out infinite",
-          }}
-        />
-        <div style={{ fontWeight: 700, color: "#0F2044", fontSize: 16, flex: 1 }}>DSM Live</div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dsm-live" as never })}
-          style={{
-            background: "transparent",
-            border: 0,
-            color: "#0F2044",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          See all →
-        </button>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
+          <span style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}>DSM Live</span>
+        </div>
+        <p style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "Poppins, sans-serif", margin: "2px 0 0 14px" }}>
+          Live events , podcasts and webinars
+        </p>
       </div>
       <div
         style={{
