@@ -72,6 +72,7 @@ import {
   Camera,
   Activity,
   CheckCircle2,
+  Music,
 } from "lucide-react";
 import {
   Dialog,
@@ -725,6 +726,18 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   };
 
   const [sessions, setSessions] = useState<LiveTile[]>([]);
+  type PodcastTile = {
+    id: string;
+    episode_number: number | null;
+    title: string;
+    guest_name: string | null;
+    duration_minutes: number | null;
+    image_url: string | null;
+    spotify_url: string | null;
+    apple_url: string | null;
+    audio_url: string | null;
+  };
+  const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -747,13 +760,28 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       } catch {
         /* ignore */
       }
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,duration_minutes,image_url,spotify_url,apple_url,audio_url`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          },
+        );
+        const data = (await res.json()) as PodcastTile[];
+        if (!cancelled && Array.isArray(data)) setPodcasts(data);
+      } catch {
+        /* ignore */
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (sessions.length === 0) return null;
+  if (sessions.length === 0 && podcasts.length === 0) return null;
 
   const fmtDate = (d: string) => {
     try {
@@ -894,6 +922,83 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           );
         })}
       </div>
+      {podcasts.length > 0 && (
+        <div style={{ marginTop: 4 }}>
+          {podcasts.map((p) => {
+            const openPodcasts = () =>
+              navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
+            return (
+              <div
+                key={p.id}
+                onClick={openPodcasts}
+                style={{
+                  background: "#fff",
+                  border: "0.5px solid #E2E6ED",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  marginBottom: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 6,
+                    background: p.image_url
+                      ? `url(${p.image_url}) center/cover no-repeat`
+                      : "#0F2044",
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {!p.image_url && <Music size={16} color="#fff" />}
+                </div>
+                <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {p.episode_number != null && (
+                      <span style={{ fontSize: 9, fontWeight: 700, color: "#CC2229" }}>
+                        EP {p.episode_number}
+                      </span>
+                    )}
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "#0F2044",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        flex: 1,
+                        minWidth: 0,
+                      }}
+                    >
+                      {p.title}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>
+                    {p.guest_name ? `${p.guest_name} · ` : ""}
+                    {p.duration_minutes ? `${p.duration_minutes} mins` : ""}
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6, alignItems: "center", paddingLeft: 8 }}>
+                  {p.spotify_url && (
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1DB954" }} />
+                  )}
+                  {p.apple_url && (
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#FC3C44" }} />
+                  )}
+                  {p.audio_url && <PlayCircle size={16} color="#0F2044" />}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
       <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
     </div>
   );

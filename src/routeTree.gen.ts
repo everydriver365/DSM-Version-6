@@ -116,6 +116,7 @@ import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$p
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
+import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
@@ -668,6 +669,11 @@ const BookingsIdRoute = BookingsIdRouteImport.update({
   path: '/bookings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPodcastsRoute = AdminPodcastsRouteImport.update({
+  id: '/podcasts',
+  path: '/podcasts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminListingsRoute = AdminListingsRouteImport.update({
   id: '/listings',
   path: '/listings',
@@ -844,6 +850,7 @@ export interface FileRoutesByFullPath {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -968,6 +975,7 @@ export interface FileRoutesByTo {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1095,6 +1103,7 @@ export interface FileRoutesById {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1222,6 +1231,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/listings'
+    | '/admin/podcasts'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1346,6 +1356,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/listings'
+    | '/admin/podcasts'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1472,6 +1483,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/listings'
+    | '/admin/podcasts'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -2373,6 +2385,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/podcasts': {
+      id: '/admin/podcasts'
+      path: '/podcasts'
+      fullPath: '/admin/podcasts'
+      preLoaderRoute: typeof AdminPodcastsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/listings': {
       id: '/admin/listings'
       path: '/listings'
@@ -2520,6 +2539,7 @@ interface AdminRouteChildren {
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminListingsRoute: typeof AdminListingsRoute
+  AdminPodcastsRoute: typeof AdminPodcastsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -2527,6 +2547,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDsmLiveRoute: AdminDsmLiveRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminListingsRoute: AdminListingsRoute,
+  AdminPodcastsRoute: AdminPodcastsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
