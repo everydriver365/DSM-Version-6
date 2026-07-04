@@ -406,7 +406,7 @@ END:VCALENDAR`;
               <div>⏱ Duration: {session.duration_minutes ?? 60} minutes</div>
               <div>👥 Spaces: {remaining} remaining</div>
               <div>💰 Price: {session.price_display ?? (session.price_amount ? `£${session.price_amount}` : "Free")}</div>
-              <div>🎥 Platform: Zoom (link sent after booking)</div>
+              <div>🎥 Type: {(session.category ?? "").toLowerCase().includes("webinar") ? "Webinar" : "Zoom Session"}</div>
             </div>
 
             <div
