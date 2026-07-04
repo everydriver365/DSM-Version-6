@@ -52,6 +52,7 @@ interface Listing {
   listing_type: string | null;
   category_id: string | null;
   supplier_id: string | null;
+  instructor_id: string | null;
   location: string | null;
   condition: string | null;
   tags: string[] | null;
