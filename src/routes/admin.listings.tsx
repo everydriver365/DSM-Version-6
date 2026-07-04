@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -61,6 +61,44 @@ async function restPatch(id: string, body: Record<string, unknown>) {
   return res.json();
 }
 
+type Category = { id: string; name: string };
+
+type NewListingDraft = {
+  supplierName: string;
+  supplierWebsite: string;
+  supplierLogo: string;
+  supplierVerified: boolean;
+  categoryId: string;
+  title: string;
+  description: string;
+  priceDisplay: string;
+  priceType: "fixed" | "poa" | "free";
+  contactType: "website" | "email" | "phone";
+  contactValue: string;
+  isFeatured: boolean;
+  isVerified: boolean;
+  isActive: boolean;
+  images: [string, string, string, string];
+};
+
+const emptyDraft: NewListingDraft = {
+  supplierName: "",
+  supplierWebsite: "",
+  supplierLogo: "",
+  supplierVerified: true,
+  categoryId: "",
+  title: "",
+  description: "",
+  priceDisplay: "",
+  priceType: "fixed",
+  contactType: "website",
+  contactValue: "",
+  isFeatured: false,
+  isVerified: true,
+  isActive: true,
+  images: ["", "", "", ""],
+};
+
 function AdminListingsPage() {
   const navigate = useNavigate();
   const [gate, setGate] = useState<"checking" | "allowed" | "denied">("checking");
@@ -72,6 +110,10 @@ function AdminListingsPage() {
   const [rejectReason, setRejectReason] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState<Partial<Listing>>({});
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [draft, setDraft] = useState<NewListingDraft>(emptyDraft);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,6 +168,100 @@ function AdminListingsPage() {
       cancelled = true;
     };
   }, [gate]);
+
+  useEffect(() => {
+    if (gate !== "allowed") return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("marketplace_categories")
+        .select("id,name")
+        .order("name", { ascending: true });
+      if (error) {
+        console.error("[admin/listings] categories", error);
+        return;
+      }
+      setCategories((data ?? []) as Category[]);
+    })();
+  }, [gate]);
+
+  async function refetchListings() {
+    const { data, error } = await supabase
+      .from("marketplace_listings")
+      .select("*,marketplace_categories(name),instructors(name)")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("[admin/listings] refetch", error);
+      return;
+    }
+    setListings((data ?? []) as Listing[]);
+  }
+
+  async function handleCreateSupplierListing() {
+    if (!draft.supplierName.trim()) {
+      toast.error("Supplier name is required");
+      return;
+    }
+    if (!draft.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!draft.description.trim()) {
+      toast.error("Description is required");
+      return;
+    }
+    setSaving(true);
+    try {
+      const { data: supplierRow, error: supplierErr } = await supabase
+        .from("marketplace_suppliers")
+        .insert({
+          name: draft.supplierName.trim(),
+          website_url: draft.supplierWebsite.trim() || null,
+          logo_url: draft.supplierLogo.trim() || null,
+          is_verified: draft.supplierVerified,
+          is_featured: draft.isFeatured,
+        })
+        .select("id")
+        .single();
+      if (supplierErr || !supplierRow) throw supplierErr ?? new Error("Supplier insert failed");
+
+      const images = draft.images.map((s) => s.trim()).filter(Boolean);
+      const listingPayload: Record<string, unknown> = {
+        supplier_id: supplierRow.id,
+        category_id: draft.categoryId || null,
+        title: draft.title.trim(),
+        description: draft.description.trim(),
+        price_display: draft.priceDisplay.trim() || null,
+        price_type: draft.priceType,
+        contact_type: draft.contactType,
+        is_active: draft.isActive,
+        is_featured: draft.isFeatured,
+        is_verified: draft.isVerified,
+        listing_type: "supplier",
+        image_urls: images,
+      };
+      const contactVal = draft.contactValue.trim() || null;
+      if (draft.contactType === "website") listingPayload.contact_url = contactVal;
+      else if (draft.contactType === "email") listingPayload.contact_email = contactVal;
+      else listingPayload.contact_phone = contactVal;
+
+      const { error: listErr } = await supabase
+        .from("marketplace_listings")
+        .insert(listingPayload);
+      if (listErr) throw listErr;
+
+      toast.success("Supplier listing created");
+      setSheetOpen(false);
+      setDraft(emptyDraft);
+      await refetchListings();
+    } catch (e) {
+      console.error("[admin/listings] create", e);
+      const msg = e instanceof Error ? e.message : "Failed to create listing";
+      toast.error(msg);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   const stats = useMemo(() => {
     const pending = listings.filter((l) => !l.is_active).length;
@@ -282,6 +418,26 @@ function AdminListingsPage() {
           <ChevronLeft size={18} />
         </button>
         <span style={{ fontSize: 16, fontWeight: 600 }}>Marketplace listings</span>
+        <button
+          type="button"
+          onClick={() => setSheetOpen(true)}
+          style={{
+            marginLeft: "auto",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            background: "rgba(255,255,255,0.18)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 999,
+            padding: "6px 12px",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          <Plus size={14} /> Add supplier listing
+        </button>
       </div>
 
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
@@ -499,7 +655,283 @@ function AdminListingsPage() {
           })
         )}
       </div>
+
+      {sheetOpen && (
+        <SupplierListingSheet
+          draft={draft}
+          setDraft={setDraft}
+          categories={categories}
+          saving={saving}
+          onClose={() => setSheetOpen(false)}
+          onSave={handleCreateSupplierListing}
+        />
+      )}
     </div>
+  );
+}
+
+function SupplierListingSheet({
+  draft,
+  setDraft,
+  categories,
+  saving,
+  onClose,
+  onSave,
+}: {
+  draft: NewListingDraft;
+  setDraft: (d: NewListingDraft) => void;
+  categories: Category[];
+  saving: boolean;
+  onClose: () => void;
+  onSave: () => void;
+}) {
+  const upd = <K extends keyof NewListingDraft>(k: K, v: NewListingDraft[K]) =>
+    setDraft({ ...draft, [k]: v });
+  const setImage = (i: number, v: string) => {
+    const next = [...draft.images] as [string, string, string, string];
+    next[i] = v;
+    setDraft({ ...draft, images: next });
+  };
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 60,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#fff",
+          width: "100%",
+          maxWidth: 560,
+          maxHeight: "92vh",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          display: "flex",
+          flexDirection: "column",
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            borderBottom: "0.5px solid #E2E6ED",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+            New supplier listing
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              marginLeft: "auto",
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "#F3F4F6",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#0B1F3A",
+            }}
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <div style={{ overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 18 }}>
+          <Section title="Supplier">
+            <Field label="Supplier name *">
+              <input value={draft.supplierName} onChange={(e) => upd("supplierName", e.target.value)} style={inputStyle} />
+            </Field>
+            <Field label="Website URL">
+              <input value={draft.supplierWebsite} onChange={(e) => upd("supplierWebsite", e.target.value)} style={inputStyle} placeholder="https://" />
+            </Field>
+            <Field label="Logo URL">
+              <input value={draft.supplierLogo} onChange={(e) => upd("supplierLogo", e.target.value)} style={inputStyle} placeholder="https://" />
+            </Field>
+            <Toggle label="Verified supplier" value={draft.supplierVerified} onChange={(v) => upd("supplierVerified", v)} />
+          </Section>
+
+          <Section title="Listing details">
+            <Field label="Category">
+              <select value={draft.categoryId} onChange={(e) => upd("categoryId", e.target.value)} style={inputStyle}>
+                <option value="">Select a category…</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Title *">
+              <input value={draft.title} onChange={(e) => upd("title", e.target.value)} style={inputStyle} />
+            </Field>
+            <Field label="Description *">
+              <textarea value={draft.description} onChange={(e) => upd("description", e.target.value)} style={{ ...inputStyle, minHeight: 90 }} />
+            </Field>
+            <Field label="Price display">
+              <input value={draft.priceDisplay} onChange={(e) => upd("priceDisplay", e.target.value)} style={inputStyle} placeholder="From £14.99/month" />
+            </Field>
+            <Field label="Price type">
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["fixed", "poa", "free"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => upd("priceType", t)}
+                    style={{
+                      flex: 1,
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "0.5px solid #E2E6ED",
+                      background: draft.priceType === t ? "#0F2044" : "#fff",
+                      color: draft.priceType === t ? "#fff" : "#0B1F3A",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </Field>
+          </Section>
+
+          <Section title="Contact">
+            <Field label="Contact type">
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["website", "email", "phone"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => upd("contactType", t)}
+                    style={{
+                      flex: 1,
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "0.5px solid #E2E6ED",
+                      background: draft.contactType === t ? "#0F2044" : "#fff",
+                      color: draft.contactType === t ? "#fff" : "#0B1F3A",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label={draft.contactType === "website" ? "URL" : draft.contactType === "email" ? "Email" : "Phone"}>
+              <input
+                value={draft.contactValue}
+                onChange={(e) => upd("contactValue", e.target.value)}
+                style={inputStyle}
+                placeholder={
+                  draft.contactType === "website"
+                    ? "https://"
+                    : draft.contactType === "email"
+                    ? "name@example.com"
+                    : "+44 …"
+                }
+              />
+            </Field>
+          </Section>
+
+          <Section title="Images (up to 4 URLs)">
+            {draft.images.map((val, i) => (
+              <Field key={i} label={`Image ${i + 1}`}>
+                <input value={val} onChange={(e) => setImage(i, e.target.value)} style={inputStyle} placeholder="https://" />
+              </Field>
+            ))}
+          </Section>
+
+          <Section title="Settings">
+            <Toggle label="Featured (show in featured carousel)" value={draft.isFeatured} onChange={(v) => upd("isFeatured", v)} />
+            <Toggle label="Verified badge" value={draft.isVerified} onChange={(v) => upd("isVerified", v)} />
+            <Toggle label="Active (publish immediately)" value={draft.isActive} onChange={(v) => upd("isActive", v)} />
+          </Section>
+        </div>
+
+        <div style={{ padding: 16, borderTop: "0.5px solid #E2E6ED", display: "flex", gap: 8 }}>
+          <button type="button" onClick={onClose} style={{ ...ghostBtn, flex: 1 }} disabled={saving}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onSave}
+            style={{ ...primaryBtn("#0F2044"), flex: 2, opacity: saving ? 0.6 : 1 }}
+            disabled={saving}
+          >
+            {saving ? "Saving…" : "Create listing"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.6 }}>
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        aria-pressed={value}
+        style={{
+          width: 40,
+          height: 24,
+          borderRadius: 999,
+          border: "none",
+          background: value ? "#16A34A" : "#D1D5DB",
+          position: "relative",
+          cursor: "pointer",
+          padding: 0,
+          flexShrink: 0,
+        }}
+      >
+        <span
+          style={{
+            position: "absolute",
+            top: 2,
+            left: value ? 18 : 2,
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+            background: "#fff",
+            transition: "left 0.15s",
+          }}
+        />
+      </button>
+      <span style={{ fontSize: 13, color: "#0B1F3A" }}>{label}</span>
+    </label>
   );
 }
 
