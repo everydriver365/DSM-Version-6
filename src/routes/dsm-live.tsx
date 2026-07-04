@@ -388,7 +388,10 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
           {p.spotify_url && (
             <button
               type="button"
-              onClick={() => openUrl(p.spotify_url!)}
+              onClick={(e) => {
+                e.stopPropagation();
+                openUrl(p.spotify_url!);
+              }}
               style={{
                 background: "#1DB954",
                 color: "#fff",
