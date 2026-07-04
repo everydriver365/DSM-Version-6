@@ -272,33 +272,86 @@ function chunkTiles<T>(arr: T[], size: number): T[][] {
 }
 
 function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
-  const [tiles, setTiles] = useState<MarketplaceTile[]>([]);
+  type ListingTile = {
+    id: string;
+    title: string;
+    price_display: string | null;
+    image_urls: string[] | string | null;
+    is_featured: boolean | null;
+    marketplace_categories: { name: string } | null;
+    marketplace_suppliers: { name: string; logo_url: string | null } | null;
+  };
+
+  const [listings, setListings] = useState<ListingTile[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from("marketplace_tiles")
-        .select("*")
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
-      console.log("[home] marketplace tiles fetched:", data);
-      if (!cancelled && data) setTiles(data as MarketplaceTile[]);
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc&limit=6`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          },
+        );
+        const data = (await res.json()) as ListingTile[];
+        if (!cancelled) setListings(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("[home] listings fetch failed", err);
+        if (!cancelled) setListings([]);
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (tiles.length === 0) return null;
+  const firstImageUrl = (raw: ListingTile["image_urls"]): string | null => {
+    const arr = Array.isArray(raw)
+      ? raw
+      : typeof raw === "string"
+      ? (() => {
+          try {
+            return JSON.parse(raw) as string[];
+          } catch {
+            return [];
+          }
+        })()
+      : [];
+    return arr[0] ?? null;
+  };
 
-  const handleNav = (url: string) => {
-    if (!url) return;
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      window.open(url, "_blank", "noopener,noreferrer");
-    } else {
-      navigate({ to: url as never });
-    }
+  const CATEGORY_GRADIENTS: Record<string, string> = {
+    tracking: "#4DA3FF",
+    dashcams: "#1877D6",
+    hardware: "#6D28D9",
+    health: "#EF4444",
+    learning: "#F59E0B",
+    cpd: "#F59E0B",
+    courses: "#10B981",
+    insurance: "#0EA5E9",
+    finance: "#22C55E",
+    marketing: "#EC4899",
+  };
+  const gradientFor = (categoryName: string | undefined): string => {
+    const key = (categoryName ?? "").toLowerCase();
+    const accent =
+      Object.entries(CATEGORY_GRADIENTS).find(([k]) => key.includes(k))?.[1] ??
+      "#4DA3FF";
+    return `linear-gradient(135deg, ${accent}, #0B1F3A)`;
+  };
+
+  const openListing = (listingId: string) => {
+    navigate({
+      to: "/marketplace/$listingId" as never,
+      params: { listingId } as never,
+    });
   };
 
   return (
@@ -355,7 +408,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               padding: 0,
             }}
           >
-            View all
+            See all →
           </button>
         </div>
       </div>
@@ -374,7 +427,17 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {chunkTiles(tiles, 4).map((chunk, pageIndex) => (
+        {(() => {
+          const hasListings = (listings?.length ?? 0) > 0;
+          const placeholders: ListingTile[] = [
+            { id: "p1", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "tracking" }, marketplace_suppliers: null },
+            { id: "p2", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "dashcams" }, marketplace_suppliers: null },
+            { id: "p3", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "insurance" }, marketplace_suppliers: null },
+            { id: "p4", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "learning" }, marketplace_suppliers: null },
+          ];
+          const items: ListingTile[] = hasListings ? listings! : placeholders;
+          const isPlaceholder = !hasListings;
+          return chunkTiles(items, 4).map((chunk, pageIndex) => (
           <div
             key={pageIndex}
             style={{
@@ -389,22 +452,23 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             }}
           >
             {chunk.map((tile) => {
-              const accentColor = tile.color || "#4DA3FF";
-              const hero = tile.image_url
-                ? `url(${tile.image_url}) center/cover no-repeat`
-                : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
-              const badgeLabel = tile.badge?.trim();
-              const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
+              const img = firstImageUrl(tile.image_urls);
+              const gradient = gradientFor(tile.marketplace_categories?.name);
+              const hero = img
+                ? `linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%), url(${img}) center/cover no-repeat`
+                : gradient;
+              const showFeatured = !!tile.is_featured;
               return (
                 <div
                   key={tile.id}
-                  onClick={() => handleNav(tile.link_url)}
+                  onClick={() => (isPlaceholder ? navigate({ to: "/marketplace" as never }) : openListing(tile.id))}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      handleNav(tile.link_url);
+                      if (isPlaceholder) navigate({ to: "/marketplace" as never });
+                      else openListing(tile.id);
                     }
                   }}
                   style={{
@@ -420,16 +484,20 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   <div
                     style={{
                       position: "relative",
-                      height: 96,
+                      height: 120,
                       borderRadius: 12,
                       overflow: "hidden",
                       background: hero,
                       border: "1px solid #EEF2F7",
                       boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
                       flexShrink: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-end",
+                      padding: 10,
                     }}
                   >
-                    {badgeLabel && (
+                    {showFeatured && (
                       <span
                         className="font-bold"
                         style={{
@@ -439,9 +507,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           fontSize: 9,
                           letterSpacing: 0.6,
                           color: "#FFFFFF",
-                          backgroundColor: badgeIsNew
-                            ? "rgba(11,31,58,0.92)"
-                            : "rgba(24,119,214,0.92)",
+                          backgroundColor: "rgba(245,158,11,0.95)",
                           backdropFilter: "blur(6px)",
                           WebkitBackdropFilter: "blur(6px)",
                           fontFamily: "Inter, sans-serif",
@@ -451,26 +517,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                         }}
                       >
-                        {badgeLabel}
+                        Featured
                       </span>
                     )}
-                  </div>
-                  {/* Label below card */}
-                  <div
-                    style={{
-                      padding: "8px 2px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      textAlign: "left",
-                    }}
-                  >
                     <span
                       style={{
+                        position: "relative",
                         fontSize: 12,
-                        color: "#0B1F3A",
-                        lineHeight: 1.25,
-                        maxWidth: "100%",
+                        color: "#FFFFFF",
+                        lineHeight: 1.2,
                         overflow: "hidden",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
@@ -478,25 +533,24 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         fontWeight: 700,
                         fontFamily: "Inter, sans-serif",
                         letterSpacing: -0.1,
+                        textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                       }}
                     >
                       {tile.title}
                     </span>
-                    {tile.subtitle && (
+                    {(tile.price_display || isPlaceholder) && (
                       <span
                         style={{
+                          position: "relative",
                           fontSize: 10,
-                          color: "#6B7684",
+                          color: "rgba(255,255,255,0.75)",
                           marginTop: 2,
                           fontFamily: "Inter, sans-serif",
-                          overflow: "hidden",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
                           fontWeight: 500,
+                          textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                         }}
                       >
-                        {tile.subtitle}
+                        {isPlaceholder ? "Coming soon" : tile.price_display}
                       </span>
                     )}
                   </div>
@@ -504,7 +558,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               );
             })}
           </div>
-        ))}
+          ));
+        })()}
       </div>
       <style>{`
         .marketplace-scroll::-webkit-scrollbar {
