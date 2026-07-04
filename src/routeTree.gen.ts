@@ -111,6 +111,7 @@ import { Route as MarketplaceListingIdRouteImport } from './routes/marketplace_.
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
+import { Route as DsmLiveSessionIdRouteImport } from './routes/dsm-live.$sessionId'
 import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$pupilId'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
@@ -641,6 +642,11 @@ const ISlugRoute = ISlugRouteImport.update({
   path: '/i/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLiveSessionIdRoute = DsmLiveSessionIdRouteImport.update({
+  id: '/$sessionId',
+  path: '/$sessionId',
+  getParentRoute: () => DsmLiveRoute,
+} as any)
 const DrivingTestPupilIdRoute = DrivingTestPupilIdRouteImport.update({
   id: '/driving-test/$pupilId',
   path: '/driving-test/$pupilId',
@@ -758,7 +764,7 @@ export interface FileRoutesByFullPath {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
-  '/dsm-live': typeof DsmLiveRoute
+  '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -835,6 +841,7 @@ export interface FileRoutesByFullPath {
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
+  '/dsm-live/$sessionId': typeof DsmLiveSessionIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -881,7 +888,7 @@ export interface FileRoutesByTo {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
-  '/dsm-live': typeof DsmLiveRoute
+  '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -957,6 +964,7 @@ export interface FileRoutesByTo {
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
+  '/dsm-live/$sessionId': typeof DsmLiveSessionIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -1005,7 +1013,7 @@ export interface FileRoutesById {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
-  '/dsm-live': typeof DsmLiveRoute
+  '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -1082,6 +1090,7 @@ export interface FileRoutesById {
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
+  '/dsm-live/$sessionId': typeof DsmLiveSessionIdRoute
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
@@ -1207,6 +1216,7 @@ export interface FileRouteTypes {
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
+    | '/dsm-live/$sessionId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1329,6 +1339,7 @@ export interface FileRouteTypes {
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
+    | '/dsm-live/$sessionId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1453,6 +1464,7 @@ export interface FileRouteTypes {
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
+    | '/dsm-live/$sessionId'
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
@@ -1501,7 +1513,7 @@ export interface RootRouteChildren {
   DiaryRoute: typeof DiaryRoute
   DiscountCodesRoute: typeof DiscountCodesRoute
   DocumentsRoute: typeof DocumentsRoute
-  DsmLiveRoute: typeof DsmLiveRoute
+  DsmLiveRoute: typeof DsmLiveRouteWithChildren
   EarningsRoute: typeof EarningsRoute
   EndOfDayRoute: typeof EndOfDayRoute
   EnquiriesRoute: typeof EnquiriesRoute
@@ -2314,6 +2326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ISlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live/$sessionId': {
+      id: '/dsm-live/$sessionId'
+      path: '/$sessionId'
+      fullPath: '/dsm-live/$sessionId'
+      preLoaderRoute: typeof DsmLiveSessionIdRouteImport
+      parentRoute: typeof DsmLiveRoute
+    }
     '/driving-test/$pupilId': {
       id: '/driving-test/$pupilId'
       path: '/driving-test/$pupilId'
@@ -2491,6 +2510,17 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface DsmLiveRouteChildren {
+  DsmLiveSessionIdRoute: typeof DsmLiveSessionIdRoute
+}
+
+const DsmLiveRouteChildren: DsmLiveRouteChildren = {
+  DsmLiveSessionIdRoute: DsmLiveSessionIdRoute,
+}
+
+const DsmLiveRouteWithChildren =
+  DsmLiveRoute._addFileChildren(DsmLiveRouteChildren)
+
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -2533,7 +2563,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiaryRoute: DiaryRoute,
   DiscountCodesRoute: DiscountCodesRoute,
   DocumentsRoute: DocumentsRoute,
-  DsmLiveRoute: DsmLiveRoute,
+  DsmLiveRoute: DsmLiveRouteWithChildren,
   EarningsRoute: EarningsRoute,
   EndOfDayRoute: EndOfDayRoute,
   EnquiriesRoute: EnquiriesRoute,
