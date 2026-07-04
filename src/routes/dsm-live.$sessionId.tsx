@@ -58,7 +58,9 @@ function SessionDetailPage() {
           `${SUPABASE_URL}/rest/v1/dsm_live_sessions?id=eq.${sessionId}&deleted_at=is.null`,
           { headers: authHeaders() },
         );
+        console.log("[session detail] response status", res.status);
         const rows = (await res.json()) as SessionDetail[];
+        console.log("[session detail] rows", rows);
         if (!cancelled) setSession(rows?.[0] ?? null);
       } catch {
         if (!cancelled) setSession(null);
