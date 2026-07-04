@@ -93,6 +93,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
+import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
@@ -134,6 +135,7 @@ import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.reschedule.$id'
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
+import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
 
 const WeeklyreportRoute = WeeklyreportRouteImport.update({
   id: '/weeklyreport',
@@ -554,6 +556,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/notes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLiveIndexRoute = DsmLiveIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DsmLiveRoute,
+} as any)
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
@@ -759,6 +766,11 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
   path: '/lessons/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
+  id: '/podcast/$podcastId',
+  path: '/podcast/$podcastId',
+  getParentRoute: () => DsmLiveRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -874,9 +886,11 @@ export interface FileRoutesByFullPath {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
+  '/dsm-live/': typeof DsmLiveIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -902,7 +916,6 @@ export interface FileRoutesByTo {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
-  '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -999,9 +1012,11 @@ export interface FileRoutesByTo {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
+  '/dsm-live': typeof DsmLiveIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -1127,9 +1142,11 @@ export interface FileRoutesById {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
+  '/dsm-live/': typeof DsmLiveIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -1255,9 +1272,11 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses/'
+    | '/dsm-live/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -1283,7 +1302,6 @@ export interface FileRouteTypes {
     | '/diary'
     | '/discount-codes'
     | '/documents'
-    | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1380,9 +1398,11 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses'
+    | '/dsm-live'
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -1507,9 +1527,11 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses/'
+    | '/dsm-live/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -2224,6 +2246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live/': {
+      id: '/dsm-live/'
+      path: '/'
+      fullPath: '/dsm-live/'
+      preLoaderRoute: typeof DsmLiveIndexRouteImport
+      parentRoute: typeof DsmLiveRoute
+    }
     '/courses/': {
       id: '/courses/'
       path: '/courses'
@@ -2511,6 +2540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live/podcast/$podcastId': {
+      id: '/dsm-live/podcast/$podcastId'
+      path: '/podcast/$podcastId'
+      fullPath: '/dsm-live/podcast/$podcastId'
+      preLoaderRoute: typeof DsmLivePodcastPodcastIdRouteImport
+      parentRoute: typeof DsmLiveRoute
+    }
   }
 }
 
@@ -2554,10 +2590,14 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface DsmLiveRouteChildren {
   DsmLiveSessionIdRoute: typeof DsmLiveSessionIdRoute
+  DsmLiveIndexRoute: typeof DsmLiveIndexRoute
+  DsmLivePodcastPodcastIdRoute: typeof DsmLivePodcastPodcastIdRoute
 }
 
 const DsmLiveRouteChildren: DsmLiveRouteChildren = {
   DsmLiveSessionIdRoute: DsmLiveSessionIdRoute,
+  DsmLiveIndexRoute: DsmLiveIndexRoute,
+  DsmLivePodcastPodcastIdRoute: DsmLivePodcastPodcastIdRoute,
 }
 
 const DsmLiveRouteWithChildren =

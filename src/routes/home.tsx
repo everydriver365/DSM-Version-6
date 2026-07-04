@@ -731,11 +731,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     episode_number: number | null;
     title: string;
     guest_name: string | null;
+    guest_title: string | null;
     duration_minutes: number | null;
     image_url: string | null;
     spotify_url: string | null;
     apple_url: string | null;
     audio_url: string | null;
+    published_at: string | null;
   };
   const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
@@ -762,7 +764,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       }
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,duration_minutes,image_url,spotify_url,apple_url,audio_url`,
+          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,guest_title,duration_minutes,image_url,spotify_url,apple_url,audio_url,published_at`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -924,13 +926,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           );
         })}
         {podcasts.map((p) => {
-          const openPodcasts = () =>
-            navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
+          const openPodcast = () =>
+            navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
           const bandColor = "#7C3AED";
           return (
             <div
               key={`pod-${p.id}`}
-              onClick={openPodcasts}
+              onClick={openPodcast}
               style={{
                 background: "transparent",
                 scrollSnapAlign: "start",
