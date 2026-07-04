@@ -105,6 +105,7 @@ import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
 import { Route as MarketplaceApplyRouteImport } from './routes/marketplace_.apply'
 import { Route as MarketplaceSlugRouteImport } from './routes/marketplace_.$slug'
+import { Route as MarketplaceListingIdRouteImport } from './routes/marketplace_.$listingId'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
@@ -607,6 +608,11 @@ const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
   path: '/marketplace/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketplaceListingIdRoute = MarketplaceListingIdRouteImport.update({
+  id: '/marketplace_/$listingId',
+  path: '/marketplace/$listingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LessonsNewRoute = LessonsNewRouteImport.update({
   id: '/lessons/new',
   path: '/lessons/new',
@@ -812,6 +818,7 @@ export interface FileRoutesByFullPath {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
@@ -930,6 +937,7 @@ export interface FileRoutesByTo {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
@@ -1051,6 +1059,7 @@ export interface FileRoutesById {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace_/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace_/$slug': typeof MarketplaceSlugRoute
   '/marketplace_/apply': typeof MarketplaceApplyRoute
   '/marketplace_/edit': typeof MarketplaceEditRoute
@@ -1172,6 +1181,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/$listingId'
     | '/marketplace/$slug'
     | '/marketplace/apply'
     | '/marketplace/edit'
@@ -1290,6 +1300,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/$listingId'
     | '/marketplace/$slug'
     | '/marketplace/apply'
     | '/marketplace/edit'
@@ -1410,6 +1421,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace_/$listingId'
     | '/marketplace_/$slug'
     | '/marketplace_/apply'
     | '/marketplace_/edit'
@@ -1524,6 +1536,7 @@ export interface RootRouteChildren {
   ISlugRoute: typeof ISlugRoute
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
+  MarketplaceListingIdRoute: typeof MarketplaceListingIdRoute
   MarketplaceSlugRoute: typeof MarketplaceSlugRoute
   MarketplaceApplyRoute: typeof MarketplaceApplyRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
@@ -2221,6 +2234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketplace_/$listingId': {
+      id: '/marketplace_/$listingId'
+      path: '/marketplace/$listingId'
+      fullPath: '/marketplace/$listingId'
+      preLoaderRoute: typeof MarketplaceListingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lessons/new': {
       id: '/lessons/new'
       path: '/lessons/new'
@@ -2523,6 +2543,7 @@ const rootRouteChildren: RootRouteChildren = {
   ISlugRoute: ISlugRoute,
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
+  MarketplaceListingIdRoute: MarketplaceListingIdRoute,
   MarketplaceSlugRoute: MarketplaceSlugRoute,
   MarketplaceApplyRoute: MarketplaceApplyRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
