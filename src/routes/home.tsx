@@ -924,12 +924,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
       {podcasts.length > 0 && (
         <div style={{ marginTop: 16 }}>
-          <div style={{ fontWeight: 800, fontSize: 22, color: "#0F2044", lineHeight: 1.15, fontFamily: "Poppins, sans-serif" }}>
-            New Episodes For You
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
+            <span style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}>New Episodes For You</span>
           </div>
-          <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2, marginBottom: 12, fontFamily: "Poppins, sans-serif" }}>
+          <p style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "Poppins, sans-serif", margin: "2px 0 12px 14px" }}>
             Your Favourite Podcasts
-          </div>
+          </p>
           <div
             style={{
               display: "grid",
