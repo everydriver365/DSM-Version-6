@@ -824,77 +824,86 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         }}
       >
         {sessions.map((s) => {
-          const gradient = categoryGradient(s.category);
-          const heroBg = s.image_url
-            ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.75) 100%), url(${s.image_url}) center/cover no-repeat`
-            : gradient;
+          const color = categoryColor(s.category);
+          const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time)}${s.duration_minutes ? ` · ${s.duration_minutes} mins` : ""}`;
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                scrollSnapAlign: "start",
-                borderRadius: 14,
+                height: 110,
+                borderRadius: 12,
                 overflow: "hidden",
                 position: "relative",
-                height: 110,
                 cursor: "pointer",
-                background: heroBg,
+                background: "#fff",
+                border: "0.5px solid #E2E6ED",
+                scrollSnapAlign: "start",
                 minWidth: 0,
               }}
             >
               <div
                 style={{
                   position: "absolute",
-                  top: 8,
-                  left: 8,
-                  right: 8,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  zIndex: 2,
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 4,
+                  background: color,
                 }}
-              >
-                <div
+              />
+              {s.image_url && (
+                <img
+                  src={s.image_url}
+                  alt=""
                   style={{
-                    background: "rgba(255,255,255,0.2)",
-                    color: "#fff",
-                    fontSize: 9,
-                    fontWeight: 600,
-                    padding: "2px 6px",
-                    borderRadius: 999,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.4,
-                    lineHeight: 1,
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    width: 36,
+                    height: 36,
+                    objectFit: "cover",
+                    borderRadius: 6,
                   }}
-                >
-                  {s.category ?? "Session"}
-                </div>
-                {s.is_live && <span style={{ fontSize: 11 }}>🔴</span>}
-              </div>
+                />
+              )}
               <div
                 style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: "8px 10px",
-                  zIndex: 2,
+                  padding: "10px 10px 10px 14px",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
               >
-                <div
-                  style={{
-                    color: "#fff",
-                    fontSize: 11,
-                    lineHeight: 1.3,
-                    fontWeight: 700,
-                    marginBottom: 2,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {s.title}
+                <div>
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.025em",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {s.category ?? "Session"}
+                  </div>
+                  <div
+                    style={{
+                      color: "#0F2044",
+                      fontSize: 12,
+                      lineHeight: 1.3,
+                      fontWeight: 700,
+                      marginTop: 2,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {s.title}
+                  </div>
                 </div>
                 <div
                   style={{
@@ -903,8 +912,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                     alignItems: "center",
                   }}
                 >
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>
-                    {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
+                  <span style={{ fontSize: 10, color: "#9CA3AF" }}>
+                    {dateTime}
                   </span>
                   <button
                     type="button"
@@ -913,13 +922,12 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                       open(s.id);
                     }}
                     style={{
-                      background: "rgba(255,255,255,0.2)",
-                      color: "#fff",
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: 600,
-                      padding: "2px 8px",
-                      borderRadius: 6,
-                      border: "1px solid rgba(255,255,255,0.3)",
+                      color,
+                      background: "transparent",
+                      border: 0,
+                      padding: 0,
                       cursor: "pointer",
                     }}
                   >
