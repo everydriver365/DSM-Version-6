@@ -327,7 +327,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <button
             type="button"
-            onClick={() => navigate({ to: "/marketplace/apply" as never })}
+            onClick={() => navigate({ to: "/marketplace" as never })}
             className="font-bold"
             style={{
               fontSize: 13,
