@@ -62,14 +62,15 @@ function DsmLivePage() {
       try {
         const { data: userData } = await supabase.auth.getUser();
         const userId = userData?.user?.id;
-        if (!userId) return;
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_bookings?instructor_id=eq.${userId}&status=eq.confirmed&select=session_id,status`,
-          { headers: AUTH_HEADERS },
-        );
-        const rows = (await res.json()) as { session_id: string }[];
-        if (!cancelled && Array.isArray(rows)) {
-          setBookedIds(new Set(rows.map((r) => r.session_id)));
+        if (userId) {
+          const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/dsm_live_bookings?instructor_id=eq.${userId}&status=eq.confirmed&select=session_id,status`,
+            { headers: AUTH_HEADERS },
+          );
+          const rows = (await res.json()) as { session_id: string }[];
+          if (!cancelled && Array.isArray(rows)) {
+            setBookedIds(new Set(rows.map((r) => r.session_id)));
+          }
         }
       } catch {
         /* ignore */
