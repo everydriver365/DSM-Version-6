@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Music, Play } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -297,61 +297,77 @@ function DsmLivePage() {
 function PodcastCard({ podcast: p }: { podcast: Podcast }) {
   const openUrl = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
   const hasAny = p.spotify_url || p.apple_url || p.audio_url;
+  const bandColor = "#CC2229";
   return (
     <div
       style={{
         background: "#fff",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 14,
-        marginBottom: 8,
-        display: "flex",
-        alignItems: "flex-start",
+        borderRadius: 16,
+        overflow: "hidden",
+        marginBottom: 12,
+        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
       }}
     >
-      <div
-        style={{
-          width: 56,
-          height: 56,
-          borderRadius: 8,
-          background: p.image_url ? `url(${p.image_url}) center/cover no-repeat` : "#0F2044",
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {!p.image_url && <Music size={22} color="#fff" />}
-      </div>
-      <div style={{ paddingLeft: 12, flex: 1, minWidth: 0 }}>
-        {p.episode_number != null && (
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#CC2229", textTransform: "uppercase" }}>
-            EP {p.episode_number}
-          </div>
-        )}
-        <div
-          style={{
-            fontWeight: 700,
-            fontSize: 13,
-            color: "#0F2044",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
+      <div style={{ height: 6, background: bandColor, width: "100%" }} />
+      <div style={{ padding: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span
+            style={{
+              background: `${bandColor}15`,
+              color: bandColor,
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "4px 8px",
+              borderRadius: 6,
+            }}
+          >
+            {p.episode_number != null ? `EP ${p.episode_number}` : "Podcast"}
+          </span>
+          {p.duration_minutes && (
+            <span style={{ color: "#6B7280", fontSize: 12, fontWeight: 600 }}>
+              {p.duration_minutes} mins
+            </span>
+          )}
+        </div>
+
+        <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", marginTop: 8, marginBottom: 4 }}>
           {p.title}
         </div>
         {p.guest_name && (
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-            {p.guest_name}
+          <div style={{ color: "#6B7280", fontSize: 13 }}>
+            with {p.guest_name}
             {p.guest_title ? ` · ${p.guest_title}` : ""}
           </div>
         )}
-        <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
-          {p.duration_minutes ? `${p.duration_minutes} mins` : ""}
-        </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+        {p.description && (
+          <div
+            style={{
+              color: "#6B7280",
+              fontSize: 12,
+              marginTop: 6,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {p.description}
+          </div>
+        )}
+
+        <div
+          style={{
+            background: "#F7FAFC",
+            margin: "12px -16px 0",
+            padding: "10px 16px",
+            borderTop: "0.5px solid #E2E6ED",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+            alignItems: "center",
+          }}
+        >
           {p.spotify_url && (
             <button
               type="button"
@@ -359,10 +375,10 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
               style={{
                 background: "#1DB954",
                 color: "#fff",
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 600,
                 borderRadius: 8,
-                padding: "6px 12px",
+                padding: "8px 14px",
                 border: 0,
                 cursor: "pointer",
               }}
@@ -377,10 +393,10 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
               style={{
                 background: "#FC3C44",
                 color: "#fff",
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 600,
                 borderRadius: 8,
-                padding: "6px 12px",
+                padding: "8px 14px",
                 border: 0,
                 cursor: "pointer",
               }}
@@ -393,30 +409,31 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
               type="button"
               onClick={() => openUrl(p.audio_url!)}
               style={{
-                background: "#0F2044",
+                background: "#CC2229",
                 color: "#fff",
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 600,
                 borderRadius: 8,
-                padding: "6px 12px",
+                padding: "8px 14px",
                 border: 0,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 4,
+                gap: 6,
               }}
             >
-              <Play size={12} /> Play
+              <Play size={14} /> Play now
             </button>
           )}
           {!hasAny && (
             <span
               style={{
-                background: "#F3F4F6",
-                color: "#9CA3AF",
+                background: "#FEF3C7",
+                color: "#92400E",
                 fontSize: 12,
+                fontWeight: 600,
                 padding: "6px 10px",
-                borderRadius: 8,
+                borderRadius: 999,
               }}
             >
               Coming soon
