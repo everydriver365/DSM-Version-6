@@ -163,7 +163,7 @@ function DsmLivePage() {
   }, [sessions, category]);
 
   return (
-    <div style={{ background: "#fff", minHeight: "auto" }}>
+    <div style={{ background: "#fff", minHeight: "calc(100vh - 80px)" }}>
       <div
         style={{
           background: "#0F2044",
