@@ -134,6 +134,7 @@ import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.reschedule.$id'
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
+import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
 
 const WeeklyreportRoute = WeeklyreportRouteImport.update({
   id: '/weeklyreport',
@@ -759,6 +760,11 @@ const LessonsEditIdRoute = LessonsEditIdRouteImport.update({
   path: '/lessons/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
+  id: '/podcast/$podcastId',
+  path: '/podcast/$podcastId',
+  getParentRoute: () => DsmLiveRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -877,6 +883,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -1002,6 +1009,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -1130,6 +1138,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
@@ -1258,6 +1267,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -1383,6 +1393,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -1510,6 +1521,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
@@ -2511,6 +2523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live/podcast/$podcastId': {
+      id: '/dsm-live/podcast/$podcastId'
+      path: '/podcast/$podcastId'
+      fullPath: '/dsm-live/podcast/$podcastId'
+      preLoaderRoute: typeof DsmLivePodcastPodcastIdRouteImport
+      parentRoute: typeof DsmLiveRoute
+    }
   }
 }
 
@@ -2554,10 +2573,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface DsmLiveRouteChildren {
   DsmLiveSessionIdRoute: typeof DsmLiveSessionIdRoute
+  DsmLivePodcastPodcastIdRoute: typeof DsmLivePodcastPodcastIdRoute
 }
 
 const DsmLiveRouteChildren: DsmLiveRouteChildren = {
   DsmLiveSessionIdRoute: DsmLiveSessionIdRoute,
+  DsmLivePodcastPodcastIdRoute: DsmLivePodcastPodcastIdRoute,
 }
 
 const DsmLiveRouteWithChildren =

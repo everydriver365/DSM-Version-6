@@ -255,7 +255,24 @@ END:VCALENDAR`;
           padding: "24px 16px",
         }}
       >
-        <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "rgba(255,255,255,0.92)",
+            color: bandColor,
+            fontSize: 10,
+            fontWeight: 800,
+            padding: "4px 8px",
+            borderRadius: 4,
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+          }}
+        >
+          {(session.category ?? "").toLowerCase().includes("webinar") ? "🎓 Webinar" : "📹 Zoom Session"}
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 700, textTransform: "uppercase", marginTop: 12 }}>
           {session.category ?? "Session"}
         </div>
         <div style={{ fontWeight: 900, fontSize: 20, marginTop: 4 }}>{session.title}</div>
