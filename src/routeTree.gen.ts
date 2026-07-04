@@ -73,6 +73,7 @@ import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EndOfDayRouteImport } from './routes/end-of-day'
 import { Route as EarningsRouteImport } from './routes/earnings'
+import { Route as DsmLiveRouteImport } from './routes/dsm-live'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DiscountCodesRouteImport } from './routes/discount-codes'
 import { Route as DiaryRouteImport } from './routes/diary'
@@ -451,6 +452,11 @@ const EarningsRoute = EarningsRouteImport.update({
   path: '/earnings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLiveRoute = DsmLiveRouteImport.update({
+  id: '/dsm-live',
+  path: '/dsm-live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentsRoute = DocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -752,6 +758,7 @@ export interface FileRoutesByFullPath {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-live': typeof DsmLiveRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -874,6 +881,7 @@ export interface FileRoutesByTo {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-live': typeof DsmLiveRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -997,6 +1005,7 @@ export interface FileRoutesById {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-live': typeof DsmLiveRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -1121,6 +1130,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/discount-codes'
     | '/documents'
+    | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1243,6 +1253,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/discount-codes'
     | '/documents'
+    | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1365,6 +1376,7 @@ export interface FileRouteTypes {
     | '/diary'
     | '/discount-codes'
     | '/documents'
+    | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1489,6 +1501,7 @@ export interface RootRouteChildren {
   DiaryRoute: typeof DiaryRoute
   DiscountCodesRoute: typeof DiscountCodesRoute
   DocumentsRoute: typeof DocumentsRoute
+  DsmLiveRoute: typeof DsmLiveRoute
   EarningsRoute: typeof EarningsRoute
   EndOfDayRoute: typeof EndOfDayRoute
   EnquiriesRoute: typeof EnquiriesRoute
@@ -2035,6 +2048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EarningsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live': {
+      id: '/dsm-live'
+      path: '/dsm-live'
+      fullPath: '/dsm-live'
+      preLoaderRoute: typeof DsmLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/documents': {
       id: '/documents'
       path: '/documents'
@@ -2513,6 +2533,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiaryRoute: DiaryRoute,
   DiscountCodesRoute: DiscountCodesRoute,
   DocumentsRoute: DocumentsRoute,
+  DsmLiveRoute: DsmLiveRoute,
   EarningsRoute: EarningsRoute,
   EndOfDayRoute: EndOfDayRoute,
   EnquiriesRoute: EnquiriesRoute,
