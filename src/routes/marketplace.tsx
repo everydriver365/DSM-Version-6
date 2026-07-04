@@ -275,17 +275,8 @@ function MarketplacePage() {
 
         <button
           type="button"
-          onClick={() => navigate({ to: "/marketplace/list" as never })}
-          style={{
-            marginTop: 8,
-            background: "none",
-            border: "none",
-            padding: 0,
-            color: "#1A52A0",
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
+          onClick={(e) => { e.stopPropagation(); navigate({ to: "/marketplace/list" as never }); }}
+          style={{ background: "none", border: "none", color: "#1A52A0", fontSize: 13, cursor: "pointer", padding: 0, fontFamily: "Poppins, sans-serif", textDecoration: "underline" }}
         >
           List your product or service →
         </button>
