@@ -873,7 +873,7 @@ function QrTab({ pupils }: { pupils: PupilLite[] }) {
       <input value={description} onChange={(e) => { setDescription(e.target.value); setQrUrl(null); }} className="h-11 w-full rounded-lg px-3 text-[14px] bg-white" style={{ border: `0.5px solid ${BORDER}`, color: NAVY, ...POPPINS }} />
 
       {!qrUrl ? (
-        <Button onClick={generate} disabled={busy} type="button">{busy ? "Generating…" : "Generate QR code"}</Button>
+        <button onClick={generate} disabled={busy} type="button" className="h-11 w-full rounded-lg text-[14px] font-semibold text-white disabled:opacity-60" style={{ backgroundColor: PURPLE }}>{busy ? "Generating…" : "Generate QR code"}</button>
       ) : (
         <div className="flex flex-col items-center gap-3 py-2 rounded-lg" style={{ border: `0.5px solid ${BORDER}`, padding: 16 }}>
           <div style={{ backgroundColor: "#fff", padding: 8, borderRadius: 8 }}>
@@ -955,15 +955,19 @@ function LinkTab({ pupils }: { pupils: PupilLite[] }) {
 // ---------- BNPL TAB ----------
 function BnplTab() {
   return (
-    <div className="flex flex-col items-center justify-center py-10 gap-3">
-      <div className="rounded-full flex items-center justify-center" style={{ width: 64, height: 64, backgroundColor: "#FEF3C7" }}>
-        <ShoppingBag size={28} color={AMBER} />
+    <div className="flex flex-col gap-3 py-4">
+      <div className="rounded-lg p-4 flex items-start gap-3" style={{ backgroundColor: "#FEF3C7", border: `0.5px solid #FCD34D` }}>
+        <ShoppingBag size={22} color={AMBER} style={{ marginTop: 2 }} />
+        <div className="flex-1">
+          <div className="text-[14px] font-semibold" style={{ color: AMBER, ...POPPINS }}>Klarna and Clearpay coming soon</div>
+          <div className="text-[12px] mt-1" style={{ color: AMBER, ...POPPINS }}>
+            Buy-now-pay-later checkout for pupils is on the way. You'll be able to send BNPL payment links from here.
+          </div>
+        </div>
       </div>
-      <span className="px-3 py-1 rounded-full text-[11px] font-semibold uppercase" style={{ backgroundColor: "#FEF3C7", color: AMBER, letterSpacing: "0.05em" }}>BNPL coming soon</span>
-      <div className="text-[14px] font-semibold" style={{ color: NAVY, ...POPPINS }}>Klarna & Clearpay</div>
-      <div className="text-[12px] text-center max-w-[260px]" style={{ color: MUTED, ...POPPINS }}>
-        Buy-now-pay-later checkout for pupils is coming soon. You'll be able to send BNPL payment links here.
-      </div>
+      <button type="button" onClick={() => toast.success("We'll let you know when BNPL is available")} className="h-11 w-full rounded-lg text-[14px] font-semibold" style={{ border: `0.5px solid ${AMBER}`, color: AMBER, backgroundColor: "#fff" }}>
+        Notify me when available
+      </button>
     </div>
   );
 }
