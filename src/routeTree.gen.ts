@@ -93,6 +93,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
+import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
@@ -555,6 +556,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/notes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLiveIndexRoute = DsmLiveIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DsmLiveRoute,
+} as any)
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
@@ -880,6 +886,7 @@ export interface FileRoutesByFullPath {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
+  '/dsm-live/': typeof DsmLiveIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -909,7 +916,6 @@ export interface FileRoutesByTo {
   '/diary': typeof DiaryRoute
   '/discount-codes': typeof DiscountCodesRoute
   '/documents': typeof DocumentsRoute
-  '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -1006,6 +1012,7 @@ export interface FileRoutesByTo {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
+  '/dsm-live': typeof DsmLiveIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
@@ -1135,6 +1142,7 @@ export interface FileRoutesById {
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
+  '/dsm-live/': typeof DsmLiveIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -1264,6 +1272,7 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses/'
+    | '/dsm-live/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -1293,7 +1302,6 @@ export interface FileRouteTypes {
     | '/diary'
     | '/discount-codes'
     | '/documents'
-    | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1390,6 +1398,7 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses'
+    | '/dsm-live'
     | '/notes'
     | '/pupils'
     | '/quotes'
@@ -1518,6 +1527,7 @@ export interface FileRouteTypes {
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
     | '/courses/'
+    | '/dsm-live/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -2236,6 +2246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dsm-live/': {
+      id: '/dsm-live/'
+      path: '/'
+      fullPath: '/dsm-live/'
+      preLoaderRoute: typeof DsmLiveIndexRouteImport
+      parentRoute: typeof DsmLiveRoute
+    }
     '/courses/': {
       id: '/courses/'
       path: '/courses'
@@ -2573,11 +2590,13 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface DsmLiveRouteChildren {
   DsmLiveSessionIdRoute: typeof DsmLiveSessionIdRoute
+  DsmLiveIndexRoute: typeof DsmLiveIndexRoute
   DsmLivePodcastPodcastIdRoute: typeof DsmLivePodcastPodcastIdRoute
 }
 
 const DsmLiveRouteChildren: DsmLiveRouteChildren = {
   DsmLiveSessionIdRoute: DsmLiveSessionIdRoute,
+  DsmLiveIndexRoute: DsmLiveIndexRoute,
   DsmLivePodcastPodcastIdRoute: DsmLivePodcastPodcastIdRoute,
 }
 
@@ -2725,13 +2744,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

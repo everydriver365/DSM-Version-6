@@ -99,7 +99,7 @@ type Podcast = {
   image_url: string | null;
 };
 
-export const Route = createFileRoute("/dsm-live")({
+export const Route = createFileRoute("/dsm-live/")({
   component: DsmLivePage,
 });
 
