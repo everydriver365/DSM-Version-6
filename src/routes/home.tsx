@@ -752,6 +752,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   const fmtDate = (d: string) => {
     try {
       return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+        weekday: "short",
         day: "numeric",
         month: "short",
       });
