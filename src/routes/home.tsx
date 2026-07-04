@@ -813,7 +813,10 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
       <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none" }}>
         {sessions.map((s) => {
-          const band = categoryColor(s.category);
+          const gradient = categoryGradient(s.category);
+          const heroBg = s.image_url
+            ? `url(${s.image_url}) center/cover no-repeat`
+            : gradient;
           return (
             <div
               key={s.id}
