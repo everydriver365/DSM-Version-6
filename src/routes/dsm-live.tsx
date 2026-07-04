@@ -310,6 +310,20 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
       }}
     >
       <div style={{ height: 6, background: bandColor, width: "100%" }} />
+      <div
+        style={{
+          background: `${bandColor}12`,
+          color: bandColor,
+          fontSize: 10,
+          fontWeight: 800,
+          letterSpacing: "0.08em",
+          padding: "6px 16px",
+          textTransform: "uppercase",
+          borderBottom: "0.5px solid #E2E6ED",
+        }}
+      >
+        🎙️ PODCAST
+      </div>
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span
