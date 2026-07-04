@@ -837,7 +837,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                width: 195,
+                width: "100%",
                 flexShrink: 0,
                 scrollSnapAlign: "start",
                 background: "#fff",
@@ -848,6 +848,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
+                minWidth: 0,
               }}
             >
               <div
