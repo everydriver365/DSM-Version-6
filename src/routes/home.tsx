@@ -924,13 +924,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           );
         })}
         {podcasts.map((p) => {
-          const openPodcasts = () =>
-            navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
+          const openPodcast = () =>
+            navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
           const bandColor = "#7C3AED";
           return (
             <div
               key={`pod-${p.id}`}
-              onClick={openPodcasts}
+              onClick={openPodcast}
               style={{
                 background: "transparent",
                 scrollSnapAlign: "start",
