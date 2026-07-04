@@ -806,7 +806,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
       <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none" }}>
         {sessions.map((s) => {
-          const band = (s.category && CATEGORY_COLORS[s.category]) || "#CC2229";
+          const band = categoryColor(s.category);
           return (
             <div
               key={s.id}
