@@ -327,6 +327,10 @@ function AdminListingsPage() {
           <div style={{ padding: 24, color: "#6B7280" }}>No listings.</div>
         ) : (
           filtered.map((l) => {
+            const images = Array.isArray(l.image_urls)
+              ? l.image_urls
+              : (typeof l.image_urls === "string" ? JSON.parse(l.image_urls) : []);
+            const firstImage = images[0];
             const expanded = expandedId === l.id;
             const editing = editingId === l.id;
             const rejecting = rejectingId === l.id;
@@ -432,17 +436,12 @@ function AdminListingsPage() {
                         {l.tags && l.tags.length > 0 && (
                           <Detail label="Tags" value={l.tags.join(", ")} />
                         )}
-                        {l.image_urls && l.image_urls.length > 0 && (
-                          <div style={{ display: "flex", gap: 6, overflowX: "auto", marginTop: 8 }}>
-                            {l.image_urls.map((u) => (
-                              <img
-                                key={u}
-                                src={u}
-                                alt=""
-                                style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 8, border: "0.5px solid #E2E6ED" }}
-                              />
-                            ))}
-                          </div>
+                        {firstImage && (
+                          <img
+                            src={firstImage}
+                            alt={l.title}
+                            style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8, marginBottom: 12 }}
+                          />
                         )}
                       </>
                     )}
