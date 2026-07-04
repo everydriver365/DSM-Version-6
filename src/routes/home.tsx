@@ -810,206 +810,272 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   const open = (id: string) =>
     navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
 
+  const tiles = [
+    ...sessions.map((s) => ({ kind: "session" as const, item: s })),
+    ...podcasts.map((p) => ({ kind: "podcast" as const, item: p })),
+  ];
+
+  if (tiles.length === 0) return null;
+
   return (
-    <div style={{ padding: "0 16px", marginTop: 16, marginBottom: 8 }}>
-      <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
-          <span style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}>DSM Live</span>
+    <div className="mt-4 pb-4">
+      <div className="mx-4 flex items-end justify-between mb-4">
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
+            <span
+              className="font-bold tracking-tight"
+              style={{ fontSize: 20, color: "#0B1F3A", fontFamily: "Inter, sans-serif", lineHeight: 1.1 }}
+            >
+              DSM Live
+            </span>
+          </div>
+          <p
+            className="font-semibold uppercase"
+            style={{
+              fontSize: 10,
+              color: "#9CA3AF",
+              letterSpacing: 1,
+              fontFamily: "Inter, sans-serif",
+              marginTop: 3,
+              marginLeft: 14,
+            }}
+          >
+            Live events, podcasts and webinars
+          </p>
         </div>
-        <p style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "Poppins, sans-serif", margin: "2px 0 0 14px" }}>
-          Live events , podcasts and webinars
-        </p>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dsm-live" as never })}
+          className="font-bold"
+          style={{
+            fontSize: 13,
+            color: "#1877D6",
+            fontFamily: "Inter, sans-serif",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          See all →
+        </button>
       </div>
       <div
+        className="marketplace-scroll"
         style={{
-          display: "grid",
-          gridAutoFlow: "column",
-          gridAutoColumns: "44%",
+          display: "flex",
           gap: 14,
           overflowX: "auto",
+          paddingBottom: 12,
+          paddingLeft: 16,
+          paddingRight: 16,
           scrollSnapType: "x mandatory",
-          paddingTop: 12,
-          paddingBottom: 8,
+          scrollPaddingLeft: 16,
           scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
         }}
       >
-        {sessions.map((s) => {
-          const bandColor = categoryColor(s.category);
-          const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time).replace(" ", "")}`;
-          const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
-          const typeLabel = isWebinar ? "WEBINAR" : "ZOOM SESSION";
-          return (
-            <div
-              key={s.id}
-              onClick={() => open(s.id)}
-              style={{
-                background: "transparent",
-                scrollSnapAlign: "start",
-                minWidth: 0,
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "1 / 1",
-                  borderRadius: 14,
-                  overflow: "hidden",
-                  background: s.image_url
-                    ? `url(${s.image_url}) center/cover no-repeat`
-                    : `linear-gradient(135deg, ${bandColor}, ${bandColor}CC)`,
-                  position: "relative",
-                  boxShadow: "0 2px 8px rgba(15,32,68,0.08)",
-                }}
-              >
-                {!s.image_url && (
+        {chunkTiles(tiles, 4).map((chunk, pageIndex) => (
+          <div
+            key={pageIndex}
+            style={{
+              scrollSnapAlign: "start",
+              flex: "0 0 auto",
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "1fr 1fr",
+              gap: 12,
+              alignContent: "start",
+            }}
+          >
+            {chunk.map((tile) => {
+              if (tile.kind === "session") {
+                const s = tile.item;
+                const bandColor = categoryColor(s.category);
+                const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
+                const typeLabel = isWebinar ? "WEBINAR" : "ZOOM";
+                const hero = s.image_url
+                  ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${s.image_url}) center/cover no-repeat`
+                  : `linear-gradient(135deg, ${bandColor}, #0F2044)`;
+                return (
                   <div
+                    key={s.id}
+                    onClick={() => open(s.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        open(s.id);
+                      }
+                    }}
+                    style={{
+                      position: "relative",
+                      cursor: "pointer",
+                      userSelect: "none",
+                      height: 110,
+                      borderRadius: 12,
+                      overflow: "hidden",
+                      background: hero,
+                      border: "1px solid #EEF2F7",
+                      boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        fontSize: 9,
+                        letterSpacing: 0.6,
+                        color: bandColor,
+                        backgroundColor: "#FFFFFF",
+                        fontFamily: "Inter, sans-serif",
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        textTransform: "uppercase",
+                        fontWeight: 700,
+                        boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
+                      }}
+                    >
+                      {typeLabel}
+                    </span>
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        padding: "8px 10px",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#FFFFFF",
+                          lineHeight: 1.2,
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          fontWeight: 700,
+                          fontFamily: "Inter, sans-serif",
+                          letterSpacing: -0.1,
+                        }}
+                      >
+                        {s.title}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.7)",
+                          marginTop: 2,
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {fmtDate(s.session_date)} · {fmtTime(s.session_time).replace(" ", "")}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              const p = tile.item;
+              const hero = p.image_url
+                ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${p.image_url}) center/cover no-repeat`
+                : "linear-gradient(135deg, #7C3AED, #0F2044)";
+              return (
+                <div
+                  key={`pod-${p.id}`}
+                  onClick={() =>
+                    navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never })
+                  }
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
+                    }
+                  }}
+                  style={{
+                    position: "relative",
+                    cursor: "pointer",
+                    userSelect: "none",
+                    height: 110,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: hero,
+                    border: "1px solid #EEF2F7",
+                    boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
+                  }}
+                >
+                  <span
                     style={{
                       position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#fff",
-                      fontWeight: 800,
-                      fontSize: 18,
-                      textAlign: "center",
-                      padding: 16,
+                      top: 8,
+                      left: 8,
+                      fontSize: 9,
+                      letterSpacing: 0.6,
+                      color: "#7C3AED",
+                      backgroundColor: "#FFFFFF",
+                      fontFamily: "Inter, sans-serif",
+                      padding: "2px 8px",
+                      borderRadius: 999,
                       textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                      lineHeight: 1.15,
+                      fontWeight: 700,
+                      boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                     }}
                   >
-                    {s.title}
-                  </div>
-                )}
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    background: "rgba(255,255,255,0.92)",
-                    color: bandColor,
-                    fontSize: 9,
-                    fontWeight: 800,
-                    padding: "3px 6px",
-                    borderRadius: 4,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {typeLabel}
-                </span>
-              </div>
-              <div
-                style={{
-                  marginTop: 10,
-                  fontWeight: 700,
-                  fontSize: 14,
-                  color: "#0F2044",
-                  lineHeight: 1.25,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {s.title}
-              </div>
-              <div style={{ marginTop: 2, color: "#6B7280", fontSize: 12 }}>
-                {dateTime}
-              </div>
-            </div>
-          );
-        })}
-        {podcasts.map((p) => {
-          const openPodcast = () =>
-            navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
-          const bandColor = "#7C3AED";
-          return (
-            <div
-              key={`pod-${p.id}`}
-              onClick={openPodcast}
-              style={{
-                background: "transparent",
-                scrollSnapAlign: "start",
-                minWidth: 0,
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "1 / 1",
-                  borderRadius: 14,
-                  overflow: "hidden",
-                  background: p.image_url
-                    ? `url(${p.image_url}) center/cover no-repeat`
-                    : "linear-gradient(135deg, #0F2044, #1A2E5C)",
-                  position: "relative",
-                  boxShadow: "0 2px 8px rgba(15,32,68,0.08)",
-                }}
-              >
-                {!p.image_url && (
+                    PODCAST
+                  </span>
                   <div
                     style={{
                       position: "absolute",
-                      inset: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      padding: "8px 10px",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#fff",
+                      flexDirection: "column",
                     }}
                   >
-                    <Music size={48} strokeWidth={1.5} />
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#FFFFFF",
+                        lineHeight: 1.2,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        fontWeight: 700,
+                        fontFamily: "Inter, sans-serif",
+                        letterSpacing: -0.1,
+                      }}
+                    >
+                      {p.title}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        color: "rgba(255,255,255,0.7)",
+                        marginTop: 2,
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
+                    </span>
                   </div>
-                )}
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    background: "rgba(255,255,255,0.92)",
-                    color: bandColor,
-                    fontSize: 9,
-                    fontWeight: 800,
-                    padding: "3px 6px",
-                    borderRadius: 4,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  PODCAST
-                </span>
-              </div>
-              <div
-                style={{
-                  marginTop: 10,
-                  fontWeight: 700,
-                  fontSize: 14,
-                  color: "#0F2044",
-                  lineHeight: 1.25,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {p.title}
-              </div>
-              <div style={{ marginTop: 2, color: "#6B7280", fontSize: 12 }}>
-                {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
-              </div>
-            </div>
-          );
-        })}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
-      <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
     </div>
   );
 }
