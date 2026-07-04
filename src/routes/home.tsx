@@ -324,22 +324,40 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             Curated for you
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          className="font-bold"
-          style={{
-            fontSize: 13,
-            color: "#1877D6",
-            fontFamily: "Inter, sans-serif",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          View all
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/marketplace/apply" as never })}
+            className="font-bold"
+            style={{
+              fontSize: 13,
+              color: "#1877D6",
+              fontFamily: "Inter, sans-serif",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            Get Listed
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/marketplace" as never })}
+            className="font-bold"
+            style={{
+              fontSize: 13,
+              color: "#1877D6",
+              fontFamily: "Inter, sans-serif",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            View all
+          </button>
+        </div>
       </div>
       <div
         className="marketplace-scroll"
