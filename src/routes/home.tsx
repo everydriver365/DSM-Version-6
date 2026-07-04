@@ -805,81 +805,71 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
       <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none" }}>
         {sessions.map((s) => {
-          const band = (s.category && CATEGORY_COLORS[s.category]) || "#0F2044";
-          const isFree =
-            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
+          const band = (s.category && CATEGORY_COLORS[s.category]) || "#CC2229";
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                width: 260,
+                width: 200,
+                height: 100,
                 flexShrink: 0,
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
                 borderRadius: 12,
                 overflow: "hidden",
+                position: "relative",
                 cursor: "pointer",
               }}
             >
-              <div style={{ height: 6, background: band }} />
-              <div style={{ padding: 12 }}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  width: 4,
+                  height: "100%",
+                  background: band,
+                }}
+              />
+              <div
+                style={{
+                  padding: "10px 10px 10px 14px",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <div
                   style={{
-                    background: `${band}15`,
-                    color: band,
-                    fontSize: 10,
                     fontWeight: 700,
-                    padding: "2px 6px",
-                    borderRadius: 4,
-                    display: "inline-block",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {s.category ?? "Session"}
-                </div>
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: 13,
+                    fontSize: 12,
                     color: "#0F2044",
-                    marginTop: 6,
+                    lineHeight: 1.3,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    minHeight: 34,
+                    marginBottom: 4,
                   }}
                 >
                   {s.title}
                 </div>
                 {s.host_name && (
-                  <div style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}>
-                    {s.host_name}
+                  <div style={{ fontSize: 10, color: "#9CA3AF", marginBottom: 6 }}>
+                    with {s.host_name}
                   </div>
                 )}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    fontSize: 11,
-                    color: "#6B7280",
-                    marginTop: 8,
-                  }}
-                >
-                  <CalendarIcon size={12} /> {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
-                </div>
+                <div style={{ flex: 1 }} />
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginTop: 10,
                   }}
                 >
-                  <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? "#16A34A" : "#0F2044" }}>
-                    {s.price_display ?? (isFree ? "Free" : `£${s.price_amount}`)}
+                  <div style={{ fontSize: 10, color: "#6B7280" }}>
+                    {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
                   </div>
                   <button
                     type="button"
@@ -890,11 +880,11 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                     style={{
                       background: "#CC2229",
                       color: "#fff",
-                      border: 0,
-                      borderRadius: 8,
-                      padding: "6px 12px",
-                      fontSize: 12,
+                      fontSize: 10,
                       fontWeight: 600,
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                      border: 0,
                       cursor: "pointer",
                     }}
                   >
