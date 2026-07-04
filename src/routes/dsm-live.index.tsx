@@ -82,7 +82,6 @@ function DsmLivePage() {
           { headers: AUTH_HEADERS },
         );
         const data = (await res.json()) as Podcast[];
-        console.log("[dsm-live index] podcasts", res.status, data);
         if (!cancelled && Array.isArray(data)) setPodcasts(data);
       } catch {
         /* ignore */
