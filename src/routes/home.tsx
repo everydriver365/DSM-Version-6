@@ -709,6 +709,11 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     session_time: string;
     price_display: string | null;
     price_amount: number | null;
+    image_url: string | null;
+    is_live: boolean | null;
+    max_spaces: number | null;
+    spaces_taken: number | null;
+    duration_minutes: number | null;
   };
 
   const categoryColor = (category: string | null): string => {
