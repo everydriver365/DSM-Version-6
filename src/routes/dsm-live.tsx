@@ -464,6 +464,9 @@ function SessionCard({
   const isFree =
     !session.price_amount ||
     (session.price_display ?? "").toLowerCase().includes("free");
+  const isWebinar = (session.category ?? "").toLowerCase().includes("webinar");
+  const typeLabel = isWebinar ? "🎓 WEBINAR" : "📹 ZOOM SESSION";
+  const typeColor = isWebinar ? "#7C3AED" : "#1A52A0";
 
   return (
     <div
@@ -477,6 +480,20 @@ function SessionCard({
       }}
     >
       <div style={{ height: 6, background: bandColor, width: "100%" }} />
+      <div
+        style={{
+          background: `${typeColor}12`,
+          color: typeColor,
+          fontSize: 10,
+          fontWeight: 800,
+          letterSpacing: "0.08em",
+          padding: "6px 16px",
+          textTransform: "uppercase",
+          borderBottom: "0.5px solid #E2E6ED",
+        }}
+      >
+        {typeLabel}
+      </div>
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span
