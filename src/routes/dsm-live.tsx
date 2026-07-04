@@ -409,7 +409,10 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
           {p.apple_url && (
             <button
               type="button"
-              onClick={() => openUrl(p.apple_url!)}
+              onClick={(e) => {
+                e.stopPropagation();
+                openUrl(p.apple_url!);
+              }}
               style={{
                 background: "#FC3C44",
                 color: "#fff",
