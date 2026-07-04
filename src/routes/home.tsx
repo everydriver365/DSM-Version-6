@@ -710,12 +710,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     price_amount: number | null;
   };
 
-  const CATEGORY_COLORS: Record<string, string> = {
-    "Standards Check": "#1A52A0",
-    "Business Coaching": "#16A34A",
-    "CPD Webinar": "#7C3AED",
-    "New ADI": "#D97706",
-    "Q&A": "#0891B2",
+  const categoryColor = (category: string | null): string => {
+    if (!category) return "#CC2229";
+    if (category.startsWith("Standards Check")) return "#1A52A0";
+    if (category.startsWith("Business Coaching")) return "#16A34A";
+    if (category.startsWith("CPD Webinar")) return "#7C3AED";
+    if (category.startsWith("New ADI")) return "#D97706";
+    return "#CC2229";
   };
 
   const [sessions, setSessions] = useState<LiveTile[]>([]);
