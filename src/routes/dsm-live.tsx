@@ -295,11 +295,13 @@ function DsmLivePage() {
 }
 
 function PodcastCard({ podcast: p }: { podcast: Podcast }) {
+  const navigate = useNavigate();
   const openUrl = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
   const hasAny = p.spotify_url || p.apple_url || p.audio_url;
   const bandColor = "#CC2229";
   return (
     <div
+      onClick={() => navigate({ to: "/dsm-live/podcast/$podcastId", params: { podcastId: p.id } })}
       style={{
         background: "#fff",
         border: "0.5px solid #E2E6ED",
@@ -307,6 +309,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
         overflow: "hidden",
         marginBottom: 12,
         boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+        cursor: "pointer",
       }}
     >
       <div style={{ height: 6, background: bandColor, width: "100%" }} />
