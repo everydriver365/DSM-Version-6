@@ -813,8 +813,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         style={{
           display: "grid",
           gridAutoFlow: "column",
-          gridAutoColumns: "85%",
-          gap: 12,
+          gridAutoColumns: "44%",
+          gap: 14,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
           paddingBottom: 8,
@@ -823,25 +823,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       >
         {sessions.map((s) => {
           const bandColor = categoryColor(s.category);
-          const remaining = Math.max(0, (s.max_spaces ?? 0) - (s.spaces_taken ?? 0));
-          const full = remaining <= 0;
-          const spaceColor = full ? "#CC2229" : remaining < 5 ? "#D97706" : "#16A34A";
-          const spaceText = full ? "Full" : `${remaining} spaces left`;
-          const isFree =
-            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
           const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time).replace(" ", "")}`;
-          const duration = s.duration_minutes ? `${s.duration_minutes} mins · Zoom` : "Zoom";
 
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                background: "#fff",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                overflow: "hidden",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+                background: "transparent",
                 scrollSnapAlign: "start",
                 minWidth: 0,
                 cursor: "pointer",
@@ -849,85 +838,75 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 flexDirection: "column",
               }}
             >
-              <div style={{ height: 6, background: bandColor, width: "100%", flexShrink: 0 }} />
-              <div style={{ padding: 16, display: "flex", flexDirection: "column", flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  background: s.image_url
+                    ? `url(${s.image_url}) center/cover no-repeat`
+                    : `linear-gradient(135deg, ${bandColor}, ${bandColor}CC)`,
+                  position: "relative",
+                  boxShadow: "0 2px 8px rgba(15,32,68,0.08)",
+                }}
+              >
+                {!s.image_url && (
+                  <div
                     style={{
-                      background: `${bandColor}15`,
-                      color: bandColor,
-                      fontSize: 11,
-                      fontWeight: 700,
-                      padding: "4px 8px",
-                      borderRadius: 6,
-                    }}
-                  >
-                    {s.category ?? "Session"}
-                  </span>
-                  <span style={{ color: spaceColor, fontSize: 12, fontWeight: 600 }}>{spaceText}</span>
-                </div>
-
-                <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", marginTop: 8, marginBottom: 4 }}>
-                  {s.title}
-                </div>
-                {s.host_name && (
-                  <div style={{ color: "#6B7280", fontSize: 13 }}>with {s.host_name}</div>
-                )}
-
-                <div
-                  style={{
-                    background: "#F7FAFC",
-                    margin: "12px -16px 0",
-                    padding: "10px 16px",
-                    borderTop: "0.5px solid #E2E6ED",
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 12,
-                    alignItems: "center",
-                    fontSize: 12,
-                    color: "#374151",
-                  }}
-                >
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    <CalendarIcon size={14} /> {dateTime}
-                  </span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    <Clock size={14} /> {duration}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: "auto",
-                    paddingTop: 12,
-                  }}
-                >
-                  <div style={{ fontWeight: 700, color: isFree ? "#16A34A" : "#0F2044" }}>
-                    {s.price_display ?? (isFree ? "Free for Plus & Max" : `£${s.price_amount}`)}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      open(s.id);
-                    }}
-                    style={{
-                      background: "#CC2229",
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       color: "#fff",
-                      border: 0,
-                      borderRadius: 8,
-                      padding: "8px 14px",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: "pointer",
+                      fontWeight: 800,
+                      fontSize: 18,
+                      textAlign: "center",
+                      padding: 16,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.15,
                     }}
                   >
-                    Book now →
-                  </button>
-                </div>
+                    {s.title}
+                  </div>
+                )}
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    background: "rgba(255,255,255,0.92)",
+                    color: bandColor,
+                    fontSize: 9,
+                    fontWeight: 800,
+                    padding: "3px 6px",
+                    borderRadius: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {s.category ?? "Live"}
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: "#0F2044",
+                  lineHeight: 1.25,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {s.title}
+              </div>
+              <div style={{ marginTop: 2, color: "#6B7280", fontSize: 12 }}>
+                {dateTime}
               </div>
             </div>
           );
