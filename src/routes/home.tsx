@@ -294,19 +294,33 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
   return (
     <div className="mt-4 pb-4">
-      <div className="mx-4 flex items-center justify-between mb-3">
-        <h2
-          className="font-bold"
-          style={{ fontSize: 16, color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}
-        >
-          DSM Marketplace
-        </h2>
+      <div className="mx-4 flex items-end justify-between mb-4">
+        <div>
+          <h2
+            className="font-bold tracking-tight"
+            style={{ fontSize: 20, color: "#0B1F3A", fontFamily: "Inter, sans-serif", lineHeight: 1.1 }}
+          >
+            Marketplace
+          </h2>
+          <p
+            className="font-semibold uppercase"
+            style={{
+              fontSize: 10,
+              color: "#9CA3AF",
+              letterSpacing: 1,
+              fontFamily: "Inter, sans-serif",
+              marginTop: 3,
+            }}
+          >
+            Curated for you
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => navigate({ to: "/marketplace" as never })}
-          className="font-medium"
+          className="font-bold"
           style={{
-            fontSize: 12,
+            fontSize: 13,
             color: "#1877D6",
             fontFamily: "Inter, sans-serif",
             background: "none",
@@ -315,19 +329,16 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             padding: 0,
           }}
         >
-          See all →
+          View all
         </button>
       </div>
       <div
         className="marketplace-scroll"
         style={{
-          display: "grid",
-          gridTemplateRows: "repeat(2, 1fr)",
-          gridAutoFlow: "column",
-          gridAutoColumns: "calc(33.333% - 8px)",
-          gap: 10,
+          display: "flex",
+          gap: 14,
           overflowX: "auto",
-          paddingBottom: 8,
+          paddingBottom: 12,
           paddingLeft: 16,
           paddingRight: 16,
           scrollSnapType: "x mandatory",
@@ -341,6 +352,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           const hero = tile.image_url
             ? `url(${tile.image_url}) center/cover no-repeat`
             : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
+          const badgeLabel = tile.badge?.trim();
+          const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
           return (
             <div
               key={tile.id}
@@ -355,78 +368,99 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               }}
               style={{
                 scrollSnapAlign: "start",
-                borderRadius: 12,
-                overflow: "hidden",
+                flex: "0 0 auto",
+                width: 232,
                 position: "relative",
-                height: 118,
                 cursor: "pointer",
-                background: "#FFFFFF",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#EEF2F7",
                 userSelect: "none",
                 display: "flex",
                 flexDirection: "column",
+                background: "transparent",
               }}
             >
               {/* Hero image */}
               <div
                 style={{
                   position: "relative",
-                  height: 66,
+                  height: 140,
+                  borderRadius: 16,
+                  overflow: "hidden",
                   background: hero,
+                  border: "1px solid #EEF2F7",
+                  boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
                   flexShrink: 0,
                 }}
               >
-                {tile.badge && (
+                {badgeLabel && (
                   <span
                     className="font-bold"
                     style={{
                       position: "absolute",
-                      top: 5,
-                      left: 5,
-                      fontSize: 8,
-                      letterSpacing: 0.4,
+                      top: 10,
+                      left: 10,
+                      fontSize: 10,
+                      letterSpacing: 0.6,
                       color: "#FFFFFF",
-                      backgroundColor: "rgba(11,31,58,0.55)",
+                      backgroundColor: badgeIsNew
+                        ? "rgba(11,31,58,0.92)"
+                        : "rgba(24,119,214,0.92)",
                       backdropFilter: "blur(6px)",
                       WebkitBackdropFilter: "blur(6px)",
                       fontFamily: "Inter, sans-serif",
-                      padding: "2px 6px",
+                      padding: "3px 9px",
                       borderRadius: 999,
                       textTransform: "uppercase",
+                      boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                     }}
                   >
-                    {tile.badge}
+                    {badgeLabel}
                   </span>
                 )}
               </div>
-              {/* Label */}
+              {/* Label below card */}
               <div
                 style={{
-                  flex: 1,
-                  padding: "6px 8px",
+                  padding: "10px 2px 0",
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
+                  alignItems: "flex-start",
+                  textAlign: "left",
                 }}
               >
                 <span
-                  className="text-[10px] text-[#0B1F3A] text-center leading-tight"
                   style={{
+                    fontSize: 14,
+                    color: "#0B1F3A",
+                    lineHeight: 1.25,
                     maxWidth: "100%",
                     overflow: "hidden",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontFamily: "Inter, sans-serif",
+                    letterSpacing: -0.1,
                   }}
                 >
                   {tile.title}
                 </span>
+                {tile.subtitle && (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: "#6B7684",
+                      marginTop: 3,
+                      fontFamily: "Inter, sans-serif",
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {tile.subtitle}
+                  </span>
+                )}
               </div>
             </div>
           );
