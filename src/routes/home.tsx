@@ -812,10 +812,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       <div
         style={{
           display: "grid",
-          gridTemplateRows: "repeat(2, 1fr)",
           gridAutoFlow: "column",
-          gridAutoColumns: "47%",
-          gap: 10,
+          gridAutoColumns: "85%",
+          gap: 12,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
           paddingBottom: 8,
