@@ -283,6 +283,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   };
 
   const [listings, setListings] = useState<ListingTile[] | null>(null);
+  const [legacyTiles, setLegacyTiles] = useState<MarketplaceTile[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -307,6 +308,14 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         if (!cancelled) setListings([]);
       }
     })();
+    (async () => {
+      const { data } = await supabase
+        .from("marketplace_tiles")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (!cancelled && data) setLegacyTiles(data as MarketplaceTile[]);
+    })();
     return () => {
       cancelled = true;
     };
@@ -328,24 +337,17 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   };
 
   const CATEGORY_GRADIENTS: Record<string, string> = {
-    tracking: "#4DA3FF",
-    dashcams: "#1877D6",
-    hardware: "#6D28D9",
-    health: "#EF4444",
-    learning: "#F59E0B",
-    cpd: "#F59E0B",
-    courses: "#10B981",
-    insurance: "#0EA5E9",
-    finance: "#22C55E",
-    marketing: "#EC4899",
+    "ADI Training": "linear-gradient(135deg, #1A52A0, #0F2044)",
+    "Vehicles": "linear-gradient(135deg, #0891B2, #164E63)",
+    "Equipment": "linear-gradient(135deg, #6B7280, #374151)",
+    "Technology": "linear-gradient(135deg, #7C3AED, #4C1D95)",
+    "Insurance": "linear-gradient(135deg, #16A34A, #14532D)",
+    "Business Services": "linear-gradient(135deg, #D97706, #92400E)",
+    "For Sale": "linear-gradient(135deg, #CC2229, #7A1419)",
   };
-  const gradientFor = (categoryName: string | undefined): string => {
-    const key = (categoryName ?? "").toLowerCase();
-    const accent =
-      Object.entries(CATEGORY_GRADIENTS).find(([k]) => key.includes(k))?.[1] ??
-      "#4DA3FF";
-    return `linear-gradient(135deg, ${accent}, #0B1F3A)`;
-  };
+  const DEFAULT_GRADIENT = "linear-gradient(135deg, #0F2044, #1A52A0)";
+  const gradientFor = (categoryName: string | undefined): string =>
+    (categoryName && CATEGORY_GRADIENTS[categoryName]) || DEFAULT_GRADIENT;
 
   const openListing = (listingId: string) => {
     navigate({
@@ -353,6 +355,20 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       params: { listingId } as never,
     });
   };
+
+  const handleLegacyNav = (url: string) => {
+    if (!url) return;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      navigate({ to: url as never });
+    }
+  };
+
+  const showListings = (listings?.length ?? 0) > 0;
+  const showLegacy = !showListings && legacyTiles.length > 0;
+  // While listings are still loading (null) and there are no legacy tiles yet, render nothing.
+  if (!showListings && !showLegacy) return null;
 
   return (
     <div className="mt-4 pb-4">
@@ -427,17 +443,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {(() => {
-          const hasListings = (listings?.length ?? 0) > 0;
-          const placeholders: ListingTile[] = [
-            { id: "p1", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "tracking" }, marketplace_suppliers: null },
-            { id: "p2", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "dashcams" }, marketplace_suppliers: null },
-            { id: "p3", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "insurance" }, marketplace_suppliers: null },
-            { id: "p4", title: "Coming soon", price_display: null, image_urls: null, is_featured: false, marketplace_categories: { name: "learning" }, marketplace_suppliers: null },
-          ];
-          const items: ListingTile[] = hasListings ? listings! : placeholders;
-          const isPlaceholder = !hasListings;
-          return chunkTiles(items, 4).map((chunk, pageIndex) => (
+        {showListings && chunkTiles(listings!, 4).map((chunk, pageIndex) => (
           <div
             key={pageIndex}
             style={{
@@ -455,20 +461,131 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               const img = firstImageUrl(tile.image_urls);
               const gradient = gradientFor(tile.marketplace_categories?.name);
               const hero = img
-                ? `linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%), url(${img}) center/cover no-repeat`
+                ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${img}) center/cover no-repeat`
                 : gradient;
               const showFeatured = !!tile.is_featured;
               return (
                 <div
                   key={tile.id}
-                  onClick={() => (isPlaceholder ? navigate({ to: "/marketplace" as never }) : openListing(tile.id))}
+                  onClick={() => openListing(tile.id)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      if (isPlaceholder) navigate({ to: "/marketplace" as never });
-                      else openListing(tile.id);
+                      openListing(tile.id);
+                    }
+                  }}
+                  style={{
+                    position: "relative",
+                    cursor: "pointer",
+                    userSelect: "none",
+                    height: 110,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: hero,
+                    border: "1px solid #EEF2F7",
+                    boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
+                  }}
+                >
+                  {showFeatured && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        fontSize: 9,
+                        letterSpacing: 0.6,
+                        color: "#D97706",
+                        backgroundColor: "#FFFFFF",
+                        fontFamily: "Inter, sans-serif",
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        textTransform: "uppercase",
+                        fontWeight: 700,
+                        boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
+                      }}
+                    >
+                      Featured
+                    </span>
+                  )}
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      padding: "8px 10px",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#FFFFFF",
+                        lineHeight: 1.2,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        fontWeight: 700,
+                        fontFamily: "Inter, sans-serif",
+                        letterSpacing: -0.1,
+                      }}
+                    >
+                      {tile.title}
+                    </span>
+                    {tile.price_display && (
+                      <span
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.7)",
+                          marginTop: 2,
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {tile.price_display}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+
+        {showLegacy && chunkTiles(legacyTiles, 4).map((chunk, pageIndex) => (
+          <div
+            key={`legacy-${pageIndex}`}
+            style={{
+              scrollSnapAlign: "start",
+              flex: "0 0 auto",
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "1fr 1fr",
+              gap: 12,
+              alignContent: "start",
+            }}
+          >
+            {chunk.map((tile) => {
+              const accentColor = tile.color || "#4DA3FF";
+              const hero = tile.image_url
+                ? `url(${tile.image_url}) center/cover no-repeat`
+                : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
+              const badgeLabel = tile.badge?.trim();
+              const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
+              return (
+                <div
+                  key={tile.id}
+                  onClick={() => handleLegacyNav(tile.link_url)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleLegacyNav(tile.link_url);
                     }
                   }}
                   style={{
@@ -480,24 +597,19 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     background: "transparent",
                   }}
                 >
-                  {/* Hero image */}
                   <div
                     style={{
                       position: "relative",
-                      height: 120,
+                      height: 96,
                       borderRadius: 12,
                       overflow: "hidden",
                       background: hero,
                       border: "1px solid #EEF2F7",
                       boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
                       flexShrink: 0,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "flex-end",
-                      padding: 10,
                     }}
                   >
-                    {showFeatured && (
+                    {badgeLabel && (
                       <span
                         className="font-bold"
                         style={{
@@ -507,7 +619,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           fontSize: 9,
                           letterSpacing: 0.6,
                           color: "#FFFFFF",
-                          backgroundColor: "rgba(245,158,11,0.95)",
+                          backgroundColor: badgeIsNew
+                            ? "rgba(11,31,58,0.92)"
+                            : "rgba(24,119,214,0.92)",
                           backdropFilter: "blur(6px)",
                           WebkitBackdropFilter: "blur(6px)",
                           fontFamily: "Inter, sans-serif",
@@ -517,15 +631,25 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                         }}
                       >
-                        Featured
+                        {badgeLabel}
                       </span>
                     )}
+                  </div>
+                  <div
+                    style={{
+                      padding: "8px 2px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      textAlign: "left",
+                    }}
+                  >
                     <span
                       style={{
-                        position: "relative",
                         fontSize: 12,
-                        color: "#FFFFFF",
-                        lineHeight: 1.2,
+                        color: "#0B1F3A",
+                        lineHeight: 1.25,
+                        maxWidth: "100%",
                         overflow: "hidden",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
@@ -533,24 +657,25 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         fontWeight: 700,
                         fontFamily: "Inter, sans-serif",
                         letterSpacing: -0.1,
-                        textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                       }}
                     >
                       {tile.title}
                     </span>
-                    {(tile.price_display || isPlaceholder) && (
+                    {tile.subtitle && (
                       <span
                         style={{
-                          position: "relative",
                           fontSize: 10,
-                          color: "rgba(255,255,255,0.75)",
+                          color: "#6B7684",
                           marginTop: 2,
                           fontFamily: "Inter, sans-serif",
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 1,
+                          WebkitBoxOrient: "vertical",
                           fontWeight: 500,
-                          textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                         }}
                       >
-                        {isPlaceholder ? "Coming soon" : tile.price_display}
+                        {tile.subtitle}
                       </span>
                     )}
                   </div>
@@ -558,8 +683,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               );
             })}
           </div>
-          ));
-        })()}
+        ))}
       </div>
       <style>{`
         .marketplace-scroll::-webkit-scrollbar {
