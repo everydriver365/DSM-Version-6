@@ -71,6 +71,7 @@ import {
   Megaphone,
   Camera,
   Activity,
+  Video,
   CheckCircle2,
 } from "lucide-react";
 import {
@@ -708,15 +709,21 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     session_time: string;
     price_display: string | null;
     price_amount: number | null;
+    image_url: string | null;
+    is_live: boolean | null;
+    max_spaces: number | null;
+    spaces_taken: number | null;
+    duration_minutes: number | null;
   };
 
-  const categoryColor = (category: string | null): string => {
-    if (!category) return "#CC2229";
-    if (category.startsWith("Standards Check")) return "#1A52A0";
-    if (category.startsWith("Business Coaching")) return "#16A34A";
-    if (category.startsWith("CPD Webinar")) return "#7C3AED";
-    if (category.startsWith("New ADI")) return "#D97706";
-    return "#CC2229";
+  const categoryGradient = (category: string | null): string => {
+    if (!category) return "linear-gradient(135deg, #CC2229, #7A1419)";
+    if (category.startsWith("Standards Check")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
+    if (category.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
+    if (category.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
+    if (category.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
+    if (category.startsWith("Q&A")) return "linear-gradient(135deg, #0891B2, #164E63)";
+    return "linear-gradient(135deg, #CC2229, #7A1419)";
   };
 
   const [sessions, setSessions] = useState<LiveTile[]>([]);
@@ -729,7 +736,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=3&select=id,title,host_name,category,session_date,session_time,price_display,price_amount`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=3&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -804,73 +811,159 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           See all →
         </button>
       </div>
-      <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          scrollSnapType: "x mandatory",
+          paddingBottom: 4,
+        }}
+      >
         {sessions.map((s) => {
-          const band = categoryColor(s.category);
+          const gradient = categoryGradient(s.category);
+          const heroBg = s.image_url
+            ? `url(${s.image_url}) center/cover no-repeat`
+            : gradient;
+          const isFree =
+            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
+          const spaces =
+            s.max_spaces != null && s.spaces_taken != null
+              ? s.max_spaces - s.spaces_taken
+              : null;
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                width: 200,
-                height: 100,
+                width: 220,
                 flexShrink: 0,
+                scrollSnapAlign: "start",
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 12,
+                borderRadius: 14,
                 overflow: "hidden",
-                position: "relative",
                 cursor: "pointer",
               }}
             >
               <div
                 style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: 4,
-                  height: "100%",
-                  background: band,
-                }}
-              />
-              <div
-                style={{
-                  padding: "10px 10px 10px 14px",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
+                  height: 90,
+                  position: "relative",
+                  background: heroBg,
                 }}
               >
                 <div
                   style={{
-                    fontWeight: 700,
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    background: "rgba(255,255,255,0.2)",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {s.category ?? "Session"}
+                </div>
+                {s.is_live && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      background: "#CC2229",
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                    }}
+                  >
+                    🔴 LIVE
+                  </div>
+                )}
+                {spaces != null && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 8,
+                      background: "rgba(0,0,0,0.3)",
+                      color: "#fff",
+                      fontSize: 10,
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                    }}
+                  >
+                    {spaces} spaces
+                  </div>
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <Video size={28} color="#fff" style={{ opacity: 0.3 }} />
+                </div>
+              </div>
+              <div style={{ padding: "10px 12px 12px" }}>
+                <div
+                  style={{
+                    fontWeight: 600,
                     fontSize: 12,
                     color: "#0F2044",
-                    lineHeight: 1.3,
+                    lineHeight: 1.35,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    marginBottom: 4,
+                    marginBottom: 6,
                   }}
                 >
                   {s.title}
                 </div>
-                {s.host_name && (
-                  <div style={{ fontSize: 10, color: "#9CA3AF", marginBottom: 6 }}>
-                    with {s.host_name}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+                  <CalendarIcon size={10} color="#9CA3AF" />
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
                   </div>
-                )}
-                <div style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+                  <Clock size={10} color="#9CA3AF" />
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    {s.duration_minutes ? `${s.duration_minutes} mins` : "Duration TBC"}
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+                  <Video size={10} color="#9CA3AF" />
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>Zoom</div>
+                </div>
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginTop: 8,
                   }}
                 >
-                  <div style={{ fontSize: 10, color: "#6B7280" }}>
-                    {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: isFree ? "#16A34A" : "#CC2229",
+                    }}
+                  >
+                    {s.price_display ?? (isFree ? "Free" : `£${s.price_amount}`)}
                   </div>
                   <button
                     type="button"
@@ -882,9 +975,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                       background: "#CC2229",
                       color: "#fff",
                       fontSize: 10,
-                      fontWeight: 600,
-                      padding: "4px 8px",
-                      borderRadius: 6,
+                      fontWeight: 700,
+                      padding: "4px 10px",
+                      borderRadius: 8,
                       border: 0,
                       cursor: "pointer",
                     }}
