@@ -71,7 +71,6 @@ import {
   Megaphone,
   Camera,
   Activity,
-  Video,
   CheckCircle2,
 } from "lucide-react";
 import {
@@ -824,97 +823,92 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         }}
       >
         {sessions.map((s) => {
-          const color = categoryColor(s.category);
-          const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time)}${s.duration_minutes ? ` · ${s.duration_minutes} mins` : ""}`;
+          const bandColor = categoryColor(s.category);
+          const remaining = Math.max(0, (s.max_spaces ?? 0) - (s.spaces_taken ?? 0));
+          const full = remaining <= 0;
+          const spaceColor = full ? "#CC2229" : remaining < 5 ? "#D97706" : "#16A34A";
+          const spaceText = full ? "Full" : `${remaining} spaces left`;
+          const isFree =
+            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
+          const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time).replace(" ", "")}`;
+          const duration = s.duration_minutes ? `${s.duration_minutes} mins · Zoom` : "Zoom";
+
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                height: 110,
-                borderRadius: 12,
-                overflow: "hidden",
-                position: "relative",
-                cursor: "pointer",
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
+                borderRadius: 16,
+                overflow: "hidden",
+                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
                 scrollSnapAlign: "start",
                 minWidth: 0,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 4,
-                  background: color,
-                }}
-              />
-              {s.image_url && (
-                <img
-                  src={s.image_url}
-                  alt=""
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    width: 36,
-                    height: 36,
-                    objectFit: "cover",
-                    borderRadius: 6,
-                  }}
-                />
-              )}
-              <div
-                style={{
-                  padding: "10px 10px 10px 14px",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div>
-                  <div
+              <div style={{ height: 6, background: bandColor, width: "100%", flexShrink: 0 }} />
+              <div style={{ padding: 16, display: "flex", flexDirection: "column", flex: 1 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span
                     style={{
-                      fontSize: 9,
-                      fontWeight: 600,
-                      color,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.025em",
-                      lineHeight: 1,
+                      background: `${bandColor}15`,
+                      color: bandColor,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: "4px 8px",
+                      borderRadius: 6,
                     }}
                   >
                     {s.category ?? "Session"}
-                  </div>
-                  <div
-                    style={{
-                      color: "#0F2044",
-                      fontSize: 12,
-                      lineHeight: 1.3,
-                      fontWeight: 700,
-                      marginTop: 2,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {s.title}
-                  </div>
+                  </span>
+                  <span style={{ color: spaceColor, fontSize: 12, fontWeight: 600 }}>{spaceText}</span>
                 </div>
+
+                <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", marginTop: 8, marginBottom: 4 }}>
+                  {s.title}
+                </div>
+                {s.host_name && (
+                  <div style={{ color: "#6B7280", fontSize: 13 }}>with {s.host_name}</div>
+                )}
+
+                <div
+                  style={{
+                    background: "#F7FAFC",
+                    margin: "12px -16px 0",
+                    padding: "10px 16px",
+                    borderTop: "0.5px solid #E2E6ED",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 12,
+                    alignItems: "center",
+                    fontSize: 12,
+                    color: "#374151",
+                  }}
+                >
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <CalendarIcon size={14} /> {dateTime}
+                  </span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <Clock size={14} /> {duration}
+                  </span>
+                </div>
+
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginTop: "auto",
+                    paddingTop: 12,
                   }}
                 >
-                  <span style={{ fontSize: 10, color: "#9CA3AF" }}>
-                    {dateTime}
-                  </span>
+                  <div style={{ fontWeight: 700, color: isFree ? "#16A34A" : "#0F2044" }}>
+                    {s.price_display ?? (isFree ? "Free for Plus & Max" : `£${s.price_amount}`)}
+                  </div>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -922,16 +916,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                       open(s.id);
                     }}
                     style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      color,
-                      background: "transparent",
+                      background: "#CC2229",
+                      color: "#fff",
                       border: 0,
-                      padding: 0,
+                      borderRadius: 8,
+                      padding: "8px 14px",
+                      fontSize: 13,
+                      fontWeight: 600,
                       cursor: "pointer",
                     }}
                   >
-                    Book →
+                    Book now →
                   </button>
                 </div>
               </div>
