@@ -113,6 +113,7 @@ import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
+import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
@@ -646,6 +647,11 @@ const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
   path: '/featured',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
+  getParentRoute: () => AdminRoute,
+} as any)
 const MarketingPricingRoute = MarketingPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -797,6 +803,7 @@ export interface FileRoutesByFullPath {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
@@ -914,6 +921,7 @@ export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
@@ -1034,6 +1042,7 @@ export interface FileRoutesById {
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
@@ -1154,6 +1163,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/admin/applications'
     | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
@@ -1271,6 +1281,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/how-it-works'
     | '/pricing'
+    | '/admin/applications'
     | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
@@ -1390,6 +1401,7 @@ export interface FileRouteTypes {
     | '/_marketing/features'
     | '/_marketing/how-it-works'
     | '/_marketing/pricing'
+    | '/admin/applications'
     | '/admin/featured'
     | '/bookings/$id'
     | '/courses/$id'
@@ -2265,6 +2277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFeaturedRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/applications': {
+      id: '/admin/applications'
+      path: '/applications'
+      fullPath: '/admin/applications'
+      preLoaderRoute: typeof AdminApplicationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_marketing/pricing': {
       id: '/_marketing/pricing'
       path: '/pricing'
@@ -2380,10 +2399,12 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminApplicationsRoute: AdminApplicationsRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
 }
 
