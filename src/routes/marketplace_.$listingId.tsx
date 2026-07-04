@@ -633,7 +633,7 @@ function EnquirySheet({
       // 1. Instructor notification (in-app)
       if (listing.instructor_id) {
         tasks.push(
-          supabase.from("instructor_notifications").insert({
+          Promise.resolve(supabase.from("instructor_notifications").insert({
             instructor_id: listing.instructor_id,
             title: "New marketplace enquiry 📬",
             body: `Someone enquired about your listing: '${listing.title}'`,
@@ -641,7 +641,7 @@ function EnquirySheet({
             read: false,
             reference_id: listing.id,
             reference_type: "marketplace_listing",
-          }),
+          })),
         );
       }
 
