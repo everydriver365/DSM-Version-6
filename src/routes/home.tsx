@@ -698,6 +698,218 @@ function _RemovedMarketplaceLegacy() {
   return null;
 }
 
+function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
+  type LiveTile = {
+    id: string;
+    title: string;
+    host_name: string | null;
+    category: string | null;
+    session_date: string;
+    session_time: string;
+    price_display: string | null;
+    price_amount: number | null;
+  };
+
+  const CATEGORY_COLORS: Record<string, string> = {
+    "Standards Check": "#1A52A0",
+    "Business Coaching": "#16A34A",
+    "CPD Webinar": "#7C3AED",
+    "New ADI": "#D97706",
+    "Q&A": "#0891B2",
+  };
+
+  const [sessions, setSessions] = useState<LiveTile[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=3&select=id,title,host_name,category,session_date,session_time,price_display,price_amount`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          },
+        );
+        const data = (await res.json()) as LiveTile[];
+        if (!cancelled && Array.isArray(data)) setSessions(data);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (sessions.length === 0) return null;
+
+  const fmtDate = (d: string) => {
+    try {
+      return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+      });
+    } catch {
+      return d;
+    }
+  };
+  const fmtTime = (t: string) => {
+    try {
+      const [h, m] = t.split(":");
+      const d = new Date();
+      d.setHours(Number(h), Number(m), 0, 0);
+      return d.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true });
+    } catch {
+      return t;
+    }
+  };
+
+  const open = (id: string) =>
+    navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
+
+  return (
+    <div style={{ padding: "0 16px", marginTop: 16, marginBottom: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            background: "#EF4444",
+            borderRadius: 999,
+            marginRight: 8,
+            animation: "pulse 1.5s ease-in-out infinite",
+          }}
+        />
+        <div style={{ fontWeight: 700, color: "#0F2044", fontSize: 16, flex: 1 }}>DSM Live</div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dsm-live" as never })}
+          style={{
+            background: "transparent",
+            border: 0,
+            color: "#0F2044",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          See all →
+        </button>
+      </div>
+      <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none" }}>
+        {sessions.map((s) => {
+          const band = (s.category && CATEGORY_COLORS[s.category]) || "#0F2044";
+          const isFree =
+            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
+          return (
+            <div
+              key={s.id}
+              onClick={() => open(s.id)}
+              style={{
+                width: 260,
+                flexShrink: 0,
+                background: "#fff",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 12,
+                overflow: "hidden",
+                cursor: "pointer",
+              }}
+            >
+              <div style={{ height: 6, background: band }} />
+              <div style={{ padding: 12 }}>
+                <div
+                  style={{
+                    background: `${band}15`,
+                    color: band,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "2px 6px",
+                    borderRadius: 4,
+                    display: "inline-block",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {s.category ?? "Session"}
+                </div>
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 13,
+                    color: "#0F2044",
+                    marginTop: 6,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    minHeight: 34,
+                  }}
+                >
+                  {s.title}
+                </div>
+                {s.host_name && (
+                  <div style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}>
+                    {s.host_name}
+                  </div>
+                )}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 11,
+                    color: "#6B7280",
+                    marginTop: 8,
+                  }}
+                >
+                  <CalendarIcon size={12} /> {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: 10,
+                  }}
+                >
+                  <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? "#16A34A" : "#0F2044" }}>
+                    {s.price_display ?? (isFree ? "Free" : `£${s.price_amount}`)}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      open(s.id);
+                    }}
+                    style={{
+                      background: "#CC2229",
+                      color: "#fff",
+                      border: 0,
+                      borderRadius: 8,
+                      padding: "6px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Book →
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
+    </div>
+  );
+}
+
 function HomePage() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("there");
@@ -3651,6 +3863,8 @@ function HomePage() {
       />
 
       <MarketplaceSection navigate={navigate} />
+
+      <DsmLiveSection navigate={navigate} />
 
     </div>
 
