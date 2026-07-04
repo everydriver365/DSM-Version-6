@@ -72,7 +72,6 @@ import {
   Camera,
   Activity,
   CheckCircle2,
-  Music,
 } from "lucide-react";
 import {
   Dialog,
