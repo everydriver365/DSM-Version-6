@@ -923,7 +923,19 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         })}
       </div>
       {podcasts.length > 0 && (
-        <div style={{ marginTop: 4 }}>
+        <div
+          style={{
+            display: "grid",
+            gridAutoFlow: "column",
+            gridAutoColumns: "44%",
+            gap: 14,
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            paddingBottom: 8,
+            marginTop: 4,
+            scrollbarWidth: "none",
+          }}
+        >
           {podcasts.map((p) => {
             const openPodcasts = () =>
               navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
@@ -932,67 +944,94 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 key={p.id}
                 onClick={openPodcasts}
                 style={{
-                  background: "#fff",
-                  border: "0.5px solid #E2E6ED",
-                  borderRadius: 10,
-                  padding: "10px 12px",
-                  marginBottom: 6,
-                  display: "flex",
-                  alignItems: "center",
+                  background: "transparent",
+                  scrollSnapAlign: "start",
+                  minWidth: 0,
                   cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <div
                   style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 6,
+                    width: "100%",
+                    aspectRatio: "1 / 1",
+                    borderRadius: 14,
+                    overflow: "hidden",
                     background: p.image_url
                       ? `url(${p.image_url}) center/cover no-repeat`
-                      : "#0F2044",
-                    flexShrink: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                      : "linear-gradient(135deg, #0F2044, #1A2E5C)",
+                    position: "relative",
+                    boxShadow: "0 2px 8px rgba(15,32,68,0.08)",
                   }}
                 >
-                  {!p.image_url && <Music size={16} color="#fff" />}
-                </div>
-                <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {p.episode_number != null && (
-                      <span style={{ fontSize: 9, fontWeight: 700, color: "#CC2229" }}>
-                        EP {p.episode_number}
-                      </span>
-                    )}
-                    <span
+                  {!p.image_url && (
+                    <div
                       style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: "#0F2044",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        flex: 1,
-                        minWidth: 0,
+                        position: "absolute",
+                        inset: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#fff",
                       }}
                     >
-                      {p.title}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>
-                    {p.guest_name ? `${p.guest_name} · ` : ""}
-                    {p.duration_minutes ? `${p.duration_minutes} mins` : ""}
-                  </div>
+                      <Music size={48} strokeWidth={1.5} />
+                    </div>
+                  )}
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      background: "rgba(255,255,255,0.92)",
+                      color: "#CC2229",
+                      fontSize: 9,
+                      fontWeight: 800,
+                      padding: "3px 6px",
+                      borderRadius: 4,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {p.episode_number != null ? `EP ${p.episode_number}` : "Podcast"}
+                  </span>
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 8,
+                      background: "rgba(15,32,68,0.85)",
+                      color: "#fff",
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <PlayCircle size={20} />
+                  </span>
                 </div>
-                <div style={{ display: "flex", gap: 6, alignItems: "center", paddingLeft: 8 }}>
-                  {p.spotify_url && (
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1DB954" }} />
-                  )}
-                  {p.apple_url && (
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#FC3C44" }} />
-                  )}
-                  {p.audio_url && <PlayCircle size={16} color="#0F2044" />}
+                <div
+                  style={{
+                    marginTop: 10,
+                    fontWeight: 700,
+                    fontSize: 14,
+                    color: "#0F2044",
+                    lineHeight: 1.25,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div style={{ marginTop: 2, color: "#6B7280", fontSize: 12 }}>
+                  {p.guest_name || "DSM Podcast"}
+                  {p.duration_minutes ? ` · ${p.duration_minutes} mins` : ""}
                 </div>
               </div>
             );
