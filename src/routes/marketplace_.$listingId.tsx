@@ -52,6 +52,7 @@ interface Listing {
   listing_type: string | null;
   category_id: string | null;
   supplier_id: string | null;
+  instructor_id: string | null;
   location: string | null;
   condition: string | null;
   tags: string[] | null;
@@ -618,6 +619,77 @@ function EnquirySheet({
         contact_phone: phone.trim() || null,
       });
       if (error) throw error;
+
+      // Fire-and-forget notifications; don't block success UX on failures.
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const contactEmail = email.trim();
+      const contactPhone = phone.trim();
+      const msgBody = message.trim();
+
+      const tasks: Promise<unknown>[] = [];
+
+      // 1. Instructor notification (in-app)
+      if (listing.instructor_id) {
+        tasks.push(
+          Promise.resolve(supabase.from("instructor_notifications").insert({
+            instructor_id: listing.instructor_id,
+            title: "New marketplace enquiry 📬",
+            body: `Someone enquired about your listing: '${listing.title}'`,
+            type: "marketplace_enquiry",
+            read: false,
+            reference_id: listing.id,
+            reference_type: "marketplace_listing",
+          })),
+        );
+      }
+
+      const callNotify = (payload: Record<string, string>) =>
+        fetch(`${SUPABASE_URL}/functions/v1/send-contact-notification`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+      // 2. Supplier email (supplier listings)
+      if (listing.supplier_id) {
+        const supplierEmail =
+          listing.marketplace_suppliers?.email || "info@everydriver.co.uk";
+        tasks.push(
+          callNotify({
+            name: "DSM Marketplace",
+            email: supplierEmail,
+            subject: `New enquiry: ${listing.title}`,
+            message: `New enquiry from ${contactEmail}:\n\n${msgBody}\n\nContact: ${contactEmail} ${contactPhone}`,
+          }),
+        );
+      }
+
+      // 3. Admin notification (always)
+      tasks.push(
+        callNotify({
+          name: "DSM Marketplace",
+          email: "info@everydriver.co.uk",
+          subject: `New marketplace enquiry — ${listing.title}`,
+          message: `Listing: ${listing.title} (${listing.id})\nType: ${
+            listing.listing_type ?? "—"
+          }\nFrom: ${contactEmail}${contactPhone ? ` / ${contactPhone}` : ""}\n\n${msgBody}`,
+        }),
+      );
+
+      Promise.allSettled(tasks).then((results) => {
+        results.forEach((r) => {
+          if (r.status === "rejected") {
+            console.error("[enquiry] notification failed", r.reason);
+          }
+        });
+      });
+
       toast.success("Enquiry sent! They'll be in touch soon.");
       onClose();
     } catch (err) {
