@@ -731,11 +731,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     episode_number: number | null;
     title: string;
     guest_name: string | null;
+    guest_title: string | null;
     duration_minutes: number | null;
     image_url: string | null;
     spotify_url: string | null;
     apple_url: string | null;
     audio_url: string | null;
+    published_at: string | null;
   };
   const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
