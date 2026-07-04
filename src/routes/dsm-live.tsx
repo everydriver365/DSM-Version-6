@@ -218,7 +218,7 @@ function DsmLivePage() {
           display: "flex",
           gap: 8,
           overflowX: "auto",
-          padding: "20px 16px",
+          padding: "28px 16px",
           scrollbarWidth: "none",
         }}
       >
