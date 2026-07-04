@@ -716,13 +716,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     duration_minutes: number | null;
   };
 
-  const categoryColor = (category: string | null): string => {
-    if (!category) return "#CC2229";
-    if (category.startsWith("Standards Check")) return "#1A52A0";
-    if (category.startsWith("Business Coaching")) return "#16A34A";
-    if (category.startsWith("CPD Webinar")) return "#7C3AED";
-    if (category.startsWith("New ADI")) return "#D97706";
-    return "#CC2229";
+  const categoryGradient = (category: string | null): string => {
+    if (!category) return "linear-gradient(135deg, #CC2229, #7A1419)";
+    if (category.startsWith("Standards Check")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
+    if (category.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
+    if (category.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
+    if (category.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
+    if (category.startsWith("Q&A")) return "linear-gradient(135deg, #0891B2, #164E63)";
+    return "linear-gradient(135deg, #CC2229, #7A1419)";
   };
 
   const [sessions, setSessions] = useState<LiveTile[]>([]);
