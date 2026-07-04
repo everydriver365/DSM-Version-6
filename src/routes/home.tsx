@@ -834,7 +834,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         {sessions.map((s) => {
           const bandColor = categoryColor(s.category);
           const dateTime = `${fmtDate(s.session_date)} · ${fmtTime(s.session_time).replace(" ", "")}`;
-
+          const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
+          const typeLabel = isWebinar ? "WEBINAR" : "ZOOM SESSION";
           return (
             <div
               key={s.id}
@@ -897,7 +898,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                     letterSpacing: "0.04em",
                   }}
                 >
-                  {s.category ?? "Live"}
+                  {typeLabel}
                 </span>
               </div>
               <div
@@ -921,88 +922,90 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             </div>
           );
         })}
-      </div>
-      {podcasts.length > 0 && (
-        <div style={{ marginTop: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
-            <span style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", fontFamily: "Poppins, sans-serif" }}>New Episodes For You</span>
-          </div>
-          <p style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "Poppins, sans-serif", margin: "2px 0 12px 14px" }}>
-            Your Favourite Podcasts
-          </p>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
-            }}
-          >
-            {podcasts.map((p) => {
-              const openPodcasts = () =>
-                navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
-              return (
-                <div
-                  key={p.id}
-                  onClick={openPodcasts}
+        {podcasts.map((p) => {
+          const openPodcasts = () =>
+            navigate({ to: "/dsm-live" as never, hash: "podcasts" as never });
+          const bandColor = "#7C3AED";
+          return (
+            <div
+              key={`pod-${p.id}`}
+              onClick={openPodcasts}
+              style={{
+                background: "transparent",
+                scrollSnapAlign: "start",
+                minWidth: 0,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  background: p.image_url
+                    ? `url(${p.image_url}) center/cover no-repeat`
+                    : "linear-gradient(135deg, #0F2044, #1A2E5C)",
+                  position: "relative",
+                  boxShadow: "0 2px 8px rgba(15,32,68,0.08)",
+                }}
+              >
+                {!p.image_url && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                    }}
+                  >
+                    <Music size={48} strokeWidth={1.5} />
+                  </div>
+                )}
+                <span
                   style={{
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    background: "rgba(255,255,255,0.92)",
+                    color: bandColor,
+                    fontSize: 9,
+                    fontWeight: 800,
+                    padding: "3px 6px",
+                    borderRadius: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "100%",
-                      aspectRatio: "1 / 1",
-                      borderRadius: 12,
-                      overflow: "hidden",
-                      background: p.image_url
-                        ? `url(${p.image_url}) center/cover no-repeat`
-                        : "linear-gradient(135deg, #0F2044, #1A2E5C)",
-                      position: "relative",
-                      boxShadow: "0 2px 10px rgba(15,32,68,0.10)",
-                    }}
-                  >
-                    {!p.image_url && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#fff",
-                        }}
-                      >
-                        <Music size={56} strokeWidth={1.5} />
-                      </div>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      marginTop: 10,
-                      fontWeight: 700,
-                      fontSize: 14,
-                      color: "#0F2044",
-                      lineHeight: 1.25,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {p.title}
-                  </div>
-                  <div style={{ marginTop: 2, color: "#6B7280", fontSize: 13 }}>
-                    {p.guest_name || "DSM Podcast"}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                  PODCAST
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: "#0F2044",
+                  lineHeight: 1.25,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {p.title}
+              </div>
+              <div style={{ marginTop: 2, color: "#6B7280", fontSize: 12 }}>
+                {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
     </div>
   );
