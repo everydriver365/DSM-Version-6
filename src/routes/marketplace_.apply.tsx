@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Star, Check, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
-export const Route = createFileRoute("/marketplace/apply")({
+export const Route = createFileRoute("/marketplace_/apply")({
   head: () => ({
     meta: [
       { title: "Get Featured on EveryDriver" },

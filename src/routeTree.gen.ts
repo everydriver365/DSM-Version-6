@@ -103,6 +103,7 @@ import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests.$pupilId'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
+import { Route as MarketplaceApplyRouteImport } from './routes/marketplace_.apply'
 import { Route as MarketplaceSlugRouteImport } from './routes/marketplace_.$slug'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
@@ -595,6 +596,11 @@ const MarketplaceEditRoute = MarketplaceEditRouteImport.update({
   path: '/marketplace/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketplaceApplyRoute = MarketplaceApplyRouteImport.update({
+  id: '/marketplace_/apply',
+  path: '/marketplace/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
   id: '/marketplace_/$slug',
   path: '/marketplace/$slug',
@@ -800,6 +806,7 @@ export interface FileRoutesByFullPath {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
@@ -916,6 +923,7 @@ export interface FileRoutesByTo {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
@@ -1035,6 +1043,7 @@ export interface FileRoutesById {
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
   '/marketplace_/$slug': typeof MarketplaceSlugRoute
+  '/marketplace_/apply': typeof MarketplaceApplyRoute
   '/marketplace_/edit': typeof MarketplaceEditRoute
   '/messages/$id': typeof MessagesIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
@@ -1154,6 +1163,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/marketplace/$slug'
+    | '/marketplace/apply'
     | '/marketplace/edit'
     | '/messages/$id'
     | '/mock-tests/$pupilId'
@@ -1270,6 +1280,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/marketplace/$slug'
+    | '/marketplace/apply'
     | '/marketplace/edit'
     | '/messages/$id'
     | '/mock-tests/$pupilId'
@@ -1388,6 +1399,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/lessons/new'
     | '/marketplace_/$slug'
+    | '/marketplace_/apply'
     | '/marketplace_/edit'
     | '/messages/$id'
     | '/mock-tests/$pupilId'
@@ -1501,6 +1513,7 @@ export interface RootRouteChildren {
   LessonsIdRoute: typeof LessonsIdRoute
   LessonsNewRoute: typeof LessonsNewRoute
   MarketplaceSlugRoute: typeof MarketplaceSlugRoute
+  MarketplaceApplyRoute: typeof MarketplaceApplyRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
   MockTestsPupilIdRoute: typeof MockTestsPupilIdRoute
   NotesIdRoute: typeof NotesIdRoute
@@ -2182,6 +2195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketplace_/apply': {
+      id: '/marketplace_/apply'
+      path: '/marketplace/apply'
+      fullPath: '/marketplace/apply'
+      preLoaderRoute: typeof MarketplaceApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/marketplace_/$slug': {
       id: '/marketplace_/$slug'
       path: '/marketplace/$slug'
@@ -2483,6 +2503,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIdRoute: LessonsIdRoute,
   LessonsNewRoute: LessonsNewRoute,
   MarketplaceSlugRoute: MarketplaceSlugRoute,
+  MarketplaceApplyRoute: MarketplaceApplyRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
   MockTestsPupilIdRoute: MockTestsPupilIdRoute,
   NotesIdRoute: NotesIdRoute,
