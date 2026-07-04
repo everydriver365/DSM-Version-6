@@ -58,7 +58,7 @@ interface Listing {
   title: string;
   description: string | null;
   price_display: string | null;
-  image_url: string | null;
+  image_urls: string[] | null;
   is_featured: boolean;
   is_active: boolean;
   listing_type: string | null;
@@ -102,6 +102,14 @@ async function sbGet<T>(path: string): Promise<T> {
   });
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   return (await res.json()) as T;
+}
+
+function firstImageUrl(listing: Listing): string | null {
+  const raw = listing.image_urls;
+  const images = Array.isArray(raw)
+    ? raw
+    : (typeof raw === "string" ? JSON.parse(raw) : []);
+  return images[0] ?? null;
 }
 
 function MarketplacePage() {
@@ -571,15 +579,15 @@ function FeaturedCard({
         style={{
           height: 120,
           borderRadius: "12px 12px 0 0",
-          background: listing.image_url
-            ? `#F3F8FF url(${listing.image_url}) center/cover`
+          background: firstImageUrl(listing)
+            ? `#F3F8FF url(${firstImageUrl(listing)}) center/cover`
             : "linear-gradient(135deg,#0F2044,#1A52A0)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!listing.image_url && <Icon size={40} color="#FFFFFF" />}
+        {!firstImageUrl(listing) && <Icon size={40} color="#FFFFFF" />}
       </div>
       <div
         style={{
@@ -697,15 +705,15 @@ function ListingRow({
           height: 80,
           borderRadius: 8,
           flexShrink: 0,
-          background: listing.image_url
-            ? `#F3F8FF url(${listing.image_url}) center/cover`
+          background: firstImageUrl(listing)
+            ? `#F3F8FF url(${firstImageUrl(listing)}) center/cover`
             : "linear-gradient(135deg,#0F2044,#1A52A0)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!listing.image_url && <Icon size={28} color="#FFFFFF" />}
+        {!firstImageUrl(listing) && <Icon size={28} color="#FFFFFF" />}
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
