@@ -274,6 +274,156 @@ function DsmLivePage() {
           ))
         )}
       </div>
+
+      <div id="podcasts" style={{ padding: "8px 16px 16px" }}>
+        <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044" }}>
+          🎙️ DSM Podcast
+        </div>
+        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, marginBottom: 12 }}>
+          Listen to our latest episodes
+        </div>
+        {podcasts.length === 0 ? (
+          <div style={{ color: "#9CA3AF", fontSize: 13, padding: "12px 0" }}>
+            No episodes yet — check back soon.
+          </div>
+        ) : (
+          podcasts.map((p) => <PodcastCard key={p.id} podcast={p} />)
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PodcastCard({ podcast: p }: { podcast: Podcast }) {
+  const openUrl = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
+  const hasAny = p.spotify_url || p.apple_url || p.audio_url;
+  return (
+    <div
+      style={{
+        background: "#fff",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
+        padding: 14,
+        marginBottom: 8,
+        display: "flex",
+        alignItems: "flex-start",
+      }}
+    >
+      <div
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: 8,
+          background: p.image_url ? `url(${p.image_url}) center/cover no-repeat` : "#0F2044",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {!p.image_url && <Music size={22} color="#fff" />}
+      </div>
+      <div style={{ paddingLeft: 12, flex: 1, minWidth: 0 }}>
+        {p.episode_number != null && (
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#CC2229", textTransform: "uppercase" }}>
+            EP {p.episode_number}
+          </div>
+        )}
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 13,
+            color: "#0F2044",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {p.title}
+        </div>
+        {p.guest_name && (
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            {p.guest_name}
+            {p.guest_title ? ` · ${p.guest_title}` : ""}
+          </div>
+        )}
+        <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+          {p.duration_minutes ? `${p.duration_minutes} mins` : ""}
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+          {p.spotify_url && (
+            <button
+              type="button"
+              onClick={() => openUrl(p.spotify_url!)}
+              style={{
+                background: "#1DB954",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 600,
+                borderRadius: 8,
+                padding: "6px 12px",
+                border: 0,
+                cursor: "pointer",
+              }}
+            >
+              🎵 Spotify
+            </button>
+          )}
+          {p.apple_url && (
+            <button
+              type="button"
+              onClick={() => openUrl(p.apple_url!)}
+              style={{
+                background: "#FC3C44",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 600,
+                borderRadius: 8,
+                padding: "6px 12px",
+                border: 0,
+                cursor: "pointer",
+              }}
+            >
+              🎧 Apple
+            </button>
+          )}
+          {p.audio_url && (
+            <button
+              type="button"
+              onClick={() => openUrl(p.audio_url!)}
+              style={{
+                background: "#0F2044",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 600,
+                borderRadius: 8,
+                padding: "6px 12px",
+                border: 0,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Play size={12} /> Play
+            </button>
+          )}
+          {!hasAny && (
+            <span
+              style={{
+                background: "#F3F4F6",
+                color: "#9CA3AF",
+                fontSize: 12,
+                padding: "6px 10px",
+                borderRadius: 8,
+              }}
+            >
+              Coming soon
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
