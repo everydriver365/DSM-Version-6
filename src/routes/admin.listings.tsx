@@ -327,6 +327,10 @@ function AdminListingsPage() {
           <div style={{ padding: 24, color: "#6B7280" }}>No listings.</div>
         ) : (
           filtered.map((l) => {
+            const images = Array.isArray(l.image_urls)
+              ? l.image_urls
+              : (typeof l.image_urls === "string" ? JSON.parse(l.image_urls) : []);
+            const firstImage = images[0];
             const expanded = expandedId === l.id;
             const editing = editingId === l.id;
             const rejecting = rejectingId === l.id;
