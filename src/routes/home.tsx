@@ -356,124 +356,137 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {tiles.map((tile) => {
-          const accentColor = tile.color || "#4DA3FF";
-          const hero = tile.image_url
-            ? `url(${tile.image_url}) center/cover no-repeat`
-            : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
-          const badgeLabel = tile.badge?.trim();
-          const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
-          return (
-            <div
-              key={tile.id}
-              onClick={() => handleNav(tile.link_url)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleNav(tile.link_url);
-                }
-              }}
-              style={{
-                scrollSnapAlign: "start",
-                flex: "0 0 auto",
-                width: 232,
-                position: "relative",
-                cursor: "pointer",
-                userSelect: "none",
-                display: "flex",
-                flexDirection: "column",
-                background: "transparent",
-              }}
-            >
-              {/* Hero image */}
-              <div
-                style={{
-                  position: "relative",
-                  height: 140,
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  background: hero,
-                  border: "1px solid #EEF2F7",
-                  boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
-                  flexShrink: 0,
-                }}
-              >
-                {badgeLabel && (
-                  <span
-                    className="font-bold"
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      left: 10,
-                      fontSize: 10,
-                      letterSpacing: 0.6,
-                      color: "#FFFFFF",
-                      backgroundColor: badgeIsNew
-                        ? "rgba(11,31,58,0.92)"
-                        : "rgba(24,119,214,0.92)",
-                      backdropFilter: "blur(6px)",
-                      WebkitBackdropFilter: "blur(6px)",
-                      fontFamily: "Inter, sans-serif",
-                      padding: "3px 9px",
-                      borderRadius: 999,
-                      textTransform: "uppercase",
-                      boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
-                    }}
-                  >
-                    {badgeLabel}
-                  </span>
-                )}
-              </div>
-              {/* Label below card */}
-              <div
-                style={{
-                  padding: "10px 2px 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  textAlign: "left",
-                }}
-              >
-                <span
+        {chunkTiles(tiles, 4).map((chunk, pageIndex) => (
+          <div
+            key={pageIndex}
+            style={{
+              scrollSnapAlign: "start",
+              flex: "0 0 auto",
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "1fr 1fr",
+              gap: 12,
+              alignContent: "start",
+            }}
+          >
+            {chunk.map((tile) => {
+              const accentColor = tile.color || "#4DA3FF";
+              const hero = tile.image_url
+                ? `url(${tile.image_url}) center/cover no-repeat`
+                : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
+              const badgeLabel = tile.badge?.trim();
+              const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
+              return (
+                <div
+                  key={tile.id}
+                  onClick={() => handleNav(tile.link_url)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleNav(tile.link_url);
+                    }
+                  }}
                   style={{
-                    fontSize: 14,
-                    color: "#0B1F3A",
-                    lineHeight: 1.25,
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    fontWeight: 700,
-                    fontFamily: "Inter, sans-serif",
-                    letterSpacing: -0.1,
+                    position: "relative",
+                    cursor: "pointer",
+                    userSelect: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    background: "transparent",
                   }}
                 >
-                  {tile.title}
-                </span>
-                {tile.subtitle && (
-                  <span
+                  {/* Hero image */}
+                  <div
                     style={{
-                      fontSize: 11,
-                      color: "#6B7684",
-                      marginTop: 3,
-                      fontFamily: "Inter, sans-serif",
+                      position: "relative",
+                      height: 96,
+                      borderRadius: 12,
                       overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: "vertical",
-                      fontWeight: 500,
+                      background: hero,
+                      border: "1px solid #EEF2F7",
+                      boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
+                      flexShrink: 0,
                     }}
                   >
-                    {tile.subtitle}
-                  </span>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                    {badgeLabel && (
+                      <span
+                        className="font-bold"
+                        style={{
+                          position: "absolute",
+                          top: 8,
+                          left: 8,
+                          fontSize: 9,
+                          letterSpacing: 0.6,
+                          color: "#FFFFFF",
+                          backgroundColor: badgeIsNew
+                            ? "rgba(11,31,58,0.92)"
+                            : "rgba(24,119,214,0.92)",
+                          backdropFilter: "blur(6px)",
+                          WebkitBackdropFilter: "blur(6px)",
+                          fontFamily: "Inter, sans-serif",
+                          padding: "2px 7px",
+                          borderRadius: 999,
+                          textTransform: "uppercase",
+                          boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
+                        }}
+                      >
+                        {badgeLabel}
+                      </span>
+                    )}
+                  </div>
+                  {/* Label below card */}
+                  <div
+                    style={{
+                      padding: "8px 2px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      textAlign: "left",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#0B1F3A",
+                        lineHeight: 1.25,
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        fontWeight: 700,
+                        fontFamily: "Inter, sans-serif",
+                        letterSpacing: -0.1,
+                      }}
+                    >
+                      {tile.title}
+                    </span>
+                    {tile.subtitle && (
+                      <span
+                        style={{
+                          fontSize: 10,
+                          color: "#6B7684",
+                          marginTop: 2,
+                          fontFamily: "Inter, sans-serif",
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 1,
+                          WebkitBoxOrient: "vertical",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {tile.subtitle}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
       <style>{`
         .marketplace-scroll::-webkit-scrollbar {
