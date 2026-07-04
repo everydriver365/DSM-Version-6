@@ -106,6 +106,7 @@ import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
 import { Route as MarketplaceApplyRouteImport } from './routes/marketplace_.apply'
 import { Route as MarketplaceSlugRouteImport } from './routes/marketplace_.$slug'
 import { Route as MarketplaceListingIdRouteImport } from './routes/marketplace_.$listingId'
+import { Route as MarketplaceListRouteImport } from './routes/marketplace.list'
 import { Route as LessonsNewRouteImport } from './routes/lessons.new'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as ISlugRouteImport } from './routes/i.$slug'
@@ -613,6 +614,11 @@ const MarketplaceListingIdRoute = MarketplaceListingIdRouteImport.update({
   path: '/marketplace/$listingId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketplaceListRoute = MarketplaceListRouteImport.update({
+  id: '/list',
+  path: '/list',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const LessonsNewRoute = LessonsNewRouteImport.update({
   id: '/lessons/new',
   path: '/lessons/new',
@@ -757,7 +763,7 @@ export interface FileRoutesByFullPath {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -818,6 +824,7 @@ export interface FileRoutesByFullPath {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/list': typeof MarketplaceListRoute
   '/marketplace/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/apply': typeof MarketplaceApplyRoute
@@ -877,7 +884,7 @@ export interface FileRoutesByTo {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -937,6 +944,7 @@ export interface FileRoutesByTo {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/list': typeof MarketplaceListRoute
   '/marketplace/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/marketplace/apply': typeof MarketplaceApplyRoute
@@ -998,7 +1006,7 @@ export interface FileRoutesById {
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -1059,6 +1067,7 @@ export interface FileRoutesById {
   '/i/$slug': typeof ISlugRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/lessons/new': typeof LessonsNewRoute
+  '/marketplace/list': typeof MarketplaceListRoute
   '/marketplace_/$listingId': typeof MarketplaceListingIdRoute
   '/marketplace_/$slug': typeof MarketplaceSlugRoute
   '/marketplace_/apply': typeof MarketplaceApplyRoute
@@ -1181,6 +1190,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/list'
     | '/marketplace/$listingId'
     | '/marketplace/$slug'
     | '/marketplace/apply'
@@ -1300,6 +1310,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/list'
     | '/marketplace/$listingId'
     | '/marketplace/$slug'
     | '/marketplace/apply'
@@ -1421,6 +1432,7 @@ export interface FileRouteTypes {
     | '/i/$slug'
     | '/lessons/$id'
     | '/lessons/new'
+    | '/marketplace/list'
     | '/marketplace_/$listingId'
     | '/marketplace_/$slug'
     | '/marketplace_/apply'
@@ -1482,7 +1494,7 @@ export interface RootRouteChildren {
   LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
   ManifestRoute: typeof ManifestRoute
-  MarketplaceRoute: typeof MarketplaceRoute
+  MarketplaceRoute: typeof MarketplaceRouteWithChildren
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
@@ -2241,6 +2253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceListingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketplace/list': {
+      id: '/marketplace/list'
+      path: '/list'
+      fullPath: '/marketplace/list'
+      preLoaderRoute: typeof MarketplaceListRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
     '/lessons/new': {
       id: '/lessons/new'
       path: '/lessons/new'
@@ -2430,6 +2449,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface MarketplaceRouteChildren {
+  MarketplaceListRoute: typeof MarketplaceListRoute
+}
+
+const MarketplaceRouteChildren: MarketplaceRouteChildren = {
+  MarketplaceListRoute: MarketplaceListRoute,
+}
+
+const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
+  MarketplaceRouteChildren,
+)
+
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
 }
@@ -2489,7 +2520,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
   ManifestRoute: ManifestRoute,
-  MarketplaceRoute: MarketplaceRoute,
+  MarketplaceRoute: MarketplaceRouteWithChildren,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
