@@ -158,6 +158,10 @@ function MarketplacePage() {
         : marketplaceItems.filter((item) => item.category === activeCategory);
 
     const handleAction = (item: MarketplaceItem) => {
+      if (item.id === "featured-listing") {
+        navigate({ to: "/marketplace/apply" });
+        return;
+      }
       if (item.action === "plan") {
         navigate({ to: "/settings" });
       } else {
