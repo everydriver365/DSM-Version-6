@@ -736,7 +736,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=3&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=4&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
