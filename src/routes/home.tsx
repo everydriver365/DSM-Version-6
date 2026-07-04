@@ -827,6 +827,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           gap: 14,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
+          paddingTop: 12,
           paddingBottom: 8,
           scrollbarWidth: "none",
         }}
