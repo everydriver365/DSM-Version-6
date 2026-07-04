@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Music, Play } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
