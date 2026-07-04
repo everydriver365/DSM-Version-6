@@ -813,214 +813,100 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
       <div
         style={{
-          display: "flex",
-          gap: 12,
+          display: "grid",
+          gridTemplateRows: "repeat(2, 1fr)",
+          gridAutoFlow: "column",
+          gridAutoColumns: "47%",
+          gap: 10,
           overflowX: "auto",
-          scrollbarWidth: "none",
           scrollSnapType: "x mandatory",
-          paddingBottom: 4,
+          paddingBottom: 8,
+          scrollbarWidth: "none",
         }}
       >
         {sessions.map((s) => {
           const gradient = categoryGradient(s.category);
           const heroBg = s.image_url
-            ? `linear-gradient(180deg, rgba(12,35,64,0.4), rgba(12,35,64,0.85)), url(${s.image_url}) center/cover no-repeat`
+            ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.75) 100%), url(${s.image_url}) center/cover no-repeat`
             : gradient;
-          const isFree =
-            !s.price_amount || (s.price_display ?? "").toLowerCase().includes("free");
-          const spaces =
-            s.max_spaces != null && s.spaces_taken != null
-              ? s.max_spaces - s.spaces_taken
-              : null;
           return (
             <div
               key={s.id}
               onClick={() => open(s.id)}
               style={{
-                width: "100%",
-                flexShrink: 0,
                 scrollSnapAlign: "start",
-                background: "#fff",
-                border: "1px solid #E2E8F0",
-                borderRadius: 12,
+                borderRadius: 14,
                 overflow: "hidden",
-                boxShadow: "0 2px 8px rgba(12,35,64,0.08)",
+                position: "relative",
+                height: 110,
                 cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
+                background: heroBg,
                 minWidth: 0,
               }}
             >
               <div
                 style={{
-                  position: "relative",
-                  height: 64,
-                  width: "100%",
-                  background: heroBg,
-                  overflow: "hidden",
+                  position: "absolute",
+                  top: 8,
+                  left: 8,
+                  right: 8,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  zIndex: 2,
                 }}
               >
                 <div
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(0deg, rgba(12,35,64,0.6), transparent)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 6,
-                    left: 6,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
+                    background: "rgba(255,255,255,0.2)",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 600,
+                    padding: "2px 6px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.4,
+                    lineHeight: 1,
                   }}
                 >
-                  {s.is_live && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                        background: "#2D8A9E",
-                        padding: "2px 6px",
-                        borderRadius: 4,
-                        alignSelf: "flex-start",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 4,
-                          height: 4,
-                          borderRadius: 999,
-                          background: "#fff",
-                          animation: "pulse 1.5s ease-in-out infinite",
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: 8,
-                          fontWeight: 700,
-                          color: "#fff",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.6,
-                        }}
-                      >
-                        Live
-                      </span>
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      alignSelf: "flex-start",
-                      background: "rgba(255,255,255,0.15)",
-                      border: "1px solid rgba(255,255,255,0.25)",
-                      padding: "2px 6px",
-                      borderRadius: 4,
-                      fontSize: 8,
-                      fontWeight: 700,
-                      color: "#fff",
-                      textTransform: "uppercase",
-                      letterSpacing: 0.4,
-                    }}
-                  >
-                    {s.category ?? "Session"}
-                  </div>
+                  {s.category ?? "Session"}
                 </div>
-                {spaces != null && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 6,
-                      right: 8,
-                      fontSize: 9,
-                      fontWeight: 600,
-                      color: "#5EEAD4",
-                    }}
-                  >
-                    {spaces} spaces left
-                  </div>
-                )}
+                {s.is_live && <span style={{ fontSize: 11 }}>🔴</span>}
               </div>
               <div
                 style={{
-                  padding: 12,
-                  display: "flex",
-                  flexDirection: "column",
-                  flexGrow: 1,
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: "8px 10px",
+                  zIndex: 2,
                 }}
               >
                 <div
                   style={{
-                    color: "#0C2340",
-                    fontSize: 12,
+                    color: "#fff",
+                    fontSize: 11,
                     lineHeight: 1.3,
                     fontWeight: 700,
-                    marginBottom: 8,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    marginBottom: 2,
+                    whiteSpace: "nowrap",
                     overflow: "hidden",
-                    minHeight: 32,
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {s.title}
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <CalendarIcon size={12} color="#2D8A9E" />
-                    <span style={{ fontSize: 10, color: "#64748B", fontWeight: 500 }}>
-                      {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <Clock size={12} color="#2D8A9E" />
-                    <span style={{ fontSize: 10, color: "#64748B", fontWeight: 500 }}>
-                      {s.duration_minutes ? `${s.duration_minutes} minutes` : "Duration TBC"}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <Video size={12} color="#3B82F6" />
-                    <span style={{ fontSize: 10, color: "#64748B", fontWeight: 500 }}>Zoom Platform</span>
-                  </div>
-                </div>
                 <div
                   style={{
-                    marginTop: "auto",
-                    paddingTop: 10,
-                    borderTop: "1px solid #F1F5F9",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 8,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 9,
-                        fontWeight: 700,
-                        color: "#94A3B8",
-                        textTransform: "uppercase",
-                        letterSpacing: 0.8,
-                      }}
-                    >
-                      Price
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: isFree ? "#16A34A" : "#0C2340",
-                      }}
-                    >
-                      {s.price_display ?? (isFree ? "Free" : `£${s.price_amount}`)}
-                    </span>
-                  </div>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>
+                    {fmtDate(s.session_date)} · {fmtTime(s.session_time)}
+                  </span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -1028,19 +914,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                       open(s.id);
                     }}
                     style={{
-                      width: "100%",
-                      background: "#0C2340",
+                      background: "rgba(255,255,255,0.2)",
                       color: "#fff",
-                      border: 0,
-                      borderRadius: 8,
-                      padding: "8px 0",
-                      fontSize: 11,
-                      fontWeight: 700,
+                      fontSize: 9,
+                      fontWeight: 600,
+                      padding: "2px 8px",
+                      borderRadius: 6,
+                      border: "1px solid rgba(255,255,255,0.3)",
                       cursor: "pointer",
-                      boxShadow: "0 1px 2px rgba(12,35,64,0.15)",
                     }}
                   >
-                    Book Session
+                    Book →
                   </button>
                 </div>
               </div>
