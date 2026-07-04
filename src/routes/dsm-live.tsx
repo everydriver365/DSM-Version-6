@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Music, Play } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -85,6 +85,20 @@ export function daysUntil(dateStr: string): number {
   return Math.round((d - now.getTime()) / 86400000);
 }
 
+type Podcast = {
+  id: string;
+  episode_number: number | null;
+  title: string;
+  description: string | null;
+  guest_name: string | null;
+  guest_title: string | null;
+  duration_minutes: number | null;
+  audio_url: string | null;
+  spotify_url: string | null;
+  apple_url: string | null;
+  image_url: string | null;
+};
+
 export const Route = createFileRoute("/dsm-live")({
   component: DsmLivePage,
 });
@@ -94,6 +108,7 @@ function DsmLivePage() {
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [bookedIds, setBookedIds] = useState<Set<string>>(new Set());
   const [category, setCategory] = useState<string>("All");
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,6 +136,17 @@ function DsmLivePage() {
         if (!cancelled && Array.isArray(rows)) {
           setBookedIds(new Set(rows.map((r) => r.session_id)));
         }
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc`,
+          { headers: AUTH_HEADERS },
+        );
+        const data = (await res.json()) as Podcast[];
+        if (!cancelled && Array.isArray(data)) setPodcasts(data);
       } catch {
         /* ignore */
       }
