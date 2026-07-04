@@ -22,9 +22,13 @@ const NAVY = "#0F2044";
 const BORDER = "#E2E6ED";
 const MUTED = "#6B7280";
 const GREEN = "#16A34A";
-const RED = "#DC2626";
+const RED = "#CC2229";
 const AMBER = "#B45309";
 const BLUE = "#1877D6";
+const TEAL = "#00B5A5";
+const PURPLE = "#7C3AED";
+const CYAN = "#0891B2";
+const CARD_BLUE = "#1A52A0";
 
 // ---------- helpers ----------
 function formatGBP(amount: number) {
@@ -42,7 +46,7 @@ function dateGroupLabel(iso: string) {
   const yest = new Date(); yest.setDate(today.getDate()-1);
   if (sameDay(d, today)) return "Today";
   if (sameDay(d, yest)) return "Yesterday";
-  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
 }
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -68,7 +72,7 @@ function methodLabel(m: string | null | undefined) {
 }
 function MethodIcon({ method, refund }: { method: string | null | undefined; refund?: boolean }) {
   const size = 18;
-  const color = refund ? RED : NAVY;
+  const color = "#fff";
   if (refund) return <RotateCcw size={size} color={color} />;
   switch (method) {
     case "cash": return <Banknote size={size} color={color} />;
@@ -78,6 +82,18 @@ function MethodIcon({ method, refund }: { method: string | null | undefined; ref
     case "klarna":
     case "clearpay": return <Wallet size={size} color={color} />;
     default: return <Banknote size={size} color={color} />;
+  }
+}
+function methodBg(method: string | null | undefined, refund?: boolean) {
+  if (refund) return RED;
+  switch (method) {
+    case "cash": return GREEN;
+    case "card": return CARD_BLUE;
+    case "qr": return PURPLE;
+    case "bank_transfer": return CYAN;
+    case "klarna":
+    case "clearpay": return AMBER;
+    default: return MUTED;
   }
 }
 
@@ -356,7 +372,7 @@ function PaymentsPage() {
           type="button"
           onClick={() => setTakeOpen(true)}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: BLUE }}
+          style={{ backgroundColor: TEAL }}
         >
           <Plus size={16} color="#fff" /> Take payment
         </button>
@@ -364,9 +380,9 @@ function PaymentsPage() {
 
       {/* Summary stats */}
       <div className="p-4 grid grid-cols-3 gap-3">
-        <StatCard label="Received (mo)" value={formatGBP(stats.monthReceived)} color={GREEN} bold />
+        <StatCard label="This month" value={formatGBP(stats.monthReceived)} color={GREEN} bold />
         <StatCard label="Outstanding" value={formatGBP(stats.outstanding)} color={stats.outstanding > 0 ? RED : NAVY} />
-        <StatCard label="Refunded (mo)" value={formatGBP(stats.monthRefunded)} color={stats.monthRefunded > 0 ? RED : NAVY} />
+        <StatCard label="Refunded" value={formatGBP(stats.monthRefunded)} color={stats.monthRefunded > 0 ? RED : NAVY} />
       </div>
 
       {/* Filters */}
@@ -411,7 +427,7 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id} className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <div className="text-[12px] font-medium uppercase" style={{ color: MUTED, letterSpacing: "0.05em" }}>{g.label}</div>
+                <div className="text-[13px] font-bold" style={{ color: NAVY, ...POPPINS }}>{g.label}</div>
                 <div className="text-[12px]" style={{ color: MUTED }}>{formatGBP(g.total)}</div>
               </div>
 
@@ -423,7 +439,7 @@ function PaymentsPage() {
                   return (
                     <div key={row.id} className="bg-white" style={{ border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "14px 16px" }}>
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center rounded-full shrink-0" style={{ width: 36, height: 36, backgroundColor: isRefund ? "#FEE2E2" : "#EEF2F7" }}>
+                        <div className="flex items-center justify-center rounded-full shrink-0" style={{ width: 36, height: 36, backgroundColor: methodBg(row.payment_method, isRefund) }}>
                           <MethodIcon method={row.payment_method} refund={isRefund} />
                         </div>
                         <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setExpandedId(isOpen ? null : row.id)}>
