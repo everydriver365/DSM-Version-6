@@ -1,6 +1,8 @@
 // Browser push/local notification helpers.
 // All functions are no-ops on the server or in unsupported browsers.
 
+import icon192 from "../assets/icon-192.png.asset.json";
+
 export function isSupported(): boolean {
   return typeof window !== "undefined" && "Notification" in window;
 }
