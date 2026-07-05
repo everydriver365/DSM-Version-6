@@ -374,12 +374,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     <div className="mt-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
-          <span
-            className="text-[11px] uppercase"
-            style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-          >
-            Marketplace
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
+            <span
+              className="text-[11px] uppercase"
+              style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
+            >
+              Marketplace
+            </span>
+          </div>
           <p
             className="font-semibold uppercase"
             style={{
@@ -388,6 +391,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               letterSpacing: 1,
               fontFamily: "Inter, sans-serif",
               marginTop: 3,
+              marginLeft: 14,
             }}
           >
             Curated for you
