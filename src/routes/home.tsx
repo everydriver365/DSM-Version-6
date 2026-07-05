@@ -764,6 +764,8 @@ function TestCountdownSection({
 
   if (!rows || rows.length === 0) return null;
 
+  const single = rows.length === 1;
+
   const today0 = startOfDay(new Date()).getTime();
   const daysUntil = (d: string) =>
     Math.round((startOfDay(new Date(`${d}T00:00:00`)).getTime() - today0) / 86400000);
