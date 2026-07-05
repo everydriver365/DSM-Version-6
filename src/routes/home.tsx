@@ -824,45 +824,20 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           See all →
         </button>
       </div>
-      <div style={{ position: "relative" }}>
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 28,
-            background: "linear-gradient(to right, #F3F8FF, rgba(243,248,255,0))",
-            zIndex: 2,
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: 28,
-            background: "linear-gradient(to left, #F3F8FF, rgba(243,248,255,0))",
-            zIndex: 2,
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 10,
-            overflowX: "auto",
-            paddingLeft: 16,
-            paddingRight: 16,
-            paddingBottom: 8,
-            scrollSnapType: "x mandatory",
-            scrollbarWidth: "none",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 10,
+          overflowX: "auto",
+          marginLeft: 16,
+          marginRight: 16,
+          paddingBottom: 8,
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         {tiles.map((tile) => {
               if (tile.kind === "session") {
                 const s = tile.item;
