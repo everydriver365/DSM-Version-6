@@ -808,15 +808,16 @@ function TestCountdownSection({
         </span>
       </div>
       <div
+        className={single ? "mx-4" : undefined}
         style={{
           display: "flex",
-          gap: 10,
-          overflowX: "auto",
+          gap: single ? 0 : 10,
+          overflowX: single ? "visible" : "auto",
           paddingBottom: 8,
-          paddingLeft: 16,
-          paddingRight: 16,
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
+          paddingLeft: single ? 0 : 16,
+          paddingRight: single ? 0 : 16,
+          WebkitOverflowScrolling: single ? undefined : "touch",
+          scrollbarWidth: single ? undefined : "none",
         }}
       >
         {rows.map((p) => {
