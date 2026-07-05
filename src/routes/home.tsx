@@ -1075,6 +1075,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         ))}
       </div>
+      <div className="mx-4 mt-4 mb-2">
+        <span
+          className="text-[11px] uppercase"
+          style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
+        >
+          DSM Community
+        </span>
+      </div>
       <button
         type="button"
         onClick={() => navigate({ to: "/dsm-live", hash: "community" } as never)}
