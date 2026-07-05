@@ -425,20 +425,45 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           </button>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 10,
-          overflowX: "auto",
-          paddingLeft: 16,
-          paddingRight: 16,
-          paddingBottom: 8,
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
+      <div style={{ position: "relative" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 28,
+            background: "linear-gradient(to right, #F3F8FF, rgba(243,248,255,0))",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 28,
+            background: "linear-gradient(to left, #F3F8FF, rgba(243,248,255,0))",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 10,
+            overflowX: "auto",
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingBottom: 8,
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
         {showListings && listings!.map((tile) => {
               const img = firstImageUrl(tile.image_urls);
               const gradient = gradientFor(tile.marketplace_categories?.name);
@@ -647,6 +672,24 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           );
         })}
       </div>
+      {(showListings ? (listings?.length ?? 0) > 2 : legacyTiles.length > 2) && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: 4,
+            marginTop: 4,
+            paddingRight: 16,
+            fontSize: 11,
+            color: "#9CA3AF",
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 500,
+          }}
+        >
+          Swipe <ChevronRight size={12} />
+        </div>
+      )}
     </div>
   );
 }
