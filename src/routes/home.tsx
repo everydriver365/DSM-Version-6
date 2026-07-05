@@ -4720,9 +4720,6 @@ function HomePage() {
         }}
       />
 
-      {/* RECENT ACTIVITY */}
-      <RecentActivitySection userId={userId} navigate={navigate} />
-
       <MarketplaceSection navigate={navigate} />
 
       <DsmLiveSection navigate={navigate} />
