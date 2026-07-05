@@ -966,6 +966,7 @@ function OutstandingPaymentsSection({
     <div
       className="mx-4 mt-3"
       style={{
+        width: "100%",
         background: "#FFFFFF",
         border: "0.5px solid #E2E6ED",
         borderRadius: 12,
@@ -1155,6 +1156,7 @@ function RecentActivitySection({
     <div
       className="mx-4 mt-3"
       style={{
+        width: "100%",
         background: "#FFFFFF",
         border: "0.5px solid #E2E6ED",
         borderRadius: 12,
