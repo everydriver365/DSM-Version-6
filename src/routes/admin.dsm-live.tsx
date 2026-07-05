@@ -866,8 +866,11 @@ function AdminDsmLive() {
               alt="Crop preview"
               draggable={false}
               style={{
-                width: "100%",
-                height: "100%",
+                position: "absolute",
+                width: `${cropZoom}%`,
+                height: `${cropZoom}%`,
+                left: `${(100 - cropZoom) / 2}%`,
+                top: `${(100 - cropZoom) / 2}%`,
                 objectFit: "cover",
                 objectPosition: `${cropPos.x}% ${cropPos.y}%`,
                 pointerEvents: "none",
@@ -877,6 +880,21 @@ function AdminDsmLive() {
           </div>
           <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
             Position: {Math.round(cropPos.x)}% {Math.round(cropPos.y)}%
+          </div>
+          <div style={{ width: "100%", maxWidth: 420, marginTop: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+              <label className="text-sm" style={{ color: "#6B7280" }}>Zoom</label>
+              <span className="text-xs" style={{ color: "#9CA3AF" }}>{cropZoom}%</span>
+            </div>
+            <input
+              type="range"
+              min={50}
+              max={200}
+              step={5}
+              value={cropZoom}
+              onChange={(e) => setCropZoom(Number(e.target.value))}
+              style={{ width: "100%" }}
+            />
           </div>
           <button
             type="button"
