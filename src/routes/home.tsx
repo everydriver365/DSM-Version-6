@@ -842,8 +842,8 @@ function TestCountdownSection({
                 }
               }}
               style={{
-                flex: "0 0 auto",
-                width: 200,
+                flex: single ? "1 1 auto" : "0 0 auto",
+                width: single ? "100%" : 200,
                 background: bg,
                 border: "0.5px solid #E2E6ED",
                 borderRadius: 12,
