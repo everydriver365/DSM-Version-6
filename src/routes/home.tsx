@@ -4677,6 +4677,7 @@ function HomePage() {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
         }}
+      />
 
       <MarketplaceSection navigate={navigate} />
 
