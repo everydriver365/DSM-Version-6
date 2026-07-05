@@ -2603,6 +2603,316 @@ function HomePage() {
     );
   }
 
+  // ============ DESKTOP LAYOUT (>=768px) ============
+  if (isDesktop) {
+    const now = new Date();
+    const in7 = new Date(now.getTime() + 7 * 86400000);
+    const in30 = new Date(now.getTime() + 30 * 86400000);
+    const parseTest = (t: { test_date: string }) => new Date(t.test_date + "T00:00:00");
+    const testsThisWeek = upcomingTests.filter((t) => {
+      const d = parseTest(t);
+      return d >= new Date(now.getFullYear(), now.getMonth(), now.getDate()) && d <= in7;
+    });
+    const upcomingTests30 = upcomingTests.filter((t) => parseTest(t) <= in30);
+    const dateHeader = now.toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    });
+    const timeAgo = (iso: string) => {
+      const diff = Math.max(0, Date.now() - new Date(iso).getTime());
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return "just now";
+      if (m < 60) return `${m}m ago`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `${h}h ago`;
+      return `${Math.floor(h / 24)}d ago`;
+    };
+    const cardStyle: React.CSSProperties = {
+      background: "#FFFFFF", border: "0.5px solid #E2E6ED",
+      borderRadius: 12, padding: 16,
+    };
+    const statLabel: React.CSSProperties = {
+      fontSize: 12, fontWeight: 600, color: "#6B7280",
+      marginTop: 4, letterSpacing: 0.2,
+    };
+    const statValue: React.CSSProperties = {
+      fontSize: 28, fontWeight: 900, color: "#0F2044", letterSpacing: -0.5,
+    };
+    const panelHeading: React.CSSProperties = {
+      fontSize: 16, fontWeight: 800, color: "#0F2044", marginBottom: 12,
+    };
+    const viewAllLink: React.CSSProperties = {
+      fontSize: 13, fontWeight: 600, color: "#1877D6",
+      background: "none", border: "none", cursor: "pointer",
+      fontFamily: "Inter, sans-serif", padding: 0,
+    };
+    const quickBtn: React.CSSProperties = {
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      gap: 6, padding: "14px 8px", borderRadius: 10,
+      border: "0.5px solid #E2E6ED", background: "#F8FAFF",
+      cursor: "pointer", fontFamily: "Inter, sans-serif",
+      fontSize: 12, fontWeight: 600, color: "#0F2044",
+    };
+    return (
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
+        <InstructorTopBar
+          firstName={firstName}
+          avatarUrl={avatarUrl}
+          unreadCount={notifCount}
+          onProfile={() => navigate({ to: "/profile" })}
+          onPhone={() => navigate({ to: "/enquiries" })}
+          onLiveTrack={() => navigate({ to: "/live" })}
+          onBell={() => navigate({ to: "/notifications" })}
+          onMenu={() => navigate({ to: "/settings" })}
+        />
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
+          {/* HEADER */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0F2044", margin: 0, fontFamily: "Inter, sans-serif" }}>
+              Good morning, {firstName} 👋
+            </h1>
+            <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
+              {dateHeader}
+            </div>
+          </div>
+
+          {/* STATS ROW */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
+            <div style={cardStyle}>
+              <div style={statValue}>{todayLessons.length}</div>
+              <div style={statLabel}>Lessons today</div>
+            </div>
+            <div style={cardStyle}>
+              <div style={{ ...statValue, color: "#16A34A" }}>£{Math.round(weekEarnings)}</div>
+              <div style={statLabel}>This week</div>
+            </div>
+            <div style={cardStyle}>
+              <div style={{ ...statValue, color: "#CC2229" }}>£{Math.round(outstanding)}</div>
+              <div style={statLabel}>Outstanding</div>
+            </div>
+            <div style={cardStyle}>
+              <div style={statValue}>{activePupilsCount}</div>
+              <div style={statLabel}>Active pupils</div>
+            </div>
+            <div style={cardStyle}>
+              <div style={statValue}>{testsThisWeek.length}</div>
+              <div style={statLabel}>Tests this week</div>
+            </div>
+          </div>
+
+          {/* 2-COLUMN GRID */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {/* LEFT COLUMN */}
+            <div>
+              {/* Today's schedule */}
+              <div style={cardStyle}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                  <div style={panelHeading}>Today's schedule</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{dateHeader}</div>
+                </div>
+                {todayLessons.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                    No lessons scheduled today.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {todayLessons.map((l) => {
+                      const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+                      return (
+                        <button
+                          key={l.id}
+                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
+                          style={{
+                            display: "grid", gridTemplateColumns: "70px 1fr auto auto",
+                            gap: 12, alignItems: "center", padding: "10px 12px",
+                            borderRadius: 10, border: "0.5px solid #E2E6ED",
+                            background: "#FFFFFF", cursor: "pointer", textAlign: "left",
+                            fontFamily: "Inter, sans-serif",
+                          }}
+                        >
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>{formatTime(l)}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                            padding: "3px 8px", borderRadius: 6,
+                            background: paid ? "#DCFCE7" : "#FEE2E2",
+                            color: paid ? "#166534" : "#991B1B",
+                          }}>{paid ? "Paid" : "Unpaid"}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                <button
+                  onClick={() => navigate({ to: "/schedule" })}
+                  style={{
+                    marginTop: 12, width: "100%", padding: "10px 12px",
+                    borderRadius: 10, border: "1px dashed #1877D6",
+                    background: "transparent", color: "#1877D6",
+                    fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    fontFamily: "Inter, sans-serif",
+                  }}
+                >Add lesson +</button>
+              </div>
+
+              {/* Outstanding payments */}
+              <div style={{ ...cardStyle, marginTop: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                  <div style={panelHeading}>Outstanding payments</div>
+                  <button onClick={() => navigate({ to: "/payments" })} style={viewAllLink}>View all →</button>
+                </div>
+                {outstandingBreakdown.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                    All pupils paid up.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {outstandingBreakdown.slice(0, 8).map((p) => (
+                      <div key={p.pupilId + p.type}
+                        style={{
+                          display: "grid", gridTemplateColumns: "1fr auto auto",
+                          gap: 12, alignItems: "center", padding: "10px 12px",
+                          borderRadius: 10, border: "0.5px solid #E2E6ED",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                          <div style={{ fontSize: 11, color: "#6B7280" }}>{p.type}</div>
+                        </div>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: "#CC2229" }}>£{p.amount.toFixed(2)}</div>
+                        {p.phone ? (
+                          <a
+                            href={`sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}`}
+                            style={{
+                              padding: "6px 10px", borderRadius: 8,
+                              background: "#1877D6", color: "#FFFFFF",
+                              fontSize: 12, fontWeight: 600, textDecoration: "none",
+                            }}
+                          >Chase SMS</a>
+                        ) : (
+                          <span style={{ fontSize: 11, color: "#9CA3AF" }}>No phone</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div>
+              {/* Recent activity */}
+              <div style={cardStyle}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                  <div style={panelHeading}>Recent activity</div>
+                  <button onClick={() => navigate({ to: "/notifications" })} style={viewAllLink}>View all →</button>
+                </div>
+                {recentActivity.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                    No recent activity.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {recentActivity.map((n) => (
+                      <div key={n.id}
+                        style={{
+                          display: "flex", gap: 10, alignItems: "flex-start",
+                          padding: "10px 12px", borderRadius: 10,
+                          border: "0.5px solid #E2E6ED",
+                          background: n.read ? "#FFFFFF" : "#F0F7FF",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                      >
+                        <div style={{
+                          width: 28, height: 28, borderRadius: "50%",
+                          background: "#E7F0FA", display: "flex",
+                          alignItems: "center", justifyContent: "center", flexShrink: 0,
+                        }}>
+                          <Bell size={14} color="#1877D6" />
+                        </div>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", lineHeight: 1.3 }}>{n.title}</div>
+                          {n.body && (
+                            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                              {n.body}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>{timeAgo(n.created_at)}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Upcoming tests */}
+              <div style={{ ...cardStyle, marginTop: 16 }}>
+                <div style={panelHeading}>Upcoming tests</div>
+                {upcomingTests30.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                    No tests in the next 30 days.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {upcomingTests30.map((t) => (
+                      <div key={t.id}
+                        style={{
+                          display: "grid", gridTemplateColumns: "1fr auto",
+                          gap: 12, alignItems: "center", padding: "10px 12px",
+                          borderRadius: 10, border: "0.5px solid #E2E6ED",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
+                          <div style={{ fontSize: 12, color: "#6B7280" }}>
+                            {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
+                            {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
+                            {t.test_centre ? ` · ${t.test_centre}` : ""}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => navigate({ to: "/pupils/$id", params: { id: t.id } as any })}
+                          style={viewAllLink}
+                        >View →</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quick actions */}
+              <div style={{ ...cardStyle, marginTop: 16 }}>
+                <div style={panelHeading}>Quick actions</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/schedule" })}>
+                    <Plus size={18} color="#1877D6" /> Add lesson
+                  </button>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/payments" })}>
+                    <PoundSterling size={18} color="#16A34A" /> Take payment
+                  </button>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/pupils" })}>
+                    <Users size={18} color="#1877D6" /> Add pupil
+                  </button>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/schedule" })}>
+                    <CalendarIcon size={18} color="#1877D6" /> Schedule
+                  </button>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/quotes" })}>
+                    <FileText size={18} color="#1877D6" /> Quotes
+                  </button>
+                  <button style={quickBtn} onClick={() => navigate({ to: "/reports" })}>
+                    <BarChart3 size={18} color="#1877D6" /> Reports
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
