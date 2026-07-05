@@ -717,523 +717,6 @@ async function homeRest<T>(path: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-function TestCountdownSection({
-  userId,
-  navigate,
-}: {
-  userId: string | null;
-  navigate: ReturnType<typeof useNavigate>;
-}) {
-  type PupilTest = {
-    id: string;
-    name: string | null;
-    first_name: string | null;
-    test_date: string;
-    test_time: string | null;
-    test_status: string | null;
-  };
-  const [rows, setRows] = useState<PupilTest[] | null>(null);
-
-  useEffect(() => {
-    if (!userId) return;
-    let cancelled = false;
-    (async () => {
-      const today = ymd(new Date());
-      const in14 = ymd(addDays(new Date(), 14));
-      try {
-        const { data, error } = await supabase
-          .from("pupils")
-          .select("id,name,first_name,test_date,test_time,test_status")
-          .eq("instructor_id", userId)
-          .gte("test_date", today)
-          .lte("test_date", in14)
-          .is("deleted_at", null)
-          .order("test_date", { ascending: true });
-        if (error) throw error;
-        console.log("[test-countdown] userId:", userId, "pupils with tests:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
-        if (!cancelled) setRows((data ?? []) as PupilTest[]);
-      } catch (err) {
-        console.error("[home] test countdown fetch failed", err);
-        if (!cancelled) setRows([]);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
-
-  if (!rows || rows.length === 0) return null;
-
-  const single = rows.length === 1;
-
-  const today0 = startOfDay(new Date()).getTime();
-  const daysUntil = (d: string) =>
-    Math.round((startOfDay(new Date(`${d}T00:00:00`)).getTime() - today0) / 86400000);
-
-  const formatTestDateTime = (d: string, t: string | null) => {
-    const timePart = t ? (t.length === 5 ? `${t}:00` : t) : "00:00:00";
-    const date = new Date(`${d}T${timePart}`);
-    const dateStr = date.toLocaleDateString("en-GB", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    });
-    if (!t || t === "00:00" || t === "00:00:00") return dateStr;
-    let hours = date.getHours();
-    const mins = String(date.getMinutes()).padStart(2, "0");
-    const ampm = hours >= 12 ? "pm" : "am";
-    hours = hours % 12;
-    if (hours === 0) hours = 12;
-    return `${dateStr} at ${hours}:${mins}${ampm}`;
-  };
-
-  return (
-    <div className="mt-3">
-      <div className="mx-4 flex items-center gap-2 mb-2">
-        <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", fontFamily: "Inter, sans-serif" }}>
-          Upcoming tests
-        </span>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: "#FFFFFF",
-            background: "#CC2229",
-            padding: "2px 8px",
-            borderRadius: 999,
-            fontFamily: "Inter, sans-serif",
-          }}
-        >
-          {rows.length}
-        </span>
-      </div>
-      <div
-        className={single ? "mx-4" : undefined}
-        style={{
-          display: "flex",
-          gap: single ? 0 : 10,
-          overflowX: single ? "hidden" : "auto",
-          paddingBottom: 8,
-          paddingLeft: single ? 0 : 16,
-          paddingRight: single ? 0 : 16,
-          WebkitOverflowScrolling: single ? "auto" : "touch",
-          scrollbarWidth: single ? "auto" : "none",
-        }}
-      >
-        {rows.map((p) => {
-          const d = daysUntil(p.test_date);
-          const isTestDay = d === 0;
-          const color = isTestDay ? "#FFFFFF" : d < 3 ? "#CC2229" : d < 7 ? "#D97706" : "#0F2044";
-          const bg = isTestDay ? "#CC2229" : "#FFFFFF";
-          const displayName = p.first_name || p.name || "Pupil";
-          const badgeText = isTestDay ? "🎯 TEST DAY! 🍀" : `🎯 Test in ${d} day${d === 1 ? "" : "s"}`;
-          return (
-            <div
-              key={p.id}
-              onClick={() =>
-                navigate({ to: "/pupils/$id" as never, params: { id: p.id } as never })
-              }
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  navigate({ to: "/pupils/$id" as never, params: { id: p.id } as never });
-                }
-              }}
-              style={{
-                flex: single ? "1 1 auto" : "0 0 auto",
-                width: single ? "100%" : 200,
-                background: bg,
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 12,
-                padding: "12px 14px",
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color,
-                  letterSpacing: 0.2,
-                  marginBottom: 6,
-                }}
-              >
-                {badgeText}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: isTestDay ? "#FFFFFF" : "#0F2044", lineHeight: 1.2 }}>
-                {displayName}
-              </div>
-              <div style={{ fontSize: 12, color: isTestDay ? "rgba(255,255,255,0.85)" : "#6B7280", marginTop: 4 }}>
-                {formatTestDateTime(p.test_date, p.test_time)}
-              </div>
-              <div
-                style={{
-                  marginTop: 8,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: isTestDay ? "#FFFFFF" : "#1877D6",
-                }}
-              >
-                View →
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function OutstandingPaymentsSection({
-  userId,
-  navigate,
-}: {
-  userId: string | null;
-  navigate: ReturnType<typeof useNavigate>;
-}) {
-  type UnpaidLesson = {
-    pupil_id: string;
-    amount_due: number | null;
-    pupils: { name: string | null; first_name: string | null; phone: string | null } | null;
-  };
-  type PupilOwed = {
-    pupil_id: string;
-    name: string;
-    phone: string | null;
-    amount: number;
-  };
-  const [pupils, setPupils] = useState<PupilOwed[] | null>(null);
-
-  useEffect(() => {
-    if (!userId) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase
-          .from("lessons")
-          .select("pupil_id,amount_due,pupils(name,first_name,phone)")
-          .eq("instructor_id", userId)
-          .eq("payment_status", "unpaid")
-          .is("deleted_at", null);
-        if (error) throw error;
-        console.log("[outstanding] userId:", userId, "unpaid lessons:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
-        const grouped: Record<string, PupilOwed> = {};
-        for (const l of ((data ?? []) as unknown as UnpaidLesson[])) {
-          const amt = Number(l.amount_due ?? 0);
-          if (!l.pupil_id || amt <= 0) continue;
-          const name = l.pupils?.first_name || l.pupils?.name || "Pupil";
-          const phone = l.pupils?.phone ?? null;
-          if (grouped[l.pupil_id]) {
-            grouped[l.pupil_id].amount += amt;
-          } else {
-            grouped[l.pupil_id] = { pupil_id: l.pupil_id, name, phone, amount: amt };
-          }
-        }
-        const arr: PupilOwed[] = Object.values(grouped)
-          .filter((r) => r.amount > 0)
-          .sort((a, b) => b.amount - a.amount);
-        console.log("[outstanding] pupils owing:", arr.length, "total owed:", arr.reduce((n, p) => n + p.amount, 0));
-        if (!cancelled) setPupils(arr);
-      } catch (err) {
-        console.error("[home] outstanding payments fetch failed", err);
-        if (!cancelled) setPupils([]);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
-
-  if (!pupils || pupils.length === 0) return null;
-  const grandTotal = pupils.reduce((n, p) => n + p.amount, 0);
-  const shown = pupils.slice(0, 3);
-  const fmt = (n: number) => (Number.isInteger(n) ? n.toFixed(0) : n.toFixed(2));
-
-  const chase = (p: PupilOwed) => {
-    if (!p.phone) {
-      toast.error("No phone number on file for this pupil");
-      return;
-    }
-    const body = `Hi ${p.name}, just a reminder you have an outstanding lesson payment of £${fmt(p.amount)}. Please let me know if you have any questions.`;
-    window.location.href = `sms:${p.phone}?body=${encodeURIComponent(body)}`;
-  };
-
-  return (
-    <div
-      className="mx-4 mt-3"
-      style={{
-        width: "100%",
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 16,
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <AlertCircle size={16} color="#CC2229" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-            Outstanding payments
-          </span>
-        </div>
-        <span style={{ fontSize: 15, fontWeight: 800, color: "#CC2229" }}>
-          £{fmt(grandTotal)}
-        </span>
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {shown.map((p) => (
-          <div
-            key={p.pupil_id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 8,
-            }}
-          >
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {p.name}
-              </div>
-              <div style={{ fontSize: 12, color: "#CC2229", fontWeight: 600 }}>
-                Owes £{fmt(p.amount)}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => chase(p)}
-              style={{
-                background: "transparent",
-                border: "0.5px solid #CC2229",
-                color: "#CC2229",
-                borderRadius: 8,
-                padding: "6px 10px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                opacity: p.phone ? 1 : 0.5,
-              }}
-            >
-              Chase →
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <div
-        style={{
-          marginTop: 12,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-        }}
-      >
-        {pupils.length > 3 ? (
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/payments" as never })}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              padding: 0,
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            View all {pupils.length} →
-          </button>
-        ) : (
-          <span />
-        )}
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/payments" as never })}
-          style={{
-            background: "#0F766E",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: 10,
-            padding: "8px 12px",
-            fontSize: 12,
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
-          }}
-        >
-          Record payment →
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function RecentActivitySection({
-  userId,
-  navigate,
-}: {
-  userId: string | null;
-  navigate: ReturnType<typeof useNavigate>;
-}) {
-  type Notif = {
-    id: string;
-    title: string | null;
-    body: string | null;
-    type: string | null;
-    created_at: string;
-  };
-  const [items, setItems] = useState<Notif[] | null>(null);
-
-  useEffect(() => {
-    if (!userId) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase
-          .from("instructor_notifications")
-          .select("id,title,body,type,created_at")
-          .eq("instructor_id", userId)
-          .is("deleted_at", null)
-          .order("created_at", { ascending: false })
-          .limit(8);
-        if (error) throw error;
-        console.log("[activity] userId:", userId, "notifications:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
-        if (!cancelled) setItems((data ?? []) as Notif[]);
-      } catch (err) {
-        console.error("[home] activity fetch failed", err);
-        if (!cancelled) setItems([]);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
-
-  if (!items || items.length === 0) return null;
-
-  const iconFor = (type: string | null) => {
-    switch ((type ?? "").toLowerCase()) {
-      case "booking":
-        return { bg: "#E0F4FF", node: <BookOpen size={14} color="#1A52A0" /> };
-      case "payment":
-        return { bg: "#E0FFF4", node: <PoundSterling size={14} color="#16A34A" /> };
-      case "reflective_log":
-        return { bg: "#F5F3FF", node: <BookOpen size={14} color="#7C3AED" /> };
-      case "rewards":
-        return { bg: "#FFFBEB", node: <Trophy size={14} color="#D97706" /> };
-      default:
-        return { bg: "#F3F4F6", node: <Bell size={14} color="#6B7280" /> };
-    }
-  };
-
-  const relTime = (iso: string) => {
-    const then = new Date(iso).getTime();
-    const now = Date.now();
-    const diffSec = Math.max(0, Math.round((now - then) / 1000));
-    if (diffSec < 60) return "just now";
-    const diffMin = Math.round(diffSec / 60);
-    if (diffMin < 60) return `${diffMin}m ago`;
-    const diffHr = Math.round(diffMin / 60);
-    if (diffHr < 24) return `${diffHr}h ago`;
-    const startToday = startOfDay(new Date()).getTime();
-    const dayDiff = Math.round((startToday - startOfDay(new Date(iso)).getTime()) / 86400000);
-    if (dayDiff === 1) return "Yesterday";
-    if (dayDiff < 7) return `${dayDiff} days ago`;
-    return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-  };
-
-  return (
-    <div
-      className="mx-4 mt-3"
-      style={{
-        width: "100%",
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 0,
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      <div style={{ padding: "14px 16px 10px", fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-        Recent activity
-      </div>
-      <div>
-        {items.map((n, i) => {
-          const ic = iconFor(n.type);
-          return (
-            <div
-              key={n.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "10px 16px",
-                borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
-              }}
-            >
-              <span
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 999,
-                  background: ic.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                {ic.node}
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {n.title ?? "Notification"}
-                </div>
-                {n.body && (
-                  <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {n.body}
-                  </div>
-                )}
-              </div>
-              <span style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>
-                {relTime(n.created_at)}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-      <button
-        type="button"
-        onClick={() => navigate({ to: "/notifications" as never })}
-        style={{
-          width: "100%",
-          padding: "10px 16px 12px",
-          textAlign: "center",
-          background: "transparent",
-          border: "none",
-          borderTop: "0.5px solid #F3F4F6",
-          fontSize: 12,
-          fontWeight: 700,
-          color: "#1877D6",
-          cursor: "pointer",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        View all →
-      </button>
-    </div>
-  );
-}
 
 function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
 
@@ -3627,9 +3110,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* UPCOMING TESTS COUNTDOWN */}
-      <TestCountdownSection userId={userId} navigate={navigate} />
-
       {/* ENABLE NOTIFICATIONS PROMPT */}
       {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
         <div
@@ -3719,22 +3199,9 @@ function HomePage() {
 
       {/* NEEDS ATTENTION */}
       <NeedsAttention
-        jobs={0}
-        tests={testCount}
-        calls={0}
-        enqs={enqCount}
-        onNavigate={(to) => {
-          if (to === "/tests") {
-            setTestsOpen(true);
-          } else {
-            navigate({ to });
-          }
-        }}
+        userId={userId}
+        navigate={navigate}
       />
-
-      {/* OUTSTANDING PAYMENTS */}
-      <OutstandingPaymentsSection userId={userId} navigate={navigate} />
-
 
       {/* TODAY'S SCHEDULE (Google Calendar style) */}
       <div
@@ -4736,9 +4203,6 @@ function HomePage() {
         }}
       />
 
-      {/* RECENT ACTIVITY */}
-      <RecentActivitySection userId={userId} navigate={navigate} />
-
       <MarketplaceSection navigate={navigate} />
 
       <DsmLiveSection navigate={navigate} />
@@ -5211,98 +4675,388 @@ function TodayTile({
 }
 
 function NeedsAttention({
-  jobs,
-  tests,
-  calls,
-  enqs,
-  onNavigate,
+  userId,
+  navigate,
 }: {
-  jobs: number;
-  tests: number;
-  calls: number;
-  enqs: number;
-  onNavigate: (to: string) => void;
+  userId: string | null;
+  navigate: ReturnType<typeof useNavigate>;
 }) {
-  const urgentCount = jobs;
-  const cells: Array<{
+  type PupilTest = {
+    id: string;
+    name: string | null;
+    first_name: string | null;
+    test_date: string;
+    test_time: string | null;
+  };
+  type UnpaidLesson = {
+    pupil_id: string;
+    amount_due: number | null;
+    pupils: { id?: string; name: string | null; first_name: string | null; phone: string | null } | null;
+  };
+  type Notif = {
+    id: string;
+    title: string | null;
+    type: string | null;
+    created_at: string;
+    read_at?: string | null;
+  };
+  type PupilOwed = {
+    pupil_id: string;
+    name: string;
+    phone: string | null;
+    amount: number;
+  };
+
+  const [tests, setTests] = useState<PupilTest[]>([]);
+  const [owed, setOwed] = useState<PupilOwed[]>([]);
+  const [notifs, setNotifs] = useState<Notif[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const today = ymd(new Date());
+      const in14 = ymd(addDays(new Date(), 14));
+      try {
+        const [t, l, n] = await Promise.all([
+          supabase
+            .from("pupils")
+            .select("id,name,first_name,test_date,test_time")
+            .eq("instructor_id", userId)
+            .gte("test_date", today)
+            .lte("test_date", in14)
+            .is("deleted_at", null)
+            .order("test_date", { ascending: true }),
+          supabase
+            .from("lessons")
+            .select("pupil_id,amount_due,pupils(name,first_name,phone)")
+            .eq("instructor_id", userId)
+            .eq("payment_status", "unpaid")
+            .is("deleted_at", null),
+          supabase
+            .from("instructor_notifications")
+            .select("id,title,type,created_at,read_at")
+            .eq("instructor_id", userId)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(8),
+        ]);
+
+        const testRows = ((t.data ?? []) as PupilTest[]);
+
+        const grouped: Record<string, PupilOwed> = {};
+        for (const row of ((l.data ?? []) as unknown as UnpaidLesson[])) {
+          const amt = Number(row.amount_due ?? 0);
+          if (!row.pupil_id || amt <= 0) continue;
+          const name = row.pupils?.first_name || row.pupils?.name || "Pupil";
+          const phone = row.pupils?.phone ?? null;
+          if (grouped[row.pupil_id]) grouped[row.pupil_id].amount += amt;
+          else grouped[row.pupil_id] = { pupil_id: row.pupil_id, name, phone, amount: amt };
+        }
+        const owedArr = Object.values(grouped).sort((a, b) => b.amount - a.amount);
+
+        const notifRows = ((n.data ?? []) as Notif[]).filter((x) => !x.read_at);
+
+        if (!cancelled) {
+          setTests(testRows);
+          setOwed(owedArr);
+          setNotifs(notifRows);
+          setLoaded(true);
+        }
+      } catch (err) {
+        console.error("[needs-attention] fetch failed", err);
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const today0 = startOfDay(new Date()).getTime();
+  const daysUntil = (d: string) =>
+    Math.round((startOfDay(new Date(`${d}T00:00:00`)).getTime() - today0) / 86400000);
+
+  const fmtDate = (d: string) =>
+    new Date(`${d}T00:00:00`).toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+
+  const relTime = (iso: string) => {
+    const diffMin = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (diffMin < 1) return "just now";
+    if (diffMin < 60) return `${diffMin}m`;
+    const diffHr = Math.round(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h`;
+    const diffDay = Math.round(diffHr / 24);
+    if (diffDay < 7) return `${diffDay}d`;
+    return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  };
+
+  const fmtAmount = (n: number) => (Number.isInteger(n) ? n.toFixed(0) : n.toFixed(2));
+
+  type Item = {
     key: string;
-    label: string;
-    count: number;
-    bg: string;
-    countColor: string;
-    route: string;
-    detail: string;
-  }> = [
-    { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
-    { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
-    { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
-    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#1877D6' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
-  ];
-  const [expanded, setExpanded] = useState<string | null>(null);
+    priority: number;
+    dot: string;
+    dotColor: string;
+    icon: string;
+    text: React.ReactNode;
+    right: React.ReactNode;
+  };
+  const items: Item[] = [];
+
+  for (const p of tests) {
+    const d = daysUntil(p.test_date);
+    const nm = p.first_name || p.name || "Pupil";
+    if (d === 0) {
+      items.push({
+        key: `test-today-${p.id}`,
+        priority: 0,
+        dot: "#CC2229",
+        dotColor: "#CC2229",
+        icon: "🎯",
+        text: (
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#CC2229" }}>
+            {nm} has a test TODAY! 🍀
+          </span>
+        ),
+        right: (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/pupils/$id" as never, params: { id: p.id } as never })}
+            style={linkBtn("#CC2229")}
+          >
+            View →
+          </button>
+        ),
+      });
+    } else if (d < 3) {
+      items.push({
+        key: `test-urgent-${p.id}`,
+        priority: 1,
+        dot: "#F59E0B",
+        dotColor: "#F59E0B",
+        icon: "🎯",
+        text: (
+          <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+            {nm} test in {d} day{d === 1 ? "" : "s"} — {fmtDate(p.test_date)}
+          </span>
+        ),
+        right: (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/pupils/$id" as never, params: { id: p.id } as never })}
+            style={linkBtn("#1877D6")}
+          >
+            View →
+          </button>
+        ),
+      });
+    }
+  }
+
+  for (const p of owed) {
+    if (p.amount <= 50) continue;
+    items.push({
+      key: `owed-${p.pupil_id}`,
+      priority: 2,
+      dot: "#CC2229",
+      dotColor: "#CC2229",
+      icon: "💰",
+      text: (
+        <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+          {p.name} owes £{fmtAmount(p.amount)}
+        </span>
+      ),
+      right: (
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={() => {
+              if (!p.phone) {
+                toast.error("No phone number on file");
+                return;
+              }
+              const body = `Hi ${p.name}, just a reminder you have an outstanding lesson payment of £${fmtAmount(p.amount)}. Thanks.`;
+              window.location.href = `sms:${p.phone}?body=${encodeURIComponent(body)}`;
+            }}
+            style={linkBtn("#CC2229")}
+          >
+            Chase →
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/payments" as never })}
+            style={linkBtn("#1877D6")}
+          >
+            Record →
+          </button>
+        </div>
+      ),
+    });
+  }
+
+  for (const p of tests) {
+    const d = daysUntil(p.test_date);
+    if (d < 3 || d > 14) continue;
+    const nm = p.first_name || p.name || "Pupil";
+    items.push({
+      key: `test-info-${p.id}`,
+      priority: 3,
+      dot: "#1877D6",
+      dotColor: "#1877D6",
+      icon: "📅",
+      text: (
+        <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+          {nm} test on {fmtDate(p.test_date)}
+        </span>
+      ),
+      right: (
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/pupils/$id" as never, params: { id: p.id } as never })}
+          style={linkBtn("#1877D6")}
+        >
+          View →
+        </button>
+      ),
+    });
+  }
+
+  for (const n of notifs) {
+    items.push({
+      key: `notif-${n.id}`,
+      priority: 4,
+      dot: "#9CA3AF",
+      dotColor: "#9CA3AF",
+      icon: "🔔",
+      text: (
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#0F2044",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "block",
+          }}
+        >
+          {n.title ?? "Notification"}
+        </span>
+      ),
+      right: (
+        <span style={{ fontSize: 11, color: "#9CA3AF", whiteSpace: "nowrap" }}>
+          {relTime(n.created_at)}
+        </span>
+      ),
+    });
+  }
+
+  items.sort((a, b) => a.priority - b.priority);
+  const shown = items.slice(0, 8);
 
   return (
     <div
+      className="mx-4 mt-3"
       style={{
-        margin: '12px 16px 0',
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #e0e3ea',
-        borderRadius: 14,
-        padding: 12,
-        fontFamily: 'Inter, sans-serif',
+        background: "#FFFFFF",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
+        padding: 14,
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: '#999', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-          NEEDS ATTENTION
-        </div>
-        {urgentCount > 0 && (
-          <span style={{ backgroundColor: '#c9302c', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 999 }}>
-            {urgentCount} urgent
-          </span>
-        )}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <AlertCircle size={14} color="#CC2229" strokeWidth={2.5} />
+        <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+          Needs attention
+        </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
-        {cells.map((c) => {
-          const isOpen = expanded === c.key;
-          return (
-            <button
-              key={c.key}
-              onClick={() => {
-                setExpanded(isOpen ? null : c.key);
-                onNavigate(c.route);
-              }}
+
+      {!loaded ? (
+        <div style={{ padding: "12px 0", fontSize: 12, color: "#9CA3AF" }}>Loading…</div>
+      ) : shown.length === 0 ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 0" }}>
+          <CheckCircle2 size={16} color="#16A34A" />
+          <span style={{ fontSize: 13, fontWeight: 600, color: "#16A34A" }}>
+            All up to date
+          </span>
+        </div>
+      ) : (
+        <div>
+          {shown.map((it, i) => (
+            <div
+              key={it.key}
               style={{
-                backgroundColor: c.bg,
-                border: 'none',
-                borderRadius: 10,
-                padding: '8px 4px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-                position: 'relative',
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "10px 0",
+                borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
               }}
             >
-              <div style={{ fontSize: 20, fontWeight: 700, color: c.countColor, lineHeight: 1.1 }}>
-                {c.count}
-              </div>
-              <div style={{ fontSize: 9, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', marginTop: 2, letterSpacing: 0.4 }}>
-                {c.label}
-              </div>
-              <span style={{ position: 'absolute', right: 4, top: 4, fontSize: 9, color: '#9CA3AF' }}>›</span>
-            </button>
-          );
-        })}
-      </div>
-      {expanded && (
-        <div style={{ marginTop: 10, padding: '8px 10px', backgroundColor: '#F8F9FB', borderRadius: 8, fontSize: 12, color: '#374151' }}>
-          {cells.find((c) => c.key === expanded)?.detail}
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 999,
+                  background: it.dotColor,
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ fontSize: 14, flexShrink: 0 }}>{it.icon}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>{it.text}</div>
+              <div style={{ flexShrink: 0 }}>{it.right}</div>
+            </div>
+          ))}
         </div>
       )}
+
+      <div
+        style={{
+          marginTop: 10,
+          paddingTop: 10,
+          borderTop: "0.5px solid #F3F4F6",
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 8,
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/notifications" as never })}
+          style={linkBtn("#1877D6")}
+        >
+          Recent activity →
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/payments" as never })}
+          style={linkBtn("#1877D6")}
+        >
+          View all payments →
+        </button>
+      </div>
     </div>
   );
+}
+
+function linkBtn(color: string): React.CSSProperties {
+  return {
+    background: "transparent",
+    border: "none",
+    color,
+    fontSize: 12,
+    fontWeight: 700,
+    cursor: "pointer",
+    padding: 0,
+    fontFamily: "Inter, sans-serif",
+  };
 }
 
 function OutstandingBreakdownModal({
