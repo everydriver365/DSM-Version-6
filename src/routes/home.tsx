@@ -743,6 +743,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     published_at: string | null;
   };
   const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
+  const [communityExpanded, setCommunityExpanded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
