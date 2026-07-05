@@ -3603,6 +3603,9 @@ function HomePage() {
         </div>
       </div>
 
+      {/* UPCOMING TESTS COUNTDOWN */}
+      <TestCountdownSection userId={userId} navigate={navigate} />
+
       {/* ENABLE NOTIFICATIONS PROMPT */}
       {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
         <div
