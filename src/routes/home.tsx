@@ -1030,8 +1030,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 </div>
               );
             })}
-          </div>
-        ))}
       </div>
       <div className="mx-4 mt-4 mb-2">
         <span
