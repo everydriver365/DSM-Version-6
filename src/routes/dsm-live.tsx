@@ -14,6 +14,8 @@ export type LiveSession = {
   price_amount: number | null;
   price_display: string | null;
   status: string | null;
+  image_url: string | null;
+  is_live: boolean | null;
 };
 
 export const CATEGORIES = [
