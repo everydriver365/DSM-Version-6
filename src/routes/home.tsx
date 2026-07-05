@@ -3688,9 +3688,11 @@ function HomePage() {
         userId={userId}
         upcomingTests={upcomingTests}
         outstandingBreakdown={outstandingBreakdown}
-        onNavigate={(to) => {
+        onNavigate={(to, params) => {
           if (to === "/tests") {
             setTestsOpen(true);
+          } else if (params) {
+            navigate({ to: to as never, params: params as never });
           } else {
             navigate({ to: to as never });
           }
