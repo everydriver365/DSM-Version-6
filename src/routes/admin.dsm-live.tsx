@@ -951,6 +951,110 @@ function AdminDsmLive() {
           {toast}
         </div>
       )}
+
+      {recurringUpdateOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 80,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+          onClick={() => !saving && setRecurringUpdateOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              padding: 20,
+              width: "100%",
+              maxWidth: 420,
+              boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
+              Update recurring sessions
+            </div>
+            <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
+              This is a recurring session. What would you like to update?
+            </div>
+            {[
+              { v: "single", label: "Just this session", desc: "Only update this single session" },
+              { v: "following", label: "This and all following sessions", desc: "Update this and every future session in the series" },
+              { v: "all", label: "All sessions in this series", desc: "Update every session in the series" },
+            ].map((opt) => (
+              <label
+                key={opt.v}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  padding: "10px 12px",
+                  border: `1px solid ${recurringUpdateChoice === opt.v ? "#0B1F3A" : "#E2E6ED"}`,
+                  borderRadius: 10,
+                  marginBottom: 8,
+                  cursor: "pointer",
+                  background: recurringUpdateChoice === opt.v ? "#F5F7FB" : "#fff",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="recurring-update-scope"
+                  checked={recurringUpdateChoice === opt.v}
+                  onChange={() => setRecurringUpdateChoice(opt.v as any)}
+                  style={{ marginTop: 3 }}
+                />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{opt.label}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{opt.desc}</div>
+                </div>
+              </label>
+            ))}
+            <div style={{ display: "flex", gap: 8, marginTop: 14, justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => setRecurringUpdateOpen(false)}
+                style={{
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  border: "1px solid #E2E6ED",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={confirmRecurringUpdate}
+                style={{
+                  background: "#0B1F3A",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: saving ? "wait" : "pointer",
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving ? "Updating…" : "Update"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
