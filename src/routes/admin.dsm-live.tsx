@@ -133,6 +133,10 @@ function AdminDsmLive() {
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
+  const [recurringUpdateOpen, setRecurringUpdateOpen] = useState(false);
+  const [recurringUpdateChoice, setRecurringUpdateChoice] =
+    useState<"single" | "following" | "all">("single");
+  const [pendingPayload, setPendingPayload] = useState<any>(null);
 
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
