@@ -484,7 +484,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     position: "relative",
                     cursor: "pointer",
                     userSelect: "none",
-                    height: 110,
+                    height: 120,
                     borderRadius: 12,
                     overflow: "hidden",
                     background: hero,
