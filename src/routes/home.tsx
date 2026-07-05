@@ -741,11 +741,17 @@ function TestCountdownSection({
       const today = ymd(new Date());
       const in14 = ymd(addDays(new Date(), 14));
       try {
-        const data = await homeRest<PupilTest[]>(
-          `pupils?instructor_id=eq.${userId}&test_date=gte.${today}&test_date=lte.${in14}&deleted_at=is.null&select=id,name,first_name,test_date,test_time,test_status&order=test_date.asc`,
-        );
+        const { data, error } = await supabase
+          .from("pupils")
+          .select("id,name,first_name,test_date,test_time,test_status")
+          .eq("instructor_id", userId)
+          .gte("test_date", today)
+          .lte("test_date", in14)
+          .is("deleted_at", null)
+          .order("test_date", { ascending: true });
+        if (error) throw error;
         console.log("[test-countdown] userId:", userId, "pupils with tests:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
-        if (!cancelled) setRows(Array.isArray(data) ? data : []);
+        if (!cancelled) setRows((data ?? []) as PupilTest[]);
       } catch (err) {
         console.error("[home] test countdown fetch failed", err);
         if (!cancelled) setRows([]);
@@ -904,12 +910,16 @@ function OutstandingPaymentsSection({
     let cancelled = false;
     (async () => {
       try {
-        const data = await homeRest<UnpaidLesson[]>(
-          `lessons?instructor_id=eq.${userId}&payment_status=eq.unpaid&deleted_at=is.null&select=pupil_id,amount_due,pupils(name,first_name,phone)`,
-        );
+        const { data, error } = await supabase
+          .from("lessons")
+          .select("pupil_id,amount_due,pupils(name,first_name,phone)")
+          .eq("instructor_id", userId)
+          .eq("payment_status", "unpaid")
+          .is("deleted_at", null);
+        if (error) throw error;
         console.log("[outstanding] userId:", userId, "unpaid lessons:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
         const grouped: Record<string, PupilOwed> = {};
-        for (const l of Array.isArray(data) ? data : []) {
+        for (const l of ((data ?? []) as unknown as UnpaidLesson[])) {
           const amt = Number(l.amount_due ?? 0);
           if (!l.pupil_id || amt <= 0) continue;
           const name = l.pupils?.first_name || l.pupils?.name || "Pupil";
@@ -1085,11 +1095,16 @@ function RecentActivitySection({
     let cancelled = false;
     (async () => {
       try {
-        const data = await homeRest<Notif[]>(
-          `instructor_notifications?instructor_id=eq.${userId}&deleted_at=is.null&select=id,title,body,type,created_at&order=created_at.desc&limit=8`,
-        );
+        const { data, error } = await supabase
+          .from("instructor_notifications")
+          .select("id,title,body,type,created_at")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false })
+          .limit(8);
+        if (error) throw error;
         console.log("[activity] userId:", userId, "notifications:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
-        if (!cancelled) setItems(Array.isArray(data) ? data : []);
+        if (!cancelled) setItems((data ?? []) as Notif[]);
       } catch (err) {
         console.error("[home] activity fetch failed", err);
         if (!cancelled) setItems([]);
