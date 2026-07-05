@@ -3,8 +3,8 @@ self.addEventListener('push', function(event) {
   const data = event.data.json();
   const options = {
     body: data.body || '',
-    icon: '/icon-192.png',
-    badge: '/icon-72.png',
+    icon: '/__l5e/assets-v1/822269be-f3a7-47f7-9696-0d4e26d6be94/icon-192.png',
+    badge: '/__l5e/assets-v1/822269be-f3a7-47f7-9696-0d4e26d6be94/icon-192.png',
     tag: data.tag || 'dsm-notification',
     requireInteraction: false,
     data: data.data || {}

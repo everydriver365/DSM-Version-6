@@ -1,6 +1,8 @@
 // Browser push/local notification helpers.
 // All functions are no-ops on the server or in unsupported browsers.
 
+import icon192 from "../assets/icon-192.png.asset.json";
+
 export function isSupported(): boolean {
   return typeof window !== "undefined" && "Notification" in window;
 }
@@ -30,7 +32,7 @@ export function sendLocalNotification(title: string, body: string, icon?: string
   if (!isSupported()) return;
   if (Notification.permission !== "granted") return;
   try {
-    new Notification(title, { body, icon: icon ?? "/icon-192.png" });
+    new Notification(title, { body, icon: icon ?? icon192.url });
   } catch (err) {
     console.error("[pushNotifications] sendLocalNotification error", err);
   }

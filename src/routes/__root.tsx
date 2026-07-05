@@ -10,6 +10,8 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import icon192 from "../assets/icon-192.png.asset.json";
+import icon512 from "../assets/icon-512.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
@@ -127,9 +129,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.json" },
-      { rel: "apple-touch-icon", href: "/icon-192.png" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
-      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
+      { rel: "apple-touch-icon", href: icon192.url },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: icon192.url },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: icon512.url },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -259,8 +261,8 @@ function RootComponent() {
               const n: any = payload.new;
               registration.showNotification(n.title || "DSM", {
                 body: n.body || "",
-                icon: "/icon-192.png",
-                badge: "/icon-72.png",
+                icon: icon192.url,
+                badge: icon192.url,
                 tag: n.type || "dsm-notification",
                 data: { url: getNotificationUrl(n) },
               });
