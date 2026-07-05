@@ -5285,7 +5285,7 @@ function NeedsAttention({
         icon: <Trophy size={16} color="#CC2229" />,
         message: `🎯 ${displayName} — TEST DAY!`,
         action: "View →",
-        onClick: () => onNavigate(`/pupils/${t.id}`),
+        onClick: () => onNavigate("/pupils/$id", { id: t.id }),
       });
     } else if (d < 3) {
       alerts.push({
@@ -5294,7 +5294,7 @@ function NeedsAttention({
         icon: <CalendarIcon size={16} color="#D97706" />,
         message: `${displayName} test in ${d} days`,
         action: "View →",
-        onClick: () => onNavigate(`/pupils/${t.id}`),
+        onClick: () => onNavigate("/pupils/$id", { id: t.id }),
       });
     } else if (d <= 14) {
       alerts.push({
@@ -5303,7 +5303,7 @@ function NeedsAttention({
         icon: <CalendarIcon size={16} color="#1A52A0" />,
         message: `${displayName} test on ${formatTestDateShort(t.test_date)}`,
         action: "View →",
-        onClick: () => onNavigate(`/pupils/${t.id}`),
+        onClick: () => onNavigate("/pupils/$id", { id: t.id }),
       });
     }
   }
