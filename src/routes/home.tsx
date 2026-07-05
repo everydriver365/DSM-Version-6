@@ -906,20 +906,19 @@ function OutstandingPaymentsSection({
         const data = await homeRest<UnpaidLesson[]>(
           `lessons?instructor_id=eq.${userId}&payment_status=eq.unpaid&deleted_at=is.null&select=pupil_id,amount_due,pupils(name,first_name,phone)`,
         );
-        const grouped = new Map<string, PupilOwed>();
+        const grouped: Record<string, PupilOwed> = {};
         for (const l of Array.isArray(data) ? data : []) {
           const amt = Number(l.amount_due ?? 0);
           if (!l.pupil_id || amt <= 0) continue;
-          const existing = grouped.get(l.pupil_id);
           const name = l.pupils?.first_name || l.pupils?.name || "Pupil";
           const phone = l.pupils?.phone ?? null;
-          if (existing) {
-            existing.amount += amt;
+          if (grouped[l.pupil_id]) {
+            grouped[l.pupil_id].amount += amt;
           } else {
-            grouped.set(l.pupil_id, { pupil_id: l.pupil_id, name, phone, amount: amt });
+            grouped[l.pupil_id] = { pupil_id: l.pupil_id, name, phone, amount: amt };
           }
         }
-        const arr = Array.from(grouped.values())
+        const arr: PupilOwed[] = Object.values(grouped)
           .filter((r) => r.amount > 0)
           .sort((a, b) => b.amount - a.amount);
         if (!cancelled) setPupils(arr);
