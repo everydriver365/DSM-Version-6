@@ -69,6 +69,8 @@ type Session = {
   image_position: string | null;
   status: string | null;
   deleted_at: string | null;
+  is_recurring?: boolean | null;
+  recurring_group_id?: string | null;
 };
 
 async function restFetch(path: string, init?: RequestInit) {
