@@ -744,6 +744,7 @@ function TestCountdownSection({
         const data = await homeRest<PupilTest[]>(
           `pupils?instructor_id=eq.${userId}&test_date=gte.${today}&test_date=lte.${in14}&deleted_at=is.null&select=id,name,first_name,test_date,test_time,test_status&order=test_date.asc`,
         );
+        console.log("[test-countdown] userId:", userId, "pupils with tests:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
         if (!cancelled) setRows(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("[home] test countdown fetch failed", err);
@@ -906,6 +907,7 @@ function OutstandingPaymentsSection({
         const data = await homeRest<UnpaidLesson[]>(
           `lessons?instructor_id=eq.${userId}&payment_status=eq.unpaid&deleted_at=is.null&select=pupil_id,amount_due,pupils(name,first_name,phone)`,
         );
+        console.log("[outstanding] userId:", userId, "unpaid lessons:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
         const grouped: Record<string, PupilOwed> = {};
         for (const l of Array.isArray(data) ? data : []) {
           const amt = Number(l.amount_due ?? 0);
@@ -921,6 +923,7 @@ function OutstandingPaymentsSection({
         const arr: PupilOwed[] = Object.values(grouped)
           .filter((r) => r.amount > 0)
           .sort((a, b) => b.amount - a.amount);
+        console.log("[outstanding] pupils owing:", arr.length, "total owed:", arr.reduce((n, p) => n + p.amount, 0));
         if (!cancelled) setPupils(arr);
       } catch (err) {
         console.error("[home] outstanding payments fetch failed", err);
@@ -1085,6 +1088,7 @@ function RecentActivitySection({
         const data = await homeRest<Notif[]>(
           `instructor_notifications?instructor_id=eq.${userId}&deleted_at=is.null&select=id,title,body,type,created_at&order=created_at.desc&limit=8`,
         );
+        console.log("[activity] userId:", userId, "notifications:", Array.isArray(data) ? data.length : "not-array", "raw:", data);
         if (!cancelled) setItems(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("[home] activity fetch failed", err);
