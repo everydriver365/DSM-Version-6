@@ -672,6 +672,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           );
         })}
       </div>
+    </div>
       {(showListings ? (listings?.length ?? 0) > 2 : legacyTiles.length > 2) && (
         <div
           style={{
