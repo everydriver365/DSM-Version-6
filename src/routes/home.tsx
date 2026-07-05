@@ -4982,7 +4982,7 @@ function NeedsAttention({
         <div style={{ padding: "12px 0", fontSize: 12, color: "#9CA3AF" }}>Loading…</div>
       ) : shown.length === 0 ? (
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 0" }}>
-          <CheckCircle size={16} color="#16A34A" />
+          <CheckCircle2 size={16} color="#16A34A" />
           <span style={{ fontSize: 13, fontWeight: 600, color: "#16A34A" }}>
             All up to date
           </span>
