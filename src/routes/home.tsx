@@ -54,6 +54,7 @@ import {
   UserCircle,
   PlayCircle,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   Send,
   CheckCheck,
@@ -314,6 +315,27 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     };
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  const scrollBy = (direction: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * 170, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    updateScrollState();
+  }, [listings, legacyTiles]);
+
   const firstImageUrl = (raw: ListingTile["image_urls"]): string | null => {
     const arr = Array.isArray(raw)
       ? raw
@@ -423,9 +445,57 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           >
             See all →
           </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              disabled={!canScrollLeft}
+              aria-label="Scroll left"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: canScrollLeft ? "pointer" : "default",
+                opacity: canScrollLeft ? 1 : 0.45,
+                padding: 0,
+              }}
+            >
+              <ChevronLeft size={16} color="#0F2044" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              disabled={!canScrollRight}
+              aria-label="Scroll right"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: canScrollRight ? "pointer" : "default",
+                opacity: canScrollRight ? 1 : 0.45,
+                padding: 0,
+              }}
+            >
+              <ChevronRight size={16} color="#0F2044" />
+            </button>
+          </div>
         </div>
       </div>
         <div
+          ref={scrollRef}
+          onScroll={updateScrollState}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -746,6 +816,27 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     };
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  const scrollBy = (direction: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * 170, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    updateScrollState();
+  }, [sessions, podcasts]);
+
   if (sessions.length === 0 && podcasts.length === 0) return null;
 
   const fmtDate = (d: string) => {
@@ -807,24 +898,74 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             Live events, podcasts and webinars
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dsm-live" as never })}
-          className="font-bold"
-          style={{
-            fontSize: 13,
-            color: "#1877D6",
-            fontFamily: "Inter, sans-serif",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          See all →
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/dsm-live" as never })}
+            className="font-bold"
+            style={{
+              fontSize: 13,
+              color: "#1877D6",
+              fontFamily: "Inter, sans-serif",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            See all →
+          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              disabled={!canScrollLeft}
+              aria-label="Scroll left"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: canScrollLeft ? "pointer" : "default",
+                opacity: canScrollLeft ? 1 : 0.45,
+                padding: 0,
+              }}
+            >
+              <ChevronLeft size={16} color="#0F2044" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              disabled={!canScrollRight}
+              aria-label="Scroll right"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: canScrollRight ? "pointer" : "default",
+                opacity: canScrollRight ? 1 : 0.45,
+                padding: 0,
+              }}
+            >
+              <ChevronRight size={16} color="#0F2044" />
+            </button>
+          </div>
+        </div>
       </div>
       <div
+        ref={scrollRef}
+        onScroll={updateScrollState}
         style={{
           display: "flex",
           flexDirection: "row",
