@@ -1094,20 +1094,48 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           display: "block",
           width: "calc(100% - 32px)",
           margin: "8px 16px 0",
-          background: "#0F2044",
-          borderRadius: 12,
-          padding: 14,
-          border: 0,
+          background: "#0c2340",
+          borderRadius: 16,
+          padding: 0,
+          border: "1px solid #1a4a6e",
           cursor: "pointer",
           textAlign: "left",
+          overflow: "hidden",
+          boxShadow: "0 10px 30px -10px rgba(12, 35, 64, 0.35)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
-          <Users color="#fff" size={18} style={{ marginRight: 10, flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>DSM Community</div>
-            <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>
-              Forum for ADIs
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 16px",
+            borderBottom: "1px solid #1a4a6e",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 12,
+                background: "rgba(26, 74, 110, 0.5)",
+                border: "1px solid rgba(93, 189, 185, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Users color="#5cbdb9" size={20} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, letterSpacing: -0.2 }}>
+                DSM Community
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, marginTop: 2 }}>
+                Forum for ADIs
+              </div>
             </div>
           </div>
           <span
@@ -1115,20 +1143,23 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               background: "#CC2229",
               color: "#fff",
               fontSize: 11,
-              fontWeight: 600,
-              padding: "5px 10px",
-              borderRadius: 8,
+              fontWeight: 700,
+              padding: "6px 12px",
+              borderRadius: 999,
               flexShrink: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
-            Open →
+            Open
+            <ChevronRight size={14} />
           </span>
         </div>
+
         <div
           style={{
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 10,
-            padding: "4px 10px",
+            padding: "4px 16px",
           }}
         >
           {[
@@ -1142,17 +1173,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "8px 0",
-                borderBottom: i < 2 ? "0.5px solid rgba(255,255,255,0.08)" : "none",
+                padding: "12px 0",
+                borderBottom: i < 2 ? "1px solid rgba(26, 74, 110, 0.5)" : "none",
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
                     color: "#fff",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    lineHeight: 1.3,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    lineHeight: 1.35,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
@@ -1160,12 +1191,24 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 >
                   {t.title}
                 </div>
-                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, marginTop: 2 }}>
+                <div style={{ color: "rgba(93, 189, 185, 0.85)", fontSize: 11, marginTop: 3, fontWeight: 500 }}>
                   {t.cat} · {t.replies} replies · {t.activity}
                 </div>
               </div>
             </div>
           ))}
+        </div>
+
+        <div
+          style={{
+            padding: "10px 16px",
+            borderTop: "1px solid #1a4a6e",
+            textAlign: "center",
+          }}
+        >
+          <span style={{ color: "#5cbdb9", fontSize: 11, fontWeight: 700 }}>
+            View all discussions
+          </span>
         </div>
       </button>
     </div>
