@@ -121,6 +121,8 @@ function AdminDsmLive() {
   const [bookingsFor, setBookingsFor] = useState<Session | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [isRecurring, setIsRecurring] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
 
