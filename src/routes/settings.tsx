@@ -1284,6 +1284,160 @@ function SettingsPage() {
           />
         </Card>
 
+        <SectionHeader>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <Globe size={14} color="#6B7280" /> EVERYDRIVER
+          </span>
+        </SectionHeader>
+        <Card className="!p-0">
+          {/* Row 1: List on marketplace toggle */}
+          <div
+            className="px-4 py-3 flex items-start gap-3"
+          >
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{ width: 36, height: 36, backgroundColor: "#DBEAFE" }}
+            >
+              <Globe size={18} color="#1877D6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                List me on EveryDriver
+              </div>
+              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                Your courses appear in EveryDriver search results and your mini website is publicly visible
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={publishToMarketplace}
+              aria-label="List me on EveryDriver"
+              onClick={togglePublishToMarketplace}
+              style={{
+                width: 44,
+                height: 26,
+                borderRadius: 13,
+                background: publishToMarketplace ? "#1877D6" : "#D1D5DB",
+                border: "none",
+                position: "relative",
+                cursor: "pointer",
+                flexShrink: 0,
+                transition: "background 0.2s",
+                marginTop: 4,
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  left: publishToMarketplace ? 21 : 3,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  transition: "left 0.2s",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                }}
+              />
+            </button>
+          </div>
+
+          {/* Row 2: Featured status */}
+          <div
+            className="px-4 py-3 flex items-center gap-3"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+          >
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{ width: 36, height: 36, backgroundColor: "#FEF3C7" }}
+            >
+              <Crown size={18} color="#D97706" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                Featured status
+              </div>
+              {featuredListing && featuredUntil && new Date(featuredUntil) > new Date() ? (
+                <span
+                  className="inline-flex items-center gap-1 mt-1"
+                  style={{
+                    fontSize: 12,
+                    color: "#0F7B3F",
+                    background: "#E8F5EC",
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    ...POPPINS,
+                  }}
+                >
+                  Featured until{" "}
+                  {new Date(featuredUntil).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+              ) : (
+                <div className="mt-1 flex items-center gap-2 flex-wrap">
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#6B7280",
+                      background: "#F4F4F5",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      ...POPPINS,
+                    }}
+                  >
+                    Not featured
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/marketplace/apply" })}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      color: "#1877D6",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      ...POPPINS,
+                    }}
+                  >
+                    Apply to get featured →
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Row 3: View profile link */}
+          <button
+            type="button"
+            onClick={() => {
+              if (!appSlug) {
+                toast.error("Your EveryDriver profile is not set up yet");
+                return;
+              }
+              window.open(`https://everydriver.co.uk/i/${appSlug}`, "_blank", "noopener,noreferrer");
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left"
+            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+          >
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{ width: 36, height: 36, backgroundColor: "#DBEAFE" }}
+            >
+              <Globe size={18} color="#1877D6" />
+            </div>
+            <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>
+              View my EveryDriver profile
+            </span>
+            <ChevronRight size={18} color="#6B7280" />
+          </button>
+        </Card>
+
         <SectionHeader>SUPPORT</SectionHeader>
         <Card className="!p-0">
           <MenuRow
