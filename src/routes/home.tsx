@@ -1075,6 +1075,43 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         ))}
       </div>
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/dsm-live", hash: "community" } as never)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          width: "calc(100% - 32px)",
+          margin: "8px 16px 0",
+          background: "#0F2044",
+          borderRadius: 12,
+          padding: "12px 14px",
+          border: 0,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <Users color="#fff" size={18} style={{ marginRight: 10, flexShrink: 0 }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>DSM Community</div>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12 }}>
+            Forum for ADIs — coming soon
+          </div>
+        </div>
+        <span
+          style={{
+            background: "#CC2229",
+            color: "#fff",
+            fontSize: 12,
+            fontWeight: 600,
+            padding: "6px 12px",
+            borderRadius: 8,
+            flexShrink: 0,
+          }}
+        >
+          Join waitlist →
+        </span>
+      </button>
     </div>
   );
 }

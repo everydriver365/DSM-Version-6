@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play, Users } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
@@ -225,6 +226,107 @@ function DsmLivePage() {
         ) : (
           podcasts.map((p) => <PodcastCard key={p.id} podcast={p} />)
         )}
+      </div>
+
+      <CommunitySection />
+    </div>
+  );
+}
+
+function CommunitySection() {
+  const [email, setEmail] = useState("");
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast("You're on the list! We'll notify you when DSM Community launches.");
+    setEmail("");
+  };
+  return (
+    <div
+      id="community"
+      style={{
+        background: "#0F2044",
+        borderRadius: 16,
+        padding: 20,
+        margin: "16px 16px 24px",
+      }}
+    >
+      <Users color="#fff" size={28} style={{ marginBottom: 12 }} />
+      <div style={{ color: "#fff", fontWeight: 900, fontSize: 18 }}>DSM Community</div>
+      <div
+        style={{
+          color: "rgba(255,255,255,0.7)",
+          fontSize: 13,
+          marginTop: 8,
+          lineHeight: 1.5,
+        }}
+      >
+        A dedicated forum for driving instructors — discuss standards checks, share tips, get
+        business advice and connect with ADIs across the UK.
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <span
+          style={{
+            display: "inline-block",
+            background: "#D97706",
+            color: "#fff",
+            fontSize: 12,
+            fontWeight: 700,
+            padding: "4px 12px",
+            borderRadius: 999,
+          }}
+        >
+          Coming soon
+        </span>
+      </div>
+      <form onSubmit={onSubmit}>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email to be notified"
+          style={{
+            width: "100%",
+            background: "rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            color: "#fff",
+            padding: 12,
+            borderRadius: 10,
+            marginTop: 16,
+            fontSize: 14,
+            outline: "none",
+            boxSizing: "border-box",
+          }}
+          className="community-email-input"
+        />
+        <style>{`.community-email-input::placeholder{color:rgba(255,255,255,0.4);}`}</style>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            background: "#CC2229",
+            color: "#fff",
+            fontWeight: 600,
+            padding: 12,
+            borderRadius: 10,
+            marginTop: 8,
+            border: 0,
+            cursor: "pointer",
+            fontSize: 14,
+          }}
+        >
+          Notify me when it launches →
+        </button>
+      </form>
+      <div
+        style={{
+          color: "rgba(255,255,255,0.4)",
+          fontSize: 12,
+          textAlign: "center",
+          marginTop: 8,
+        }}
+      >
+        No spam. Just a heads up when we launch.
       </div>
     </div>
   );
