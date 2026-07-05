@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Pencil, Trash2, Users as UsersIcon } from "lucide-react";
+import { ChevronLeft, Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 
@@ -121,6 +121,8 @@ function AdminDsmLive() {
   const [bookingsFor, setBookingsFor] = useState<Session | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [isRecurring, setIsRecurring] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
 
@@ -254,6 +256,34 @@ function AdminDsmLive() {
   }
 
   async function handleDelete(s: Session) {
+    return _handleDelete(s);
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `sessions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase
+        .storage
+        .from("dsm-live-images")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("dsm-live-images").getPublicUrl(path);
+      setForm((f) => ({ ...f, image_url: pub.publicUrl }));
+      showToast("Image uploaded");
+    } catch (err: any) {
+      console.error("[dsm-live] image upload error:", err?.message || err);
+      showToast(`Upload failed: ${err?.message?.slice(0, 60) || "unknown"}`);
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+    }
+  }
+
+  async function _handleDelete(s: Session) {
     if (!confirm(`Delete "${s.title}"?`)) return;
     try {
       await restFetch(`dsm_live_sessions?id=eq.${s.id}`, {
@@ -492,8 +522,76 @@ function AdminDsmLive() {
             <input style={inp} placeholder="https://zoom.us/j/…" value={form.zoom_link || ""} onChange={(e) => setForm({ ...form, zoom_link: e.target.value })} />
           </FormField>
           <Toggle label="Reveal Zoom link after booking" checked={!!form.zoom_link_revealed_after_booking} onChange={(v) => setForm({ ...form, zoom_link_revealed_after_booking: v })} />
-          <FormField label="Image URL (optional)">
-            <input style={inp} value={form.image_url || ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+          <FormField label="Session image (optional)">
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            {form.image_url ? (
+              <div style={{ position: "relative" }}>
+                <img
+                  src={form.image_url}
+                  alt="Session"
+                  onClick={() => imageInputRef.current?.click()}
+                  style={{
+                    width: "100%",
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 10,
+                    border: "1px solid #E2E6ED",
+                    cursor: "pointer",
+                    display: "block",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, image_url: "" }))}
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    background: "rgba(11,31,58,0.85)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 8,
+                    padding: "4px 10px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={uploadingImage}
+                style={{
+                  width: "100%",
+                  height: 120,
+                  border: "1.5px dashed #CBD5E1",
+                  borderRadius: 10,
+                  background: "#F9FAFB",
+                  color: "#6B7280",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: uploadingImage ? "wait" : "pointer",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                }}
+              >
+                <Camera size={22} />
+                {uploadingImage ? "Uploading…" : "Tap to upload session image"}
+              </button>
+            )}
           </FormField>
           <FormField label="Status">
             <select style={inp} value={form.status || "upcoming"} onChange={(e) => setForm({ ...form, status: e.target.value })}>
