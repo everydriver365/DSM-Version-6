@@ -261,8 +261,8 @@ function RootComponent() {
               const n: any = payload.new;
               registration.showNotification(n.title || "DSM", {
                 body: n.body || "",
-                icon: "/icon-192.png",
-                badge: "/icon-72.png",
+                icon: icon192.url,
+                badge: icon192.url,
                 tag: n.type || "dsm-notification",
                 data: { url: getNotificationUrl(n) },
               });
