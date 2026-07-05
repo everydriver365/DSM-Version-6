@@ -3719,15 +3719,14 @@ function HomePage() {
 
       {/* NEEDS ATTENTION */}
       <NeedsAttention
-        jobs={0}
-        tests={testCount}
-        calls={0}
-        enqs={enqCount}
+        userId={userId}
+        upcomingTests={upcomingTests}
+        outstandingBreakdown={outstandingBreakdown}
         onNavigate={(to) => {
           if (to === "/tests") {
             setTestsOpen(true);
           } else {
-            navigate({ to });
+            navigate({ to: to as never });
           }
         }}
       />
