@@ -519,189 +519,134 @@ function SessionCard({
   onOpen: () => void;
 }) {
   const remaining = Math.max(0, session.max_spaces - session.spaces_taken);
-  const full = remaining <= 0;
-  const spaceColor = full ? "#CC2229" : remaining < 5 ? "#D97706" : "#16A34A";
-  const spaceText = full ? "Full" : `${remaining} spaces left`;
-  const days = daysUntil(session.session_date);
-  const soon = days >= 0 && days <= 7;
-  const bandColor = categoryColor(session.category);
+  const spaceText = `${remaining} spaces left`;
+  const spaceIsLow = remaining > 0 && remaining < 5;
   const isFree =
     !session.price_amount ||
     (session.price_display ?? "").toLowerCase().includes("free");
-  const isWebinar = (session.category ?? "").toLowerCase().includes("webinar");
-  const typeLabel = isWebinar ? "🎓 WEBINAR" : "📹 ZOOM SESSION";
-  const typeColor = isWebinar ? "#7C3AED" : "#1A52A0";
+
+  const categoryGradient = (c: string | null): string => {
+    if (!c) return "linear-gradient(135deg, #CC2229, #7A1419)";
+    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
+    if (c.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
+    if (c.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
+    if (c.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
+    if (c.startsWith("Q&A")) return "linear-gradient(135deg, #0891B2, #164E63)";
+    return "linear-gradient(135deg, #CC2229, #7A1419)";
+  };
+
+  const topBackground = session.image_url
+    ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%), url(${session.image_url})`
+    : categoryGradient(session.category);
 
   return (
     <div
-      style={{
-        background: "#fff",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 16,
-        overflow: "hidden",
-        marginBottom: 12,
-        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-      }}
+      onClick={onOpen}
+      className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer mb-3"
+      style={{ background: "#fff" }}
     >
-      <div style={{ height: 6, background: bandColor, width: "100%" }} />
       <div
         style={{
-          background: `${typeColor}12`,
-          color: typeColor,
-          fontSize: 10,
-          fontWeight: 800,
-          letterSpacing: "0.08em",
-          padding: "6px 16px",
-          textTransform: "uppercase",
-          borderBottom: "0.5px solid #E2E6ED",
+          height: 160,
+          position: "relative",
+          background: topBackground,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        {typeLabel}
-      </div>
-      <div style={{ padding: 16 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span
+          className="text-xs font-semibold px-2 py-1 rounded-full"
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            background: "rgba(255,255,255,0.2)",
+            color: "#fff",
+          }}
+        >
+          {session.category ?? "Session"}
+        </span>
+
+        <span
+          className="text-xs px-2 py-1 rounded-full"
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            background: "rgba(0,0,0,0.3)",
+            color: spaceIsLow ? "#FCD34D" : "#fff",
+            fontWeight: 600,
+          }}
+        >
+          {spaceText}
+        </span>
+
+        {session.host_name && (
           <span
+            className="text-sm font-medium"
             style={{
-              background: `${bandColor}15`,
-              color: bandColor,
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "4px 8px",
-              borderRadius: 6,
+              position: "absolute",
+              bottom: 12,
+              left: 12,
+              color: "rgba(255,255,255,0.8)",
             }}
           >
-            {session.category ?? "Session"}
+            with {session.host_name}
           </span>
-          <span style={{ color: spaceColor, fontSize: 12, fontWeight: 600 }}>{spaceText}</span>
-        </div>
+        )}
 
-        <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044", marginTop: 8, marginBottom: 4 }}>
+        {session.is_live && (
+          <span
+            className="text-xs font-bold px-2 py-1 rounded-full"
+            style={{
+              position: "absolute",
+              bottom: 12,
+              right: 12,
+              background: "#CC2229",
+              color: "#fff",
+            }}
+          >
+            🔴 LIVE NOW
+          </span>
+        )}
+      </div>
+
+      <div className="bg-white p-4">
+        <div className="font-bold text-base mb-2" style={{ color: "#0F2044" }}>
           {session.title}
         </div>
-        {session.host_name && (
-          <div style={{ color: "#6B7280", fontSize: 13 }}>with {session.host_name}</div>
-        )}
-        {session.description && (
-          <div
-            style={{
-              color: "#6B7280",
-              fontSize: 12,
-              marginTop: 6,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {session.description}
-          </div>
-        )}
 
-        <div
-          style={{
-            background: "#F7FAFC",
-            margin: "12px -16px 0",
-            padding: "10px 16px",
-            borderTop: "0.5px solid #E2E6ED",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 12,
-            alignItems: "center",
-            fontSize: 12,
-            color: "#374151",
-          }}
-        >
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <CalendarIcon size={14} /> {formatSessionDate(session.session_date)}
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <Clock size={14} /> {formatSessionTime(session.session_time)}
-            {session.duration_minutes ? ` (${session.duration_minutes} mins)` : ""}
-          </span>
-          {soon && (
-            <span
-              style={{
-                background: "#FEF3C7",
-                color: "#92400E",
-                fontSize: 11,
-                fontWeight: 600,
-                padding: "3px 8px",
-                borderRadius: 999,
-              }}
-            >
-              {days === 0 ? "Today" : days === 1 ? "Tomorrow" : `Starts in ${days} days`}
-            </span>
-          )}
+        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
+          <CalendarIcon size={14} color="#6B7280" />
+          {formatSessionDate(session.session_date)}
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 12,
-          }}
-        >
-          <div style={{ fontWeight: 700, color: isFree ? "#16A34A" : "#0F2044" }}>
-            {session.price_display ?? (isFree ? "Free for Plus & Max" : `£${session.price_amount}`)}
+        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
+          <Clock size={14} color="#6B7280" />
+          {formatSessionTime(session.session_time)}
+          {session.duration_minutes ? ` · ${session.duration_minutes} minutes` : ""}
+        </div>
+
+        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
+          <Video size={14} color="#6B7280" />
+          Zoom
+        </div>
+
+        <div className="flex justify-between items-center mt-3">
+          <div
+            className="font-black text-lg"
+            style={{ color: isFree ? "#16A34A" : "#0F2044" }}
+          >
+            {session.price_display ?? (isFree ? "Free" : `£${session.price_amount}`)}
           </div>
-          {booked ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span
-                style={{
-                  background: "#DCFCE7",
-                  color: "#166534",
-                  padding: "4px 10px",
-                  borderRadius: 999,
-                  fontSize: 12,
-                  fontWeight: 700,
-                }}
-              >
-                ✓ Booked
-              </span>
-              <button
-                type="button"
-                onClick={onOpen}
-                style={{ background: "transparent", border: 0, color: "#0F2044", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-              >
-                View details →
-              </button>
-            </div>
-          ) : full ? (
-            <button
-              type="button"
-              onClick={onOpen}
-              style={{
-                border: "1px solid #CC2229",
-                color: "#CC2229",
-                background: "#fff",
-                borderRadius: 8,
-                padding: "8px 14px",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Join waitlist →
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onOpen}
-              style={{
-                background: "#CC2229",
-                color: "#fff",
-                border: 0,
-                borderRadius: 8,
-                padding: "8px 14px",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Book now →
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onOpen}
+            className="font-semibold text-sm px-4 py-2 rounded-xl"
+            style={{ background: "#CC2229", color: "#fff" }}
+          >
+            Book now →
+          </button>
         </div>
       </div>
     </div>
