@@ -535,9 +535,11 @@ function SessionCard({
     return "linear-gradient(135deg, #CC2229, #7A1419)";
   };
 
-  const topBackground = session.image_url
-    ? `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%), url(${session.image_url})`
+  const hasImage = !!session.image_url;
+  const topBackground = hasImage
+    ? `url(${session.image_url})`
     : categoryGradient(session.category);
+  const imagePosition = (session as any).image_position || "center center";
 
   return (
     <div
@@ -551,9 +553,19 @@ function SessionCard({
           position: "relative",
           background: topBackground,
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: imagePosition,
+          backgroundRepeat: "no-repeat",
         }}
       >
+        {hasImage && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%)",
+            }}
+          />
+        )}
         <span
           className="text-xs font-semibold px-2 py-1 rounded-full"
           style={{
