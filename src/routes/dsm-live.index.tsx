@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play, Users } from "lucide-react";
 import { toast } from "sonner";
-import { useState as useReactState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
@@ -235,7 +234,7 @@ function DsmLivePage() {
 }
 
 function CommunitySection() {
-  const [email, setEmail] = useReactState("");
+  const [email, setEmail] = useState("");
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast("You're on the list! We'll notify you when DSM Community launches.");
