@@ -263,13 +263,6 @@ type MarketplaceTile = {
 };
 
 
-function chunkTiles<T>(arr: T[], size: number): T[][] {
-  const chunks: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    chunks.push(arr.slice(i, i + size));
-  }
-  return chunks;
-}
 
 function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
   type ListingTile = {
@@ -433,35 +426,20 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         </div>
       </div>
       <div
-        className="marketplace-scroll"
         style={{
           display: "flex",
-          gap: 14,
+          flexDirection: "row",
+          gap: 10,
           overflowX: "auto",
-          paddingBottom: 12,
           paddingLeft: 16,
           paddingRight: 16,
+          paddingBottom: 8,
           scrollSnapType: "x mandatory",
-          scrollPaddingLeft: 16,
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {showListings && chunkTiles(listings!, 4).map((chunk, pageIndex) => (
-          <div
-            key={pageIndex}
-            style={{
-              scrollSnapAlign: "start",
-              flex: "0 0 auto",
-              width: "100%",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridTemplateRows: "1fr 1fr",
-              gap: 12,
-              alignContent: "start",
-            }}
-          >
-            {chunk.map((tile) => {
+        {showListings && listings!.map((tile) => {
               const img = firstImageUrl(tile.image_urls);
               const gradient = gradientFor(tile.marketplace_categories?.name);
               const hero = img
@@ -481,12 +459,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     }
                   }}
                   style={{
+                    width: 160,
+                    height: 120,
+                    flexShrink: 0,
+                    scrollSnapAlign: "start",
+                    borderRadius: 12,
+                    overflow: "hidden",
                     position: "relative",
                     cursor: "pointer",
                     userSelect: "none",
-                    height: 120,
-                    borderRadius: 12,
-                    overflow: "hidden",
                     background: hero,
                     border: "1px solid #EEF2F7",
                     boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
@@ -557,144 +538,115 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 </div>
               );
             })}
-          </div>
-        ))}
 
-        {showLegacy && chunkTiles(legacyTiles, 4).map((chunk, pageIndex) => (
-          <div
-            key={`legacy-${pageIndex}`}
-            style={{
-              scrollSnapAlign: "start",
-              flex: "0 0 auto",
-              width: "100%",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridTemplateRows: "1fr 1fr",
-              gap: 12,
-              alignContent: "start",
-            }}
-          >
-            {chunk.map((tile) => {
-              const accentColor = tile.color || "#4DA3FF";
-              const hero = tile.image_url
-                ? `url(${tile.image_url}) center/cover no-repeat`
-                : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
-              const badgeLabel = tile.badge?.trim();
-              const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
-              return (
-                <div
-                  key={tile.id}
-                  onClick={() => handleLegacyNav(tile.link_url)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleLegacyNav(tile.link_url);
-                    }
-                  }}
+        {showLegacy && legacyTiles.map((tile) => {
+          const accentColor = tile.color || "#4DA3FF";
+          const hero = tile.image_url
+            ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${tile.image_url}) center/cover no-repeat`
+            : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
+          const badgeLabel = tile.badge?.trim();
+          const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
+          return (
+            <div
+              key={tile.id}
+              onClick={() => handleLegacyNav(tile.link_url)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleLegacyNav(tile.link_url);
+                }
+              }}
+              style={{
+                width: 160,
+                height: 120,
+                flexShrink: 0,
+                scrollSnapAlign: "start",
+                borderRadius: 12,
+                overflow: "hidden",
+                position: "relative",
+                cursor: "pointer",
+                userSelect: "none",
+                background: hero,
+                border: "1px solid #EEF2F7",
+                boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
+              }}
+            >
+              {badgeLabel && (
+                <span
+                  className="font-bold"
                   style={{
-                    position: "relative",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    display: "flex",
-                    flexDirection: "column",
-                    background: "transparent",
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    fontSize: 9,
+                    letterSpacing: 0.6,
+                    color: "#FFFFFF",
+                    backgroundColor: badgeIsNew
+                      ? "rgba(11,31,58,0.92)"
+                      : "rgba(24,119,214,0.92)",
+                    backdropFilter: "blur(6px)",
+                    WebkitBackdropFilter: "blur(6px)",
+                    fontFamily: "Inter, sans-serif",
+                    padding: "2px 7px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                    boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                   }}
                 >
-                  <div
+                  {badgeLabel}
+                </span>
+              )}
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  padding: "8px 10px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: "#FFFFFF",
+                    lineHeight: 1.3,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    fontWeight: 700,
+                    fontFamily: "Inter, sans-serif",
+                    letterSpacing: -0.1,
+                  }}
+                >
+                  {tile.title}
+                </span>
+                {tile.subtitle && (
+                  <span
                     style={{
-                      position: "relative",
-                      height: 96,
-                      borderRadius: 12,
+                      fontSize: 10,
+                      color: "rgba(255,255,255,0.7)",
+                      marginTop: 2,
+                      fontFamily: "Inter, sans-serif",
                       overflow: "hidden",
-                      background: hero,
-                      border: "1px solid #EEF2F7",
-                      boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
-                      flexShrink: 0,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                      fontWeight: 500,
                     }}
                   >
-                    {badgeLabel && (
-                      <span
-                        className="font-bold"
-                        style={{
-                          position: "absolute",
-                          top: 8,
-                          left: 8,
-                          fontSize: 9,
-                          letterSpacing: 0.6,
-                          color: "#FFFFFF",
-                          backgroundColor: badgeIsNew
-                            ? "rgba(11,31,58,0.92)"
-                            : "rgba(24,119,214,0.92)",
-                          backdropFilter: "blur(6px)",
-                          WebkitBackdropFilter: "blur(6px)",
-                          fontFamily: "Inter, sans-serif",
-                          padding: "2px 7px",
-                          borderRadius: 999,
-                          textTransform: "uppercase",
-                          boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
-                        }}
-                      >
-                        {badgeLabel}
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      padding: "8px 2px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      textAlign: "left",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#0B1F3A",
-                        lineHeight: 1.25,
-                        maxWidth: "100%",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                        letterSpacing: -0.1,
-                      }}
-                    >
-                      {tile.title}
-                    </span>
-                    {tile.subtitle && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          color: "#6B7684",
-                          marginTop: 2,
-                          fontFamily: "Inter, sans-serif",
-                          overflow: "hidden",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {tile.subtitle}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                    {tile.subtitle}
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <style>{`
-        .marketplace-scroll::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 }
@@ -873,35 +825,20 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         </button>
       </div>
       <div
-        className="marketplace-scroll"
         style={{
           display: "flex",
-          gap: 14,
+          flexDirection: "row",
+          gap: 10,
           overflowX: "auto",
-          paddingBottom: 12,
           paddingLeft: 16,
           paddingRight: 16,
+          paddingBottom: 8,
           scrollSnapType: "x mandatory",
-          scrollPaddingLeft: 16,
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {chunkTiles(tiles, 4).map((chunk, pageIndex) => (
-          <div
-            key={pageIndex}
-            style={{
-              scrollSnapAlign: "start",
-              flex: "0 0 auto",
-              width: "100%",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridTemplateRows: "1fr 1fr",
-              gap: 12,
-              alignContent: "start",
-            }}
-          >
-            {chunk.map((tile) => {
+        {tiles.map((tile) => {
               if (tile.kind === "session") {
                 const s = tile.item;
                 const bandColor = categoryColor(s.category);
@@ -923,12 +860,15 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                       }
                     }}
                     style={{
+                      width: 160,
+                      height: 120,
+                      flexShrink: 0,
+                      scrollSnapAlign: "start",
+                      borderRadius: 12,
+                      overflow: "hidden",
                       position: "relative",
                       cursor: "pointer",
                       userSelect: "none",
-                      height: 120,
-                      borderRadius: 12,
-                      overflow: "hidden",
                       background: hero,
                       border: "1px solid #EEF2F7",
                       boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
@@ -1014,12 +954,15 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                     }
                   }}
                   style={{
+                    width: 160,
+                    height: 120,
+                    flexShrink: 0,
+                    scrollSnapAlign: "start",
+                    borderRadius: 12,
+                    overflow: "hidden",
                     position: "relative",
                     cursor: "pointer",
                     userSelect: "none",
-                    height: 120,
-                    borderRadius: 12,
-                    overflow: "hidden",
                     background: hero,
                     border: "1px solid #EEF2F7",
                     boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
@@ -1086,8 +1029,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 </div>
               );
             })}
-          </div>
-        ))}
       </div>
       <div className="mx-4 mt-4 mb-2">
         <span
