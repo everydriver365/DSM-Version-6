@@ -1091,38 +1091,82 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         type="button"
         onClick={() => navigate({ to: "/dsm-live", hash: "community" } as never)}
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: "block",
           width: "calc(100% - 32px)",
           margin: "8px 16px 0",
           background: "#0F2044",
           borderRadius: 12,
-          padding: "12px 14px",
+          padding: 14,
           border: 0,
           cursor: "pointer",
           textAlign: "left",
         }}
       >
-        <Users color="#fff" size={18} style={{ marginRight: 10, flexShrink: 0 }} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>DSM Community</div>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12 }}>
-            Forum for ADIs — coming soon
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+          <Users color="#fff" size={18} style={{ marginRight: 10, flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>DSM Community</div>
+            <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>
+              Forum for ADIs
+            </div>
           </div>
+          <span
+            style={{
+              background: "#CC2229",
+              color: "#fff",
+              fontSize: 11,
+              fontWeight: 600,
+              padding: "5px 10px",
+              borderRadius: 8,
+              flexShrink: 0,
+            }}
+          >
+            Open →
+          </span>
         </div>
-        <span
+        <div
           style={{
-            background: "#CC2229",
-            color: "#fff",
-            fontSize: 12,
-            fontWeight: 600,
-            padding: "6px 12px",
-            borderRadius: 8,
-            flexShrink: 0,
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 10,
+            padding: "4px 10px",
           }}
         >
-          Join waitlist →
-        </span>
+          {[
+            { title: "Standards check advice — anyone had part 3 recently?", cat: "Standards Check", replies: 12, activity: "2h" },
+            { title: "Best diary app for a solo ADI in 2026?", cat: "Business", replies: 8, activity: "5h" },
+            { title: "Pupil no-show policy — what do you charge?", cat: "General", replies: 24, activity: "1d" },
+          ].map((t, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "8px 0",
+                borderBottom: i < 2 ? "0.5px solid rgba(255,255,255,0.08)" : "none",
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#fff",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    lineHeight: 1.3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {t.title}
+                </div>
+                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, marginTop: 2 }}>
+                  {t.cat} · {t.replies} replies · {t.activity}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </button>
     </div>
   );
