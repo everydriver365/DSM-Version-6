@@ -648,25 +648,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         })}
       </div>
     </div>
-      {(showListings ? (listings?.length ?? 0) > 2 : legacyTiles.length > 2) && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: 4,
-            marginTop: 4,
-            paddingRight: 16,
-            fontSize: 11,
-            color: "#9CA3AF",
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 500,
-          }}
-        >
-          Swipe <ChevronRight size={12} />
-        </div>
-      )}
-    </div>
   );
 }
 
