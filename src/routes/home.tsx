@@ -961,12 +961,15 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                     }
                   }}
                   style={{
+                    width: 160,
+                    height: 120,
+                    flexShrink: 0,
+                    scrollSnapAlign: "start",
+                    borderRadius: 12,
+                    overflow: "hidden",
                     position: "relative",
                     cursor: "pointer",
                     userSelect: "none",
-                    height: 120,
-                    borderRadius: 12,
-                    overflow: "hidden",
                     background: hero,
                     border: "1px solid #EEF2F7",
                     boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
