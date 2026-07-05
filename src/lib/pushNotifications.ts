@@ -32,7 +32,7 @@ export function sendLocalNotification(title: string, body: string, icon?: string
   if (!isSupported()) return;
   if (Notification.permission !== "granted") return;
   try {
-    new Notification(title, { body, icon: icon ?? "/icon-192.png" });
+    new Notification(title, { body, icon: icon ?? icon192.url });
   } catch (err) {
     console.error("[pushNotifications] sendLocalNotification error", err);
   }
