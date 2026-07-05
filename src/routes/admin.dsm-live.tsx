@@ -193,12 +193,15 @@ function AdminDsmLive() {
         host_name: form.host_name || "DSM by EveryDriver",
         description: form.description || null,
         session_date: form.session_date,
-        session_time: form.session_time,
+        session_time:
+          form.session_time && form.session_time.length === 5
+            ? `${form.session_time}:00`
+            : form.session_time,
         duration_minutes: Number(form.duration_minutes) || 60,
         max_spaces: Number(form.max_spaces) || 20,
         price_display: form.price_display || null,
         price_amount: Number(form.price_amount) || 0,
-        free_for_plus_max: !!form.free_for_plus_max,
+        free_for_plus: !!form.free_for_plus_max,
         zoom_link: form.zoom_link || null,
         zoom_link_revealed_after_booking: !!form.zoom_link_revealed_after_booking,
         image_url: form.image_url || null,
@@ -546,10 +549,14 @@ function AdminDsmLive() {
               marginTop: 12,
               cursor: "pointer",
               opacity: saving ? 0.6 : 1,
+              position: "sticky",
+              bottom: 16,
+              boxShadow: "0 -8px 16px rgba(255,255,255,0.9)",
             }}
           >
             {saving ? "Saving…" : "Save session"}
           </button>
+          <div style={{ height: 100 }} />
         </Sheet>
       )}
 
