@@ -1095,13 +1095,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           width: "calc(100% - 32px)",
           margin: "8px 16px 0",
           background: "#FFFFFF",
-          borderRadius: 16,
+          borderRadius: 12,
           padding: 0,
           border: "1px solid #EEF2F7",
           cursor: "pointer",
           textAlign: "left",
           overflow: "hidden",
-          boxShadow: "0 4px 16px rgba(11, 31, 58, 0.06)",
+          boxShadow: "0 2px 10px rgba(11, 31, 58, 0.05)",
         }}
       >
         <div
@@ -1109,16 +1109,16 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "14px 16px",
+            padding: "10px 14px",
             borderBottom: "1px solid #EEF2F7",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div
               style={{
-                width: 38,
-                height: 38,
-                borderRadius: 12,
+                width: 32,
+                height: 32,
+                borderRadius: 10,
                 background: "#EAF3FB",
                 border: "1px solid #E0ECF8",
                 display: "flex",
@@ -1127,13 +1127,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 flexShrink: 0,
               }}
             >
-              <Users color="#0C2340" size={20} />
+              <Users color="#0C2340" size={18} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: "#0B1F3A", fontWeight: 700, fontSize: 15, letterSpacing: -0.2 }}>
+              <div style={{ color: "#0B1F3A", fontWeight: 700, fontSize: 14, letterSpacing: -0.2 }}>
                 DSM Community
               </div>
-              <div style={{ color: "#5A6B82", fontSize: 11, marginTop: 2 }}>
+              <div style={{ color: "#5A6B82", fontSize: 10, marginTop: 1 }}>
                 Forum for ADIs
               </div>
             </div>
@@ -1142,24 +1142,24 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             style={{
               background: "#CC2229",
               color: "#fff",
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 700,
-              padding: "6px 12px",
+              padding: "4px 10px",
               borderRadius: 999,
               flexShrink: 0,
               display: "inline-flex",
               alignItems: "center",
-              gap: 4,
+              gap: 3,
             }}
           >
             Open
-            <ChevronRight size={14} />
+            <ChevronRight size={12} />
           </span>
         </div>
 
         <div
           style={{
-            padding: "4px 16px",
+            padding: "2px 14px",
           }}
         >
           {[
@@ -1173,7 +1173,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "12px 0",
+                padding: "10px 0",
                 borderBottom: i < 2 ? "1px solid #EEF2F7" : "none",
               }}
             >
@@ -1181,7 +1181,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 <div
                   style={{
                     color: "#0B1F3A",
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: 600,
                     lineHeight: 1.35,
                     overflow: "hidden",
@@ -1191,7 +1191,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 >
                   {t.title}
                 </div>
-                <div style={{ color: "#1877D6", fontSize: 11, marginTop: 3, fontWeight: 500 }}>
+                <div style={{ color: "#1877D6", fontSize: 10, marginTop: 2, fontWeight: 500 }}>
                   {t.cat} · {t.replies} replies · {t.activity}
                 </div>
               </div>
@@ -1201,12 +1201,12 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
         <div
           style={{
-            padding: "10px 16px",
+            padding: "8px 14px",
             borderTop: "1px solid #EEF2F7",
             textAlign: "center",
           }}
         >
-          <span style={{ color: "#1877D6", fontSize: 11, fontWeight: 700 }}>
+          <span style={{ color: "#1877D6", fontSize: 10, fontWeight: 700 }}>
             View all discussions
           </span>
         </div>
