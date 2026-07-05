@@ -3627,9 +3627,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* UPCOMING TESTS COUNTDOWN */}
-      <TestCountdownSection userId={userId} navigate={navigate} />
-
       {/* ENABLE NOTIFICATIONS PROMPT */}
       {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
         <div
@@ -3719,22 +3716,9 @@ function HomePage() {
 
       {/* NEEDS ATTENTION */}
       <NeedsAttention
-        jobs={0}
-        tests={testCount}
-        calls={0}
-        enqs={enqCount}
-        onNavigate={(to) => {
-          if (to === "/tests") {
-            setTestsOpen(true);
-          } else {
-            navigate({ to });
-          }
-        }}
+        userId={userId}
+        navigate={navigate}
       />
-
-      {/* OUTSTANDING PAYMENTS */}
-      <OutstandingPaymentsSection userId={userId} navigate={navigate} />
-
 
       {/* TODAY'S SCHEDULE (Google Calendar style) */}
       <div
