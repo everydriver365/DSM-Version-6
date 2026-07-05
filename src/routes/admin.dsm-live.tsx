@@ -20,6 +20,34 @@ const CATEGORIES = [
   "Q&A Session",
 ];
 const STATUSES = ["upcoming", "live", "completed", "cancelled"] as const;
+const FREQUENCIES = [
+  { value: "weekly", label: "Weekly", days: 7 },
+  { value: "fortnightly", label: "Fortnightly", days: 14 },
+  { value: "monthly", label: "Monthly", days: 0 /* month-based */ },
+] as const;
+
+type Frequency = typeof FREQUENCIES[number]["value"];
+
+function generateOccurrences(startDate: string, until: string, freq: Frequency): string[] {
+  const out: string[] = [];
+  if (!startDate || !until) return out;
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(until + "T00:00:00");
+  if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) return [startDate];
+  const cur = new Date(start);
+  let guard = 0;
+  while (cur <= end && guard < 500) {
+    out.push(cur.toISOString().slice(0, 10));
+    if (freq === "monthly") {
+      cur.setMonth(cur.getMonth() + 1);
+    } else {
+      const days = freq === "fortnightly" ? 14 : 7;
+      cur.setDate(cur.getDate() + days);
+    }
+    guard++;
+  }
+  return out;
+}
 
 type Session = {
   id: string;
@@ -90,6 +118,9 @@ function AdminDsmLive() {
   const [saving, setSaving] = useState(false);
   const [bookingsFor, setBookingsFor] = useState<Session | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
+  const [recurringUntil, setRecurringUntil] = useState<string>("");
 
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
@@ -134,12 +165,18 @@ function AdminDsmLive() {
   function openAdd() {
     setEditing(null);
     setForm(emptyForm());
+    setIsRecurring(false);
+    setRecurringFrequency("weekly");
+    setRecurringUntil("");
     setShowSheet(true);
   }
 
   function openEdit(s: Session) {
     setEditing(s);
     setForm({ ...s });
+    setIsRecurring(false);
+    setRecurringFrequency("weekly");
+    setRecurringUntil("");
     setShowSheet(true);
   }
 
@@ -168,23 +205,44 @@ function AdminDsmLive() {
         status: form.status || "upcoming",
       };
       if (editing) {
+        console.log("[dsm-live] saving session (PATCH):", payload);
         await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
           method: "PATCH",
           body: JSON.stringify(payload),
         });
+        console.log("[dsm-live] save result: PATCH ok");
         showToast("Session updated");
+      } else if (isRecurring && recurringUntil && form.session_date) {
+        const groupId = crypto.randomUUID();
+        const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency);
+        const rows = dates.map((d) => ({
+          ...payload,
+          session_date: d,
+          is_recurring: true,
+          recurring_frequency: recurringFrequency,
+          recurring_group_id: groupId,
+        }));
+        console.log("[dsm-live] saving session (POST recurring):", rows);
+        const data = await restFetch("dsm_live_sessions", {
+          method: "POST",
+          body: JSON.stringify(rows),
+        });
+        console.log("[dsm-live] save result: POST recurring", data);
+        showToast(`Created ${rows.length} recurring sessions`);
       } else {
-        await restFetch("dsm_live_sessions", {
+        console.log("[dsm-live] saving session (POST):", payload);
+        const data = await restFetch("dsm_live_sessions", {
           method: "POST",
           body: JSON.stringify(payload),
         });
+        console.log("[dsm-live] save result: POST", data);
         showToast("Session added");
       }
       setShowSheet(false);
       loadSessions();
     } catch (e: any) {
-      console.error(e);
-      showToast("Save failed");
+      console.error("[dsm-live] save error:", e?.message || e);
+      showToast(`Save failed: ${e?.message?.slice(0, 60) || "unknown"}`);
     } finally {
       setSaving(false);
     }
@@ -437,6 +495,41 @@ function AdminDsmLive() {
               {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </FormField>
+          {!editing && (
+            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+              <Toggle
+                label="This is a recurring session"
+                checked={isRecurring}
+                onChange={setIsRecurring}
+              />
+              {isRecurring && (
+                <div style={{ marginTop: 8 }}>
+                  <FormField label="Frequency">
+                    <select
+                      style={inp}
+                      value={recurringFrequency}
+                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                    >
+                      {FREQUENCIES.map((f) => (
+                        <option key={f.value} value={f.value}>{f.label}</option>
+                      ))}
+                    </select>
+                  </FormField>
+                  <FormField label="Repeat until">
+                    <input
+                      type="date"
+                      style={inp}
+                      value={recurringUntil}
+                      onChange={(e) => setRecurringUntil(e.target.value)}
+                    />
+                  </FormField>
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    Generates individual session entries for each occurrence.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <button
             type="button"
             disabled={saving}
