@@ -764,6 +764,8 @@ function TestCountdownSection({
 
   if (!rows || rows.length === 0) return null;
 
+  const single = rows.length === 1;
+
   const today0 = startOfDay(new Date()).getTime();
   const daysUntil = (d: string) =>
     Math.round((startOfDay(new Date(`${d}T00:00:00`)).getTime() - today0) / 86400000);
@@ -806,15 +808,16 @@ function TestCountdownSection({
         </span>
       </div>
       <div
+        className={single ? "mx-4" : undefined}
         style={{
           display: "flex",
-          gap: 10,
-          overflowX: "auto",
+          gap: single ? 0 : 10,
+          overflowX: single ? "hidden" : "auto",
           paddingBottom: 8,
-          paddingLeft: 16,
-          paddingRight: 16,
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
+          paddingLeft: single ? 0 : 16,
+          paddingRight: single ? 0 : 16,
+          WebkitOverflowScrolling: single ? "auto" : "touch",
+          scrollbarWidth: single ? "auto" : "none",
         }}
       >
         {rows.map((p) => {
@@ -839,8 +842,8 @@ function TestCountdownSection({
                 }
               }}
               style={{
-                flex: "0 0 auto",
-                width: 200,
+                flex: single ? "1 1 auto" : "0 0 auto",
+                width: single ? "100%" : 200,
                 background: bg,
                 border: "0.5px solid #E2E6ED",
                 borderRadius: 12,
@@ -963,6 +966,7 @@ function OutstandingPaymentsSection({
     <div
       className="mx-4 mt-3"
       style={{
+        width: "100%",
         background: "#FFFFFF",
         border: "0.5px solid #E2E6ED",
         borderRadius: 12,
@@ -1152,6 +1156,7 @@ function RecentActivitySection({
     <div
       className="mx-4 mt-3"
       style={{
+        width: "100%",
         background: "#FFFFFF",
         border: "0.5px solid #E2E6ED",
         borderRadius: 12,
