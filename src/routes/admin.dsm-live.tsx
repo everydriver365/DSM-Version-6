@@ -66,6 +66,7 @@ type Session = {
   zoom_link: string | null;
   zoom_link_revealed_after_booking: boolean | null;
   image_url: string | null;
+  image_position: string | null;
   status: string | null;
   deleted_at: string | null;
 };
@@ -104,6 +105,7 @@ function emptyForm(): Partial<Session> {
     zoom_link: "",
     zoom_link_revealed_after_booking: true,
     image_url: "",
+    image_position: "center center",
     status: "upcoming",
   };
 }
@@ -123,6 +125,10 @@ function AdminDsmLive() {
   const [isRecurring, setIsRecurring] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropDataUrl, setCropDataUrl] = useState<string | null>(null);
+  const [cropPos, setCropPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
 
@@ -209,6 +215,7 @@ function AdminDsmLive() {
         zoom_link: form.zoom_link || null,
         zoom_link_revealed_after_booking: !!form.zoom_link_revealed_after_booking,
         image_url: form.image_url || null,
+        image_position: form.image_position || "center center",
         status: form.status || "upcoming",
       };
       if (editing) {
@@ -262,24 +269,43 @@ function AdminDsmLive() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropFile(file);
+      setCropDataUrl(String(reader.result));
+      setCropPos({ x: 50, y: 50 });
+    };
+    reader.readAsDataURL(file);
+    if (imageInputRef.current) imageInputRef.current.value = "";
+  }
+
+  function cancelCrop() {
+    setCropFile(null);
+    setCropDataUrl(null);
+  }
+
+  async function confirmCrop() {
+    if (!cropFile) return;
     setUploadingImage(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = cropFile.name.split(".").pop() || "jpg";
       const path = `sessions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error: upErr } = await supabase
         .storage
         .from("dsm-live-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, cropFile, { contentType: cropFile.type, upsert: false });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("dsm-live-images").getPublicUrl(path);
-      setForm((f) => ({ ...f, image_url: pub.publicUrl }));
+      const positionStr = `${cropPos.x}% ${cropPos.y}%`;
+      setForm((f) => ({ ...f, image_url: pub.publicUrl, image_position: positionStr }));
       showToast("Image uploaded");
+      setCropFile(null);
+      setCropDataUrl(null);
     } catch (err: any) {
       console.error("[dsm-live] image upload error:", err?.message || err);
       showToast(`Upload failed: ${err?.message?.slice(0, 60) || "unknown"}`);
     } finally {
       setUploadingImage(false);
-      if (imageInputRef.current) imageInputRef.current.value = "";
     }
   }
 
@@ -532,20 +558,30 @@ function AdminDsmLive() {
             />
             {form.image_url ? (
               <div style={{ position: "relative" }}>
-                <img
-                  src={form.image_url}
-                  alt="Session"
+                <div
                   onClick={() => imageInputRef.current?.click()}
                   style={{
                     width: "100%",
                     height: 120,
-                    objectFit: "cover",
                     borderRadius: 10,
                     border: "1px solid #E2E6ED",
+                    overflow: "hidden",
                     cursor: "pointer",
-                    display: "block",
+                    background: "#F3F4F6",
                   }}
-                />
+                >
+                  <img
+                    src={form.image_url}
+                    alt="Session"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: form.image_position || "center center",
+                      display: "block",
+                    }}
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => setForm((f) => ({ ...f, image_url: "" }))}
@@ -697,6 +733,135 @@ function AdminDsmLive() {
             Send Zoom link to all
           </button>
         </Sheet>
+      )}
+
+      {cropDataUrl && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.8)",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div style={{ color: "#fff", fontSize: 14, fontWeight: 600, marginBottom: 12, textAlign: "center" }}>
+            Drag to reposition
+          </div>
+          <div
+            onPointerDown={(e) => {
+              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+              cropDragRef.current = {
+                startX: e.clientX,
+                startY: e.clientY,
+                startPosX: cropPos.x,
+                startPosY: cropPos.y,
+                width: rect.width,
+                height: rect.height,
+              };
+              (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+            }}
+            onPointerMove={(e) => {
+              const d = cropDragRef.current;
+              if (!d) return;
+              const dx = ((e.clientX - d.startX) / d.width) * 100;
+              const dy = ((e.clientY - d.startY) / d.height) * 100;
+              const nx = Math.max(0, Math.min(100, d.startPosX - dx));
+              const ny = Math.max(0, Math.min(100, d.startPosY - dy));
+              setCropPos({ x: nx, y: ny });
+            }}
+            onPointerUp={(e) => {
+              cropDragRef.current = null;
+              try { (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId); } catch {}
+            }}
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              height: 200,
+              overflow: "hidden",
+              position: "relative",
+              borderRadius: 12,
+              background: "#000",
+              cursor: "crosshair",
+              touchAction: "none",
+              userSelect: "none",
+            }}
+          >
+            <img
+              src={cropDataUrl}
+              alt="Crop preview"
+              draggable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: `${cropPos.x}% ${cropPos.y}%`,
+                pointerEvents: "none",
+                display: "block",
+              }}
+            />
+          </div>
+          <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
+            Position: {Math.round(cropPos.x)}% {Math.round(cropPos.y)}%
+          </div>
+          <button
+            type="button"
+            disabled={uploadingImage}
+            onClick={confirmCrop}
+            style={{
+              marginTop: 20,
+              width: "100%",
+              maxWidth: 420,
+              background: "#0F2044",
+              color: "#fff",
+              border: "none",
+              borderRadius: 10,
+              padding: "12px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: uploadingImage ? "wait" : "pointer",
+              opacity: uploadingImage ? 0.6 : 1,
+            }}
+          >
+            {uploadingImage ? "Uploading…" : "Use this position →"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              cancelCrop();
+              imageInputRef.current?.click();
+            }}
+            style={{
+              marginTop: 10,
+              background: "transparent",
+              color: "#fff",
+              border: "none",
+              fontSize: 13,
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Choose different image
+          </button>
+          <button
+            type="button"
+            onClick={cancelCrop}
+            style={{
+              marginTop: 6,
+              background: "transparent",
+              color: "#9CA3AF",
+              border: "none",
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       )}
 
       {toast && (
