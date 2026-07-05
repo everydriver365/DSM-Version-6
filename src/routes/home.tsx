@@ -371,7 +371,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   if (!showListings && !showLegacy) return null;
 
   return (
-    <div className="mt-2 pb-2">
+    <div className="mt-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
           <h2
@@ -817,7 +817,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   if (tiles.length === 0) return null;
 
   return (
-    <div className="mt-2 pb-2">
+    <div className="mt-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -2435,7 +2435,7 @@ function HomePage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+    <div className="min-h-screen pb-20 pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
