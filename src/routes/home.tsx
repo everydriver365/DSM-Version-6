@@ -1341,6 +1341,46 @@ function HomePage() {
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
+  // ----- Desktop layout (>=768px) — mobile untouched -----
+  const [isDesktop, setIsDesktop] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : false
+  );
+  useEffect(() => {
+    const handler = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  const [activePupilsCount, setActivePupilsCount] = useState(0);
+  const [recentActivity, setRecentActivity] = useState<Array<{
+    id: string;
+    title: string;
+    body: string | null;
+    created_at: string;
+    read: boolean;
+  }>>([]);
+  useEffect(() => {
+    if (!isDesktop) return;
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { count } = await supabase
+        .from("pupils")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .eq("status", "active");
+      if (!cancelled) setActivePupilsCount(count || 0);
+      const { data: notes } = await supabase
+        .from("instructor_notifications")
+        .select("id, title, body, created_at, read")
+        .eq("instructor_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(8);
+      if (!cancelled) setRecentActivity((notes ?? []) as any);
+    })();
+    return () => { cancelled = true; };
+  }, [isDesktop]);
+
   useEffect(() => {
     async function loadCount() {
       const { data: { user } } = await supabase.auth.getUser();
