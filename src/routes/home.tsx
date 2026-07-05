@@ -812,12 +812,12 @@ function TestCountdownSection({
         style={{
           display: "flex",
           gap: single ? 0 : 10,
-          overflowX: single ? "visible" : "auto",
+          overflowX: single ? "hidden" : "auto",
           paddingBottom: 8,
           paddingLeft: single ? 0 : 16,
           paddingRight: single ? 0 : 16,
-          WebkitOverflowScrolling: single ? undefined : "touch",
-          scrollbarWidth: single ? undefined : "none",
+          WebkitOverflowScrolling: single ? "auto" : "touch",
+          scrollbarWidth: single ? "auto" : "none",
         }}
       >
         {rows.map((p) => {
