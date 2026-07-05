@@ -225,6 +225,13 @@ function AdminDsmLive() {
         status: form.status || "upcoming",
       };
       if (editing) {
+        if (editing.is_recurring && editing.recurring_group_id) {
+          setPendingPayload(payload);
+          setRecurringUpdateChoice("single");
+          setRecurringUpdateOpen(true);
+          setSaving(false);
+          return;
+        }
         console.log("[dsm-live] saving session (PATCH):", payload);
         await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
           method: "PATCH",
@@ -262,6 +269,62 @@ function AdminDsmLive() {
       loadSessions();
     } catch (e: any) {
       console.error("[dsm-live] save error:", e?.message || e);
+      showToast(`Save failed: ${e?.message?.slice(0, 60) || "unknown"}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function confirmRecurringUpdate() {
+    if (!editing || !pendingPayload) return;
+    setSaving(true);
+    try {
+      const scope = recurringUpdateChoice;
+      if (scope === "single") {
+        await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(pendingPayload),
+        });
+        showToast("Session updated");
+      } else {
+        // Strip date/time fields for multi-session updates
+        const {
+          session_date: _sd,
+          session_time: _st,
+          duration_minutes: _dm,
+          free_for_plus: _fp,
+          ...rest
+        } = pendingPayload;
+        const restrictedPayload = {
+          title: rest.title,
+          description: rest.description,
+          host_name: rest.host_name,
+          category: rest.category,
+          image_url: rest.image_url,
+          image_position: rest.image_position,
+          price_display: rest.price_display,
+          price_amount: rest.price_amount,
+          max_spaces: rest.max_spaces,
+          zoom_link: rest.zoom_link,
+          status: rest.status,
+        };
+        let query = `dsm_live_sessions?recurring_group_id=eq.${editing.recurring_group_id}&deleted_at=is.null`;
+        if (scope === "following" && editing.session_date) {
+          query += `&session_date=gte.${editing.session_date}`;
+        }
+        const data = await restFetch(query, {
+          method: "PATCH",
+          body: JSON.stringify(restrictedPayload),
+        });
+        const count = Array.isArray(data) ? data.length : 0;
+        showToast(`${count} session${count === 1 ? "" : "s"} updated`);
+      }
+      setRecurringUpdateOpen(false);
+      setPendingPayload(null);
+      setShowSheet(false);
+      loadSessions();
+    } catch (e: any) {
+      console.error("[dsm-live] recurring update error:", e?.message || e);
       showToast(`Save failed: ${e?.message?.slice(0, 60) || "unknown"}`);
     } finally {
       setSaving(false);
