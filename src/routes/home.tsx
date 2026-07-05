@@ -1094,14 +1094,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           display: "block",
           width: "calc(100% - 32px)",
           margin: "8px 16px 0",
-          background: "#0c2340",
+          background: "#FFFFFF",
           borderRadius: 16,
           padding: 0,
-          border: "1px solid #1a4a6e",
+          border: "1px solid #EEF2F7",
           cursor: "pointer",
           textAlign: "left",
           overflow: "hidden",
-          boxShadow: "0 10px 30px -10px rgba(12, 35, 64, 0.35)",
+          boxShadow: "0 4px 16px rgba(11, 31, 58, 0.06)",
         }}
       >
         <div
@@ -1110,7 +1110,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             alignItems: "center",
             justifyContent: "space-between",
             padding: "14px 16px",
-            borderBottom: "1px solid #1a4a6e",
+            borderBottom: "1px solid #EEF2F7",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -1119,21 +1119,21 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 width: 38,
                 height: 38,
                 borderRadius: 12,
-                background: "rgba(26, 74, 110, 0.5)",
-                border: "1px solid rgba(93, 189, 185, 0.25)",
+                background: "#EAF3FB",
+                border: "1px solid #E0ECF8",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <Users color="#5cbdb9" size={20} />
+              <Users color="#0C2340" size={20} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, letterSpacing: -0.2 }}>
+              <div style={{ color: "#0B1F3A", fontWeight: 700, fontSize: 15, letterSpacing: -0.2 }}>
                 DSM Community
               </div>
-              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, marginTop: 2 }}>
+              <div style={{ color: "#5A6B82", fontSize: 11, marginTop: 2 }}>
                 Forum for ADIs
               </div>
             </div>
@@ -1174,13 +1174,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 alignItems: "center",
                 gap: 8,
                 padding: "12px 0",
-                borderBottom: i < 2 ? "1px solid rgba(26, 74, 110, 0.5)" : "none",
+                borderBottom: i < 2 ? "1px solid #EEF2F7" : "none",
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    color: "#fff",
+                    color: "#0B1F3A",
                     fontSize: 13,
                     fontWeight: 600,
                     lineHeight: 1.35,
@@ -1191,7 +1191,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 >
                   {t.title}
                 </div>
-                <div style={{ color: "rgba(93, 189, 185, 0.85)", fontSize: 11, marginTop: 3, fontWeight: 500 }}>
+                <div style={{ color: "#1877D6", fontSize: 11, marginTop: 3, fontWeight: 500 }}>
                   {t.cat} · {t.replies} replies · {t.activity}
                 </div>
               </div>
@@ -1202,11 +1202,11 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         <div
           style={{
             padding: "10px 16px",
-            borderTop: "1px solid #1a4a6e",
+            borderTop: "1px solid #EEF2F7",
             textAlign: "center",
           }}
         >
-          <span style={{ color: "#5cbdb9", fontSize: 11, fontWeight: 700 }}>
+          <span style={{ color: "#1877D6", fontSize: 11, fontWeight: 700 }}>
             View all discussions
           </span>
         </div>
