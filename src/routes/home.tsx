@@ -5211,96 +5211,230 @@ function TodayTile({
 }
 
 function NeedsAttention({
-  jobs,
-  tests,
-  calls,
-  enqs,
+  userId,
+  upcomingTests,
+  outstandingBreakdown,
   onNavigate,
 }: {
-  jobs: number;
-  tests: number;
-  calls: number;
-  enqs: number;
+  userId: string | null;
+  upcomingTests: Array<{
+    id: string;
+    name: string;
+    test_date: string;
+    test_time: string | null;
+    test_centre: string | null;
+  }>;
+  outstandingBreakdown: Array<{
+    pupilId: string;
+    name: string;
+    firstName: string;
+    phone: string | null;
+    email: string | null;
+    amount: number;
+    type: "Lessons" | "NI Course";
+  }>;
   onNavigate: (to: string) => void;
 }) {
-  const urgentCount = jobs;
-  const cells: Array<{
-    key: string;
-    label: string;
-    count: number;
-    bg: string;
-    countColor: string;
-    route: string;
-    detail: string;
-  }> = [
-    { key: 'jobs', label: "Jobs", count: jobs, bg: '#fbe8e8', countColor: '#c9302c', route: '/enquiries', detail: 'Outstanding jobs to action.' },
-    { key: 'tests', label: "Tests", count: tests, bg: '#e8eefb', countColor: '#2952b3', route: '/tests', detail: 'Upcoming driving tests.' },
-    { key: 'calls', label: "Calls", count: calls, bg: 'transparent', countColor: '#6B7280', route: '/messages', detail: 'Calls to return.' },
-    { key: 'enqs', label: "Enq's", count: enqs, bg: enqs > 0 ? '#1877D6' : 'transparent', countColor: enqs > 0 ? '#FFFFFF' : '#6B7280', route: '/enquiries', detail: 'New enquiries to respond to.' },
-  ];
-  const [expanded, setExpanded] = useState<string | null>(null);
+  type UnreadNotif = {
+    id: string;
+    title: string | null;
+    body: string | null;
+    created_at: string;
+  };
+  const [unread, setUnread] = useState<UnreadNotif[]>([]);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("instructor_notifications")
+          .select("id,title,body,created_at")
+          .eq("instructor_id", userId)
+          .eq("read", false)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false })
+          .limit(5);
+        if (error) throw error;
+        if (!cancelled) setUnread((data ?? []) as UnreadNotif[]);
+      } catch (err) {
+        console.error("[home] needs-attention notifications fetch failed", err);
+        if (!cancelled) setUnread([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const today0 = startOfDay(new Date()).getTime();
+  const daysUntil = (d: string) =>
+    Math.round((startOfDay(new Date(`${d}T00:00:00`)).getTime() - today0) / 86400000);
+
+  const formatTestDateShort = (d: string) => {
+    const date = new Date(`${d}T00:00:00`);
+    return date.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  };
+
+  const relTime = (iso: string) => {
+    const then = new Date(iso).getTime();
+    const now = Date.now();
+    const diffSec = Math.max(0, Math.round((now - then) / 1000));
+    if (diffSec < 60) return "just now";
+    const diffMin = Math.round(diffSec / 60);
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHr = Math.round(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+    const startToday = startOfDay(new Date()).getTime();
+    const dayDiff = Math.round(
+      (startToday - startOfDay(new Date(iso)).getTime()) / 86400000,
+    );
+    if (dayDiff === 1) return "Yesterday";
+    if (dayDiff < 7) return `${dayDiff} days ago`;
+    return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  };
+
+  type AlertItem = {
+    id: string;
+    borderColor: string;
+    icon: React.ReactNode;
+    message: string;
+    action: string;
+    onClick: () => void;
+  };
+
+  const alerts: AlertItem[] = [];
+
+  for (const t of upcomingTests) {
+    const d = daysUntil(t.test_date);
+    const displayName = t.name || "Pupil";
+    if (d === 0) {
+      alerts.push({
+        id: `test-today-${t.id}`,
+        borderColor: "#CC2229",
+        icon: <Trophy size={16} color="#CC2229" />,
+        message: `🎯 ${displayName} — TEST DAY!`,
+        action: "View →",
+        onClick: () => onNavigate(`/pupils/${t.id}`),
+      });
+    } else if (d < 3) {
+      alerts.push({
+        id: `test-soon-${t.id}`,
+        borderColor: "#D97706",
+        icon: <CalendarIcon size={16} color="#D97706" />,
+        message: `${displayName} test in ${d} days`,
+        action: "View →",
+        onClick: () => onNavigate(`/pupils/${t.id}`),
+      });
+    } else if (d <= 14) {
+      alerts.push({
+        id: `test-upcoming-${t.id}`,
+        borderColor: "#1A52A0",
+        icon: <CalendarIcon size={16} color="#1A52A0" />,
+        message: `${displayName} test on ${formatTestDateShort(t.test_date)}`,
+        action: "View →",
+        onClick: () => onNavigate(`/pupils/${t.id}`),
+      });
+    }
+  }
+
+  for (const o of outstandingBreakdown) {
+    if (o.amount > 50) {
+      const fmt = Number.isInteger(o.amount) ? o.amount.toFixed(0) : o.amount.toFixed(2);
+      alerts.push({
+        id: `owes-${o.pupilId}`,
+        borderColor: "#CC2229",
+        icon: <PoundSterling size={16} color="#CC2229" />,
+        message: `${o.name} owes £${fmt}`,
+        action: "Chase →",
+        onClick: () => {
+          if (o.phone) {
+            const body = `Hi ${o.firstName}, just a reminder that £${fmt} is outstanding on your lesson account.`;
+            window.location.href = `sms:${o.phone.replace(/\s+/g, "")}?body=${encodeURIComponent(body)}`;
+          } else {
+            onNavigate("/payments");
+          }
+        },
+      });
+    }
+  }
+
+  for (const n of unread) {
+    alerts.push({
+      id: `notif-${n.id}`,
+      borderColor: "#E2E6ED",
+      icon: <Bell size={16} color="#6B7280" />,
+      message: n.title ?? "Notification",
+      action: relTime(n.created_at),
+      onClick: () => onNavigate("/notifications"),
+    });
+  }
+
+  if (alerts.length === 0) return null;
+
+  const shown = alerts.slice(0, 5);
 
   return (
-    <div
-      style={{
-        margin: '12px 16px 0',
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #e0e3ea',
-        borderRadius: 14,
-        padding: 12,
-        fontFamily: 'Inter, sans-serif',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: '#999', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-          NEEDS ATTENTION
-        </div>
-        {urgentCount > 0 && (
-          <span style={{ backgroundColor: '#c9302c', color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 999 }}>
-            {urgentCount} urgent
+    <div className="mx-4 mt-2" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      {shown.map((a) => (
+        <div
+          key={a.id}
+          onClick={a.onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              a.onClick();
+            }
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "#FFFFFF",
+            borderLeft: `3px solid ${a.borderColor}`,
+            borderRadius: 8,
+            padding: "10px 12px",
+            cursor: "pointer",
+            fontFamily: "Inter, sans-serif",
+            boxShadow: "0 1px 3px rgba(11,31,58,0.04)",
+          }}
+        >
+          <span style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+            {a.icon}
           </span>
-        )}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
-        {cells.map((c) => {
-          const isOpen = expanded === c.key;
-          return (
-            <button
-              key={c.key}
-              onClick={() => {
-                setExpanded(isOpen ? null : c.key);
-                onNavigate(c.route);
-              }}
-              style={{
-                backgroundColor: c.bg,
-                border: 'none',
-                borderRadius: 10,
-                padding: '8px 4px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-                position: 'relative',
-              }}
-            >
-              <div style={{ fontSize: 20, fontWeight: 700, color: c.countColor, lineHeight: 1.1 }}>
-                {c.count}
-              </div>
-              <div style={{ fontSize: 9, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', marginTop: 2, letterSpacing: 0.4 }}>
-                {c.label}
-              </div>
-              <span style={{ position: 'absolute', right: 4, top: 4, fontSize: 9, color: '#9CA3AF' }}>›</span>
-            </button>
-          );
-        })}
-      </div>
-      {expanded && (
-        <div style={{ marginTop: 10, padding: '8px 10px', backgroundColor: '#F8F9FB', borderRadius: 8, fontSize: 12, color: '#374151' }}>
-          {cells.find((c) => c.key === expanded)?.detail}
+          <span
+            className="text-sm"
+            style={{
+              flex: 1,
+              minWidth: 0,
+              color: "#0F2044",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontWeight: 500,
+            }}
+          >
+            {a.message}
+          </span>
+          <span
+            style={{
+              flexShrink: 0,
+              fontSize: 12,
+              fontWeight: 700,
+              color: "#1877D6",
+            }}
+          >
+            {a.action}
+          </span>
         </div>
-      )}
+      ))}
     </div>
   );
 }
