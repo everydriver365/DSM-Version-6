@@ -735,6 +735,135 @@ function AdminDsmLive() {
         </Sheet>
       )}
 
+      {cropDataUrl && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.8)",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div style={{ color: "#fff", fontSize: 14, fontWeight: 600, marginBottom: 12, textAlign: "center" }}>
+            Drag to reposition
+          </div>
+          <div
+            onPointerDown={(e) => {
+              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+              cropDragRef.current = {
+                startX: e.clientX,
+                startY: e.clientY,
+                startPosX: cropPos.x,
+                startPosY: cropPos.y,
+                width: rect.width,
+                height: rect.height,
+              };
+              (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+            }}
+            onPointerMove={(e) => {
+              const d = cropDragRef.current;
+              if (!d) return;
+              const dx = ((e.clientX - d.startX) / d.width) * 100;
+              const dy = ((e.clientY - d.startY) / d.height) * 100;
+              const nx = Math.max(0, Math.min(100, d.startPosX - dx));
+              const ny = Math.max(0, Math.min(100, d.startPosY - dy));
+              setCropPos({ x: nx, y: ny });
+            }}
+            onPointerUp={(e) => {
+              cropDragRef.current = null;
+              try { (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId); } catch {}
+            }}
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              height: 200,
+              overflow: "hidden",
+              position: "relative",
+              borderRadius: 12,
+              background: "#000",
+              cursor: "crosshair",
+              touchAction: "none",
+              userSelect: "none",
+            }}
+          >
+            <img
+              src={cropDataUrl}
+              alt="Crop preview"
+              draggable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: `${cropPos.x}% ${cropPos.y}%`,
+                pointerEvents: "none",
+                display: "block",
+              }}
+            />
+          </div>
+          <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
+            Position: {Math.round(cropPos.x)}% {Math.round(cropPos.y)}%
+          </div>
+          <button
+            type="button"
+            disabled={uploadingImage}
+            onClick={confirmCrop}
+            style={{
+              marginTop: 20,
+              width: "100%",
+              maxWidth: 420,
+              background: "#0F2044",
+              color: "#fff",
+              border: "none",
+              borderRadius: 10,
+              padding: "12px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: uploadingImage ? "wait" : "pointer",
+              opacity: uploadingImage ? 0.6 : 1,
+            }}
+          >
+            {uploadingImage ? "Uploading…" : "Use this position →"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              cancelCrop();
+              imageInputRef.current?.click();
+            }}
+            style={{
+              marginTop: 10,
+              background: "transparent",
+              color: "#fff",
+              border: "none",
+              fontSize: 13,
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Choose different image
+          </button>
+          <button
+            type="button"
+            onClick={cancelCrop}
+            style={{
+              marginTop: 6,
+              background: "transparent",
+              color: "#9CA3AF",
+              border: "none",
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
       {toast && (
         <div
           style={{
