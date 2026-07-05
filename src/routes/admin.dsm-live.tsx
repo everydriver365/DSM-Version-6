@@ -256,6 +256,34 @@ function AdminDsmLive() {
   }
 
   async function handleDelete(s: Session) {
+    return _handleDelete(s);
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `sessions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase
+        .storage
+        .from("dsm-live-images")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("dsm-live-images").getPublicUrl(path);
+      setForm((f) => ({ ...f, image_url: pub.publicUrl }));
+      showToast("Image uploaded");
+    } catch (err: any) {
+      console.error("[dsm-live] image upload error:", err?.message || err);
+      showToast(`Upload failed: ${err?.message?.slice(0, 60) || "unknown"}`);
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+    }
+  }
+
+  async function _handleDelete(s: Session) {
     if (!confirm(`Delete "${s.title}"?`)) return;
     try {
       await restFetch(`dsm_live_sessions?id=eq.${s.id}`, {
