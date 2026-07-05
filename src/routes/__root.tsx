@@ -10,6 +10,8 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import icon192 from "../assets/icon-192.png.asset.json";
+import icon512 from "../assets/icon-512.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
