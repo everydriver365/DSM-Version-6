@@ -374,12 +374,12 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     <div className="mt-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
-          <h2
-            className="font-bold tracking-tight"
-            style={{ fontSize: 20, color: "#0B1F3A", fontFamily: "Inter, sans-serif", lineHeight: 1.1 }}
+          <span
+            className="text-[11px] uppercase"
+            style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
           >
             Marketplace
-          </h2>
+          </span>
           <p
             className="font-semibold uppercase"
             style={{
@@ -823,8 +823,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
             <span
-              className="font-bold tracking-tight"
-              style={{ fontSize: 20, color: "#0B1F3A", fontFamily: "Inter, sans-serif", lineHeight: 1.1 }}
+              className="text-[11px] uppercase"
+              style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
             >
               DSM Live
             </span>
