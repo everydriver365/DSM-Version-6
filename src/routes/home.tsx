@@ -371,7 +371,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   if (!showListings && !showLegacy) return null;
 
   return (
-    <div className="mt-4 pb-4">
+    <div className="mt-2 pb-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
           <h2
@@ -817,7 +817,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   if (tiles.length === 0) return null;
 
   return (
-    <div className="mt-4 pb-4">
+    <div className="mt-2 pb-2">
       <div className="mx-4 flex items-end justify-between mb-4">
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
