@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Pencil, Trash2, Users as UsersIcon } from "lucide-react";
+import { ChevronLeft, Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 
