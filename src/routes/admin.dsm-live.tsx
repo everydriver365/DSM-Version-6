@@ -69,6 +69,8 @@ type Session = {
   image_position: string | null;
   status: string | null;
   deleted_at: string | null;
+  is_recurring?: boolean | null;
+  recurring_group_id?: string | null;
 };
 
 async function restFetch(path: string, init?: RequestInit) {
@@ -131,6 +133,10 @@ function AdminDsmLive() {
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
+  const [recurringUpdateOpen, setRecurringUpdateOpen] = useState(false);
+  const [recurringUpdateChoice, setRecurringUpdateChoice] =
+    useState<"single" | "following" | "all">("single");
+  const [pendingPayload, setPendingPayload] = useState<any>(null);
 
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
@@ -219,6 +225,13 @@ function AdminDsmLive() {
         status: form.status || "upcoming",
       };
       if (editing) {
+        if (editing.is_recurring && editing.recurring_group_id) {
+          setPendingPayload(payload);
+          setRecurringUpdateChoice("single");
+          setRecurringUpdateOpen(true);
+          setSaving(false);
+          return;
+        }
         console.log("[dsm-live] saving session (PATCH):", payload);
         await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
           method: "PATCH",
@@ -256,6 +269,62 @@ function AdminDsmLive() {
       loadSessions();
     } catch (e: any) {
       console.error("[dsm-live] save error:", e?.message || e);
+      showToast(`Save failed: ${e?.message?.slice(0, 60) || "unknown"}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function confirmRecurringUpdate() {
+    if (!editing || !pendingPayload) return;
+    setSaving(true);
+    try {
+      const scope = recurringUpdateChoice;
+      if (scope === "single") {
+        await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(pendingPayload),
+        });
+        showToast("Session updated");
+      } else {
+        // Strip date/time fields for multi-session updates
+        const {
+          session_date: _sd,
+          session_time: _st,
+          duration_minutes: _dm,
+          free_for_plus: _fp,
+          ...rest
+        } = pendingPayload;
+        const restrictedPayload = {
+          title: rest.title,
+          description: rest.description,
+          host_name: rest.host_name,
+          category: rest.category,
+          image_url: rest.image_url,
+          image_position: rest.image_position,
+          price_display: rest.price_display,
+          price_amount: rest.price_amount,
+          max_spaces: rest.max_spaces,
+          zoom_link: rest.zoom_link,
+          status: rest.status,
+        };
+        let query = `dsm_live_sessions?recurring_group_id=eq.${editing.recurring_group_id}&deleted_at=is.null`;
+        if (scope === "following" && editing.session_date) {
+          query += `&session_date=gte.${editing.session_date}`;
+        }
+        const data = await restFetch(query, {
+          method: "PATCH",
+          body: JSON.stringify(restrictedPayload),
+        });
+        const count = Array.isArray(data) ? data.length : 0;
+        showToast(`${count} session${count === 1 ? "" : "s"} updated`);
+      }
+      setRecurringUpdateOpen(false);
+      setPendingPayload(null);
+      setShowSheet(false);
+      loadSessions();
+    } catch (e: any) {
+      console.error("[dsm-live] recurring update error:", e?.message || e);
       showToast(`Save failed: ${e?.message?.slice(0, 60) || "unknown"}`);
     } finally {
       setSaving(false);
@@ -880,6 +949,110 @@ function AdminDsmLive() {
           }}
         >
           {toast}
+        </div>
+      )}
+
+      {recurringUpdateOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 80,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+          onClick={() => !saving && setRecurringUpdateOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              padding: 20,
+              width: "100%",
+              maxWidth: 420,
+              boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
+              Update recurring sessions
+            </div>
+            <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
+              This is a recurring session. What would you like to update?
+            </div>
+            {[
+              { v: "single", label: "Just this session", desc: "Only update this single session" },
+              { v: "following", label: "This and all following sessions", desc: "Update this and every future session in the series" },
+              { v: "all", label: "All sessions in this series", desc: "Update every session in the series" },
+            ].map((opt) => (
+              <label
+                key={opt.v}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  padding: "10px 12px",
+                  border: `1px solid ${recurringUpdateChoice === opt.v ? "#0B1F3A" : "#E2E6ED"}`,
+                  borderRadius: 10,
+                  marginBottom: 8,
+                  cursor: "pointer",
+                  background: recurringUpdateChoice === opt.v ? "#F5F7FB" : "#fff",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="recurring-update-scope"
+                  checked={recurringUpdateChoice === opt.v}
+                  onChange={() => setRecurringUpdateChoice(opt.v as any)}
+                  style={{ marginTop: 3 }}
+                />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{opt.label}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{opt.desc}</div>
+                </div>
+              </label>
+            ))}
+            <div style={{ display: "flex", gap: 8, marginTop: 14, justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => setRecurringUpdateOpen(false)}
+                style={{
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  border: "1px solid #E2E6ED",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={confirmRecurringUpdate}
+                style={{
+                  background: "#0B1F3A",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: saving ? "wait" : "pointer",
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving ? "Updating…" : "Update"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
