@@ -1851,37 +1851,6 @@ function HomePage() {
         .eq("read", false);
       setNotifCount(count || 0);
 
-      // Pending enquiries = enquiry rows linked to this instructor's notifications
-      // whose status is still 'new' or 'accepted'. Declined enquiries are not pending.
-      const { data: refRows } = await supabase
-        .from("instructor_notifications")
-        .select("reference_id")
-        .eq("instructor_id", user.id)
-        .eq("type", "enquiry");
-      const refIds = (refRows ?? [])
-        .map((r) => r.reference_id as string | null)
-        .filter((x): x is string => !!x);
-      if (refIds.length === 0) {
-        setEnqCount(0);
-      } else {
-        const { count: eCount } = await supabase
-          .from("enquiries")
-          .select("id", { count: "exact", head: true })
-          .in("id", refIds)
-          .in("status", ["new", "accepted"]);
-        setEnqCount(eCount || 0);
-      }
-
-      // Upcoming tests (any future date)
-      const todayStr = new Date().toISOString().split("T")[0];
-      const { count: tCount } = await supabase
-        .from("pupils")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", user.id)
-        .not("test_date", "is", null)
-        .gte("test_date", todayStr);
-
-
       // EverySwap requests for ALL this instructor's pupils
       const { data: allPupils } = await supabase
         .from("pupils")
@@ -1902,10 +1871,9 @@ function HomePage() {
       }
       setPendingSwapCount(swapCount);
       setSwapRequests(swapRows);
-      setTestCount((tCount || 0) + swapCount);
 
-
-      // Upcoming tests list for the bottom sheet
+      // Upcoming tests list for the bottom sheet and the alert strip
+      const todayStr = new Date().toISOString().split("T")[0];
       const { data: testRows } = await supabase
         .from("pupils")
         .select("id, name, first_name, test_date, test_time, test_centre")
