@@ -704,6 +704,8 @@ function _RemovedMarketplaceLegacy() {
 }
 
 function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
+
+
   type LiveTile = {
     id: string;
     title: string;
