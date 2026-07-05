@@ -155,7 +155,7 @@ function DsmLivePage() {
           display: "flex",
           gap: 8,
           overflowX: "auto",
-          padding: "28px 16px",
+          padding: "16px 16px 12px",
           scrollbarWidth: "none",
         }}
       >
@@ -184,7 +184,7 @@ function DsmLivePage() {
         })}
       </div>
 
-      <div style={{ padding: 16 }}>
+      <div style={{ padding: "8px 16px" }}>
         {sessions === null ? null : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "48px 16px", color: "#6B7280" }}>
             <Video size={48} style={{ margin: "0 auto", opacity: 0.4 }} />
@@ -212,7 +212,7 @@ function DsmLivePage() {
         )}
       </div>
 
-      <div id="podcasts" style={{ padding: "8px 16px 16px" }}>
+      <div id="podcasts" style={{ padding: "4px 16px 8px" }}>
         <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044" }}>
           🎙️ DSM Podcast
         </div>
@@ -247,7 +247,7 @@ function CommunitySection() {
         background: "#0F2044",
         borderRadius: 16,
         padding: 20,
-        margin: "16px 16px 24px",
+        margin: "12px 16px 16px",
       }}
     >
       <Users color="#fff" size={28} style={{ marginBottom: 12 }} />
