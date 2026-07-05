@@ -542,8 +542,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 </div>
               );
             })}
-          </div>
-        ))}
 
         {showLegacy && chunkTiles(legacyTiles, 4).map((chunk, pageIndex) => (
           <div
