@@ -385,6 +385,32 @@ function SettingsPage() {
     }
   }
 
+  async function togglePublishToMarketplace() {
+    if (!userId) return;
+    const next = !publishToMarketplace;
+    setPublishToMarketplace(next);
+    const { error: instErr } = await supabase
+      .from("instructors")
+      .update({ publish_to_marketplace: next })
+      .eq("id", userId);
+    if (instErr) {
+      console.error("[settings] toggle publish_to_marketplace error", instErr);
+      setPublishToMarketplace(!next);
+      toast.error("Could not update listing");
+      return;
+    }
+    const courseUpdate = supabase.from("instructor_courses").update({ publish_marketplace: next }).eq("instructor_id", userId);
+    const { error: courseErr } = await (next ? courseUpdate.eq("status", "active") : courseUpdate);
+    if (courseErr) {
+      console.error("[settings] update instructor_courses error", courseErr);
+    }
+    if (next) {
+      toast.success("You're now listed on EveryDriver");
+    } else {
+      toast.success("Your listings have been removed from EveryDriver");
+    }
+  }
+
 
 
   async function saveRates() {
