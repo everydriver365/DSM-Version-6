@@ -256,10 +256,6 @@ function AdminDsmLive() {
   }
 
   async function handleDelete(s: Session) {
-    void 0;
-    return _handleDelete(s);
-  }
-  async function _handleDelete(s: Session) {
     if (!confirm(`Delete "${s.title}"?`)) return;
     try {
       await restFetch(`dsm_live_sessions?id=eq.${s.id}`, {
