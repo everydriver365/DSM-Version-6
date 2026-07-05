@@ -3708,6 +3708,9 @@ function HomePage() {
         }}
       />
 
+      {/* OUTSTANDING PAYMENTS */}
+      <OutstandingPaymentsSection userId={userId} navigate={navigate} />
+
 
       {/* TODAY'S SCHEDULE (Google Calendar style) */}
       <div
