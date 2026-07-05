@@ -3593,9 +3593,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* UPCOMING TESTS COUNTDOWN */}
-      <TestCountdownSection userId={userId} navigate={navigate} />
-
       {/* ENABLE NOTIFICATIONS PROMPT */}
       {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
         <div
@@ -3680,27 +3677,6 @@ function HomePage() {
           </button>
         </div>
       )}
-
-
-
-      {/* NEEDS ATTENTION */}
-      <NeedsAttention
-        userId={userId}
-        upcomingTests={upcomingTests}
-        outstandingBreakdown={outstandingBreakdown}
-        onNavigate={(to, params) => {
-          if (to === "/tests") {
-            setTestsOpen(true);
-          } else if (params) {
-            navigate({ to: to as never, params: params as never });
-          } else {
-            navigate({ to: to as never });
-          }
-        }}
-      />
-
-      {/* OUTSTANDING PAYMENTS */}
-      <OutstandingPaymentsSection userId={userId} navigate={navigate} />
 
 
       {/* TODAY'S SCHEDULE (Google Calendar style) */}
@@ -4701,10 +4677,6 @@ function HomePage() {
           setTestsOpen(false);
           navigate({ to: "/pupils/$id", params: { id } });
         }}
-      />
-
-      {/* RECENT ACTIVITY */}
-      <RecentActivitySection userId={userId} navigate={navigate} />
 
       <MarketplaceSection navigate={navigate} />
 
