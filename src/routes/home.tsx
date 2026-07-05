@@ -433,35 +433,20 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         </div>
       </div>
       <div
-        className="marketplace-scroll"
         style={{
           display: "flex",
-          gap: 14,
+          flexDirection: "row",
+          gap: 10,
           overflowX: "auto",
-          paddingBottom: 12,
           paddingLeft: 16,
           paddingRight: 16,
+          paddingBottom: 8,
           scrollSnapType: "x mandatory",
-          scrollPaddingLeft: 16,
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {showListings && chunkTiles(listings!, 4).map((chunk, pageIndex) => (
-          <div
-            key={pageIndex}
-            style={{
-              scrollSnapAlign: "start",
-              flex: "0 0 auto",
-              width: "100%",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridTemplateRows: "1fr 1fr",
-              gap: 12,
-              alignContent: "start",
-            }}
-          >
-            {chunk.map((tile) => {
+        {showListings && listings!.map((tile) => {
               const img = firstImageUrl(tile.image_urls);
               const gradient = gradientFor(tile.marketplace_categories?.name);
               const hero = img
