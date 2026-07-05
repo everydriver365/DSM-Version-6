@@ -130,6 +130,7 @@ function AdminDsmLive() {
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [cropDataUrl, setCropDataUrl] = useState<string | null>(null);
   const [cropPos, setCropPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const [cropZoom, setCropZoom] = useState<number>(100);
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
@@ -365,7 +366,7 @@ function AdminDsmLive() {
         .upload(path, cropFile, { contentType: cropFile.type, upsert: false });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("dsm-live-images").getPublicUrl(path);
-      const positionStr = `${cropPos.x}% ${cropPos.y}%`;
+      const positionStr = `${cropPos.x}% ${cropPos.y}% / ${cropZoom}%`;
       setForm((f) => ({ ...f, image_url: pub.publicUrl, image_position: positionStr }));
       showToast("Image uploaded");
       setCropFile(null);
