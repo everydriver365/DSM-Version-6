@@ -19,6 +19,7 @@ import {
   Tag,
   ClipboardList,
   AlertTriangle,
+  Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -88,6 +89,12 @@ function SettingsPage() {
   const [savingCoverage, setSavingCoverage] = useState(false);
   const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
   const [reminderTiming, setReminderTiming] = useState<"evening" | "morning" | "both">("evening");
+
+  // EveryDriver listing state
+  const [publishToMarketplace, setPublishToMarketplace] = useState<boolean>(true);
+  const [featuredListing, setFeaturedListing] = useState<boolean>(false);
+  const [featuredUntil, setFeaturedUntil] = useState<string | null>(null);
+  const [appSlug, setAppSlug] = useState<string>("");
 
   const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
@@ -245,7 +252,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -275,6 +282,19 @@ function SettingsPage() {
       const rt = (instructor as { reminder_timing?: string } | null)?.reminder_timing;
       if (rt === "evening" || rt === "morning" || rt === "both") {
         setReminderTiming(rt);
+      }
+
+      if (instructor && typeof (instructor as { publish_to_marketplace?: boolean }).publish_to_marketplace === "boolean") {
+        setPublishToMarketplace((instructor as { publish_to_marketplace: boolean }).publish_to_marketplace);
+      }
+      if (instructor && typeof (instructor as { featured_listing?: boolean }).featured_listing === "boolean") {
+        setFeaturedListing((instructor as { featured_listing: boolean }).featured_listing);
+      }
+      if (instructor && (instructor as { featured_until?: string | null }).featured_until) {
+        setFeaturedUntil((instructor as { featured_until: string }).featured_until);
+      }
+      if (instructor && typeof (instructor as { app_slug?: string }).app_slug === "string") {
+        setAppSlug((instructor as { app_slug: string }).app_slug);
       }
 
 
