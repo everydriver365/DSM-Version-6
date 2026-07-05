@@ -5198,7 +5198,7 @@ function NeedsAttention({
     amount: number;
     type: "Lessons" | "NI Course";
   }>;
-  onNavigate: (to: string) => void;
+  onNavigate: (to: string, params?: Record<string, string>) => void;
 }) {
   type UnreadNotif = {
     id: string;
