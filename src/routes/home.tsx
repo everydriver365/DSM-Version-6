@@ -1030,25 +1030,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               );
             })}
         </div>
-      </div>
-      {tiles.length > 2 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: 4,
-            marginTop: 4,
-            paddingRight: 16,
-            fontSize: 11,
-            color: "#9CA3AF",
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 500,
-          }}
-        >
-          Swipe <ChevronRight size={12} />
-        </div>
-      )}
       <div className="mx-4 mt-4 mb-2">
         <span
           className="text-[11px] uppercase"
