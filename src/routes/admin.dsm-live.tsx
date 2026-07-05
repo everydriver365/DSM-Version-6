@@ -522,8 +522,76 @@ function AdminDsmLive() {
             <input style={inp} placeholder="https://zoom.us/j/…" value={form.zoom_link || ""} onChange={(e) => setForm({ ...form, zoom_link: e.target.value })} />
           </FormField>
           <Toggle label="Reveal Zoom link after booking" checked={!!form.zoom_link_revealed_after_booking} onChange={(v) => setForm({ ...form, zoom_link_revealed_after_booking: v })} />
-          <FormField label="Image URL (optional)">
-            <input style={inp} value={form.image_url || ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+          <FormField label="Session image (optional)">
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            {form.image_url ? (
+              <div style={{ position: "relative" }}>
+                <img
+                  src={form.image_url}
+                  alt="Session"
+                  onClick={() => imageInputRef.current?.click()}
+                  style={{
+                    width: "100%",
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 10,
+                    border: "1px solid #E2E6ED",
+                    cursor: "pointer",
+                    display: "block",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, image_url: "" }))}
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    background: "rgba(11,31,58,0.85)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 8,
+                    padding: "4px 10px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={uploadingImage}
+                style={{
+                  width: "100%",
+                  height: 120,
+                  border: "1.5px dashed #CBD5E1",
+                  borderRadius: 10,
+                  background: "#F9FAFB",
+                  color: "#6B7280",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: uploadingImage ? "wait" : "pointer",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                }}
+              >
+                <Camera size={22} />
+                {uploadingImage ? "Uploading…" : "Tap to upload session image"}
+              </button>
+            )}
           </FormField>
           <FormField label="Status">
             <select style={inp} value={form.status || "upcoming"} onChange={(e) => setForm({ ...form, status: e.target.value })}>
