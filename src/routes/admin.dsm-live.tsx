@@ -66,6 +66,7 @@ type Session = {
   zoom_link: string | null;
   zoom_link_revealed_after_booking: boolean | null;
   image_url: string | null;
+  image_position: string | null;
   status: string | null;
   deleted_at: string | null;
 };
@@ -104,6 +105,7 @@ function emptyForm(): Partial<Session> {
     zoom_link: "",
     zoom_link_revealed_after_booking: true,
     image_url: "",
+    image_position: "center center",
     status: "upcoming",
   };
 }
@@ -123,6 +125,10 @@ function AdminDsmLive() {
   const [isRecurring, setIsRecurring] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropDataUrl, setCropDataUrl] = useState<string | null>(null);
+  const [cropPos, setCropPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
 
@@ -209,6 +215,7 @@ function AdminDsmLive() {
         zoom_link: form.zoom_link || null,
         zoom_link_revealed_after_booking: !!form.zoom_link_revealed_after_booking,
         image_url: form.image_url || null,
+        image_position: form.image_position || "center center",
         status: form.status || "upcoming",
       };
       if (editing) {
@@ -262,24 +269,43 @@ function AdminDsmLive() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropFile(file);
+      setCropDataUrl(String(reader.result));
+      setCropPos({ x: 50, y: 50 });
+    };
+    reader.readAsDataURL(file);
+    if (imageInputRef.current) imageInputRef.current.value = "";
+  }
+
+  function cancelCrop() {
+    setCropFile(null);
+    setCropDataUrl(null);
+  }
+
+  async function confirmCrop() {
+    if (!cropFile) return;
     setUploadingImage(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = cropFile.name.split(".").pop() || "jpg";
       const path = `sessions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error: upErr } = await supabase
         .storage
         .from("dsm-live-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, cropFile, { contentType: cropFile.type, upsert: false });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("dsm-live-images").getPublicUrl(path);
-      setForm((f) => ({ ...f, image_url: pub.publicUrl }));
+      const positionStr = `${cropPos.x}% ${cropPos.y}%`;
+      setForm((f) => ({ ...f, image_url: pub.publicUrl, image_position: positionStr }));
       showToast("Image uploaded");
+      setCropFile(null);
+      setCropDataUrl(null);
     } catch (err: any) {
       console.error("[dsm-live] image upload error:", err?.message || err);
       showToast(`Upload failed: ${err?.message?.slice(0, 60) || "unknown"}`);
     } finally {
       setUploadingImage(false);
-      if (imageInputRef.current) imageInputRef.current.value = "";
     }
   }
 
@@ -532,20 +558,30 @@ function AdminDsmLive() {
             />
             {form.image_url ? (
               <div style={{ position: "relative" }}>
-                <img
-                  src={form.image_url}
-                  alt="Session"
+                <div
                   onClick={() => imageInputRef.current?.click()}
                   style={{
                     width: "100%",
                     height: 120,
-                    objectFit: "cover",
                     borderRadius: 10,
                     border: "1px solid #E2E6ED",
+                    overflow: "hidden",
                     cursor: "pointer",
-                    display: "block",
+                    background: "#F3F4F6",
                   }}
-                />
+                >
+                  <img
+                    src={form.image_url}
+                    alt="Session"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: form.image_position || "center center",
+                      display: "block",
+                    }}
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => setForm((f) => ({ ...f, image_url: "" }))}
