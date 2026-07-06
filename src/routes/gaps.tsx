@@ -1196,46 +1196,46 @@ function GapsPage() {
         )}
       </div>
 
-      {selectedSlotKey && (
+      {selectedSlots.length > 0 && (
         <>
           <div style={{ height: 96 }} />
           <div
             style={{
               position: "fixed",
               bottom: 80,
-              left: 16,
-              right: 16,
-              maxWidth: 430,
-              margin: "0 auto",
+              left: 0,
+              right: 0,
+              padding: "12px 16px",
+              background: "#FFFFFF",
+              borderTop: `0.5px solid ${BORDER}`,
               zIndex: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              boxShadow: "0 -6px 20px rgba(15, 32, 68, 0.08)",
             }}
           >
+            <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+              {selectedSlots.length} slot
+              {selectedSlots.length === 1 ? "" : "s"} selected
+            </div>
             <button
               onClick={findPupils}
               disabled={loading}
               style={{
-                width: "100%",
                 background: NAVY,
                 color: "#FFFFFF",
                 fontWeight: 600,
                 fontSize: 14,
                 borderRadius: 12,
                 border: "none",
-                padding: "12px 16px",
+                padding: "10px 20px",
                 cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(15, 32, 68, 0.25)",
                 opacity: loading ? 0.6 : 1,
               }}
             >
-              {loading
-                ? "Finding pupils…"
-                : `Find pupils for ${new Date(
-                    slotDate + "T00:00:00",
-                  ).toLocaleDateString("en-GB", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "short",
-                  })} at ${fmt12h(slotTime)} (${duration} min) →`}
+              {loading ? "Finding…" : "Find pupils →"}
             </button>
           </div>
         </>
