@@ -131,6 +131,18 @@ interface Ranked {
   shortNotice: boolean;
   shortNoticeOk: boolean;
   minNoticeHours: number;
+  matchedSlots: SlotMatch[];
+}
+
+interface SelectedSlot {
+  date: string;
+  time: string;
+  duration: number;
+}
+
+interface SlotMatch extends SelectedSlot {
+  match: boolean;
+  subScore: number;
 }
 
 interface OfferRow {
