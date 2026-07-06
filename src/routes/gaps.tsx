@@ -131,6 +131,18 @@ interface Ranked {
   shortNotice: boolean;
   shortNoticeOk: boolean;
   minNoticeHours: number;
+  matchedSlots: SlotMatch[];
+}
+
+interface SelectedSlot {
+  date: string;
+  time: string;
+  duration: number;
+}
+
+interface SlotMatch extends SelectedSlot {
+  match: boolean;
+  subScore: number;
 }
 
 interface OfferRow {
@@ -180,6 +192,104 @@ function fmtTimeHm(t: string) {
   return t.slice(0, 5);
 }
 
+function slotKey(s: SelectedSlot) {
+  return `${s.date}|${s.time}|${s.duration}`;
+}
+
+function describeSlot(
+  _p: Pupil,
+  s: Availability | null,
+  last: string | null,
+  sl: SelectedSlot,
+  nowMs: number,
+) {
+  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
+  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
+  let daysSince: number | null = null;
+  if (last) {
+    daysSince = Math.floor(
+      (new Date(sl.date + "T00:00:00").getTime() -
+        new Date(last + "T00:00:00").getTime()) /
+        86400000,
+    );
+  }
+  let dayMatch: "yes" | "no" | "unknown" = "unknown";
+  let shortNotice = false;
+  let shortNoticeOk = false;
+  let minNoticeHours = 24;
+  if (s) {
+    const availDays = s.available_days || [];
+    if (availDays.length) {
+      dayMatch = availDays.includes(dayOfWeek) ? "yes" : "no";
+    }
+    const hoursUntilSlot = Math.floor(
+      (slotDateTime.getTime() - nowMs) / 3600000,
+    );
+    minNoticeHours = s.min_notice_hours || 24;
+    if (hoursUntilSlot < minNoticeHours) {
+      shortNotice = true;
+      if (s.short_notice_opt_in) shortNoticeOk = true;
+    }
+  }
+  return { daysSince, dayMatch, shortNotice, shortNoticeOk, minNoticeHours };
+}
+
+function scoreSlot(
+  p: Pupil,
+  s: Availability | null,
+  last: string | null,
+  sl: SelectedSlot,
+  nowMs: number,
+): SlotMatch {
+  let score = 50;
+  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
+  const slotHour = parseInt(sl.time.split(":")[0], 10);
+  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
+
+  if (last) {
+    const daysSince = Math.floor(
+      (new Date(sl.date + "T00:00:00").getTime() -
+        new Date(last + "T00:00:00").getTime()) /
+        86400000,
+    );
+    if (daysSince > 14) score += 20;
+    else if (daysSince > 7) score += 10;
+    else if (daysSince < 3) score -= 20;
+  } else {
+    score += 30;
+  }
+
+  if (s) {
+    const availDays = s.available_days || [];
+    if (availDays.length) {
+      if (availDays.includes(dayOfWeek)) score += 15;
+      else score -= 30;
+    }
+    const fromHour = parseInt((s.available_from || "08:00").split(":")[0], 10);
+    const untilHour = parseInt(
+      (s.available_until || "18:00").split(":")[0],
+      10,
+    );
+    if (slotHour >= fromHour && slotHour < untilHour) score += 10;
+    else score -= 20;
+
+    const hoursUntilSlot = Math.floor(
+      (slotDateTime.getTime() - nowMs) / 3600000,
+    );
+    const minNoticeHours = s.min_notice_hours || 24;
+    if (hoursUntilSlot < minNoticeHours) {
+      if (s.short_notice_opt_in) score += 5;
+      else score -= 40;
+    }
+    if (s.preferred_duration_minutes === sl.duration) score += 10;
+  }
+
+  score = Math.max(0, Math.min(100, score));
+  // Suppress unused parameter warning
+  void p;
+  return { ...sl, subScore: score, match: score >= 50 };
+}
+
 function GapsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -190,9 +300,7 @@ function GapsPage() {
 
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
-  const [searchDate, setSearchDate] = useState<string>("");
-  const [searchTime, setSearchTime] = useState<string>("");
-  const [searchDuration, setSearchDuration] = useState<number>(60);
+  const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
@@ -201,7 +309,7 @@ function GapsPage() {
 
   const [freeSlots, setFreeSlots] = useState<FreeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
-  const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
+  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
@@ -405,8 +513,10 @@ function GapsPage() {
     })();
   }, [userId, reloadKey]);
 
-  async function findPupils() {
+  async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
+    const slotsToScore = override && override.length ? override : selectedSlots;
+    if (slotsToScore.length === 0) return;
     setLoading(true);
     setRanked(null);
     try {
@@ -447,93 +557,48 @@ function GapsPage() {
           lastLessonMap.set(l.pupil_id, l.lesson_date);
       }
 
-      const dayOfWeek = DAYS[new Date(slotDate + "T00:00:00").getDay()];
-      const slotHour = parseInt(slotTime.split(":")[0], 10);
-      const slotDateTime = new Date(`${slotDate}T${slotTime}:00`);
       const nowMs = Date.now();
+      // slotsToScore captured above
 
       const scored: Ranked[] = pupils.map((p) => {
-        let score = 50;
         const s = availMap.get(p.id) || null;
         const last = lastLessonMap.get(p.id) || p.last_lesson_date || null;
-        let daysSince: number | null = null;
-
-        if (last) {
-          daysSince = Math.floor(
-            (new Date(slotDate + "T00:00:00").getTime() -
-              new Date(last + "T00:00:00").getTime()) /
-              86400000,
-          );
-          if (daysSince > 14) score += 20;
-          else if (daysSince > 7) score += 10;
-          else if (daysSince < 3) score -= 20;
-        } else {
-          score += 30;
-        }
-
-        let dayMatch: "yes" | "no" | "unknown" = "unknown";
-        let shortNotice = false;
-        let shortNoticeOk = false;
-        let minNoticeHours = 24;
-
-        if (s) {
-          const availDays = s.available_days || [];
-          if (availDays.length) {
-            if (availDays.includes(dayOfWeek)) {
-              score += 15;
-              dayMatch = "yes";
-            } else {
-              score -= 30;
-              dayMatch = "no";
-            }
-          }
-          const fromHour = parseInt(
-            (s.available_from || "08:00").split(":")[0],
-            10,
-          );
-          const untilHour = parseInt(
-            (s.available_until || "18:00").split(":")[0],
-            10,
-          );
-          if (slotHour >= fromHour && slotHour < untilHour) score += 10;
-          else score -= 20;
-
-          const hoursUntilSlot = Math.floor(
-            (slotDateTime.getTime() - nowMs) / 3600000,
-          );
-          minNoticeHours = s.min_notice_hours || 24;
-          if (hoursUntilSlot < minNoticeHours) {
-            shortNotice = true;
-            if (s.short_notice_opt_in) {
-              score += 5;
-              shortNoticeOk = true;
-            } else {
-              score -= 40;
-            }
-          }
-
-          if (s.preferred_duration_minutes === duration) score += 10;
-        }
-
-        score = Math.max(0, Math.min(100, score));
+        const matched: SlotMatch[] = slotsToScore.map((sl) =>
+          scoreSlot(p, s, last, sl, nowMs),
+        );
+        const matchCount = matched.filter((m) => m.match).length;
+        const avg =
+          matched.reduce((sum, m) => sum + m.subScore, 0) /
+          Math.max(1, matched.length);
+        const score = Math.max(
+          0,
+          Math.min(
+            100,
+            Math.round((matchCount / matched.length) * 60 + avg * 0.4),
+          ),
+        );
+        // Best slot for "summary" fields
+        const best = matched.reduce((a, b) =>
+          b.subScore > a.subScore ? b : a,
+        );
+        const bestInfo = describeSlot(p, s, last, best, nowMs);
         return {
           pupil: p,
           settings: s,
           lastLesson: last,
-          daysSince,
+          daysSince: bestInfo.daysSince,
           score,
-          dayMatch,
-          shortNotice,
-          shortNoticeOk,
-          minNoticeHours,
+          dayMatch: bestInfo.dayMatch,
+          shortNotice: bestInfo.shortNotice,
+          shortNoticeOk: bestInfo.shortNoticeOk,
+          minNoticeHours: bestInfo.minNoticeHours,
+          matchedSlots: matched,
         };
       });
 
       scored.sort((a, b) => b.score - a.score);
       setRanked(scored);
-      setSearchDate(slotDate);
-      setSearchTime(slotTime);
-      setSearchDuration(duration);
+      setSearchSlots(slotsToScore);
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
       toast.error("Could not load pupils");
@@ -544,16 +609,19 @@ function GapsPage() {
 
   async function logOffer(pupilId: string, via: "sms" | "message") {
     if (!userId) return;
+    const slots = searchSlots.length ? searchSlots : selectedSlots;
+    if (!slots.length) return;
     try {
-      const { error } = await supabase.from("gap_filler_offers").insert({
+      const rows = slots.map((s) => ({
         instructor_id: userId,
         pupil_id: pupilId,
-        slot_date: searchDate || slotDate,
-        slot_time: searchTime || slotTime,
-        duration_minutes: searchDuration || duration,
+        slot_date: s.date,
+        slot_time: s.time,
+        duration_minutes: s.duration,
         status: "sent",
         sent_via: via,
-      });
+      }));
+      const { error } = await supabase.from("gap_filler_offers").insert(rows);
       if (error) throw error;
       setReloadKey((k) => k + 1);
     } catch (err) {
@@ -563,10 +631,22 @@ function GapsPage() {
 
   function handleText(r: Ranked) {
     const first = firstNameOf(r.pupil);
-    const dateStr = fmtDateLong(searchDate || slotDate);
-    const timeStr = fmtTimeHm(searchTime || slotTime);
-    const dur = searchDuration || duration;
-    const body = `Hi ${first}, I have a ${dur} minute lesson slot available on ${dateStr} at ${timeStr}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const offerSlots =
+      matches.length > 0 ? matches : r.matchedSlots;
+    let body: string;
+    if (offerSlots.length === 1) {
+      const s = offerSlots[0];
+      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    } else {
+      const lines = offerSlots
+        .map(
+          (s) =>
+            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+        )
+        .join("\n");
+      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+    }
     const phone = r.pupil.phone || "";
     const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
     window.location.href = href;
@@ -579,11 +659,14 @@ function GapsPage() {
   }
 
   function handleBook(r: Ranked) {
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const s = matches[0] || r.matchedSlots[0];
+    if (!s) return;
     const qs = new URLSearchParams({
       pupilId: r.pupil.id,
-      date: searchDate || slotDate,
-      time: searchTime || slotTime,
-      duration: String(searchDuration || duration),
+      date: s.date,
+      time: s.time,
+      duration: String(s.duration),
     });
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
@@ -594,9 +677,10 @@ function GapsPage() {
     [ranked],
   );
 
-  const dayOfWeekLabel = searchDate
-    ? DAYS[new Date(searchDate + "T00:00:00").getDay()]
-    : "";
+  const dayOfWeekLabel =
+    searchSlots[0]
+      ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
+      : "";
 
   return (
     <div
@@ -650,8 +734,45 @@ function GapsPage() {
 
       <div style={{ marginTop: 16 }}>
         <div style={{ margin: "0 16px" }}>
-          <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
-            Your free slots — next 14 days
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
+              Your free slots — next 14 days
+            </div>
+            {freeSlots.length > 0 && (
+              <button
+                onClick={() => {
+                  if (selectedSlots.length > 0) {
+                    setSelectedSlots([]);
+                  } else {
+                    setSelectedSlots(
+                      freeSlots.map((s) => ({
+                        date: s.date,
+                        time: s.startTime,
+                        duration: 60,
+                      })),
+                    );
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: BLUE,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                {selectedSlots.length > 0 ? "Clear all" : "Select all"}
+              </button>
+            )}
           </div>
           <div style={{ color: MUTED, fontSize: 13, marginBottom: 12 }}>
             {slotsLoading
@@ -711,7 +832,7 @@ function GapsPage() {
                     ? () => {
                         setManualMode(true);
                         setSlotDate(g.iso);
-                        setSelectedSlotKey(null);
+                        setSelectedSlots([]);
                       }
                     : undefined
                 }
@@ -795,21 +916,40 @@ function GapsPage() {
                     </span>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                       {slot.possibleDurations.map((d) => {
-                        const key = `${slot.date}|${slot.startTime}|${d}`;
-                        const isSelected = selectedSlotKey === key;
+                        const key = slotKey({
+                          date: slot.date,
+                          time: slot.startTime,
+                          duration: d,
+                        });
+                        const isSelected = selectedSlots.some(
+                          (s) => slotKey(s) === key,
+                        );
                         return (
                           <button
                             key={d}
                             onClick={() => {
-                              setSelectedSlotKey(key);
-                              setSlotDate(slot.date);
-                              setSlotTime(slot.startTime);
-                              setDuration(d);
+                              setSelectedSlots((prev) => {
+                                const exists = prev.some(
+                                  (s) => slotKey(s) === key,
+                                );
+                                if (exists)
+                                  return prev.filter(
+                                    (s) => slotKey(s) !== key,
+                                  );
+                                return [
+                                  ...prev,
+                                  {
+                                    date: slot.date,
+                                    time: slot.startTime,
+                                    duration: d,
+                                  },
+                                ];
+                              });
                             }}
                             style={{
-                              background: isSelected ? BLUE : "#F0F4FF",
+                              background: isSelected ? NAVY : "#F0F4FF",
                               color: isSelected ? "#FFFFFF" : BLUE,
-                              border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                              border: `0.5px solid ${isSelected ? NAVY : "#BFDBFE"}`,
                               borderRadius: 999,
                               padding: "4px 10px",
                               fontSize: 12,
@@ -870,7 +1010,7 @@ function GapsPage() {
               value={slotDate}
               onChange={(e) => {
                 setSlotDate(e.target.value);
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             />
@@ -881,7 +1021,7 @@ function GapsPage() {
               value={slotTime}
               onChange={(e) => {
                 setSlotTime(e.target.value);
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             />
@@ -891,7 +1031,7 @@ function GapsPage() {
               value={duration}
               onChange={(e) => {
                 setDuration(parseInt(e.target.value, 10));
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             >
@@ -900,7 +1040,15 @@ function GapsPage() {
               <option value={120}>120 mins</option>
             </select>
             <button
-              onClick={findPupils}
+              onClick={() => {
+                const one: SelectedSlot = {
+                  date: slotDate,
+                  time: slotTime,
+                  duration,
+                };
+                setSelectedSlots([one]);
+                void findPupils([one]);
+              }}
               disabled={loading}
               style={{
                 marginTop: 16,
@@ -944,10 +1092,12 @@ function GapsPage() {
           <div style={{ margin: "0 16px 8px" }}>
             <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
               {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
-              {fmtDateLong(searchDate)} at {fmtTimeHm(searchTime)}
+              {searchSlots.length} slot{searchSlots.length === 1 ? "" : "s"}
             </div>
             <div style={{ color: MUTED, fontSize: 13 }}>
-              {searchDuration} min slot
+              {searchSlots.length === 1
+                ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
+                : `Across ${new Set(searchSlots.map((s) => s.date)).size} day${new Set(searchSlots.map((s) => s.date)).size === 1 ? "" : "s"}`}
             </div>
           </div>
 
@@ -1023,6 +1173,7 @@ function GapsPage() {
               rank={idx + 1}
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
+              multi={searchSlots.length > 1}
               onText={() => handleText(r)}
               onMessage={() => handleMessage(r)}
               onBook={() => handleBook(r)}
@@ -1092,46 +1243,46 @@ function GapsPage() {
         )}
       </div>
 
-      {selectedSlotKey && (
+      {selectedSlots.length > 0 && (
         <>
           <div style={{ height: 96 }} />
           <div
             style={{
               position: "fixed",
               bottom: 80,
-              left: 16,
-              right: 16,
-              maxWidth: 430,
-              margin: "0 auto",
+              left: 0,
+              right: 0,
+              padding: "12px 16px",
+              background: "#FFFFFF",
+              borderTop: `0.5px solid ${BORDER}`,
               zIndex: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              boxShadow: "0 -6px 20px rgba(15, 32, 68, 0.08)",
             }}
           >
+            <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+              {selectedSlots.length} slot
+              {selectedSlots.length === 1 ? "" : "s"} selected
+            </div>
             <button
-              onClick={findPupils}
+              onClick={() => void findPupils()}
               disabled={loading}
               style={{
-                width: "100%",
                 background: NAVY,
                 color: "#FFFFFF",
                 fontWeight: 600,
                 fontSize: 14,
                 borderRadius: 12,
                 border: "none",
-                padding: "12px 16px",
+                padding: "10px 20px",
                 cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(15, 32, 68, 0.25)",
                 opacity: loading ? 0.6 : 1,
               }}
             >
-              {loading
-                ? "Finding pupils…"
-                : `Find pupils for ${new Date(
-                    slotDate + "T00:00:00",
-                  ).toLocaleDateString("en-GB", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "short",
-                  })} at ${fmt12h(slotTime)} (${duration} min) →`}
+              {loading ? "Finding…" : "Find pupils →"}
             </button>
           </div>
         </>
@@ -1278,6 +1429,7 @@ function PupilCard({
   rank,
   r,
   dayOfWeekLabel,
+  multi,
   onText,
   onMessage,
   onBook,
@@ -1285,6 +1437,7 @@ function PupilCard({
   rank: number;
   r: Ranked;
   dayOfWeekLabel: string;
+  multi: boolean;
   onText: () => void;
   onMessage: () => void;
   onBook: () => void;
@@ -1393,6 +1546,40 @@ function PupilCard({
               ⚠ Prefers {r.minNoticeHours}hrs notice
             </span>
           )}
+        </div>
+      )}
+
+      {multi && r.matchedSlots.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            gap: 6,
+            flexWrap: "wrap",
+            marginTop: 8,
+          }}
+        >
+          {r.matchedSlots.map((m) => {
+            const label = `${new Date(m.date + "T00:00:00").toLocaleDateString(
+              "en-GB",
+              { weekday: "short" },
+            )} ${fmt12h(m.time)}`;
+            return (
+              <span
+                key={slotKey(m)}
+                style={{
+                  background: m.match ? "#D1FAE5" : "#F3F4F6",
+                  color: m.match ? "#065F46" : "#6B7280",
+                  border: `0.5px solid ${m.match ? "#86EFAC" : "#E5E7EB"}`,
+                  borderRadius: 999,
+                  padding: "2px 8px",
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                {m.match ? "✓" : "✗"} {label}
+              </span>
+            );
+          })}
         </div>
       )}
 
