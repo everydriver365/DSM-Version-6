@@ -1,351 +1,904 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Check, Plus } from "lucide-react";
-import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
+import {
+  ArrowLeft,
+  Zap,
+  Calendar as CalendarIcon,
+  Clock,
+  Users,
+  MessageSquare,
+  Plus,
+  ChevronDown,
+  ChevronUp,
+  AlertTriangle,
+} from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/gaps")({
   head: () => ({
     meta: [
-      { title: "Find gaps — DSM" },
-      { name: "description", content: "Find free slots between your lessons." },
+      { title: "Fill My Slots — DSM" },
+      {
+        name: "description",
+        content: "Find the right pupil for a free lesson slot in seconds.",
+      },
     ],
   }),
   component: GapsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Inter, sans-serif" } as const;
+const NAVY = "#0F2044";
+const NAVY_DEEP = "#0B1F3A";
+const BLUE = "#1A52A0";
+const TEAL = "#00B5A5";
+const MUTED = "#6B7280";
+const BORDER = "#E2E6ED";
+const DAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
-interface LessonRow {
+interface Pupil {
   id: string;
-  lesson_date: string;
-  lesson_time: string;
-  duration_minutes: number | null;
+  name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  postcode: string | null;
+  calendar_colour: string | null;
+  last_lesson_date: string | null;
+}
+
+interface Availability {
+  pupil_id: string;
+  available_days: string[] | null;
+  available_from: string | null;
+  available_until: string | null;
+  min_notice_hours: number | null;
+  short_notice_opt_in: boolean | null;
+  preferred_duration_minutes: number | null;
+}
+
+interface Ranked {
+  pupil: Pupil;
+  settings: Availability | null;
+  lastLesson: string | null;
+  daysSince: number | null;
+  score: number;
+  dayMatch: "yes" | "no" | "unknown";
+  shortNotice: boolean;
+  shortNoticeOk: boolean;
+  minNoticeHours: number;
+}
+
+interface OfferRow {
+  id: string;
+  pupil_id: string;
+  slot_date: string;
+  slot_time: string;
+  duration_minutes: number;
   status: string;
+  created_at: string;
+  pupils?: { name: string | null; first_name: string | null } | null;
 }
 
-interface Gap {
-  start: string; // HH:MM
-  end: string;
-  minutes: number;
+function todayIso() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
 }
 
-function ymd(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+function firstNameOf(p: Pupil) {
+  return (
+    p.first_name ||
+    (p.name ? p.name.split(" ")[0] : "there") ||
+    "there"
+  );
 }
-function toMinutes(t: string) {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
+
+function fullNameOf(p: Pupil) {
+  return (
+    p.name ||
+    [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+    "Unnamed pupil"
+  );
 }
-function toHHMM(mins: number) {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+
+function fmtDateLong(iso: string) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 }
-function fmtDuration(mins: number) {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  if (h && m) return `${h}h ${m}m`;
-  if (h) return `${h}h`;
-  return `${m}m`;
-}
-function fmtLong(d: Date) {
-  return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+
+function fmtTimeHm(t: string) {
+  return t.slice(0, 5);
 }
 
 function GapsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-  const days = useMemo(() => {
-    return Array.from({ length: 14 }, (_, i) => {
-      const d = new Date(today);
-      d.setDate(d.getDate() + i);
-      return d;
-    });
-  }, [today]);
 
-  const [selectedDate, setSelectedDate] = useState<string>(ymd(today));
-  const [minGapMins, setMinGapMins] = useState<number>(60);
-  const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("17:00");
-  const [lessons, setLessons] = useState<LessonRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [slotDate, setSlotDate] = useState<string>(todayIso());
+  const [slotTime, setSlotTime] = useState<string>("10:00");
+  const [duration, setDuration] = useState<number>(60);
+
+  const [loading, setLoading] = useState(false);
+  const [ranked, setRanked] = useState<Ranked[] | null>(null);
+  const [searchDate, setSearchDate] = useState<string>("");
+  const [searchTime, setSearchTime] = useState<string>("");
+  const [searchDuration, setSearchDuration] = useState<number>(60);
+
+  const [offers, setOffers] = useState<OfferRow[]>([]);
+  const [offersOpen, setOffersOpen] = useState(false);
+  const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      const uid = data.user?.id ?? null;
-      setUserId(uid);
-      if (!uid) return;
-      const { data: wh, error: whErr } = await supabase
-        .from("working_hours")
-        .select("start_time, end_time")
-        .eq("instructor_id", uid)
-        .maybeSingle();
-      if (whErr) console.error("[gaps] working_hours error", whErr);
-      if (wh) {
-        if (wh.start_time) setStartTime(String(wh.start_time).slice(0, 5));
-        if (wh.end_time) setEndTime(String(wh.end_time).slice(0, 5));
-      }
-    })();
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
 
   useEffect(() => {
     if (!userId) return;
-    setLoading(true);
     (async () => {
-      const { data, error } = await supabase
-        .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status")
+      const { data: offerRows } = await supabase
+        .from("gap_filler_offers")
+        .select("*, pupils(name, first_name)")
         .eq("instructor_id", userId)
-        .eq("lesson_date", selectedDate)
-        .neq("status", "cancelled")
-        .order("lesson_time", { ascending: true });
-      if (error) console.error("[gaps] lessons error", error);
-      setLessons((data ?? []) as LessonRow[]);
-      setLoading(false);
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setOffers((offerRows ?? []) as OfferRow[]);
+
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+        .toISOString()
+        .slice(0, 10);
+      const { data: accepted } = await supabase
+        .from("gap_filler_offers")
+        .select("id")
+        .eq("instructor_id", userId)
+        .eq("status", "accepted")
+        .gte("created_at", monthStart);
+      const { data: recent } = await supabase
+        .from("lesson_history")
+        .select("lesson_cost")
+        .eq("instructor_id", userId)
+        .eq("payment_status", "paid")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      const paid = (recent ?? [])
+        .map((r: { lesson_cost: number | null }) => Number(r.lesson_cost ?? 0))
+        .filter((n: number) => n > 0);
+      const avg = paid.length
+        ? paid.reduce((a: number, b: number) => a + b, 0) / paid.length
+        : 40;
+      setMonthlyRevenue(Math.round((accepted?.length ?? 0) * avg * 100) / 100);
     })();
-  }, [userId, selectedDate]);
+  }, [userId, reloadKey]);
 
-  const gaps: Gap[] = useMemo(() => {
-    const dayStart = toMinutes(startTime);
-    const dayEnd = toMinutes(endTime);
-    if (dayEnd <= dayStart) return [];
+  async function findPupils() {
+    if (!userId) return;
+    setLoading(true);
+    setRanked(null);
+    try {
+      const [pupilsRes, availRes, lessonsRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select(
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,last_lesson_date",
+          )
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+        supabase
+          .from("lessons")
+          .select("pupil_id,lesson_date,lesson_time")
+          .eq("instructor_id", userId)
+          .is("deleted_at", null)
+          .in("status", ["completed", "confirmed"])
+          .order("lesson_date", { ascending: false }),
+      ]);
 
-    if (lessons.length === 0) {
-      const span = dayEnd - dayStart;
-      if (span >= minGapMins) {
-        return [{ start: toHHMM(dayStart), end: toHHMM(dayEnd), minutes: span }];
+      const pupils = (pupilsRes.data ?? []) as Pupil[];
+      const availMap = new Map<string, Availability>();
+      for (const a of (availRes.data ?? []) as Availability[]) {
+        if (a.pupil_id) availMap.set(a.pupil_id, a);
       }
-      return [];
-    }
+      const lastLessonMap = new Map<string, string>();
+      for (const l of (lessonsRes.data ?? []) as {
+        pupil_id: string | null;
+        lesson_date: string | null;
+      }[]) {
+        if (!l.pupil_id || !l.lesson_date) continue;
+        if (!lastLessonMap.has(l.pupil_id))
+          lastLessonMap.set(l.pupil_id, l.lesson_date);
+      }
 
-    const busy = lessons
-      .map((l) => {
-        const s = toMinutes((l.lesson_time ?? "00:00:00").slice(0, 5));
-        const e = s + (l.duration_minutes ?? 60);
-        return { s, e };
-      })
-      .sort((a, b) => a.s - b.s);
+      const dayOfWeek = DAYS[new Date(slotDate + "T00:00:00").getDay()];
+      const slotHour = parseInt(slotTime.split(":")[0], 10);
+      const slotDateTime = new Date(`${slotDate}T${slotTime}:00`);
+      const nowMs = Date.now();
 
-    const result: Gap[] = [];
-    let cursor = dayStart;
-    for (const b of busy) {
-      if (b.s > cursor) {
-        const gapEnd = Math.min(b.s, dayEnd);
-        const dur = gapEnd - cursor;
-        if (dur >= minGapMins) {
-          result.push({ start: toHHMM(cursor), end: toHHMM(gapEnd), minutes: dur });
+      const scored: Ranked[] = pupils.map((p) => {
+        let score = 50;
+        const s = availMap.get(p.id) || null;
+        const last = lastLessonMap.get(p.id) || p.last_lesson_date || null;
+        let daysSince: number | null = null;
+
+        if (last) {
+          daysSince = Math.floor(
+            (new Date(slotDate + "T00:00:00").getTime() -
+              new Date(last + "T00:00:00").getTime()) /
+              86400000,
+          );
+          if (daysSince > 14) score += 20;
+          else if (daysSince > 7) score += 10;
+          else if (daysSince < 3) score -= 20;
+        } else {
+          score += 30;
         }
-      }
-      cursor = Math.max(cursor, b.e);
-      if (cursor >= dayEnd) break;
-    }
-    if (cursor < dayEnd) {
-      const dur = dayEnd - cursor;
-      if (dur >= minGapMins) {
-        result.push({ start: toHHMM(cursor), end: toHHMM(dayEnd), minutes: dur });
-      }
-    }
-    return result;
-  }, [lessons, startTime, endTime, minGapMins]);
 
-  const selectedDateObj = useMemo(() => {
-    const [y, m, d] = selectedDate.split("-").map(Number);
-    return new Date(y, m - 1, d);
-  }, [selectedDate]);
+        let dayMatch: "yes" | "no" | "unknown" = "unknown";
+        let shortNotice = false;
+        let shortNoticeOk = false;
+        let minNoticeHours = 24;
 
-  const durationOptions: { label: string; mins: number }[] = [
-    { label: "1h", mins: 60 },
-    { label: "1.5h", mins: 90 },
-    { label: "2h", mins: 120 },
-  ];
+        if (s) {
+          const availDays = s.available_days || [];
+          if (availDays.length) {
+            if (availDays.includes(dayOfWeek)) {
+              score += 15;
+              dayMatch = "yes";
+            } else {
+              score -= 30;
+              dayMatch = "no";
+            }
+          }
+          const fromHour = parseInt(
+            (s.available_from || "08:00").split(":")[0],
+            10,
+          );
+          const untilHour = parseInt(
+            (s.available_until || "18:00").split(":")[0],
+            10,
+          );
+          if (slotHour >= fromHour && slotHour < untilHour) score += 10;
+          else score -= 20;
+
+          const hoursUntilSlot = Math.floor(
+            (slotDateTime.getTime() - nowMs) / 3600000,
+          );
+          minNoticeHours = s.min_notice_hours || 24;
+          if (hoursUntilSlot < minNoticeHours) {
+            shortNotice = true;
+            if (s.short_notice_opt_in) {
+              score += 5;
+              shortNoticeOk = true;
+            } else {
+              score -= 40;
+            }
+          }
+
+          if (s.preferred_duration_minutes === duration) score += 10;
+        }
+
+        score = Math.max(0, Math.min(100, score));
+        return {
+          pupil: p,
+          settings: s,
+          lastLesson: last,
+          daysSince,
+          score,
+          dayMatch,
+          shortNotice,
+          shortNoticeOk,
+          minNoticeHours,
+        };
+      });
+
+      scored.sort((a, b) => b.score - a.score);
+      setRanked(scored);
+      setSearchDate(slotDate);
+      setSearchTime(slotTime);
+      setSearchDuration(duration);
+    } catch (err) {
+      console.error("[gaps] findPupils failed:", err);
+      toast.error("Could not load pupils");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function logOffer(pupilId: string, via: "sms" | "message") {
+    if (!userId) return;
+    try {
+      const { error } = await supabase.from("gap_filler_offers").insert({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        slot_date: searchDate || slotDate,
+        slot_time: searchTime || slotTime,
+        duration_minutes: searchDuration || duration,
+        status: "sent",
+        sent_via: via,
+      });
+      if (error) throw error;
+      setReloadKey((k) => k + 1);
+    } catch (err) {
+      console.warn("[gaps] logOffer failed:", err);
+    }
+  }
+
+  function handleText(r: Ranked) {
+    const first = firstNameOf(r.pupil);
+    const dateStr = fmtDateLong(searchDate || slotDate);
+    const timeStr = fmtTimeHm(searchTime || slotTime);
+    const dur = searchDuration || duration;
+    const body = `Hi ${first}, I have a ${dur} minute lesson slot available on ${dateStr} at ${timeStr}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    const phone = r.pupil.phone || "";
+    const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+    void logOffer(r.pupil.id, "sms");
+  }
+
+  function handleMessage(r: Ranked) {
+    void logOffer(r.pupil.id, "message");
+    navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
+  }
+
+  function handleBook(r: Ranked) {
+    const qs = new URLSearchParams({
+      pupilId: r.pupil.id,
+      date: searchDate || slotDate,
+      time: searchTime || slotTime,
+      duration: String(searchDuration || duration),
+    });
+    navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
+  }
+
+  const noGoodMatches = useMemo(
+    () =>
+      ranked !== null && ranked.length > 0 && ranked.every((r) => r.score < 20),
+    [ranked],
+  );
+
+  const dayOfWeekLabel = searchDate
+    ? DAYS[new Date(searchDate + "T00:00:00").getDay()]
+    : "";
 
   return (
-    <div className="min-h-screen bg-white pb-8 pb-safe" style={POPPINS}>
-      {/* TOP BAR */}
+    <div
+      className="min-h-screen"
+      style={{ ...FONT, backgroundColor: "#FFFFFF", margin: -8 }}
+    >
       <div
-        className="sticky top-0 z-40 flex items-center px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
+        style={{ backgroundColor: NAVY_DEEP }}
       >
         <button
-          type="button"
-          aria-label="Back"
           onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          aria-label="Back"
+          className="p-1 -ml-1"
+          style={{ color: "#fff" }}
         >
-          <ChevronLeft size={24} color="#FFFFFF" />
+          <ArrowLeft size={22} />
         </button>
-        <div className="flex-1 text-center text-white text-[15px] font-semibold">Find gaps</div>
-        <div style={{ width: 40 }} />
+        <h1
+          className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-medium"
+          style={FONT}
+        >
+          Fill My Slots
+        </h1>
       </div>
 
-      {/* DATE STRIP */}
-      <div className="mt-3 overflow-x-auto no-scrollbar">
-        <div className="flex gap-2 px-4" style={{ width: "max-content" }}>
-          {days.map((d) => {
-            const key = ymd(d);
-            const active = key === selectedDate;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setSelectedDate(key)}
-                className="flex flex-col items-center justify-center rounded-lg"
-                style={{
-                  width: 52,
-                  height: 64,
-                  backgroundColor: active ? "#1877D6" : "#F8F9FB",
-                  color: active ? "#FFFFFF" : "#0B1F3A",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: active ? "#1877D6" : "#EEF2F7",
-                }}
-              >
-                <span className="text-[10px] uppercase font-medium">
-                  {d.toLocaleDateString("en-GB", { weekday: "short" })}
-                </span>
-                <span className="text-[18px] font-semibold leading-tight mt-0.5">
-                  {d.getDate()}
-                </span>
-              </button>
-            );
-          })}
+      <div
+        style={{
+          background: "#F0F4FF",
+          border: "1px solid #BFDBFE",
+          borderRadius: 12,
+          padding: 16,
+          margin: "16px 16px 0",
+          display: "flex",
+          gap: 12,
+        }}
+      >
+        <Zap size={20} color={BLUE} style={{ flexShrink: 0, marginTop: 2 }} />
+        <div>
+          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
+            Got a free slot? Find the right pupil in seconds.
+          </div>
+          <div
+            style={{ color: MUTED, fontSize: 13, marginTop: 4, lineHeight: 1.4 }}
+          >
+            We'll rank your pupils based on their availability, preferences and
+            how long since their last lesson.
+          </div>
         </div>
       </div>
 
-      {/* SETTINGS CARD */}
-      <div className="mx-4 mt-3">
-        <Card>
-          <div className="text-[12px] font-medium text-[#6B7280] mb-2">
-            Minimum gap duration
-          </div>
-          <div className="flex gap-2">
-            {durationOptions.map((o) => {
-              const active = minGapMins === o.mins;
-              return (
-                <button
-                  key={o.mins}
-                  type="button"
-                  onClick={() => setMinGapMins(o.mins)}
-                  className="flex-1 h-10 rounded-lg text-[13px] font-medium"
-                  style={{
-                    backgroundColor: active ? "#1877D6" : "#FFFFFF",
-                    color: active ? "#FFFFFF" : "#0B1F3A",
-                    borderWidth: "0.5px",
-                    borderStyle: "solid",
-                    borderColor: active ? "#1877D6" : "#EEF2F7",
-                  }}
-                >
-                  {o.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="text-[12px] font-medium text-[#6B7280] mt-4 mb-2">
-            Show gaps between
-          </div>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="block text-[11px] text-[#6B7280] mb-1">Start</label>
-              <input
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                }}
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-[11px] text-[#6B7280] mb-1">End</label>
-              <input
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                }}
-              />
-            </div>
-          </div>
-        </Card>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: `0.5px solid ${BORDER}`,
+          borderRadius: 12,
+          padding: 16,
+          margin: "12px 16px 0",
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 700,
+            color: NAVY,
+            fontSize: 14,
+            marginBottom: 12,
+          }}
+        >
+          Select your free slot
+        </div>
+        <FieldLabel>Date</FieldLabel>
+        <input
+          type="date"
+          value={slotDate}
+          onChange={(e) => setSlotDate(e.target.value)}
+          style={inputStyle}
+        />
+        <div style={{ height: 10 }} />
+        <FieldLabel>Start time</FieldLabel>
+        <input
+          type="time"
+          value={slotTime}
+          onChange={(e) => setSlotTime(e.target.value)}
+          style={inputStyle}
+        />
+        <div style={{ height: 10 }} />
+        <FieldLabel>Duration</FieldLabel>
+        <select
+          value={duration}
+          onChange={(e) => setDuration(parseInt(e.target.value, 10))}
+          style={inputStyle}
+        >
+          <option value={60}>60 mins</option>
+          <option value={90}>90 mins</option>
+          <option value={120}>120 mins</option>
+        </select>
+        <button
+          onClick={findPupils}
+          disabled={loading}
+          style={{
+            marginTop: 16,
+            width: "100%",
+            height: 48,
+            borderRadius: 12,
+            background: NAVY,
+            color: "#FFFFFF",
+            fontWeight: 600,
+            fontSize: 15,
+            border: "none",
+            cursor: "pointer",
+            opacity: loading ? 0.6 : 1,
+          }}
+        >
+          {loading ? "Finding pupils…" : "Find pupils →"}
+        </button>
       </div>
 
-      <div className="px-4">
-        <SectionHeader>FREE SLOTS ON {fmtLong(selectedDateObj).toUpperCase()}</SectionHeader>
-      </div>
+      {monthlyRevenue > 0 && (
+        <div
+          style={{
+            background: "#E0FFF4",
+            border: "1px solid #86EFAC",
+            borderRadius: 12,
+            padding: 16,
+            margin: "12px 16px 0",
+            color: "#065F46",
+            fontWeight: 600,
+            fontSize: 14,
+          }}
+        >
+          💰 Revenue recovered this month: £{monthlyRevenue.toFixed(2)}
+        </div>
+      )}
 
-      <div className="px-4 flex flex-col gap-2">
-        {loading ? (
-          <div className="text-center text-[13px] text-[#6B7280] py-6">Loading...</div>
-        ) : gaps.length === 0 ? (
-          <Card className="flex flex-col items-center justify-center py-8">
+      {ranked !== null && (
+        <div style={{ marginTop: 16 }}>
+          <div style={{ margin: "0 16px 8px" }}>
+            <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
+              {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
+              {fmtDateLong(searchDate)} at {fmtTimeHm(searchTime)}
+            </div>
+            <div style={{ color: MUTED, fontSize: 13 }}>
+              {searchDuration} min slot
+            </div>
+          </div>
+
+          {ranked.length === 0 && (
             <div
-              className="flex items-center justify-center rounded-full mb-3"
-              style={{ width: 48, height: 48, backgroundColor: "#F3F8FF" }}
+              style={{
+                margin: "0 16px",
+                padding: 24,
+                textAlign: "center",
+                border: `0.5px solid ${BORDER}`,
+                borderRadius: 12,
+                background: "#FFFFFF",
+              }}
             >
-              <Check size={24} color="#1877D6" />
-            </div>
-            <div className="text-[14px] font-semibold text-[#0B1F3A]">
-              No gaps found — fully booked!
-            </div>
-          </Card>
-        ) : (
-          gaps.map((g, i) => (
-            <Card key={i}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-[16px] font-semibold text-[#0B1F3A]">
-                    {g.start} – {g.end}
-                  </div>
-                  <span
-                    className="inline-block mt-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#EEF4FB", color: "#1877D6" }}
-                  >
-                    {fmtDuration(g.minutes)}
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  inline
-                  onClick={() =>
-                    navigate({
-                      to: "/lessons/new",
-                      search: { date: selectedDate, time: g.start } as never,
-                    })
-                  }
-                  className="!h-9 !px-3"
-                >
-                  <Plus size={14} className="mr-1" /> Add lesson
-                </Button>
+              <Users size={40} color="#9CA3AF" style={{ margin: "0 auto" }} />
+              <div style={{ fontWeight: 600, color: NAVY, marginTop: 8 }}>
+                No active pupils found
               </div>
-            </Card>
-          ))
+              <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
+                Add pupils to DSM to use gap filler
+              </div>
+            </div>
+          )}
+
+          {noGoodMatches && (
+            <div
+              style={{
+                margin: "0 16px 12px",
+                padding: 16,
+                background: "#FEF3C7",
+                border: "1px solid #FCD34D",
+                borderRadius: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  color: "#92400E",
+                  fontWeight: 700,
+                  fontSize: 14,
+                }}
+              >
+                <AlertTriangle size={16} /> No strong matches for this slot
+              </div>
+              <div style={{ color: "#78350F", fontSize: 13, marginTop: 6 }}>
+                These pupils have low availability for this time — consider
+                offering to EveryDriver instead.
+              </div>
+              <button
+                onClick={() => navigate({ to: "/marketplace" })}
+                style={{
+                  marginTop: 10,
+                  background: "#0F2044",
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "8px 14px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Post to EveryDriver →
+              </button>
+            </div>
+          )}
+
+          {ranked.map((r, idx) => (
+            <PupilCard
+              key={r.pupil.id}
+              rank={idx + 1}
+              r={r}
+              dayOfWeekLabel={dayOfWeekLabel}
+              onText={() => handleText(r)}
+              onMessage={() => handleMessage(r)}
+              onBook={() => handleBook(r)}
+            />
+          ))}
+        </div>
+      )}
+
+      <div style={{ margin: "16px 16px 40px" }}>
+        <button
+          onClick={() => setOffersOpen((o) => !o)}
+          style={{
+            width: "100%",
+            background: "#FFFFFF",
+            border: `0.5px solid ${BORDER}`,
+            borderRadius: 12,
+            padding: "12px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+          }}
+        >
+          <span style={{ fontWeight: 600, color: NAVY, fontSize: 14 }}>
+            Recent offers ({offers.length})
+          </span>
+          {offersOpen ? (
+            <ChevronUp size={18} color={MUTED} />
+          ) : (
+            <ChevronDown size={18} color={MUTED} />
+          )}
+        </button>
+        {offersOpen && (
+          <div style={{ marginTop: 8 }}>
+            {offers.length === 0 && (
+              <div style={{ color: MUTED, fontSize: 13, padding: "8px 4px" }}>
+                No offers yet.
+              </div>
+            )}
+            {offers.map((o) => (
+              <div
+                key={o.id}
+                style={{
+                  background: "#FFFFFF",
+                  border: `0.5px solid ${BORDER}`,
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  marginBottom: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>
+                  <div style={{ color: NAVY, fontWeight: 600, fontSize: 13 }}>
+                    {o.pupils?.name || o.pupils?.first_name || "Pupil"}
+                  </div>
+                  <div style={{ color: MUTED, fontSize: 12 }}>
+                    {fmtDateLong(o.slot_date)} · {fmtTimeHm(o.slot_time)} ·{" "}
+                    {o.duration_minutes}m
+                  </div>
+                </div>
+                <StatusBadge status={o.status} />
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-export default GapsPage;
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  height: 44,
+  borderRadius: 10,
+  border: `0.5px solid ${BORDER}`,
+  padding: "0 12px",
+  fontSize: 14,
+  color: NAVY,
+  background: "#FFFFFF",
+  fontFamily: "Inter, sans-serif",
+};
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{ fontSize: 12, color: MUTED, fontWeight: 500, marginBottom: 4 }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { bg: string; fg: string; label: string }> = {
+    sent: { bg: "#DBEAFE", fg: "#1E40AF", label: "Sent" },
+    accepted: { bg: "#D1FAE5", fg: "#065F46", label: "Accepted" },
+    declined: { bg: "#FEE2E2", fg: "#991B1B", label: "Declined" },
+    expired: { bg: "#E5E7EB", fg: "#374151", label: "Expired" },
+  };
+  const s = map[status] || { bg: "#E5E7EB", fg: "#374151", label: status };
+  return (
+    <span
+      style={{
+        background: s.bg,
+        color: s.fg,
+        borderRadius: 999,
+        padding: "3px 10px",
+        fontSize: 11,
+        fontWeight: 600,
+      }}
+    >
+      {s.label}
+    </span>
+  );
+}
+
+function rankColor(rank: number) {
+  if (rank === 1) return { bg: "#FEF3C7", fg: "#92400E" };
+  if (rank === 2) return { bg: "#E5E7EB", fg: "#374151" };
+  if (rank === 3) return { bg: "#FED7AA", fg: "#7C2D12" };
+  return { bg: "#F3F4F6", fg: "#6B7280" };
+}
+
+function PupilCard({
+  rank,
+  r,
+  dayOfWeekLabel,
+  onText,
+  onMessage,
+  onBook,
+}: {
+  rank: number;
+  r: Ranked;
+  dayOfWeekLabel: string;
+  onText: () => void;
+  onMessage: () => void;
+  onBook: () => void;
+}) {
+  const rc = rankColor(rank);
+  const availLabel =
+    r.dayMatch === "yes"
+      ? { text: `✓ Available ${dayOfWeekLabel}s`, color: "#047857" }
+      : r.dayMatch === "no"
+        ? { text: `⚠ Usually busy ${dayOfWeekLabel}s`, color: "#B45309" }
+        : { text: "✗ No availability set", color: "#B91C1C" };
+  const last =
+    r.lastLesson && r.daysSince !== null
+      ? `Last lesson: ${r.daysSince} day${r.daysSince === 1 ? "" : "s"} ago`
+      : "New pupil";
+
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        border: `0.5px solid ${BORDER}`,
+        borderRadius: 12,
+        padding: "14px 16px",
+        margin: "0 16px 8px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span
+            style={{
+              background: rc.bg,
+              color: rc.fg,
+              borderRadius: 999,
+              width: 26,
+              height: 26,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              fontWeight: 700,
+            }}
+          >
+            #{rank}
+          </span>
+          <span style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+            {fullNameOf(r.pupil)}
+          </span>
+        </div>
+        <span
+          style={{
+            background: "#E0F4FF",
+            color: BLUE,
+            fontWeight: 700,
+            fontSize: 11,
+            padding: "2px 8px",
+            borderRadius: 999,
+          }}
+        >
+          {r.score}%
+        </span>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          marginTop: 6,
+          flexWrap: "wrap",
+          fontSize: 12,
+        }}
+      >
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            color: availLabel.color,
+          }}
+        >
+          <CalendarIcon size={12} /> {availLabel.text}
+        </span>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            color: MUTED,
+          }}
+        >
+          <Clock size={12} /> {last}
+        </span>
+      </div>
+
+      {r.shortNotice && (
+        <div style={{ marginTop: 4, fontSize: 12 }}>
+          {r.shortNoticeOk ? (
+            <span style={{ color: "#047857" }}>✓ Accepts short notice</span>
+          ) : (
+            <span style={{ color: "#B45309" }}>
+              ⚠ Prefers {r.minNoticeHours}hrs notice
+            </span>
+          )}
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+        <button
+          onClick={onText}
+          style={{
+            background: NAVY,
+            color: "#FFFFFF",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: 600,
+            border: "none",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          📱 Text
+        </button>
+        <button
+          onClick={onMessage}
+          style={{
+            background: TEAL,
+            color: "#FFFFFF",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: 600,
+            border: "none",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <MessageSquare size={14} /> Message
+        </button>
+        <button
+          onClick={onBook}
+          style={{
+            background: "#FFFFFF",
+            color: NAVY,
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: 600,
+            border: `0.5px solid ${NAVY}`,
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <Plus size={14} /> Book
+        </button>
+      </div>
+    </div>
+  );
+}
