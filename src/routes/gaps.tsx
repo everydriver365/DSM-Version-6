@@ -45,6 +45,52 @@ const DAYS = [
   "Saturday",
 ];
 
+interface FreeSlot {
+  date: string;
+  startTime: string;
+  endTime: string;
+  gapMinutes: number;
+  possibleDurations: number[];
+}
+
+function addDaysIso(base: Date, n: number) {
+  const d = new Date(base);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
+}
+
+function hmToMin(t: string) {
+  const [h, m] = t.split(":").map((x) => parseInt(x, 10));
+  return (h || 0) * 60 + (m || 0);
+}
+
+function minToHm(m: number) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+function fmtSlotDateLong(iso: string) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+}
+
+function fmt12h(t: string) {
+  const [hStr, mStr] = t.split(":");
+  let h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  const suffix = h >= 12 ? "pm" : "am";
+  h = h % 12;
+  if (h === 0) h = 12;
+  return m === 0 ? `${h}${suffix}` : `${h}:${String(m).padStart(2, "0")}${suffix}`;
+}
+
 interface Pupil {
   id: string;
   name: string | null;
