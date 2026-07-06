@@ -2207,14 +2207,18 @@ function HomePage() {
 
   useEffect(() => {
     if (!userId) return;
+    let cancelled = false;
+    const channelName = `payment-updates-home-${userId}`;
+    console.log('[realtime] home subscribing:', channelName);
     const channel = supabase
-      .channel(`payment-updates-home-${userId}-${Math.random()}`)
+      .channel(channelName)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'lessons',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lessons changed, refetching home payments...');
         setReloadKey((k) => k + 1);
       })
@@ -2224,11 +2228,22 @@ function HomePage() {
         table: 'lesson_history',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lesson_history changed, refetching home payments...');
         setReloadKey((k) => k + 1);
       })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+      .subscribe((status, err) => {
+        console.log('[realtime] home channel status:', status, err ?? '');
+      });
+    return () => {
+      cancelled = true;
+      console.log('[realtime] home unsubscribing:', channelName);
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn('[realtime] home removeChannel failed:', e);
+      }
+    };
   }, [userId]);
 
   // Schedule a local reminder 1h before the next lesson if it's today & >1h away.

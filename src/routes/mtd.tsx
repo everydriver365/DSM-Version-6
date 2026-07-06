@@ -235,14 +235,18 @@ function MtdPage() {
 
   useEffect(() => {
     if (!userId) return;
+    let cancelled = false;
+    const channelName = `payment-updates-mtd-${userId}`;
+    console.log('[realtime] mtd subscribing:', channelName);
     const channel = supabase
-      .channel(`payment-updates-mtd-${userId}-${Math.random()}`)
+      .channel(channelName)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'lessons',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lessons changed, refetching mtd...');
         setReloadKey((k) => k + 1);
       })
@@ -252,11 +256,22 @@ function MtdPage() {
         table: 'lesson_history',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lesson_history changed, refetching mtd...');
         setReloadKey((k) => k + 1);
       })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+      .subscribe((status, err) => {
+        console.log('[realtime] mtd channel status:', status, err ?? '');
+      });
+    return () => {
+      cancelled = true;
+      console.log('[realtime] mtd unsubscribing:', channelName);
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn('[realtime] mtd removeChannel failed:', e);
+      }
+    };
   }, [userId]);
 
   const mileageAllowance = miles * MILEAGE_RATE;

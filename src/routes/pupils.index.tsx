@@ -84,14 +84,18 @@ function PupilsIndexPage() {
 
   useEffect(() => {
     if (!userId) return;
+    let cancelled = false;
+    const channelName = `payment-updates-pupils-${userId}`;
+    console.log('[realtime] pupils.index subscribing:', channelName);
     const channel = supabase
-      .channel(`payment-updates-pupils-${userId}-${Math.random()}`)
+      .channel(channelName)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'lessons',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lessons changed, refetching pupils balances...');
         setReloadKey((k) => k + 1);
       })
@@ -101,11 +105,22 @@ function PupilsIndexPage() {
         table: 'lesson_history',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lesson_history changed, refetching pupils balances...');
         setReloadKey((k) => k + 1);
       })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+      .subscribe((status, err) => {
+        console.log('[realtime] pupils.index channel status:', status, err ?? '');
+      });
+    return () => {
+      cancelled = true;
+      console.log('[realtime] pupils.index unsubscribing:', channelName);
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn('[realtime] pupils.index removeChannel failed:', e);
+      }
+    };
   }, [userId]);
 
   useEffect(() => {

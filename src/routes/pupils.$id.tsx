@@ -335,14 +335,18 @@ function PupilDetailPage() {
 
   useEffect(() => {
     if (!userId) return;
+    let cancelled = false;
+    const channelName = `payment-updates-pupil-${userId}`;
+    console.log('[realtime] pupil profile subscribing:', channelName);
     const channel = supabase
-      .channel(`payment-updates-pupil-${userId}-${Math.random()}`)
+      .channel(channelName)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'lessons',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lessons changed, refetching pupil profile...');
         setPaymentHistoryRefresh((v) => v + 1);
       })
@@ -352,11 +356,22 @@ function PupilDetailPage() {
         table: 'lesson_history',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
+        if (cancelled) return;
         console.log('[realtime] lesson_history changed, refetching pupil profile...');
         setPaymentHistoryRefresh((v) => v + 1);
       })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+      .subscribe((status, err) => {
+        console.log('[realtime] pupil profile channel status:', status, err ?? '');
+      });
+    return () => {
+      cancelled = true;
+      console.log('[realtime] pupil profile unsubscribing:', channelName);
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn('[realtime] pupil profile removeChannel failed:', e);
+      }
+    };
   }, [userId]);
 
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
