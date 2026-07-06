@@ -648,22 +648,15 @@ function GapsPage() {
         </div>
       </div>
 
-      <div style={{ margin: "16px 16px 0" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            marginBottom: 8,
-          }}
-        >
-          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
-            Your free slots
+      <div style={{ marginTop: 16 }}>
+        <div style={{ margin: "0 16px" }}>
+          <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
+            Your free slots — next 14 days
           </div>
-          <div style={{ color: MUTED, fontSize: 12 }}>
+          <div style={{ color: MUTED, fontSize: 13, marginBottom: 12 }}>
             {slotsLoading
               ? "Scanning diary…"
-              : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} in next 14 days`}
+              : `${freeSlots.length} free slot${freeSlots.length === 1 ? "" : "s"} across ${dayGroups.filter((g) => g.slots.length > 0).length} day${dayGroups.filter((g) => g.slots.length > 0).length === 1 ? "" : "s"}`}
           </div>
         </div>
 
@@ -674,6 +667,7 @@ function GapsPage() {
               border: `0.5px solid ${BORDER}`,
               borderRadius: 12,
               padding: 20,
+              margin: "0 16px",
               textAlign: "center",
             }}
           >
@@ -700,88 +694,147 @@ function GapsPage() {
           </div>
         )}
 
-        {freeSlots.map((slot) => {
-          const isSelectedSlot =
-            selectedSlotKey && selectedSlotKey.startsWith(`${slot.date}|${slot.startTime}|`);
-          return (
-            <div
-              key={`${slot.date}|${slot.startTime}`}
-              style={{
-                background: isSelectedSlot ? "#E0F4FF" : "#FFFFFF",
-                border: `0.5px solid ${isSelectedSlot ? BLUE : BORDER}`,
-                borderRadius: 12,
-                padding: "14px 16px",
-                marginBottom: 8,
-              }}
-            >
-              <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
-                {fmtSlotDateLong(slot.date)}
-              </div>
-              <div style={{ color: MUTED, fontSize: 13, marginTop: 2 }}>
-                {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)} ·{" "}
-                {slot.gapMinutes} min free
-              </div>
+        {dayGroups.map((g) => {
+          const dLabel = new Date(g.iso + "T00:00:00").toLocaleDateString(
+            "en-GB",
+            { weekday: "long", day: "numeric", month: "long" },
+          );
+          // Off-day or fully-booked: single muted row
+          if (!g.isWorkDay || g.slots.length === 0) {
+            const rightLabel = !g.isWorkDay ? "Day off" : "Fully booked";
+            const clickable = !g.isWorkDay;
+            return (
               <div
+                key={g.iso}
+                onClick={
+                  clickable
+                    ? () => {
+                        setManualMode(true);
+                        setSlotDate(g.iso);
+                        setSelectedSlotKey(null);
+                      }
+                    : undefined
+                }
                 style={{
+                  padding: "10px 16px",
+                  borderTop: `0.5px solid ${BORDER}`,
+                  background: "#FAFAFA",
                   display: "flex",
-                  gap: 6,
-                  marginTop: 8,
-                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: clickable ? "pointer" : "default",
                 }}
               >
-                {slot.possibleDurations.map((d) => {
-                  const key = `${slot.date}|${slot.startTime}|${d}`;
-                  const isSelected = selectedSlotKey === key;
-                  return (
-                    <button
-                      key={d}
-                      onClick={() => {
-                        setSelectedSlotKey(key);
-                        setSlotDate(slot.date);
-                        setSlotTime(slot.startTime);
-                        setDuration(d);
-                      }}
+                <span style={{ color: "#9CA3AF", fontSize: 13 }}>{dLabel}</span>
+                <span style={{ color: "#9CA3AF", fontSize: 12 }}>
+                  {rightLabel}
+                </span>
+              </div>
+            );
+          }
+
+          return (
+            <div key={g.iso}>
+              <div
+                style={{
+                  padding: "8px 16px",
+                  background: "#F7FAFC",
+                  borderTop: `0.5px solid ${BORDER}`,
+                  borderBottom: `0.5px solid ${BORDER}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}>
+                  {dLabel}
+                </span>
+                <span style={{ color: MUTED, fontSize: 11 }}>
+                  {g.slots.length} slot{g.slots.length === 1 ? "" : "s"}{" "}
+                  available
+                </span>
+              </div>
+              <div style={{ padding: "0 16px" }}>
+                {g.slots.map((slot) => (
+                  <div
+                    key={`${slot.date}|${slot.startTime}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 0",
+                      borderBottom: "0.5px solid #F3F4F6",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div
                       style={{
-                        background: isSelected ? BLUE : "#F0F4FF",
-                        color: isSelected ? "#FFFFFF" : BLUE,
-                        border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
-                        borderRadius: 999,
-                        padding: "4px 12px",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flex: "1 1 auto",
+                        minWidth: 130,
                       }}
                     >
-                      {d} min
-                    </button>
-                  );
-                })}
+                      <Clock size={14} color="#9CA3AF" />
+                      <span
+                        style={{
+                          color: NAVY,
+                          fontSize: 13,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                      </span>
+                    </div>
+                    <span style={{ color: MUTED, fontSize: 11 }}>
+                      {(slot.gapMinutes / 60).toFixed(
+                        slot.gapMinutes % 60 === 0 ? 0 : 1,
+                      )}{" "}
+                      hrs free
+                    </span>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {slot.possibleDurations.map((d) => {
+                        const key = `${slot.date}|${slot.startTime}|${d}`;
+                        const isSelected = selectedSlotKey === key;
+                        return (
+                          <button
+                            key={d}
+                            onClick={() => {
+                              setSelectedSlotKey(key);
+                              setSlotDate(slot.date);
+                              setSlotTime(slot.startTime);
+                              setDuration(d);
+                            }}
+                            style={{
+                              background: isSelected ? BLUE : "#F0F4FF",
+                              color: isSelected ? "#FFFFFF" : BLUE,
+                              border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                              borderRadius: 999,
+                              padding: "4px 10px",
+                              fontSize: 12,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {d} min
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {isSelectedSlot && (
-                <button
-                  onClick={findPupils}
-                  disabled={loading}
-                  style={{
-                    marginTop: 12,
-                    width: "100%",
-                    height: 48,
-                    borderRadius: 12,
-                    background: NAVY,
-                    color: "#FFFFFF",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    border: "none",
-                    cursor: "pointer",
-                    opacity: loading ? 0.6 : 1,
-                  }}
-                >
-                  {loading ? "Finding pupils…" : "Find pupils for this slot →"}
-                </button>
-              )}
             </div>
           );
         })}
+
+        {!slotsLoading && dayGroups.length > 0 && (
+          <SummaryStats
+            dayGroups={dayGroups}
+            hourlyRate={hourlyRate}
+          />
+        )}
 
         <div style={{ marginTop: 8, textAlign: "center" }}>
           <button
