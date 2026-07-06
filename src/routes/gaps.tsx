@@ -1247,7 +1247,7 @@ function GapsPage() {
                             fontSize: 14,
                           }}
                         >
-                          {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                          {fmt12h(slot.startTime)} – {fmt12h(displayEnd)}
                         </div>
                         <div
                           style={{
