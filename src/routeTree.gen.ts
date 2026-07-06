@@ -65,7 +65,6 @@ import { Route as IntakeQuestionsRouteImport } from './routes/intake-questions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HealthRouteImport } from './routes/health'
-import { Route as GapsRouteImport } from './routes/gaps'
 import { Route as FuelRouteImport } from './routes/fuel'
 import { Route as ForgotpasswordRouteImport } from './routes/forgotpassword'
 import { Route as ExpensesRouteImport } from './routes/expenses'
@@ -416,11 +415,6 @@ const HelpRoute = HelpRouteImport.update({
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GapsRoute = GapsRouteImport.update({
-  id: '/gaps',
-  path: '/gaps',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FuelRoute = FuelRouteImport.update({
@@ -802,7 +796,6 @@ export interface FileRoutesByFullPath {
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
-  '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
@@ -930,7 +923,6 @@ export interface FileRoutesByTo {
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
-  '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
@@ -1059,7 +1051,6 @@ export interface FileRoutesById {
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
-  '/gaps': typeof GapsRoute
   '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
@@ -1190,7 +1181,6 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
-    | '/gaps'
     | '/health'
     | '/help'
     | '/home'
@@ -1318,7 +1308,6 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
-    | '/gaps'
     | '/health'
     | '/help'
     | '/home'
@@ -1446,7 +1435,6 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
-    | '/gaps'
     | '/health'
     | '/help'
     | '/home'
@@ -1577,7 +1565,6 @@ export interface RootRouteChildren {
   ExpensesRoute: typeof ExpensesRoute
   ForgotpasswordRoute: typeof ForgotpasswordRoute
   FuelRoute: typeof FuelRoute
-  GapsRoute: typeof GapsRoute
   HealthRoute: typeof HealthRoute
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
@@ -2058,13 +2045,6 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gaps': {
-      id: '/gaps'
-      path: '/gaps'
-      fullPath: '/gaps'
-      preLoaderRoute: typeof GapsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fuel': {
@@ -2672,7 +2652,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExpensesRoute: ExpensesRoute,
   ForgotpasswordRoute: ForgotpasswordRoute,
   FuelRoute: FuelRoute,
-  GapsRoute: GapsRoute,
   HealthRoute: HealthRoute,
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
