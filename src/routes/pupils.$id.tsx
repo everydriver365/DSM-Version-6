@@ -1298,6 +1298,14 @@ function PupilDetailPage() {
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
           />
           <ActionTile
+            label="Message"
+            icon={<MessageSquare size={20} />}
+            iconBg="#E0F7F5"
+            iconColor="#00B5A5"
+            onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
+            badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
+          />
+          <ActionTile
             label="Text"
             icon={<MessageSquare size={20} />}
             iconBg="#EAF3FB"
