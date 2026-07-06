@@ -279,7 +279,7 @@ function PupilThreadPage() {
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2"
-        style={{ paddingBottom: 80 }}
+        style={{ paddingBottom: 120 }}
       >
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center py-12">
@@ -322,57 +322,61 @@ function PupilThreadPage() {
       </div>
 
       {/* Input bar */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          send();
-        }}
-        className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white px-3 py-2 pb-safe flex items-end gap-2"
-        style={{
-          bottom: 64,
-          borderTopWidth: "0.5px",
-          borderTopStyle: "solid",
-          borderTopColor: "#EEF2F7",
-        }}
-      >
-        <textarea
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-          rows={1}
-          placeholder="Message"
-          className="flex-1 rounded-2xl px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-          style={{
-            ...POPPINS,
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#EEF2F7",
-            maxHeight: 120,
-            resize: "none",
-          }}
-        />
-        <button
-          type="submit"
-          aria-label="Send"
-          onClick={() => console.log("[dsm-messages] send button tapped")}
-          disabled={!draft.trim() || sending}
-          className="flex items-center justify-center rounded-full shrink-0 disabled:opacity-50"
-          style={{
-            width: 40,
-            height: 40,
-            backgroundColor: "#0F2044",
-            color: "#FFFFFF",
-            border: "none",
-          }}
-        >
-          <Send size={18} color="#FFFFFF" />
-        </button>
-      </form>
+<div style={{
+  position: 'fixed',
+  bottom: 64,
+  left: 0,
+  right: 0,
+  zIndex: 50,
+  background: 'white',
+  borderTop: '0.5px solid #E2E6ED',
+  padding: '10px 16px',
+  display: 'flex',
+  gap: 8,
+  alignItems: 'flex-end',
+  maxWidth: 480,
+  margin: '0 auto',
+}}>
+  <textarea
+    value={messageText}
+    onChange={e => setMessageText(e.target.value)}
+    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+    placeholder="Message..."
+    rows={1}
+    style={{
+      flex: 1,
+      background: '#F7FAFC',
+      border: '0.5px solid #E2E6ED',
+      borderRadius: 20,
+      padding: '10px 16px',
+      fontSize: 14,
+      fontFamily: 'Poppins, sans-serif',
+      resize: 'none',
+      outline: 'none',
+      maxHeight: 120,
+      overflowY: 'auto',
+    }}
+  />
+  <button
+    type="button"
+    onClick={handleSend}
+    disabled={!messageText.trim()}
+    style={{
+      width: 40,
+      height: 40,
+      borderRadius: '50%',
+      background: messageText.trim() ? '#0F2044' : '#E2E6ED',
+      border: 'none',
+      cursor: messageText.trim() ? 'pointer' : 'default',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    }}
+  >
+    <Send size={16} color="white" />
+  </button>
+</div>
     </div>
   );
 }
