@@ -358,6 +358,7 @@ function PupilThreadPage() {
         <button
           type="submit"
           aria-label="Send"
+          onClick={() => console.log("[dsm-messages] send button tapped")}
           disabled={!draft.trim() || sending}
           className="flex items-center justify-center rounded-full shrink-0 disabled:opacity-50"
           style={{
