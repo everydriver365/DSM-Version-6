@@ -118,7 +118,7 @@ interface Pupil {
   phone: string | null;
   postcode: string | null;
   calendar_colour: string | null;
-  last_lesson_date: string | null;
+  last_lesson_date?: string | null;
 }
 
 interface Availability {
@@ -571,7 +571,7 @@ function GapsPage() {
         supabase
           .from("pupils")
           .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour,last_lesson_date",
+            "id,name,first_name,last_name,phone,postcode,calendar_colour",
           )
           .eq("instructor_id", userId)
           .eq("status", "active")
