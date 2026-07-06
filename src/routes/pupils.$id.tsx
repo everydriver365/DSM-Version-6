@@ -1300,8 +1300,8 @@ function PupilDetailPage() {
           <ActionTile
             label="Message"
             icon={<MessageSquare size={20} />}
-            iconBg="#E0F7F5"
-            iconColor="#00B5A5"
+            iconBg="#00B5A5"
+            iconColor="#FFFFFF"
             onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
             badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
           />
