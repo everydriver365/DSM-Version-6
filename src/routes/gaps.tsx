@@ -1184,6 +1184,18 @@ function GapsPage() {
                   if (!anySelected && !isBlocked && durations.length === 0) {
                     return null;
                   }
+                  const selectedDuration =
+                    selectedSlots.find(
+                      (s) =>
+                        s.date === slot.date && s.time === slot.startTime,
+                    )?.duration ??
+                    durations[0] ??
+                    slot.possibleDurations[0] ??
+                    60;
+                  const displayEnd = addMinutesToTime(
+                    slot.startTime,
+                    selectedDuration,
+                  );
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
