@@ -1046,10 +1046,12 @@ function GapsPage() {
           <div style={{ margin: "0 16px 8px" }}>
             <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
               {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
-              {fmtDateLong(searchDate)} at {fmtTimeHm(searchTime)}
+              {searchSlots.length} slot{searchSlots.length === 1 ? "" : "s"}
             </div>
             <div style={{ color: MUTED, fontSize: 13 }}>
-              {searchDuration} min slot
+              {searchSlots.length === 1
+                ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
+                : `Across ${new Set(searchSlots.map((s) => s.date)).size} day${new Set(searchSlots.map((s) => s.date)).size === 1 ? "" : "s"}`}
             </div>
           </div>
 
