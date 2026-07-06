@@ -4615,6 +4615,72 @@ function HomePage() {
         }}
       />
 
+      {unreadMsgs.length > 0 && (
+        <div style={{ padding: "0 16px", marginTop: 16, fontFamily: "Inter, sans-serif" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <MessageSquare size={18} color="#0F2044" />
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Messages</div>
+              <span style={{ background: "#CC2229", color: "#FFFFFF", fontSize: 12, borderRadius: 999, padding: "2px 8px", fontWeight: 600 }}>
+                {unreadMsgs.length}
+              </span>
+            </div>
+            <button
+              onClick={() => navigate({ to: "/messages" as never })}
+              style={{ background: "none", border: "none", color: "#1877D6", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              See all →
+            </button>
+          </div>
+          {unreadMsgs.map((m) => {
+            const displayName = m.pupils?.first_name || m.pupils?.name || "Pupil";
+            const initials = displayName
+              .split(/\s+/)
+              .map((s) => s.charAt(0))
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
+            return (
+              <div
+                key={m.id}
+                onClick={() => navigate({ to: "/messages/$pupilId" as never, params: { pupilId: m.pupil_id } as never })}
+                style={{
+                  background: "#FFFFFF",
+                  border: "0.5px solid #E2E6ED",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  marginBottom: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: "#1A52A0",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
+                  backgroundImage: m.pupils?.profile_image_url ? `url(${m.pupils.profile_image_url})` : undefined,
+                  backgroundSize: "cover", backgroundPosition: "center",
+                }}>
+                  {!m.pupils?.profile_image_url && initials}
+                </div>
+                <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {m.body || ""}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{timeAgo(m.created_at)}</div>
+                </div>
+                {!m.read_at && (
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", flexShrink: 0, marginLeft: 8 }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <MarketplaceSection navigate={navigate} />
 
       <DsmLiveSection navigate={navigate} />
