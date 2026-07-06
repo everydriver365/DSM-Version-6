@@ -1873,22 +1873,75 @@ function PupilCard({
 
 function OfferSheet({
   r,
-  checked,
-  setChecked,
+  freeSlots,
+  slotStates,
+  setSlotStates,
   onClose,
   onSms,
   onMessage,
   onBook,
 }: {
   r: Ranked;
-  checked: Record<string, boolean>;
-  setChecked: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  freeSlots: FreeSlot[];
+  slotStates: Record<string, { selected: boolean; duration: number }>;
+  setSlotStates: React.Dispatch<
+    React.SetStateAction<
+      Record<string, { selected: boolean; duration: number }>
+    >
+  >;
   onClose: () => void;
   onSms: () => void;
   onMessage: () => void;
   onBook: () => void;
 }) {
   const name = fullNameOf(r.pupil);
+  const first = firstNameOf(r.pupil);
+  const settings = r.settings;
+
+  // Group free slots by day
+  const byDay = new Map<string, FreeSlot[]>();
+  for (const s of freeSlots) {
+    const arr = byDay.get(s.date) ?? [];
+    arr.push(s);
+    byDay.set(s.date, arr);
+  }
+  const dayEntries = Array.from(byDay.entries()).sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+
+  function slotDTKey(s: FreeSlot) {
+    return `${s.date}|${s.startTime}`;
+  }
+
+  function matchInfo(s: FreeSlot): { text: string; color: string } | null {
+    if (!settings) return null;
+    const dayOfWeek = DAYS[new Date(s.date + "T00:00:00").getDay()];
+    const availDays = settings.available_days || [];
+    if (availDays.length && !availDays.includes(dayOfWeek)) {
+      return { text: "✗ Not their preferred day", color: "#CC2229" };
+    }
+    const slotHour = parseInt(s.startTime.split(":")[0], 10);
+    const fromHour = parseInt(
+      (settings.available_from || "08:00").split(":")[0],
+      10,
+    );
+    const untilHour = parseInt(
+      (settings.available_until || "18:00").split(":")[0],
+      10,
+    );
+    if (slotHour < fromHour || slotHour >= untilHour) {
+      return { text: "⚠️ Outside their preferred hours", color: "#D97706" };
+    }
+    return {
+      text: `✓ ${first} is usually available at this time`,
+      color: "#16A34A",
+    };
+  }
+
+  const selectedList = freeSlots
+    .map((s) => ({ s, st: slotStates[slotDTKey(s)] }))
+    .filter((x) => x.st?.selected);
+
   return (
     <div
       onClick={onClose}
@@ -1910,90 +1963,269 @@ function OfferSheet({
           maxWidth: 480,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          padding: "20px 20px 24px",
           maxHeight: "85vh",
-          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
           boxShadow: "0 -8px 32px rgba(15,32,68,0.2)",
         }}
       >
-        <div
-          style={{
-            width: 40,
-            height: 4,
-            background: "#E5E7EB",
-            borderRadius: 999,
-            margin: "0 auto 14px",
-          }}
-        />
-        <div style={{ color: NAVY, fontSize: 18, fontWeight: 700 }}>
-          Offer slots to {name}
-        </div>
-        <div style={{ color: MUTED, fontSize: 13, marginBottom: 16 }}>
-          Select which slots to offer
+        <div style={{ padding: "12px 20px 0" }}>
+          <div
+            style={{
+              width: 40,
+              height: 4,
+              background: "#E5E7EB",
+              borderRadius: 999,
+              margin: "0 auto 14px",
+            }}
+          />
+          <div style={{ color: NAVY, fontSize: 18, fontWeight: 700 }}>
+            Offer slots to {name}
+          </div>
+          <div style={{ color: MUTED, fontSize: 13, marginBottom: 8 }}>
+            Select which slots to offer
+          </div>
         </div>
 
-        <div>
-          {r.matchedSlots.map((m) => {
-            const key = slotKey(m);
-            const isChecked = !!checked[key];
-            const dLabel = new Date(m.date + "T00:00:00").toLocaleDateString(
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "4px 20px 12px",
+          }}
+        >
+          {freeSlots.length === 0 && (
+            <div
+              style={{
+                color: MUTED,
+                fontSize: 13,
+                textAlign: "center",
+                padding: "24px 0",
+              }}
+            >
+              No free slots detected in the next 14 days.
+            </div>
+          )}
+          {dayEntries.map(([iso, slots]) => {
+            const dLabel = new Date(iso + "T00:00:00").toLocaleDateString(
               "en-GB",
               { weekday: "long", day: "numeric", month: "long" },
             );
             return (
-              <label
-                key={key}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "10px 0",
-                  borderBottom: "0.5px solid #F3F4F6",
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={(e) =>
-                    setChecked((prev) => ({
-                      ...prev,
-                      [key]: e.target.checked,
-                    }))
-                  }
+              <div key={iso}>
+                <div
                   style={{
-                    width: 18,
-                    height: 18,
-                    accentColor: NAVY,
-                    cursor: "pointer",
-                    flexShrink: 0,
+                    color: NAVY,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    marginTop: 12,
+                    marginBottom: 6,
                   }}
-                />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: NAVY, fontSize: 14 }}>
-                    {dLabel} at {fmt12h(m.time)} · {m.duration} mins
-                  </div>
-                  <div style={{ fontSize: 12, marginTop: 2 }}>
-                    {m.match ? (
-                      <span style={{ color: "#047857" }}>✓ Available</span>
-                    ) : (
-                      <span style={{ color: "#B45309" }}>
-                        ⚠️ Prefers different time
-                      </span>
-                    )}
-                  </div>
+                >
+                  {dLabel}
                 </div>
-              </label>
+                {slots.map((s) => {
+                  const key = slotDTKey(s);
+                  const st = slotStates[key] ?? {
+                    selected: true,
+                    duration: s.possibleDurations[0] ?? 60,
+                  };
+                  const info = matchInfo(s);
+                  const hoursFree = (s.gapMinutes / 60).toFixed(
+                    s.gapMinutes % 60 === 0 ? 0 : 1,
+                  );
+                  return (
+                    <div
+                      key={key}
+                      style={{
+                        background: "#FFFFFF",
+                        border: `0.5px solid ${BORDER}`,
+                        borderRadius: 10,
+                        padding: "12px 14px",
+                        marginBottom: 6,
+                        opacity: st.selected ? 1 : 0.5,
+                        transition: "opacity 120ms ease",
+                      }}
+                    >
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSlotStates((prev) => ({
+                              ...prev,
+                              [key]: {
+                                selected: !st.selected,
+                                duration: st.duration,
+                              },
+                            }))
+                          }
+                          aria-label={
+                            st.selected ? "Deselect slot" : "Select slot"
+                          }
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 6,
+                            background: st.selected ? NAVY : "#FFFFFF",
+                            border: st.selected
+                              ? `1.5px solid ${NAVY}`
+                              : `1.5px solid ${BORDER}`,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: 0,
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {st.selected && (
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#FFFFFF"
+                              strokeWidth="3.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          )}
+                        </button>
+                        <span
+                          style={{
+                            marginLeft: 10,
+                            color: NAVY,
+                            fontSize: 14,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {fmt12h(s.startTime)} – {fmt12h(s.endTime)}
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "auto",
+                            color: "#9CA3AF",
+                            fontSize: 12,
+                          }}
+                        >
+                          {hoursFree} hrs free
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 6,
+                          marginTop: 8,
+                          marginLeft: 30,
+                        }}
+                      >
+                        {s.possibleDurations.map((d) => {
+                          const isSel = st.duration === d;
+                          return (
+                            <button
+                              key={d}
+                              type="button"
+                              onClick={() =>
+                                setSlotStates((prev) => ({
+                                  ...prev,
+                                  [key]: {
+                                    selected: true,
+                                    duration: d,
+                                  },
+                                }))
+                              }
+                              style={{
+                                background: isSel ? NAVY : "#F0F4FF",
+                                color: isSel ? "#FFFFFF" : BLUE,
+                                border: isSel
+                                  ? "none"
+                                  : "0.5px solid #BFDBFE",
+                                borderRadius: 999,
+                                padding: "3px 10px",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {d} min
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {info && (
+                        <div
+                          style={{
+                            marginTop: 4,
+                            marginLeft: 30,
+                            color: info.color,
+                            fontSize: 12,
+                          }}
+                        >
+                          {info.text}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             );
           })}
         </div>
+
+        {/* Sticky summary + actions */}
+        <div
+          style={{
+            borderTop: `0.5px solid ${BORDER}`,
+            padding: "12px 20px 20px",
+            background: "#FFFFFF",
+          }}
+        >
+          <div style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 6 }}>
+            Offering {selectedList.length} slot
+            {selectedList.length === 1 ? "" : "s"}:
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 6,
+              marginBottom: 12,
+              minHeight: 24,
+            }}
+          >
+            {selectedList.map(({ s, st }) => {
+              const wd = new Date(s.date + "T00:00:00").toLocaleDateString(
+                "en-GB",
+                { weekday: "short" },
+              );
+              return (
+                <span
+                  key={slotDTKey(s)}
+                  style={{
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    borderRadius: 999,
+                    padding: "3px 10px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                  }}
+                >
+                  {wd} {fmt12h(s.startTime)} ({st!.duration}min)
+                </span>
+              );
+            })}
+          </div>
 
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             gap: 8,
-            marginTop: 16,
           }}
         >
           <button
@@ -2060,6 +2292,7 @@ function OfferSheet({
         >
           Cancel
         </button>
+        </div>
       </div>
     </div>
   );
