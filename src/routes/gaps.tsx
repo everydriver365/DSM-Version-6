@@ -437,18 +437,27 @@ function GapsPage() {
             }
             const gapMinutes = g.end - gStart;
             if (gapMinutes < 60) continue;
-            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
-            if (!possible.length) continue;
-            const slot: FreeSlot = {
-              date: iso,
-              startTime: minToHm(gStart),
-              endTime: minToHm(g.end),
-              gapMinutes,
-              possibleDurations: possible,
-            };
-            slots.push(slot);
-            daySlots.push(slot);
             dayFree += gapMinutes;
+            // Generate every 30-minute start time within the gap that still
+            // leaves room for at least a 60-min lesson.
+            let current = gStart;
+            while (current + 60 <= g.end) {
+              const remaining = g.end - current;
+              const possible = [60, 90, 120].filter((d) => d <= remaining);
+              if (possible.length) {
+                const maxDur = possible[possible.length - 1];
+                const slot: FreeSlot = {
+                  date: iso,
+                  startTime: minToHm(current),
+                  endTime: minToHm(current + maxDur),
+                  gapMinutes: remaining,
+                  possibleDurations: possible,
+                };
+                slots.push(slot);
+                daySlots.push(slot);
+              }
+              current += 30;
+            }
           }
           groups.push({
             iso,
