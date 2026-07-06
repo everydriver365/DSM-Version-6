@@ -67,16 +67,30 @@ function PupilThreadPage() {
       if (pErr) console.error("[pupil-thread] pupil fetch error", pErr);
       setPupil((p as unknown as Pupil) ?? null);
 
-      const { data: m, error: mErr } = await supabase
-        .from("chat_messages")
-        .select("id, pupil_id, instructor_id, sender_type, sender_id, body, created_at, read_at, deleted_at")
-        .eq("pupil_id", pupilId)
-        .eq("instructor_id", uid)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: true });
-      if (mErr) console.error("[pupil-thread] messages fetch error", mErr);
-      console.log("[dsm-messages] messages fetched:", messages?.length, messages);
-      setMessages((m ?? []) as ChatMessage[]);
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const { data: sessionRes } = await supabase.auth.getSession();
+      const token = sessionRes.session?.access_token;
+      console.log("[dsm-messages] fetching for pupil:", pupilId, "instructor:", uid);
+      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.asc&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
+      console.log("[dsm-messages] fetch URL:", url);
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token ?? ""}`,
+        },
+      });
+      let m: ChatMessage[] = [];
+      try {
+        const data = await res.json();
+        console.log("[dsm-messages] result:", res.status, data);
+        if (res.ok && Array.isArray(data)) m = data as ChatMessage[];
+        else if (!res.ok) console.error("[pupil-thread] messages fetch error", data);
+      } catch (e) {
+        console.error("[pupil-thread] messages parse error", e);
+      }
+      setMessages(m);
 
       // Mark inbound messages read
       await supabase
