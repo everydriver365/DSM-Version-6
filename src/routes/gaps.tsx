@@ -53,6 +53,15 @@ interface FreeSlot {
   possibleDurations: number[];
 }
 
+interface DayGroup {
+  iso: string;
+  dayName: string;
+  isWorkDay: boolean;
+  slots: FreeSlot[];
+  totalFreeMinutes: number;
+  busyMinutes: number;
+}
+
 function addDaysIso(base: Date, n: number) {
   const d = new Date(base);
   d.setDate(d.getDate() + n);
