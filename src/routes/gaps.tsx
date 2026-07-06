@@ -665,7 +665,7 @@ function GapsPage() {
       const possible = s.possibleDurations;
       const chosen = possible.includes(pref) ? pref : possible[0] ?? 60;
       defaults[slotDayTimeKey(s.date, s.startTime)] = {
-        selected: true,
+        selected: false,
         duration: chosen,
       };
     }
