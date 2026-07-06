@@ -4477,7 +4477,7 @@ function HomePage() {
           style={{
             marginTop: 10,
             display: "grid",
-            gridTemplateRows: "repeat(4, 80px)",
+            gridTemplateRows: "repeat(2, 80px)",
             gridAutoFlow: "column",
             gridAutoColumns: "calc((100% - 16px) / 3)",
             columnGap: 8,
