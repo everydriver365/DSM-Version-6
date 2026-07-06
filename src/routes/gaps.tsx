@@ -315,6 +315,10 @@ function GapsPage() {
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
+  // Offer-sheet state (per-pupil slot picker)
+  const [offerFor, setOfferFor] = useState<Ranked | null>(null);
+  const [offerChecked, setOfferChecked] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -612,6 +616,15 @@ function GapsPage() {
     if (!userId) return;
     const slots = searchSlots.length ? searchSlots : selectedSlots;
     if (!slots.length) return;
+    await logOfferSlots(pupilId, via, slots);
+  }
+
+  async function logOfferSlots(
+    pupilId: string,
+    via: "sms" | "message",
+    slots: SelectedSlot[],
+  ) {
+    if (!userId || !slots.length) return;
     try {
       const rows = slots.map((s) => ({
         instructor_id: userId,
@@ -630,45 +643,84 @@ function GapsPage() {
     }
   }
 
-  function handleText(r: Ranked) {
-    const first = firstNameOf(r.pupil);
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const offerSlots =
-      matches.length > 0 ? matches : r.matchedSlots;
-    let body: string;
-    if (offerSlots.length === 1) {
-      const s = offerSlots[0];
-      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    } else {
-      const lines = offerSlots
-        .map(
-          (s) =>
-            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
-        )
-        .join("\n");
-      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+  function openOfferSheet(r: Ranked) {
+    const defaults: Record<string, boolean> = {};
+    for (const m of r.matchedSlots) defaults[slotKey(m)] = m.match;
+    // If nothing matches, pre-check all so the sheet isn't empty
+    if (r.matchedSlots.every((m) => !m.match)) {
+      for (const m of r.matchedSlots) defaults[slotKey(m)] = true;
     }
-    const phone = r.pupil.phone || "";
-    const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    window.location.href = href;
-    void logOffer(r.pupil.id, "sms");
+    setOfferChecked(defaults);
+    setOfferFor(r);
   }
 
-  function handleMessage(r: Ranked) {
-    void logOffer(r.pupil.id, "message");
+  function closeOfferSheet() {
+    setOfferFor(null);
+    setOfferChecked({});
+  }
+
+  function buildOfferMessage(first: string, slots: SelectedSlot[]) {
+    if (slots.length === 1) {
+      const s = slots[0];
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    }
+    const lines = slots
+      .map(
+        (s) =>
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+      )
+      .join("\n");
+    return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
+  }
+
+  function checkedSlotsFor(r: Ranked): SelectedSlot[] {
+    return r.matchedSlots
+      .filter((m) => offerChecked[slotKey(m)])
+      .map((m) => ({ date: m.date, time: m.time, duration: m.duration }));
+  }
+
+  function handleSheetSms(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (!slots.length) {
+      toast.error("Select at least one slot to offer");
+      return;
+    }
+    const body = buildOfferMessage(firstNameOf(r.pupil), slots);
+    const phone = r.pupil.phone || "";
+    window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+    void logOfferSlots(r.pupil.id, "sms", slots);
+    closeOfferSheet();
+  }
+
+  function handleSheetMessage(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (!slots.length) {
+      toast.error("Select at least one slot to offer");
+      return;
+    }
+    void logOfferSlots(r.pupil.id, "message", slots);
+    closeOfferSheet();
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
-  function handleBook(r: Ranked) {
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const s = matches[0] || r.matchedSlots[0];
-    if (!s) return;
+  function handleSheetBook(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (slots.length === 0) {
+      toast.error("Select one slot to book");
+      return;
+    }
+    if (slots.length > 1) {
+      toast.info("Select one slot to book");
+      return;
+    }
+    const s = slots[0];
     const qs = new URLSearchParams({
       pupilId: r.pupil.id,
       date: s.date,
       time: s.time,
       duration: String(s.duration),
     });
+    closeOfferSheet();
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
 
@@ -1335,9 +1387,7 @@ function GapsPage() {
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
               multi={searchSlots.length > 1}
-              onText={() => handleText(r)}
-              onMessage={() => handleMessage(r)}
-              onBook={() => handleBook(r)}
+              onOffer={() => openOfferSheet(r)}
             />
           ))}
         </div>
@@ -1476,6 +1526,18 @@ function GapsPage() {
             </button>
           </div>
         </>
+      )}
+
+      {offerFor && (
+        <OfferSheet
+          r={offerFor}
+          checked={offerChecked}
+          setChecked={setOfferChecked}
+          onClose={closeOfferSheet}
+          onSms={() => handleSheetSms(offerFor)}
+          onMessage={() => handleSheetMessage(offerFor)}
+          onBook={() => handleSheetBook(offerFor)}
+        />
       )}
     </div>
   );
@@ -1620,17 +1682,13 @@ function PupilCard({
   r,
   dayOfWeekLabel,
   multi,
-  onText,
-  onMessage,
-  onBook,
+  onOffer,
 }: {
   rank: number;
   r: Ranked;
   dayOfWeekLabel: string;
   multi: boolean;
-  onText: () => void;
-  onMessage: () => void;
-  onBook: () => void;
+  onOffer: () => void;
 }) {
   const rc = rankColor(rank);
   const availLabel =
@@ -1773,15 +1831,15 @@ function PupilCard({
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+      <div style={{ marginTop: 12 }}>
         <button
-          onClick={onText}
+          onClick={onOffer}
           style={{
             background: NAVY,
             color: "#FFFFFF",
             borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
+            padding: "10px 16px",
+            fontSize: 14,
             fontWeight: 600,
             border: "none",
             cursor: "pointer",
@@ -1790,43 +1848,201 @@ function PupilCard({
             gap: 6,
           }}
         >
-          📱 Text
+          Offer slots →
         </button>
-        <button
-          onClick={onMessage}
+      </div>
+    </div>
+  );
+}
+
+function OfferSheet({
+  r,
+  checked,
+  setChecked,
+  onClose,
+  onSms,
+  onMessage,
+  onBook,
+}: {
+  r: Ranked;
+  checked: Record<string, boolean>;
+  setChecked: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  onClose: () => void;
+  onSms: () => void;
+  onMessage: () => void;
+  onBook: () => void;
+}) {
+  const name = fullNameOf(r.pupil);
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(15,32,68,0.45)",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#FFFFFF",
+          width: "100%",
+          maxWidth: 480,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: "20px 20px 24px",
+          maxHeight: "85vh",
+          overflowY: "auto",
+          boxShadow: "0 -8px 32px rgba(15,32,68,0.2)",
+        }}
+      >
+        <div
           style={{
-            background: TEAL,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
+            width: 40,
+            height: 4,
+            background: "#E5E7EB",
+            borderRadius: 999,
+            margin: "0 auto 14px",
+          }}
+        />
+        <div style={{ color: NAVY, fontSize: 18, fontWeight: 700 }}>
+          Offer slots to {name}
+        </div>
+        <div style={{ color: MUTED, fontSize: 13, marginBottom: 16 }}>
+          Select which slots to offer
+        </div>
+
+        <div>
+          {r.matchedSlots.map((m) => {
+            const key = slotKey(m);
+            const isChecked = !!checked[key];
+            const dLabel = new Date(m.date + "T00:00:00").toLocaleDateString(
+              "en-GB",
+              { weekday: "long", day: "numeric", month: "long" },
+            );
+            return (
+              <label
+                key={key}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 0",
+                  borderBottom: "0.5px solid #F3F4F6",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={(e) =>
+                    setChecked((prev) => ({
+                      ...prev,
+                      [key]: e.target.checked,
+                    }))
+                  }
+                  style={{
+                    width: 18,
+                    height: 18,
+                    accentColor: NAVY,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: NAVY, fontSize: 14 }}>
+                    {dLabel} at {fmt12h(m.time)} · {m.duration} mins
+                  </div>
+                  <div style={{ fontSize: 12, marginTop: 2 }}>
+                    {m.match ? (
+                      <span style={{ color: "#047857" }}>✓ Available</span>
+                    ) : (
+                      <span style={{ color: "#B45309" }}>
+                        ⚠️ Prefers different time
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            marginTop: 16,
+          }}
+        >
+          <button
+            onClick={onSms}
+            style={{
+              background: NAVY,
+              color: "#FFFFFF",
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            📱 Send SMS
+          </button>
+          <button
+            onClick={onMessage}
+            style={{
+              background: TEAL,
+              color: "#FFFFFF",
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            💬 In-app message
+          </button>
+          <button
+            onClick={onBook}
+            style={{
+              background: "#FFFFFF",
+              color: NAVY,
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: `0.5px solid ${NAVY}`,
+              cursor: "pointer",
+            }}
+          >
+            📅 Book directly
+          </button>
+        </div>
+
+        <button
+          onClick={onClose}
+          style={{
+            display: "block",
+            margin: "12px auto 0",
+            background: "transparent",
             border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <MessageSquare size={14} /> Message
-        </button>
-        <button
-          onClick={onBook}
-          style={{
-            background: "#FFFFFF",
-            color: NAVY,
-            borderRadius: 12,
-            padding: "10px 14px",
+            color: "#9CA3AF",
             fontSize: 13,
-            fontWeight: 600,
-            border: `0.5px solid ${NAVY}`,
             cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
           }}
         >
-          <Plus size={14} /> Book
+          Cancel
         </button>
       </div>
     </div>
