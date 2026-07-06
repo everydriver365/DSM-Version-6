@@ -437,18 +437,27 @@ function GapsPage() {
             }
             const gapMinutes = g.end - gStart;
             if (gapMinutes < 60) continue;
-            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
-            if (!possible.length) continue;
-            const slot: FreeSlot = {
-              date: iso,
-              startTime: minToHm(gStart),
-              endTime: minToHm(g.end),
-              gapMinutes,
-              possibleDurations: possible,
-            };
-            slots.push(slot);
-            daySlots.push(slot);
             dayFree += gapMinutes;
+            // Generate every 30-minute start time within the gap that still
+            // leaves room for at least a 60-min lesson.
+            let current = gStart;
+            while (current + 60 <= g.end) {
+              const remaining = g.end - current;
+              const possible = [60, 90, 120].filter((d) => d <= remaining);
+              if (possible.length) {
+                const maxDur = possible[possible.length - 1];
+                const slot: FreeSlot = {
+                  date: iso,
+                  startTime: minToHm(current),
+                  endTime: minToHm(current + maxDur),
+                  gapMinutes: remaining,
+                  possibleDurations: possible,
+                };
+                slots.push(slot);
+                daySlots.push(slot);
+              }
+              current += 30;
+            }
           }
           groups.push({
             iso,
@@ -656,7 +665,7 @@ function GapsPage() {
       const possible = s.possibleDurations;
       const chosen = possible.includes(pref) ? pref : possible[0] ?? 60;
       defaults[slotDayTimeKey(s.date, s.startTime)] = {
-        selected: true,
+        selected: false,
         duration: chosen,
       };
     }
@@ -2015,19 +2024,61 @@ function OfferSheet({
               <div key={iso}>
                 <div
                   style={{
-                    color: NAVY,
-                    fontWeight: 700,
-                    fontSize: 13,
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
                     marginTop: 12,
                     marginBottom: 6,
                   }}
                 >
-                  {dLabel}
+                  <span
+                    style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}
+                  >
+                    {dLabel}
+                  </span>
+                  {(() => {
+                    const allSelected = slots.every(
+                      (s) => slotStates[slotDTKey(s)]?.selected,
+                    );
+                    return (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSlotStates((prev) => {
+                            const next = { ...prev };
+                            for (const s of slots) {
+                              const k = slotDTKey(s);
+                              const cur = next[k];
+                              next[k] = {
+                                selected: !allSelected,
+                                duration:
+                                  cur?.duration ??
+                                  s.possibleDurations[0] ??
+                                  60,
+                              };
+                            }
+                            return next;
+                          })
+                        }
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          padding: 0,
+                          color: BLUE,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {allSelected ? "Clear today" : "Select all today"}
+                      </button>
+                    );
+                  })()}
                 </div>
                 {slots.map((s) => {
                   const key = slotDTKey(s);
                   const st = slotStates[key] ?? {
-                    selected: true,
+                    selected: false,
                     duration: s.possibleDurations[0] ?? 60,
                   };
                   const info = matchInfo(s);
