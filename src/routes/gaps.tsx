@@ -1292,7 +1292,8 @@ function GapsPage() {
                             return (
                               <button
                                 key={d}
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedSlots((prev) => {
                                     const exists = prev.some(
                                       (s) => slotKey(s) === key,
@@ -1301,8 +1302,18 @@ function GapsPage() {
                                       return prev.filter(
                                         (s) => slotKey(s) !== key,
                                       );
+                                    // Replace any existing entry for this slot
+                                    // with the newly-chosen duration so a slot
+                                    // has exactly one active duration at a time.
+                                    const cleared = prev.filter(
+                                      (s) =>
+                                        !(
+                                          s.date === slot.date &&
+                                          s.time === slot.startTime
+                                        ),
+                                    );
                                     return [
-                                      ...prev,
+                                      ...cleared,
                                       {
                                         date: slot.date,
                                         time: slot.startTime,
