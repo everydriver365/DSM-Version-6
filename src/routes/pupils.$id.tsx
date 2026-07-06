@@ -323,6 +323,10 @@ function PupilDetailPage() {
   const [addressEditing, setAddressEditing] = useState(false);
   const [theoryEditing, setTheoryEditing] = useState(false);
   const [practicalEditing, setPracticalEditing] = useState(false);
+  const [emailEditing, setEmailEditing] = useState(false);
+  const [emailDraft, setEmailDraft] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
