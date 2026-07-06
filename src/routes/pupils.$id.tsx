@@ -451,6 +451,19 @@ function PupilDetailPage() {
     toast.success(successMsg);
     return true;
   }
+
+  async function saveEmail() {
+    const value = emailDraft.trim();
+    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    setSavingEmail(true);
+    const ok = await savePupilFields({ email: value || null }, "Email saved");
+    setSavingEmail(false);
+    if (ok) setEmailEditing(false);
+  }
+
   const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
