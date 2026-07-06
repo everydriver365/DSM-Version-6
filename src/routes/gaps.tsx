@@ -1087,6 +1087,38 @@ function GapsPage() {
                         }),
                     ),
                   );
+                  // Dynamic blocking from already-selected slots on same day.
+                  const slotStartMin = hmToMin(slot.startTime);
+                  const dayBlocks = blockedByDate[slot.date] ?? [];
+                  const isBlocked =
+                    !anySelected &&
+                    dayBlocks.some(
+                      (b) => slotStartMin >= b.start && slotStartMin < b.end,
+                    );
+                  // How much free time exists from this start until the next
+                  // blocked range begins (or gap end via gapMinutes fallback).
+                  const nextBlockStart = dayBlocks
+                    .filter((b) => b.start > slotStartMin)
+                    .reduce(
+                      (min, b) => Math.min(min, b.start),
+                      Number.POSITIVE_INFINITY,
+                    );
+                  const freeMinsFromHere = Math.min(
+                    slot.gapMinutes,
+                    nextBlockStart === Number.POSITIVE_INFINITY
+                      ? slot.gapMinutes
+                      : nextBlockStart - slotStartMin,
+                  );
+                  const durations = anySelected
+                    ? slot.possibleDurations
+                    : slot.possibleDurations.filter(
+                        (d) => d <= freeMinsFromHere,
+                      );
+                  // Hide slots that are fully consumed by a later block and
+                  // cannot fit any lesson, unless already selected.
+                  if (!anySelected && !isBlocked && durations.length === 0) {
+                    return null;
+                  }
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
@@ -1102,6 +1134,8 @@ function GapsPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
+                        opacity: isBlocked ? 0.4 : 1,
+                        pointerEvents: isBlocked ? "none" : "auto",
                       }}
                     >
                       {/* Radio dot */}
@@ -1146,7 +1180,7 @@ function GapsPage() {
                             marginTop: 8,
                           }}
                         >
-                          {slot.possibleDurations.map((d) => {
+                          {durations.map((d) => {
                             const key = slotKey({
                               date: slot.date,
                               time: slot.startTime,
