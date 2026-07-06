@@ -2872,6 +2872,7 @@ function HomePage() {
     };
     return (
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
+        {notifBanner}
         <InstructorTopBar
           firstName={firstName}
           avatarUrl={avatarUrl}
@@ -3133,6 +3134,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+      {notifBanner}
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
