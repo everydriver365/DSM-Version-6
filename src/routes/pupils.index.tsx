@@ -22,7 +22,6 @@ interface Pupil {
   phone: string | null;
   email: string | null;
   lesson_count: number | null;
-  balance_owed: number | null;
   account_balance: number | null;
   prepaid_hours: number | null;
   ni_amount_total: number | null;
@@ -76,6 +75,38 @@ function PupilsIndexPage() {
   const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`payment-updates-pupils-${userId}-${Math.random()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lessons',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lessons changed, refetching pupils balances...');
+        setReloadKey((k) => k + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lesson_history',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lesson_history changed, refetching pupils balances...');
+        setReloadKey((k) => k + 1);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   useEffect(() => {
     setPupils(null);
@@ -90,7 +121,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, balance_owed, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -226,7 +257,7 @@ function PupilsIndexPage() {
       setLastPaymentMap({});
     }
   })();
-  }, [tab]);
+  }, [tab, reloadKey]);
 
 
 
