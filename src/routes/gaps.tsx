@@ -1173,6 +1173,7 @@ function GapsPage() {
               rank={idx + 1}
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
+              multi={searchSlots.length > 1}
               onText={() => handleText(r)}
               onMessage={() => handleMessage(r)}
               onBook={() => handleBook(r)}
