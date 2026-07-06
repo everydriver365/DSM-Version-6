@@ -322,6 +322,7 @@ function scoreSlot(
 function GapsPage() {
   const navigate = useNavigate();
   const resultsRef = useRef<HTMLDivElement | null>(null);
+  const shouldScrollToResultsRef = useRef(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
@@ -523,6 +524,17 @@ function GapsPage() {
   }, []);
 
   useEffect(() => {
+    if (ranked === null || !shouldScrollToResultsRef.current) return;
+    shouldScrollToResultsRef.current = false;
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, [ranked]);
+
+  useEffect(() => {
     if (!userId) return;
     (async () => {
       const { data: offerRows } = await supabase
@@ -655,14 +667,9 @@ function GapsPage() {
 
       scored.sort((a, b) => b.score - a.score);
       console.log("[gaps] ranked result:", scored.length);
+      shouldScrollToResultsRef.current = true;
       setRanked(scored);
       setSearchSlots(slotsToScore);
-      requestAnimationFrame(() => {
-        resultsRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      });
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
       toast.error("Failed to find pupils — please try again");
