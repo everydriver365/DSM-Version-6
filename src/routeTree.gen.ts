@@ -103,6 +103,7 @@ import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests.$pupilId'
+import { Route as MessagesPupilIdRouteImport } from './routes/messages.$pupilId'
 import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as MarketplaceListRouteImport } from './routes/marketplace_.list'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
@@ -606,6 +607,11 @@ const MockTestsPupilIdRoute = MockTestsPupilIdRouteImport.update({
   path: '/mock-tests/$pupilId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesPupilIdRoute = MessagesPupilIdRouteImport.update({
+  id: '/$pupilId',
+  path: '/$pupilId',
+  getParentRoute: () => MessagesRoute,
+} as any)
 const MessagesIdRoute = MessagesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -877,6 +883,7 @@ export interface FileRoutesByFullPath {
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/marketplace/list': typeof MarketplaceListRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1003,6 +1010,7 @@ export interface FileRoutesByTo {
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/marketplace/list': typeof MarketplaceListRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1133,6 +1141,7 @@ export interface FileRoutesById {
   '/marketplace_/edit': typeof MarketplaceEditRoute
   '/marketplace_/list': typeof MarketplaceListRoute
   '/messages/$id': typeof MessagesIdRoute
+  '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1263,6 +1272,7 @@ export interface FileRouteTypes {
     | '/marketplace/edit'
     | '/marketplace/list'
     | '/messages/$id'
+    | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
     | '/pupils/$id'
@@ -1389,6 +1399,7 @@ export interface FileRouteTypes {
     | '/marketplace/edit'
     | '/marketplace/list'
     | '/messages/$id'
+    | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
     | '/pupils/$id'
@@ -1518,6 +1529,7 @@ export interface FileRouteTypes {
     | '/marketplace_/edit'
     | '/marketplace_/list'
     | '/messages/$id'
+    | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
     | '/pupils/$id'
@@ -2316,6 +2328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MockTestsPupilIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/$pupilId': {
+      id: '/messages/$pupilId'
+      path: '/$pupilId'
+      fullPath: '/messages/$pupilId'
+      preLoaderRoute: typeof MessagesPupilIdRouteImport
+      parentRoute: typeof MessagesRoute
+    }
     '/messages/$id': {
       id: '/messages/$id'
       path: '/$id'
@@ -2605,10 +2624,12 @@ const DsmLiveRouteWithChildren =
 
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
+  MessagesPupilIdRoute: typeof MessagesPupilIdRoute
 }
 
 const MessagesRouteChildren: MessagesRouteChildren = {
   MessagesIdRoute: MessagesIdRoute,
+  MessagesPupilIdRoute: MessagesPupilIdRoute,
 }
 
 const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
