@@ -2398,6 +2398,237 @@ function OfferSheet({
             })}
           </div>
 
+        {/* Discount card */}
+        {(() => {
+          const now = Date.now();
+          const earliestMs = selectedList.reduce((min, { s }) => {
+            const ts = new Date(`${s.date}T${s.startTime}:00`).getTime();
+            return ts < min ? ts : min;
+          }, Number.POSITIVE_INFINITY);
+          const hrsUntil =
+            earliestMs === Number.POSITIVE_INFINITY
+              ? Infinity
+              : (earliestMs - now) / (1000 * 60 * 60);
+          const hint =
+            hrsUntil <= 4
+              ? "💡 Try 15-20% off to fill this slot quickly"
+              : hrsUntil <= 24
+                ? "💡 Last-minute slots fill faster with a small discount"
+                : null;
+          const suffix = discountType === "percent" ? "%" : "£";
+          return (
+            <div
+              style={{
+                background: "#FFFFFF",
+                border: `0.5px solid ${BORDER}`,
+                borderRadius: 10,
+                padding: 14,
+                marginTop: 12,
+                marginBottom: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Tag size={16} color="#D97706" />
+                  <span
+                    style={{
+                      color: NAVY,
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Offer a discount?
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={discountEnabled}
+                  onClick={() => setDiscountEnabled((v) => !v)}
+                  style={{
+                    width: 40,
+                    height: 22,
+                    borderRadius: 999,
+                    background: discountEnabled ? NAVY : "#E2E6ED",
+                    border: "none",
+                    padding: 0,
+                    position: "relative",
+                    cursor: "pointer",
+                    transition: "background 120ms ease",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 2,
+                      left: discountEnabled ? 20 : 2,
+                      width: 18,
+                      height: 18,
+                      background: "#FFFFFF",
+                      borderRadius: 999,
+                      boxShadow: "0 1px 2px rgba(15,32,68,0.25)",
+                      transition: "left 120ms ease",
+                    }}
+                  />
+                </button>
+              </div>
+              {discountEnabled && (
+                <>
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    {(
+                      [
+                        { k: "percent", label: "% off" },
+                        { k: "fixed", label: "£ off" },
+                      ] as const
+                    ).map((opt) => {
+                      const sel = discountType === opt.k;
+                      return (
+                        <button
+                          key={opt.k}
+                          type="button"
+                          onClick={() => handleTypeSwitch(opt.k)}
+                          style={{
+                            background: sel ? NAVY : "#F3F4F6",
+                            color: sel ? "#FFFFFF" : "#6B7280",
+                            border: "none",
+                            borderRadius: 999,
+                            padding: "6px 14px",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginTop: 8,
+                    }}
+                  >
+                    <input
+                      type="number"
+                      min={0}
+                      value={Number.isFinite(discountValue) ? discountValue : 0}
+                      onChange={(e) => {
+                        const n = parseFloat(e.target.value);
+                        setDiscountValue(Number.isFinite(n) ? n : 0);
+                      }}
+                      style={{
+                        background: "#F7FAFC",
+                        border: `0.5px solid ${BORDER}`,
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        width: 80,
+                        textAlign: "center",
+                        fontWeight: 700,
+                        color: NAVY,
+                        fontSize: 14,
+                      }}
+                    />
+                    <span
+                      style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}
+                    >
+                      {suffix}
+                    </span>
+                  </div>
+                  {hourlyRate > 0 && selectedList.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      {selectedList.map(({ s, st }) => {
+                        const priced = computeDiscount(
+                          hourlyRate,
+                          st!.duration,
+                          discount,
+                        );
+                        const wd = new Date(
+                          s.date + "T00:00:00",
+                        ).toLocaleDateString("en-GB", { weekday: "short" });
+                        return (
+                          <div
+                            key={`price-${slotDTKey(s)}`}
+                            style={{
+                              display: "flex",
+                              alignItems: "baseline",
+                              gap: 8,
+                              flexWrap: "wrap",
+                              marginTop: 2,
+                            }}
+                          >
+                            <span
+                              style={{
+                                color: "#9CA3AF",
+                                fontSize: 11,
+                                minWidth: 90,
+                              }}
+                            >
+                              {wd} {fmt12h(s.startTime)}
+                            </span>
+                            <span
+                              style={{
+                                color: "#9CA3AF",
+                                fontSize: 13,
+                                textDecoration: "line-through",
+                              }}
+                            >
+                              £{priced.lessonPrice.toFixed(0)}
+                            </span>
+                            <span style={{ color: "#9CA3AF" }}>→</span>
+                            <span
+                              style={{
+                                color: TEAL,
+                                fontSize: 14,
+                                fontWeight: 700,
+                              }}
+                            >
+                              £{priced.discountedPrice.toFixed(0)}
+                            </span>
+                            <span
+                              style={{
+                                color: "#16A34A",
+                                fontSize: 11,
+                              }}
+                            >
+                              Saving £{priced.discountAmount.toFixed(0)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {hint && (
+                    <div
+                      style={{
+                        marginTop: 8,
+                        color: "#6B7280",
+                        fontSize: 11,
+                      }}
+                    >
+                      {hint}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })()}
+
         <div
           style={{
             display: "flex",
@@ -2406,7 +2637,7 @@ function OfferSheet({
           }}
         >
           <button
-            onClick={onSms}
+            onClick={() => onSms(discount)}
             style={{
               background: NAVY,
               color: "#FFFFFF",
@@ -2422,7 +2653,7 @@ function OfferSheet({
             📱 Send SMS
           </button>
           <button
-            onClick={onMessage}
+            onClick={() => onMessage(discount)}
             style={{
               background: TEAL,
               color: "#FFFFFF",
@@ -2438,7 +2669,7 @@ function OfferSheet({
             💬 In-app message
           </button>
           <button
-            onClick={onBook}
+            onClick={() => onBook(discount)}
             style={{
               background: "#FFFFFF",
               color: NAVY,
