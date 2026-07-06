@@ -562,6 +562,7 @@ function GapsPage() {
   async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
+    console.log("[gaps] findPupils called, slots:", slotsToScore);
     if (slotsToScore.length === 0) return;
     setLoading(true);
     setRanked(null);
@@ -587,10 +588,19 @@ function GapsPage() {
           .in("status", ["completed", "confirmed"])
           .order("lesson_date", { ascending: false }),
       ]);
+      if (pupilsRes.error)
+        console.error("[gaps] pupils fetch error:", pupilsRes.error);
+      if (availRes.error)
+        console.error("[gaps] settings fetch error:", availRes.error);
+      if (lessonsRes.error)
+        console.error("[gaps] lessons fetch error:", lessonsRes.error);
 
       const pupils = (pupilsRes.data ?? []) as Pupil[];
+      const settingsList = (availRes.data ?? []) as Availability[];
+      console.log("[gaps] pupils fetched:", pupils.length);
+      console.log("[gaps] settings fetched:", settingsList.length);
       const availMap = new Map<string, Availability>();
-      for (const a of (availRes.data ?? []) as Availability[]) {
+      for (const a of settingsList) {
         if (a.pupil_id) availMap.set(a.pupil_id, a);
       }
       const lastLessonMap = new Map<string, string>();
@@ -643,11 +653,12 @@ function GapsPage() {
       });
 
       scored.sort((a, b) => b.score - a.score);
+      console.log("[gaps] ranked result:", scored.length);
       setRanked(scored);
       setSearchSlots(slotsToScore);
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
-      toast.error("Could not load pupils");
+      toast.error("Failed to find pupils — please try again");
     } finally {
       setLoading(false);
     }
