@@ -1039,7 +1039,15 @@ function GapsPage() {
               <option value={120}>120 mins</option>
             </select>
             <button
-              onClick={findPupils}
+              onClick={() => {
+                setSelectedSlots([
+                  { date: slotDate, time: slotTime, duration },
+                ]);
+                // Give React one tick; findPupils reads selectedSlots on next render
+                setTimeout(() => {
+                  void findPupils();
+                }, 0);
+              }}
               disabled={loading}
               style={{
                 marginTop: 16,
