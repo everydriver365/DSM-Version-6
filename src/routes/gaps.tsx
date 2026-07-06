@@ -53,6 +53,15 @@ interface FreeSlot {
   possibleDurations: number[];
 }
 
+interface DayGroup {
+  iso: string;
+  dayName: string;
+  isWorkDay: boolean;
+  slots: FreeSlot[];
+  totalFreeMinutes: number;
+  busyMinutes: number;
+}
+
 function addDaysIso(base: Date, n: number) {
   const d = new Date(base);
   d.setDate(d.getDate() + n);
@@ -194,6 +203,8 @@ function GapsPage() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
   const [manualMode, setManualMode] = useState(false);
+  const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
+  const [hourlyRate, setHourlyRate] = useState<number>(0);
 
   useEffect(() => {
     if (!userId) return;
@@ -238,6 +249,10 @@ function GapsPage() {
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const rate = Number(
+          (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
+        );
+        if (!cancelled) setHourlyRate(rate);
 
         const byDay = new Map<
           string,
@@ -257,17 +272,33 @@ function GapsPage() {
         }
 
         const slots: FreeSlot[] = [];
+        const groups: DayGroup[] = [];
         const wsMin = hmToMin(workStart);
         const weMin = hmToMin(workEnd);
         for (let i = 0; i < 14; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
-          if (!workDays.includes(dayName)) continue;
           const iso = addDaysIso(today, i);
+          const isWorkDay = workDays.includes(dayName);
           const dayLessons = (byDay.get(iso) ?? []).slice().sort(
             (a, b) => a.start - b.start,
           );
+          const busyMinutes = dayLessons.reduce(
+            (sum, l) => sum + (l.end - l.start),
+            0,
+          );
+          if (!isWorkDay) {
+            groups.push({
+              iso,
+              dayName,
+              isWorkDay: false,
+              slots: [],
+              totalFreeMinutes: 0,
+              busyMinutes,
+            });
+            continue;
+          }
           // Build gap boundaries
           const gaps: { start: number; end: number }[] = [];
           let cursor = wsMin;
@@ -281,7 +312,8 @@ function GapsPage() {
           if (weMin - cursor >= 60) {
             gaps.push({ start: cursor, end: weMin });
           }
-          // Filter out gaps that start in the past (today only)
+          const daySlots: FreeSlot[] = [];
+          let dayFree = 0;
           for (const g of gaps) {
             let gStart = g.start;
             if (i === 0) {
@@ -292,19 +324,36 @@ function GapsPage() {
             if (gapMinutes < 60) continue;
             const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
             if (!possible.length) continue;
-            slots.push({
+            const slot: FreeSlot = {
               date: iso,
               startTime: minToHm(gStart),
               endTime: minToHm(g.end),
               gapMinutes,
               possibleDurations: possible,
-            });
+            };
+            slots.push(slot);
+            daySlots.push(slot);
+            dayFree += gapMinutes;
           }
+          groups.push({
+            iso,
+            dayName,
+            isWorkDay: true,
+            slots: daySlots,
+            totalFreeMinutes: dayFree,
+            busyMinutes,
+          });
         }
-        if (!cancelled) setFreeSlots(slots);
+        if (!cancelled) {
+          setFreeSlots(slots);
+          setDayGroups(groups);
+        }
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
-        if (!cancelled) setFreeSlots([]);
+        if (!cancelled) {
+          setFreeSlots([]);
+          setDayGroups([]);
+        }
       } finally {
         if (!cancelled) setSlotsLoading(false);
       }
@@ -599,22 +648,15 @@ function GapsPage() {
         </div>
       </div>
 
-      <div style={{ margin: "16px 16px 0" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            marginBottom: 8,
-          }}
-        >
-          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
-            Your free slots
+      <div style={{ marginTop: 16 }}>
+        <div style={{ margin: "0 16px" }}>
+          <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
+            Your free slots — next 14 days
           </div>
-          <div style={{ color: MUTED, fontSize: 12 }}>
+          <div style={{ color: MUTED, fontSize: 13, marginBottom: 12 }}>
             {slotsLoading
               ? "Scanning diary…"
-              : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} in next 14 days`}
+              : `${freeSlots.length} free slot${freeSlots.length === 1 ? "" : "s"} across ${dayGroups.filter((g) => g.slots.length > 0).length} day${dayGroups.filter((g) => g.slots.length > 0).length === 1 ? "" : "s"}`}
           </div>
         </div>
 
@@ -625,6 +667,7 @@ function GapsPage() {
               border: `0.5px solid ${BORDER}`,
               borderRadius: 12,
               padding: 20,
+              margin: "0 16px",
               textAlign: "center",
             }}
           >
@@ -651,88 +694,147 @@ function GapsPage() {
           </div>
         )}
 
-        {freeSlots.map((slot) => {
-          const isSelectedSlot =
-            selectedSlotKey && selectedSlotKey.startsWith(`${slot.date}|${slot.startTime}|`);
-          return (
-            <div
-              key={`${slot.date}|${slot.startTime}`}
-              style={{
-                background: isSelectedSlot ? "#E0F4FF" : "#FFFFFF",
-                border: `0.5px solid ${isSelectedSlot ? BLUE : BORDER}`,
-                borderRadius: 12,
-                padding: "14px 16px",
-                marginBottom: 8,
-              }}
-            >
-              <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
-                {fmtSlotDateLong(slot.date)}
-              </div>
-              <div style={{ color: MUTED, fontSize: 13, marginTop: 2 }}>
-                {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)} ·{" "}
-                {slot.gapMinutes} min free
-              </div>
+        {dayGroups.map((g) => {
+          const dLabel = new Date(g.iso + "T00:00:00").toLocaleDateString(
+            "en-GB",
+            { weekday: "long", day: "numeric", month: "long" },
+          );
+          // Off-day or fully-booked: single muted row
+          if (!g.isWorkDay || g.slots.length === 0) {
+            const rightLabel = !g.isWorkDay ? "Day off" : "Fully booked";
+            const clickable = !g.isWorkDay;
+            return (
               <div
+                key={g.iso}
+                onClick={
+                  clickable
+                    ? () => {
+                        setManualMode(true);
+                        setSlotDate(g.iso);
+                        setSelectedSlotKey(null);
+                      }
+                    : undefined
+                }
                 style={{
+                  padding: "10px 16px",
+                  borderTop: `0.5px solid ${BORDER}`,
+                  background: "#FAFAFA",
                   display: "flex",
-                  gap: 6,
-                  marginTop: 8,
-                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: clickable ? "pointer" : "default",
                 }}
               >
-                {slot.possibleDurations.map((d) => {
-                  const key = `${slot.date}|${slot.startTime}|${d}`;
-                  const isSelected = selectedSlotKey === key;
-                  return (
-                    <button
-                      key={d}
-                      onClick={() => {
-                        setSelectedSlotKey(key);
-                        setSlotDate(slot.date);
-                        setSlotTime(slot.startTime);
-                        setDuration(d);
-                      }}
+                <span style={{ color: "#9CA3AF", fontSize: 13 }}>{dLabel}</span>
+                <span style={{ color: "#9CA3AF", fontSize: 12 }}>
+                  {rightLabel}
+                </span>
+              </div>
+            );
+          }
+
+          return (
+            <div key={g.iso}>
+              <div
+                style={{
+                  padding: "8px 16px",
+                  background: "#F7FAFC",
+                  borderTop: `0.5px solid ${BORDER}`,
+                  borderBottom: `0.5px solid ${BORDER}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}>
+                  {dLabel}
+                </span>
+                <span style={{ color: MUTED, fontSize: 11 }}>
+                  {g.slots.length} slot{g.slots.length === 1 ? "" : "s"}{" "}
+                  available
+                </span>
+              </div>
+              <div style={{ padding: "0 16px" }}>
+                {g.slots.map((slot) => (
+                  <div
+                    key={`${slot.date}|${slot.startTime}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 0",
+                      borderBottom: "0.5px solid #F3F4F6",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div
                       style={{
-                        background: isSelected ? BLUE : "#F0F4FF",
-                        color: isSelected ? "#FFFFFF" : BLUE,
-                        border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
-                        borderRadius: 999,
-                        padding: "4px 12px",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flex: "1 1 auto",
+                        minWidth: 130,
                       }}
                     >
-                      {d} min
-                    </button>
-                  );
-                })}
+                      <Clock size={14} color="#9CA3AF" />
+                      <span
+                        style={{
+                          color: NAVY,
+                          fontSize: 13,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                      </span>
+                    </div>
+                    <span style={{ color: MUTED, fontSize: 11 }}>
+                      {(slot.gapMinutes / 60).toFixed(
+                        slot.gapMinutes % 60 === 0 ? 0 : 1,
+                      )}{" "}
+                      hrs free
+                    </span>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {slot.possibleDurations.map((d) => {
+                        const key = `${slot.date}|${slot.startTime}|${d}`;
+                        const isSelected = selectedSlotKey === key;
+                        return (
+                          <button
+                            key={d}
+                            onClick={() => {
+                              setSelectedSlotKey(key);
+                              setSlotDate(slot.date);
+                              setSlotTime(slot.startTime);
+                              setDuration(d);
+                            }}
+                            style={{
+                              background: isSelected ? BLUE : "#F0F4FF",
+                              color: isSelected ? "#FFFFFF" : BLUE,
+                              border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                              borderRadius: 999,
+                              padding: "4px 10px",
+                              fontSize: 12,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {d} min
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {isSelectedSlot && (
-                <button
-                  onClick={findPupils}
-                  disabled={loading}
-                  style={{
-                    marginTop: 12,
-                    width: "100%",
-                    height: 48,
-                    borderRadius: 12,
-                    background: NAVY,
-                    color: "#FFFFFF",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    border: "none",
-                    cursor: "pointer",
-                    opacity: loading ? 0.6 : 1,
-                  }}
-                >
-                  {loading ? "Finding pupils…" : "Find pupils for this slot →"}
-                </button>
-              )}
             </div>
           );
         })}
+
+        {!slotsLoading && dayGroups.length > 0 && (
+          <SummaryStats
+            dayGroups={dayGroups}
+            hourlyRate={hourlyRate}
+          />
+        )}
 
         <div style={{ marginTop: 8, textAlign: "center" }}>
           <button
@@ -989,6 +1091,132 @@ function GapsPage() {
           </div>
         )}
       </div>
+
+      {selectedSlotKey && (
+        <>
+          <div style={{ height: 96 }} />
+          <div
+            style={{
+              position: "fixed",
+              bottom: 80,
+              left: 16,
+              right: 16,
+              maxWidth: 430,
+              margin: "0 auto",
+              zIndex: 50,
+            }}
+          >
+            <button
+              onClick={findPupils}
+              disabled={loading}
+              style={{
+                width: "100%",
+                background: NAVY,
+                color: "#FFFFFF",
+                fontWeight: 600,
+                fontSize: 14,
+                borderRadius: 12,
+                border: "none",
+                padding: "12px 16px",
+                cursor: "pointer",
+                boxShadow: "0 6px 20px rgba(15, 32, 68, 0.25)",
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading
+                ? "Finding pupils…"
+                : `Find pupils for ${new Date(
+                    slotDate + "T00:00:00",
+                  ).toLocaleDateString("en-GB", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "short",
+                  })} at ${fmt12h(slotTime)} (${duration} min) →`}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SummaryStats({
+  dayGroups,
+  hourlyRate,
+}: {
+  dayGroups: DayGroup[];
+  hourlyRate: number;
+}) {
+  const workDays = dayGroups.filter((d) => d.isWorkDay);
+  if (!workDays.length) return null;
+  const busiest = workDays.reduce((a, b) =>
+    b.busyMinutes > a.busyMinutes ? b : a,
+  );
+  const mostFree = workDays.reduce((a, b) =>
+    b.totalFreeMinutes > a.totalFreeMinutes ? b : a,
+  );
+  const totalFreeMins = workDays.reduce((s, d) => s + d.totalFreeMinutes, 0);
+  const totalFreeHours = totalFreeMins / 60;
+  const potential = hourlyRate > 0 ? totalFreeHours * hourlyRate : 0;
+
+  const dayLabel = (iso: string) =>
+    new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {
+      weekday: "long",
+    });
+
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        border: `0.5px solid ${BORDER}`,
+        borderRadius: 12,
+        padding: 14,
+        margin: "12px 16px 0",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "4px 0",
+          fontSize: 13,
+        }}
+      >
+        <span style={{ color: MUTED }}>Busiest day this week:</span>
+        <span style={{ color: NAVY, fontWeight: 600 }}>
+          {busiest.busyMinutes > 0 ? dayLabel(busiest.iso) : "—"}
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "4px 0",
+          fontSize: 13,
+        }}
+      >
+        <span style={{ color: MUTED }}>Most free time:</span>
+        <span style={{ color: NAVY, fontWeight: 600 }}>
+          {mostFree.totalFreeMinutes > 0
+            ? `${dayLabel(mostFree.iso)} · ${(mostFree.totalFreeMinutes / 60).toFixed(1)}h`
+            : "—"}
+        </span>
+      </div>
+      {hourlyRate > 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "4px 0",
+            fontSize: 13,
+          }}
+        >
+          <span style={{ color: MUTED }}>Potential revenue if filled:</span>
+          <span style={{ color: "#065F46", fontWeight: 700 }}>
+            £{potential.toFixed(0)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
