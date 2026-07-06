@@ -315,6 +315,10 @@ function GapsPage() {
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
+  // Offer-sheet state (per-pupil slot picker)
+  const [offerFor, setOfferFor] = useState<Ranked | null>(null);
+  const [offerChecked, setOfferChecked] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -612,6 +616,15 @@ function GapsPage() {
     if (!userId) return;
     const slots = searchSlots.length ? searchSlots : selectedSlots;
     if (!slots.length) return;
+    await logOfferSlots(pupilId, via, slots);
+  }
+
+  async function logOfferSlots(
+    pupilId: string,
+    via: "sms" | "message",
+    slots: SelectedSlot[],
+  ) {
+    if (!userId || !slots.length) return;
     try {
       const rows = slots.map((s) => ({
         instructor_id: userId,
@@ -630,45 +643,84 @@ function GapsPage() {
     }
   }
 
-  function handleText(r: Ranked) {
-    const first = firstNameOf(r.pupil);
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const offerSlots =
-      matches.length > 0 ? matches : r.matchedSlots;
-    let body: string;
-    if (offerSlots.length === 1) {
-      const s = offerSlots[0];
-      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    } else {
-      const lines = offerSlots
-        .map(
-          (s) =>
-            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
-        )
-        .join("\n");
-      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+  function openOfferSheet(r: Ranked) {
+    const defaults: Record<string, boolean> = {};
+    for (const m of r.matchedSlots) defaults[slotKey(m)] = m.match;
+    // If nothing matches, pre-check all so the sheet isn't empty
+    if (r.matchedSlots.every((m) => !m.match)) {
+      for (const m of r.matchedSlots) defaults[slotKey(m)] = true;
     }
-    const phone = r.pupil.phone || "";
-    const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    window.location.href = href;
-    void logOffer(r.pupil.id, "sms");
+    setOfferChecked(defaults);
+    setOfferFor(r);
   }
 
-  function handleMessage(r: Ranked) {
-    void logOffer(r.pupil.id, "message");
+  function closeOfferSheet() {
+    setOfferFor(null);
+    setOfferChecked({});
+  }
+
+  function buildOfferMessage(first: string, slots: SelectedSlot[]) {
+    if (slots.length === 1) {
+      const s = slots[0];
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    }
+    const lines = slots
+      .map(
+        (s) =>
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+      )
+      .join("\n");
+    return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
+  }
+
+  function checkedSlotsFor(r: Ranked): SelectedSlot[] {
+    return r.matchedSlots
+      .filter((m) => offerChecked[slotKey(m)])
+      .map((m) => ({ date: m.date, time: m.time, duration: m.duration }));
+  }
+
+  function handleSheetSms(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (!slots.length) {
+      toast.error("Select at least one slot to offer");
+      return;
+    }
+    const body = buildOfferMessage(firstNameOf(r.pupil), slots);
+    const phone = r.pupil.phone || "";
+    window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+    void logOfferSlots(r.pupil.id, "sms", slots);
+    closeOfferSheet();
+  }
+
+  function handleSheetMessage(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (!slots.length) {
+      toast.error("Select at least one slot to offer");
+      return;
+    }
+    void logOfferSlots(r.pupil.id, "message", slots);
+    closeOfferSheet();
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
-  function handleBook(r: Ranked) {
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const s = matches[0] || r.matchedSlots[0];
-    if (!s) return;
+  function handleSheetBook(r: Ranked) {
+    const slots = checkedSlotsFor(r);
+    if (slots.length === 0) {
+      toast.error("Select one slot to book");
+      return;
+    }
+    if (slots.length > 1) {
+      toast.info("Select one slot to book");
+      return;
+    }
+    const s = slots[0];
     const qs = new URLSearchParams({
       pupilId: r.pupil.id,
       date: s.date,
       time: s.time,
       duration: String(s.duration),
     });
+    closeOfferSheet();
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
 
@@ -1335,9 +1387,7 @@ function GapsPage() {
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
               multi={searchSlots.length > 1}
-              onText={() => handleText(r)}
-              onMessage={() => handleMessage(r)}
-              onBook={() => handleBook(r)}
+              onOffer={() => openOfferSheet(r)}
             />
           ))}
         </div>
@@ -1476,6 +1526,18 @@ function GapsPage() {
             </button>
           </div>
         </>
+      )}
+
+      {offerFor && (
+        <OfferSheet
+          r={offerFor}
+          checked={offerChecked}
+          setChecked={setOfferChecked}
+          onClose={closeOfferSheet}
+          onSms={() => handleSheetSms(offerFor)}
+          onMessage={() => handleSheetMessage(offerFor)}
+          onBook={() => handleSheetBook(offerFor)}
+        />
       )}
     </div>
   );
