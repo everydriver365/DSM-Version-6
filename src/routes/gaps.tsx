@@ -142,6 +142,25 @@ interface SelectedSlot {
   duration: number;
 }
 
+interface DiscountConfig {
+  enabled: boolean;
+  type: "percent" | "fixed";
+  value: number;
+}
+
+function computeDiscount(
+  hourlyRate: number,
+  durationMins: number,
+  d: DiscountConfig,
+) {
+  const lessonPrice = (hourlyRate / 60) * durationMins;
+  const rawDiscount =
+    d.type === "percent" ? lessonPrice * (d.value / 100) : d.value;
+  const discountAmount = Math.max(0, Math.min(lessonPrice, rawDiscount));
+  const discountedPrice = Math.max(0, lessonPrice - discountAmount);
+  return { lessonPrice, discountAmount, discountedPrice };
+}
+
 interface SlotMatch extends SelectedSlot {
   match: boolean;
   subScore: number;
@@ -637,18 +656,30 @@ function GapsPage() {
     pupilId: string,
     via: "sms" | "message",
     slots: SelectedSlot[],
+    discount?: DiscountConfig,
+    hourlyRate?: number,
   ) {
     if (!userId || !slots.length) return;
     try {
-      const rows = slots.map((s) => ({
-        instructor_id: userId,
-        pupil_id: pupilId,
-        slot_date: s.date,
-        slot_time: s.time,
-        duration_minutes: s.duration,
-        status: "sent",
-        sent_via: via,
-      }));
+      const rows = slots.map((s) => {
+        const base: Record<string, unknown> = {
+          instructor_id: userId,
+          pupil_id: pupilId,
+          slot_date: s.date,
+          slot_time: s.time,
+          duration_minutes: s.duration,
+          status: "sent",
+          sent_via: via,
+        };
+        if (discount?.enabled && hourlyRate && hourlyRate > 0) {
+          const priced = computeDiscount(hourlyRate, s.duration, discount);
+          base.discount_type = discount.type;
+          base.discount_value = discount.value;
+          base.original_price = priced.lessonPrice;
+          base.discounted_price = priced.discountedPrice;
+        }
+        return base;
+      });
       const { error } = await supabase.from("gap_filler_offers").insert(rows);
       if (error) throw error;
       setReloadKey((k) => k + 1);
@@ -656,6 +687,11 @@ function GapsPage() {
       console.warn("[gaps] logOffer failed:", err);
     }
   }
+  // NOTE: to persist discount fields, run in Supabase:
+  //   alter table gap_filler_offers add column if not exists discount_type text;
+  //   alter table gap_filler_offers add column if not exists discount_value numeric(5,2);
+  //   alter table gap_filler_offers add column if not exists original_price numeric(8,2);
+  //   alter table gap_filler_offers add column if not exists discounted_price numeric(8,2);
 
   function slotDayTimeKey(date: string, startTime: string) {
     return `${date}|${startTime}`;
@@ -681,15 +717,25 @@ function GapsPage() {
     setOfferSlotStates({});
   }
 
-  function buildOfferMessage(first: string, slots: SelectedSlot[]) {
+  function buildOfferMessage(
+    first: string,
+    slots: SelectedSlot[],
+    discount?: DiscountConfig,
+    hourlyRate?: number,
+  ) {
+    const priceLine = (s: SelectedSlot) => {
+      if (!discount?.enabled || !hourlyRate || hourlyRate <= 0) return "";
+      const p = computeDiscount(hourlyRate, s.duration, discount);
+      return ` Special offer: this slot is discounted to £${p.discountedPrice.toFixed(0)} (usually £${p.lessonPrice.toFixed(0)}).`;
+    };
     if (slots.length === 1) {
       const s = slots[0];
-      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}.${priceLine(s)} Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
     }
     const lines = slots
       .map(
         (s) =>
-          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)${priceLine(s)}`,
       )
       .join("\n");
     return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
@@ -706,31 +752,36 @@ function GapsPage() {
     return out;
   }
 
-  function handleSheetSms(r: Ranked) {
+  function handleSheetSms(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (!slots.length) {
       toast.error("Select at least one slot to offer");
       return;
     }
-    const body = buildOfferMessage(firstNameOf(r.pupil), slots);
+    const body = buildOfferMessage(
+      firstNameOf(r.pupil),
+      slots,
+      discount,
+      hourlyRate,
+    );
     const phone = r.pupil.phone || "";
     window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    void logOfferSlots(r.pupil.id, "sms", slots);
+    void logOfferSlots(r.pupil.id, "sms", slots, discount, hourlyRate);
     closeOfferSheet();
   }
 
-  function handleSheetMessage(r: Ranked) {
+  function handleSheetMessage(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (!slots.length) {
       toast.error("Select at least one slot to offer");
       return;
     }
-    void logOfferSlots(r.pupil.id, "message", slots);
+    void logOfferSlots(r.pupil.id, "message", slots, discount, hourlyRate);
     closeOfferSheet();
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
-  function handleSheetBook(r: Ranked) {
+  function handleSheetBook(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (slots.length === 0) {
       toast.error("Select one slot to book");
@@ -741,12 +792,17 @@ function GapsPage() {
       return;
     }
     const s = slots[0];
-    const qs = new URLSearchParams({
+    const params: Record<string, string> = {
       pupilId: r.pupil.id,
       date: s.date,
       time: s.time,
       duration: String(s.duration),
-    });
+    };
+    if (discount.enabled && hourlyRate > 0) {
+      const priced = computeDiscount(hourlyRate, s.duration, discount);
+      params.amount = priced.discountedPrice.toFixed(2);
+    }
+    const qs = new URLSearchParams(params);
     closeOfferSheet();
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
@@ -1608,10 +1664,11 @@ function GapsPage() {
           freeSlots={freeSlots}
           slotStates={offerSlotStates}
           setSlotStates={setOfferSlotStates}
+          hourlyRate={hourlyRate}
           onClose={closeOfferSheet}
-          onSms={() => handleSheetSms(offerFor)}
-          onMessage={() => handleSheetMessage(offerFor)}
-          onBook={() => handleSheetBook(offerFor)}
+          onSms={(d) => handleSheetSms(offerFor, d)}
+          onMessage={(d) => handleSheetMessage(offerFor, d)}
+          onBook={(d) => handleSheetBook(offerFor, d)}
         />
       )}
     </div>
@@ -1935,6 +1992,7 @@ function OfferSheet({
   freeSlots,
   slotStates,
   setSlotStates,
+  hourlyRate,
   onClose,
   onSms,
   onMessage,
@@ -1948,14 +2006,32 @@ function OfferSheet({
       Record<string, { selected: boolean; duration: number }>
     >
   >;
+  hourlyRate: number;
   onClose: () => void;
-  onSms: () => void;
-  onMessage: () => void;
-  onBook: () => void;
+  onSms: (d: DiscountConfig) => void;
+  onMessage: (d: DiscountConfig) => void;
+  onBook: (d: DiscountConfig) => void;
 }) {
   const name = fullNameOf(r.pupil);
   const first = firstNameOf(r.pupil);
   const settings = r.settings;
+
+  const [discountEnabled, setDiscountEnabled] = useState(false);
+  const [discountType, setDiscountType] = useState<"percent" | "fixed">(
+    "percent",
+  );
+  const [discountValue, setDiscountValue] = useState<number>(10);
+
+  function handleTypeSwitch(next: "percent" | "fixed") {
+    setDiscountType(next);
+    setDiscountValue(next === "percent" ? 10 : 5);
+  }
+
+  const discount: DiscountConfig = {
+    enabled: discountEnabled,
+    type: discountType,
+    value: Number.isFinite(discountValue) ? discountValue : 0,
+  };
 
   // Group free slots by day
   const byDay = new Map<string, FreeSlot[]>();
@@ -2322,6 +2398,237 @@ function OfferSheet({
             })}
           </div>
 
+        {/* Discount card */}
+        {(() => {
+          const now = Date.now();
+          const earliestMs = selectedList.reduce((min, { s }) => {
+            const ts = new Date(`${s.date}T${s.startTime}:00`).getTime();
+            return ts < min ? ts : min;
+          }, Number.POSITIVE_INFINITY);
+          const hrsUntil =
+            earliestMs === Number.POSITIVE_INFINITY
+              ? Infinity
+              : (earliestMs - now) / (1000 * 60 * 60);
+          const hint =
+            hrsUntil <= 4
+              ? "💡 Try 15-20% off to fill this slot quickly"
+              : hrsUntil <= 24
+                ? "💡 Last-minute slots fill faster with a small discount"
+                : null;
+          const suffix = discountType === "percent" ? "%" : "£";
+          return (
+            <div
+              style={{
+                background: "#FFFFFF",
+                border: `0.5px solid ${BORDER}`,
+                borderRadius: 10,
+                padding: 14,
+                marginTop: 12,
+                marginBottom: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Tag size={16} color="#D97706" />
+                  <span
+                    style={{
+                      color: NAVY,
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Offer a discount?
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={discountEnabled}
+                  onClick={() => setDiscountEnabled((v) => !v)}
+                  style={{
+                    width: 40,
+                    height: 22,
+                    borderRadius: 999,
+                    background: discountEnabled ? NAVY : "#E2E6ED",
+                    border: "none",
+                    padding: 0,
+                    position: "relative",
+                    cursor: "pointer",
+                    transition: "background 120ms ease",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 2,
+                      left: discountEnabled ? 20 : 2,
+                      width: 18,
+                      height: 18,
+                      background: "#FFFFFF",
+                      borderRadius: 999,
+                      boxShadow: "0 1px 2px rgba(15,32,68,0.25)",
+                      transition: "left 120ms ease",
+                    }}
+                  />
+                </button>
+              </div>
+              {discountEnabled && (
+                <>
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    {(
+                      [
+                        { k: "percent", label: "% off" },
+                        { k: "fixed", label: "£ off" },
+                      ] as const
+                    ).map((opt) => {
+                      const sel = discountType === opt.k;
+                      return (
+                        <button
+                          key={opt.k}
+                          type="button"
+                          onClick={() => handleTypeSwitch(opt.k)}
+                          style={{
+                            background: sel ? NAVY : "#F3F4F6",
+                            color: sel ? "#FFFFFF" : "#6B7280",
+                            border: "none",
+                            borderRadius: 999,
+                            padding: "6px 14px",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginTop: 8,
+                    }}
+                  >
+                    <input
+                      type="number"
+                      min={0}
+                      value={Number.isFinite(discountValue) ? discountValue : 0}
+                      onChange={(e) => {
+                        const n = parseFloat(e.target.value);
+                        setDiscountValue(Number.isFinite(n) ? n : 0);
+                      }}
+                      style={{
+                        background: "#F7FAFC",
+                        border: `0.5px solid ${BORDER}`,
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        width: 80,
+                        textAlign: "center",
+                        fontWeight: 700,
+                        color: NAVY,
+                        fontSize: 14,
+                      }}
+                    />
+                    <span
+                      style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}
+                    >
+                      {suffix}
+                    </span>
+                  </div>
+                  {hourlyRate > 0 && selectedList.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      {selectedList.map(({ s, st }) => {
+                        const priced = computeDiscount(
+                          hourlyRate,
+                          st!.duration,
+                          discount,
+                        );
+                        const wd = new Date(
+                          s.date + "T00:00:00",
+                        ).toLocaleDateString("en-GB", { weekday: "short" });
+                        return (
+                          <div
+                            key={`price-${slotDTKey(s)}`}
+                            style={{
+                              display: "flex",
+                              alignItems: "baseline",
+                              gap: 8,
+                              flexWrap: "wrap",
+                              marginTop: 2,
+                            }}
+                          >
+                            <span
+                              style={{
+                                color: "#9CA3AF",
+                                fontSize: 11,
+                                minWidth: 90,
+                              }}
+                            >
+                              {wd} {fmt12h(s.startTime)}
+                            </span>
+                            <span
+                              style={{
+                                color: "#9CA3AF",
+                                fontSize: 13,
+                                textDecoration: "line-through",
+                              }}
+                            >
+                              £{priced.lessonPrice.toFixed(0)}
+                            </span>
+                            <span style={{ color: "#9CA3AF" }}>→</span>
+                            <span
+                              style={{
+                                color: TEAL,
+                                fontSize: 14,
+                                fontWeight: 700,
+                              }}
+                            >
+                              £{priced.discountedPrice.toFixed(0)}
+                            </span>
+                            <span
+                              style={{
+                                color: "#16A34A",
+                                fontSize: 11,
+                              }}
+                            >
+                              Saving £{priced.discountAmount.toFixed(0)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {hint && (
+                    <div
+                      style={{
+                        marginTop: 8,
+                        color: "#6B7280",
+                        fontSize: 11,
+                      }}
+                    >
+                      {hint}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })()}
+
         <div
           style={{
             display: "flex",
@@ -2330,7 +2637,7 @@ function OfferSheet({
           }}
         >
           <button
-            onClick={onSms}
+            onClick={() => onSms(discount)}
             style={{
               background: NAVY,
               color: "#FFFFFF",
@@ -2346,7 +2653,7 @@ function OfferSheet({
             📱 Send SMS
           </button>
           <button
-            onClick={onMessage}
+            onClick={() => onMessage(discount)}
             style={{
               background: TEAL,
               color: "#FFFFFF",
@@ -2362,7 +2669,7 @@ function OfferSheet({
             💬 In-app message
           </button>
           <button
-            onClick={onBook}
+            onClick={() => onBook(discount)}
             style={{
               background: "#FFFFFF",
               color: NAVY,
