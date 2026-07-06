@@ -608,16 +608,19 @@ function GapsPage() {
 
   async function logOffer(pupilId: string, via: "sms" | "message") {
     if (!userId) return;
+    const slots = searchSlots.length ? searchSlots : selectedSlots;
+    if (!slots.length) return;
     try {
-      const { error } = await supabase.from("gap_filler_offers").insert({
+      const rows = slots.map((s) => ({
         instructor_id: userId,
         pupil_id: pupilId,
-        slot_date: searchDate || slotDate,
-        slot_time: searchTime || slotTime,
-        duration_minutes: searchDuration || duration,
+        slot_date: s.date,
+        slot_time: s.time,
+        duration_minutes: s.duration,
         status: "sent",
         sent_via: via,
-      });
+      }));
+      const { error } = await supabase.from("gap_filler_offers").insert(rows);
       if (error) throw error;
       setReloadKey((k) => k + 1);
     } catch (err) {
@@ -627,10 +630,22 @@ function GapsPage() {
 
   function handleText(r: Ranked) {
     const first = firstNameOf(r.pupil);
-    const dateStr = fmtDateLong(searchDate || slotDate);
-    const timeStr = fmtTimeHm(searchTime || slotTime);
-    const dur = searchDuration || duration;
-    const body = `Hi ${first}, I have a ${dur} minute lesson slot available on ${dateStr} at ${timeStr}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const offerSlots =
+      matches.length > 0 ? matches : r.matchedSlots;
+    let body: string;
+    if (offerSlots.length === 1) {
+      const s = offerSlots[0];
+      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    } else {
+      const lines = offerSlots
+        .map(
+          (s) =>
+            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+        )
+        .join("\n");
+      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+    }
     const phone = r.pupil.phone || "";
     const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
     window.location.href = href;
@@ -643,11 +658,14 @@ function GapsPage() {
   }
 
   function handleBook(r: Ranked) {
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const s = matches[0] || r.matchedSlots[0];
+    if (!s) return;
     const qs = new URLSearchParams({
       pupilId: r.pupil.id,
-      date: searchDate || slotDate,
-      time: searchTime || slotTime,
-      duration: String(searchDuration || duration),
+      date: s.date,
+      time: s.time,
+      duration: String(s.duration),
     });
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
@@ -658,9 +676,10 @@ function GapsPage() {
     [ranked],
   );
 
-  const dayOfWeekLabel = searchDate
-    ? DAYS[new Date(searchDate + "T00:00:00").getDay()]
-    : "";
+  const dayOfWeekLabel =
+    searchSlots[0]
+      ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
+      : "";
 
   return (
     <div
