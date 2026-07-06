@@ -314,6 +314,7 @@ function GapsPage() {
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
+  const [bufferMins, setBufferMins] = useState<number>(15);
 
   // Offer-sheet state (per-pupil slot picker across ALL free slots)
   const [offerFor, setOfferFor] = useState<Ranked | null>(null);
@@ -360,6 +361,7 @@ function GapsPage() {
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const buffer = instr.lesson_buffer_minutes ?? 15;
+        if (!cancelled) setBufferMins(buffer);
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
