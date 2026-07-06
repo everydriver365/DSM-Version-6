@@ -2300,7 +2300,8 @@ function OfferSheet({
                             fontWeight: 500,
                           }}
                         >
-                          {fmt12h(s.startTime)} – {fmt12h(s.endTime)}
+                          {fmt12h(s.startTime)} –{" "}
+                          {fmt12h(addMinutesToTime(s.startTime, st.duration))}
                         </span>
                         <span
                           style={{
