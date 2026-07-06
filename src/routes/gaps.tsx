@@ -733,8 +733,45 @@ function GapsPage() {
 
       <div style={{ marginTop: 16 }}>
         <div style={{ margin: "0 16px" }}>
-          <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
-            Your free slots — next 14 days
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
+              Your free slots — next 14 days
+            </div>
+            {freeSlots.length > 0 && (
+              <button
+                onClick={() => {
+                  if (selectedSlots.length > 0) {
+                    setSelectedSlots([]);
+                  } else {
+                    setSelectedSlots(
+                      freeSlots.map((s) => ({
+                        date: s.date,
+                        time: s.startTime,
+                        duration: 60,
+                      })),
+                    );
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: BLUE,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                {selectedSlots.length > 0 ? "Clear all" : "Select all"}
+              </button>
+            )}
           </div>
           <div style={{ color: MUTED, fontSize: 13, marginBottom: 12 }}>
             {slotsLoading
