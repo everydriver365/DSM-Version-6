@@ -4670,7 +4670,15 @@ function HomePage() {
                   <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {m.body || ""}
                   </div>
-                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{timeAgo(m.created_at)}</div>
+                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{(() => {
+                    const diff = Math.max(0, Date.now() - new Date(m.created_at).getTime());
+                    const mm = Math.floor(diff / 60000);
+                    if (mm < 1) return "just now";
+                    if (mm < 60) return `${mm}m ago`;
+                    const h = Math.floor(mm / 60);
+                    if (h < 24) return `${h}h ago`;
+                    return `${Math.floor(h / 24)}d ago`;
+                  })()}</div>
                 </div>
                 {!m.read_at && (
                   <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", flexShrink: 0, marginLeft: 8 }} />
