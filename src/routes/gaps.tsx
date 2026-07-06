@@ -190,6 +190,130 @@ function GapsPage() {
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
   const [reloadKey, setReloadKey] = useState(0);
 
+  const [freeSlots, setFreeSlots] = useState<FreeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
+  const [manualMode, setManualMode] = useState(false);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      setSlotsLoading(true);
+      try {
+        const today = new Date();
+        const startIso = todayIso();
+        const endIso = addDaysIso(today, 14);
+        const [lessonsRes, instrRes] = await Promise.all([
+          supabase
+            .from("lessons")
+            .select("lesson_date,lesson_time,duration_minutes")
+            .eq("instructor_id", userId)
+            .is("deleted_at", null)
+            .in("status", ["confirmed", "pending"])
+            .gte("lesson_date", startIso)
+            .lte("lesson_date", endIso)
+            .order("lesson_date", { ascending: true })
+            .order("lesson_time", { ascending: true }),
+          supabase
+            .from("instructors")
+            .select(
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,hourly_rate",
+            )
+            .eq("id", userId)
+            .maybeSingle(),
+        ]);
+        if (cancelled) return;
+
+        const instr = (instrRes.data ?? {}) as {
+          working_hours_start?: string | null;
+          working_hours_end?: string | null;
+          working_days?: string[] | null;
+          lesson_buffer_minutes?: number | null;
+        };
+        const workStart = instr.working_hours_start || "09:00";
+        const workEnd = instr.working_hours_end || "18:00";
+        const buffer = instr.lesson_buffer_minutes ?? 15;
+        const workDays =
+          instr.working_days && instr.working_days.length
+            ? instr.working_days
+            : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+        const byDay = new Map<
+          string,
+          { start: number; end: number }[]
+        >();
+        for (const l of (lessonsRes.data ?? []) as {
+          lesson_date: string | null;
+          lesson_time: string | null;
+          duration_minutes: number | null;
+        }[]) {
+          if (!l.lesson_date || !l.lesson_time) continue;
+          const s = hmToMin(l.lesson_time);
+          const e = s + (l.duration_minutes ?? 60);
+          const arr = byDay.get(l.lesson_date) ?? [];
+          arr.push({ start: s, end: e });
+          byDay.set(l.lesson_date, arr);
+        }
+
+        const slots: FreeSlot[] = [];
+        const wsMin = hmToMin(workStart);
+        const weMin = hmToMin(workEnd);
+        for (let i = 0; i < 14; i++) {
+          const dt = new Date(today);
+          dt.setDate(dt.getDate() + i);
+          const dayName = DAYS[dt.getDay()];
+          if (!workDays.includes(dayName)) continue;
+          const iso = addDaysIso(today, i);
+          const dayLessons = (byDay.get(iso) ?? []).slice().sort(
+            (a, b) => a.start - b.start,
+          );
+          // Build gap boundaries
+          const gaps: { start: number; end: number }[] = [];
+          let cursor = wsMin;
+          for (const l of dayLessons) {
+            const gapEnd = l.start - buffer;
+            if (gapEnd - cursor >= 60) {
+              gaps.push({ start: cursor, end: gapEnd });
+            }
+            cursor = Math.max(cursor, l.end + buffer);
+          }
+          if (weMin - cursor >= 60) {
+            gaps.push({ start: cursor, end: weMin });
+          }
+          // Filter out gaps that start in the past (today only)
+          for (const g of gaps) {
+            let gStart = g.start;
+            if (i === 0) {
+              const nowMins = today.getHours() * 60 + today.getMinutes();
+              if (gStart < nowMins) gStart = Math.ceil(nowMins / 15) * 15;
+            }
+            const gapMinutes = g.end - gStart;
+            if (gapMinutes < 60) continue;
+            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
+            if (!possible.length) continue;
+            slots.push({
+              date: iso,
+              startTime: minToHm(gStart),
+              endTime: minToHm(g.end),
+              gapMinutes,
+              possibleDurations: possible,
+            });
+          }
+        }
+        if (!cancelled) setFreeSlots(slots);
+      } catch (err) {
+        console.error("[gaps] free-slot detection failed:", err);
+        if (!cancelled) setFreeSlots([]);
+      } finally {
+        if (!cancelled) setSlotsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, reloadKey]);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
