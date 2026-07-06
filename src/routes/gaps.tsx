@@ -30,8 +30,9 @@ export const Route = createFileRoute("/gaps")({
 
 const FONT = { fontFamily: "Inter, sans-serif" } as const;
 const NAVY = "#0F2044";
-const NAVY_DEEP = "#0B1F3A";
 const BLUE = "#1A52A0";
+const BLUE_BRIGHT = "#3B82F6";
+const TINT = "#E0F4FF";
 const TEAL = "#00B5A5";
 const MUTED = "#6B7280";
 const BORDER = "#E2E6ED";
@@ -687,49 +688,130 @@ function GapsPage() {
       className="min-h-screen"
       style={{ ...FONT, backgroundColor: "#FFFFFF", margin: -8 }}
     >
+      {/* Light header */}
       <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: NAVY_DEEP }}
-      >
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          className="p-1 -ml-1"
-          style={{ color: "#fff" }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <h1
-          className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-medium"
-          style={FONT}
-        >
-          Fill My Slots
-        </h1>
-      </div>
-
-      <div
+        className="sticky top-0 z-40"
         style={{
-          background: "#F0F4FF",
-          border: "1px solid #BFDBFE",
-          borderRadius: 12,
-          padding: 16,
-          margin: "16px 16px 0",
-          display: "flex",
-          gap: 12,
+          background: "#FFFFFF",
+          borderBottom: `0.5px solid ${BORDER}`,
+          padding: "14px 20px 12px",
         }}
       >
-        <Zap size={20} color={BLUE} style={{ flexShrink: 0, marginTop: 2 }} />
-        <div>
-          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
-            Got a free slot? Find the right pupil in seconds.
-          </div>
-          <div
-            style={{ color: MUTED, fontSize: 13, marginTop: 4, lineHeight: 1.4 }}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={() => navigate({ to: "/home" })}
+            aria-label="Back"
+            style={{
+              background: "#F1F5F9",
+              border: "none",
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: NAVY,
+            }}
           >
-            We'll rank your pupils based on their availability, preferences and
-            how long since their last lesson.
+            <ArrowLeft size={18} />
+          </button>
+          <div style={{ flex: 1 }}>
+            <h1
+              style={{
+                ...FONT,
+                color: NAVY,
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                margin: 0,
+                lineHeight: 1.1,
+              }}
+            >
+              Fill My Slots
+            </h1>
+            <div style={{ color: "#94A3B8", fontSize: 13, marginTop: 2 }}>
+              Available gaps in the next 14 days
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Stat cards */}
+      <div
+        style={{
+          padding: "16px 20px 8px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: 10,
+        }}
+      >
+        {[
+          { label: "Slots", value: String(freeSlots.length) },
+          {
+            label: "Days",
+            value: String(
+              dayGroups.filter((g) => g.slots.length > 0).length,
+            ),
+          },
+          {
+            label: "Potential",
+            value:
+              hourlyRate > 0
+                ? `£${Math.round(
+                    (dayGroups.reduce(
+                      (s, d) => s + d.totalFreeMinutes,
+                      0,
+                    ) /
+                      60) *
+                      hourlyRate,
+                  )}`
+                : "—",
+          },
+        ].map((s) => (
+          <div
+            key={s.label}
+            style={{
+              background: TINT,
+              padding: "12px 12px 10px",
+              borderRadius: 16,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: BLUE,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                marginBottom: 4,
+              }}
+            >
+              {s.label}
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: NAVY }}>
+              {s.value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Reassurance strip */}
+      <div
+        style={{
+          margin: "4px 20px 4px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          color: MUTED,
+          fontSize: 12,
+        }}
+      >
+        <Zap size={13} color={BLUE_BRIGHT} />
+        <span>
+          We rank pupils by availability, preferences and time since last
+          lesson.
+        </span>
       </div>
 
       <div style={{ marginTop: 16 }}>
@@ -785,27 +867,41 @@ function GapsPage() {
           <div
             style={{
               background: "#FFFFFF",
-              border: `0.5px solid ${BORDER}`,
-              borderRadius: 12,
-              padding: 20,
+              border: `1px solid ${BORDER}`,
+              borderRadius: 20,
+              padding: 24,
               margin: "0 16px",
               textAlign: "center",
             }}
           >
-            <div style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 999,
+                background: TINT,
+                margin: "0 auto 10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CalendarIcon size={20} color={BLUE_BRIGHT} />
+            </div>
+            <div style={{ color: NAVY, fontWeight: 700, fontSize: 15 }}>
               No free slots in the next 14 days
             </div>
-            <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
+            <div style={{ color: MUTED, fontSize: 13, marginTop: 6 }}>
               Your diary looks full — check your schedule
             </div>
             <button
               onClick={() => navigate({ to: "/schedule" })}
               style={{
-                marginTop: 10,
+                marginTop: 12,
                 background: "transparent",
                 border: "none",
-                color: BLUE,
-                fontWeight: 600,
+                color: BLUE_BRIGHT,
+                fontWeight: 700,
                 fontSize: 13,
                 cursor: "pointer",
               }}
@@ -837,9 +933,10 @@ function GapsPage() {
                     : undefined
                 }
                 style={{
-                  padding: "10px 16px",
-                  borderTop: `0.5px solid ${BORDER}`,
-                  background: "#FAFAFA",
+                  padding: "10px 20px",
+                  margin: "0 20px 6px",
+                  borderRadius: 12,
+                  background: "#F8FAFC",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -855,115 +952,179 @@ function GapsPage() {
           }
 
           return (
-            <div key={g.iso}>
+            <div key={g.iso} style={{ marginBottom: 18 }}>
               <div
                 style={{
-                  padding: "8px 16px",
-                  background: "#F7FAFC",
-                  borderTop: `0.5px solid ${BORDER}`,
-                  borderBottom: `0.5px solid ${BORDER}`,
+                  padding: "6px 20px 10px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
               >
-                <span style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}>
+                <span
+                  style={{
+                    color: "#94A3B8",
+                    fontWeight: 700,
+                    fontSize: 11,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                  }}
+                >
                   {dLabel}
                 </span>
-                <span style={{ color: MUTED, fontSize: 11 }}>
-                  {g.slots.length} slot{g.slots.length === 1 ? "" : "s"}{" "}
-                  available
+                <span style={{ color: "#94A3B8", fontSize: 11 }}>
+                  {g.slots.length} slot{g.slots.length === 1 ? "" : "s"}
                 </span>
               </div>
-              <div style={{ padding: "0 16px" }}>
-                {g.slots.map((slot) => (
-                  <div
-                    key={`${slot.date}|${slot.startTime}`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "10px 0",
-                      borderBottom: "0.5px solid #F3F4F6",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        flex: "1 1 auto",
-                        minWidth: 130,
-                      }}
-                    >
-                      <Clock size={14} color="#9CA3AF" />
-                      <span
-                        style={{
-                          color: NAVY,
-                          fontSize: 13,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
-                      </span>
-                    </div>
-                    <span style={{ color: MUTED, fontSize: 11 }}>
-                      {(slot.gapMinutes / 60).toFixed(
-                        slot.gapMinutes % 60 === 0 ? 0 : 1,
-                      )}{" "}
-                      hrs free
-                    </span>
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {slot.possibleDurations.map((d) => {
-                        const key = slotKey({
+              <div
+                style={{
+                  padding: "0 20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                {g.slots.map((slot) => {
+                  const anySelected = slot.possibleDurations.some((d) =>
+                    selectedSlots.some(
+                      (s) =>
+                        slotKey(s) ===
+                        slotKey({
                           date: slot.date,
                           time: slot.startTime,
                           duration: d,
-                        });
-                        const isSelected = selectedSlots.some(
-                          (s) => slotKey(s) === key,
-                        );
-                        return (
-                          <button
-                            key={d}
-                            onClick={() => {
-                              setSelectedSlots((prev) => {
-                                const exists = prev.some(
-                                  (s) => slotKey(s) === key,
-                                );
-                                if (exists)
-                                  return prev.filter(
-                                    (s) => slotKey(s) !== key,
-                                  );
-                                return [
-                                  ...prev,
-                                  {
-                                    date: slot.date,
-                                    time: slot.startTime,
-                                    duration: d,
-                                  },
-                                ];
-                              });
-                            }}
+                        }),
+                    ),
+                  );
+                  return (
+                    <div
+                      key={`${slot.date}|${slot.startTime}`}
+                      style={{
+                        background: "#FFFFFF",
+                        border: anySelected
+                          ? `2px solid ${BLUE_BRIGHT}`
+                          : `1px solid #EEF2F7`,
+                        borderRadius: 16,
+                        padding: "14px 14px",
+                        boxShadow:
+                          "0 1px 2px rgba(15, 32, 68, 0.04)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      {/* Radio dot */}
+                      <div
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 999,
+                          border: `2px solid ${anySelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {anySelected && (
+                          <div
                             style={{
-                              background: isSelected ? NAVY : "#F0F4FF",
-                              color: isSelected ? "#FFFFFF" : BLUE,
-                              border: `0.5px solid ${isSelected ? NAVY : "#BFDBFE"}`,
+                              width: 10,
+                              height: 10,
                               borderRadius: 999,
-                              padding: "4px 10px",
-                              fontSize: 12,
-                              fontWeight: 600,
-                              cursor: "pointer",
+                              background: BLUE_BRIGHT,
                             }}
-                          >
-                            {d} min
-                          </button>
-                        );
-                      })}
+                          />
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            color: NAVY,
+                            fontWeight: 700,
+                            fontSize: 14,
+                          }}
+                        >
+                          {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 6,
+                            marginTop: 8,
+                          }}
+                        >
+                          {slot.possibleDurations.map((d) => {
+                            const key = slotKey({
+                              date: slot.date,
+                              time: slot.startTime,
+                              duration: d,
+                            });
+                            const isSelected = selectedSlots.some(
+                              (s) => slotKey(s) === key,
+                            );
+                            return (
+                              <button
+                                key={d}
+                                onClick={() => {
+                                  setSelectedSlots((prev) => {
+                                    const exists = prev.some(
+                                      (s) => slotKey(s) === key,
+                                    );
+                                    if (exists)
+                                      return prev.filter(
+                                        (s) => slotKey(s) !== key,
+                                      );
+                                    return [
+                                      ...prev,
+                                      {
+                                        date: slot.date,
+                                        time: slot.startTime,
+                                        duration: d,
+                                      },
+                                    ];
+                                  });
+                                }}
+                                style={{
+                                  background: isSelected
+                                    ? BLUE_BRIGHT
+                                    : "#F1F5F9",
+                                  color: isSelected ? "#FFFFFF" : "#475569",
+                                  border: "none",
+                                  borderRadius: 6,
+                                  padding: "3px 8px",
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  letterSpacing: "0.04em",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {d} MIN
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      {hourlyRate > 0 && (
+                        <div
+                          style={{
+                            color: BLUE,
+                            fontWeight: 700,
+                            fontSize: 13,
+                            textAlign: "right",
+                          }}
+                        >
+                          £
+                          {(
+                            (slot.gapMinutes / 60) *
+                            hourlyRate
+                          ).toFixed(0)}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );
@@ -1188,17 +1349,38 @@ function GapsPage() {
           style={{
             width: "100%",
             background: "#FFFFFF",
-            border: `0.5px solid ${BORDER}`,
-            borderRadius: 12,
-            padding: "12px 14px",
+            border: `1px solid ${BORDER}`,
+            borderRadius: 16,
+            padding: "14px 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             cursor: "pointer",
           }}
         >
-          <span style={{ fontWeight: 600, color: NAVY, fontSize: 14 }}>
-            Recent offers ({offers.length})
+          <span
+            style={{
+              fontWeight: 700,
+              color: NAVY,
+              fontSize: 14,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            Recent offers
+            <span
+              style={{
+                background: TINT,
+                color: BLUE,
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "2px 8px",
+                borderRadius: 999,
+              }}
+            >
+              {offers.length}
+            </span>
           </span>
           {offersOpen ? (
             <ChevronUp size={18} color={MUTED} />
@@ -1207,9 +1389,16 @@ function GapsPage() {
           )}
         </button>
         {offersOpen && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 10 }}>
             {offers.length === 0 && (
-              <div style={{ color: MUTED, fontSize: 13, padding: "8px 4px" }}>
+              <div
+                style={{
+                  color: MUTED,
+                  fontSize: 13,
+                  padding: "10px 4px",
+                  textAlign: "center",
+                }}
+              >
                 No offers yet.
               </div>
             )}
@@ -1217,8 +1406,7 @@ function GapsPage() {
               <div
                 key={o.id}
                 style={{
-                  background: "#FFFFFF",
-                  border: `0.5px solid ${BORDER}`,
+                  background: "#F8FAFC",
                   borderRadius: 12,
                   padding: "10px 12px",
                   marginBottom: 6,
@@ -1245,44 +1433,46 @@ function GapsPage() {
 
       {selectedSlots.length > 0 && (
         <>
-          <div style={{ height: 96 }} />
+          <div style={{ height: 108 }} />
           <div
             style={{
               position: "fixed",
               bottom: 80,
               left: 0,
               right: 0,
-              padding: "12px 16px",
-              background: "#FFFFFF",
-              borderTop: `0.5px solid ${BORDER}`,
+              padding: "14px 20px",
+              background: "rgba(255,255,255,0.92)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+              borderTop: `1px solid ${BORDER}`,
               zIndex: 50,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 12,
-              boxShadow: "0 -6px 20px rgba(15, 32, 68, 0.08)",
             }}
           >
-            <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
-              {selectedSlots.length} slot
-              {selectedSlots.length === 1 ? "" : "s"} selected
-            </div>
             <button
               onClick={() => void findPupils()}
               disabled={loading}
               style={{
-                background: NAVY,
+                width: "100%",
+                background: BLUE_BRIGHT,
                 color: "#FFFFFF",
-                fontWeight: 600,
-                fontSize: 14,
-                borderRadius: 12,
+                fontWeight: 700,
+                fontSize: 15,
+                borderRadius: 16,
                 border: "none",
-                padding: "10px 20px",
+                padding: "14px 20px",
                 cursor: "pointer",
                 opacity: loading ? 0.6 : 1,
+                boxShadow:
+                  "0 8px 20px rgba(59, 130, 246, 0.28)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
               }}
             >
-              {loading ? "Finding…" : "Find pupils →"}
+              {loading
+                ? "Finding…"
+                : `Find pupils for ${selectedSlots.length} slot${selectedSlots.length === 1 ? "" : "s"} →`}
             </button>
           </div>
         </>
