@@ -637,18 +637,30 @@ function GapsPage() {
     pupilId: string,
     via: "sms" | "message",
     slots: SelectedSlot[],
+    discount?: DiscountConfig,
+    hourlyRate?: number,
   ) {
     if (!userId || !slots.length) return;
     try {
-      const rows = slots.map((s) => ({
-        instructor_id: userId,
-        pupil_id: pupilId,
-        slot_date: s.date,
-        slot_time: s.time,
-        duration_minutes: s.duration,
-        status: "sent",
-        sent_via: via,
-      }));
+      const rows = slots.map((s) => {
+        const base: Record<string, unknown> = {
+          instructor_id: userId,
+          pupil_id: pupilId,
+          slot_date: s.date,
+          slot_time: s.time,
+          duration_minutes: s.duration,
+          status: "sent",
+          sent_via: via,
+        };
+        if (discount?.enabled && hourlyRate && hourlyRate > 0) {
+          const priced = computeDiscount(hourlyRate, s.duration, discount);
+          base.discount_type = discount.type;
+          base.discount_value = discount.value;
+          base.original_price = priced.lessonPrice;
+          base.discounted_price = priced.discountedPrice;
+        }
+        return base;
+      });
       const { error } = await supabase.from("gap_filler_offers").insert(rows);
       if (error) throw error;
       setReloadKey((k) => k + 1);
@@ -656,6 +668,11 @@ function GapsPage() {
       console.warn("[gaps] logOffer failed:", err);
     }
   }
+  // NOTE: to persist discount fields, run in Supabase:
+  //   alter table gap_filler_offers add column if not exists discount_type text;
+  //   alter table gap_filler_offers add column if not exists discount_value numeric(5,2);
+  //   alter table gap_filler_offers add column if not exists original_price numeric(8,2);
+  //   alter table gap_filler_offers add column if not exists discounted_price numeric(8,2);
 
   function slotDayTimeKey(date: string, startTime: string) {
     return `${date}|${startTime}`;
