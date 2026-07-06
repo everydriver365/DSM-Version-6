@@ -1664,10 +1664,11 @@ function GapsPage() {
           freeSlots={freeSlots}
           slotStates={offerSlotStates}
           setSlotStates={setOfferSlotStates}
+          hourlyRate={hourlyRate}
           onClose={closeOfferSheet}
-          onSms={() => handleSheetSms(offerFor)}
-          onMessage={() => handleSheetMessage(offerFor)}
-          onBook={() => handleSheetBook(offerFor)}
+          onSms={(d) => handleSheetSms(offerFor, d)}
+          onMessage={(d) => handleSheetMessage(offerFor, d)}
+          onBook={(d) => handleSheetBook(offerFor, d)}
         />
       )}
     </div>
