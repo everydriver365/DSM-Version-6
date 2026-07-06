@@ -83,6 +83,14 @@ function minToHm(m: number) {
   return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
+function addMinutesToTime(time: string, minutes: number) {
+  const [h, m] = time.split(":").map((x) => parseInt(x, 10));
+  const total = (h || 0) * 60 + (m || 0) + minutes;
+  const newH = Math.floor(total / 60) % 24;
+  const newM = ((total % 60) + 60) % 60;
+  return `${String(newH).padStart(2, "0")}:${String(newM).padStart(2, "0")}`;
+}
+
 function fmtSlotDateLong(iso: string) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-GB", {
