@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Zap,
@@ -321,6 +321,8 @@ function scoreSlot(
 
 function GapsPage() {
   const navigate = useNavigate();
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  const shouldScrollToResultsRef = useRef(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
@@ -522,6 +524,17 @@ function GapsPage() {
   }, []);
 
   useEffect(() => {
+    if (ranked === null || !shouldScrollToResultsRef.current) return;
+    shouldScrollToResultsRef.current = false;
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, [ranked]);
+
+  useEffect(() => {
     if (!userId) return;
     (async () => {
       const { data: offerRows } = await supabase
@@ -654,6 +667,7 @@ function GapsPage() {
 
       scored.sort((a, b) => b.score - a.score);
       console.log("[gaps] ranked result:", scored.length);
+      shouldScrollToResultsRef.current = true;
       setRanked(scored);
       setSearchSlots(slotsToScore);
     } catch (err) {
@@ -1496,7 +1510,7 @@ function GapsPage() {
       )}
 
       {ranked !== null && (
-        <div style={{ marginTop: 16 }}>
+        <div ref={resultsRef} style={{ marginTop: 16 }}>
           <div style={{ margin: "0 16px 8px" }}>
             <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
               {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
