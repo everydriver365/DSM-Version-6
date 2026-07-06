@@ -318,6 +318,7 @@ function PupilDetailPage() {
   const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
   const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
   const [certOpen, setCertOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
   const [addressEditing, setAddressEditing] = useState(false);
