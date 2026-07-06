@@ -133,7 +133,7 @@ function PupilThreadPage() {
   }, [messages]);
 
   async function handleSend() {
-    const body = draft.trim();
+    const body = messageText.trim();
     if (!body || sending || !userId) return;
     setSending(true);
 
@@ -152,7 +152,7 @@ function PupilThreadPage() {
       deleted_at: null,
     };
     setMessages((prev) => [...prev, optimistic]);
-    setDraft("");
+    setMessageText("");
 
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
     const SUPABASE_ANON_KEY =
@@ -189,7 +189,7 @@ function PupilThreadPage() {
     } catch (err) {
       console.error("[pupil-thread] send error", err);
       setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
-      setDraft(body);
+      setMessageText(body);
       setSending(false);
       return;
     }
