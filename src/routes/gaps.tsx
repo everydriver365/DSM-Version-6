@@ -794,7 +794,7 @@ function GapsPage() {
                     ? () => {
                         setManualMode(true);
                         setSlotDate(g.iso);
-                        setSelectedSlotKey(null);
+                        setSelectedSlots([]);
                       }
                     : undefined
                 }
@@ -972,7 +972,7 @@ function GapsPage() {
               value={slotDate}
               onChange={(e) => {
                 setSlotDate(e.target.value);
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             />
@@ -983,7 +983,7 @@ function GapsPage() {
               value={slotTime}
               onChange={(e) => {
                 setSlotTime(e.target.value);
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             />
@@ -993,7 +993,7 @@ function GapsPage() {
               value={duration}
               onChange={(e) => {
                 setDuration(parseInt(e.target.value, 10));
-                setSelectedSlotKey(null);
+                setSelectedSlots([]);
               }}
               style={inputStyle}
             >
