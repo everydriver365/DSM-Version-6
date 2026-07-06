@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Zap,
@@ -321,6 +321,7 @@ function scoreSlot(
 
 function GapsPage() {
   const navigate = useNavigate();
+  const resultsRef = useRef<HTMLDivElement | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
@@ -656,6 +657,12 @@ function GapsPage() {
       console.log("[gaps] ranked result:", scored.length);
       setRanked(scored);
       setSearchSlots(slotsToScore);
+      requestAnimationFrame(() => {
+        resultsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
       toast.error("Failed to find pupils — please try again");
@@ -1496,7 +1503,7 @@ function GapsPage() {
       )}
 
       {ranked !== null && (
-        <div style={{ marginTop: 16 }}>
+        <div ref={resultsRef} style={{ marginTop: 16 }}>
           <div style={{ margin: "0 16px 8px" }}>
             <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
               {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
