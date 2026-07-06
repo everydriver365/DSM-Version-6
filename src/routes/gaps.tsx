@@ -1525,7 +1525,7 @@ function GapsPage() {
                 No active pupils found
               </div>
               <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
-                Add pupils to DSM to use gap filler
+                Add pupils to DSM to use Fill My Slots
               </div>
             </div>
           )}
