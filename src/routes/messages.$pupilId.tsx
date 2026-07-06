@@ -46,7 +46,7 @@ function PupilThreadPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [pupil, setPupil] = useState<Pupil | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [draft, setDraft] = useState("");
+  const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
@@ -132,7 +132,7 @@ function PupilThreadPage() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
-  async function send() {
+  async function handleSend() {
     const body = draft.trim();
     if (!body || sending || !userId) return;
     setSending(true);
