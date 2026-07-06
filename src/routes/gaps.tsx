@@ -756,6 +756,19 @@ function GapsPage() {
     [ranked],
   );
 
+  // Blocked time ranges (per date) created by already-selected slots.
+  // Each selected slot blocks: [start, start + duration + buffer).
+  const blockedByDate = useMemo(() => {
+    const map: Record<string, { start: number; end: number }[]> = {};
+    for (const s of selectedSlots) {
+      const start = hmToMin(s.time);
+      const end = start + s.duration + bufferMins;
+      (map[s.date] ??= []).push({ start, end });
+    }
+    for (const k of Object.keys(map)) map[k].sort((a, b) => a.start - b.start);
+    return map;
+  }, [selectedSlots, bufferMins]);
+
   const dayOfWeekLabel =
     searchSlots[0]
       ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
