@@ -1041,13 +1041,13 @@ function GapsPage() {
             </select>
             <button
               onClick={() => {
-                setSelectedSlots([
-                  { date: slotDate, time: slotTime, duration },
-                ]);
-                // Give React one tick; findPupils reads selectedSlots on next render
-                setTimeout(() => {
-                  void findPupils();
-                }, 0);
+                const one: SelectedSlot = {
+                  date: slotDate,
+                  time: slotTime,
+                  duration,
+                };
+                setSelectedSlots([one]);
+                void findPupils([one]);
               }}
               disabled={loading}
               style={{
