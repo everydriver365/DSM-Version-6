@@ -2372,8 +2372,8 @@ function HomePage() {
     const status = (l.status ?? "").toLowerCase();
     const accent = status === "cancelled" ? "#9CA3AF" : "#1A52A0";
 
-    const balance = l.pupils?.balance_owed ?? 0;
-    const paid = balance <= 0;
+    const balance = Number(l.amount_due ?? 0);
+    const paid = (l.payment_status === "paid") || balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
     const notes = (l.notes ?? "").toLowerCase();
     const lessonType = (l.lesson_type ?? "").toLowerCase();
@@ -2586,7 +2586,7 @@ function HomePage() {
       return Number.isInteger(v) ? `£${v}` : `£${v.toFixed(2)}`;
     };
     const amountDue = typeof l.amount_due === "number" ? l.amount_due : 0;
-    const balance = typeof l.pupils?.balance_owed === "number" ? l.pupils!.balance_owed! : 0;
+    const balance = 0;
     if (paymentStatus === "paid" && amountDue > 0) {
       badges.push({ label: `${fmtAmt(amountDue)} ✓`, bg: "#E8F8ED", color: "#1A7A3C" });
     } else if (paymentStatus === "unpaid" && amountDue > 0) {
@@ -4852,7 +4852,7 @@ function HeroExpandedPanel({
 }) {
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
-  const balance = Number(lesson.pupils?.balance_owed ?? 0);
+  const balance = Number(lesson.amount_due ?? 0);
   const pickupPostcode = ""; // no pickup field on schema
 
   const sendSms = (body: string) => {
