@@ -1267,7 +1267,7 @@ function GapsPage() {
               {selectedSlots.length === 1 ? "" : "s"} selected
             </div>
             <button
-              onClick={findPupils}
+              onClick={() => void findPupils()}
               disabled={loading}
               style={{
                 background: NAVY,
