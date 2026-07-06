@@ -1682,17 +1682,13 @@ function PupilCard({
   r,
   dayOfWeekLabel,
   multi,
-  onText,
-  onMessage,
-  onBook,
+  onOffer,
 }: {
   rank: number;
   r: Ranked;
   dayOfWeekLabel: string;
   multi: boolean;
-  onText: () => void;
-  onMessage: () => void;
-  onBook: () => void;
+  onOffer: () => void;
 }) {
   const rc = rankColor(rank);
   const availLabel =
@@ -1835,15 +1831,15 @@ function PupilCard({
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+      <div style={{ marginTop: 12 }}>
         <button
-          onClick={onText}
+          onClick={onOffer}
           style={{
             background: NAVY,
             color: "#FFFFFF",
             borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
+            padding: "10px 16px",
+            fontSize: 14,
             fontWeight: 600,
             border: "none",
             cursor: "pointer",
@@ -1852,43 +1848,201 @@ function PupilCard({
             gap: 6,
           }}
         >
-          📱 Text
+          Offer slots →
         </button>
-        <button
-          onClick={onMessage}
+      </div>
+    </div>
+  );
+}
+
+function OfferSheet({
+  r,
+  checked,
+  setChecked,
+  onClose,
+  onSms,
+  onMessage,
+  onBook,
+}: {
+  r: Ranked;
+  checked: Record<string, boolean>;
+  setChecked: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  onClose: () => void;
+  onSms: () => void;
+  onMessage: () => void;
+  onBook: () => void;
+}) {
+  const name = fullNameOf(r.pupil);
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(15,32,68,0.45)",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#FFFFFF",
+          width: "100%",
+          maxWidth: 480,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: "20px 20px 24px",
+          maxHeight: "85vh",
+          overflowY: "auto",
+          boxShadow: "0 -8px 32px rgba(15,32,68,0.2)",
+        }}
+      >
+        <div
           style={{
-            background: TEAL,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
+            width: 40,
+            height: 4,
+            background: "#E5E7EB",
+            borderRadius: 999,
+            margin: "0 auto 14px",
+          }}
+        />
+        <div style={{ color: NAVY, fontSize: 18, fontWeight: 700 }}>
+          Offer slots to {name}
+        </div>
+        <div style={{ color: MUTED, fontSize: 13, marginBottom: 16 }}>
+          Select which slots to offer
+        </div>
+
+        <div>
+          {r.matchedSlots.map((m) => {
+            const key = slotKey(m);
+            const isChecked = !!checked[key];
+            const dLabel = new Date(m.date + "T00:00:00").toLocaleDateString(
+              "en-GB",
+              { weekday: "long", day: "numeric", month: "long" },
+            );
+            return (
+              <label
+                key={key}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 0",
+                  borderBottom: "0.5px solid #F3F4F6",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={(e) =>
+                    setChecked((prev) => ({
+                      ...prev,
+                      [key]: e.target.checked,
+                    }))
+                  }
+                  style={{
+                    width: 18,
+                    height: 18,
+                    accentColor: NAVY,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: NAVY, fontSize: 14 }}>
+                    {dLabel} at {fmt12h(m.time)} · {m.duration} mins
+                  </div>
+                  <div style={{ fontSize: 12, marginTop: 2 }}>
+                    {m.match ? (
+                      <span style={{ color: "#047857" }}>✓ Available</span>
+                    ) : (
+                      <span style={{ color: "#B45309" }}>
+                        ⚠️ Prefers different time
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            marginTop: 16,
+          }}
+        >
+          <button
+            onClick={onSms}
+            style={{
+              background: NAVY,
+              color: "#FFFFFF",
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            📱 Send SMS
+          </button>
+          <button
+            onClick={onMessage}
+            style={{
+              background: TEAL,
+              color: "#FFFFFF",
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            💬 In-app message
+          </button>
+          <button
+            onClick={onBook}
+            style={{
+              background: "#FFFFFF",
+              color: NAVY,
+              width: "100%",
+              borderRadius: 12,
+              padding: "12px 16px",
+              fontSize: 15,
+              fontWeight: 600,
+              border: `0.5px solid ${NAVY}`,
+              cursor: "pointer",
+            }}
+          >
+            📅 Book directly
+          </button>
+        </div>
+
+        <button
+          onClick={onClose}
+          style={{
+            display: "block",
+            margin: "12px auto 0",
+            background: "transparent",
             border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <MessageSquare size={14} /> Message
-        </button>
-        <button
-          onClick={onBook}
-          style={{
-            background: "#FFFFFF",
-            color: NAVY,
-            borderRadius: 12,
-            padding: "10px 14px",
+            color: "#9CA3AF",
             fontSize: 13,
-            fontWeight: 600,
-            border: `0.5px solid ${NAVY}`,
             cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
           }}
         >
-          <Plus size={14} /> Book
+          Cancel
         </button>
       </div>
     </div>
