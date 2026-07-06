@@ -327,6 +327,37 @@ function PupilDetailPage() {
   const [emailEditing, setEmailEditing] = useState(false);
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`payment-updates-pupil-${userId}-${Math.random()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lessons',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lessons changed, refetching pupil profile...');
+        setPaymentHistoryRefresh((v) => v + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lesson_history',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lesson_history changed, refetching pupil profile...');
+        setPaymentHistoryRefresh((v) => v + 1);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");

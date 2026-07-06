@@ -124,6 +124,7 @@ function MtdPage() {
   >([]);
   const [mileageRows, setMileageRows] = useState<{ miles: number; created_at: string }[]>([]);
   const [mtdMiles, setMtdMiles] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const now = useMemo(() => new Date(), []);
   const taxYearStart = useMemo(() => currentTaxYearStart(now), [now]);
@@ -230,7 +231,33 @@ function MtdPage() {
         }
       }
     })();
-  }, [taxYearStart, taxYearEnd]);
+  }, [taxYearStart, taxYearEnd, reloadKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`payment-updates-mtd-${userId}-${Math.random()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lessons',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lessons changed, refetching mtd...');
+        setReloadKey((k) => k + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lesson_history',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lesson_history changed, refetching mtd...');
+        setReloadKey((k) => k + 1);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   const mileageAllowance = miles * MILEAGE_RATE;
   const mtdMileageAllowance = mtdMiles * MILEAGE_RATE;

@@ -116,7 +116,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; balance_owed?: number | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
 }
 
 interface PrevLessonRow {
@@ -1337,6 +1337,7 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
@@ -1948,7 +1949,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,address,prepaid_hours,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -1969,7 +1970,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,balance_owed,postcode,address,prepaid_hours,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -2202,7 +2203,33 @@ function HomePage() {
       }
       setLoading(false);
     })();
-  }, [userId, todayStart, weekStart, weekEnd]);
+  }, [userId, todayStart, weekStart, weekEnd, reloadKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`payment-updates-home-${userId}-${Math.random()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lessons',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lessons changed, refetching home payments...');
+        setReloadKey((k) => k + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lesson_history',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lesson_history changed, refetching home payments...');
+        setReloadKey((k) => k + 1);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   // Schedule a local reminder 1h before the next lesson if it's today & >1h away.
   useEffect(() => {
@@ -2372,8 +2399,8 @@ function HomePage() {
     const status = (l.status ?? "").toLowerCase();
     const accent = status === "cancelled" ? "#9CA3AF" : "#1A52A0";
 
-    const balance = l.pupils?.balance_owed ?? 0;
-    const paid = balance <= 0;
+    const balance = Number(l.amount_due ?? 0);
+    const paid = (l.payment_status === "paid") || balance <= 0;
     const postcode = l.pupils?.postcode ?? null;
     const notes = (l.notes ?? "").toLowerCase();
     const lessonType = (l.lesson_type ?? "").toLowerCase();
@@ -2586,7 +2613,7 @@ function HomePage() {
       return Number.isInteger(v) ? `£${v}` : `£${v.toFixed(2)}`;
     };
     const amountDue = typeof l.amount_due === "number" ? l.amount_due : 0;
-    const balance = typeof l.pupils?.balance_owed === "number" ? l.pupils!.balance_owed! : 0;
+    const balance = 0;
     if (paymentStatus === "paid" && amountDue > 0) {
       badges.push({ label: `${fmtAmt(amountDue)} ✓`, bg: "#E8F8ED", color: "#1A7A3C" });
     } else if (paymentStatus === "unpaid" && amountDue > 0) {
@@ -4852,7 +4879,7 @@ function HeroExpandedPanel({
 }) {
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
-  const balance = Number(lesson.pupils?.balance_owed ?? 0);
+  const balance = Number(lesson.amount_due ?? 0);
   const pickupPostcode = ""; // no pickup field on schema
 
   const sendSms = (body: string) => {
