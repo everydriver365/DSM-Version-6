@@ -1381,6 +1381,8 @@ function HomePage() {
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
+  const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
   const [testsOpen, setTestsOpen] = useState(false);
   const [upcomingTests, setUpcomingTests] = useState<Array<{
 
@@ -1592,6 +1594,137 @@ function HomePage() {
     const id = setInterval(poll, 30000);
     return () => { cancelled = true; clearInterval(id); };
   }, [navigate]);
+
+  // Realtime: show a slide-down banner immediately when a new
+  // instructor_notifications row is inserted for this user.
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`home-notif-banner-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "instructor_notifications",
+          filter: `instructor_id=eq.${userId}`,
+        },
+        (payload: any) => {
+          const n = payload.new || {};
+          setToastNotif({
+            id: String(n.id ?? Date.now()),
+            title: n.title || "New notification",
+            body: n.body || "",
+            type: (n.type || "default") as string,
+          });
+          setToastVisible(true);
+          setNotifCount((c) => c + 1);
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
+
+  // Auto-dismiss the banner after 5s.
+  useEffect(() => {
+    if (!toastVisible) return;
+    const t = setTimeout(() => setToastVisible(false), 5000);
+    return () => clearTimeout(t);
+  }, [toastVisible, toastNotif?.id]);
+
+  const notifBanner = (() => {
+    const type = toastNotif?.type || "default";
+    const map: Record<string, { bg: string; Icon: any; route: string }> = {
+      booking: { bg: "#1A52A0", Icon: BookOpen, route: "/bookings" },
+      course_booking: { bg: "#1A52A0", Icon: BookOpen, route: "/bookings" },
+      payment: { bg: "#16A34A", Icon: PoundSterling, route: "/payments" },
+      message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
+      rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
+      default: { bg: "#CC2229", Icon: Bell, route: "/notifications" },
+    };
+    const cfg = map[type] ?? map.default;
+    const Icon = cfg.Icon;
+    return (
+      <div
+        role="alert"
+        onClick={() => {
+          setToastVisible(false);
+          navigate({ to: cfg.route });
+        }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+          background: "#0F2044",
+          padding: "12px 16px calc(12px) 16px",
+          paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
+          transform: toastVisible ? "translateY(0)" : "translateY(-110%)",
+          transition: "transform 0.3s ease",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          cursor: "pointer",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+          fontFamily: "Inter, sans-serif",
+          pointerEvents: toastVisible ? "auto" : "none",
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: cfg.bg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={18} color="#FFFFFF" />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: "#FFFFFF", fontWeight: 600, fontSize: 13, lineHeight: 1.3 }}>
+            {toastNotif?.title ?? ""}
+          </div>
+          {toastNotif?.body && (
+            <div
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: 12,
+                marginTop: 2,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {toastNotif.body}
+            </div>
+          )}
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, flexShrink: 0 }}>Just now</div>
+        <button
+          type="button"
+          aria-label="Dismiss notification"
+          onClick={(e) => { e.stopPropagation(); setToastVisible(false); }}
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: 4,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <X size={16} color="rgba(255,255,255,0.6)" />
+        </button>
+      </div>
+    );
+  })();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -2739,6 +2872,7 @@ function HomePage() {
     };
     return (
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
+        {notifBanner}
         <InstructorTopBar
           firstName={firstName}
           avatarUrl={avatarUrl}
@@ -3000,6 +3134,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+      {notifBanner}
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
