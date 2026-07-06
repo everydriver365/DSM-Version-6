@@ -1091,6 +1091,132 @@ function GapsPage() {
           </div>
         )}
       </div>
+
+      {selectedSlotKey && (
+        <>
+          <div style={{ height: 96 }} />
+          <div
+            style={{
+              position: "fixed",
+              bottom: 80,
+              left: 16,
+              right: 16,
+              maxWidth: 430,
+              margin: "0 auto",
+              zIndex: 50,
+            }}
+          >
+            <button
+              onClick={findPupils}
+              disabled={loading}
+              style={{
+                width: "100%",
+                background: NAVY,
+                color: "#FFFFFF",
+                fontWeight: 600,
+                fontSize: 14,
+                borderRadius: 12,
+                border: "none",
+                padding: "12px 16px",
+                cursor: "pointer",
+                boxShadow: "0 6px 20px rgba(15, 32, 68, 0.25)",
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading
+                ? "Finding pupils…"
+                : `Find pupils for ${new Date(
+                    slotDate + "T00:00:00",
+                  ).toLocaleDateString("en-GB", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "short",
+                  })} at ${fmt12h(slotTime)} (${duration} min) →`}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SummaryStats({
+  dayGroups,
+  hourlyRate,
+}: {
+  dayGroups: DayGroup[];
+  hourlyRate: number;
+}) {
+  const workDays = dayGroups.filter((d) => d.isWorkDay);
+  if (!workDays.length) return null;
+  const busiest = workDays.reduce((a, b) =>
+    b.busyMinutes > a.busyMinutes ? b : a,
+  );
+  const mostFree = workDays.reduce((a, b) =>
+    b.totalFreeMinutes > a.totalFreeMinutes ? b : a,
+  );
+  const totalFreeMins = workDays.reduce((s, d) => s + d.totalFreeMinutes, 0);
+  const totalFreeHours = totalFreeMins / 60;
+  const potential = hourlyRate > 0 ? totalFreeHours * hourlyRate : 0;
+
+  const dayLabel = (iso: string) =>
+    new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {
+      weekday: "long",
+    });
+
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        border: `0.5px solid ${BORDER}`,
+        borderRadius: 12,
+        padding: 14,
+        margin: "12px 16px 0",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "4px 0",
+          fontSize: 13,
+        }}
+      >
+        <span style={{ color: MUTED }}>Busiest day this week:</span>
+        <span style={{ color: NAVY, fontWeight: 600 }}>
+          {busiest.busyMinutes > 0 ? dayLabel(busiest.iso) : "—"}
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "4px 0",
+          fontSize: 13,
+        }}
+      >
+        <span style={{ color: MUTED }}>Most free time:</span>
+        <span style={{ color: NAVY, fontWeight: 600 }}>
+          {mostFree.totalFreeMinutes > 0
+            ? `${dayLabel(mostFree.iso)} · ${(mostFree.totalFreeMinutes / 60).toFixed(1)}h`
+            : "—"}
+        </span>
+      </div>
+      {hourlyRate > 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "4px 0",
+            fontSize: 13,
+          }}
+        >
+          <span style={{ color: MUTED }}>Potential revenue if filled:</span>
+          <span style={{ color: "#065F46", fontWeight: 700 }}>
+            £{potential.toFixed(0)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
