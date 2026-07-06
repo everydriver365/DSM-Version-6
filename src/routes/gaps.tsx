@@ -83,6 +83,14 @@ function minToHm(m: number) {
   return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
+function addMinutesToTime(time: string, minutes: number) {
+  const [h, m] = time.split(":").map((x) => parseInt(x, 10));
+  const total = (h || 0) * 60 + (m || 0) + minutes;
+  const newH = Math.floor(total / 60) % 24;
+  const newM = ((total % 60) + 60) % 60;
+  return `${String(newH).padStart(2, "0")}:${String(newM).padStart(2, "0")}`;
+}
+
 function fmtSlotDateLong(iso: string) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-GB", {
@@ -1176,6 +1184,18 @@ function GapsPage() {
                   if (!anySelected && !isBlocked && durations.length === 0) {
                     return null;
                   }
+                  const selectedDuration =
+                    selectedSlots.find(
+                      (s) =>
+                        s.date === slot.date && s.time === slot.startTime,
+                    )?.duration ??
+                    durations[0] ??
+                    slot.possibleDurations[0] ??
+                    60;
+                  const displayEnd = addMinutesToTime(
+                    slot.startTime,
+                    selectedDuration,
+                  );
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
@@ -1227,7 +1247,7 @@ function GapsPage() {
                             fontSize: 14,
                           }}
                         >
-                          {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                          {fmt12h(slot.startTime)} – {fmt12h(displayEnd)}
                         </div>
                         <div
                           style={{
@@ -2280,7 +2300,8 @@ function OfferSheet({
                             fontWeight: 500,
                           }}
                         >
-                          {fmt12h(s.startTime)} – {fmt12h(s.endTime)}
+                          {fmt12h(s.startTime)} –{" "}
+                          {fmt12h(addMinutesToTime(s.startTime, st.duration))}
                         </span>
                         <span
                           style={{
