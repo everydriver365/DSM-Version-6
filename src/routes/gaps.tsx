@@ -142,6 +142,25 @@ interface SelectedSlot {
   duration: number;
 }
 
+interface DiscountConfig {
+  enabled: boolean;
+  type: "percent" | "fixed";
+  value: number;
+}
+
+function computeDiscount(
+  hourlyRate: number,
+  durationMins: number,
+  d: DiscountConfig,
+) {
+  const lessonPrice = (hourlyRate / 60) * durationMins;
+  const rawDiscount =
+    d.type === "percent" ? lessonPrice * (d.value / 100) : d.value;
+  const discountAmount = Math.max(0, Math.min(lessonPrice, rawDiscount));
+  const discountedPrice = Math.max(0, lessonPrice - discountAmount);
+  return { lessonPrice, discountAmount, discountedPrice };
+}
+
 interface SlotMatch extends SelectedSlot {
   match: boolean;
   subScore: number;
