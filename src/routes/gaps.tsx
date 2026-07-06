@@ -878,21 +878,40 @@ function GapsPage() {
                     </span>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                       {slot.possibleDurations.map((d) => {
-                        const key = `${slot.date}|${slot.startTime}|${d}`;
-                        const isSelected = selectedSlotKey === key;
+                        const key = slotKey({
+                          date: slot.date,
+                          time: slot.startTime,
+                          duration: d,
+                        });
+                        const isSelected = selectedSlots.some(
+                          (s) => slotKey(s) === key,
+                        );
                         return (
                           <button
                             key={d}
                             onClick={() => {
-                              setSelectedSlotKey(key);
-                              setSlotDate(slot.date);
-                              setSlotTime(slot.startTime);
-                              setDuration(d);
+                              setSelectedSlots((prev) => {
+                                const exists = prev.some(
+                                  (s) => slotKey(s) === key,
+                                );
+                                if (exists)
+                                  return prev.filter(
+                                    (s) => slotKey(s) !== key,
+                                  );
+                                return [
+                                  ...prev,
+                                  {
+                                    date: slot.date,
+                                    time: slot.startTime,
+                                    duration: d,
+                                  },
+                                ];
+                              });
                             }}
                             style={{
-                              background: isSelected ? BLUE : "#F0F4FF",
+                              background: isSelected ? NAVY : "#F0F4FF",
                               color: isSelected ? "#FFFFFF" : BLUE,
-                              border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                              border: `0.5px solid ${isSelected ? NAVY : "#BFDBFE"}`,
                               borderRadius: 999,
                               padding: "4px 10px",
                               fontSize: 12,
