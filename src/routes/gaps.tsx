@@ -1992,6 +1992,7 @@ function OfferSheet({
   freeSlots,
   slotStates,
   setSlotStates,
+  hourlyRate,
   onClose,
   onSms,
   onMessage,
@@ -2005,14 +2006,32 @@ function OfferSheet({
       Record<string, { selected: boolean; duration: number }>
     >
   >;
+  hourlyRate: number;
   onClose: () => void;
-  onSms: () => void;
-  onMessage: () => void;
-  onBook: () => void;
+  onSms: (d: DiscountConfig) => void;
+  onMessage: (d: DiscountConfig) => void;
+  onBook: (d: DiscountConfig) => void;
 }) {
   const name = fullNameOf(r.pupil);
   const first = firstNameOf(r.pupil);
   const settings = r.settings;
+
+  const [discountEnabled, setDiscountEnabled] = useState(false);
+  const [discountType, setDiscountType] = useState<"percent" | "fixed">(
+    "percent",
+  );
+  const [discountValue, setDiscountValue] = useState<number>(10);
+
+  function handleTypeSwitch(next: "percent" | "fixed") {
+    setDiscountType(next);
+    setDiscountValue(next === "percent" ? 10 : 5);
+  }
+
+  const discount: DiscountConfig = {
+    enabled: discountEnabled,
+    type: discountType,
+    value: Number.isFinite(discountValue) ? discountValue : 0,
+  };
 
   // Group free slots by day
   const byDay = new Map<string, FreeSlot[]>();
