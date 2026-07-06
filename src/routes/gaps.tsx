@@ -202,9 +202,7 @@ function GapsPage() {
 
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
-  const [searchDate, setSearchDate] = useState<string>("");
-  const [searchTime, setSearchTime] = useState<string>("");
-  const [searchDuration, setSearchDuration] = useState<number>(60);
+  const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
@@ -213,7 +211,7 @@ function GapsPage() {
 
   const [freeSlots, setFreeSlots] = useState<FreeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
-  const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
+  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
