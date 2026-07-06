@@ -513,9 +513,10 @@ function GapsPage() {
     })();
   }, [userId, reloadKey]);
 
-  async function findPupils() {
+  async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
-    if (selectedSlots.length === 0) return;
+    const slotsToScore = override && override.length ? override : selectedSlots;
+    if (slotsToScore.length === 0) return;
     setLoading(true);
     setRanked(null);
     try {
@@ -557,7 +558,7 @@ function GapsPage() {
       }
 
       const nowMs = Date.now();
-      const slotsToScore = selectedSlots;
+      // slotsToScore captured above
 
       const scored: Ranked[] = pupils.map((p) => {
         const s = availMap.get(p.id) || null;
