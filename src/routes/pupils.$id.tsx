@@ -323,6 +323,10 @@ function PupilDetailPage() {
   const [addressEditing, setAddressEditing] = useState(false);
   const [theoryEditing, setTheoryEditing] = useState(false);
   const [practicalEditing, setPracticalEditing] = useState(false);
+  const [emailEditing, setEmailEditing] = useState(false);
+  const [emailDraft, setEmailDraft] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
@@ -447,6 +451,19 @@ function PupilDetailPage() {
     toast.success(successMsg);
     return true;
   }
+
+  async function saveEmail() {
+    const value = emailDraft.trim();
+    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    setSavingEmail(true);
+    const ok = await savePupilFields({ email: value || null }, "Email saved");
+    setSavingEmail(false);
+    if (ok) setEmailEditing(false);
+  }
+
   const [centreInfo, setCentreInfo] = useState<{ id: string; name: string; town: string | null } | null>(null);
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
@@ -884,12 +901,57 @@ function PupilDetailPage() {
                     <h1 className="text-[20px] font-bold leading-tight truncate" style={POPPINS}>
                       {pupil.name}
                     </h1>
-                    <p
-                      className="text-[13px] font-medium truncate mt-0.5"
-                      style={{ color: "rgba(255,255,255,0.85)", ...POPPINS }}
-                    >
-                      {pupil.email || "No email set"}
-                    </p>
+                    {!emailEditing ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEmailDraft(pupil.email ?? "");
+                          setEmailEditing(true);
+                        }}
+                        className="text-[13px] font-medium truncate mt-0.5 flex items-center gap-1.5 w-full text-left"
+                        style={{ color: "rgba(255,255,255,0.85)", ...POPPINS }}
+                      >
+                        <span className="truncate">{pupil.email || "No email set"}</span>
+                        <Pencil size={12} color="rgba(255,255,255,0.7)" />
+                      </button>
+                    ) : (
+                      <div className="mt-0.5 flex flex-col gap-1.5">
+                        <input
+                          type="email"
+                          value={emailDraft}
+                          onChange={(e) => setEmailDraft(e.target.value)}
+                          placeholder="Email address"
+                          disabled={savingEmail}
+                          className="w-full rounded-md px-2 py-1 text-[13px] text-[#0B1F3A] focus:outline-none focus:ring-2 focus:ring-white/60"
+                          style={{ background: "rgba(255,255,255,0.95)", ...POPPINS }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") saveEmail();
+                            if (e.key === "Escape") setEmailEditing(false);
+                          }}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={saveEmail}
+                            disabled={savingEmail}
+                            className="flex-1 h-8 rounded-md text-[12px] font-semibold text-[#1877D6] bg-white disabled:opacity-60"
+                            style={POPPINS}
+                          >
+                            {savingEmail ? "Saving…" : "Save"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEmailEditing(false)}
+                            disabled={savingEmail}
+                            className="h-8 px-3 rounded-md text-[12px] font-semibold text-white border border-white/40"
+                            style={{ background: "transparent", ...POPPINS }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <span
                       className="mt-2 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
                       style={{ backgroundColor: "#00B5A5", color: "#0F2044", ...POPPINS }}
