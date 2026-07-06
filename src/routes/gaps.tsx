@@ -417,6 +417,7 @@ function GapsPage() {
 
   async function findPupils() {
     if (!userId) return;
+    if (selectedSlots.length === 0) return;
     setLoading(true);
     setRanked(null);
     try {
@@ -457,93 +458,48 @@ function GapsPage() {
           lastLessonMap.set(l.pupil_id, l.lesson_date);
       }
 
-      const dayOfWeek = DAYS[new Date(slotDate + "T00:00:00").getDay()];
-      const slotHour = parseInt(slotTime.split(":")[0], 10);
-      const slotDateTime = new Date(`${slotDate}T${slotTime}:00`);
       const nowMs = Date.now();
+      const slotsToScore = selectedSlots;
 
       const scored: Ranked[] = pupils.map((p) => {
-        let score = 50;
         const s = availMap.get(p.id) || null;
         const last = lastLessonMap.get(p.id) || p.last_lesson_date || null;
-        let daysSince: number | null = null;
-
-        if (last) {
-          daysSince = Math.floor(
-            (new Date(slotDate + "T00:00:00").getTime() -
-              new Date(last + "T00:00:00").getTime()) /
-              86400000,
-          );
-          if (daysSince > 14) score += 20;
-          else if (daysSince > 7) score += 10;
-          else if (daysSince < 3) score -= 20;
-        } else {
-          score += 30;
-        }
-
-        let dayMatch: "yes" | "no" | "unknown" = "unknown";
-        let shortNotice = false;
-        let shortNoticeOk = false;
-        let minNoticeHours = 24;
-
-        if (s) {
-          const availDays = s.available_days || [];
-          if (availDays.length) {
-            if (availDays.includes(dayOfWeek)) {
-              score += 15;
-              dayMatch = "yes";
-            } else {
-              score -= 30;
-              dayMatch = "no";
-            }
-          }
-          const fromHour = parseInt(
-            (s.available_from || "08:00").split(":")[0],
-            10,
-          );
-          const untilHour = parseInt(
-            (s.available_until || "18:00").split(":")[0],
-            10,
-          );
-          if (slotHour >= fromHour && slotHour < untilHour) score += 10;
-          else score -= 20;
-
-          const hoursUntilSlot = Math.floor(
-            (slotDateTime.getTime() - nowMs) / 3600000,
-          );
-          minNoticeHours = s.min_notice_hours || 24;
-          if (hoursUntilSlot < minNoticeHours) {
-            shortNotice = true;
-            if (s.short_notice_opt_in) {
-              score += 5;
-              shortNoticeOk = true;
-            } else {
-              score -= 40;
-            }
-          }
-
-          if (s.preferred_duration_minutes === duration) score += 10;
-        }
-
-        score = Math.max(0, Math.min(100, score));
+        const matched: SlotMatch[] = slotsToScore.map((sl) =>
+          scoreSlot(p, s, last, sl, nowMs),
+        );
+        const matchCount = matched.filter((m) => m.match).length;
+        const avg =
+          matched.reduce((sum, m) => sum + m.subScore, 0) /
+          Math.max(1, matched.length);
+        const score = Math.max(
+          0,
+          Math.min(
+            100,
+            Math.round((matchCount / matched.length) * 60 + avg * 0.4),
+          ),
+        );
+        // Best slot for "summary" fields
+        const best = matched.reduce((a, b) =>
+          b.subScore > a.subScore ? b : a,
+        );
+        const bestInfo = describeSlot(p, s, last, best, nowMs);
         return {
           pupil: p,
           settings: s,
           lastLesson: last,
-          daysSince,
+          daysSince: bestInfo.daysSince,
           score,
-          dayMatch,
-          shortNotice,
-          shortNoticeOk,
-          minNoticeHours,
+          dayMatch: bestInfo.dayMatch,
+          shortNotice: bestInfo.shortNotice,
+          shortNoticeOk: bestInfo.shortNoticeOk,
+          minNoticeHours: bestInfo.minNoticeHours,
+          matchedSlots: matched,
         };
       });
 
       scored.sort((a, b) => b.score - a.score);
       setRanked(scored);
-      setSearchDate(slotDate);
-      setSearchTime(slotTime);
-      setSearchDuration(duration);
+      setSearchSlots(slotsToScore);
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
       toast.error("Could not load pupils");
