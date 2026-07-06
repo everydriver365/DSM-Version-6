@@ -1411,6 +1411,38 @@ function HomePage() {
     created_at: string;
     read: boolean;
   }>>([]);
+  const [unreadMsgs, setUnreadMsgs] = useState<Array<{
+    id: string;
+    pupil_id: string;
+    body: string | null;
+    created_at: string;
+    read_at: string | null;
+    pupils: { name: string | null; first_name: string | null; profile_image_url: string | null } | null;
+  }>>([]);
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url)`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          }
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
