@@ -662,7 +662,28 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
       const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
       await supabase.from("pupils").update({ account_balance: Math.max(0, current - refundAmount) }).eq("id", row.pupil_id);
     }
-    toast.success(`Refund of £${refundAmount.toFixed(2)} recorded`);
+    // Recompute this pupil's outstanding balance (unpaid lessons + account credit)
+    const [{ data: unpaidRows }, { data: pupilRow }] = await Promise.all([
+      supabase
+        .from("lessons")
+        .select("amount_due")
+        .eq("instructor_id", userId)
+        .eq("pupil_id", row.pupil_id)
+        .eq("payment_status", "unpaid")
+        .is("deleted_at", null),
+      supabase.from("pupils").select("account_balance").eq("id", row.pupil_id).maybeSingle(),
+    ]);
+    const owed = ((unpaidRows ?? []) as { amount_due: number | null }[]).reduce(
+      (s, l) => s + Number(l.amount_due || 0),
+      0,
+    );
+    const credit = Number(
+      (pupilRow as { account_balance?: number | null } | null)?.account_balance ?? 0,
+    );
+    const newBalance = owed - credit;
+    toast.success(
+      `Refund recorded. Balance updated to ${newBalance < 0 ? "-" : ""}£${Math.abs(newBalance).toFixed(2)}`,
+    );
     setSaving(false);
     onSaved();
   }
