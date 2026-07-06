@@ -522,6 +522,27 @@ function PupilDetailPage() {
         console.log("[pupils.$id] lesson count (completed):", count);
       });
 
+    // Unread messages from this pupil (for Message quick-action badge)
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u.user?.id;
+      if (!uid) return;
+      supabase
+        .from("chat_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("pupil_id", id)
+        .eq("instructor_id", uid)
+        .eq("sender_type", "pupil")
+        .is("read_at", null)
+        .is("deleted_at", null)
+        .then(({ count, error }) => {
+          if (error) {
+            console.error("[pupil] unread chat count error", error);
+            return;
+          }
+          setUnreadMessages(count ?? 0);
+        });
+    });
+
     // Total lessons figure: count all non-cancelled lessons
     supabase
       .from("lessons")
