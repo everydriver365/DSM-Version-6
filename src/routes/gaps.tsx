@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
