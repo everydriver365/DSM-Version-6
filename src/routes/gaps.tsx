@@ -2036,7 +2036,7 @@ function OfferSheet({
                 {slots.map((s) => {
                   const key = slotDTKey(s);
                   const st = slotStates[key] ?? {
-                    selected: true,
+                    selected: false,
                     duration: s.possibleDurations[0] ?? 60,
                   };
                   const info = matchInfo(s);
