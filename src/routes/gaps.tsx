@@ -1196,9 +1196,31 @@ function GapsPage() {
                     slot.startTime,
                     selectedDuration,
                   );
+                  const toggleWholeSlot = () => {
+                    setSelectedSlots((prev) => {
+                      // Deselect: remove ALL entries for this date+startTime
+                      const filtered = prev.filter(
+                        (s) =>
+                          !(s.date === slot.date && s.time === slot.startTime),
+                      );
+                      if (filtered.length !== prev.length) return filtered;
+                      // Select: add with the current default duration
+                      return [
+                        ...prev,
+                        {
+                          date: slot.date,
+                          time: slot.startTime,
+                          duration: selectedDuration,
+                        },
+                      ];
+                    });
+                  };
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
+                      onClick={isBlocked ? undefined : toggleWholeSlot}
+                      role="button"
+                      aria-pressed={anySelected}
                       style={{
                         background: "#FFFFFF",
                         border: anySelected
@@ -1213,6 +1235,7 @@ function GapsPage() {
                         gap: 12,
                         opacity: isBlocked ? 0.4 : 1,
                         pointerEvents: isBlocked ? "none" : "auto",
+                        cursor: isBlocked ? "default" : "pointer",
                       }}
                     >
                       {/* Radio dot */}
@@ -1269,7 +1292,8 @@ function GapsPage() {
                             return (
                               <button
                                 key={d}
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedSlots((prev) => {
                                     const exists = prev.some(
                                       (s) => slotKey(s) === key,
@@ -1278,8 +1302,18 @@ function GapsPage() {
                                       return prev.filter(
                                         (s) => slotKey(s) !== key,
                                       );
+                                    // Replace any existing entry for this slot
+                                    // with the newly-chosen duration so a slot
+                                    // has exactly one active duration at a time.
+                                    const cleared = prev.filter(
+                                      (s) =>
+                                        !(
+                                          s.date === slot.date &&
+                                          s.time === slot.startTime
+                                        ),
+                                    );
                                     return [
-                                      ...prev,
+                                      ...cleared,
                                       {
                                         date: slot.date,
                                         time: slot.startTime,
