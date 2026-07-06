@@ -717,15 +717,25 @@ function GapsPage() {
     setOfferSlotStates({});
   }
 
-  function buildOfferMessage(first: string, slots: SelectedSlot[]) {
+  function buildOfferMessage(
+    first: string,
+    slots: SelectedSlot[],
+    discount?: DiscountConfig,
+    hourlyRate?: number,
+  ) {
+    const priceLine = (s: SelectedSlot) => {
+      if (!discount?.enabled || !hourlyRate || hourlyRate <= 0) return "";
+      const p = computeDiscount(hourlyRate, s.duration, discount);
+      return ` Special offer: this slot is discounted to £${p.discountedPrice.toFixed(0)} (usually £${p.lessonPrice.toFixed(0)}).`;
+    };
     if (slots.length === 1) {
       const s = slots[0];
-      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}.${priceLine(s)} Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
     }
     const lines = slots
       .map(
         (s) =>
-          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)${priceLine(s)}`,
       )
       .join("\n");
     return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
@@ -742,31 +752,36 @@ function GapsPage() {
     return out;
   }
 
-  function handleSheetSms(r: Ranked) {
+  function handleSheetSms(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (!slots.length) {
       toast.error("Select at least one slot to offer");
       return;
     }
-    const body = buildOfferMessage(firstNameOf(r.pupil), slots);
+    const body = buildOfferMessage(
+      firstNameOf(r.pupil),
+      slots,
+      discount,
+      hourlyRate,
+    );
     const phone = r.pupil.phone || "";
     window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    void logOfferSlots(r.pupil.id, "sms", slots);
+    void logOfferSlots(r.pupil.id, "sms", slots, discount, hourlyRate);
     closeOfferSheet();
   }
 
-  function handleSheetMessage(r: Ranked) {
+  function handleSheetMessage(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (!slots.length) {
       toast.error("Select at least one slot to offer");
       return;
     }
-    void logOfferSlots(r.pupil.id, "message", slots);
+    void logOfferSlots(r.pupil.id, "message", slots, discount, hourlyRate);
     closeOfferSheet();
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
-  function handleSheetBook(r: Ranked) {
+  function handleSheetBook(r: Ranked, discount: DiscountConfig) {
     const slots = checkedSlotsFor(r);
     if (slots.length === 0) {
       toast.error("Select one slot to book");
@@ -777,12 +792,17 @@ function GapsPage() {
       return;
     }
     const s = slots[0];
-    const qs = new URLSearchParams({
+    const params: Record<string, string> = {
       pupilId: r.pupil.id,
       date: s.date,
       time: s.time,
       duration: String(s.duration),
-    });
+    };
+    if (discount.enabled && hourlyRate > 0) {
+      const priced = computeDiscount(hourlyRate, s.duration, discount);
+      params.amount = priced.discountedPrice.toFixed(2);
+    }
+    const qs = new URLSearchParams(params);
     closeOfferSheet();
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
