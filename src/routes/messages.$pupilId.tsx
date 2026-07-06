@@ -75,6 +75,7 @@ function PupilThreadPage() {
         .is("deleted_at", null)
         .order("created_at", { ascending: true });
       if (mErr) console.error("[pupil-thread] messages fetch error", mErr);
+      console.log("[dsm-messages] messages fetched:", messages?.length, messages);
       setMessages((m ?? []) as ChatMessage[]);
 
       // Mark inbound messages read
