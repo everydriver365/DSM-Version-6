@@ -314,6 +314,7 @@ function GapsPage() {
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
+  const [bufferMins, setBufferMins] = useState<number>(15);
 
   // Offer-sheet state (per-pupil slot picker across ALL free slots)
   const [offerFor, setOfferFor] = useState<Ranked | null>(null);
@@ -360,6 +361,7 @@ function GapsPage() {
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const buffer = instr.lesson_buffer_minutes ?? 15;
+        if (!cancelled) setBufferMins(buffer);
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
@@ -754,6 +756,19 @@ function GapsPage() {
     [ranked],
   );
 
+  // Blocked time ranges (per date) created by already-selected slots.
+  // Each selected slot blocks: [start, start + duration + buffer).
+  const blockedByDate = useMemo(() => {
+    const map: Record<string, { start: number; end: number }[]> = {};
+    for (const s of selectedSlots) {
+      const start = hmToMin(s.time);
+      const end = start + s.duration + bufferMins;
+      (map[s.date] ??= []).push({ start, end });
+    }
+    for (const k of Object.keys(map)) map[k].sort((a, b) => a.start - b.start);
+    return map;
+  }, [selectedSlots, bufferMins]);
+
   const dayOfWeekLabel =
     searchSlots[0]
       ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
@@ -1072,6 +1087,38 @@ function GapsPage() {
                         }),
                     ),
                   );
+                  // Dynamic blocking from already-selected slots on same day.
+                  const slotStartMin = hmToMin(slot.startTime);
+                  const dayBlocks = blockedByDate[slot.date] ?? [];
+                  const isBlocked =
+                    !anySelected &&
+                    dayBlocks.some(
+                      (b) => slotStartMin >= b.start && slotStartMin < b.end,
+                    );
+                  // How much free time exists from this start until the next
+                  // blocked range begins (or gap end via gapMinutes fallback).
+                  const nextBlockStart = dayBlocks
+                    .filter((b) => b.start > slotStartMin)
+                    .reduce(
+                      (min, b) => Math.min(min, b.start),
+                      Number.POSITIVE_INFINITY,
+                    );
+                  const freeMinsFromHere = Math.min(
+                    slot.gapMinutes,
+                    nextBlockStart === Number.POSITIVE_INFINITY
+                      ? slot.gapMinutes
+                      : nextBlockStart - slotStartMin,
+                  );
+                  const durations = anySelected
+                    ? slot.possibleDurations
+                    : slot.possibleDurations.filter(
+                        (d) => d <= freeMinsFromHere,
+                      );
+                  // Hide slots that are fully consumed by a later block and
+                  // cannot fit any lesson, unless already selected.
+                  if (!anySelected && !isBlocked && durations.length === 0) {
+                    return null;
+                  }
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
@@ -1087,6 +1134,8 @@ function GapsPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
+                        opacity: isBlocked ? 0.4 : 1,
+                        pointerEvents: isBlocked ? "none" : "auto",
                       }}
                     >
                       {/* Radio dot */}
@@ -1131,7 +1180,7 @@ function GapsPage() {
                             marginTop: 8,
                           }}
                         >
-                          {slot.possibleDurations.map((d) => {
+                          {durations.map((d) => {
                             const key = slotKey({
                               date: slot.date,
                               time: slot.startTime,
