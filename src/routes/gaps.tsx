@@ -203,6 +203,8 @@ function GapsPage() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
   const [manualMode, setManualMode] = useState(false);
+  const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
+  const [hourlyRate, setHourlyRate] = useState<number>(0);
 
   useEffect(() => {
     if (!userId) return;
@@ -247,6 +249,10 @@ function GapsPage() {
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const rate = Number(
+          (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
+        );
+        if (!cancelled) setHourlyRate(rate);
 
         const byDay = new Map<
           string,
@@ -266,17 +272,33 @@ function GapsPage() {
         }
 
         const slots: FreeSlot[] = [];
+        const groups: DayGroup[] = [];
         const wsMin = hmToMin(workStart);
         const weMin = hmToMin(workEnd);
         for (let i = 0; i < 14; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
-          if (!workDays.includes(dayName)) continue;
           const iso = addDaysIso(today, i);
+          const isWorkDay = workDays.includes(dayName);
           const dayLessons = (byDay.get(iso) ?? []).slice().sort(
             (a, b) => a.start - b.start,
           );
+          const busyMinutes = dayLessons.reduce(
+            (sum, l) => sum + (l.end - l.start),
+            0,
+          );
+          if (!isWorkDay) {
+            groups.push({
+              iso,
+              dayName,
+              isWorkDay: false,
+              slots: [],
+              totalFreeMinutes: 0,
+              busyMinutes,
+            });
+            continue;
+          }
           // Build gap boundaries
           const gaps: { start: number; end: number }[] = [];
           let cursor = wsMin;
@@ -290,7 +312,8 @@ function GapsPage() {
           if (weMin - cursor >= 60) {
             gaps.push({ start: cursor, end: weMin });
           }
-          // Filter out gaps that start in the past (today only)
+          const daySlots: FreeSlot[] = [];
+          let dayFree = 0;
           for (const g of gaps) {
             let gStart = g.start;
             if (i === 0) {
@@ -301,19 +324,36 @@ function GapsPage() {
             if (gapMinutes < 60) continue;
             const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
             if (!possible.length) continue;
-            slots.push({
+            const slot: FreeSlot = {
               date: iso,
               startTime: minToHm(gStart),
               endTime: minToHm(g.end),
               gapMinutes,
               possibleDurations: possible,
-            });
+            };
+            slots.push(slot);
+            daySlots.push(slot);
+            dayFree += gapMinutes;
           }
+          groups.push({
+            iso,
+            dayName,
+            isWorkDay: true,
+            slots: daySlots,
+            totalFreeMinutes: dayFree,
+            busyMinutes,
+          });
         }
-        if (!cancelled) setFreeSlots(slots);
+        if (!cancelled) {
+          setFreeSlots(slots);
+          setDayGroups(groups);
+        }
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
-        if (!cancelled) setFreeSlots([]);
+        if (!cancelled) {
+          setFreeSlots([]);
+          setDayGroups([]);
+        }
       } finally {
         if (!cancelled) setSlotsLoading(false);
       }
