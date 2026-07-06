@@ -192,6 +192,104 @@ function fmtTimeHm(t: string) {
   return t.slice(0, 5);
 }
 
+function slotKey(s: SelectedSlot) {
+  return `${s.date}|${s.time}|${s.duration}`;
+}
+
+function describeSlot(
+  _p: Pupil,
+  s: Availability | null,
+  last: string | null,
+  sl: SelectedSlot,
+  nowMs: number,
+) {
+  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
+  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
+  let daysSince: number | null = null;
+  if (last) {
+    daysSince = Math.floor(
+      (new Date(sl.date + "T00:00:00").getTime() -
+        new Date(last + "T00:00:00").getTime()) /
+        86400000,
+    );
+  }
+  let dayMatch: "yes" | "no" | "unknown" = "unknown";
+  let shortNotice = false;
+  let shortNoticeOk = false;
+  let minNoticeHours = 24;
+  if (s) {
+    const availDays = s.available_days || [];
+    if (availDays.length) {
+      dayMatch = availDays.includes(dayOfWeek) ? "yes" : "no";
+    }
+    const hoursUntilSlot = Math.floor(
+      (slotDateTime.getTime() - nowMs) / 3600000,
+    );
+    minNoticeHours = s.min_notice_hours || 24;
+    if (hoursUntilSlot < minNoticeHours) {
+      shortNotice = true;
+      if (s.short_notice_opt_in) shortNoticeOk = true;
+    }
+  }
+  return { daysSince, dayMatch, shortNotice, shortNoticeOk, minNoticeHours };
+}
+
+function scoreSlot(
+  p: Pupil,
+  s: Availability | null,
+  last: string | null,
+  sl: SelectedSlot,
+  nowMs: number,
+): SlotMatch {
+  let score = 50;
+  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
+  const slotHour = parseInt(sl.time.split(":")[0], 10);
+  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
+
+  if (last) {
+    const daysSince = Math.floor(
+      (new Date(sl.date + "T00:00:00").getTime() -
+        new Date(last + "T00:00:00").getTime()) /
+        86400000,
+    );
+    if (daysSince > 14) score += 20;
+    else if (daysSince > 7) score += 10;
+    else if (daysSince < 3) score -= 20;
+  } else {
+    score += 30;
+  }
+
+  if (s) {
+    const availDays = s.available_days || [];
+    if (availDays.length) {
+      if (availDays.includes(dayOfWeek)) score += 15;
+      else score -= 30;
+    }
+    const fromHour = parseInt((s.available_from || "08:00").split(":")[0], 10);
+    const untilHour = parseInt(
+      (s.available_until || "18:00").split(":")[0],
+      10,
+    );
+    if (slotHour >= fromHour && slotHour < untilHour) score += 10;
+    else score -= 20;
+
+    const hoursUntilSlot = Math.floor(
+      (slotDateTime.getTime() - nowMs) / 3600000,
+    );
+    const minNoticeHours = s.min_notice_hours || 24;
+    if (hoursUntilSlot < minNoticeHours) {
+      if (s.short_notice_opt_in) score += 5;
+      else score -= 40;
+    }
+    if (s.preferred_duration_minutes === sl.duration) score += 10;
+  }
+
+  score = Math.max(0, Math.min(100, score));
+  // Suppress unused parameter warning
+  void p;
+  return { ...sl, subScore: score, match: score >= 50 };
+}
+
 function GapsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
