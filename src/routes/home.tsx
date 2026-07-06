@@ -2203,7 +2203,33 @@ function HomePage() {
       }
       setLoading(false);
     })();
-  }, [userId, todayStart, weekStart, weekEnd]);
+  }, [userId, todayStart, weekStart, weekEnd, reloadKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`payment-updates-home-${userId}-${Math.random()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lessons',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lessons changed, refetching home payments...');
+        setReloadKey((k) => k + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'lesson_history',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        console.log('[realtime] lesson_history changed, refetching home payments...');
+        setReloadKey((k) => k + 1);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   // Schedule a local reminder 1h before the next lesson if it's today & >1h away.
   useEffect(() => {
