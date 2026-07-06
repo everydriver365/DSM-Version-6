@@ -1429,6 +1429,7 @@ function PupilCard({
   rank,
   r,
   dayOfWeekLabel,
+  multi,
   onText,
   onMessage,
   onBook,
@@ -1436,6 +1437,7 @@ function PupilCard({
   rank: number;
   r: Ranked;
   dayOfWeekLabel: string;
+  multi: boolean;
   onText: () => void;
   onMessage: () => void;
   onBook: () => void;
@@ -1544,6 +1546,40 @@ function PupilCard({
               ⚠ Prefers {r.minNoticeHours}hrs notice
             </span>
           )}
+        </div>
+      )}
+
+      {multi && r.matchedSlots.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            gap: 6,
+            flexWrap: "wrap",
+            marginTop: 8,
+          }}
+        >
+          {r.matchedSlots.map((m) => {
+            const label = `${new Date(m.date + "T00:00:00").toLocaleDateString(
+              "en-GB",
+              { weekday: "short" },
+            )} ${fmt12h(m.time)}`;
+            return (
+              <span
+                key={slotKey(m)}
+                style={{
+                  background: m.match ? "#D1FAE5" : "#F3F4F6",
+                  color: m.match ? "#065F46" : "#6B7280",
+                  border: `0.5px solid ${m.match ? "#86EFAC" : "#E5E7EB"}`,
+                  borderRadius: 999,
+                  padding: "2px 8px",
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                {m.match ? "✓" : "✗"} {label}
+              </span>
+            );
+          })}
         </div>
       )}
 
