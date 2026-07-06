@@ -137,6 +137,8 @@ function PupilThreadPage() {
     if (!body || sending || !userId) return;
     setSending(true);
 
+    console.log("[dsm-messages] sending:", { body, pupilId, instructorId: userId });
+
     const now = new Date().toISOString();
     const optimistic: ChatMessage = {
       id: `tmp-${Date.now()}`,
@@ -152,29 +154,50 @@ function PupilThreadPage() {
     setMessages((prev) => [...prev, optimistic]);
     setDraft("");
 
-    const { data: inserted, error } = await supabase
-      .from("chat_messages")
-      .insert({
-        pupil_id: pupilId,
-        instructor_id: userId,
-        sender_type: "instructor",
-        sender_id: userId,
-        body,
-      })
-      .select("id, pupil_id, instructor_id, sender_type, sender_id, body, created_at, read_at, deleted_at")
-      .single();
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    const { data: sessionRes } = await supabase.auth.getSession();
+    const token = sessionRes.session?.access_token;
 
-    if (error) {
-      console.error("[pupil-thread] send error", error);
+    let res: Response;
+    let inserted: ChatMessage | null = null;
+    try {
+      res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token ?? ""}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          instructor_id: userId,
+          pupil_id: pupilId,
+          sender_type: "instructor",
+          sender_id: userId,
+          body,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      console.log("[dsm-messages] send result:", res.status, data);
+      if (res.ok && Array.isArray(data) && data.length > 0) {
+        inserted = data[0] as ChatMessage;
+      } else if (!res.ok) {
+        throw new Error(`send failed: ${res.status}`);
+      }
+    } catch (err) {
+      console.error("[pupil-thread] send error", err);
       setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
       setDraft(body);
       setSending(false);
       return;
     }
 
-    setMessages((prev) =>
-      prev.map((m) => (m.id === optimistic.id ? (inserted as ChatMessage) : m)),
-    );
+    if (inserted) {
+      const finalRow = inserted;
+      setMessages((prev) => prev.map((m) => (m.id === optimistic.id ? finalRow : m)));
+    }
     setSending(false);
   }
 
@@ -335,6 +358,7 @@ function PupilThreadPage() {
         <button
           type="submit"
           aria-label="Send"
+          onClick={() => console.log("[dsm-messages] send button tapped")}
           disabled={!draft.trim() || sending}
           className="flex items-center justify-center rounded-full shrink-0 disabled:opacity-50"
           style={{
