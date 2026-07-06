@@ -1381,6 +1381,8 @@ function HomePage() {
   const [workingHours, setWorkingHours] = useState<any>(null);
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
+  const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
   const [testsOpen, setTestsOpen] = useState(false);
   const [upcomingTests, setUpcomingTests] = useState<Array<{
 
