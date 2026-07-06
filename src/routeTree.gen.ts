@@ -105,7 +105,6 @@ import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests.$pupilId'
 import { Route as MessagesPupilIdRouteImport } from './routes/messages.$pupilId'
-import { Route as MessagesIdRouteImport } from './routes/messages.$id'
 import { Route as MarketplaceListRouteImport } from './routes/marketplace_.list'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
 import { Route as MarketplaceApplyRouteImport } from './routes/marketplace_.apply'
@@ -618,11 +617,6 @@ const MessagesPupilIdRoute = MessagesPupilIdRouteImport.update({
   path: '/$pupilId',
   getParentRoute: () => MessagesRoute,
 } as any)
-const MessagesIdRoute = MessagesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => MessagesRoute,
-} as any)
 const MarketplaceListRoute = MarketplaceListRouteImport.update({
   id: '/marketplace_/list',
   path: '/marketplace/list',
@@ -888,7 +882,6 @@ export interface FileRoutesByFullPath {
   '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/marketplace/list': typeof MarketplaceListRoute
-  '/messages/$id': typeof MessagesIdRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -1015,7 +1008,6 @@ export interface FileRoutesByTo {
   '/marketplace/apply': typeof MarketplaceApplyRoute
   '/marketplace/edit': typeof MarketplaceEditRoute
   '/marketplace/list': typeof MarketplaceListRoute
-  '/messages/$id': typeof MessagesIdRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -1147,7 +1139,6 @@ export interface FileRoutesById {
   '/marketplace_/apply': typeof MarketplaceApplyRoute
   '/marketplace_/edit': typeof MarketplaceEditRoute
   '/marketplace_/list': typeof MarketplaceListRoute
-  '/messages/$id': typeof MessagesIdRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
   '/notes/$id': typeof NotesIdRoute
@@ -1279,7 +1270,6 @@ export interface FileRouteTypes {
     | '/marketplace/apply'
     | '/marketplace/edit'
     | '/marketplace/list'
-    | '/messages/$id'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
@@ -1406,7 +1396,6 @@ export interface FileRouteTypes {
     | '/marketplace/apply'
     | '/marketplace/edit'
     | '/marketplace/list'
-    | '/messages/$id'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
@@ -1537,7 +1526,6 @@ export interface FileRouteTypes {
     | '/marketplace_/apply'
     | '/marketplace_/edit'
     | '/marketplace_/list'
-    | '/messages/$id'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
     | '/notes/$id'
@@ -2352,13 +2340,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MessagesPupilIdRouteImport
       parentRoute: typeof MessagesRoute
     }
-    '/messages/$id': {
-      id: '/messages/$id'
-      path: '/$id'
-      fullPath: '/messages/$id'
-      preLoaderRoute: typeof MessagesIdRouteImport
-      parentRoute: typeof MessagesRoute
-    }
     '/marketplace_/list': {
       id: '/marketplace_/list'
       path: '/marketplace/list'
@@ -2640,13 +2621,11 @@ const DsmLiveRouteWithChildren =
   DsmLiveRoute._addFileChildren(DsmLiveRouteChildren)
 
 interface MessagesRouteChildren {
-  MessagesIdRoute: typeof MessagesIdRoute
   MessagesPupilIdRoute: typeof MessagesPupilIdRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 const MessagesRouteChildren: MessagesRouteChildren = {
-  MessagesIdRoute: MessagesIdRoute,
   MessagesPupilIdRoute: MessagesPupilIdRoute,
   MessagesIndexRoute: MessagesIndexRoute,
 }
@@ -2784,13 +2763,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
