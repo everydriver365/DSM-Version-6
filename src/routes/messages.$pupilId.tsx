@@ -279,7 +279,7 @@ function PupilThreadPage() {
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2"
-        style={{ paddingBottom: 88 }}
+        style={{ paddingBottom: 80 }}
       >
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center py-12">
@@ -327,8 +327,9 @@ function PupilThreadPage() {
           e.preventDefault();
           send();
         }}
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white px-3 py-2 pb-safe flex items-end gap-2"
+        className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white px-3 py-2 pb-safe flex items-end gap-2"
         style={{
+          bottom: 64,
           borderTopWidth: "0.5px",
           borderTopStyle: "solid",
           borderTopColor: "#EEF2F7",
