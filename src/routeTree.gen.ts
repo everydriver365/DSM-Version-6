@@ -93,6 +93,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
+import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
@@ -557,6 +558,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/notes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MessagesRoute,
+} as any)
 const DsmLiveIndexRoute = DsmLiveIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -894,6 +900,7 @@ export interface FileRoutesByFullPath {
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
+  '/messages/': typeof MessagesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -941,7 +948,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/marketplace': typeof MarketplaceRoute
-  '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
   '/month-to-date': typeof MonthToDateRoute
@@ -1021,6 +1027,7 @@ export interface FileRoutesByTo {
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
+  '/messages': typeof MessagesIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
@@ -1152,6 +1159,7 @@ export interface FileRoutesById {
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
+  '/messages/': typeof MessagesIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -1283,6 +1291,7 @@ export interface FileRouteTypes {
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
+    | '/messages/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -1330,7 +1339,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/manifest'
     | '/marketplace'
-    | '/messages'
     | '/mileage'
     | '/minisite'
     | '/month-to-date'
@@ -1410,6 +1418,7 @@ export interface FileRouteTypes {
     | '/test-day/$pupilId'
     | '/courses'
     | '/dsm-live'
+    | '/messages'
     | '/notes'
     | '/pupils'
     | '/quotes'
@@ -1540,6 +1549,7 @@ export interface FileRouteTypes {
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
+    | '/messages/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -2258,6 +2268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/': {
+      id: '/messages/'
+      path: '/'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof MessagesRoute
+    }
     '/dsm-live/': {
       id: '/dsm-live/'
       path: '/'
@@ -2625,11 +2642,13 @@ const DsmLiveRouteWithChildren =
 interface MessagesRouteChildren {
   MessagesIdRoute: typeof MessagesIdRoute
   MessagesPupilIdRoute: typeof MessagesPupilIdRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 const MessagesRouteChildren: MessagesRouteChildren = {
   MessagesIdRoute: MessagesIdRoute,
   MessagesPupilIdRoute: MessagesPupilIdRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
 }
 
 const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
@@ -2765,13 +2784,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
