@@ -599,70 +599,225 @@ function GapsPage() {
         </div>
       </div>
 
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: `0.5px solid ${BORDER}`,
-          borderRadius: 12,
-          padding: 16,
-          margin: "12px 16px 0",
-        }}
-      >
+      <div style={{ margin: "16px 16px 0" }}>
         <div
           style={{
-            fontWeight: 700,
-            color: NAVY,
-            fontSize: 14,
-            marginBottom: 12,
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginBottom: 8,
           }}
         >
-          Select your free slot
+          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
+            Your free slots
+          </div>
+          <div style={{ color: MUTED, fontSize: 12 }}>
+            {slotsLoading
+              ? "Scanning diary…"
+              : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} in next 14 days`}
+          </div>
         </div>
-        <FieldLabel>Date</FieldLabel>
-        <input
-          type="date"
-          value={slotDate}
-          onChange={(e) => setSlotDate(e.target.value)}
-          style={inputStyle}
-        />
-        <div style={{ height: 10 }} />
-        <FieldLabel>Start time</FieldLabel>
-        <input
-          type="time"
-          value={slotTime}
-          onChange={(e) => setSlotTime(e.target.value)}
-          style={inputStyle}
-        />
-        <div style={{ height: 10 }} />
-        <FieldLabel>Duration</FieldLabel>
-        <select
-          value={duration}
-          onChange={(e) => setDuration(parseInt(e.target.value, 10))}
-          style={inputStyle}
-        >
-          <option value={60}>60 mins</option>
-          <option value={90}>90 mins</option>
-          <option value={120}>120 mins</option>
-        </select>
-        <button
-          onClick={findPupils}
-          disabled={loading}
-          style={{
-            marginTop: 16,
-            width: "100%",
-            height: 48,
-            borderRadius: 12,
-            background: NAVY,
-            color: "#FFFFFF",
-            fontWeight: 600,
-            fontSize: 15,
-            border: "none",
-            cursor: "pointer",
-            opacity: loading ? 0.6 : 1,
-          }}
-        >
-          {loading ? "Finding pupils…" : "Find pupils →"}
-        </button>
+
+        {!slotsLoading && freeSlots.length === 0 && (
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `0.5px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+            }}
+          >
+            <div style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}>
+              No free slots in the next 14 days
+            </div>
+            <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
+              Your diary looks full — check your schedule
+            </div>
+            <button
+              onClick={() => navigate({ to: "/schedule" })}
+              style={{
+                marginTop: 10,
+                background: "transparent",
+                border: "none",
+                color: BLUE,
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              View schedule →
+            </button>
+          </div>
+        )}
+
+        {freeSlots.map((slot) => {
+          const isSelectedSlot =
+            selectedSlotKey && selectedSlotKey.startsWith(`${slot.date}|${slot.startTime}|`);
+          return (
+            <div
+              key={`${slot.date}|${slot.startTime}`}
+              style={{
+                background: isSelectedSlot ? "#E0F4FF" : "#FFFFFF",
+                border: `0.5px solid ${isSelectedSlot ? BLUE : BORDER}`,
+                borderRadius: 12,
+                padding: "14px 16px",
+                marginBottom: 8,
+              }}
+            >
+              <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+                {fmtSlotDateLong(slot.date)}
+              </div>
+              <div style={{ color: MUTED, fontSize: 13, marginTop: 2 }}>
+                {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)} ·{" "}
+                {slot.gapMinutes} min free
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 6,
+                  marginTop: 8,
+                  flexWrap: "wrap",
+                }}
+              >
+                {slot.possibleDurations.map((d) => {
+                  const key = `${slot.date}|${slot.startTime}|${d}`;
+                  const isSelected = selectedSlotKey === key;
+                  return (
+                    <button
+                      key={d}
+                      onClick={() => {
+                        setSelectedSlotKey(key);
+                        setSlotDate(slot.date);
+                        setSlotTime(slot.startTime);
+                        setDuration(d);
+                      }}
+                      style={{
+                        background: isSelected ? BLUE : "#F0F4FF",
+                        color: isSelected ? "#FFFFFF" : BLUE,
+                        border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                        borderRadius: 999,
+                        padding: "4px 12px",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {d} min
+                    </button>
+                  );
+                })}
+              </div>
+
+              {isSelectedSlot && (
+                <button
+                  onClick={findPupils}
+                  disabled={loading}
+                  style={{
+                    marginTop: 12,
+                    width: "100%",
+                    height: 48,
+                    borderRadius: 12,
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    fontWeight: 600,
+                    fontSize: 15,
+                    border: "none",
+                    cursor: "pointer",
+                    opacity: loading ? 0.6 : 1,
+                  }}
+                >
+                  {loading ? "Finding pupils…" : "Find pupils for this slot →"}
+                </button>
+              )}
+            </div>
+          );
+        })}
+
+        <div style={{ marginTop: 8, textAlign: "center" }}>
+          <button
+            onClick={() => setManualMode((m) => !m)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: BLUE,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            {manualMode
+              ? "Hide manual entry"
+              : "Don't see the right slot? Enter manually →"}
+          </button>
+        </div>
+
+        {manualMode && (
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `0.5px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: 16,
+              marginTop: 8,
+            }}
+          >
+            <FieldLabel>Date</FieldLabel>
+            <input
+              type="date"
+              value={slotDate}
+              onChange={(e) => {
+                setSlotDate(e.target.value);
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            />
+            <div style={{ height: 10 }} />
+            <FieldLabel>Start time</FieldLabel>
+            <input
+              type="time"
+              value={slotTime}
+              onChange={(e) => {
+                setSlotTime(e.target.value);
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            />
+            <div style={{ height: 10 }} />
+            <FieldLabel>Duration</FieldLabel>
+            <select
+              value={duration}
+              onChange={(e) => {
+                setDuration(parseInt(e.target.value, 10));
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            >
+              <option value={60}>60 mins</option>
+              <option value={90}>90 mins</option>
+              <option value={120}>120 mins</option>
+            </select>
+            <button
+              onClick={findPupils}
+              disabled={loading}
+              style={{
+                marginTop: 16,
+                width: "100%",
+                height: 48,
+                borderRadius: 12,
+                background: NAVY,
+                color: "#FFFFFF",
+                fontWeight: 600,
+                fontSize: 15,
+                border: "none",
+                cursor: "pointer",
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading ? "Finding pupils…" : "Find pupils →"}
+            </button>
+          </div>
+        )}
       </div>
 
       {monthlyRevenue > 0 && (
