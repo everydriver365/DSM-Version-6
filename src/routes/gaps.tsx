@@ -45,6 +45,52 @@ const DAYS = [
   "Saturday",
 ];
 
+interface FreeSlot {
+  date: string;
+  startTime: string;
+  endTime: string;
+  gapMinutes: number;
+  possibleDurations: number[];
+}
+
+function addDaysIso(base: Date, n: number) {
+  const d = new Date(base);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
+}
+
+function hmToMin(t: string) {
+  const [h, m] = t.split(":").map((x) => parseInt(x, 10));
+  return (h || 0) * 60 + (m || 0);
+}
+
+function minToHm(m: number) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+function fmtSlotDateLong(iso: string) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+}
+
+function fmt12h(t: string) {
+  const [hStr, mStr] = t.split(":");
+  let h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  const suffix = h >= 12 ? "pm" : "am";
+  h = h % 12;
+  if (h === 0) h = 12;
+  return m === 0 ? `${h}${suffix}` : `${h}:${String(m).padStart(2, "0")}${suffix}`;
+}
+
 interface Pupil {
   id: string;
   name: string | null;
@@ -143,6 +189,130 @@ function GapsPage() {
   const [offersOpen, setOffersOpen] = useState(false);
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const [freeSlots, setFreeSlots] = useState<FreeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
+  const [manualMode, setManualMode] = useState(false);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      setSlotsLoading(true);
+      try {
+        const today = new Date();
+        const startIso = todayIso();
+        const endIso = addDaysIso(today, 14);
+        const [lessonsRes, instrRes] = await Promise.all([
+          supabase
+            .from("lessons")
+            .select("lesson_date,lesson_time,duration_minutes")
+            .eq("instructor_id", userId)
+            .is("deleted_at", null)
+            .in("status", ["confirmed", "pending"])
+            .gte("lesson_date", startIso)
+            .lte("lesson_date", endIso)
+            .order("lesson_date", { ascending: true })
+            .order("lesson_time", { ascending: true }),
+          supabase
+            .from("instructors")
+            .select(
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,hourly_rate",
+            )
+            .eq("id", userId)
+            .maybeSingle(),
+        ]);
+        if (cancelled) return;
+
+        const instr = (instrRes.data ?? {}) as {
+          working_hours_start?: string | null;
+          working_hours_end?: string | null;
+          working_days?: string[] | null;
+          lesson_buffer_minutes?: number | null;
+        };
+        const workStart = instr.working_hours_start || "09:00";
+        const workEnd = instr.working_hours_end || "18:00";
+        const buffer = instr.lesson_buffer_minutes ?? 15;
+        const workDays =
+          instr.working_days && instr.working_days.length
+            ? instr.working_days
+            : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+        const byDay = new Map<
+          string,
+          { start: number; end: number }[]
+        >();
+        for (const l of (lessonsRes.data ?? []) as {
+          lesson_date: string | null;
+          lesson_time: string | null;
+          duration_minutes: number | null;
+        }[]) {
+          if (!l.lesson_date || !l.lesson_time) continue;
+          const s = hmToMin(l.lesson_time);
+          const e = s + (l.duration_minutes ?? 60);
+          const arr = byDay.get(l.lesson_date) ?? [];
+          arr.push({ start: s, end: e });
+          byDay.set(l.lesson_date, arr);
+        }
+
+        const slots: FreeSlot[] = [];
+        const wsMin = hmToMin(workStart);
+        const weMin = hmToMin(workEnd);
+        for (let i = 0; i < 14; i++) {
+          const dt = new Date(today);
+          dt.setDate(dt.getDate() + i);
+          const dayName = DAYS[dt.getDay()];
+          if (!workDays.includes(dayName)) continue;
+          const iso = addDaysIso(today, i);
+          const dayLessons = (byDay.get(iso) ?? []).slice().sort(
+            (a, b) => a.start - b.start,
+          );
+          // Build gap boundaries
+          const gaps: { start: number; end: number }[] = [];
+          let cursor = wsMin;
+          for (const l of dayLessons) {
+            const gapEnd = l.start - buffer;
+            if (gapEnd - cursor >= 60) {
+              gaps.push({ start: cursor, end: gapEnd });
+            }
+            cursor = Math.max(cursor, l.end + buffer);
+          }
+          if (weMin - cursor >= 60) {
+            gaps.push({ start: cursor, end: weMin });
+          }
+          // Filter out gaps that start in the past (today only)
+          for (const g of gaps) {
+            let gStart = g.start;
+            if (i === 0) {
+              const nowMins = today.getHours() * 60 + today.getMinutes();
+              if (gStart < nowMins) gStart = Math.ceil(nowMins / 15) * 15;
+            }
+            const gapMinutes = g.end - gStart;
+            if (gapMinutes < 60) continue;
+            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
+            if (!possible.length) continue;
+            slots.push({
+              date: iso,
+              startTime: minToHm(gStart),
+              endTime: minToHm(g.end),
+              gapMinutes,
+              possibleDurations: possible,
+            });
+          }
+        }
+        if (!cancelled) setFreeSlots(slots);
+      } catch (err) {
+        console.error("[gaps] free-slot detection failed:", err);
+        if (!cancelled) setFreeSlots([]);
+      } finally {
+        if (!cancelled) setSlotsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, reloadKey]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -429,70 +599,225 @@ function GapsPage() {
         </div>
       </div>
 
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: `0.5px solid ${BORDER}`,
-          borderRadius: 12,
-          padding: 16,
-          margin: "12px 16px 0",
-        }}
-      >
+      <div style={{ margin: "16px 16px 0" }}>
         <div
           style={{
-            fontWeight: 700,
-            color: NAVY,
-            fontSize: 14,
-            marginBottom: 12,
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginBottom: 8,
           }}
         >
-          Select your free slot
+          <div style={{ fontWeight: 700, color: NAVY, fontSize: 14 }}>
+            Your free slots
+          </div>
+          <div style={{ color: MUTED, fontSize: 12 }}>
+            {slotsLoading
+              ? "Scanning diary…"
+              : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} in next 14 days`}
+          </div>
         </div>
-        <FieldLabel>Date</FieldLabel>
-        <input
-          type="date"
-          value={slotDate}
-          onChange={(e) => setSlotDate(e.target.value)}
-          style={inputStyle}
-        />
-        <div style={{ height: 10 }} />
-        <FieldLabel>Start time</FieldLabel>
-        <input
-          type="time"
-          value={slotTime}
-          onChange={(e) => setSlotTime(e.target.value)}
-          style={inputStyle}
-        />
-        <div style={{ height: 10 }} />
-        <FieldLabel>Duration</FieldLabel>
-        <select
-          value={duration}
-          onChange={(e) => setDuration(parseInt(e.target.value, 10))}
-          style={inputStyle}
-        >
-          <option value={60}>60 mins</option>
-          <option value={90}>90 mins</option>
-          <option value={120}>120 mins</option>
-        </select>
-        <button
-          onClick={findPupils}
-          disabled={loading}
-          style={{
-            marginTop: 16,
-            width: "100%",
-            height: 48,
-            borderRadius: 12,
-            background: NAVY,
-            color: "#FFFFFF",
-            fontWeight: 600,
-            fontSize: 15,
-            border: "none",
-            cursor: "pointer",
-            opacity: loading ? 0.6 : 1,
-          }}
-        >
-          {loading ? "Finding pupils…" : "Find pupils →"}
-        </button>
+
+        {!slotsLoading && freeSlots.length === 0 && (
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `0.5px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+            }}
+          >
+            <div style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}>
+              No free slots in the next 14 days
+            </div>
+            <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
+              Your diary looks full — check your schedule
+            </div>
+            <button
+              onClick={() => navigate({ to: "/schedule" })}
+              style={{
+                marginTop: 10,
+                background: "transparent",
+                border: "none",
+                color: BLUE,
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              View schedule →
+            </button>
+          </div>
+        )}
+
+        {freeSlots.map((slot) => {
+          const isSelectedSlot =
+            selectedSlotKey && selectedSlotKey.startsWith(`${slot.date}|${slot.startTime}|`);
+          return (
+            <div
+              key={`${slot.date}|${slot.startTime}`}
+              style={{
+                background: isSelectedSlot ? "#E0F4FF" : "#FFFFFF",
+                border: `0.5px solid ${isSelectedSlot ? BLUE : BORDER}`,
+                borderRadius: 12,
+                padding: "14px 16px",
+                marginBottom: 8,
+              }}
+            >
+              <div style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+                {fmtSlotDateLong(slot.date)}
+              </div>
+              <div style={{ color: MUTED, fontSize: 13, marginTop: 2 }}>
+                {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)} ·{" "}
+                {slot.gapMinutes} min free
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 6,
+                  marginTop: 8,
+                  flexWrap: "wrap",
+                }}
+              >
+                {slot.possibleDurations.map((d) => {
+                  const key = `${slot.date}|${slot.startTime}|${d}`;
+                  const isSelected = selectedSlotKey === key;
+                  return (
+                    <button
+                      key={d}
+                      onClick={() => {
+                        setSelectedSlotKey(key);
+                        setSlotDate(slot.date);
+                        setSlotTime(slot.startTime);
+                        setDuration(d);
+                      }}
+                      style={{
+                        background: isSelected ? BLUE : "#F0F4FF",
+                        color: isSelected ? "#FFFFFF" : BLUE,
+                        border: `0.5px solid ${isSelected ? BLUE : "#BFDBFE"}`,
+                        borderRadius: 999,
+                        padding: "4px 12px",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {d} min
+                    </button>
+                  );
+                })}
+              </div>
+
+              {isSelectedSlot && (
+                <button
+                  onClick={findPupils}
+                  disabled={loading}
+                  style={{
+                    marginTop: 12,
+                    width: "100%",
+                    height: 48,
+                    borderRadius: 12,
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    fontWeight: 600,
+                    fontSize: 15,
+                    border: "none",
+                    cursor: "pointer",
+                    opacity: loading ? 0.6 : 1,
+                  }}
+                >
+                  {loading ? "Finding pupils…" : "Find pupils for this slot →"}
+                </button>
+              )}
+            </div>
+          );
+        })}
+
+        <div style={{ marginTop: 8, textAlign: "center" }}>
+          <button
+            onClick={() => setManualMode((m) => !m)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: BLUE,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            {manualMode
+              ? "Hide manual entry"
+              : "Don't see the right slot? Enter manually →"}
+          </button>
+        </div>
+
+        {manualMode && (
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `0.5px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: 16,
+              marginTop: 8,
+            }}
+          >
+            <FieldLabel>Date</FieldLabel>
+            <input
+              type="date"
+              value={slotDate}
+              onChange={(e) => {
+                setSlotDate(e.target.value);
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            />
+            <div style={{ height: 10 }} />
+            <FieldLabel>Start time</FieldLabel>
+            <input
+              type="time"
+              value={slotTime}
+              onChange={(e) => {
+                setSlotTime(e.target.value);
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            />
+            <div style={{ height: 10 }} />
+            <FieldLabel>Duration</FieldLabel>
+            <select
+              value={duration}
+              onChange={(e) => {
+                setDuration(parseInt(e.target.value, 10));
+                setSelectedSlotKey(null);
+              }}
+              style={inputStyle}
+            >
+              <option value={60}>60 mins</option>
+              <option value={90}>90 mins</option>
+              <option value={120}>120 mins</option>
+            </select>
+            <button
+              onClick={findPupils}
+              disabled={loading}
+              style={{
+                marginTop: 16,
+                width: "100%",
+                height: 48,
+                borderRadius: 12,
+                background: NAVY,
+                color: "#FFFFFF",
+                fontWeight: 600,
+                fontSize: 15,
+                border: "none",
+                cursor: "pointer",
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading ? "Finding pupils…" : "Find pupils →"}
+            </button>
+          </div>
+        )}
       </div>
 
       {monthlyRevenue > 0 && (
