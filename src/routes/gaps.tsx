@@ -315,9 +315,11 @@ function GapsPage() {
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
-  // Offer-sheet state (per-pupil slot picker)
+  // Offer-sheet state (per-pupil slot picker across ALL free slots)
   const [offerFor, setOfferFor] = useState<Ranked | null>(null);
-  const [offerChecked, setOfferChecked] = useState<Record<string, boolean>>({});
+  const [offerSlotStates, setOfferSlotStates] = useState<
+    Record<string, { selected: boolean; duration: number }>
+  >({});
 
   useEffect(() => {
     if (!userId) return;
@@ -643,20 +645,28 @@ function GapsPage() {
     }
   }
 
+  function slotDayTimeKey(date: string, startTime: string) {
+    return `${date}|${startTime}`;
+  }
+
   function openOfferSheet(r: Ranked) {
-    const defaults: Record<string, boolean> = {};
-    for (const m of r.matchedSlots) defaults[slotKey(m)] = m.match;
-    // If nothing matches, pre-check all so the sheet isn't empty
-    if (r.matchedSlots.every((m) => !m.match)) {
-      for (const m of r.matchedSlots) defaults[slotKey(m)] = true;
+    const defaults: Record<string, { selected: boolean; duration: number }> = {};
+    const pref = r.settings?.preferred_duration_minutes ?? 60;
+    for (const s of freeSlots) {
+      const possible = s.possibleDurations;
+      const chosen = possible.includes(pref) ? pref : possible[0] ?? 60;
+      defaults[slotDayTimeKey(s.date, s.startTime)] = {
+        selected: true,
+        duration: chosen,
+      };
     }
-    setOfferChecked(defaults);
+    setOfferSlotStates(defaults);
     setOfferFor(r);
   }
 
   function closeOfferSheet() {
     setOfferFor(null);
-    setOfferChecked({});
+    setOfferSlotStates({});
   }
 
   function buildOfferMessage(first: string, slots: SelectedSlot[]) {
@@ -673,10 +683,15 @@ function GapsPage() {
     return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
   }
 
-  function checkedSlotsFor(r: Ranked): SelectedSlot[] {
-    return r.matchedSlots
-      .filter((m) => offerChecked[slotKey(m)])
-      .map((m) => ({ date: m.date, time: m.time, duration: m.duration }));
+  function checkedSlotsFor(_r: Ranked): SelectedSlot[] {
+    const out: SelectedSlot[] = [];
+    for (const s of freeSlots) {
+      const st = offerSlotStates[slotDayTimeKey(s.date, s.startTime)];
+      if (st?.selected) {
+        out.push({ date: s.date, time: s.startTime, duration: st.duration });
+      }
+    }
+    return out;
   }
 
   function handleSheetSms(r: Ranked) {
@@ -1531,8 +1546,9 @@ function GapsPage() {
       {offerFor && (
         <OfferSheet
           r={offerFor}
-          checked={offerChecked}
-          setChecked={setOfferChecked}
+          freeSlots={freeSlots}
+          slotStates={offerSlotStates}
+          setSlotStates={setOfferSlotStates}
           onClose={closeOfferSheet}
           onSms={() => handleSheetSms(offerFor)}
           onMessage={() => handleSheetMessage(offerFor)}
