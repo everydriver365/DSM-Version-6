@@ -2024,14 +2024,56 @@ function OfferSheet({
               <div key={iso}>
                 <div
                   style={{
-                    color: NAVY,
-                    fontWeight: 700,
-                    fontSize: 13,
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
                     marginTop: 12,
                     marginBottom: 6,
                   }}
                 >
-                  {dLabel}
+                  <span
+                    style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}
+                  >
+                    {dLabel}
+                  </span>
+                  {(() => {
+                    const allSelected = slots.every(
+                      (s) => slotStates[slotDTKey(s)]?.selected,
+                    );
+                    return (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSlotStates((prev) => {
+                            const next = { ...prev };
+                            for (const s of slots) {
+                              const k = slotDTKey(s);
+                              const cur = next[k];
+                              next[k] = {
+                                selected: !allSelected,
+                                duration:
+                                  cur?.duration ??
+                                  s.possibleDurations[0] ??
+                                  60,
+                              };
+                            }
+                            return next;
+                          })
+                        }
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          padding: 0,
+                          color: BLUE,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {allSelected ? "Clear today" : "Select all today"}
+                      </button>
+                    );
+                  })()}
                 </div>
                 {slots.map((s) => {
                   const key = slotDTKey(s);
