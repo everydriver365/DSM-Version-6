@@ -318,6 +318,7 @@ function PupilDetailPage() {
   const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
   const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
   const [certOpen, setCertOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
   const [intakeAnswers, setIntakeAnswers] = useState<any[] | null>(null);
   const [addressEditing, setAddressEditing] = useState(false);
@@ -520,6 +521,27 @@ function PupilDetailPage() {
         setActualLessonCount(count ?? 0);
         console.log("[pupils.$id] lesson count (completed):", count);
       });
+
+    // Unread messages from this pupil (for Message quick-action badge)
+    supabase.auth.getUser().then(({ data: u }) => {
+      const uid = u.user?.id;
+      if (!uid) return;
+      supabase
+        .from("chat_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("pupil_id", id)
+        .eq("instructor_id", uid)
+        .eq("sender_type", "pupil")
+        .is("read_at", null)
+        .is("deleted_at", null)
+        .then(({ count, error }) => {
+          if (error) {
+            console.error("[pupil] unread chat count error", error);
+            return;
+          }
+          setUnreadMessages(count ?? 0);
+        });
+    });
 
     // Total lessons figure: count all non-cancelled lessons
     supabase
@@ -1274,6 +1296,14 @@ function PupilDetailPage() {
             iconBg="#EAF3FB"
             iconColor="#1877D6"
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
+          />
+          <ActionTile
+            label="Message"
+            icon={<MessageSquare size={20} />}
+            iconBg="#E0F7F5"
+            iconColor="#00B5A5"
+            onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
+            badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
           />
           <ActionTile
             label="Text"
