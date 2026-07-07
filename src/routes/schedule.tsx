@@ -363,7 +363,7 @@ function SchedulePage() {
       Array.from({ length: 15 }).map((_, i) => ymd(addDays(pickerStart, i))),
     );
     return map;
-  }, [lessons, rangeStart]);
+  }, [lessons, pickerStart]);
 
   const days = useMemo(() => {
     const out: Date[] = [];
