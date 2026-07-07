@@ -1776,12 +1776,7 @@ function HomePage() {
         6,
       );
       const currentYear = new Date().getFullYear();
-      const [pupilsRes, lessonsRes, paymentsRes, expensesRes, mtdRes, instructorRes, pointsRes] = await Promise.all([
-        supabase
-          .from("pupils")
-          .select("id", { count: "exact", head: true })
-          .eq("instructor_id", userId)
-          .is("deleted_at", null),
+      const [lessonsRes, paymentsRes, expensesRes, mtdRes, pointsRes] = await Promise.all([
         supabase
           .from("lessons")
           .select("id", { count: "exact", head: true })
@@ -1806,18 +1801,12 @@ function HomePage() {
           .eq("instructor_id", userId)
           .maybeSingle(),
         supabase
-          .from("instructors")
-          .select("weekly_lesson_goal, weekly_earnings_goal")
-          .eq("id", userId)
-          .maybeSingle(),
-        supabase
           .from("instructor_points")
           .select("total_points")
           .eq("instructor_id", userId)
           .eq("season_year", currentYear)
           .maybeSingle(),
       ]);
-      setGlancePupilCount(pupilsRes.count ?? 0);
       setGlanceCompletedLessons(lessonsRes.count ?? 0);
       const pays = paymentsRes.data ?? [];
       setGlancePaymentsCount(pays.length);
@@ -1826,13 +1815,6 @@ function HomePage() {
         (expensesRes.data ?? []).reduce((s, e: any) => s + Number(e.amount ?? 0), 0),
       );
       setGlanceMtdEnrolled(mtdRes.data ? Boolean((mtdRes.data as any).enrolled) : false);
-      const instructorRow = (instructorRes as any)?.data ?? null;
-      if (instructorRow) {
-        const wl = Number(instructorRow.weekly_lesson_goal);
-        const we = Number(instructorRow.weekly_earnings_goal);
-        if (Number.isFinite(wl) && wl > 0) setWeeklyLessonGoal(wl);
-        if (Number.isFinite(we) && we > 0) setWeeklyEarningsGoal(we);
-      }
       const pointsRow = (pointsRes as any)?.data ?? null;
       setGlancePoints(Number(pointsRow?.total_points ?? 0));
     })();
