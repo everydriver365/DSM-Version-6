@@ -549,19 +549,17 @@ function SchedulePage() {
           className="cursor-pointer select-none"
           style={{
             display: "flex",
-            gap: 12,
-            padding: "12px 16px",
+            gap: 14,
+            padding: "14px 16px",
             alignItems: "stretch",
-            borderLeft: `4px solid ${lessonColour}`,
-            background: `${lessonColour}15`,
+            background: isCurrent ? `${lessonColour}10` : "#FFFFFF",
           }}
         >
-
           <div
             style={{
-              width: 48,
+              width: 62,
               flexShrink: 0,
-              textAlign: "right",
+              textAlign: "left",
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -569,25 +567,34 @@ function SchedulePage() {
           >
             <div
               style={{
-                fontSize: 13,
+                fontSize: 20,
                 fontWeight: 700,
                 color: timeColor,
                 ...POPPINS,
+                lineHeight: 1.1,
+                letterSpacing: "-0.01em",
                 textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
               {formatLessonTime(l)}
             </div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 4 }}>
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              width: 4,
+              borderRadius: 3,
+              background: lessonColour,
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
             <div
-
               style={{
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: 15,
+                fontWeight: 700,
                 color: nameColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
@@ -596,31 +603,37 @@ function SchedulePage() {
             >
               {name}
             </div>
-            {l.pickup_location && (
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "#6B7280",
-                  ...POPPINS,
-                  marginTop: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-                className="truncate"
-              >
-                <MapPin size={10} color="#6B7280" />
-                <span className="truncate">{l.pickup_location}</span>
-              </div>
-            )}
+            <div
+              style={{
+                fontSize: 13,
+                color: "#94A3B8",
+                ...POPPINS,
+                marginTop: 3,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+              className="truncate"
+            >
+              {l.pickup_location ? (
+                <>
+                  <MapPin size={11} color="#94A3B8" />
+                  <span className="truncate">{l.pickup_location}</span>
+                </>
+              ) : (
+                <span>Lesson</span>
+              )}
+            </div>
             {badges.length > 0 && (
-              <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
+              <div
+                style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}
+              >
                 {badges}
               </div>
             )}
           </div>
           <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <ChevronRight size={16} color="#D1D5DB" />
+            <ChevronRight size={18} color="#CBD5E1" />
           </div>
         </div>
 
