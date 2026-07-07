@@ -156,6 +156,33 @@ function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   return "bronze";
 }
 
+function getMatchingPupils(
+  gapDate: string,
+  gapStartTime: string,
+  gapMinutes: number,
+  pupils: any[],
+  availabilitySettings: any[],
+) {
+  const dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(gapDate).getDay()];
+  const gapHour = parseInt((gapStartTime || "00:00").split(":")[0], 10);
+  return (pupils || [])
+    .filter((p) => {
+      const settings = (availabilitySettings || []).find((s) => s.pupil_id === p.id);
+      if (!settings) return true;
+      const availDays: string[] = settings.available_days || [];
+      const fromHour = parseInt((settings.available_from || "08:00").split(":")[0], 10);
+      const untilHour = parseInt((settings.available_until || "18:00").split(":")[0], 10);
+      const prefDuration = settings.preferred_duration_minutes || 60;
+      return (
+        availDays.includes(dayOfWeek) &&
+        gapHour >= fromHour &&
+        gapHour < untilHour &&
+        gapMinutes >= prefDuration
+      );
+    })
+    .slice(0, 5);
+}
+
 function CircleIconBtn({
   children, onClick, ariaLabel,
 }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) {
