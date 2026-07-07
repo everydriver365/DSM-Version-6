@@ -29,6 +29,33 @@ export const Route = createFileRoute("/schedule")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
+function getMatchingPupils(
+  gapDate: string,
+  gapStartTime: string,
+  gapMinutes: number,
+  pupils: any[],
+  availabilitySettings: any[],
+) {
+  const dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(gapDate).getDay()];
+  const gapHour = parseInt((gapStartTime || "00:00").split(":")[0], 10);
+  return (pupils || [])
+    .filter((p) => {
+      const settings = (availabilitySettings || []).find((s) => s.pupil_id === p.id);
+      if (!settings) return true;
+      const availDays: string[] = settings.available_days || [];
+      const fromHour = parseInt((settings.available_from || "08:00").split(":")[0], 10);
+      const untilHour = parseInt((settings.available_until || "18:00").split(":")[0], 10);
+      const prefDuration = settings.preferred_duration_minutes || 60;
+      return (
+        availDays.includes(dayOfWeek) &&
+        gapHour >= fromHour &&
+        gapHour < untilHour &&
+        gapMinutes >= prefDuration
+      );
+    })
+    .slice(0, 5);
+}
+
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
