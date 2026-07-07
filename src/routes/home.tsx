@@ -3863,7 +3863,7 @@ function HomePage() {
       {/* TODAY STRIP — 3 white tiles */}
       <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
         <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot?.time ?? '—'} subValue={nextFreeSlot?.dayLabel} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
         <div
           style={{ flex: 1, display: 'flex', cursor: 'pointer' }}
           onClick={() => setOutstandingOpen(true)}
