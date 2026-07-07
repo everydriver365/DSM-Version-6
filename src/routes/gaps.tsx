@@ -53,6 +53,7 @@ interface FreeSlot {
   endTime: string;
   gapMinutes: number;
   possibleDurations: number[];
+  bufferMinutes?: number;
 }
 
 interface DayGroup {
