@@ -1135,15 +1135,32 @@ function SchedulePage() {
             Schedule
           </span>
         </div>
-        <button
-          type="button"
-          aria-label="Open calendar"
-          onClick={() => navigate({ to: "/diary" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <CalendarIcon size={20} color="#FFFFFF" />
-        </button>
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              aria-label="Open calendar"
+              className="flex items-center justify-center"
+              style={{ width: 32, height: 32 }}
+            >
+              <CalendarIcon size={20} color="#FFFFFF" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <ShadcnCalendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(d) => {
+                if (d) {
+                  setSelectedDate(startOfDay(d));
+                  setCalendarOpen(false);
+                }
+              }}
+              initialFocus
+              className="pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       {lessons === null ? (
