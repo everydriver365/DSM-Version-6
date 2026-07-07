@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
+import { readMinGapMinutes } from "../lib/gapPrefs";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -207,6 +208,17 @@ function SchedulePage() {
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
+  const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
+
+  useEffect(() => {
+    const sync = () => setMinGapMinutes(readMinGapMinutes());
+    window.addEventListener("min-gap-minutes-changed", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("min-gap-minutes-changed", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
 
   useEffect(() => {
