@@ -4061,7 +4061,7 @@ function HomePage() {
                 fontFamily: "Inter, sans-serif",
               }}
             >
-              {tab === "tomorrow" ? "No lessons tomorrow" : "No upcoming lessons"}
+              No upcoming lessons
             </div>
           )
         ) : (
