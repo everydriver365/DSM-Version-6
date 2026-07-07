@@ -27,6 +27,11 @@ import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import {
+  readMinGapMinutes,
+  writeMinGapMinutes,
+  DEFAULT_MIN_GAP_MINUTES,
+} from "../lib/gapPrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 
@@ -82,6 +87,11 @@ function SettingsPage() {
   const [hourlyRate, setHourlyRate] = useState<number>(35);
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
+  const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
+
+  useEffect(() => {
+    setMinGapMinutes(readMinGapMinutes());
+  }, []);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
@@ -829,6 +839,45 @@ function SettingsPage() {
                   }}
                 >
                   <option value={0}>None</option>
+                  <option value={15}>15 mins</option>
+                  <option value={30}>30 mins</option>
+                  <option value={45}>45 mins</option>
+                  <option value={60}>1 hour</option>
+                  <option value={90}>1.5 hours</option>
+                  <option value={120}>2 hours</option>
+                </select>
+              </div>
+
+              {/* Minimum gap shown on schedule */}
+              <div
+                className="flex items-center gap-3 pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                    Minimum gap to show
+                  </div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                    Free gaps shorter than this are hidden on the schedule
+                  </div>
+                </div>
+                <select
+                  value={minGapMinutes}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    setMinGapMinutes(v);
+                    writeMinGapMinutes(v);
+                  }}
+                  className="text-[13px] text-[#0B1F3A]"
+                  style={{
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    padding: "0 8px",
+                    backgroundColor: "#fff",
+                    ...POPPINS,
+                  }}
+                >
                   <option value={15}>15 mins</option>
                   <option value={30}>30 mins</option>
                   <option value={45}>45 mins</option>

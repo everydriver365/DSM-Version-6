@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
+import { readMinGapMinutes } from "../lib/gapPrefs";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -207,6 +208,17 @@ function SchedulePage() {
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
+  const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
+
+  useEffect(() => {
+    const sync = () => setMinGapMinutes(readMinGapMinutes());
+    window.addEventListener("min-gap-minutes-changed", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("min-gap-minutes-changed", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -838,12 +850,12 @@ function SchedulePage() {
         endMs: number,
       ) => {
         const gapMins = Math.round((endMs - startMs) / 60000);
-        if (gapMins <= 30) return null;
+        if (gapMins < minGapMinutes) return null;
         if (isPast) return null;
         if (isToday && endMs <= nowMs) return null;
         const displayStart = isToday && startMs < nowMs ? nowMs : startMs;
         const displayMins = Math.round((endMs - displayStart) / 60000);
-        if (displayMins <= 30) return null;
+        if (displayMins < minGapMinutes) return null;
         return (
           <div
             key={key}
@@ -919,7 +931,7 @@ function SchedulePage() {
           const gapMins = Math.round(
             (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
           );
-          if (gapMins > 30) {
+          if (gapMins >= minGapMinutes) {
             rows.push(
               <div
                 key={`gap-${l.id}`}
