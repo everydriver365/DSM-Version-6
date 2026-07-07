@@ -3969,7 +3969,7 @@ function HomePage() {
                 return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
               };
               const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : `Not working ${dayNoun}`;
-              const fmtWindow = todayWorks ? `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")} – ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}` : "—";
+              const fmtWindow = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "—";
               return (
                 <div style={{
                   margin: "4px 16px 12px",
