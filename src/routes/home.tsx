@@ -1452,12 +1452,6 @@ function HomePage() {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
-      const { count } = await supabase
-        .from("pupils")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", user.id)
-        .eq("status", "active");
-      if (!cancelled) setActivePupilsCount(count || 0);
       const { data: notes } = await supabase
         .from("instructor_notifications")
         .select("id, title, body, created_at, read")
