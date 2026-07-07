@@ -798,24 +798,88 @@ function SchedulePage() {
             (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
           );
           if (gapMins > 30) {
+            const gapStartT = formatTimeFromDate(lessonEnd(l));
+            const gapEndT = formatTimeFromDate(lessonStart(next));
+            const gapDate = l.lesson_date.substring(0, 10);
+            const matches = getMatchingPupils(gapDate, gapStartT, gapMins, matchPupils, matchAvailability);
+            const hourlyRate = 40;
+            const potential = Math.round((gapMins / 60) * hourlyRate);
+            const durationLabel = gapMins >= 60
+              ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
+              : `${gapMins}min`;
             rows.push(
               <div
                 key={`gap-${l.id}`}
                 style={{
-                  margin: "4px 16px 8px 16px",
-                  backgroundColor: "#F8F9FB",
-                  borderRadius: 8,
-                  padding: "8px 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
+                  background: "#FFFBEB",
+                  border: "0.5px solid #FDE68A",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  margin: "4px 16px",
                 }}
               >
-                <Clock size={12} color="#9CA3AF" />
-                <span style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                  {gapMins} mins free · {formatTimeFromDate(lessonEnd(l))} –{" "}
-                  {formatTimeFromDate(lessonStart(next))}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Zap size={14} color="#D97706" />
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#78350F", ...POPPINS }}>
+                      Free slot · {durationLabel}
+                    </span>
+                    <span style={{ fontSize: 12, color: "#92400E", marginLeft: 6, ...POPPINS }}>
+                      {gapStartT} – {gapEndT}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#16A34A", ...POPPINS }}>
+                    £{potential}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {matches.slice(0, 3).map((pupil, i) => (
+                      <div key={pupil.id} style={{
+                        width: 28, height: 28, borderRadius: "50%",
+                        background: pupil.calendar_colour || "#1A52A0",
+                        border: "2px solid #FFFBEB",
+                        marginLeft: i > 0 ? -8 : 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        color: "white", fontSize: 10, fontWeight: 700,
+                        zIndex: 3 - i, position: "relative",
+                      }}>
+                        {((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}
+                      </div>
+                    ))}
+                    {matches.length > 3 && (
+                      <div style={{
+                        width: 28, height: 28, borderRadius: "50%",
+                        background: "#E5E7EB", border: "2px solid #FFFBEB",
+                        marginLeft: -8, display: "flex", alignItems: "center",
+                        justifyContent: "center", color: "#6B7280",
+                        fontSize: 10, fontWeight: 700, position: "relative", zIndex: 0,
+                      }}>
+                        +{matches.length - 3}
+                      </div>
+                    )}
+                    {matches.length > 0 ? (
+                      <span style={{ fontSize: 11, color: "#92400E", marginLeft: 8, fontWeight: 500, ...POPPINS }}>
+                        {matches.length} match{matches.length !== 1 ? "es" : ""}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: 11, color: "#92400E", ...POPPINS }}>
+                        No matches — post to EveryDriver?
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => navigate({ to: "/gaps" as never })}
+                    style={{
+                      background: "#D97706", color: "white", border: "none",
+                      borderRadius: 8, padding: "6px 14px",
+                      fontSize: 12, fontWeight: 700, cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Fill slot →
+                  </button>
+                </div>
               </div>,
             );
           } else {
