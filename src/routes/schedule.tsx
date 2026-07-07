@@ -882,18 +882,35 @@ function SchedulePage() {
       const dayWindowEnd = new Date(d);
       dayWindowEnd.setHours(18, 0, 0, 0);
 
+      // Resolve per-lesson buffers (pupil override → instructor default).
+      const resolveBuf = (pupilId: string | null | undefined, type: "before" | "after") => {
+        if (pupilId && pupilBufferMap[pupilId]) {
+          const v = type === "before"
+            ? pupilBufferMap[pupilId].before
+            : pupilBufferMap[pupilId].after;
+          if (v != null) return v;
+        }
+        return type === "before" ? instructorBufferBefore : instructorBufferAfter;
+      };
+      // Total buffer reserved around any proposed slot = existing lesson buffer + new lesson's own default buffer.
+      const minUsable = 60; // usable window must fit ≥60 min lesson
+
       const renderGapRow = (
         key: string,
         startMs: number,
         endMs: number,
+        bufferTotalMins = 0,
       ) => {
         const gapMins = Math.round((endMs - startMs) / 60000);
-        if (gapMins < minGapMinutes) return null;
+        const threshold = Math.max(minGapMinutes, minUsable);
+        if (gapMins < threshold) return null;
         if (isPast) return null;
         if (isToday && endMs <= nowMs) return null;
-        const displayStart = isToday && startMs < nowMs ? nowMs : startMs;
+        // On today, don't surface slots that start in the past; give at least 30 mins from now.
+        const minStartMs = isToday ? nowMs + 30 * 60000 : startMs;
+        const displayStart = Math.max(startMs, minStartMs);
         const displayMins = Math.round((endMs - displayStart) / 60000);
-        if (displayMins < minGapMinutes) return null;
+        if (displayMins < threshold) return null;
         return (
           <div
             key={key}
@@ -926,13 +943,16 @@ function SchedulePage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", ...POPPINS }}>
-                {displayMins >= 60
-                  ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
-                  : `${displayMins} mins free`}
+                {bufferTotalMins > 0
+                  ? `${Math.floor(displayMins / 60)}h${displayMins % 60 ? ` ${displayMins % 60}m` : ""} usable`
+                  : displayMins >= 60
+                    ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
+                    : `${displayMins} mins free`}
               </div>
               <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 2 }}>
                 {formatTimeFromDate(new Date(displayStart))} –{" "}
                 {formatTimeFromDate(new Date(endMs))} · tap to fill
+                {bufferTotalMins > 0 ? ` · ${bufferTotalMins} min buffer` : ""}
               </div>
             </div>
             <button
