@@ -2357,11 +2357,9 @@ function HomePage() {
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   const nextFreeSlot = (() => {
-    const fmt = (d: Date) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
     const isBeforeEnd = (d: Date, endTimeStr: string | null) => {
       if (!endTimeStr) return true;
-      const [eh, em] = endTimeStr.split(":").map(Number);
-      return d.getHours() * 60 + d.getMinutes() < eh * 60 + em;
+      return d.getHours() * 60 + d.getMinutes() < timeToMins(endTimeStr);
     };
     const resolveAfter = (pupilId: string | null | undefined) => {
       if (pupilId && pupilBufferMap[pupilId]?.after != null) {
@@ -2383,18 +2381,14 @@ function HomePage() {
       return clamped;
     };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-    const workStartStr = workingHours?.start_time
-      ? String(workingHours.start_time).slice(0, 5)
-      : "09:00";
-    const [wsH, wsM] = workStartStr.split(":").map(Number);
-    const workStartMins = wsH * 60 + wsM;
-    const minsToHm = (m: number) =>
-      `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+    const workStartMins = timeToMins(
+      workingHours?.start_time ? String(workingHours.start_time) : "09:00"
+    );
     const tomorrowWorks = workingHours
       ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
       : false;
     const tomorrowEndTime = tomorrowWorks && workingHours?.end_time
-      ? String(workingHours.end_time).slice(0, 5)
+      ? String(workingHours.end_time)
       : null;
 
     // Today: free slot after last lesson
@@ -2405,17 +2399,15 @@ function HomePage() {
       if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
         // Only surface today if at least an hour still fits before the working day ends.
         const endMins = end.getHours() * 60 + end.getMinutes();
-        const [eh, em] = (todayEndTime ?? "23:59").split(":").map(Number);
-        if ((eh * 60 + em) - endMins >= 60) {
-          return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
+        if (timeToMins(todayEndTime ?? "23:59") - endMins >= 60) {
+          return minsToTime(endMins);
         }
       }
     } else if (todayEndTime) {
       // No lessons today but working — surface the earliest still-future slot time.
-      const [eh, em] = todayEndTime.split(":").map(Number);
       const startMins = Math.max(workStartMins, nowMinPlusLead);
-      if ((eh * 60 + em) - startMins >= 60) {
-        return { time: minsToHm(startMins), dayLabel: formatDayLabel(todayStart) };
+      if (timeToMins(todayEndTime) - startMins >= 60) {
+        return minsToTime(startMins);
       }
     }
 
@@ -2425,10 +2417,10 @@ function HomePage() {
       const afterBuf = resolveAfter(last.pupil_id);
       const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
-        return { time: fmt(end), dayLabel: formatDayLabel(tomorrowStart) };
+        return minsToTime(end.getHours() * 60 + end.getMinutes());
       }
     } else if (tomorrowEndTime) {
-      return { time: minsToHm(workStartMins), dayLabel: formatDayLabel(tomorrowStart) };
+      return minsToTime(workStartMins);
     }
 
     return null;
