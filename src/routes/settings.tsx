@@ -459,6 +459,20 @@ function SettingsPage() {
     }
   }
 
+  async function saveBuffers(nextBefore: number, nextAfter: number) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructors")
+      .update({ lesson_buffer_before: nextBefore, lesson_buffer_after: nextAfter })
+      .eq("id", userId);
+    if (error) {
+      console.error("[settings] save buffers error", error);
+      toast.error("Failed to save buffers");
+    } else {
+      toast.success("Buffer settings saved");
+    }
+  }
+
   async function saveCoverage() {
     if (!userId) return;
     const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
