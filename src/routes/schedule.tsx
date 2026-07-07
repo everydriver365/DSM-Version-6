@@ -642,8 +642,8 @@ function SchedulePage() {
             style={{
               display: "flex",
               gap: 8,
-              padding: "8px 16px 12px 80px",
-              backgroundColor: "#F8F9FB",
+              padding: "8px 16px 14px 92px",
+              backgroundColor: "#F8FAFC",
             }}
 
           >
