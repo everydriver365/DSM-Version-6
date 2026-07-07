@@ -473,8 +473,10 @@ function GapsPage() {
             });
             continue;
           }
-          // Build gap boundaries — use per-lesson buffers (pupil override or instructor default)
-          const gaps: { start: number; end: number; bufferMinutes: number }[] = [];
+          // Build gap boundaries — use per-lesson buffers (pupil override or instructor default).
+          // start/end here are the USABLE window (after subtracting adjacent buffers).
+          // bufferTotal = sum of the two adjacent buffers (before-side + after-side of the gap).
+          const gaps: { start: number; end: number; bufferTotal: number }[] = [];
           let cursor = wsMin;
           let prevAfterBuffer = 0;
           for (const l of dayLessons) {
@@ -483,14 +485,14 @@ function GapsPage() {
               gaps.push({
                 start: cursor,
                 end: gapEnd,
-                bufferMinutes: Math.max(prevAfterBuffer, l.bufBefore),
+                bufferTotal: prevAfterBuffer + l.bufBefore,
               });
             }
             cursor = Math.max(cursor, l.end + l.bufAfter);
             prevAfterBuffer = l.bufAfter;
           }
           if (weMin - cursor >= 60) {
-            gaps.push({ start: cursor, end: weMin, bufferMinutes: prevAfterBuffer });
+            gaps.push({ start: cursor, end: weMin, bufferTotal: prevAfterBuffer });
           }
           const daySlots: FreeSlot[] = [];
           let dayFree = 0;
@@ -512,7 +514,7 @@ function GapsPage() {
               endTime: minToHm(g.end),
               gapMinutes,
               possibleDurations: possible,
-              bufferMinutes: g.bufferMinutes,
+              bufferMinutes: g.bufferTotal,
             };
             slots.push(slot);
             daySlots.push(slot);
@@ -1268,7 +1270,9 @@ function GapsPage() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {fmtGap(slot.gapMinutes)} free
+                            {slot.bufferMinutes && slot.bufferMinutes > 0
+                              ? `${fmtGap(slot.gapMinutes)} usable`
+                              : `${fmtGap(slot.gapMinutes)} free`}
                             {hourlyRate > 0
                               ? ` · £${Math.round((slot.gapMinutes / 60) * hourlyRate)}`
                               : ""}
@@ -1283,7 +1287,7 @@ function GapsPage() {
                             {minToHm(hmToMin(slot.startTime))} –{" "}
                             {minToHm(hmToMin(slot.endTime))} · tap to fill
                             {slot.bufferMinutes && slot.bufferMinutes > 0
-                              ? ` · ${slot.bufferMinutes} min buffer applied`
+                              ? ` · ${fmtGap(slot.gapMinutes + slot.bufferMinutes)} gap − ${slot.bufferMinutes} min buffer`
                               : ""}
                           </div>
                         </div>
