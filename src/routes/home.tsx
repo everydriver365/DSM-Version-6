@@ -1339,6 +1339,7 @@ function HomePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
