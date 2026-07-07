@@ -2971,9 +2971,134 @@ function HomePage() {
                   <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{dateHeader}</div>
                 </div>
                 {todayLessons.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
-                    No lessons scheduled today.
-                  </div>
+                  (() => {
+                    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+                    const todayKey = dayKeys[todayStart.getDay()];
+                    const todayWorks = workingHours ? (workingHours as Record<string, unknown>)[todayKey] : true;
+                    const startStr = "09:00";
+                    const endStr = workingHours?.end_time ? String(workingHours.end_time).slice(0, 5) : "18:00";
+                    const [sh, sm] = startStr.split(":").map(Number);
+                    const [eh, em] = endStr.split(":").map(Number);
+                    const totalMinutes = Math.max(0, (eh * 60 + em) - (sh * 60 + sm));
+                    const availableHours = Math.round((totalMinutes / 60) * 10) / 10;
+                    const hourlyRate = 40;
+                    const potential = Math.round(availableHours * hourlyRate);
+                    const fmt12 = (h: number, m: number) => {
+                      const ampm = h >= 12 ? "pm" : "am";
+                      const hr = h % 12 === 0 ? 12 : h % 12;
+                      return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
+                    };
+                    const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
+                    const AVATAR_PALETTE = ["#1A52A0", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
+                    const pupils = outstandingBreakdown.slice(0, 5);
+                    const extraPupils = Math.max(0, activePupilsCount - pupils.length);
+                    const slots: Array<{ label: string }> = [];
+                    for (let mins = sh * 60 + sm; mins + 60 <= eh * 60 + em; mins += 60) {
+                      slots.push({ label: fmt12(Math.floor(mins / 60), mins % 60) });
+                    }
+                    const shownSlots = slots.slice(0, 4);
+                    const extraSlots = Math.max(0, slots.length - shownSlots.length);
+                    return (
+                      <div style={{
+                        background: "#FFFFFF", border: "0.5px solid #E2E6ED",
+                        borderRadius: 20, overflow: "hidden", margin: "12px 16px 0",
+                        fontFamily: "Inter, sans-serif",
+                      }}>
+                        <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1A52A0)" }} />
+                        <div style={{ padding: 20 }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                            <div style={{ fontWeight: 900, fontSize: 18, color: "#0F2044" }}>📅 Free day today</div>
+                            <div style={{ fontSize: 13, color: "#9CA3AF" }}>{workingLabel}</div>
+                          </div>
+                          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+                            {[
+                              { value: `${availableHours} hrs`, label: "Available", color: "#0F2044" },
+                              { value: `£${potential}`, label: "Potential", color: "#16A34A" },
+                              { value: `${activePupilsCount}`, label: "Pupils", color: "#1A52A0" },
+                            ].map((s) => (
+                              <div key={s.label} style={{
+                                flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
+                                borderRadius: 10, padding: "10px 14px", textAlign: "center",
+                              }}>
+                                <div style={{ fontWeight: 700, fontSize: 18, color: s.color }}>{s.value}</div>
+                                <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.label}</div>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ marginBottom: 16 }}>
+                            <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
+                              Pupils who may be free today:
+                            </div>
+                            {pupils.length > 0 ? (
+                              <div style={{ display: "flex", alignItems: "center" }}>
+                                {pupils.map((p, i) => {
+                                  const initials = (p.firstName || p.name || "?")
+                                    .split(" ").map((s) => s[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+                                  return (
+                                    <div key={p.pupilId} style={{
+                                      width: 36, height: 36, borderRadius: "50%",
+                                      background: AVATAR_PALETTE[i % AVATAR_PALETTE.length],
+                                      color: "#FFFFFF", fontWeight: 700, fontSize: 13,
+                                      display: "flex", alignItems: "center", justifyContent: "center",
+                                      marginLeft: i === 0 ? 0 : -10,
+                                      border: "2px solid #FFFFFF",
+                                    }}>{initials}</div>
+                                  );
+                                })}
+                                {extraPupils > 0 && (
+                                  <div style={{
+                                    width: 36, height: 36, borderRadius: "50%", background: "#E5E7EB",
+                                    color: "#4B5563", fontWeight: 700, fontSize: 12,
+                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                    marginLeft: -10, border: "2px solid #FFFFFF",
+                                  }}>+{extraPupils}</div>
+                                )}
+                              </div>
+                            ) : (
+                              <div style={{ fontSize: 13, color: "#9CA3AF" }}>Your active pupils</div>
+                            )}
+                          </div>
+                          <div style={{ marginBottom: 16 }}>
+                            <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
+                              Available slots today:
+                            </div>
+                            <div style={{ display: "flex", flexWrap: "wrap" }}>
+                              {shownSlots.map((s) => (
+                                <button key={s.label} onClick={() => navigate({ to: "/gaps" })} style={{
+                                  background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
+                                  padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
+                                  marginRight: 6, marginBottom: 6, cursor: "pointer",
+                                  fontFamily: "Inter, sans-serif",
+                                }}>{s.label}</button>
+                              ))}
+                              {extraSlots > 0 && (
+                                <button onClick={() => navigate({ to: "/gaps" })} style={{
+                                  background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
+                                  padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
+                                  marginRight: 6, marginBottom: 6, cursor: "pointer",
+                                  fontFamily: "Inter, sans-serif",
+                                }}>+{extraSlots} more</button>
+                              )}
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button onClick={() => navigate({ to: "/gaps" })} style={{
+                              flex: 1, background: "#0F2044", color: "#FFFFFF",
+                              padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
+                              border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                            }}>Fill My Slots →</button>
+                            <button onClick={() => {
+                              window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
+                            }} style={{
+                              flex: 1, background: "#00B5A5", color: "#FFFFFF",
+                              padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
+                              border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                            }}>Broadcast message</button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
