@@ -797,7 +797,7 @@ function SchedulePage() {
           const gapMins = Math.round(
             (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
           );
-          if (gapMins >= 30) {
+          if (gapMins >= 60) {
             const gapStartT = formatTimeFromDate(lessonEnd(l));
             const gapEndT = formatTimeFromDate(lessonStart(next));
             const gapDate = l.lesson_date.substring(0, 10);

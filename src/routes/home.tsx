@@ -3997,7 +3997,7 @@ function HomePage() {
                           const gapMins = next
                             ? Math.round((lessonDateTime(next).getTime() - end.getTime()) / 60000)
                             : 0;
-                          const showGap = next && gapMins >= 30;
+                          const showGap = next && gapMins >= 60;
                           const potential = showGap ? Math.round((gapMins / 60) * hourlyEst) : 0;
 
                           let paymentBadge: React.ReactNode = null;
