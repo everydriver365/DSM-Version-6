@@ -9,6 +9,7 @@ import {
   PoundSterling,
   CheckCircle,
   X,
+  Zap,
 } from "lucide-react";
 import type React from "react";
 import { toast } from "sonner";
