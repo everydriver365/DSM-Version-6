@@ -2296,11 +2296,6 @@ function HomePage() {
     return needsEol || needsPayment;
   });
   const todayISO = ymd(todayStart);
-  console.log("[today-panel] todayLessons:", todayLessons?.length, todayLessons);
-  console.log("[today-panel] lessons:", lessons?.length);
-  console.log("[today-panel] todayISO:", todayISO);
-  console.log("[today-panel] sample lesson date:", lessons?.[0]?.lesson_date);
-  console.log("[today-panel] sample lesson dt parsed:", lessons?.[0] ? lessonDateTime(lessons[0]).toString() : null);
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= tomorrowStart && d < dayAfter;
@@ -2313,6 +2308,13 @@ function HomePage() {
     return d >= weekStart && d < weekEnd;
   });
   const weekLessonsTotal = Math.max(weekLessonCount, weekLessons.length);
+
+  console.log("[home] SINGLE FETCH lessons (active):", lessons?.length);
+  console.log("[home] todayLessons derived:", todayLessons?.length);
+  console.log("[home] tomorrowLessons derived:", tomorrowLessons?.length);
+  console.log("[home] weekEarnings derived:", weekEarnings);
+  console.log("[home] outstanding derived:", outstanding);
+  console.log("[home] todayISO:", todayISO);
 
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
