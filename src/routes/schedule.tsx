@@ -6,6 +6,7 @@ import {
   CalendarOff,
   MapPin,
   ChevronRight,
+  ChevronLeft,
   Clock,
   PoundSterling,
   CheckCircle,
