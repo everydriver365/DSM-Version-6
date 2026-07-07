@@ -878,6 +878,62 @@ function SettingsPage() {
                 </select>
               </div>
 
+              {/* Lesson buffers (before/after) */}
+              <div
+                className="pt-4 mt-4"
+                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock size={14} color="#0F2044" />
+                  <div className="text-[14px] font-bold" style={{ color: "#0F2044", ...POPPINS }}>
+                    Lesson buffers
+                  </div>
+                </div>
+                <div className="text-[12px] mb-4" style={{ color: "#9CA3AF", ...POPPINS }}>
+                  Buffer time is added before and after each lesson to allow for travel and preparation.
+                </div>
+                <div
+                  className="flex items-center justify-between"
+                  style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: "0.5px", borderBottomStyle: "solid", borderBottomColor: "#F3F4F6" }}
+                >
+                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>Before each lesson</div>
+                  <select
+                    value={bufferBefore}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      setBufferBefore(v);
+                      void saveBuffers(v, bufferAfter);
+                    }}
+                    className="text-[13px]"
+                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+                  >
+                    {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+                      <option key={m} value={m}>{m} min</option>
+                    ))}
+                  </select>
+                </div>
+                <div
+                  className="flex items-center justify-between"
+                  style={{ paddingTop: 10, paddingBottom: 10 }}
+                >
+                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>After each lesson</div>
+                  <select
+                    value={bufferAfter}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      setBufferAfter(v);
+                      void saveBuffers(bufferBefore, v);
+                    }}
+                    className="text-[13px]"
+                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+                  >
+                    {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+                      <option key={m} value={m}>{m} min</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {/* Minimum gap shown on schedule */}
               <div
                 className="flex items-center gap-3 pt-4 mt-4"
