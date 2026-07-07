@@ -539,7 +539,10 @@ function GapsPage() {
   }, [userId, reloadKey]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+    supabase.auth.getUser().then(({ data, error }) => {
+      console.log("[gaps] getUser →", data?.user?.id, "err:", error);
+      setUserId(data.user?.id ?? null);
+    });
   }, []);
 
   useEffect(() => {
