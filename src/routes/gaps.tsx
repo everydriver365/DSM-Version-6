@@ -62,6 +62,27 @@ interface DayGroup {
   slots: FreeSlot[];
   totalFreeMinutes: number;
   busyMinutes: number;
+  busy: BusyEntry[];
+}
+
+interface BusyEntry {
+  start: number; // minutes from midnight
+  end: number;
+  title: string;
+  color: string;
+}
+
+const BUSY_PALETTE = ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#10B981", "#EC4899"];
+function pickBusyColor(preferred: string | null | undefined, idx: number) {
+  if (preferred && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(preferred)) return preferred;
+  return BUSY_PALETTE[idx % BUSY_PALETTE.length];
+}
+function fmtGap(mins: number) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
 }
 
 function addDaysIso(base: Date, n: number) {
