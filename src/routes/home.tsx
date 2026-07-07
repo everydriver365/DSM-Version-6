@@ -213,7 +213,22 @@ function lessonDateTime(l: LessonRow) {
   return new Date(`${l.lesson_date}T${time}`);
 }
 
+function timeToMins(time: string): number {
+  if (!time) return 0;
+  const parts = time.split(':').map(Number);
+  return (parts[0] || 0) * 60 + (parts[1] || 0);
+}
+
+function minsToTime(mins: number): string {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const period = h >= 12 ? 'pm' : 'am';
+  const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return `${displayH}:${String(m).padStart(2, '0')}${period}`;
+}
+
 /** Current time in Europe/London as "HH:MM:SS" for string comparison with lesson_time */
+
 function londonTimeString() {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone: "Europe/London",
