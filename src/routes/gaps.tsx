@@ -315,6 +315,7 @@ function scoreSlot(
 
 function GapsPage() {
   const navigate = useNavigate();
+  console.log("[gaps] component mounted");
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
