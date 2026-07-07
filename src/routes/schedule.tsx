@@ -1245,6 +1245,13 @@ function SchedulePage() {
         .skeleton-pulse {
           animation: skeleton-pulse 1.5s ease-in-out infinite;
         }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
       `}</style>
     </div>
   );
