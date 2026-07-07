@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   Zap,
@@ -11,7 +11,6 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
-  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -46,23 +45,6 @@ const DAYS = [
   "Friday",
   "Saturday",
 ];
-
-const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-function normaliseDayName(day: string): string {
-  if (!day) return day;
-  const trimmed = day.trim();
-  const lower = trimmed.toLowerCase();
-  const fullIdx = DAYS.findIndex((d) => d.toLowerCase() === lower);
-  if (fullIdx >= 0) return DAYS[fullIdx];
-  const shortIdx = SHORT_DAYS.findIndex((d) => d.toLowerCase() === lower);
-  if (shortIdx >= 0) return DAYS[shortIdx];
-  // Try first 3 chars as short-day match (e.g. "monday" -> "Mon" -> "Monday")
-  const first3 = lower.slice(0, 3);
-  const s2 = SHORT_DAYS.findIndex((d) => d.toLowerCase() === first3);
-  if (s2 >= 0) return DAYS[s2];
-  return trimmed;
-}
 
 interface FreeSlot {
   date: string;
@@ -100,14 +82,6 @@ function minToHm(m: number) {
   return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
-function addMinutesToTime(time: string, minutes: number) {
-  const [h, m] = time.split(":").map((x) => parseInt(x, 10));
-  const total = (h || 0) * 60 + (m || 0) + minutes;
-  const newH = Math.floor(total / 60) % 24;
-  const newM = ((total % 60) + 60) % 60;
-  return `${String(newH).padStart(2, "0")}:${String(newM).padStart(2, "0")}`;
-}
-
 function fmtSlotDateLong(iso: string) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-GB", {
@@ -135,7 +109,7 @@ interface Pupil {
   phone: string | null;
   postcode: string | null;
   calendar_colour: string | null;
-  last_lesson_date?: string | null;
+  last_lesson_date: string | null;
 }
 
 interface Availability {
@@ -165,25 +139,6 @@ interface SelectedSlot {
   date: string;
   time: string;
   duration: number;
-}
-
-interface DiscountConfig {
-  enabled: boolean;
-  type: "percent" | "fixed";
-  value: number;
-}
-
-function computeDiscount(
-  hourlyRate: number,
-  durationMins: number,
-  d: DiscountConfig,
-) {
-  const lessonPrice = (hourlyRate / 60) * durationMins;
-  const rawDiscount =
-    d.type === "percent" ? lessonPrice * (d.value / 100) : d.value;
-  const discountAmount = Math.max(0, Math.min(lessonPrice, rawDiscount));
-  const discountedPrice = Math.max(0, lessonPrice - discountAmount);
-  return { lessonPrice, discountAmount, discountedPrice };
 }
 
 interface SlotMatch extends SelectedSlot {
@@ -338,8 +293,6 @@ function scoreSlot(
 
 function GapsPage() {
   const navigate = useNavigate();
-  const resultsRef = useRef<HTMLDivElement | null>(null);
-  const shouldScrollToResultsRef = useRef(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
@@ -361,13 +314,6 @@ function GapsPage() {
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
-  const [bufferMins, setBufferMins] = useState<number>(15);
-
-  // Offer-sheet state (per-pupil slot picker across ALL free slots)
-  const [offerFor, setOfferFor] = useState<Ranked | null>(null);
-  const [offerSlotStates, setOfferSlotStates] = useState<
-    Record<string, { selected: boolean; duration: number }>
-  >({});
 
   useEffect(() => {
     if (!userId) return;
@@ -408,21 +354,10 @@ function GapsPage() {
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const buffer = instr.lesson_buffer_minutes ?? 15;
-        if (!cancelled) setBufferMins(buffer);
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        const normalisedWorkDays = workDays.map(normaliseDayName);
-        console.log("[gaps] working days:", workDays, "->", normalisedWorkDays);
-        console.log("[gaps] working hours:", workStart, workEnd, "buffer:", buffer);
-        console.log(
-          "[gaps] lessons fetched:",
-          lessonsRes.data?.length ?? 0,
-          lessonsRes.data,
-        );
-        if (lessonsRes.error)
-          console.error("[gaps] lessons fetch error:", lessonsRes.error);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
@@ -454,17 +389,7 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const isWorkDay = normalisedWorkDays.includes(dayName);
-          console.log(
-            "[gaps] date:",
-            iso,
-            "day:",
-            dayName,
-            "isWorkDay:",
-            isWorkDay,
-            "lessons:",
-            (byDay.get(iso) ?? []).length,
-          );
+          const isWorkDay = workDays.includes(dayName);
           const dayLessons = (byDay.get(iso) ?? []).slice().sort(
             (a, b) => a.start - b.start,
           );
@@ -506,27 +431,18 @@ function GapsPage() {
             }
             const gapMinutes = g.end - gStart;
             if (gapMinutes < 60) continue;
+            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
+            if (!possible.length) continue;
+            const slot: FreeSlot = {
+              date: iso,
+              startTime: minToHm(gStart),
+              endTime: minToHm(g.end),
+              gapMinutes,
+              possibleDurations: possible,
+            };
+            slots.push(slot);
+            daySlots.push(slot);
             dayFree += gapMinutes;
-            // Generate every 30-minute start time within the gap that still
-            // leaves room for at least a 60-min lesson.
-            let current = gStart;
-            while (current + 60 <= g.end) {
-              const remaining = g.end - current;
-              const possible = [60, 90, 120].filter((d) => d <= remaining);
-              if (possible.length) {
-                const maxDur = possible[possible.length - 1];
-                const slot: FreeSlot = {
-                  date: iso,
-                  startTime: minToHm(current),
-                  endTime: minToHm(current + maxDur),
-                  gapMinutes: remaining,
-                  possibleDurations: possible,
-                };
-                slots.push(slot);
-                daySlots.push(slot);
-              }
-              current += 30;
-            }
           }
           groups.push({
             iso,
@@ -541,7 +457,6 @@ function GapsPage() {
           setFreeSlots(slots);
           setDayGroups(groups);
         }
-        console.log("[gaps] free slots computed:", slots.length, slots);
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
         if (!cancelled) {
@@ -560,17 +475,6 @@ function GapsPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
-
-  useEffect(() => {
-    if (ranked === null || !shouldScrollToResultsRef.current) return;
-    shouldScrollToResultsRef.current = false;
-    requestAnimationFrame(() => {
-      resultsRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  }, [ranked]);
 
   useEffect(() => {
     if (!userId) return;
@@ -613,7 +517,6 @@ function GapsPage() {
   async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
-    console.log("[gaps] findPupils called, slots:", slotsToScore);
     if (slotsToScore.length === 0) return;
     setLoading(true);
     setRanked(null);
@@ -622,7 +525,7 @@ function GapsPage() {
         supabase
           .from("pupils")
           .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour",
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,last_lesson_date",
           )
           .eq("instructor_id", userId)
           .eq("status", "active")
@@ -639,19 +542,10 @@ function GapsPage() {
           .in("status", ["completed", "confirmed"])
           .order("lesson_date", { ascending: false }),
       ]);
-      if (pupilsRes.error)
-        console.error("[gaps] pupils fetch error:", pupilsRes.error);
-      if (availRes.error)
-        console.error("[gaps] settings fetch error:", availRes.error);
-      if (lessonsRes.error)
-        console.error("[gaps] lessons fetch error:", lessonsRes.error);
 
       const pupils = (pupilsRes.data ?? []) as Pupil[];
-      const settingsList = (availRes.data ?? []) as Availability[];
-      console.log("[gaps] pupils fetched:", pupils.length);
-      console.log("[gaps] settings fetched:", settingsList.length);
       const availMap = new Map<string, Availability>();
-      for (const a of settingsList) {
+      for (const a of (availRes.data ?? []) as Availability[]) {
         if (a.pupil_id) availMap.set(a.pupil_id, a);
       }
       const lastLessonMap = new Map<string, string>();
@@ -704,13 +598,11 @@ function GapsPage() {
       });
 
       scored.sort((a, b) => b.score - a.score);
-      console.log("[gaps] ranked result:", scored.length);
-      shouldScrollToResultsRef.current = true;
       setRanked(scored);
       setSearchSlots(slotsToScore);
     } catch (err) {
       console.error("[gaps] findPupils failed:", err);
-      toast.error("Failed to find pupils — please try again");
+      toast.error("Could not load pupils");
     } finally {
       setLoading(false);
     }
@@ -720,37 +612,16 @@ function GapsPage() {
     if (!userId) return;
     const slots = searchSlots.length ? searchSlots : selectedSlots;
     if (!slots.length) return;
-    await logOfferSlots(pupilId, via, slots);
-  }
-
-  async function logOfferSlots(
-    pupilId: string,
-    via: "sms" | "message",
-    slots: SelectedSlot[],
-    discount?: DiscountConfig,
-    hourlyRate?: number,
-  ) {
-    if (!userId || !slots.length) return;
     try {
-      const rows = slots.map((s) => {
-        const base: Record<string, unknown> = {
-          instructor_id: userId,
-          pupil_id: pupilId,
-          slot_date: s.date,
-          slot_time: s.time,
-          duration_minutes: s.duration,
-          status: "sent",
-          sent_via: via,
-        };
-        if (discount?.enabled && hourlyRate && hourlyRate > 0) {
-          const priced = computeDiscount(hourlyRate, s.duration, discount);
-          base.discount_type = discount.type;
-          base.discount_value = discount.value;
-          base.original_price = priced.lessonPrice;
-          base.discounted_price = priced.discountedPrice;
-        }
-        return base;
-      });
+      const rows = slots.map((s) => ({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        slot_date: s.date,
+        slot_time: s.time,
+        duration_minutes: s.duration,
+        status: "sent",
+        sent_via: via,
+      }));
       const { error } = await supabase.from("gap_filler_offers").insert(rows);
       if (error) throw error;
       setReloadKey((k) => k + 1);
@@ -758,123 +629,46 @@ function GapsPage() {
       console.warn("[gaps] logOffer failed:", err);
     }
   }
-  // NOTE: to persist discount fields, run in Supabase:
-  //   alter table gap_filler_offers add column if not exists discount_type text;
-  //   alter table gap_filler_offers add column if not exists discount_value numeric(5,2);
-  //   alter table gap_filler_offers add column if not exists original_price numeric(8,2);
-  //   alter table gap_filler_offers add column if not exists discounted_price numeric(8,2);
 
-  function slotDayTimeKey(date: string, startTime: string) {
-    return `${date}|${startTime}`;
-  }
-
-  function openOfferSheet(r: Ranked) {
-    const defaults: Record<string, { selected: boolean; duration: number }> = {};
-    const pref = r.settings?.preferred_duration_minutes ?? 60;
-    for (const s of freeSlots) {
-      const possible = s.possibleDurations;
-      const chosen = possible.includes(pref) ? pref : possible[0] ?? 60;
-      defaults[slotDayTimeKey(s.date, s.startTime)] = {
-        selected: false,
-        duration: chosen,
-      };
+  function handleText(r: Ranked) {
+    const first = firstNameOf(r.pupil);
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const offerSlots =
+      matches.length > 0 ? matches : r.matchedSlots;
+    let body: string;
+    if (offerSlots.length === 1) {
+      const s = offerSlots[0];
+      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
+    } else {
+      const lines = offerSlots
+        .map(
+          (s) =>
+            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+        )
+        .join("\n");
+      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
     }
-    setOfferSlotStates(defaults);
-    setOfferFor(r);
-  }
-
-  function closeOfferSheet() {
-    setOfferFor(null);
-    setOfferSlotStates({});
-  }
-
-  function buildOfferMessage(
-    first: string,
-    slots: SelectedSlot[],
-    discount?: DiscountConfig,
-    hourlyRate?: number,
-  ) {
-    const priceLine = (s: SelectedSlot) => {
-      if (!discount?.enabled || !hourlyRate || hourlyRate <= 0) return "";
-      const p = computeDiscount(hourlyRate, s.duration, discount);
-      return ` Special offer: this slot is discounted to £${p.discountedPrice.toFixed(0)} (usually £${p.lessonPrice.toFixed(0)}).`;
-    };
-    if (slots.length === 1) {
-      const s = slots[0];
-      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}.${priceLine(s)} Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    }
-    const lines = slots
-      .map(
-        (s) =>
-          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)${priceLine(s)}`,
-      )
-      .join("\n");
-    return `Hi ${first}, I have the following lesson slots available — would any suit you?\n${lines}\nReply YES + date/time to confirm, or let me know what works for you!`;
-  }
-
-  function checkedSlotsFor(_r: Ranked): SelectedSlot[] {
-    const out: SelectedSlot[] = [];
-    for (const s of freeSlots) {
-      const st = offerSlotStates[slotDayTimeKey(s.date, s.startTime)];
-      if (st?.selected) {
-        out.push({ date: s.date, time: s.startTime, duration: st.duration });
-      }
-    }
-    return out;
-  }
-
-  function handleSheetSms(r: Ranked, discount: DiscountConfig) {
-    const slots = checkedSlotsFor(r);
-    if (!slots.length) {
-      toast.error("Select at least one slot to offer");
-      return;
-    }
-    const body = buildOfferMessage(
-      firstNameOf(r.pupil),
-      slots,
-      discount,
-      hourlyRate,
-    );
     const phone = r.pupil.phone || "";
-    window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    void logOfferSlots(r.pupil.id, "sms", slots, discount, hourlyRate);
-    closeOfferSheet();
+    const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+    void logOffer(r.pupil.id, "sms");
   }
 
-  function handleSheetMessage(r: Ranked, discount: DiscountConfig) {
-    const slots = checkedSlotsFor(r);
-    if (!slots.length) {
-      toast.error("Select at least one slot to offer");
-      return;
-    }
-    void logOfferSlots(r.pupil.id, "message", slots, discount, hourlyRate);
-    closeOfferSheet();
+  function handleMessage(r: Ranked) {
+    void logOffer(r.pupil.id, "message");
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
-  function handleSheetBook(r: Ranked, discount: DiscountConfig) {
-    const slots = checkedSlotsFor(r);
-    if (slots.length === 0) {
-      toast.error("Select one slot to book");
-      return;
-    }
-    if (slots.length > 1) {
-      toast.info("Select one slot to book");
-      return;
-    }
-    const s = slots[0];
-    const params: Record<string, string> = {
+  function handleBook(r: Ranked) {
+    const matches = r.matchedSlots.filter((m) => m.match);
+    const s = matches[0] || r.matchedSlots[0];
+    if (!s) return;
+    const qs = new URLSearchParams({
       pupilId: r.pupil.id,
       date: s.date,
       time: s.time,
       duration: String(s.duration),
-    };
-    if (discount.enabled && hourlyRate > 0) {
-      const priced = computeDiscount(hourlyRate, s.duration, discount);
-      params.amount = priced.discountedPrice.toFixed(2);
-    }
-    const qs = new URLSearchParams(params);
-    closeOfferSheet();
+    });
     navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
   }
 
@@ -883,19 +677,6 @@ function GapsPage() {
       ranked !== null && ranked.length > 0 && ranked.every((r) => r.score < 20),
     [ranked],
   );
-
-  // Blocked time ranges (per date) created by already-selected slots.
-  // Each selected slot blocks: [start, start + duration + buffer).
-  const blockedByDate = useMemo(() => {
-    const map: Record<string, { start: number; end: number }[]> = {};
-    for (const s of selectedSlots) {
-      const start = hmToMin(s.time);
-      const end = start + s.duration + bufferMins;
-      (map[s.date] ??= []).push({ start, end });
-    }
-    for (const k of Object.keys(map)) map[k].sort((a, b) => a.start - b.start);
-    return map;
-  }, [selectedSlots, bufferMins]);
 
   const dayOfWeekLabel =
     searchSlots[0]
@@ -1215,75 +996,9 @@ function GapsPage() {
                         }),
                     ),
                   );
-                  // Dynamic blocking from already-selected slots on same day.
-                  const slotStartMin = hmToMin(slot.startTime);
-                  const dayBlocks = blockedByDate[slot.date] ?? [];
-                  const isBlocked =
-                    !anySelected &&
-                    dayBlocks.some(
-                      (b) => slotStartMin >= b.start && slotStartMin < b.end,
-                    );
-                  // How much free time exists from this start until the next
-                  // blocked range begins (or gap end via gapMinutes fallback).
-                  const nextBlockStart = dayBlocks
-                    .filter((b) => b.start > slotStartMin)
-                    .reduce(
-                      (min, b) => Math.min(min, b.start),
-                      Number.POSITIVE_INFINITY,
-                    );
-                  const freeMinsFromHere = Math.min(
-                    slot.gapMinutes,
-                    nextBlockStart === Number.POSITIVE_INFINITY
-                      ? slot.gapMinutes
-                      : nextBlockStart - slotStartMin,
-                  );
-                  const durations = anySelected
-                    ? slot.possibleDurations
-                    : slot.possibleDurations.filter(
-                        (d) => d <= freeMinsFromHere,
-                      );
-                  // Hide slots that are fully consumed by a later block and
-                  // cannot fit any lesson, unless already selected.
-                  if (!anySelected && !isBlocked && durations.length === 0) {
-                    return null;
-                  }
-                  const selectedDuration =
-                    selectedSlots.find(
-                      (s) =>
-                        s.date === slot.date && s.time === slot.startTime,
-                    )?.duration ??
-                    durations[0] ??
-                    slot.possibleDurations[0] ??
-                    60;
-                  const displayEnd = addMinutesToTime(
-                    slot.startTime,
-                    selectedDuration,
-                  );
-                  const toggleWholeSlot = () => {
-                    setSelectedSlots((prev) => {
-                      // Deselect: remove ALL entries for this date+startTime
-                      const filtered = prev.filter(
-                        (s) =>
-                          !(s.date === slot.date && s.time === slot.startTime),
-                      );
-                      if (filtered.length !== prev.length) return filtered;
-                      // Select: add with the current default duration
-                      return [
-                        ...prev,
-                        {
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: selectedDuration,
-                        },
-                      ];
-                    });
-                  };
                   return (
                     <div
                       key={`${slot.date}|${slot.startTime}`}
-                      onClick={isBlocked ? undefined : toggleWholeSlot}
-                      role="button"
-                      aria-pressed={anySelected}
                       style={{
                         background: "#FFFFFF",
                         border: anySelected
@@ -1296,9 +1011,6 @@ function GapsPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
-                        opacity: isBlocked ? 0.4 : 1,
-                        pointerEvents: isBlocked ? "none" : "auto",
-                        cursor: isBlocked ? "default" : "pointer",
                       }}
                     >
                       {/* Radio dot */}
@@ -1333,7 +1045,7 @@ function GapsPage() {
                             fontSize: 14,
                           }}
                         >
-                          {fmt12h(slot.startTime)} – {fmt12h(displayEnd)}
+                          {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
                         </div>
                         <div
                           style={{
@@ -1343,7 +1055,7 @@ function GapsPage() {
                             marginTop: 8,
                           }}
                         >
-                          {durations.map((d) => {
+                          {slot.possibleDurations.map((d) => {
                             const key = slotKey({
                               date: slot.date,
                               time: slot.startTime,
@@ -1355,8 +1067,7 @@ function GapsPage() {
                             return (
                               <button
                                 key={d}
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                                onClick={() => {
                                   setSelectedSlots((prev) => {
                                     const exists = prev.some(
                                       (s) => slotKey(s) === key,
@@ -1365,18 +1076,8 @@ function GapsPage() {
                                       return prev.filter(
                                         (s) => slotKey(s) !== key,
                                       );
-                                    // Replace any existing entry for this slot
-                                    // with the newly-chosen duration so a slot
-                                    // has exactly one active duration at a time.
-                                    const cleared = prev.filter(
-                                      (s) =>
-                                        !(
-                                          s.date === slot.date &&
-                                          s.time === slot.startTime
-                                        ),
-                                    );
                                     return [
-                                      ...cleared,
+                                      ...prev,
                                       {
                                         date: slot.date,
                                         time: slot.startTime,
@@ -1548,7 +1249,7 @@ function GapsPage() {
       )}
 
       {ranked !== null && (
-        <div ref={resultsRef} style={{ marginTop: 16 }}>
+        <div style={{ marginTop: 16 }}>
           <div style={{ margin: "0 16px 8px" }}>
             <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
               {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
@@ -1577,7 +1278,7 @@ function GapsPage() {
                 No active pupils found
               </div>
               <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
-                Add pupils to DSM to use Fill My Slots
+                Add pupils to DSM to use gap filler
               </div>
             </div>
           )}
@@ -1627,125 +1328,18 @@ function GapsPage() {
             </div>
           )}
 
-          {(() => {
-            const withAvailability = ranked.filter((r) => r.settings != null);
-            const withoutAvailability = ranked
-              .filter((r) => r.settings == null)
-              .slice()
-              .sort((a, b) =>
-                fullNameOf(a.pupil).localeCompare(fullNameOf(b.pupil)),
-              );
-            return (
-              <>
-                {withAvailability.length > 0 && (
-                  <>
-                    <div
-                      style={{
-                        margin: "8px 16px 6px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: 999,
-                          background: "#16A34A",
-                          display: "inline-block",
-                        }}
-                      />
-                      <span
-                        style={{
-                          color: NAVY,
-                          fontWeight: 700,
-                          fontSize: 14,
-                        }}
-                      >
-                        Best matches
-                      </span>
-                      <span style={{ color: "#16A34A", fontSize: 12 }}>
-                        Availability set
-                      </span>
-                    </div>
-                    {withAvailability.map((r, idx) => (
-                      <PupilCard
-                        key={r.pupil.id}
-                        rank={idx + 1}
-                        r={r}
-                        dayOfWeekLabel={dayOfWeekLabel}
-                        multi={searchSlots.length > 1}
-                        onOffer={() => openOfferSheet(r)}
-                      />
-                    ))}
-                  </>
-                )}
-                {withoutAvailability.length > 0 && (
-                  <>
-                    <div
-                      style={{
-                        margin: "16px 16px 6px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: 999,
-                          background: "#9CA3AF",
-                          display: "inline-block",
-                        }}
-                      />
-                      <span
-                        style={{
-                          color: NAVY,
-                          fontWeight: 700,
-                          fontSize: 14,
-                        }}
-                      >
-                        Other pupils
-                      </span>
-                      <span style={{ color: "#9CA3AF", fontSize: 12 }}>
-                        No availability set — may still be interested
-                      </span>
-                    </div>
-                    {withoutAvailability.map((r) => (
-                      <div key={r.pupil.id}>
-                        <div style={{ margin: "0 16px 4px" }}>
-                          <span
-                            style={{
-                              display: "inline-block",
-                              background: "#FEF3C7",
-                              color: "#92400E",
-                              border: "0.5px solid #FCD34D",
-                              borderRadius: 999,
-                              padding: "2px 8px",
-                              fontSize: 11,
-                              fontWeight: 600,
-                            }}
-                          >
-                            No availability preferences set
-                          </span>
-                        </div>
-                        <PupilCard
-                          rank={0}
-                          r={r}
-                          dayOfWeekLabel={dayOfWeekLabel}
-                          multi={searchSlots.length > 1}
-                          onOffer={() => openOfferSheet(r)}
-                        />
-                      </div>
-                    ))}
-                  </>
-                )}
-              </>
-            );
-          })()}
+          {ranked.map((r, idx) => (
+            <PupilCard
+              key={r.pupil.id}
+              rank={idx + 1}
+              r={r}
+              dayOfWeekLabel={dayOfWeekLabel}
+              multi={searchSlots.length > 1}
+              onText={() => handleText(r)}
+              onMessage={() => handleMessage(r)}
+              onBook={() => handleBook(r)}
+            />
+          ))}
         </div>
       )}
 
@@ -1882,20 +1476,6 @@ function GapsPage() {
             </button>
           </div>
         </>
-      )}
-
-      {offerFor && (
-        <OfferSheet
-          r={offerFor}
-          freeSlots={freeSlots}
-          slotStates={offerSlotStates}
-          setSlotStates={setOfferSlotStates}
-          hourlyRate={hourlyRate}
-          onClose={closeOfferSheet}
-          onSms={(d) => handleSheetSms(offerFor, d)}
-          onMessage={(d) => handleSheetMessage(offerFor, d)}
-          onBook={(d) => handleSheetBook(offerFor, d)}
-        />
       )}
     </div>
   );
@@ -2040,13 +1620,17 @@ function PupilCard({
   r,
   dayOfWeekLabel,
   multi,
-  onOffer,
+  onText,
+  onMessage,
+  onBook,
 }: {
   rank: number;
   r: Ranked;
   dayOfWeekLabel: string;
   multi: boolean;
-  onOffer: () => void;
+  onText: () => void;
+  onMessage: () => void;
+  onBook: () => void;
 }) {
   const rc = rankColor(rank);
   const availLabel =
@@ -2189,15 +1773,15 @@ function PupilCard({
         </div>
       )}
 
-      <div style={{ marginTop: 12 }}>
+      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
         <button
-          onClick={onOffer}
+          onClick={onText}
           style={{
             background: NAVY,
             color: "#FFFFFF",
             borderRadius: 12,
-            padding: "10px 16px",
-            fontSize: 14,
+            padding: "10px 14px",
+            fontSize: 13,
             fontWeight: 600,
             border: "none",
             cursor: "pointer",
@@ -2206,728 +1790,44 @@ function PupilCard({
             gap: 6,
           }}
         >
-          Offer slots →
+          📱 Text
         </button>
-      </div>
-    </div>
-  );
-}
-
-function OfferSheet({
-  r,
-  freeSlots,
-  slotStates,
-  setSlotStates,
-  hourlyRate,
-  onClose,
-  onSms,
-  onMessage,
-  onBook,
-}: {
-  r: Ranked;
-  freeSlots: FreeSlot[];
-  slotStates: Record<string, { selected: boolean; duration: number }>;
-  setSlotStates: React.Dispatch<
-    React.SetStateAction<
-      Record<string, { selected: boolean; duration: number }>
-    >
-  >;
-  hourlyRate: number;
-  onClose: () => void;
-  onSms: (d: DiscountConfig) => void;
-  onMessage: (d: DiscountConfig) => void;
-  onBook: (d: DiscountConfig) => void;
-}) {
-  const name = fullNameOf(r.pupil);
-  const first = firstNameOf(r.pupil);
-  const settings = r.settings;
-
-  const [discountEnabled, setDiscountEnabled] = useState(false);
-  const [discountType, setDiscountType] = useState<"percent" | "fixed">(
-    "percent",
-  );
-  const [discountValue, setDiscountValue] = useState<number>(10);
-
-  function handleTypeSwitch(next: "percent" | "fixed") {
-    setDiscountType(next);
-    setDiscountValue(next === "percent" ? 10 : 5);
-  }
-
-  const discount: DiscountConfig = {
-    enabled: discountEnabled,
-    type: discountType,
-    value: Number.isFinite(discountValue) ? discountValue : 0,
-  };
-
-  // Group free slots by day
-  const byDay = new Map<string, FreeSlot[]>();
-  for (const s of freeSlots) {
-    const arr = byDay.get(s.date) ?? [];
-    arr.push(s);
-    byDay.set(s.date, arr);
-  }
-  const dayEntries = Array.from(byDay.entries()).sort(([a], [b]) =>
-    a.localeCompare(b),
-  );
-
-  function slotDTKey(s: FreeSlot) {
-    return `${s.date}|${s.startTime}`;
-  }
-
-  function matchInfo(s: FreeSlot): { text: string; color: string } | null {
-    if (!settings) return null;
-    const dayOfWeek = DAYS[new Date(s.date + "T00:00:00").getDay()];
-    const availDays = settings.available_days || [];
-    if (availDays.length && !availDays.includes(dayOfWeek)) {
-      return { text: "✗ Not their preferred day", color: "#CC2229" };
-    }
-    const slotHour = parseInt(s.startTime.split(":")[0], 10);
-    const fromHour = parseInt(
-      (settings.available_from || "08:00").split(":")[0],
-      10,
-    );
-    const untilHour = parseInt(
-      (settings.available_until || "18:00").split(":")[0],
-      10,
-    );
-    if (slotHour < fromHour || slotHour >= untilHour) {
-      return { text: "⚠️ Outside their preferred hours", color: "#D97706" };
-    }
-    return {
-      text: `✓ ${first} is usually available at this time`,
-      color: "#16A34A",
-    };
-  }
-
-  const selectedList = freeSlots
-    .map((s) => ({ s, st: slotStates[slotDTKey(s)] }))
-    .filter((x) => x.st?.selected);
-
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(15,32,68,0.45)",
-        zIndex: 100,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "#FFFFFF",
-          width: "100%",
-          maxWidth: 480,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          maxHeight: "85vh",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "0 -8px 32px rgba(15,32,68,0.2)",
-        }}
-      >
-        <div style={{ padding: "12px 20px 0" }}>
-          <div
-            style={{
-              width: 40,
-              height: 4,
-              background: "#E5E7EB",
-              borderRadius: 999,
-              margin: "0 auto 14px",
-            }}
-          />
-          <div style={{ color: NAVY, fontSize: 18, fontWeight: 700 }}>
-            Offer slots to {name}
-          </div>
-          <div style={{ color: MUTED, fontSize: 13, marginBottom: 8 }}>
-            Select which slots to offer
-          </div>
-        </div>
-
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "4px 20px 12px",
-          }}
-        >
-          {freeSlots.length === 0 && (
-            <div
-              style={{
-                color: MUTED,
-                fontSize: 13,
-                textAlign: "center",
-                padding: "24px 0",
-              }}
-            >
-              No free slots detected in the next 14 days.
-            </div>
-          )}
-          {dayEntries.map(([iso, slots]) => {
-            const dLabel = new Date(iso + "T00:00:00").toLocaleDateString(
-              "en-GB",
-              { weekday: "long", day: "numeric", month: "long" },
-            );
-            return (
-              <div key={iso}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    justifyContent: "space-between",
-                    marginTop: 12,
-                    marginBottom: 6,
-                  }}
-                >
-                  <span
-                    style={{ color: NAVY, fontWeight: 700, fontSize: 13 }}
-                  >
-                    {dLabel}
-                  </span>
-                  {(() => {
-                    const allSelected = slots.every(
-                      (s) => slotStates[slotDTKey(s)]?.selected,
-                    );
-                    return (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setSlotStates((prev) => {
-                            const next = { ...prev };
-                            for (const s of slots) {
-                              const k = slotDTKey(s);
-                              const cur = next[k];
-                              next[k] = {
-                                selected: !allSelected,
-                                duration:
-                                  cur?.duration ??
-                                  s.possibleDurations[0] ??
-                                  60,
-                              };
-                            }
-                            return next;
-                          })
-                        }
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          padding: 0,
-                          color: BLUE,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {allSelected ? "Clear today" : "Select all today"}
-                      </button>
-                    );
-                  })()}
-                </div>
-                {slots.map((s) => {
-                  const key = slotDTKey(s);
-                  const st = slotStates[key] ?? {
-                    selected: false,
-                    duration: s.possibleDurations[0] ?? 60,
-                  };
-                  const info = matchInfo(s);
-                  const hoursFree = (s.gapMinutes / 60).toFixed(
-                    s.gapMinutes % 60 === 0 ? 0 : 1,
-                  );
-                  return (
-                    <div
-                      key={key}
-                      style={{
-                        background: "#FFFFFF",
-                        border: `0.5px solid ${BORDER}`,
-                        borderRadius: 10,
-                        padding: "12px 14px",
-                        marginBottom: 6,
-                        opacity: st.selected ? 1 : 0.5,
-                        transition: "opacity 120ms ease",
-                      }}
-                    >
-                      <div
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setSlotStates((prev) => ({
-                              ...prev,
-                              [key]: {
-                                selected: !st.selected,
-                                duration: st.duration,
-                              },
-                            }))
-                          }
-                          aria-label={
-                            st.selected ? "Deselect slot" : "Select slot"
-                          }
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 6,
-                            background: st.selected ? NAVY : "#FFFFFF",
-                            border: st.selected
-                              ? `1.5px solid ${NAVY}`
-                              : `1.5px solid ${BORDER}`,
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: 0,
-                            cursor: "pointer",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {st.selected && (
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="#FFFFFF"
-                              strokeWidth="3.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          )}
-                        </button>
-                        <span
-                          style={{
-                            marginLeft: 10,
-                            color: NAVY,
-                            fontSize: 14,
-                            fontWeight: 500,
-                          }}
-                        >
-                          {fmt12h(s.startTime)} –{" "}
-                          {fmt12h(addMinutesToTime(s.startTime, st.duration))}
-                        </span>
-                        <span
-                          style={{
-                            marginLeft: "auto",
-                            color: "#9CA3AF",
-                            fontSize: 12,
-                          }}
-                        >
-                          {hoursFree} hrs free
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 6,
-                          marginTop: 8,
-                          marginLeft: 30,
-                        }}
-                      >
-                        {s.possibleDurations.map((d) => {
-                          const isSel = st.duration === d;
-                          return (
-                            <button
-                              key={d}
-                              type="button"
-                              onClick={() =>
-                                setSlotStates((prev) => ({
-                                  ...prev,
-                                  [key]: {
-                                    selected: true,
-                                    duration: d,
-                                  },
-                                }))
-                              }
-                              style={{
-                                background: isSel ? NAVY : "#F0F4FF",
-                                color: isSel ? "#FFFFFF" : BLUE,
-                                border: isSel
-                                  ? "none"
-                                  : "0.5px solid #BFDBFE",
-                                borderRadius: 999,
-                                padding: "3px 10px",
-                                fontSize: 12,
-                                fontWeight: 600,
-                                cursor: "pointer",
-                              }}
-                            >
-                              {d} min
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {info && (
-                        <div
-                          style={{
-                            marginTop: 4,
-                            marginLeft: 30,
-                            color: info.color,
-                            fontSize: 12,
-                          }}
-                        >
-                          {info.text}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Sticky summary + actions */}
-        <div
-          style={{
-            borderTop: `0.5px solid ${BORDER}`,
-            padding: "12px 20px 20px",
-            background: "#FFFFFF",
-          }}
-        >
-          <div style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 6 }}>
-            Offering {selectedList.length} slot
-            {selectedList.length === 1 ? "" : "s"}:
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 6,
-              marginBottom: 12,
-              minHeight: 24,
-            }}
-          >
-            {selectedList.map(({ s, st }) => {
-              const wd = new Date(s.date + "T00:00:00").toLocaleDateString(
-                "en-GB",
-                { weekday: "short" },
-              );
-              return (
-                <span
-                  key={slotDTKey(s)}
-                  style={{
-                    background: NAVY,
-                    color: "#FFFFFF",
-                    borderRadius: 999,
-                    padding: "3px 10px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                  }}
-                >
-                  {wd} {fmt12h(s.startTime)} ({st!.duration}min)
-                </span>
-              );
-            })}
-          </div>
-
-        {/* Discount card */}
-        {(() => {
-          const now = Date.now();
-          const earliestMs = selectedList.reduce((min, { s }) => {
-            const ts = new Date(`${s.date}T${s.startTime}:00`).getTime();
-            return ts < min ? ts : min;
-          }, Number.POSITIVE_INFINITY);
-          const hrsUntil =
-            earliestMs === Number.POSITIVE_INFINITY
-              ? Infinity
-              : (earliestMs - now) / (1000 * 60 * 60);
-          const hint =
-            hrsUntil <= 4
-              ? "💡 Try 15-20% off to fill this slot quickly"
-              : hrsUntil <= 24
-                ? "💡 Last-minute slots fill faster with a small discount"
-                : null;
-          const suffix = discountType === "percent" ? "%" : "£";
-          return (
-            <div
-              style={{
-                background: "#FFFFFF",
-                border: `0.5px solid ${BORDER}`,
-                borderRadius: 10,
-                padding: 14,
-                marginTop: 12,
-                marginBottom: 12,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <Tag size={16} color="#D97706" />
-                  <span
-                    style={{
-                      color: NAVY,
-                      fontSize: 14,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Offer a discount?
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={discountEnabled}
-                  onClick={() => setDiscountEnabled((v) => !v)}
-                  style={{
-                    width: 40,
-                    height: 22,
-                    borderRadius: 999,
-                    background: discountEnabled ? NAVY : "#E2E6ED",
-                    border: "none",
-                    padding: 0,
-                    position: "relative",
-                    cursor: "pointer",
-                    transition: "background 120ms ease",
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 2,
-                      left: discountEnabled ? 20 : 2,
-                      width: 18,
-                      height: 18,
-                      background: "#FFFFFF",
-                      borderRadius: 999,
-                      boxShadow: "0 1px 2px rgba(15,32,68,0.25)",
-                      transition: "left 120ms ease",
-                    }}
-                  />
-                </button>
-              </div>
-              {discountEnabled && (
-                <>
-                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                    {(
-                      [
-                        { k: "percent", label: "% off" },
-                        { k: "fixed", label: "£ off" },
-                      ] as const
-                    ).map((opt) => {
-                      const sel = discountType === opt.k;
-                      return (
-                        <button
-                          key={opt.k}
-                          type="button"
-                          onClick={() => handleTypeSwitch(opt.k)}
-                          style={{
-                            background: sel ? NAVY : "#F3F4F6",
-                            color: sel ? "#FFFFFF" : "#6B7280",
-                            border: "none",
-                            borderRadius: 999,
-                            padding: "6px 14px",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginTop: 8,
-                    }}
-                  >
-                    <input
-                      type="number"
-                      min={0}
-                      value={Number.isFinite(discountValue) ? discountValue : 0}
-                      onChange={(e) => {
-                        const n = parseFloat(e.target.value);
-                        setDiscountValue(Number.isFinite(n) ? n : 0);
-                      }}
-                      style={{
-                        background: "#F7FAFC",
-                        border: `0.5px solid ${BORDER}`,
-                        borderRadius: 8,
-                        padding: "8px 12px",
-                        width: 80,
-                        textAlign: "center",
-                        fontWeight: 700,
-                        color: NAVY,
-                        fontSize: 14,
-                      }}
-                    />
-                    <span
-                      style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}
-                    >
-                      {suffix}
-                    </span>
-                  </div>
-                  {hourlyRate > 0 && selectedList.length > 0 && (
-                    <div style={{ marginTop: 8 }}>
-                      {selectedList.map(({ s, st }) => {
-                        const priced = computeDiscount(
-                          hourlyRate,
-                          st!.duration,
-                          discount,
-                        );
-                        const wd = new Date(
-                          s.date + "T00:00:00",
-                        ).toLocaleDateString("en-GB", { weekday: "short" });
-                        return (
-                          <div
-                            key={`price-${slotDTKey(s)}`}
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              gap: 8,
-                              flexWrap: "wrap",
-                              marginTop: 2,
-                            }}
-                          >
-                            <span
-                              style={{
-                                color: "#9CA3AF",
-                                fontSize: 11,
-                                minWidth: 90,
-                              }}
-                            >
-                              {wd} {fmt12h(s.startTime)}
-                            </span>
-                            <span
-                              style={{
-                                color: "#9CA3AF",
-                                fontSize: 13,
-                                textDecoration: "line-through",
-                              }}
-                            >
-                              £{priced.lessonPrice.toFixed(0)}
-                            </span>
-                            <span style={{ color: "#9CA3AF" }}>→</span>
-                            <span
-                              style={{
-                                color: TEAL,
-                                fontSize: 14,
-                                fontWeight: 700,
-                              }}
-                            >
-                              £{priced.discountedPrice.toFixed(0)}
-                            </span>
-                            <span
-                              style={{
-                                color: "#16A34A",
-                                fontSize: 11,
-                              }}
-                            >
-                              Saving £{priced.discountAmount.toFixed(0)}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  {hint && (
-                    <div
-                      style={{
-                        marginTop: 8,
-                        color: "#6B7280",
-                        fontSize: 11,
-                      }}
-                    >
-                      {hint}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })()}
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <button
-            onClick={() => onSms(discount)}
-            style={{
-              background: NAVY,
-              color: "#FFFFFF",
-              width: "100%",
-              borderRadius: 12,
-              padding: "12px 16px",
-              fontSize: 15,
-              fontWeight: 600,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            📱 Send SMS
-          </button>
-          <button
-            onClick={() => onMessage(discount)}
-            style={{
-              background: TEAL,
-              color: "#FFFFFF",
-              width: "100%",
-              borderRadius: 12,
-              padding: "12px 16px",
-              fontSize: 15,
-              fontWeight: 600,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            💬 In-app message
-          </button>
-          <button
-            onClick={() => onBook(discount)}
-            style={{
-              background: "#FFFFFF",
-              color: NAVY,
-              width: "100%",
-              borderRadius: 12,
-              padding: "12px 16px",
-              fontSize: 15,
-              fontWeight: 600,
-              border: `0.5px solid ${NAVY}`,
-              cursor: "pointer",
-            }}
-          >
-            📅 Book directly
-          </button>
-        </div>
-
         <button
-          onClick={onClose}
+          onClick={onMessage}
           style={{
-            display: "block",
-            margin: "12px auto 0",
-            background: "transparent",
-            border: "none",
-            color: "#9CA3AF",
+            background: TEAL,
+            color: "#FFFFFF",
+            borderRadius: 12,
+            padding: "10px 14px",
             fontSize: 13,
+            fontWeight: 600,
+            border: "none",
             cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          Cancel
+          <MessageSquare size={14} /> Message
         </button>
-        </div>
+        <button
+          onClick={onBook}
+          style={{
+            background: "#FFFFFF",
+            color: NAVY,
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: 600,
+            border: `0.5px solid ${NAVY}`,
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <Plus size={14} /> Book
+        </button>
       </div>
     </div>
   );

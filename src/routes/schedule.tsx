@@ -3,23 +3,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Plus,
   Calendar as CalendarIcon,
-  CalendarOff,
   MapPin,
   ChevronRight,
   Clock,
   PoundSterling,
   CheckCircle,
   X,
-  Zap,
-  RefreshCw,
 } from "lucide-react";
 import type React from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
-import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
-import { Calendar as ShadcnCalendar } from "../components/ui/calendar";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -32,33 +27,6 @@ export const Route = createFileRoute("/schedule")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-
-function getMatchingPupils(
-  gapDate: string,
-  gapStartTime: string,
-  gapMinutes: number,
-  pupils: any[],
-  availabilitySettings: any[],
-) {
-  const dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(gapDate).getDay()];
-  const gapHour = parseInt((gapStartTime || "00:00").split(":")[0], 10);
-  return (pupils || [])
-    .filter((p) => {
-      const settings = (availabilitySettings || []).find((s) => s.pupil_id === p.id);
-      if (!settings) return true;
-      const availDays: string[] = settings.available_days || [];
-      const fromHour = parseInt((settings.available_from || "08:00").split(":")[0], 10);
-      const untilHour = parseInt((settings.available_until || "18:00").split(":")[0], 10);
-      const prefDuration = settings.preferred_duration_minutes || 60;
-      return (
-        availDays.includes(dayOfWeek) &&
-        gapHour >= fromHour &&
-        gapHour < untilHour &&
-        gapMinutes >= prefDuration
-      );
-    })
-    .slice(0, 5);
-}
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -226,21 +194,12 @@ function dayHeaderLabel(d: Date, today: Date) {
   return { main, suffix };
 }
 
-function emptyDayMessage(d: Date, today: Date) {
-  const diff = Math.round((startOfDay(d).getTime() - today.getTime()) / 86400000);
-  if (diff === 0) return "You’re free today";
-  if (diff === 1) return "You’re free tomorrow";
-  if (diff === -1) return "You were free yesterday";
-  return "No lessons on this day";
-}
-
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const [calendarOpen, setCalendarOpen] = useState(false);
-  const pickerStart = useMemo(() => addDays(selectedDate, -7), [selectedDate]);
-  const pickerEnd = useMemo(() => addDays(selectedDate, 7), [selectedDate]);
+  const [daysAhead, setDaysAhead] = useState<number>(6); // today + 6 = 7 days (with today-1 = 8 total)
+  const rangeStart = useMemo(() => addDays(today, -1), [today]);
+  const rangeEnd = useMemo(() => addDays(today, daysAhead), [today, daysAhead]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [now, setNow] = useState<Date>(() => new Date());
@@ -248,44 +207,6 @@ function SchedulePage() {
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
-  const [matchPupils, setMatchPupils] = useState<any[]>([]);
-  const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
-  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  useEffect(() => {
-    const selectedKey = ymd(selectedDate);
-    const el = chipRefs.current[selectedKey];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-    }
-  }, [selectedDate]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || cancelled) return;
-      try {
-        const [p, a] = await Promise.all([
-          supabase
-            .from("pupils")
-            .select("id,name,first_name,calendar_colour")
-            .eq("instructor_id", user.id)
-            .eq("status", "active")
-            .is("deleted_at", null)
-            .limit(50),
-          supabase
-            .from("pupil_ready_to_learn_settings")
-            .select("*")
-            .eq("instructor_id", user.id),
-        ]);
-        if (cancelled) return;
-        setMatchPupils(((p as any).data as any[]) ?? []);
-        setMatchAvailability(((a as any).data as any[]) ?? []);
-      } catch {}
-    })();
-    return () => { cancelled = true; };
-  }, []);
 
 
   useEffect(() => {
@@ -296,8 +217,8 @@ function SchedulePage() {
   useEffect(() => {
     let cancelled = false;
     setLessons(null);
-    const windowStart = ymd(pickerStart);
-    const windowEnd = ymd(pickerEnd);
+    const windowStart = ymd(rangeStart);
+    const windowEnd = ymd(rangeEnd);
     console.log("[schedule] date window:", windowStart, windowEnd);
 
     (async () => {
@@ -346,7 +267,7 @@ function SchedulePage() {
     return () => {
       cancelled = true;
     };
-  }, [pickerStart, pickerEnd]);
+  }, [rangeStart, rangeEnd]);
 
 
   const lessonsByDate = useMemo(() => {
@@ -368,17 +289,17 @@ function SchedulePage() {
     console.log("[schedule] grouped lessons for first day:", Object.values(grouped)?.[0]);
     console.log(
       "[schedule] day keys being rendered:",
-      Array.from({ length: 15 }).map((_, i) => ymd(addDays(pickerStart, i))),
+      Array.from({ length: 8 }).map((_, i) => ymd(addDays(rangeStart, i))),
     );
     return map;
-  }, [lessons, pickerStart]);
+  }, [lessons, rangeStart]);
 
-  const pickerDays = useMemo(() => {
+  const days = useMemo(() => {
     const out: Date[] = [];
-    const total = Math.round((pickerEnd.getTime() - pickerStart.getTime()) / 86400000) + 1;
-    for (let i = 0; i < total; i++) out.push(addDays(pickerStart, i));
+    const total = Math.round((rangeEnd.getTime() - rangeStart.getTime()) / 86400000) + 1;
+    for (let i = 0; i < total; i++) out.push(addDays(rangeStart, i));
     return out;
-  }, [pickerStart, pickerEnd]);
+  }, [rangeStart, rangeEnd]);
 
   const currentId = useMemo(() => {
     if (!lessons) return null;
@@ -390,80 +311,6 @@ function SchedulePage() {
     }
     return null;
   }, [lessons, now]);
-
-  const renderDayPicker = () => {
-    return (
-      <div
-        className="hide-scrollbar"
-        style={{
-          display: "flex",
-          gap: 8,
-          padding: "10px 16px",
-          backgroundColor: "#FFFFFF",
-          borderBottom: "0.5px solid #E5E5EA",
-          overflowX: "auto",
-          overflowY: "hidden",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {pickerDays.map((d) => {
-          const dateKey = ymd(d);
-          const isSelected = dateKey === ymd(selectedDate);
-          const isToday = dateKey === ymd(today);
-          const hasLessons = (lessonsByDate.get(dateKey)?.length ?? 0) > 0;
-          const dayName = d.toLocaleDateString("en-GB", { weekday: "narrow" });
-          return (
-            <button
-              key={dateKey}
-              ref={(el) => {
-                chipRefs.current[dateKey] = el;
-              }}
-              type="button"
-              onClick={() => setSelectedDate(d)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: 52,
-                height: 68,
-                flexShrink: 0,
-                borderRadius: 14,
-                border: isToday && !isSelected ? "1px solid #0B1F3A" : "1px solid transparent",
-                padding: "8px 10px",
-                background: isSelected ? "#0B1F3A" : "#F8F9FB",
-                color: isSelected ? "#FFFFFF" : isToday ? "#0B1F3A" : "#6B7280",
-                cursor: "pointer",
-                position: "relative",
-                scrollSnapAlign: "center",
-                ...POPPINS,
-              }}
-            >
-              <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3 }}>
-                {dayName}
-              </span>
-              <span style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>
-                {d.getDate()}
-              </span>
-              {(hasLessons || isSelected) && (
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: 8,
-                    width: 4,
-                    height: 4,
-                    borderRadius: 999,
-                    background: isSelected ? "#FFFFFF" : "#0B1F3A",
-                  }}
-                />
-              )}
-            </button>
-          );
-        })}
-      </div>
-    );
-  };
 
   const markPaid = async (l: Lesson) => {
     const prev = lessons;
@@ -613,11 +460,8 @@ function SchedulePage() {
     const isSelected = isCurrent || showActions;
 
     const lessonColour = l.pupil_id ? (colourMap[l.pupil_id] || "#1A52A0") : "#1A52A0";
-    const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+    const timeColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : lessonColour;
     const nameColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : "#0B1F3A";
-    const subtitle =
-      l.pickup_location ||
-      (l.lesson_type ? l.lesson_type : null);
 
     const badges: React.ReactNode[] = [];
 
@@ -704,54 +548,45 @@ function SchedulePage() {
           className="cursor-pointer select-none"
           style={{
             display: "flex",
-            gap: 14,
-            padding: "14px 16px",
+            gap: 12,
+            padding: "12px 16px",
             alignItems: "stretch",
-            background: "#FFFFFF",
+            borderLeft: `4px solid ${lessonColour}`,
+            background: `${lessonColour}15`,
           }}
         >
 
           <div
             style={{
-              width: 52,
+              width: 48,
               flexShrink: 0,
-              textAlign: "left",
+              textAlign: "right",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: "flex-start",
             }}
           >
             <div
               style={{
-                fontSize: 18,
-                fontWeight: 800,
+                fontSize: 13,
+                fontWeight: 700,
                 color: timeColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
-                letterSpacing: -0.3,
               }}
             >
               {formatLessonTime(l)}
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS, marginTop: 2, fontWeight: 600 }}>
+            <div style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}>
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div
-            style={{
-              width: 3,
-              alignSelf: "stretch",
-              borderRadius: 2,
-              background: lessonColour,
-              flexShrink: 0,
-            }}
-          />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
 
               style={{
-                fontSize: 15,
-                fontWeight: 700,
+                fontSize: 14,
+                fontWeight: 600,
                 color: nameColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
@@ -760,21 +595,21 @@ function SchedulePage() {
             >
               {name}
             </div>
-            {subtitle && (
+            {l.pickup_location && (
               <div
                 style={{
-                  fontSize: 13,
+                  fontSize: 12,
                   color: "#6B7280",
                   ...POPPINS,
-                  marginTop: 3,
+                  marginTop: 2,
                   display: "flex",
                   alignItems: "center",
                   gap: 4,
                 }}
                 className="truncate"
               >
-                {l.pickup_location && <MapPin size={11} color="#9CA3AF" />}
-                <span className="truncate">{subtitle}</span>
+                <MapPin size={10} color="#6B7280" />
+                <span className="truncate">{l.pickup_location}</span>
               </div>
             )}
             {badges.length > 0 && (
@@ -782,6 +617,9 @@ function SchedulePage() {
                 {badges}
               </div>
             )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+            <ChevronRight size={16} color="#D1D5DB" />
           </div>
         </div>
 
@@ -878,42 +716,6 @@ function SchedulePage() {
     const dateKey = ymd(d);
     const items = lessonsByDate.get(dateKey) ?? [];
     const { main, suffix } = dayHeaderLabel(d, today);
-    const isToday = dateKey === ymd(today);
-    const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-    const nowIndicator = isToday ? (
-      <div
-        key="now-indicator"
-        style={{
-          margin: "8px 16px 4px",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          ...POPPINS,
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3 }}>
-          NOW {nowLabel}
-        </span>
-        <span
-          style={{
-            width: 10,
-            height: 10,
-            borderRadius: 999,
-            background: "#E53935",
-            boxShadow: "0 0 0 3px rgba(229,57,53,0.18)",
-            flexShrink: 0,
-          }}
-        />
-        <div
-          style={{
-            flex: 1,
-            height: 2,
-            borderRadius: 2,
-            background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))",
-          }}
-        />
-      </div>
-    ) : null;
 
     const rows: React.ReactNode[] = [];
     if (items.length === 0) {
@@ -921,155 +723,42 @@ function SchedulePage() {
         <div
           key="empty"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "28px 16px",
-            background: "#FFFFFF",
-            borderRadius: 14,
-            margin: "8px 16px",
-            border: "1px solid #F2F3F6",
+            padding: "12px 16px",
+            fontSize: 13,
+            color: "#9CA3AF",
+            ...POPPINS,
           }}
         >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 999,
-              background: "#F8F9FB",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 12,
-            }}
-          >
-            <CalendarOff size={22} color="#9CA3AF" />
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>
-            No lessons scheduled
-          </div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
-            {emptyDayMessage(d, today)}
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/lessons/new" })}
-            style={{
-              marginTop: 14,
-              ...POPPINS,
-              fontSize: 12,
-              fontWeight: 700,
-              color: "#FFFFFF",
-              backgroundColor: "#0B1F3A",
-              border: 0,
-              borderRadius: 999,
-              padding: "8px 16px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              cursor: "pointer",
-            }}
-          >
-            <Plus size={14} color="#FFFFFF" /> Add lesson
-          </button>
+          No lessons
         </div>,
       );
     } else {
       items.forEach((l, i) => {
-        // Insert NOW indicator before the first lesson that starts after `now` (today only)
-        if (isToday && lessonStart(l).getTime() > now.getTime()) {
-          const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
-          if (!alreadyPlaced && nowIndicator) rows.push(nowIndicator);
-        }
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
         if (next) {
           const gapMins = Math.round(
             (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
           );
-          if (gapMins >= 60) {
-            const gapStartT = formatTimeFromDate(lessonEnd(l));
-            const gapEndT = formatTimeFromDate(lessonStart(next));
-            const gapDate = l.lesson_date.substring(0, 10);
-            const matches = getMatchingPupils(gapDate, gapStartT, gapMins, matchPupils, matchAvailability);
-            const hourlyRate = 40;
-            const potential = Math.round((gapMins / 60) * hourlyRate);
-            const durationLabel = gapMins >= 60
-              ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
-              : `${gapMins}min`;
-            const fallbackPalette = ["#D4A017", "#8B5E34", "#C4356C"];
-            const hasMatches = matches.length > 0;
-            const title = hasMatches
-              ? `${matches.length} Pupil${matches.length !== 1 ? "s" : ""} May Fit · ${durationLabel}`
-              : `Free slot · ${durationLabel}`;
-            const subtitle = hasMatches
-              ? `${gapStartT} – ${gapEndT} · tap to view`
-              : `${gapStartT} – ${gapEndT} · post to EveryDriver`;
+          if (gapMins > 30) {
             rows.push(
               <div
                 key={`gap-${l.id}`}
-                role="button"
-                tabIndex={0}
-                onClick={() => navigate({ to: "/gaps" as never })}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    navigate({ to: "/gaps" as never });
-                  }
-                }}
                 style={{
-                  margin: "6px 16px",
-                  background: "#FFFFFF",
-                  border: "1px solid #EEF0F4",
-                  borderRadius: 14,
-                  padding: "10px 12px",
+                  margin: "4px 16px 8px 16px",
+                  backgroundColor: "#F8F9FB",
+                  borderRadius: 8,
+                  padding: "8px 12px",
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
-                  cursor: "pointer",
-                  boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+                  gap: 8,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                  {(hasMatches ? matches.slice(0, 3) : [null, null, null]).map((pupil: any, i: number) => (
-                    <div
-                      key={pupil ? pupil.id : `ph-${i}`}
-                      style={{
-                        width: 30, height: 30, borderRadius: "50%",
-                        background: pupil ? (pupil.calendar_colour || fallbackPalette[i % fallbackPalette.length]) : "#E5E7EB",
-                        border: "2px solid #FFFFFF",
-                        marginLeft: i > 0 ? -10 : 0,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        color: "#FFFFFF", fontSize: 10, fontWeight: 800,
-                        zIndex: 3 - i, position: "relative",
-                        letterSpacing: 0.3,
-                      }}
-                    >
-                      {pupil
-                        ? `${((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}${(pupil.last_name?.[0] || (pupil.name?.split(" ")[1]?.[0] ?? "")).toUpperCase()}`
-                        : ""}
-                    </div>
-                  ))}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{
-                    fontSize: 13, fontWeight: 700, color: "#0F2044", ...POPPINS,
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  }}>
-                    {title}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2, ...POPPINS }}>
-                    {subtitle}
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#16A34A", ...POPPINS }}>
-                    £{potential}
-                  </span>
-                  <RefreshCw size={14} color="#9CA3AF" />
-                  <ChevronRight size={16} color="#9CA3AF" />
-                </div>
+                <Clock size={12} color="#9CA3AF" />
+                <span style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
+                  {gapMins} mins free · {formatTimeFromDate(lessonEnd(l))} –{" "}
+                  {formatTimeFromDate(lessonStart(next))}
+                </span>
               </div>,
             );
           } else {
@@ -1086,10 +775,6 @@ function SchedulePage() {
           }
         }
       });
-      // If today and NOW is after every lesson, place indicator at the end
-      if (isToday && nowIndicator && !rows.some((r: any) => r?.key === "now-indicator")) {
-        rows.push(nowIndicator);
-      }
     }
 
     return (
@@ -1134,35 +819,16 @@ function SchedulePage() {
             Schedule
           </span>
         </div>
-        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              aria-label="Open calendar"
-              className="flex items-center justify-center"
-              style={{ width: 32, height: 32 }}
-            >
-              <CalendarIcon size={20} color="#FFFFFF" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <ShadcnCalendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(d) => {
-                if (d) {
-                  setSelectedDate(startOfDay(d));
-                  setCalendarOpen(false);
-                }
-              }}
-              initialFocus
-              className="pointer-events-auto"
-            />
-          </PopoverContent>
-        </Popover>
+        <button
+          type="button"
+          aria-label="Open calendar"
+          onClick={() => navigate({ to: "/diary" })}
+          className="flex items-center justify-center"
+          style={{ width: 32, height: 32 }}
+        >
+          <CalendarIcon size={20} color="#FFFFFF" />
+        </button>
       </div>
-
-      {renderDayPicker()}
 
       {lessons === null ? (
         <div style={{ padding: 16 }}>
@@ -1180,7 +846,26 @@ function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div>{renderDay(selectedDate, true)}</div>
+        <div>{days.map((d, i) => renderDay(d, i === 0))}</div>
+      )}
+
+      {lessons !== null && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "16px 16px 24px" }}>
+          <button
+            type="button"
+            onClick={() => setDaysAhead((n) => n + 7)}
+            style={{
+              ...POPPINS,
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#1877D6",
+              backgroundColor: "transparent",
+              padding: "8px 16px",
+            }}
+          >
+            Load more →
+          </button>
+        </div>
       )}
 
       {/* FAB */}
@@ -1243,13 +928,6 @@ function SchedulePage() {
         }
         .skeleton-pulse {
           animation: skeleton-pulse 1.5s ease-in-out infinite;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
         }
       `}</style>
     </div>

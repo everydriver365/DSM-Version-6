@@ -116,7 +116,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; calendar_colour?: string | null } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
 }
 
 interface PrevLessonRow {
@@ -154,33 +154,6 @@ function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   if (pts >= TIER_THRESHOLDS.gold) return "gold";
   if (pts >= TIER_THRESHOLDS.silver) return "silver";
   return "bronze";
-}
-
-function getMatchingPupils(
-  gapDate: string,
-  gapStartTime: string,
-  gapMinutes: number,
-  pupils: any[],
-  availabilitySettings: any[],
-) {
-  const dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(gapDate).getDay()];
-  const gapHour = parseInt((gapStartTime || "00:00").split(":")[0], 10);
-  return (pupils || [])
-    .filter((p) => {
-      const settings = (availabilitySettings || []).find((s) => s.pupil_id === p.id);
-      if (!settings) return true;
-      const availDays: string[] = settings.available_days || [];
-      const fromHour = parseInt((settings.available_from || "08:00").split(":")[0], 10);
-      const untilHour = parseInt((settings.available_until || "18:00").split(":")[0], 10);
-      const prefDuration = settings.preferred_duration_minutes || 60;
-      return (
-        availDays.includes(dayOfWeek) &&
-        gapHour >= fromHour &&
-        gapHour < untilHour &&
-        gapMinutes >= prefDuration
-      );
-    })
-    .slice(0, 5);
 }
 
 function CircleIconBtn({
@@ -1364,8 +1337,6 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [matchPupils, setMatchPupils] = useState<any[]>([]);
-  const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
@@ -1471,33 +1442,6 @@ function HomePage() {
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
-      } catch {}
-    })();
-    return () => { cancelled = true; };
-  }, [userId]);
-
-  // Load pupils + availability once for free-slot matching in Schedule panel
-  useEffect(() => {
-    if (!userId) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const [p, a] = await Promise.all([
-          supabase
-            .from("pupils")
-            .select("id,name,first_name,calendar_colour")
-            .eq("instructor_id", userId)
-            .eq("status", "active")
-            .is("deleted_at", null)
-            .limit(50),
-          supabase
-            .from("pupil_ready_to_learn_settings")
-            .select("*")
-            .eq("instructor_id", userId),
-        ]);
-        if (cancelled) return;
-        setMatchPupils(((p as any).data as any[]) ?? []);
-        setMatchAvailability(((a as any).data as any[]) ?? []);
       } catch {}
     })();
     return () => { cancelled = true; };
@@ -2005,11 +1949,12 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,calendar_colour,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
         .neq("status", "cancelled")
+        .neq("status", "completed")
         .gte("lesson_date", todayYmd)
         .lte("lesson_date", ymd(addDays(todayStart, 14)))
         .order("lesson_date", { ascending: true })
@@ -2018,7 +1963,6 @@ function HomePage() {
       if (lessonRows && lessonRows.length > 0) {
         console.log("[home] first lesson row sample:", lessonRows[0]);
       }
-      console.log("[home] lessons fetched:", lessonRows?.length, "todayYmd:", todayYmd);
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
 
@@ -2026,7 +1970,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,calendar_colour,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -2415,148 +2359,6 @@ function HomePage() {
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
-  const lessonColour = (l?: LessonRow) => l?.pupils?.calendar_colour ?? "#1A52A0";
-  const formatDurationShort = (mins: number | null) => {
-    const m = mins ?? 60;
-    if (m % 60 === 0) return `${m / 60}h`;
-    if (m < 60) return `${m}m`;
-    return `${Math.floor(m / 60)}h ${m % 60}m`;
-  };
-
-  const renderHomeLessonRow = (l: LessonRow) => {
-    const paid = (l.payment_status ?? "").toLowerCase() === "paid";
-    const color = lessonColour(l);
-    const subtitle = l.pickup_location ?? "";
-    const badges: React.ReactNode[] = [];
-    if (paid) {
-      badges.push(
-        <span key="paid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF2F7", color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}>
-          Paid
-        </span>,
-      );
-    } else if ((l.amount_due ?? 0) > 0) {
-      badges.push(
-        <span key="due" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#1877D6", fontFamily: "Inter, sans-serif" }}>
-          £{Number(l.amount_due).toFixed(2)}
-        </span>,
-      );
-    }
-    return (
-      <button
-        key={l.id}
-        type="button"
-        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
-        style={{
-          display: "flex", gap: 12, alignItems: "stretch", padding: "12px 10px",
-          background: "#FFFFFF", border: "none", borderBottom: "0.5px solid #F3F4F6",
-          cursor: "pointer", textAlign: "left", width: "100%", fontFamily: "Inter, sans-serif",
-        }}
-      >
-        <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif" }}>
-            {formatTime(l)}
-          </div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
-            {formatDurationShort(l.duration_minutes)}
-          </div>
-        </div>
-        <div style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: color, flexShrink: 0 }} />
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif" }}>
-            {pupilName(l)}
-          </div>
-          {subtitle && (
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginTop: 2, display: "flex", alignItems: "center", gap: 4, fontFamily: "Inter, sans-serif" }}>
-              <MapPin size={11} color="#9CA3AF" />
-              <span className="truncate">{subtitle}</span>
-            </div>
-          )}
-          {badges.length > 0 && (
-            <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
-              {badges}
-            </div>
-          )}
-        </div>
-      </button>
-    );
-  };
-  const renderMobileScheduleRow = (l: LessonRow) => {
-    const paid = (l.payment_status ?? "").toLowerCase() === "paid";
-    const isPrepaid = Number(l.pupils?.prepaid_hours ?? 0) > 0;
-    const isCancelled = (l.status ?? "").toLowerCase() === "cancelled";
-    const amount = Number(l.amount_due ?? 0);
-    const color = lessonColour(l);
-    const name = pupilName(l);
-    const initials = name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((s) => s[0]?.toUpperCase() ?? "")
-      .join("") || "?";
-    let badge: React.ReactNode = null;
-    if (isCancelled) {
-      badge = (
-        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#FEE2E2", color: "#DC2626", fontFamily: "Inter, sans-serif" }}>
-          Cancelled
-        </span>
-      );
-    } else if (paid) {
-      badge = (
-        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#DCFCE7", color: "#166534", fontFamily: "Inter, sans-serif" }}>
-          Paid
-        </span>
-      );
-    } else if (isPrepaid) {
-      badge = (
-        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#DBEAFE", color: "#1D4ED8", fontFamily: "Inter, sans-serif" }}>
-          Prepaid
-        </span>
-      );
-    } else if (amount > 0) {
-      badge = (
-        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#FEE2E2", color: "#B91C1C", fontFamily: "Inter, sans-serif" }}>
-          £{amount.toFixed(0)}
-        </span>
-      );
-    }
-    return (
-      <button
-        key={l.id}
-        type="button"
-        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
-        style={{
-          display: "flex", gap: 12, alignItems: "center", padding: "14px 16px",
-          background: "#FFFFFF", border: "none", borderBottom: "0.5px solid #F3F4F6",
-          cursor: "pointer", textAlign: "left", width: "100%", fontFamily: "Inter, sans-serif",
-          opacity: isCancelled ? 0.6 : 1,
-        }}
-      >
-        <div style={{ fontSize: 17, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none", flexShrink: 0, minWidth: 52 }}>
-          {formatTime(l)}
-        </div>
-        <span style={{ width: 8, height: 8, borderRadius: 999, background: color, flexShrink: 0 }} />
-        <div style={{
-          width: 40, height: 40, borderRadius: "50%",
-          background: color, color: "#FFFFFF",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 13, fontWeight: 800, letterSpacing: 0.3,
-          flexShrink: 0, fontFamily: "Inter, sans-serif",
-        }}>
-          {initials}
-        </div>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
-            {name}
-          </div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", marginTop: 2, fontFamily: "Inter, sans-serif" }}>
-            {formatDurationShort(l.duration_minutes)}
-          </div>
-        </div>
-        {badge}
-        <ChevronRight size={18} color="#C7CDD6" style={{ flexShrink: 0 }} />
-      </button>
-    );
-  };
 
   async function markLessonPaid(l: LessonRow) {
     if (!userId) {
@@ -3173,34 +2975,33 @@ function HomePage() {
                     No lessons scheduled today.
                   </div>
                 ) : (
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    {(() => {
-                      const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-                      const nowIndicator = (
-                        <div
-                          key="now-indicator"
-                          style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 0 4px" }}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {todayLessons.map((l) => {
+                      const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+                      return (
+                        <button
+                          key={l.id}
+                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
+                          style={{
+                            display: "grid", gridTemplateColumns: "70px 1fr auto auto",
+                            gap: 12, alignItems: "center", padding: "10px 12px",
+                            borderRadius: 10, border: "0.5px solid #E2E6ED",
+                            background: "#FFFFFF", cursor: "pointer", textAlign: "left",
+                            fontFamily: "Inter, sans-serif",
+                          }}
                         >
-                          <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
-                            NOW {nowLabel}
-                          </span>
-                          <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
-                          <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
-                        </div>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>{formatTime(l)}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                            padding: "3px 8px", borderRadius: 6,
+                            background: paid ? "#DCFCE7" : "#FEE2E2",
+                            color: paid ? "#166534" : "#991B1B",
+                          }}>{paid ? "Paid" : "Unpaid"}</span>
+                        </button>
                       );
-                      const rows: React.ReactNode[] = [];
-                      todayLessons.forEach((l) => {
-                        if (lessonDateTime(l).getTime() > now.getTime()) {
-                          const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
-                          if (!alreadyPlaced) rows.push(nowIndicator);
-                        }
-                        rows.push(renderHomeLessonRow(l));
-                      });
-                      if (!rows.some((r: any) => r?.key === "now-indicator")) {
-                        rows.push(nowIndicator);
-                      }
-                      return rows;
-                    })()}
+                    })}
                   </div>
                 )}
                 <button
@@ -3991,319 +3792,616 @@ function HomePage() {
       )}
 
 
-      {/* SCHEDULE — Next 7 days timeline */}
-      {(() => {
-        const palette = ["#1A52A0", "#0F2044", "#D97706", "#16A34A", "#7C3AED", "#DB2777", "#EA580C", "#0891B2"];
-        const colourFor = (name: string) => {
-          let h = 0;
-          for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-          return palette[h % palette.length];
-        };
-        const initialsOf = (name: string) =>
-          name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase() ?? "").join("") || "?";
-        const fmtT = (d: Date) =>
-          `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+      {/* TODAY'S SCHEDULE (Google Calendar style) */}
+      <div
+        className="mx-4 mt-3"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: "0.5px solid #EEF2F7",
+          borderRadius: 16,
+          padding: "12px 0",
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between"
+          style={{ padding: "0 16px 8px 16px" }}
+        >
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+            Schedule
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/schedule" })}
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#1877D6",
+              background: "transparent",
+              cursor: "pointer",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
+            View all →
+          </button>
+        </div>
 
-        // Estimate hourly rate from fetched lessons for free-slot potential
-        const totalMins = lessons.reduce((s, l) => s + (l.duration_minutes ?? 60), 0);
-        const totalAmt = lessons.reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
-        const hourlyEst = totalMins > 0 && totalAmt > 0 ? Math.round(totalAmt / (totalMins / 60)) : 34;
+        {/* Tab switcher */}
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            margin: "0 16px 8px 16px",
+            padding: 3,
+            backgroundColor: "#F3F4F6",
+            borderRadius: 10,
+          }}
+        >
+          <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
+            Today
+          </TabBtn>
+          <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
+            Tomorrow
+          </TabBtn>
+          <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
+            Next
+          </TabBtn>
+        </div>
 
-        type Day = { date: Date; key: string; label: string; lessons: LessonRow[] };
-        const days: Day[] = [];
-        for (let i = 0; i < 7; i++) {
-          const d = addDays(todayStart, i);
-          const key = ymd(d);
-          const dayLessons = lessons
-            .filter((l) => l.lesson_date === key)
-            .sort((a, b) => (a.lesson_time ?? "").localeCompare(b.lesson_time ?? ""));
-          if (dayLessons.length === 0) continue;
-          const label = i === 0 ? "Today" : i === 1 ? "Tomorrow"
-            : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-          days.push({ date: d, key, label, lessons: dayLessons });
-        }
 
-        const todayISO = ymd(todayStart);
-        console.log("[schedule-panel] todayLessons:", todayLessons?.length, todayLessons);
-        console.log("[schedule-panel] lessons state:", lessons?.length);
-        console.log("[schedule-panel] today ISO:", todayISO);
+        {tabLessons.length === 0 ? (
+          <div
+            style={{
+              padding: "20px 16px",
+              fontSize: 13,
+              color: "#9CA3AF",
+              textAlign: "center",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
+            {tab === "today"
+              ? "No lessons today"
+              : tab === "tomorrow"
+                ? "No lessons tomorrow"
+                : "No upcoming lessons"}
+          </div>
+        ) : (
+          (() => {
+            const shown = tabLessons.slice(0, 6);
+            const hiddenCount = tabLessons.length - shown.length;
 
-        const isEmpty = days.length === 0;
+            const tNow = now.getTime();
+            const lStart = (l: LessonRow) => lessonDateTime(l).getTime();
+            const lEnd = (l: LessonRow) =>
+              lStart(l) + (l.duration_minutes ?? 60) * 60000;
+            let currentId: string | null = null;
+            for (const l of shown) {
+              if (lStart(l) <= tNow && tNow <= lEnd(l) && l.status !== "cancelled") {
+                currentId = l.id;
+                break;
+              }
+            }
+            const fmtT = (d: Date) =>
+              `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+            const durShort = (m: number | null) => {
+              const x = m ?? 60;
+              if (x % 60 === 0) return `${x / 60}h`;
+              if (x < 60) return `${x}m`;
+              return `${Math.floor(x / 60)}h ${x % 60}m`;
+            };
 
-        return (
-          <div className="mt-3" style={{ fontFamily: "Inter, sans-serif" }}>
-            {/* Header */}
-            <div style={{ padding: "16px 20px 8px" }}>
-              <div style={{ fontSize: 20, fontWeight: 900, color: "#0F2044", lineHeight: 1.1 }}>
-                Schedule
-              </div>
-              <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 2 }}>
-                Next 7 days
-              </div>
-            </div>
+            const rows: React.ReactNode[] = [];
+            let lastDateKey: string | null = null;
+            shown.forEach((l, i) => {
+              const startD = lessonDateTime(l);
+              const endD = new Date(lEnd(l));
+              const pastEnd = endD.getTime() < tNow;
+              const isCurrent = l.id === currentId;
+              const isCancelled = l.status === "cancelled";
+              const isCompleted = l.status === "completed" || l.eol_completed === true;
 
-            {isEmpty ? (
-              <div className="mx-4" style={{
-                background: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                padding: "28px 20px",
-                textAlign: "center",
-              }}>
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <CalendarIcon size={48} color="#D1D5DB" />
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#6B7280" }}>
-                  No lessons scheduled
-                </div>
-                <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
-                  Your diary is clear for the next 7 days
-                </div>
+              if (tab === "next") {
+                const dKey = ymd(startD);
+                if (dKey !== lastDateKey) {
+                  rows.push(
+                    <div
+                      key={`hdr-${dKey}`}
+                      style={{
+                        padding: "10px 16px 4px",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: 0.4,
+                        color: "#6B7280",
+                        fontFamily: "Inter, sans-serif",
+                      }}
+                    >
+                      {formatDayLabel(startD)}
+                    </div>,
+                  );
+                  lastDateKey = dKey;
+                }
+              }
+
+              
+
+              const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+
+              const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+
+              const badges: React.ReactNode[] = [];
+              if (isCurrent) {
+                badges.push(
+                  <span
+                    key="live"
+                    className="animate-pulse"
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "1px 6px",
+                      borderRadius: 999,
+                      backgroundColor: "#FEE2E2",
+                      color: "#1877D6",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 5,
+                        height: 5,
+                        borderRadius: 999,
+                        backgroundColor: "#1877D6",
+                      }}
+                    />
+                    Live
+                  </span>,
+                );
+              }
+              if (!isCancelled) {
+                if (pastEnd && !l.eol_completed) {
+                  badges.push(
+                    <button
+                      key="eol"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEolLesson(l);
+                      }}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#EEF2F7",
+                        color: "#0B1F3A",
+                        border: 0,
+                        cursor: "pointer",
+                        fontFamily: "Inter, sans-serif",
+                      }}
+                    >
+                      Complete EOL
+                    </button>,
+                  );
+                } else if (pastEnd && l.eol_completed) {
+                  badges.push(
+                    <span
+                      key="eol-done"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#0B1F3A",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      ✓ EOL
+                    </span>,
+                  );
+                }
+              }
+              const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
+              if (!isPrepaidPupil) {
+                if (l.payment_status === "paid") {
+                  badges.push(
+                    <span
+                      key="paid"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#0B1F3A",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      ✓ Paid
+                    </span>,
+                  );
+                } else if (
+                  !isCancelled &&
+                  pastEnd &&
+                  (l.payment_status === "unpaid" || !l.payment_status) &&
+                  Number(l.amount_due ?? 0) > 0
+                ) {
+                  const amt = Number(l.amount_due ?? 0);
+                  badges.push(
+                    <span
+                      key="due"
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "1px 6px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEE2E2",
+                        color: "#1877D6",
+                      }}
+                    >
+                      £{amt.toFixed(2)} unpaid
+                    </span>,
+                  );
+                }
+              } else {
+                badges.push(
+                  <span
+                    key="prepaid"
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "1px 6px",
+                      borderRadius: 999,
+                      backgroundColor: "#EEF4FB",
+                      color: "#1877D6",
+                    }}
+                  >
+                    Prepaid
+                  </span>,
+                );
+              }
+
+              rows.push(
+                <Fragment key={l.id}>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setExpandedLessonId((prev) =>
+                        prev === l.id ? null : l.id,
+                      )
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setExpandedLessonId((prev) =>
+                          prev === l.id ? null : l.id,
+                        );
+                      }
+                    }}
+                    className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
+                    style={{
+                      padding: "10px 16px",
+                      borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                      background: "#fff",
+                    }}
+                  >
+                    {(() => {
+                      const needsAttention =
+                        !isCancelled &&
+                        ((pastEnd && !l.eol_completed) ||
+                          (l.payment_status === "unpaid" || !l.payment_status));
+                      return (
+                        <div
+                          className="relative shrink-0 text-right"
+                          style={{ width: 40 }}
+                        >
+                          {needsAttention && (
+                            <span
+                              aria-label="Needs attention"
+                              style={{
+                                position: "absolute",
+                                top: -2,
+                                left: -2,
+                                width: 8,
+                                height: 8,
+                                borderRadius: 999,
+                                backgroundColor: "#1877D6",
+                              }}
+                            />
+                          )}
+                          <div
+                            className="truncate text-xs font-bold"
+                            style={{
+                              color: timeColor,
+                              textDecoration: isCancelled ? "line-through" : "none",
+                            }}
+                          >
+                            {fmtT(startD)}
+                          </div>
+                          <div
+                            className="truncate text-[10px] text-[#9CA3AF]"
+                            style={{ marginTop: 2 }}
+                          >
+                            {durShort(l.duration_minutes)}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                    <div className="min-w-0">
+                      <div
+                        className="truncate text-[13px] font-semibold"
+                        style={{
+                          color: nameColor,
+                          textDecoration: isCancelled ? "line-through" : "none",
+                        }}
+                      >
+                        {l.pupils?.name ?? "Pupil"}
+                      </div>
+                      {l.pickup_location && (
+                        <div
+                          className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
+                          style={{ marginTop: 2 }}
+                        >
+                          <MapPin size={10} color="#6B7280" />
+                          <span className="truncate">{l.pickup_location}</span>
+                        </div>
+                      )}
+                      {badges.length > 0 && (
+                        <div
+                          className="flex flex-wrap gap-1.5"
+                          style={{ marginTop: 4 }}
+                        >
+                          {badges}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center">
+                      <ChevronRight
+                        size={14}
+                        color="#D1D5DB"
+                        style={{
+                          transform:
+                            expandedLessonId === l.id
+                              ? "rotate(90deg)"
+                              : "rotate(0deg)",
+                          transition: "transform 200ms ease",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {expandedLessonId === l.id && (
+                    <div
+                      style={{
+                        padding: "12px 16px",
+                        background: "#fff",
+                        borderTop: "1px solid #F3F4F6",
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {(() => {
+                        const amount = l.amount_due ?? 0;
+                        const isPrepaid =
+                          Number(l.pupils?.prepaid_hours ?? 0) > 0;
+                        let statusBadge: React.ReactNode;
+                        if (l.payment_status === "paid") {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#DCFCE7",
+                                color: "#16A34A",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 4,
+                              }}
+                            >
+                              <span>✓</span> Paid
+                            </span>
+                          );
+                        } else if (isPrepaid) {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#DBEAFE",
+                                color: "#1D4ED8",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              Prepaid
+                            </span>
+                          );
+                        } else if (amount === 0) {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#F3F4F6",
+                                color: "#6B7280",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              No charge
+                            </span>
+                          );
+                        } else {
+                          statusBadge = (
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: 999,
+                                backgroundColor: "#FEE2E2",
+                                color: "#DC2626",
+                                fontSize: 12,
+                                fontWeight: 600,
+                              }}
+                            >
+                              Unpaid £{amount.toFixed(2)}
+                            </span>
+                          );
+                        }
+                        return (
+                          <>
+                            <div className="flex items-center gap-2">
+                              {statusBadge}
+                              {l.payment_status === "paid" && amount > 0 && (
+                                <span
+                                  className="text-sm font-semibold"
+                                  style={{ color: "#0B1F3A" }}
+                                >
+                                  £{amount.toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                            <div
+                              className="flex gap-2 flex-wrap"
+                              style={{ marginTop: 8 }}
+                            >
+                              {l.payment_status !== "paid" &&
+                                amount > 0 &&
+                                !isPrepaid && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      sendPaymentLink(l);
+                                    }}
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      flex: "1 1 auto",
+                                      padding: "8px 12px",
+                                      borderRadius: 8,
+                                      background: "#16A34A",
+                                      color: "#fff",
+                                      minWidth: 120,
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Send payment link
+                                  </button>
+                                )}
+                              {l.payment_status !== "paid" &&
+                                amount > 0 &&
+                                !isPrepaid && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markLessonPaid(l);
+                                    }}
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      flex: "1 1 auto",
+                                      padding: "8px 12px",
+                                      borderRadius: 8,
+                                      background: "#0F2044",
+                                      color: "#fff",
+                                      minWidth: 120,
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Mark paid
+                                  </button>
+                                )}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate({
+                                    to: "/lessons/$id",
+                                    params: { id: l.id },
+                                  });
+                                }}
+                                className="text-sm font-semibold"
+                                style={{
+                                  padding: "8px 12px",
+                                  color: "#1A52A0",
+                                  background: "transparent",
+                                  textAlign: "center",
+                                }}
+                              >
+                                View lesson
+                              </button>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </Fragment>,
+              );
+              const next = shown[i + 1];
+
+              if (next && (tab !== "next" || ymd(lessonDateTime(next)) === ymd(startD))) {
+                const gapMins = Math.round(
+                  (lStart(next) - lEnd(l)) / 60000,
+                );
+                if (gapMins > 30) {
+                  rows.push(
+                    <div
+                      key={`gap-${l.id}`}
+                      style={{
+                        margin: "2px 16px 6px 16px",
+                        padding: "4px 10px",
+                        fontSize: 11,
+                        color: "#6B7280",
+                        backgroundColor: "#F8F9FB",
+                        borderRadius: 6,
+                      }}
+                    >
+                      {gapMins} mins free
+                    </div>,
+                  );
+                } else {
+                  rows.push(
+                    <div
+                      key={`hr-${l.id}`}
+                      style={{
+                        borderTop: "0.5px solid #F3F4F6",
+                        margin: "0 16px",
+                      }}
+                    />,
+                  );
+                }
+              }
+            });
+
+            if (hiddenCount > 0) {
+              rows.push(
                 <button
+                  key="view-all"
                   type="button"
-                  onClick={() => navigate({ to: "/lessons/new" })}
+                  onClick={() => navigate({ to: "/schedule" })}
                   style={{
-                    marginTop: 16,
-                    width: "100%",
-                    padding: "12px 16px",
-                    background: "#0F2044",
-                    color: "#FFFFFF",
-                    borderRadius: 12,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    border: 0,
+                    margin: "8px 16px 0 16px",
+                    padding: "6px 0",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#1877D6",
+                    background: "transparent",
                     cursor: "pointer",
+                    textAlign: "left",
                     fontFamily: "Inter, sans-serif",
                   }}
                 >
-                  Add a lesson +
-                </button>
-              </div>
-            ) : (
-              <div className="mx-4" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {days.map((day, dayIdx) => {
-                  const paidTotal = day.lessons.reduce(
-                    (s, l) => (l.payment_status === "paid" ? s + Number(l.amount_due ?? 0) : s),
-                    0,
-                  );
-                  const isTodayDay = dayIdx === 0 && day.key === ymd(now);
+                  View all {tabLessons.length} lessons →
+                </button>,
+              );
+            }
 
-                  return (
-                    <div key={day.key}>
-                      {/* Day header */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8, padding: "0 4px" }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-                          {day.label}
-                        </div>
-                        <span style={{
-                          background: "#F0F4FF",
-                          color: "#1A52A0",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: "2px 8px",
-                          borderRadius: 999,
-                        }}>
-                          {day.lessons.length} {day.lessons.length === 1 ? "lesson" : "lessons"}
-                        </span>
-                        {paidTotal > 0 && (
-                          <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#16A34A" }}>
-                            £{paidTotal.toFixed(0)}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Day card */}
-                      <div style={{
-                        background: "#FFFFFF",
-                        border: "0.5px solid #E2E6ED",
-                        borderRadius: 16,
-                        overflow: "hidden",
-                      }}>
-                        {(() => {
-                          const rows: React.ReactNode[] = [];
-                          day.lessons.forEach((l, i) => {
-                            const start = lessonDateTime(l);
-                            const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
-                            const next = day.lessons[i + 1];
-                            const gapMins = next
-                              ? Math.round((lessonDateTime(next).getTime() - end.getTime()) / 60000)
-                              : 0;
-                            const showGap = next && gapMins >= 60;
-                            const potential = showGap ? Math.round((gapMins / 60) * hourlyEst) : 0;
-
-                            if (isTodayDay && start.getTime() > now.getTime()) {
-                              const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
-                              if (!alreadyPlaced) {
-                                const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-                                rows.push(
-                                  <div
-                                    key="now-indicator"
-                                    style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 16px 4px" }}
-                                  >
-                                    <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
-                                      NOW {nowLabel}
-                                    </span>
-                                    <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
-                                    <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
-                                  </div>,
-                                );
-                              }
-                            }
-
-                            rows.push(
-                              <div key={l.id}>
-                                {renderMobileScheduleRow(l)}
-                              </div>,
-                            );
-
-                            if (showGap) {
-                              const gapStartT = fmtT(end);
-                              const gapEndT = fmtT(new Date(end.getTime() + gapMins * 60000));
-                              const matches = getMatchingPupils(day.key, gapStartT, gapMins, matchPupils, matchAvailability);
-                              const durationLabel = gapMins >= 60
-                                ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
-                                : `${gapMins}min`;
-                              const fallbackPalette = ["#D4A017", "#8B5E34", "#C4356C"];
-                              const hasMatches = matches.length > 0;
-                              const title = hasMatches
-                                ? `${matches.length} Pupil${matches.length !== 1 ? "s" : ""} May Fit · ${durationLabel}`
-                                : `Free slot · ${durationLabel}`;
-                              const subtitle = hasMatches
-                                ? `${gapStartT} – ${gapEndT} · tap to view`
-                                : `${gapStartT} – ${gapEndT} · post to EveryDriver`;
-                              rows.push(
-                                <div
-                                  key={`gap-${l.id}`}
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === " ") {
-                                      e.preventDefault();
-                                      navigate({ to: "/gaps" });
-                                    }
-                                  }}
-                                  style={{
-                                    margin: "6px 16px",
-                                    background: "#FFFFFF",
-                                    border: "1px solid #EEF0F4",
-                                    borderRadius: 14,
-                                    padding: "10px 12px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 12,
-                                    cursor: "pointer",
-                                    boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                                  }}
-                                >
-                                  <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                                    {(hasMatches ? matches.slice(0, 3) : [null, null, null]).map((pupil: any, i: number) => (
-                                      <div key={pupil ? pupil.id : `ph-${i}`} style={{
-                                        width: 30, height: 30, borderRadius: "50%",
-                                        background: pupil ? (pupil.calendar_colour || fallbackPalette[i % fallbackPalette.length]) : "#E5E7EB",
-                                        border: "2px solid #FFFFFF",
-                                        marginLeft: i > 0 ? -10 : 0,
-                                        display: "flex", alignItems: "center", justifyContent: "center",
-                                        color: "#FFFFFF", fontSize: 10, fontWeight: 800,
-                                        zIndex: 3 - i, position: "relative",
-                                        letterSpacing: 0.3,
-                                      }}>
-                                        {pupil
-                                          ? `${((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}${(pupil.last_name?.[0] || (pupil.name?.split(" ")[1]?.[0] ?? "")).toUpperCase()}`
-                                          : ""}
-                                      </div>
-                                    ))}
-                                  </div>
-                                  <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{
-                                      fontSize: 13, fontWeight: 700, color: "#0F2044",
-                                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                                    }}>
-                                      {title}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
-                                      {subtitle}
-                                    </div>
-                                  </div>
-                                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                                    <span style={{ fontSize: 11, fontWeight: 700, color: "#16A34A" }}>
-                                      £{potential}
-                                    </span>
-                                    <RefreshCw size={14} color="#9CA3AF" />
-                                    <ChevronRight size={16} color="#9CA3AF" />
-                                  </div>
-                                </div>,
-                              );
-                            }
-                          });
-
-                          if (isTodayDay && !rows.some((r: any) => r?.key === "now-indicator")) {
-                            const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-                            rows.push(
-                              <div
-                                key="now-indicator"
-                                style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 16px 4px" }}
-                              >
-                                <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
-                                  NOW {nowLabel}
-                                </span>
-                                <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
-                                <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
-                              </div>,
-                            );
-                          }
-
-                          return rows;
-                        })()}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* Quick actions */}
-                <div style={{ display: "flex", gap: 8, padding: "0" }}>
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: "/lessons/new" })}
-                    style={{
-                      flex: 1,
-                      padding: "12px 16px",
-                      background: "#0F2044",
-                      color: "#FFFFFF",
-                      borderRadius: 12,
-                      fontSize: 14,
-                      fontWeight: 700,
-                      border: 0,
-                      cursor: "pointer",
-                      fontFamily: "Inter, sans-serif",
-                    }}
-                  >
-                    Add lesson +
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: "/gaps" })}
-                    style={{
-                      flex: 1,
-                      padding: "12px 16px",
-                      background: "#D97706",
-                      color: "#FFFFFF",
-                      borderRadius: 12,
-                      fontSize: 14,
-                      fontWeight: 700,
-                      border: 0,
-                      cursor: "pointer",
-                      fontFamily: "Inter, sans-serif",
-                    }}
-                  >
-                    Fill My Slots
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })()}
+            return <>{rows}</>;
+          })()
+        )}
+      </div>
 
       <EndOfDayBanner />
 
