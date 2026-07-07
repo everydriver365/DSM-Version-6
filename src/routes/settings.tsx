@@ -262,7 +262,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -280,8 +280,9 @@ function SettingsPage() {
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
       }
-      if (instructor && typeof (instructor as { min_gap_minutes?: number }).min_gap_minutes === "number") {
-        const v = (instructor as { min_gap_minutes: number }).min_gap_minutes;
+      const mgm = (instructor as unknown as { min_gap_minutes?: number } | null)?.min_gap_minutes;
+      if (typeof mgm === "number") {
+        const v = mgm;
         setMinGapMinutes(v);
         writeMinGapMinutes(v);
       }
