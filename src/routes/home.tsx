@@ -1381,6 +1381,9 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
+  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
+  const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
   const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
