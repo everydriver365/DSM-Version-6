@@ -224,6 +224,14 @@ function dayHeaderLabel(d: Date, today: Date) {
   return { main, suffix };
 }
 
+function emptyDayMessage(d: Date, today: Date) {
+  const diff = Math.round((startOfDay(d).getTime() - today.getTime()) / 86400000);
+  if (diff === 0) return "You’re free today";
+  if (diff === 1) return "You’re free tomorrow";
+  if (diff === -1) return "You were free yesterday";
+  return "No lessons on this day";
+}
+
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
