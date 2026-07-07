@@ -2215,7 +2215,7 @@ function HomePage() {
 
       const { data: wh } = await supabase
         .from("working_hours")
-        .select("mon, tue, wed, thu, fri, sat, sun, end_time")
+        .select("mon, tue, wed, thu, fri, sat, sun, start_time, end_time")
         .eq("instructor_id", userId)
         .maybeSingle();
       if (wh) {
@@ -2368,6 +2368,13 @@ function HomePage() {
       return clamped;
     };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+    const workStartStr = workingHours?.start_time
+      ? String(workingHours.start_time).slice(0, 5)
+      : "09:00";
+    const [wsH, wsM] = workStartStr.split(":").map(Number);
+    const workStartMins = wsH * 60 + wsM;
+    const minsToHm = (m: number) =>
+      `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
     const tomorrowWorks = workingHours
       ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
       : false;
@@ -2389,10 +2396,11 @@ function HomePage() {
         }
       }
     } else if (todayEndTime) {
-      // No lessons today but working — surface the earliest still-future slot.
+      // No lessons today but working — surface the earliest still-future slot time.
       const [eh, em] = todayEndTime.split(":").map(Number);
-      if ((eh * 60 + em) - nowMinPlusLead >= 60) {
-        return { time: "FREE", dayLabel: formatDayLabel(todayStart) };
+      const startMins = Math.max(workStartMins, nowMinPlusLead);
+      if ((eh * 60 + em) - startMins >= 60) {
+        return { time: minsToHm(startMins), dayLabel: formatDayLabel(todayStart) };
       }
     }
 
@@ -2405,7 +2413,7 @@ function HomePage() {
         return { time: fmt(end), dayLabel: formatDayLabel(tomorrowStart) };
       }
     } else if (tomorrowEndTime) {
-      return { time: "FREE", dayLabel: formatDayLabel(tomorrowStart) };
+      return { time: minsToHm(workStartMins), dayLabel: formatDayLabel(tomorrowStart) };
     }
 
     return null;
