@@ -3792,616 +3792,374 @@ function HomePage() {
       )}
 
 
-      {/* TODAY'S SCHEDULE (Google Calendar style) */}
-      <div
-        className="mx-4 mt-3"
-        style={{
-          backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EEF2F7",
-          borderRadius: 16,
-          padding: "12px 0",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between"
-          style={{ padding: "0 16px 8px 16px" }}
-        >
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
-            Schedule
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/schedule" })}
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#1877D6",
-              background: "transparent",
-              cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            View all →
-          </button>
-        </div>
+      {/* SCHEDULE — Next 7 days timeline */}
+      {(() => {
+        const palette = ["#1A52A0", "#0F2044", "#D97706", "#16A34A", "#7C3AED", "#DB2777", "#EA580C", "#0891B2"];
+        const colourFor = (name: string) => {
+          let h = 0;
+          for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+          return palette[h % palette.length];
+        };
+        const initialsOf = (name: string) =>
+          name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase() ?? "").join("") || "?";
+        const fmtT = (d: Date) =>
+          `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 
-        {/* Tab switcher */}
-        <div
-          style={{
-            display: "flex",
-            gap: 4,
-            margin: "0 16px 8px 16px",
-            padding: 3,
-            backgroundColor: "#F3F4F6",
-            borderRadius: 10,
-          }}
-        >
-          <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
-            Today
-          </TabBtn>
-          <TabBtn active={tab === "tomorrow"} onClick={() => setTab("tomorrow")}>
-            Tomorrow
-          </TabBtn>
-          <TabBtn active={tab === "next"} onClick={() => setTab("next")}>
-            Next
-          </TabBtn>
-        </div>
+        // Estimate hourly rate from fetched lessons for free-slot potential
+        const totalMins = lessons.reduce((s, l) => s + (l.duration_minutes ?? 60), 0);
+        const totalAmt = lessons.reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
+        const hourlyEst = totalMins > 0 && totalAmt > 0 ? Math.round(totalAmt / (totalMins / 60)) : 34;
 
+        type Day = { date: Date; key: string; label: string; lessons: LessonRow[] };
+        const days: Day[] = [];
+        for (let i = 0; i < 7; i++) {
+          const d = addDays(todayStart, i);
+          const key = ymd(d);
+          const dayLessons = lessons
+            .filter((l) => l.lesson_date === key)
+            .sort((a, b) => (a.lesson_time ?? "").localeCompare(b.lesson_time ?? ""));
+          if (dayLessons.length === 0) continue;
+          const label = i === 0 ? "Today" : i === 1 ? "Tomorrow"
+            : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+          days.push({ date: d, key, label, lessons: dayLessons });
+        }
 
-        {tabLessons.length === 0 ? (
-          <div
-            style={{
-              padding: "20px 16px",
-              fontSize: 13,
-              color: "#9CA3AF",
-              textAlign: "center",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            {tab === "today"
-              ? "No lessons today"
-              : tab === "tomorrow"
-                ? "No lessons tomorrow"
-                : "No upcoming lessons"}
-          </div>
-        ) : (
-          (() => {
-            const shown = tabLessons.slice(0, 6);
-            const hiddenCount = tabLessons.length - shown.length;
+        const isEmpty = days.length === 0;
 
-            const tNow = now.getTime();
-            const lStart = (l: LessonRow) => lessonDateTime(l).getTime();
-            const lEnd = (l: LessonRow) =>
-              lStart(l) + (l.duration_minutes ?? 60) * 60000;
-            let currentId: string | null = null;
-            for (const l of shown) {
-              if (lStart(l) <= tNow && tNow <= lEnd(l) && l.status !== "cancelled") {
-                currentId = l.id;
-                break;
-              }
-            }
-            const fmtT = (d: Date) =>
-              `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-            const durShort = (m: number | null) => {
-              const x = m ?? 60;
-              if (x % 60 === 0) return `${x / 60}h`;
-              if (x < 60) return `${x}m`;
-              return `${Math.floor(x / 60)}h ${x % 60}m`;
-            };
+        return (
+          <div className="mt-3" style={{ fontFamily: "Inter, sans-serif" }}>
+            {/* Header */}
+            <div style={{ padding: "16px 20px 8px" }}>
+              <div style={{ fontSize: 20, fontWeight: 900, color: "#0F2044", lineHeight: 1.1 }}>
+                Schedule
+              </div>
+              <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 2 }}>
+                Next 7 days
+              </div>
+            </div>
 
-            const rows: React.ReactNode[] = [];
-            let lastDateKey: string | null = null;
-            shown.forEach((l, i) => {
-              const startD = lessonDateTime(l);
-              const endD = new Date(lEnd(l));
-              const pastEnd = endD.getTime() < tNow;
-              const isCurrent = l.id === currentId;
-              const isCancelled = l.status === "cancelled";
-              const isCompleted = l.status === "completed" || l.eol_completed === true;
-
-              if (tab === "next") {
-                const dKey = ymd(startD);
-                if (dKey !== lastDateKey) {
-                  rows.push(
-                    <div
-                      key={`hdr-${dKey}`}
-                      style={{
-                        padding: "10px 16px 4px",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        letterSpacing: 0.4,
-                        color: "#6B7280",
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      {formatDayLabel(startD)}
-                    </div>,
-                  );
-                  lastDateKey = dKey;
-                }
-              }
-
-              
-
-              const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
-
-              const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
-
-              const badges: React.ReactNode[] = [];
-              if (isCurrent) {
-                badges.push(
-                  <span
-                    key="live"
-                    className="animate-pulse"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#FEE2E2",
-                      color: "#1877D6",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 5,
-                        height: 5,
-                        borderRadius: 999,
-                        backgroundColor: "#1877D6",
-                      }}
-                    />
-                    Live
-                  </span>,
-                );
-              }
-              if (!isCancelled) {
-                if (pastEnd && !l.eol_completed) {
-                  badges.push(
-                    <button
-                      key="eol"
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEolLesson(l);
-                      }}
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 700,
-                        padding: "2px 8px",
-                        borderRadius: 999,
-                        backgroundColor: "#EEF2F7",
-                        color: "#0B1F3A",
-                        border: 0,
-                        cursor: "pointer",
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      Complete EOL
-                    </button>,
-                  );
-                } else if (pastEnd && l.eol_completed) {
-                  badges.push(
-                    <span
-                      key="eol-done"
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 600,
-                        color: "#0B1F3A",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 3,
-                      }}
-                    >
-                      ✓ EOL
-                    </span>,
-                  );
-                }
-              }
-              const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
-              if (!isPrepaidPupil) {
-                if (l.payment_status === "paid") {
-                  badges.push(
-                    <span
-                      key="paid"
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 600,
-                        color: "#0B1F3A",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 3,
-                      }}
-                    >
-                      ✓ Paid
-                    </span>,
-                  );
-                } else if (
-                  !isCancelled &&
-                  pastEnd &&
-                  (l.payment_status === "unpaid" || !l.payment_status) &&
-                  Number(l.amount_due ?? 0) > 0
-                ) {
-                  const amt = Number(l.amount_due ?? 0);
-                  badges.push(
-                    <span
-                      key="due"
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 700,
-                        padding: "1px 6px",
-                        borderRadius: 999,
-                        backgroundColor: "#FEE2E2",
-                        color: "#1877D6",
-                      }}
-                    >
-                      £{amt.toFixed(2)} unpaid
-                    </span>,
-                  );
-                }
-              } else {
-                badges.push(
-                  <span
-                    key="prepaid"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "1px 6px",
-                      borderRadius: 999,
-                      backgroundColor: "#EEF4FB",
-                      color: "#1877D6",
-                    }}
-                  >
-                    Prepaid
-                  </span>,
-                );
-              }
-
-              rows.push(
-                <Fragment key={l.id}>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() =>
-                      setExpandedLessonId((prev) =>
-                        prev === l.id ? null : l.id,
-                      )
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setExpandedLessonId((prev) =>
-                          prev === l.id ? null : l.id,
-                        );
-                      }
-                    }}
-                    className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
-                    style={{
-                      padding: "10px 16px",
-                      borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
-                      background: "#fff",
-                    }}
-                  >
-                    {(() => {
-                      const needsAttention =
-                        !isCancelled &&
-                        ((pastEnd && !l.eol_completed) ||
-                          (l.payment_status === "unpaid" || !l.payment_status));
-                      return (
-                        <div
-                          className="relative shrink-0 text-right"
-                          style={{ width: 40 }}
-                        >
-                          {needsAttention && (
-                            <span
-                              aria-label="Needs attention"
-                              style={{
-                                position: "absolute",
-                                top: -2,
-                                left: -2,
-                                width: 8,
-                                height: 8,
-                                borderRadius: 999,
-                                backgroundColor: "#1877D6",
-                              }}
-                            />
-                          )}
-                          <div
-                            className="truncate text-xs font-bold"
-                            style={{
-                              color: timeColor,
-                              textDecoration: isCancelled ? "line-through" : "none",
-                            }}
-                          >
-                            {fmtT(startD)}
-                          </div>
-                          <div
-                            className="truncate text-[10px] text-[#9CA3AF]"
-                            style={{ marginTop: 2 }}
-                          >
-                            {durShort(l.duration_minutes)}
-                          </div>
-                        </div>
-                      );
-                    })()}
-                    <div className="min-w-0">
-                      <div
-                        className="truncate text-[13px] font-semibold"
-                        style={{
-                          color: nameColor,
-                          textDecoration: isCancelled ? "line-through" : "none",
-                        }}
-                      >
-                        {l.pupils?.name ?? "Pupil"}
-                      </div>
-                      {l.pickup_location && (
-                        <div
-                          className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
-                          style={{ marginTop: 2 }}
-                        >
-                          <MapPin size={10} color="#6B7280" />
-                          <span className="truncate">{l.pickup_location}</span>
-                        </div>
-                      )}
-                      {badges.length > 0 && (
-                        <div
-                          className="flex flex-wrap gap-1.5"
-                          style={{ marginTop: 4 }}
-                        >
-                          {badges}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex shrink-0 items-center">
-                      <ChevronRight
-                        size={14}
-                        color="#D1D5DB"
-                        style={{
-                          transform:
-                            expandedLessonId === l.id
-                              ? "rotate(90deg)"
-                              : "rotate(0deg)",
-                          transition: "transform 200ms ease",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {expandedLessonId === l.id && (
-                    <div
-                      style={{
-                        padding: "12px 16px",
-                        background: "#fff",
-                        borderTop: "1px solid #F3F4F6",
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {(() => {
-                        const amount = l.amount_due ?? 0;
-                        const isPrepaid =
-                          Number(l.pupils?.prepaid_hours ?? 0) > 0;
-                        let statusBadge: React.ReactNode;
-                        if (l.payment_status === "paid") {
-                          statusBadge = (
-                            <span
-                              style={{
-                                padding: "3px 8px",
-                                borderRadius: 999,
-                                backgroundColor: "#DCFCE7",
-                                color: "#16A34A",
-                                fontSize: 12,
-                                fontWeight: 600,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                              }}
-                            >
-                              <span>✓</span> Paid
-                            </span>
-                          );
-                        } else if (isPrepaid) {
-                          statusBadge = (
-                            <span
-                              style={{
-                                padding: "3px 8px",
-                                borderRadius: 999,
-                                backgroundColor: "#DBEAFE",
-                                color: "#1D4ED8",
-                                fontSize: 12,
-                                fontWeight: 600,
-                              }}
-                            >
-                              Prepaid
-                            </span>
-                          );
-                        } else if (amount === 0) {
-                          statusBadge = (
-                            <span
-                              style={{
-                                padding: "3px 8px",
-                                borderRadius: 999,
-                                backgroundColor: "#F3F4F6",
-                                color: "#6B7280",
-                                fontSize: 12,
-                                fontWeight: 600,
-                              }}
-                            >
-                              No charge
-                            </span>
-                          );
-                        } else {
-                          statusBadge = (
-                            <span
-                              style={{
-                                padding: "3px 8px",
-                                borderRadius: 999,
-                                backgroundColor: "#FEE2E2",
-                                color: "#DC2626",
-                                fontSize: 12,
-                                fontWeight: 600,
-                              }}
-                            >
-                              Unpaid £{amount.toFixed(2)}
-                            </span>
-                          );
-                        }
-                        return (
-                          <>
-                            <div className="flex items-center gap-2">
-                              {statusBadge}
-                              {l.payment_status === "paid" && amount > 0 && (
-                                <span
-                                  className="text-sm font-semibold"
-                                  style={{ color: "#0B1F3A" }}
-                                >
-                                  £{amount.toFixed(2)}
-                                </span>
-                              )}
-                            </div>
-                            <div
-                              className="flex gap-2 flex-wrap"
-                              style={{ marginTop: 8 }}
-                            >
-                              {l.payment_status !== "paid" &&
-                                amount > 0 &&
-                                !isPrepaid && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      sendPaymentLink(l);
-                                    }}
-                                    className="text-sm font-semibold"
-                                    style={{
-                                      flex: "1 1 auto",
-                                      padding: "8px 12px",
-                                      borderRadius: 8,
-                                      background: "#16A34A",
-                                      color: "#fff",
-                                      minWidth: 120,
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    Send payment link
-                                  </button>
-                                )}
-                              {l.payment_status !== "paid" &&
-                                amount > 0 &&
-                                !isPrepaid && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      markLessonPaid(l);
-                                    }}
-                                    className="text-sm font-semibold"
-                                    style={{
-                                      flex: "1 1 auto",
-                                      padding: "8px 12px",
-                                      borderRadius: 8,
-                                      background: "#0F2044",
-                                      color: "#fff",
-                                      minWidth: 120,
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    Mark paid
-                                  </button>
-                                )}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate({
-                                    to: "/lessons/$id",
-                                    params: { id: l.id },
-                                  });
-                                }}
-                                className="text-sm font-semibold"
-                                style={{
-                                  padding: "8px 12px",
-                                  color: "#1A52A0",
-                                  background: "transparent",
-                                  textAlign: "center",
-                                }}
-                              >
-                                View lesson
-                              </button>
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
-                  )}
-                </Fragment>,
-              );
-              const next = shown[i + 1];
-
-              if (next && (tab !== "next" || ymd(lessonDateTime(next)) === ymd(startD))) {
-                const gapMins = Math.round(
-                  (lStart(next) - lEnd(l)) / 60000,
-                );
-                if (gapMins > 30) {
-                  rows.push(
-                    <div
-                      key={`gap-${l.id}`}
-                      style={{
-                        margin: "2px 16px 6px 16px",
-                        padding: "4px 10px",
-                        fontSize: 11,
-                        color: "#6B7280",
-                        backgroundColor: "#F8F9FB",
-                        borderRadius: 6,
-                      }}
-                    >
-                      {gapMins} mins free
-                    </div>,
-                  );
-                } else {
-                  rows.push(
-                    <div
-                      key={`hr-${l.id}`}
-                      style={{
-                        borderTop: "0.5px solid #F3F4F6",
-                        margin: "0 16px",
-                      }}
-                    />,
-                  );
-                }
-              }
-            });
-
-            if (hiddenCount > 0) {
-              rows.push(
+            {isEmpty ? (
+              <div className="mx-4" style={{
+                background: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 16,
+                padding: "28px 20px",
+                textAlign: "center",
+              }}>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <CalendarIcon size={48} color="#D1D5DB" />
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#6B7280" }}>
+                  No lessons scheduled
+                </div>
+                <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
+                  Your diary is clear for the next 7 days
+                </div>
                 <button
-                  key="view-all"
                   type="button"
-                  onClick={() => navigate({ to: "/schedule" })}
+                  onClick={() => navigate({ to: "/lessons/new" })}
                   style={{
-                    margin: "8px 16px 0 16px",
-                    padding: "6px 0",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "#1877D6",
-                    background: "transparent",
+                    marginTop: 16,
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "#0F2044",
+                    color: "#FFFFFF",
+                    borderRadius: 12,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: 0,
                     cursor: "pointer",
-                    textAlign: "left",
                     fontFamily: "Inter, sans-serif",
                   }}
                 >
-                  View all {tabLessons.length} lessons →
-                </button>,
-              );
-            }
+                  Add a lesson +
+                </button>
+              </div>
+            ) : (
+              <div className="mx-4" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {days.map((day, dayIdx) => {
+                  const paidTotal = day.lessons.reduce(
+                    (s, l) => (l.payment_status === "paid" ? s + Number(l.amount_due ?? 0) : s),
+                    0,
+                  );
+                  const isTodayDay = dayIdx === 0 && day.key === ymd(now);
 
-            return <>{rows}</>;
-          })()
-        )}
-      </div>
+                  return (
+                    <div key={day.key}>
+                      {/* Day header */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8, padding: "0 4px" }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
+                          {day.label}
+                        </div>
+                        <span style={{
+                          background: "#F0F4FF",
+                          color: "#1A52A0",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: "2px 8px",
+                          borderRadius: 999,
+                        }}>
+                          {day.lessons.length} {day.lessons.length === 1 ? "lesson" : "lessons"}
+                        </span>
+                        {paidTotal > 0 && (
+                          <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#16A34A" }}>
+                            £{paidTotal.toFixed(0)}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Day timeline card */}
+                      <div style={{
+                        background: "#FFFFFF",
+                        border: "0.5px solid #E2E6ED",
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        position: "relative",
+                      }}>
+                        {/* dotted spine */}
+                        <div style={{
+                          position: "absolute",
+                          left: 48,
+                          top: 12,
+                          bottom: 12,
+                          borderLeft: "1px dashed #E5E7EB",
+                          pointerEvents: "none",
+                        }} />
+
+                        {day.lessons.map((l, i) => {
+                          const start = lessonDateTime(l);
+                          const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+                          const isCancelled = (l.status ?? "").toLowerCase() === "cancelled";
+                          const isPrepaid = Number(l.pupils?.prepaid_hours ?? 0) > 0;
+                          const amount = Number(l.amount_due ?? 0);
+                          const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+                          const name = l.pupils?.name ?? "Pupil";
+                          const colour = colourFor(name);
+
+                          // Free slot before next lesson (>=60 mins)
+                          const next = day.lessons[i + 1];
+                          const gapMins = next
+                            ? Math.round((lessonDateTime(next).getTime() - end.getTime()) / 60000)
+                            : 0;
+                          const showGap = next && gapMins >= 60;
+                          const potential = showGap ? Math.round((gapMins / 60) * hourlyEst) : 0;
+
+                          let paymentBadge: React.ReactNode = null;
+                          if (isCancelled) {
+                            paymentBadge = (
+                              <span style={{
+                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
+                                borderRadius: 999, background: "#FEE2E2", color: "#DC2626",
+                              }}>Cancelled</span>
+                            );
+                          } else if (paid) {
+                            paymentBadge = (
+                              <span style={{
+                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
+                                borderRadius: 999, background: "#DCFCE7", color: "#166534",
+                              }}>Paid</span>
+                            );
+                          } else if (isPrepaid) {
+                            paymentBadge = (
+                              <span style={{
+                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
+                                borderRadius: 999, background: "#EEF4FB", color: "#1A52A0",
+                              }}>Prepaid</span>
+                            );
+                          } else if (amount > 0) {
+                            paymentBadge = (
+                              <span style={{
+                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
+                                borderRadius: 999, background: "#FEF3C7", color: "#B45309",
+                              }}>£{amount.toFixed(0)}</span>
+                            );
+                          }
+
+                          return (
+                            <Fragment key={l.id}>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() =>
+                                  navigate({ to: "/lessons/$id", params: { id: l.id } })
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    navigate({ to: "/lessons/$id", params: { id: l.id } });
+                                  }
+                                }}
+                                style={{
+                                  minHeight: 68,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  padding: "12px 16px",
+                                  cursor: "pointer",
+                                  position: "relative",
+                                  background: "#fff",
+                                  opacity: isCancelled ? 0.6 : 1,
+                                }}
+                              >
+                                {/* Left: time */}
+                                <div style={{ width: 48, flexShrink: 0 }}>
+                                  <div style={{
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    color: "#6B7280",
+                                    textDecoration: isCancelled ? "line-through" : "none",
+                                  }}>
+                                    {fmtT(start)}
+                                  </div>
+                                </div>
+
+                                {/* Marker */}
+                                <div style={{
+                                  position: "relative",
+                                  width: 12,
+                                  height: 12,
+                                  borderRadius: 999,
+                                  flexShrink: 0,
+                                  marginLeft: -6,
+                                  background: isTodayDay ? "#1A52A0" : "#FFFFFF",
+                                  border: isTodayDay ? "none" : "2px solid #E5E7EB",
+                                  zIndex: 1,
+                                }} />
+
+                                {/* Centre */}
+                                <div style={{
+                                  flex: 1,
+                                  minWidth: 0,
+                                  paddingLeft: 12,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 10,
+                                }}>
+                                  <div style={{
+                                    width: 28,
+                                    height: 28,
+                                    borderRadius: 999,
+                                    background: colour,
+                                    color: "#FFFFFF",
+                                    fontSize: 11,
+                                    fontWeight: 700,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                  }}>
+                                    {initialsOf(name)}
+                                  </div>
+                                  <div style={{ minWidth: 0 }}>
+                                    <div style={{
+                                      fontSize: 13,
+                                      fontWeight: 600,
+                                      color: "#0F2044",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      textDecoration: isCancelled ? "line-through" : "none",
+                                    }}>
+                                      {name}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                                      {l.duration_minutes ?? 60} min
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Right */}
+                                <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                                  {paymentBadge}
+                                  <ChevronRight size={14} color="#D1D5DB" />
+                                </div>
+                              </div>
+
+                              {showGap && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate({ to: "/gaps" });
+                                  }}
+                                  style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    padding: "8px 16px 8px 60px",
+                                    background: "#FFFBEB",
+                                    borderTop: "1px solid #FEF3C7",
+                                    borderBottom: "1px solid #FEF3C7",
+                                    borderLeft: 0,
+                                    borderRight: 0,
+                                    cursor: "pointer",
+                                    fontFamily: "Inter, sans-serif",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  <span style={{ fontSize: 11, fontWeight: 700, color: "#92400E" }}>
+                                    Free · {gapMins >= 60 ? `${Math.floor(gapMins / 60)}h${gapMins % 60 ? ` ${gapMins % 60}m` : ""}` : `${gapMins}m`}
+                                  </span>
+                                  <span style={{ fontSize: 11, fontWeight: 700, color: "#B45309" }}>
+                                    £{potential}
+                                  </span>
+                                  <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#D97706" }}>
+                                    Fill →
+                                  </span>
+                                </button>
+                              )}
+                            </Fragment>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Quick actions */}
+                <div style={{ display: "flex", gap: 8, padding: "0" }}>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/lessons/new" })}
+                    style={{
+                      flex: 1,
+                      padding: "12px 16px",
+                      background: "#0F2044",
+                      color: "#FFFFFF",
+                      borderRadius: 12,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      border: 0,
+                      cursor: "pointer",
+                      fontFamily: "Inter, sans-serif",
+                    }}
+                  >
+                    Add lesson +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/gaps" })}
+                    style={{
+                      flex: 1,
+                      padding: "12px 16px",
+                      background: "#D97706",
+                      color: "#FFFFFF",
+                      borderRadius: 12,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      border: 0,
+                      cursor: "pointer",
+                      fontFamily: "Inter, sans-serif",
+                    }}
+                  >
+                    Fill My Slots
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       <EndOfDayBanner />
 
