@@ -413,6 +413,16 @@ function GapsPage() {
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const normalisedWorkDays = workDays.map(normaliseDayName);
+        console.log("[gaps] working days:", workDays, "->", normalisedWorkDays);
+        console.log("[gaps] working hours:", workStart, workEnd, "buffer:", buffer);
+        console.log(
+          "[gaps] lessons fetched:",
+          lessonsRes.data?.length ?? 0,
+          lessonsRes.data,
+        );
+        if (lessonsRes.error)
+          console.error("[gaps] lessons fetch error:", lessonsRes.error);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
@@ -444,7 +454,17 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const isWorkDay = workDays.includes(dayName);
+          const isWorkDay = normalisedWorkDays.includes(dayName);
+          console.log(
+            "[gaps] date:",
+            iso,
+            "day:",
+            dayName,
+            "isWorkDay:",
+            isWorkDay,
+            "lessons:",
+            (byDay.get(iso) ?? []).length,
+          );
           const dayLessons = (byDay.get(iso) ?? []).slice().sort(
             (a, b) => a.start - b.start,
           );
