@@ -824,6 +824,94 @@ function SchedulePage() {
         );
       }
     } else {
+      const isPast = d.getTime() < today.getTime();
+      const isToday = d.getTime() === today.getTime();
+      const nowMs = Date.now();
+      const dayWindowStart = new Date(d);
+      dayWindowStart.setHours(9, 0, 0, 0);
+      const dayWindowEnd = new Date(d);
+      dayWindowEnd.setHours(18, 0, 0, 0);
+
+      const renderGapRow = (
+        key: string,
+        startMs: number,
+        endMs: number,
+      ) => {
+        const gapMins = Math.round((endMs - startMs) / 60000);
+        if (gapMins <= 30) return null;
+        if (isPast) return null;
+        if (isToday && endMs <= nowMs) return null;
+        const displayStart = isToday && startMs < nowMs ? nowMs : startMs;
+        const displayMins = Math.round((endMs - displayStart) / 60000);
+        if (displayMins <= 30) return null;
+        return (
+          <div
+            key={key}
+            style={{
+              margin: "6px 12px",
+              background: "linear-gradient(180deg, #F8FAFC 0%, #EAF3FF 100%)",
+              border: "1px solid #EEF2F7",
+              borderRadius: 14,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#3B82F6",
+                flexShrink: 0,
+              }}
+            >
+              <Sparkles size={16} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", ...POPPINS }}>
+                {displayMins >= 60
+                  ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
+                  : `${displayMins} mins free`}
+              </div>
+              <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 2 }}>
+                {formatTimeFromDate(new Date(displayStart))} –{" "}
+                {formatTimeFromDate(new Date(endMs))} · tap to fill
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate({ to: "/gaps" });
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 4,
+                cursor: "pointer",
+              }}
+            >
+              <ChevronRight size={18} color="#94A3B8" />
+            </button>
+          </div>
+        );
+      };
+
+      const firstStartMs = lessonStart(items[0]).getTime();
+      const preGap = renderGapRow(
+        `gap-pre-${items[0].id}`,
+        dayWindowStart.getTime(),
+        firstStartMs,
+      );
+      if (preGap) rows.push(preGap);
+
       items.forEach((l, i) => {
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
@@ -917,6 +1005,15 @@ function SchedulePage() {
           }
         }
       });
+
+      const lastLesson = items[items.length - 1];
+      const lastEndMs = lessonEnd(lastLesson).getTime();
+      const postGap = renderGapRow(
+        `gap-post-${lastLesson.id}`,
+        lastEndMs,
+        dayWindowEnd.getTime(),
+      );
+      if (postGap) rows.push(postGap);
     }
 
     void isFirst;
