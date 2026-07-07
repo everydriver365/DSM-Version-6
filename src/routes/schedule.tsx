@@ -291,17 +291,25 @@ function SchedulePage() {
         const token = (await supabase.auth.getSession()).data.session?.access_token;
         if (token) {
           const pupilRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour`,
+            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour,buffer_before_minutes,buffer_after_minutes`,
             {
               headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
             },
           );
           const pupilData = await pupilRes.json();
           const map: Record<string, string> = {};
+          const bufMap: Record<string, { before: number | null; after: number | null }> = {};
           (pupilData || []).forEach((p: any) => {
             if (p.calendar_colour) map[p.id] = p.calendar_colour;
+            bufMap[p.id] = {
+              before: p.buffer_before_minutes ?? null,
+              after: p.buffer_after_minutes ?? null,
+            };
           });
-          if (!cancelled) setColourMap(map);
+          if (!cancelled) {
+            setColourMap(map);
+            setPupilBufferMap(bufMap);
+          }
         }
       }
     })();
