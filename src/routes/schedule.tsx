@@ -365,12 +365,12 @@ function SchedulePage() {
     return map;
   }, [lessons, pickerStart]);
 
-  const days = useMemo(() => {
+  const pickerDays = useMemo(() => {
     const out: Date[] = [];
-    const total = Math.round((rangeEnd.getTime() - rangeStart.getTime()) / 86400000) + 1;
-    for (let i = 0; i < total; i++) out.push(addDays(rangeStart, i));
+    const total = Math.round((pickerEnd.getTime() - pickerStart.getTime()) / 86400000) + 1;
+    for (let i = 0; i < total; i++) out.push(addDays(pickerStart, i));
     return out;
-  }, [rangeStart, rangeEnd]);
+  }, [pickerStart, pickerEnd]);
 
   const currentId = useMemo(() => {
     if (!lessons) return null;
