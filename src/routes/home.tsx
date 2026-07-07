@@ -2992,12 +2992,6 @@ function HomePage() {
                     const AVATAR_PALETTE = ["#1A52A0", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
                     const pupils = outstandingBreakdown.slice(0, 5);
                     const extraPupils = Math.max(0, activePupilsCount - pupils.length);
-                    const slots: Array<{ label: string }> = [];
-                    for (let mins = sh * 60 + sm; mins + 60 <= eh * 60 + em; mins += 60) {
-                      slots.push({ label: fmt12(Math.floor(mins / 60), mins % 60) });
-                    }
-                    const shownSlots = slots.slice(0, 4);
-                    const extraSlots = Math.max(0, slots.length - shownSlots.length);
                     return (
                       <div style={{
                         background: "#FFFFFF", border: "0.5px solid #E2E6ED",
@@ -3057,29 +3051,6 @@ function HomePage() {
                             ) : (
                               <div style={{ fontSize: 13, color: "#9CA3AF" }}>Your active pupils</div>
                             )}
-                          </div>
-                          <div style={{ marginBottom: 16 }}>
-                            <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
-                              Available slots today:
-                            </div>
-                            <div style={{ display: "flex", flexWrap: "wrap" }}>
-                              {shownSlots.map((s) => (
-                                <button key={s.label} onClick={() => navigate({ to: "/gaps" })} style={{
-                                  background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
-                                  padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
-                                  marginRight: 6, marginBottom: 6, cursor: "pointer",
-                                  fontFamily: "Inter, sans-serif",
-                                }}>{s.label}</button>
-                              ))}
-                              {extraSlots > 0 && (
-                                <button onClick={() => navigate({ to: "/gaps" })} style={{
-                                  background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
-                                  padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
-                                  marginRight: 6, marginBottom: 6, cursor: "pointer",
-                                  fontFamily: "Inter, sans-serif",
-                                }}>+{extraSlots} more</button>
-                              )}
-                            </div>
                           </div>
                           <div style={{ display: "flex", gap: 8 }}>
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
@@ -3996,12 +3967,6 @@ function HomePage() {
               };
               const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
               const fmtWindow = todayWorks ? `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")} – ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}` : "—";
-              const slots: Array<{ label: string }> = [];
-              for (let mins = sh * 60 + sm; mins + 60 <= eh * 60 + em; mins += 60) {
-                slots.push({ label: fmt12(Math.floor(mins / 60), mins % 60) });
-              }
-              const shownSlots = slots.slice(0, 3);
-              const extraSlots = Math.max(0, slots.length - shownSlots.length);
               return (
                 <div style={{
                   margin: "4px 16px 12px",
@@ -4048,28 +4013,6 @@ function HomePage() {
                     ))}
                   </div>
 
-                  {/* Suggested slots */}
-                  {shownSlots.length > 0 && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>Suggested slots</span>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {shownSlots.map((s) => (
-                          <button key={s.label} onClick={() => navigate({ to: "/gaps" })} style={{
-                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
-                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#0F2044",
-                            cursor: "pointer", fontFamily: "Inter, sans-serif",
-                          }}>{s.label}</button>
-                        ))}
-                        {extraSlots > 0 && (
-                          <button onClick={() => navigate({ to: "/gaps" })} style={{
-                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
-                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#6B7280",
-                            cursor: "pointer", fontFamily: "Inter, sans-serif",
-                          }}>+{extraSlots} more</button>
-                        )}
-                      </div>
-                    </div>
-                  )}
 
                   {/* Actions */}
                   <div style={{ display: "flex", gap: 8 }}>
