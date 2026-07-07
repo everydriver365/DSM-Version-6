@@ -3995,113 +3995,113 @@ function HomePage() {
                 return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
               };
               const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
-              const AVATAR_PALETTE = ["#1A52A0", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
-              const pupils = outstandingBreakdown.slice(0, 5);
-              const extraPupils = Math.max(0, activePupilsCount - pupils.length);
+              const fmtWindow = todayWorks ? `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")} – ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}` : "—";
               const slots: Array<{ label: string }> = [];
               for (let mins = sh * 60 + sm; mins + 60 <= eh * 60 + em; mins += 60) {
                 slots.push({ label: fmt12(Math.floor(mins / 60), mins % 60) });
               }
-              const shownSlots = slots.slice(0, 4);
+              const shownSlots = slots.slice(0, 3);
               const extraSlots = Math.max(0, slots.length - shownSlots.length);
               return (
                 <div style={{
-                  background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-                  borderRadius: 20, overflow: "hidden", margin: "8px 16px 12px",
+                  margin: "4px 16px 12px",
+                  padding: 16,
+                  background: "#FFFFFF",
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 16,
                   fontFamily: "Inter, sans-serif",
+                  display: "flex", flexDirection: "column", gap: 16,
                 }}>
-                  <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1A52A0)" }} />
-                  <div style={{ padding: 20 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                      <div style={{ fontWeight: 900, fontSize: 18, color: "#0F2044" }}>📅 Free day today</div>
-                      <div style={{ fontSize: 13, color: "#9CA3AF" }}>{workingLabel}</div>
-                    </div>
-                    <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                      {[
-                        { value: `${availableHours} hrs`, label: "Available", color: "#0F2044" },
-                        { value: `£${potential}`, label: "Potential", color: "#16A34A" },
-                        { value: `${activePupilsCount}`, label: "Pupils", color: "#1A52A0" },
-                      ].map((s) => (
-                        <div key={s.label} style={{
-                          flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-                          borderRadius: 10, padding: "10px 14px", textAlign: "center",
-                        }}>
-                          <div style={{ fontWeight: 700, fontSize: 18, color: s.color }}>{s.value}</div>
-                          <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.label}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ marginBottom: 16 }}>
-                      <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
-                        Pupils who may be free today:
+                  {/* Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>Free day today</div>
+                      <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                        {todayWorks ? `You have ${availableHours} hrs of open time` : "Not scheduled to work"}
                       </div>
-                      {pupils.length > 0 ? (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          {pupils.map((p, i) => {
-                            const initials = (p.firstName || p.name || "?")
-                              .split(" ").map((s) => s[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
-                            return (
-                              <div key={p.pupilId} style={{
-                                width: 36, height: 36, borderRadius: "50%",
-                                background: AVATAR_PALETTE[i % AVATAR_PALETTE.length],
-                                color: "#FFFFFF", fontWeight: 700, fontSize: 13,
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                marginLeft: i === 0 ? 0 : -10,
-                                border: "2px solid #FFFFFF",
-                              }}>{initials}</div>
-                            );
-                          })}
-                          {extraPupils > 0 && (
-                            <div style={{
-                              width: 36, height: 36, borderRadius: "50%", background: "#E5E7EB",
-                              color: "#4B5563", fontWeight: 700, fontSize: 12,
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              marginLeft: -10, border: "2px solid #FFFFFF",
-                            }}>+{extraPupils}</div>
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ fontSize: 13, color: "#9CA3AF" }}>Your active pupils</div>
-                      )}
                     </div>
-                    <div style={{ marginBottom: 16 }}>
-                      <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
-                        Available slots today:
+                    <div style={{ background: "rgba(0,181,165,0.10)", padding: 8, borderRadius: 10, display: "flex" }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B5A5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Stats row */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                    {[
+                      { label: "Window", value: fmtWindow, color: "#0F2044" },
+                      { label: "Potential", value: `£${potential}`, color: "#00B5A5" },
+                      { label: "Pupils", value: `${activePupilsCount} active`, color: "#0F2044" },
+                    ].map((s, i) => (
+                      <div key={s.label} style={{
+                        display: "flex", flexDirection: "column",
+                        borderLeft: i === 0 ? "none" : "1px solid #F1F3F7",
+                        paddingLeft: i === 0 ? 0 : 12,
+                      }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>{s.label}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: s.color, marginTop: 2 }}>{s.value}</span>
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap" }}>
+                    ))}
+                  </div>
+
+                  {/* Suggested slots */}
+                  {shownSlots.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>Suggested slots</span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                         {shownSlots.map((s) => (
                           <button key={s.label} onClick={() => navigate({ to: "/gaps" })} style={{
-                            background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
-                            padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
-                            marginRight: 6, marginBottom: 6, cursor: "pointer",
-                            fontFamily: "Inter, sans-serif",
+                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
+                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#0F2044",
+                            cursor: "pointer", fontFamily: "Inter, sans-serif",
                           }}>{s.label}</button>
                         ))}
                         {extraSlots > 0 && (
                           <button onClick={() => navigate({ to: "/gaps" })} style={{
-                            background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600,
-                            padding: "6px 12px", borderRadius: 999, border: "0.5px solid #BFDBFE",
-                            marginRight: 6, marginBottom: 6, cursor: "pointer",
-                            fontFamily: "Inter, sans-serif",
+                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
+                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#6B7280",
+                            cursor: "pointer", fontFamily: "Inter, sans-serif",
                           }}>+{extraSlots} more</button>
                         )}
                       </div>
                     </div>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() => navigate({ to: "/gaps" })} style={{
-                        flex: 1, background: "#0F2044", color: "#FFFFFF",
-                        padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
-                        border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
-                      }}>Fill My Slots →</button>
-                      <button onClick={() => {
-                        window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
-                      }} style={{
-                        flex: 1, background: "#00B5A5", color: "#FFFFFF",
-                        padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
-                        border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
-                      }}>Broadcast message</button>
-                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => navigate({ to: "/gaps" })} style={{
+                      flex: 1, background: "#1877D6", color: "#FFFFFF",
+                      padding: "10px 0", borderRadius: 10, fontWeight: 600, fontSize: 13,
+                      border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                    }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Fill slots
+                    </button>
+                    <button onClick={() => {
+                      window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
+                    }} style={{
+                      flex: 1, background: "#FFFFFF", color: "#0F2044",
+                      padding: "10px 0", borderRadius: 10, fontWeight: 600, fontSize: 13,
+                      border: "1px solid #E5E7EB", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                    }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 8a3 3 0 0 0-3-3H5a2 2 0 0 0-2 2v14l4-4h8a3 3 0 0 0 3-3V8z" />
+                      </svg>
+                      Broadcast
+                    </button>
                   </div>
+                  {!todayWorks && (
+                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: -4 }}>Working hours: {workingLabel}</div>
+                  )}
                 </div>
               );
             })()
