@@ -315,6 +315,7 @@ function scoreSlot(
 
 function GapsPage() {
   const navigate = useNavigate();
+  console.log("[gaps] component mounted");
   const [userId, setUserId] = useState<string | null>(null);
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
@@ -338,6 +339,7 @@ function GapsPage() {
   const [hourlyRate, setHourlyRate] = useState<number>(0);
 
   useEffect(() => {
+    console.log("[gaps] slot-detection effect fired; userId =", userId);
     if (!userId) return;
     let cancelled = false;
     (async () => {
@@ -366,6 +368,18 @@ function GapsPage() {
             .maybeSingle(),
         ]);
         if (cancelled) return;
+        console.log(
+          "[gaps] lessons fetched:",
+          (lessonsRes.data ?? []).length,
+          "err:",
+          lessonsRes.error,
+        );
+        console.log(
+          "[gaps] instructor row:",
+          instrRes.data,
+          "err:",
+          instrRes.error,
+        );
 
         const instr = (instrRes.data ?? {}) as {
           working_hours_start?: string | null;
@@ -380,6 +394,7 @@ function GapsPage() {
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd, "buffer:", buffer);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
@@ -500,6 +515,13 @@ function GapsPage() {
         if (!cancelled) {
           setFreeSlots(slots);
           setDayGroups(groups);
+          console.log(
+            "[gaps] detected",
+            slots.length,
+            "free slots across",
+            groups.filter((g) => g.slots.length > 0).length,
+            "days",
+          );
         }
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
@@ -517,7 +539,10 @@ function GapsPage() {
   }, [userId, reloadKey]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+    supabase.auth.getUser().then(({ data, error }) => {
+      console.log("[gaps] getUser →", data?.user?.id, "err:", error);
+      setUserId(data.user?.id ?? null);
+    });
   }, []);
 
   useEffect(() => {
