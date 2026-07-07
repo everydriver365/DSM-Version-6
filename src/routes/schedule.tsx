@@ -338,7 +338,7 @@ function SchedulePage() {
     return () => {
       cancelled = true;
     };
-  }, [rangeStart, rangeEnd]);
+  }, [pickerStart, pickerEnd]);
 
 
   const lessonsByDate = useMemo(() => {
