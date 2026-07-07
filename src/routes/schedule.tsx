@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
+import { Calendar as ShadcnCalendar } from "../components/ui/calendar";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
