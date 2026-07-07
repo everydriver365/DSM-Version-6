@@ -1900,7 +1900,7 @@ function HomePage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url")
+        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal")
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
@@ -1933,6 +1933,10 @@ function HomePage() {
       setFirstName(capitalize(first));
       setInstructorFullName(fullName);
       setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
+      const wlGoal = Number((instructor as any)?.weekly_lesson_goal);
+      const weGoal = Number((instructor as any)?.weekly_earnings_goal);
+      if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
+      if (Number.isFinite(weGoal) && weGoal > 0) setWeeklyEarningsGoal(weGoal);
       setAuthChecked(true);
     })();
   }, []);
