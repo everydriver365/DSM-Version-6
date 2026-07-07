@@ -235,6 +235,35 @@ function SchedulePage() {
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
+  const [matchPupils, setMatchPupils] = useState<any[]>([]);
+  const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      try {
+        const [p, a] = await Promise.all([
+          supabase
+            .from("pupils")
+            .select("id,name,first_name,calendar_colour")
+            .eq("instructor_id", user.id)
+            .eq("status", "active")
+            .is("deleted_at", null)
+            .limit(50),
+          supabase
+            .from("pupil_ready_to_learn_settings")
+            .select("*")
+            .eq("instructor_id", user.id),
+        ]);
+        if (cancelled) return;
+        setMatchPupils(((p as any).data as any[]) ?? []);
+        setMatchAvailability(((a as any).data as any[]) ?? []);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
 
   useEffect(() => {
