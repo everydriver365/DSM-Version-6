@@ -3996,12 +3996,6 @@ function HomePage() {
               };
               const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
               const fmtWindow = todayWorks ? `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")} – ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}` : "—";
-              const slots: Array<{ label: string }> = [];
-              for (let mins = sh * 60 + sm; mins + 60 <= eh * 60 + em; mins += 60) {
-                slots.push({ label: fmt12(Math.floor(mins / 60), mins % 60) });
-              }
-              const shownSlots = slots.slice(0, 3);
-              const extraSlots = Math.max(0, slots.length - shownSlots.length);
               return (
                 <div style={{
                   margin: "4px 16px 12px",
@@ -4048,28 +4042,6 @@ function HomePage() {
                     ))}
                   </div>
 
-                  {/* Suggested slots */}
-                  {shownSlots.length > 0 && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>Suggested slots</span>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {shownSlots.map((s) => (
-                          <button key={s.label} onClick={() => navigate({ to: "/gaps" })} style={{
-                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
-                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#0F2044",
-                            cursor: "pointer", fontFamily: "Inter, sans-serif",
-                          }}>{s.label}</button>
-                        ))}
-                        {extraSlots > 0 && (
-                          <button onClick={() => navigate({ to: "/gaps" })} style={{
-                            padding: "6px 12px", background: "#F7F9FC", border: "0.5px solid #EEF2F7",
-                            borderRadius: 999, fontSize: 12, fontWeight: 500, color: "#6B7280",
-                            cursor: "pointer", fontFamily: "Inter, sans-serif",
-                          }}>+{extraSlots} more</button>
-                        )}
-                      </div>
-                    </div>
-                  )}
 
                   {/* Actions */}
                   <div style={{ display: "flex", gap: 8 }}>
