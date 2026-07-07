@@ -1978,10 +1978,11 @@ function HomePage() {
       );
 
       // `lessons` state keeps its previous behaviour for panels that expect
-      // active/scheduled lessons (not cancelled, not completed).
+      // active/scheduled lessons (not cancelled).
       const activeLessons = allLessons.filter(
-        (l: any) => !["cancelled", "completed"].includes(l.status),
+        (l: any) => !["cancelled"].includes(l.status),
       );
+      setAllLessons(allLessons);
       setLessons(activeLessons as unknown as LessonRow[]);
 
       // ---- Next lesson (unbounded — may be beyond the 60-day window) ----
