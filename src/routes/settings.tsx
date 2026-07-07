@@ -438,6 +438,7 @@ function SettingsPage() {
         hourly_rate: hourlyRate,
         default_lesson_duration_minutes: defaultDuration,
         lesson_buffer_minutes: bufferMinutes,
+        min_gap_minutes: minGapMinutes,
       })
       .eq("id", userId);
     setSavingRates(false);
@@ -445,6 +446,7 @@ function SettingsPage() {
       console.error("[settings] save rates error", error);
       toast.error("Failed to save rates");
     } else {
+      writeMinGapMinutes(minGapMinutes);
       toast.success("Saved ✓");
     }
   }
