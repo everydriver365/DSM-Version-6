@@ -209,6 +209,11 @@ function SchedulePage() {
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
+  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
+  const [pupilBufferMap, setPupilBufferMap] = useState<
+    Record<string, { before: number | null; after: number | null }>
+  >({});
 
   useEffect(() => {
     const sync = () => setMinGapMinutes(readMinGapMinutes());
@@ -228,7 +233,7 @@ function SchedulePage() {
       if (!uid) return;
       const { data, error } = await supabase
         .from("instructors")
-        .select("min_gap_minutes")
+        .select("min_gap_minutes, lesson_buffer_before, lesson_buffer_after")
         .eq("id", uid)
         .maybeSingle();
       if (cancelled || error || !data) return;
@@ -237,6 +242,10 @@ function SchedulePage() {
         setMinGapMinutes(v);
         writeMinGapMinutes(v);
       }
+      const bb = (data as unknown as { lesson_buffer_before?: number }).lesson_buffer_before;
+      const ba = (data as unknown as { lesson_buffer_after?: number }).lesson_buffer_after;
+      if (typeof bb === "number") setInstructorBufferBefore(bb);
+      if (typeof ba === "number") setInstructorBufferAfter(ba);
     })();
     return () => { cancelled = true; };
   }, []);
@@ -282,17 +291,25 @@ function SchedulePage() {
         const token = (await supabase.auth.getSession()).data.session?.access_token;
         if (token) {
           const pupilRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour`,
+            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour,buffer_before_minutes,buffer_after_minutes`,
             {
               headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
             },
           );
           const pupilData = await pupilRes.json();
           const map: Record<string, string> = {};
+          const bufMap: Record<string, { before: number | null; after: number | null }> = {};
           (pupilData || []).forEach((p: any) => {
             if (p.calendar_colour) map[p.id] = p.calendar_colour;
+            bufMap[p.id] = {
+              before: p.buffer_before_minutes ?? null,
+              after: p.buffer_after_minutes ?? null,
+            };
           });
-          if (!cancelled) setColourMap(map);
+          if (!cancelled) {
+            setColourMap(map);
+            setPupilBufferMap(bufMap);
+          }
         }
       }
     })();
@@ -865,18 +882,35 @@ function SchedulePage() {
       const dayWindowEnd = new Date(d);
       dayWindowEnd.setHours(18, 0, 0, 0);
 
+      // Resolve per-lesson buffers (pupil override → instructor default).
+      const resolveBuf = (pupilId: string | null | undefined, type: "before" | "after") => {
+        if (pupilId && pupilBufferMap[pupilId]) {
+          const v = type === "before"
+            ? pupilBufferMap[pupilId].before
+            : pupilBufferMap[pupilId].after;
+          if (v != null) return v;
+        }
+        return type === "before" ? instructorBufferBefore : instructorBufferAfter;
+      };
+      // Total buffer reserved around any proposed slot = existing lesson buffer + new lesson's own default buffer.
+      const minUsable = 60; // usable window must fit ≥60 min lesson
+
       const renderGapRow = (
         key: string,
         startMs: number,
         endMs: number,
+        bufferTotalMins = 0,
       ) => {
         const gapMins = Math.round((endMs - startMs) / 60000);
-        if (gapMins < minGapMinutes) return null;
+        const threshold = Math.max(minGapMinutes, minUsable);
+        if (gapMins < threshold) return null;
         if (isPast) return null;
         if (isToday && endMs <= nowMs) return null;
-        const displayStart = isToday && startMs < nowMs ? nowMs : startMs;
+        // On today, don't surface slots that start in the past; give at least 30 mins from now.
+        const minStartMs = isToday ? nowMs + 30 * 60000 : startMs;
+        const displayStart = Math.max(startMs, minStartMs);
         const displayMins = Math.round((endMs - displayStart) / 60000);
-        if (displayMins < minGapMinutes) return null;
+        if (displayMins < threshold) return null;
         return (
           <div
             key={key}
@@ -909,13 +943,16 @@ function SchedulePage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", ...POPPINS }}>
-                {displayMins >= 60
-                  ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
-                  : `${displayMins} mins free`}
+                {bufferTotalMins > 0
+                  ? `${Math.floor(displayMins / 60)}h${displayMins % 60 ? ` ${displayMins % 60}m` : ""} usable`
+                  : displayMins >= 60
+                    ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
+                    : `${displayMins} mins free`}
               </div>
               <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 2 }}>
                 {formatTimeFromDate(new Date(displayStart))} –{" "}
                 {formatTimeFromDate(new Date(endMs))} · tap to fill
+                {bufferTotalMins > 0 ? ` · ${bufferTotalMins} min buffer` : ""}
               </div>
             </div>
             <button
@@ -937,22 +974,35 @@ function SchedulePage() {
         );
       };
 
-      const firstStartMs = lessonStart(items[0]).getTime();
-      const preGap = renderGapRow(
-        `gap-pre-${items[0].id}`,
-        dayWindowStart.getTime(),
-        firstStartMs,
-      );
-      if (preGap) rows.push(preGap);
+      // Pre-gap: reserve the first lesson's before-buffer AND the new lesson's own after-buffer.
+      {
+        const firstStartMs = lessonStart(items[0]).getTime();
+        const firstBufBefore = resolveBuf(items[0].pupil_id, "before");
+        const rightReserveMin = firstBufBefore + instructorBufferAfter;
+        const usableEndMs = firstStartMs - rightReserveMin * 60000;
+        const preGap = renderGapRow(
+          `gap-pre-${items[0].id}`,
+          dayWindowStart.getTime(),
+          usableEndMs,
+          rightReserveMin,
+        );
+        if (preGap) rows.push(preGap);
+      }
 
       items.forEach((l, i) => {
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
         if (next) {
-          const gapMins = Math.round(
-            (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
-          );
-          if (gapMins >= minGapMinutes) {
+          const lBufAfter = resolveBuf(l.pupil_id, "after");
+          const nBufBefore = resolveBuf(next.pupil_id, "before");
+          // Reserve existing lessons' buffers on both sides + new lesson's own buffers.
+          const leftReserveMin = lBufAfter + instructorBufferBefore;
+          const rightReserveMin = nBufBefore + instructorBufferAfter;
+          const bufferTotalMin = leftReserveMin + rightReserveMin;
+          const usableStartMs = lessonEnd(l).getTime() + leftReserveMin * 60000;
+          const usableEndMs = lessonStart(next).getTime() - rightReserveMin * 60000;
+          const usableMins = Math.round((usableEndMs - usableStartMs) / 60000);
+          if (usableMins >= Math.max(minGapMinutes, 60)) {
             rows.push(
               <div
                 key={`gap-${l.id}`}
@@ -993,7 +1043,9 @@ function SchedulePage() {
                       ...POPPINS,
                     }}
                   >
-                    {gapMins} mins free
+                    {bufferTotalMin > 0
+                      ? `${Math.floor(usableMins / 60)}h${usableMins % 60 ? ` ${usableMins % 60}m` : ""} usable`
+                      : `${usableMins} mins free`}
                   </div>
                   <div
                     style={{
@@ -1003,8 +1055,9 @@ function SchedulePage() {
                       marginTop: 2,
                     }}
                   >
-                    {formatTimeFromDate(lessonEnd(l))} –{" "}
-                    {formatTimeFromDate(lessonStart(next))} · tap to fill
+                    {formatTimeFromDate(new Date(usableStartMs))} –{" "}
+                    {formatTimeFromDate(new Date(usableEndMs))} · tap to fill
+                    {bufferTotalMin > 0 ? ` · ${bufferTotalMin} min buffer` : ""}
                   </div>
                 </div>
                 <button
@@ -1039,14 +1092,21 @@ function SchedulePage() {
         }
       });
 
-      const lastLesson = items[items.length - 1];
-      const lastEndMs = lessonEnd(lastLesson).getTime();
-      const postGap = renderGapRow(
-        `gap-post-${lastLesson.id}`,
-        lastEndMs,
-        dayWindowEnd.getTime(),
-      );
-      if (postGap) rows.push(postGap);
+      // Post-gap: reserve the last lesson's after-buffer AND the new lesson's own before-buffer.
+      {
+        const lastLesson = items[items.length - 1];
+        const lastEndMs = lessonEnd(lastLesson).getTime();
+        const lastBufAfter = resolveBuf(lastLesson.pupil_id, "after");
+        const leftReserveMin = lastBufAfter + instructorBufferBefore;
+        const usableStartMs = lastEndMs + leftReserveMin * 60000;
+        const postGap = renderGapRow(
+          `gap-post-${lastLesson.id}`,
+          usableStartMs,
+          dayWindowEnd.getTime(),
+          leftReserveMin,
+        );
+        if (postGap) rows.push(postGap);
+      }
     }
 
     void isFirst;
