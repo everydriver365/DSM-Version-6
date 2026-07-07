@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
-import { readMinGapMinutes } from "../lib/gapPrefs";
+import { readMinGapMinutes, writeMinGapMinutes } from "../lib/gapPrefs";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -218,6 +218,27 @@ function SchedulePage() {
       window.removeEventListener("min-gap-minutes-changed", sync);
       window.removeEventListener("storage", sync);
     };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("min_gap_minutes")
+        .eq("id", uid)
+        .maybeSingle();
+      if (cancelled || error || !data) return;
+      const v = (data as unknown as { min_gap_minutes?: number }).min_gap_minutes;
+      if (typeof v === "number") {
+        setMinGapMinutes(v);
+        writeMinGapMinutes(v);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
 

@@ -262,7 +262,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -279,6 +279,12 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
+      }
+      const mgm = (instructor as unknown as { min_gap_minutes?: number } | null)?.min_gap_minutes;
+      if (typeof mgm === "number") {
+        const v = mgm;
+        setMinGapMinutes(v);
+        writeMinGapMinutes(v);
       }
       if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
         setHomePostcode((instructor as { home_postcode: string }).home_postcode);
@@ -432,6 +438,7 @@ function SettingsPage() {
         hourly_rate: hourlyRate,
         default_lesson_duration_minutes: defaultDuration,
         lesson_buffer_minutes: bufferMinutes,
+        min_gap_minutes: minGapMinutes,
       })
       .eq("id", userId);
     setSavingRates(false);
@@ -439,6 +446,7 @@ function SettingsPage() {
       console.error("[settings] save rates error", error);
       toast.error("Failed to save rates");
     } else {
+      writeMinGapMinutes(minGapMinutes);
       toast.success("Saved ✓");
     }
   }
@@ -863,11 +871,7 @@ function SettingsPage() {
                 </div>
                 <select
                   value={minGapMinutes}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    setMinGapMinutes(v);
-                    writeMinGapMinutes(v);
-                  }}
+                  onChange={(e) => setMinGapMinutes(parseInt(e.target.value, 10))}
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
