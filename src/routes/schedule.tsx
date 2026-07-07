@@ -928,29 +928,76 @@ function SchedulePage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pb-safe relative" style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}>
-      {/* Top bar */}
+    <div
+      className="min-h-screen pb-24 pb-safe relative"
+      style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}
+    >
+      {/* Top bar — light theme */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="sticky top-0 z-40"
+        style={{
+          background: "#FFFFFF",
+          borderBottom: "0.5px solid #E2E6ED",
+          padding: "14px 20px 12px",
+        }}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold text-white" style={POPPINS}>
-            DSM
-          </span>
-          <span className="text-[15px] text-white" style={POPPINS}>
-            Schedule
-          </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={() => navigate({ to: "/home" })}
+            aria-label="Back"
+            style={{
+              background: "#F1F5F9",
+              border: "none",
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#0F2044",
+            }}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div style={{ flex: 1 }}>
+            <h1
+              style={{
+                ...POPPINS,
+                color: "#0F2044",
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                margin: 0,
+                lineHeight: 1.1,
+              }}
+            >
+              Schedule
+            </h1>
+            <div style={{ color: "#94A3B8", fontSize: 13, marginTop: 2 }}>
+              Your lessons at a glance
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-label="Open calendar"
+            onClick={() => navigate({ to: "/diary" })}
+            style={{
+              background: "#F1F5F9",
+              border: "none",
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#0F2044",
+            }}
+          >
+            <CalendarIcon size={18} />
+          </button>
         </div>
-        <button
-          type="button"
-          aria-label="Open calendar"
-          onClick={() => navigate({ to: "/diary" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <CalendarIcon size={20} color="#FFFFFF" />
-        </button>
       </div>
 
       {lessons === null ? (
@@ -969,7 +1016,9 @@ function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div>{days.map((d, i) => renderDay(d, i === 0))}</div>
+        <div style={{ paddingTop: 16 }}>
+          {days.map((d, i) => renderDay(d, i === 0))}
+        </div>
       )}
 
       {lessons !== null && (
