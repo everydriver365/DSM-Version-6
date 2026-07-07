@@ -1381,6 +1381,9 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
+  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
+  const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
   const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
@@ -1883,7 +1886,7 @@ function HomePage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal")
+        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal, lesson_buffer_before, lesson_buffer_after")
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
@@ -1920,6 +1923,10 @@ function HomePage() {
       const weGoal = Number((instructor as any)?.weekly_earnings_goal);
       if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
       if (Number.isFinite(weGoal) && weGoal > 0) setWeeklyEarningsGoal(weGoal);
+      const ibb = Number((instructor as any)?.lesson_buffer_before);
+      const iba = Number((instructor as any)?.lesson_buffer_after);
+      if (Number.isFinite(ibb)) setInstructorBufferBefore(ibb);
+      if (Number.isFinite(iba)) setInstructorBufferAfter(iba);
       setAuthChecked(true);
     })();
   }, []);
@@ -2024,7 +2031,7 @@ function HomePage() {
       const { data: pupilsData } = await supabase
         .from("pupils")
         .select(
-          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at"
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes"
         )
         .eq("instructor_id", userId);
       setActivePupilsCount(
@@ -2036,6 +2043,14 @@ function HomePage() {
 
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
+      const bufMap: Record<string, { before: number | null; after: number | null }> = {};
+      (pupilsData || []).forEach((p: any) => {
+        bufMap[p.id] = {
+          before: p.buffer_before_minutes ?? null,
+          after: p.buffer_after_minutes ?? null,
+        };
+      });
+      setPupilBufferMap(bufMap);
       const prepaidPupilIds = new Set<string>(
         (pupilsData || [])
           .filter((p: any) => Number(p.prepaid_hours || 0) > 0)
@@ -2333,6 +2348,12 @@ function HomePage() {
       const [eh, em] = endTimeStr.split(":").map(Number);
       return d.getHours() * 60 + d.getMinutes() < eh * 60 + em;
     };
+    const resolveAfter = (pupilId: string | null | undefined) => {
+      if (pupilId && pupilBufferMap[pupilId]?.after != null) {
+        return pupilBufferMap[pupilId].after as number;
+      }
+      return instructorBufferAfter;
+    };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
     const tomorrowWorks = workingHours
       ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
@@ -2344,7 +2365,8 @@ function HomePage() {
     // Today: free slot after last lesson
     if (todayLessons.length > 0) {
       const last = todayLessons[todayLessons.length - 1];
-      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      const afterBuf = resolveAfter(last.pupil_id);
+      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
         return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
       }
@@ -2356,7 +2378,8 @@ function HomePage() {
     // No free slot today — check tomorrow
     if (tomorrowLessons.length > 0) {
       const last = tomorrowLessons[tomorrowLessons.length - 1];
-      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      const afterBuf = resolveAfter(last.pupil_id);
+      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
         return { time: fmt(end), dayLabel: formatDayLabel(tomorrowStart) };
       }

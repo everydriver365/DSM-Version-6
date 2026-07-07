@@ -53,6 +53,7 @@ interface FreeSlot {
   endTime: string;
   gapMinutes: number;
   possibleDurations: number[];
+  bufferMinutes?: number;
 }
 
 interface DayGroup {
@@ -351,7 +352,7 @@ function GapsPage() {
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes,notes,pupils(name,first_name,calendar_colour)")
+            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
             .in("status", ["confirmed", "pending"])
@@ -362,7 +363,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,hourly_rate",
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,lesson_buffer_before,lesson_buffer_after,hourly_rate",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -386,10 +387,14 @@ function GapsPage() {
           working_hours_end?: string | null;
           working_days?: string[] | null;
           lesson_buffer_minutes?: number | null;
+          lesson_buffer_before?: number | null;
+          lesson_buffer_after?: number | null;
         };
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const buffer = instr.lesson_buffer_minutes ?? 15;
+        const instrBufBefore = instr.lesson_buffer_before ?? 0;
+        const instrBufAfter = instr.lesson_buffer_after ?? 15;
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
@@ -402,7 +407,7 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number; title: string; color: string | null }[]
+          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number }[]
         >();
         let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
@@ -410,7 +415,8 @@ function GapsPage() {
           lesson_time: string | null;
           duration_minutes: number | null;
           notes: string | null;
-          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null } | null;
+          pupil_id?: string | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
@@ -420,8 +426,14 @@ function GapsPage() {
             l.pupils?.first_name ||
             (l.notes ? l.notes.split("\n")[0].slice(0, 40) : null) ||
             "Lesson";
+          const bufBefore = l.pupils?.buffer_before_minutes != null
+            ? Number(l.pupils.buffer_before_minutes)
+            : instrBufBefore;
+          const bufAfter = l.pupils?.buffer_after_minutes != null
+            ? Number(l.pupils.buffer_after_minutes)
+            : instrBufAfter;
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter });
           byDay.set(l.lesson_date, arr);
           busyIdx++;
         }
@@ -461,18 +473,24 @@ function GapsPage() {
             });
             continue;
           }
-          // Build gap boundaries
-          const gaps: { start: number; end: number }[] = [];
+          // Build gap boundaries — use per-lesson buffers (pupil override or instructor default)
+          const gaps: { start: number; end: number; bufferMinutes: number }[] = [];
           let cursor = wsMin;
+          let prevAfterBuffer = 0;
           for (const l of dayLessons) {
-            const gapEnd = l.start - buffer;
+            const gapEnd = l.start - l.bufBefore;
             if (gapEnd - cursor >= 60) {
-              gaps.push({ start: cursor, end: gapEnd });
+              gaps.push({
+                start: cursor,
+                end: gapEnd,
+                bufferMinutes: Math.max(prevAfterBuffer, l.bufBefore),
+              });
             }
-            cursor = Math.max(cursor, l.end + buffer);
+            cursor = Math.max(cursor, l.end + l.bufAfter);
+            prevAfterBuffer = l.bufAfter;
           }
           if (weMin - cursor >= 60) {
-            gaps.push({ start: cursor, end: weMin });
+            gaps.push({ start: cursor, end: weMin, bufferMinutes: prevAfterBuffer });
           }
           const daySlots: FreeSlot[] = [];
           let dayFree = 0;
@@ -492,6 +510,7 @@ function GapsPage() {
               endTime: minToHm(g.end),
               gapMinutes,
               possibleDurations: possible,
+              bufferMinutes: g.bufferMinutes,
             };
             slots.push(slot);
             daySlots.push(slot);
@@ -1261,6 +1280,9 @@ function GapsPage() {
                           >
                             {minToHm(hmToMin(slot.startTime))} –{" "}
                             {minToHm(hmToMin(slot.endTime))} · tap to fill
+                            {slot.bufferMinutes && slot.bufferMinutes > 0
+                              ? ` · ${slot.bufferMinutes} min buffer applied`
+                              : ""}
                           </div>
                         </div>
                         <RefreshCw size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
