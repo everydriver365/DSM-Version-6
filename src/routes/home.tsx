@@ -116,7 +116,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; calendar_colour?: string | null } | null;
 }
 
 interface PrevLessonRow {
@@ -2005,7 +2005,7 @@ function HomePage() {
       const todayYmd = ymd(todayStart);
       const { data: lessonRows, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,calendar_colour,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -2026,7 +2026,7 @@ function HomePage() {
 
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
+        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,calendar_colour,deleted_at)")
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -2415,6 +2415,144 @@ function HomePage() {
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
   const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
+  const lessonColour = (l?: LessonRow) => l?.pupils?.calendar_colour ?? "#1A52A0";
+  const formatDurationShort = (mins: number | null) => {
+    const m = mins ?? 60;
+    if (m % 60 === 0) return `${m / 60}h`;
+    if (m < 60) return `${m}m`;
+    return `${Math.floor(m / 60)}h ${m % 60}m`;
+  };
+
+  const renderHomeLessonRow = (l: LessonRow) => {
+    const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+    const color = lessonColour(l);
+    const subtitle = l.pickup_location ?? "";
+    const badges: React.ReactNode[] = [];
+    if (paid) {
+      badges.push(
+        <span key="paid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF2F7", color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}>
+          Paid
+        </span>,
+      );
+    } else if ((l.amount_due ?? 0) > 0) {
+      badges.push(
+        <span key="due" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#1877D6", fontFamily: "Inter, sans-serif" }}>
+          £{Number(l.amount_due).toFixed(2)}
+        </span>,
+      );
+    }
+    return (
+      <button
+        key={l.id}
+        type="button"
+        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
+        style={{
+          display: "flex", gap: 12, alignItems: "stretch", padding: "12px 10px",
+          background: "#FFFFFF", border: "none", borderBottom: "0.5px solid #F3F4F6",
+          cursor: "pointer", textAlign: "left", width: "100%", fontFamily: "Inter, sans-serif",
+        }}
+      >
+        <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif" }}>
+            {formatTime(l)}
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
+            {formatDurationShort(l.duration_minutes)}
+          </div>
+        </div>
+        <div style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: color, flexShrink: 0 }} />
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif" }}>
+            {pupilName(l)}
+          </div>
+          {subtitle && (
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginTop: 2, display: "flex", alignItems: "center", gap: 4, fontFamily: "Inter, sans-serif" }}>
+              <MapPin size={11} color="#9CA3AF" />
+              <span className="truncate">{subtitle}</span>
+            </div>
+          )}
+          {badges.length > 0 && (
+            <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
+              {badges}
+            </div>
+          )}
+        </div>
+      </button>
+    );
+  };
+  const renderMobileScheduleRow = (l: LessonRow) => {
+    const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+    const isPrepaid = Number(l.pupils?.prepaid_hours ?? 0) > 0;
+    const isCancelled = (l.status ?? "").toLowerCase() === "cancelled";
+    const amount = Number(l.amount_due ?? 0);
+    const color = lessonColour(l);
+    const subtitle = l.pickup_location ?? "";
+    const badges: React.ReactNode[] = [];
+    if (isCancelled) {
+      badges.push(
+        <span key="cancelled" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#DC2626", fontFamily: "Inter, sans-serif" }}>
+          Cancelled
+        </span>,
+      );
+    } else if (paid) {
+      badges.push(
+        <span key="paid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF2F7", color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}>
+          Paid
+        </span>,
+      );
+    } else if (isPrepaid) {
+      badges.push(
+        <span key="prepaid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF4FB", color: "#1A52A0", fontFamily: "Inter, sans-serif" }}>
+          Prepaid
+        </span>,
+      );
+    } else if (amount > 0) {
+      badges.push(
+        <span key="due" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#1877D6", fontFamily: "Inter, sans-serif" }}>
+          £{amount.toFixed(0)}
+        </span>,
+      );
+    }
+    return (
+      <button
+        key={l.id}
+        type="button"
+        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
+        style={{
+          display: "flex", gap: 12, alignItems: "stretch", padding: "14px 16px",
+          background: "#FFFFFF", border: "none", borderBottom: "0.5px solid #F3F4F6",
+          cursor: "pointer", textAlign: "left", width: "100%", fontFamily: "Inter, sans-serif",
+          opacity: isCancelled ? 0.6 : 1,
+        }}
+      >
+        <div style={{ width: 52, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
+            {formatTime(l)}
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
+            {formatDurationShort(l.duration_minutes)}
+          </div>
+        </div>
+        <div style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: color, flexShrink: 0 }} />
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
+            {pupilName(l)}
+          </div>
+          {subtitle && (
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginTop: 2, display: "flex", alignItems: "center", gap: 4, fontFamily: "Inter, sans-serif" }}>
+              <MapPin size={11} color="#9CA3AF" />
+              <span className="truncate">{subtitle}</span>
+            </div>
+          )}
+          {badges.length > 0 && (
+            <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
+              {badges}
+            </div>
+          )}
+        </div>
+      </button>
+    );
+  };
 
   async function markLessonPaid(l: LessonRow) {
     if (!userId) {
@@ -3031,33 +3169,34 @@ function HomePage() {
                     No lessons scheduled today.
                   </div>
                 ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {todayLessons.map((l) => {
-                      const paid = (l.payment_status ?? "").toLowerCase() === "paid";
-                      return (
-                        <button
-                          key={l.id}
-                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
-                          style={{
-                            display: "grid", gridTemplateColumns: "70px 1fr auto auto",
-                            gap: 12, alignItems: "center", padding: "10px 12px",
-                            borderRadius: 10, border: "0.5px solid #E2E6ED",
-                            background: "#FFFFFF", cursor: "pointer", textAlign: "left",
-                            fontFamily: "Inter, sans-serif",
-                          }}
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {(() => {
+                      const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+                      const nowIndicator = (
+                        <div
+                          key="now-indicator"
+                          style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 0 4px" }}
                         >
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>{formatTime(l)}</span>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
-                          <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
-                          <span style={{
-                            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                            padding: "3px 8px", borderRadius: 6,
-                            background: paid ? "#DCFCE7" : "#FEE2E2",
-                            color: paid ? "#166534" : "#991B1B",
-                          }}>{paid ? "Paid" : "Unpaid"}</span>
-                        </button>
+                          <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
+                            NOW {nowLabel}
+                          </span>
+                          <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
+                          <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
+                        </div>
                       );
-                    })}
+                      const rows: React.ReactNode[] = [];
+                      todayLessons.forEach((l) => {
+                        if (lessonDateTime(l).getTime() > now.getTime()) {
+                          const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
+                          if (!alreadyPlaced) rows.push(nowIndicator);
+                        }
+                        rows.push(renderHomeLessonRow(l));
+                      });
+                      if (!rows.some((r: any) => r?.key === "now-indicator")) {
+                        rows.push(nowIndicator);
+                      }
+                      return rows;
+                    })()}
                   </div>
                 )}
                 <button
@@ -3969,255 +4108,149 @@ function HomePage() {
                         )}
                       </div>
 
-                      {/* Day timeline card */}
+                      {/* Day card */}
                       <div style={{
                         background: "#FFFFFF",
                         border: "0.5px solid #E2E6ED",
                         borderRadius: 16,
                         overflow: "hidden",
-                        position: "relative",
                       }}>
-                        {/* dotted spine */}
-                        <div style={{
-                          position: "absolute",
-                          left: 48,
-                          top: 12,
-                          bottom: 12,
-                          borderLeft: "1px dashed #E5E7EB",
-                          pointerEvents: "none",
-                        }} />
+                        {(() => {
+                          const rows: React.ReactNode[] = [];
+                          day.lessons.forEach((l, i) => {
+                            const start = lessonDateTime(l);
+                            const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
+                            const next = day.lessons[i + 1];
+                            const gapMins = next
+                              ? Math.round((lessonDateTime(next).getTime() - end.getTime()) / 60000)
+                              : 0;
+                            const showGap = next && gapMins >= 60;
+                            const potential = showGap ? Math.round((gapMins / 60) * hourlyEst) : 0;
 
-                        {day.lessons.map((l, i) => {
-                          const start = lessonDateTime(l);
-                          const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
-                          const isCancelled = (l.status ?? "").toLowerCase() === "cancelled";
-                          const isPrepaid = Number(l.pupils?.prepaid_hours ?? 0) > 0;
-                          const amount = Number(l.amount_due ?? 0);
-                          const paid = (l.payment_status ?? "").toLowerCase() === "paid";
-                          const name = l.pupils?.name ?? "Pupil";
-                          const colour = colourFor(name);
+                            if (isTodayDay && start.getTime() > now.getTime()) {
+                              const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
+                              if (!alreadyPlaced) {
+                                const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+                                rows.push(
+                                  <div
+                                    key="now-indicator"
+                                    style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 16px 4px" }}
+                                  >
+                                    <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
+                                      NOW {nowLabel}
+                                    </span>
+                                    <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
+                                    <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
+                                  </div>,
+                                );
+                              }
+                            }
 
-                          // Free slot before next lesson (>=60 mins)
-                          const next = day.lessons[i + 1];
-                          const gapMins = next
-                            ? Math.round((lessonDateTime(next).getTime() - end.getTime()) / 60000)
-                            : 0;
-                          const showGap = next && gapMins >= 60;
-                          const potential = showGap ? Math.round((gapMins / 60) * hourlyEst) : 0;
+                            rows.push(
+                              <div key={l.id}>
+                                {renderMobileScheduleRow(l)}
+                              </div>,
+                            );
 
-                          let paymentBadge: React.ReactNode = null;
-                          if (isCancelled) {
-                            paymentBadge = (
-                              <span style={{
-                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
-                                borderRadius: 999, background: "#FEE2E2", color: "#DC2626",
-                              }}>Cancelled</span>
-                            );
-                          } else if (paid) {
-                            paymentBadge = (
-                              <span style={{
-                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
-                                borderRadius: 999, background: "#DCFCE7", color: "#166534",
-                              }}>Paid</span>
-                            );
-                          } else if (isPrepaid) {
-                            paymentBadge = (
-                              <span style={{
-                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
-                                borderRadius: 999, background: "#EEF4FB", color: "#1A52A0",
-                              }}>Prepaid</span>
-                            );
-                          } else if (amount > 0) {
-                            paymentBadge = (
-                              <span style={{
-                                fontSize: 10, fontWeight: 700, padding: "2px 8px",
-                                borderRadius: 999, background: "#FEF3C7", color: "#B45309",
-                              }}>£{amount.toFixed(0)}</span>
+                            if (showGap) {
+                              const gapStartT = fmtT(end);
+                              const gapEndT = fmtT(new Date(end.getTime() + gapMins * 60000));
+                              const matches = getMatchingPupils(day.key, gapStartT, gapMins, matchPupils, matchAvailability);
+                              const durationLabel = gapMins >= 60
+                                ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
+                                : `${gapMins}min`;
+                              const fallbackPalette = ["#D4A017", "#8B5E34", "#C4356C"];
+                              const hasMatches = matches.length > 0;
+                              const title = hasMatches
+                                ? `${matches.length} Pupil${matches.length !== 1 ? "s" : ""} May Fit · ${durationLabel}`
+                                : `Free slot · ${durationLabel}`;
+                              const subtitle = hasMatches
+                                ? `${gapStartT} – ${gapEndT} · tap to view`
+                                : `${gapStartT} – ${gapEndT} · post to EveryDriver`;
+                              rows.push(
+                                <div
+                                  key={`gap-${l.id}`}
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      navigate({ to: "/gaps" });
+                                    }
+                                  }}
+                                  style={{
+                                    margin: "6px 16px",
+                                    background: "#FFFFFF",
+                                    border: "1px solid #EEF0F4",
+                                    borderRadius: 14,
+                                    padding: "10px 12px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 12,
+                                    cursor: "pointer",
+                                    boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+                                    {(hasMatches ? matches.slice(0, 3) : [null, null, null]).map((pupil: any, i: number) => (
+                                      <div key={pupil ? pupil.id : `ph-${i}`} style={{
+                                        width: 30, height: 30, borderRadius: "50%",
+                                        background: pupil ? (pupil.calendar_colour || fallbackPalette[i % fallbackPalette.length]) : "#E5E7EB",
+                                        border: "2px solid #FFFFFF",
+                                        marginLeft: i > 0 ? -10 : 0,
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        color: "#FFFFFF", fontSize: 10, fontWeight: 800,
+                                        zIndex: 3 - i, position: "relative",
+                                        letterSpacing: 0.3,
+                                      }}>
+                                        {pupil
+                                          ? `${((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}${(pupil.last_name?.[0] || (pupil.name?.split(" ")[1]?.[0] ?? "")).toUpperCase()}`
+                                          : ""}
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{
+                                      fontSize: 13, fontWeight: 700, color: "#0F2044",
+                                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                                    }}>
+                                      {title}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                                      {subtitle}
+                                    </div>
+                                  </div>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                                    <span style={{ fontSize: 11, fontWeight: 700, color: "#16A34A" }}>
+                                      £{potential}
+                                    </span>
+                                    <RefreshCw size={14} color="#9CA3AF" />
+                                    <ChevronRight size={16} color="#9CA3AF" />
+                                  </div>
+                                </div>,
+                              );
+                            }
+                          });
+
+                          if (isTodayDay && !rows.some((r: any) => r?.key === "now-indicator")) {
+                            const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+                            rows.push(
+                              <div
+                                key="now-indicator"
+                                style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 16px 4px" }}
+                              >
+                                <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3, fontFamily: "Inter, sans-serif" }}>
+                                  NOW {nowLabel}
+                                </span>
+                                <span style={{ width: 10, height: 10, borderRadius: 999, background: "#E53935", boxShadow: "0 0 0 3px rgba(229,57,53,0.18)", flexShrink: 0 }} />
+                                <div style={{ flex: 1, height: 2, borderRadius: 2, background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))" }} />
+                              </div>,
                             );
                           }
 
-                          return (
-                            <Fragment key={l.id}>
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                onClick={() =>
-                                  navigate({ to: "/lessons/$id", params: { id: l.id } })
-                                }
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    navigate({ to: "/lessons/$id", params: { id: l.id } });
-                                  }
-                                }}
-                                style={{
-                                  minHeight: 68,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  padding: "12px 16px",
-                                  cursor: "pointer",
-                                  position: "relative",
-                                  background: "#fff",
-                                  opacity: isCancelled ? 0.6 : 1,
-                                }}
-                              >
-                                {/* Left: time */}
-                                <div style={{ width: 48, flexShrink: 0 }}>
-                                  <div style={{
-                                    fontSize: 12,
-                                    fontWeight: 600,
-                                    color: "#6B7280",
-                                    textDecoration: isCancelled ? "line-through" : "none",
-                                  }}>
-                                    {fmtT(start)}
-                                  </div>
-                                </div>
-
-                                {/* Marker */}
-                                <div style={{
-                                  position: "relative",
-                                  width: 12,
-                                  height: 12,
-                                  borderRadius: 999,
-                                  flexShrink: 0,
-                                  marginLeft: -6,
-                                  background: isTodayDay ? "#1A52A0" : "#FFFFFF",
-                                  border: isTodayDay ? "none" : "2px solid #E5E7EB",
-                                  zIndex: 1,
-                                }} />
-
-                                {/* Centre */}
-                                <div style={{
-                                  flex: 1,
-                                  minWidth: 0,
-                                  paddingLeft: 12,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 10,
-                                }}>
-                                  <div style={{
-                                    width: 28,
-                                    height: 28,
-                                    borderRadius: 999,
-                                    background: colour,
-                                    color: "#FFFFFF",
-                                    fontSize: 11,
-                                    fontWeight: 700,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    flexShrink: 0,
-                                  }}>
-                                    {initialsOf(name)}
-                                  </div>
-                                  <div style={{ minWidth: 0 }}>
-                                    <div style={{
-                                      fontSize: 13,
-                                      fontWeight: 600,
-                                      color: "#0F2044",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      textDecoration: isCancelled ? "line-through" : "none",
-                                    }}>
-                                      {name}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
-                                      {l.duration_minutes ?? 60} min
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Right */}
-                                <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                                  {paymentBadge}
-                                  <ChevronRight size={14} color="#D1D5DB" />
-                                </div>
-                              </div>
-
-                              {showGap && (
-                                (() => {
-                                  const gapStartT = fmtT(end);
-                                  const gapEndT = fmtT(new Date(end.getTime() + gapMins * 60000));
-                                  const matches = getMatchingPupils(day.key, gapStartT, gapMins, matchPupils, matchAvailability);
-                                  const durationLabel = gapMins >= 60
-                                    ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
-                                    : `${gapMins}min`;
-                                  const fallbackPalette = ["#D4A017", "#8B5E34", "#C4356C"];
-                                  const hasMatches = matches.length > 0;
-                                  const title = hasMatches
-                                    ? `${matches.length} Pupil${matches.length !== 1 ? "s" : ""} May Fit · ${durationLabel}`
-                                    : `Free slot · ${durationLabel}`;
-                                  const subtitle = hasMatches
-                                    ? `${gapStartT} – ${gapEndT} · tap to view`
-                                    : `${gapStartT} – ${gapEndT} · post to EveryDriver`;
-                                  return (
-                                    <div
-                                      role="button"
-                                      tabIndex={0}
-                                      onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter" || e.key === " ") {
-                                          e.preventDefault();
-                                          navigate({ to: "/gaps" });
-                                        }
-                                      }}
-                                      style={{
-                                        margin: "6px 16px",
-                                        background: "#FFFFFF",
-                                        border: "1px solid #EEF0F4",
-                                        borderRadius: 14,
-                                        padding: "10px 12px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 12,
-                                        cursor: "pointer",
-                                        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                                      }}
-                                    >
-                                      <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                                        {(hasMatches ? matches.slice(0, 3) : [null, null, null]).map((pupil, i) => (
-                                          <div key={pupil ? pupil.id : `ph-${i}`} style={{
-                                            width: 30, height: 30, borderRadius: "50%",
-                                            background: pupil ? (pupil.calendar_colour || fallbackPalette[i % fallbackPalette.length]) : "#E5E7EB",
-                                            border: "2px solid #FFFFFF",
-                                            marginLeft: i > 0 ? -10 : 0,
-                                            display: "flex", alignItems: "center", justifyContent: "center",
-                                            color: "#FFFFFF", fontSize: 10, fontWeight: 800,
-                                            zIndex: 3 - i, position: "relative",
-                                            letterSpacing: 0.3,
-                                          }}>
-                                            {pupil
-                                              ? `${((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}${(pupil.last_name?.[0] || (pupil.name?.split(" ")[1]?.[0] ?? "")).toUpperCase()}`
-                                              : ""}
-                                          </div>
-                                        ))}
-                                      </div>
-                                      <div style={{ flex: 1, minWidth: 0 }}>
-                                        <div style={{
-                                          fontSize: 13, fontWeight: 700, color: "#0F2044",
-                                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                                        }}>
-                                          {title}
-                                        </div>
-                                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
-                                          {subtitle}
-                                        </div>
-                                      </div>
-                                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                                        <span style={{ fontSize: 11, fontWeight: 700, color: "#16A34A" }}>
-                                          £{potential}
-                                        </span>
-                                        <RefreshCw size={14} color="#9CA3AF" />
-                                        <ChevronRight size={16} color="#9CA3AF" />
-                                      </div>
-                                    </div>
-                                  );
-                                })()
-                              )}
-                            </Fragment>
-                          );
-                        })}
+                          return rows;
+                        })()}
                       </div>
                     </div>
                   );
