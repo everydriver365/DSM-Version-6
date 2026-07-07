@@ -1955,18 +1955,31 @@ function HomePage() {
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
 
+      console.log(
+        "[home] raw lessons dates:",
+        allLessonsRaw?.map((l: any) => l.lesson_date + " " + l.status),
+      );
+
       // Drop rows whose pupil is soft-deleted (matches previous
       // `pupils!inner` + `pupils.deleted_at IS NULL` behaviour).
       const allLessons = (allLessonsRaw ?? []).filter(
         (l: any) => !l.pupils || l.pupils.deleted_at == null,
       );
 
-      // `lessons` state keeps its previous semantics: active scheduled
-      // (not cancelled, not completed). Today/Tomorrow/Next/Week UI
-      // derives from this array via existing filters at the bottom of
-      // the component — behaviour unchanged.
+      // Today timeline shows every lesson for today regardless of status.
+      const todayLessons = allLessons.filter((l: any) => l.lesson_date === todayYmd);
+
+      // Upcoming active lessons (used by legacy panels expecting scheduled lessons).
+      const upcomingLessons = allLessons.filter(
+        (l: any) =>
+          l.lesson_date >= todayYmd &&
+          ["confirmed", "pending", "in_progress"].includes(l.status),
+      );
+
+      // `lessons` state keeps its previous behaviour for panels that expect
+      // active/scheduled lessons (not cancelled, not completed).
       const activeLessons = allLessons.filter(
-        (l: any) => l.status !== "cancelled" && l.status !== "completed",
+        (l: any) => !["cancelled", "completed"].includes(l.status),
       );
       setLessons(activeLessons as unknown as LessonRow[]);
 
