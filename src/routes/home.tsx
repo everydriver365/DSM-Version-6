@@ -2419,6 +2419,11 @@ function HomePage() {
     return null;
   })();
 
+  console.log("[next-free] todayLessons:", todayLessons?.length);
+  console.log("[next-free] workStart:", workingHours?.start_time, "workEnd:", workingHours?.end_time);
+  console.log("[next-free] todayEndTime:", todayEndTime, "instructorBufferAfter:", instructorBufferAfter);
+  console.log("[next-free] result:", nextFreeSlot);
+
   const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
