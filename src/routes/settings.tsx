@@ -88,6 +88,10 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
+
+  useEffect(() => {
+    setMinGapMinutes(readMinGapMinutes());
+  }, []);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
