@@ -288,8 +288,8 @@ function SchedulePage() {
   useEffect(() => {
     let cancelled = false;
     setLessons(null);
-    const windowStart = ymd(rangeStart);
-    const windowEnd = ymd(rangeEnd);
+    const windowStart = ymd(pickerStart);
+    const windowEnd = ymd(pickerEnd);
     console.log("[schedule] date window:", windowStart, windowEnd);
 
     (async () => {
