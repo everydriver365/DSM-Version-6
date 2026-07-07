@@ -871,11 +871,7 @@ function SettingsPage() {
                 </div>
                 <select
                   value={minGapMinutes}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    setMinGapMinutes(v);
-                    writeMinGapMinutes(v);
-                  }}
+                  onChange={(e) => setMinGapMinutes(parseInt(e.target.value, 10))}
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
