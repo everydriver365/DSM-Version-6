@@ -2031,7 +2031,7 @@ function HomePage() {
       const { data: pupilsData } = await supabase
         .from("pupils")
         .select(
-          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at"
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes"
         )
         .eq("instructor_id", userId);
       setActivePupilsCount(
@@ -2043,6 +2043,14 @@ function HomePage() {
 
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
+      const bufMap: Record<string, { before: number | null; after: number | null }> = {};
+      (pupilsData || []).forEach((p: any) => {
+        bufMap[p.id] = {
+          before: p.buffer_before_minutes ?? null,
+          after: p.buffer_after_minutes ?? null,
+        };
+      });
+      setPupilBufferMap(bufMap);
       const prepaidPupilIds = new Set<string>(
         (pupilsData || [])
           .filter((p: any) => Number(p.prepaid_hours || 0) > 0)
