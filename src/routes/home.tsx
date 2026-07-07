@@ -1339,6 +1339,7 @@ function HomePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
@@ -1955,19 +1956,33 @@ function HomePage() {
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
 
+      console.log(
+        "[home] raw lessons dates:",
+        allLessonsRaw?.map((l: any) => l.lesson_date + " " + l.status),
+      );
+
       // Drop rows whose pupil is soft-deleted (matches previous
       // `pupils!inner` + `pupils.deleted_at IS NULL` behaviour).
       const allLessons = (allLessonsRaw ?? []).filter(
         (l: any) => !l.pupils || l.pupils.deleted_at == null,
       );
 
-      // `lessons` state keeps its previous semantics: active scheduled
-      // (not cancelled, not completed). Today/Tomorrow/Next/Week UI
-      // derives from this array via existing filters at the bottom of
-      // the component — behaviour unchanged.
-      const activeLessons = allLessons.filter(
-        (l: any) => l.status !== "cancelled" && l.status !== "completed",
+      // Today timeline shows every lesson for today regardless of status.
+      const todayLessons = allLessons.filter((l: any) => l.lesson_date === todayYmd);
+
+      // Upcoming active lessons (used by legacy panels expecting scheduled lessons).
+      const upcomingLessons = allLessons.filter(
+        (l: any) =>
+          l.lesson_date >= todayYmd &&
+          ["confirmed", "pending", "in_progress"].includes(l.status),
       );
+
+      // `lessons` state keeps its previous behaviour for panels that expect
+      // active/scheduled lessons (not cancelled).
+      const activeLessons = allLessons.filter(
+        (l: any) => !["cancelled"].includes(l.status),
+      );
+      setAllLessons(allLessons);
       setLessons(activeLessons as unknown as LessonRow[]);
 
       // ---- Next lesson (unbounded — may be beyond the 60-day window) ----
@@ -2282,20 +2297,12 @@ function HomePage() {
     };
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
-  const allTodayLessons = lessons.filter((l) => {
-    const d = lessonDateTime(l);
-    return d >= todayStart && d < tomorrowStart;
-  });
-  const todayLessons = allTodayLessons.filter((l) => {
-    const end = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-    if (end.getTime() > now.getTime()) return true;
-    // keep past lessons that still need action (EOL pending or payment unpaid)
-    const paymentStatus = (l.payment_status ?? "").toLowerCase();
-    const needsEol = l.eol_completed !== true;
-    const needsPayment = paymentStatus === "unpaid" || paymentStatus === "";
-    return needsEol || needsPayment;
-  });
   const todayISO = ymd(todayStart);
+
+  // Today timeline shows every lesson for today regardless of status
+  // (completed, confirmed, in_progress, cancelled, no_show, pending).
+  const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
+
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= tomorrowStart && d < dayAfter;
