@@ -473,26 +473,37 @@ function GapsPage() {
             });
             continue;
           }
-          // Build gap boundaries — use per-lesson buffers (pupil override or instructor default).
-          // start/end here are the USABLE window (after subtracting adjacent buffers).
-          // bufferTotal = sum of the two adjacent buffers (before-side + after-side of the gap).
+          // Build gap boundaries. Reserve buffer for BOTH sides:
+          //   • the existing adjacent lesson's own buffer (pupil override or instructor default), and
+          //   • the NEW lesson we'd slot in, which needs the instructor default buffer around itself.
+          // start/end are the USABLE window (buffer-adjusted); bufferTotal is the total minutes
+          // reserved on both sides so the display can show "usable (raw − buffer)".
           const gaps: { start: number; end: number; bufferTotal: number }[] = [];
-          let cursor = wsMin;
-          let prevAfterBuffer = 0;
+          let rawCursor = wsMin;               // real end of the previous block (lesson end or workday start)
+          let prevBufAfter = 0;                 // existing lesson's after-buffer (0 at workday start)
+          let hasPrevLesson = false;            // false only for the very first gap of the day
           for (const l of dayLessons) {
-            const gapEnd = l.start - l.bufBefore;
-            if (gapEnd - cursor >= 60) {
+            const rawEnd = l.start;
+            const leftReserve = hasPrevLesson ? prevBufAfter + instrBufBefore : 0;
+            const rightReserve = l.bufBefore + instrBufAfter;
+            const effStart = rawCursor + leftReserve;
+            const effEnd = rawEnd - rightReserve;
+            if (effEnd - effStart >= 60) {
               gaps.push({
-                start: cursor,
-                end: gapEnd,
-                bufferTotal: prevAfterBuffer + l.bufBefore,
+                start: effStart,
+                end: effEnd,
+                bufferTotal: leftReserve + rightReserve,
               });
             }
-            cursor = Math.max(cursor, l.end + l.bufAfter);
-            prevAfterBuffer = l.bufAfter;
+            rawCursor = Math.max(rawCursor, l.end);
+            prevBufAfter = l.bufAfter;
+            hasPrevLesson = true;
           }
-          if (weMin - cursor >= 60) {
-            gaps.push({ start: cursor, end: weMin, bufferTotal: prevAfterBuffer });
+          // Tail gap to end of workday (no next lesson → no right-side reserve)
+          const leftReserve = hasPrevLesson ? prevBufAfter + instrBufBefore : 0;
+          const tailStart = rawCursor + leftReserve;
+          if (weMin - tailStart >= 60) {
+            gaps.push({ start: tailStart, end: weMin, bufferTotal: leftReserve });
           }
           const daySlots: FreeSlot[] = [];
           let dayFree = 0;
