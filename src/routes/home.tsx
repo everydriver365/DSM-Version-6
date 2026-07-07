@@ -2348,6 +2348,12 @@ function HomePage() {
       const [eh, em] = endTimeStr.split(":").map(Number);
       return d.getHours() * 60 + d.getMinutes() < eh * 60 + em;
     };
+    const resolveAfter = (pupilId: string | null | undefined) => {
+      if (pupilId && pupilBufferMap[pupilId]?.after != null) {
+        return pupilBufferMap[pupilId].after as number;
+      }
+      return instructorBufferAfter;
+    };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
     const tomorrowWorks = workingHours
       ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
@@ -2359,7 +2365,8 @@ function HomePage() {
     // Today: free slot after last lesson
     if (todayLessons.length > 0) {
       const last = todayLessons[todayLessons.length - 1];
-      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      const afterBuf = resolveAfter(last.pupil_id);
+      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
         return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
       }
@@ -2371,7 +2378,8 @@ function HomePage() {
     // No free slot today — check tomorrow
     if (tomorrowLessons.length > 0) {
       const last = tomorrowLessons[tomorrowLessons.length - 1];
-      const end = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+      const afterBuf = resolveAfter(last.pupil_id);
+      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
         return { time: fmt(end), dayLabel: formatDayLabel(tomorrowStart) };
       }
