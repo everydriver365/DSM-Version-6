@@ -951,7 +951,7 @@ function SchedulePage() {
             No lessons scheduled
           </div>
           <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
-            You&apos;re free today
+            {emptyDayMessage(d, today)}
           </div>
           <button
             type="button"
