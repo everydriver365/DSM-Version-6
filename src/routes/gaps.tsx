@@ -541,6 +541,7 @@ function GapsPage() {
           setFreeSlots(slots);
           setDayGroups(groups);
         }
+        console.log("[gaps] free slots computed:", slots.length, slots);
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
         if (!cancelled) {
