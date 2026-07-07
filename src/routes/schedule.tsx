@@ -827,13 +827,58 @@ function SchedulePage() {
         <div
           key="empty"
           style={{
-            padding: "12px 16px",
-            fontSize: 13,
-            color: "#9CA3AF",
-            ...POPPINS,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "28px 16px",
+            background: "#FFFFFF",
+            borderRadius: 14,
+            margin: "8px 16px",
+            border: "1px solid #F2F3F6",
           }}
         >
-          No lessons
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 999,
+              background: "#F8F9FB",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 12,
+            }}
+          >
+            <CalendarOff size={22} color="#9CA3AF" />
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>
+            No lessons scheduled
+          </div>
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+            You&apos;re free today
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/lessons/new" })}
+            style={{
+              marginTop: 14,
+              ...POPPINS,
+              fontSize: 12,
+              fontWeight: 700,
+              color: "#FFFFFF",
+              backgroundColor: "#0B1F3A",
+              border: 0,
+              borderRadius: 999,
+              padding: "8px 16px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              cursor: "pointer",
+            }}
+          >
+            <Plus size={14} color="#FFFFFF" /> Add lesson
+          </button>
         </div>,
       );
     } else {
