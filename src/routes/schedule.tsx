@@ -360,7 +360,7 @@ function SchedulePage() {
     console.log("[schedule] grouped lessons for first day:", Object.values(grouped)?.[0]);
     console.log(
       "[schedule] day keys being rendered:",
-      Array.from({ length: 8 }).map((_, i) => ymd(addDays(rangeStart, i))),
+      Array.from({ length: 15 }).map((_, i) => ymd(addDays(pickerStart, i))),
     );
     return map;
   }, [lessons, rangeStart]);
