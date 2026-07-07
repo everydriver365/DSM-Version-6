@@ -3880,6 +3880,11 @@ function HomePage() {
           days.push({ date: d, key, label, lessons: dayLessons });
         }
 
+        const todayISO = ymd(todayStart);
+        console.log("[schedule-panel] todayLessons:", todayLessons?.length, todayLessons);
+        console.log("[schedule-panel] lessons state:", lessons?.length);
+        console.log("[schedule-panel] today ISO:", todayISO);
+
         const isEmpty = days.length === 0;
 
         return (
