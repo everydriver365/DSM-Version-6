@@ -3947,11 +3947,14 @@ function HomePage() {
 
 
         {tabLessons.length === 0 ? (
-          tab === "today" ? (
+          tab !== "next" ? (
             (() => {
+              const targetDate = tab === "today" ? todayStart : tomorrowStart;
+              const isToday = tab === "today";
+              const dayNoun = isToday ? "today" : "tomorrow";
               const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-              const todayKey = dayKeys[todayStart.getDay()];
-              const todayWorks = workingHours ? (workingHours as Record<string, unknown>)[todayKey] : true;
+              const targetKey = dayKeys[targetDate.getDay()];
+              const todayWorks = workingHours ? (workingHours as Record<string, unknown>)[targetKey] : true;
               const startStr = "09:00";
               const endStr = workingHours?.end_time ? String(workingHours.end_time).slice(0, 5) : "18:00";
               const [sh, sm] = startStr.split(":").map(Number);
@@ -3965,7 +3968,7 @@ function HomePage() {
                 const hr = h % 12 === 0 ? 12 : h % 12;
                 return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
               };
-              const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
+              const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : `Not working ${dayNoun}`;
               const fmtWindow = todayWorks ? `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")} – ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}` : "—";
               return (
                 <div style={{
@@ -3980,9 +3983,9 @@ function HomePage() {
                   {/* Header */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>Free day today</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>Free day {dayNoun}</div>
                       <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                        {todayWorks ? `You have ${availableHours} hrs of open time` : "Not scheduled to work"}
+                        {todayWorks ? `You have ${availableHours} hrs of open time` : `Not scheduled to work ${dayNoun}`}
                       </div>
                     </div>
                     <div style={{ background: "rgba(0,181,165,0.10)", padding: 8, borderRadius: 10, display: "flex" }}>
@@ -4029,7 +4032,7 @@ function HomePage() {
                       Fill slots
                     </button>
                     <button onClick={() => {
-                      window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
+                      window.location.href = `sms:?body=${encodeURIComponent(`Hi everyone, I have lesson availability ${dayNoun}. Reply to book!`)}`;
                     }} style={{
                       flex: 1, background: "#FFFFFF", color: "#0F2044",
                       padding: "10px 0", borderRadius: 10, fontWeight: 600, fontSize: 13,
