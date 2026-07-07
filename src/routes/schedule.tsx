@@ -238,9 +238,10 @@ function emptyDayMessage(d: Date, today: Date) {
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
-  const [daysAhead, setDaysAhead] = useState<number>(6); // today + 6 = 7 days (with today-1 = 8 total)
-  const rangeStart = useMemo(() => addDays(today, -1), [today]);
-  const rangeEnd = useMemo(() => addDays(today, daysAhead), [today, daysAhead]);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const pickerStart = useMemo(() => addDays(selectedDate, -7), [selectedDate]);
+  const pickerEnd = useMemo(() => addDays(selectedDate, 7), [selectedDate]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [now, setNow] = useState<Date>(() => new Date());
