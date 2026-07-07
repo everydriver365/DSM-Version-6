@@ -1,8 +1,103 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/poppins/300.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* -----------------------------------------------------------
+ * EveryDriver ported design tokens (schedule + gap-filler UI).
+ * Kept as raw HSL/hex values because the ported components rely on
+ * literal color strings via inline styles.
+ * ----------------------------------------------------------- */
+
+/* Accord font-face: file is not yet vendored — falls back to Poppins 800.
+ * Drop the .ttf at src/assets/fonts/Accord-ExtraBold.ttf and uncomment
+ * the @font-face block below to activate. */
+/*
+@font-face {
+  font-family: "Accord";
+  src: url("./assets/fonts/Accord-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+:root {
+  /* ---- DSM instructor app (light) ---- */
+  --dsm-bg: 214 22% 95%;                /* #EEF1F5 slate canvas */
+  --dsm-page-bg: 214 22% 95%;
+  --dsm-card: 0 0% 100%;
+  --dsm-text: 217 51% 12%;              /* #0F1B2D */
+  --dsm-text-secondary: 213 22% 57%;    /* #7A8FAA */
+  --dsm-accent-red: 0 75% 50%;
+  --dsm-accent-blue: 226 100% 57%;
+  --dsm-border: 218 18% 88%;
+  --dsm-tile-icon-bg: 218 27% 95%;
+  --dsm-tint-red-bg: 0 100% 95%;
+  --dsm-tint-red-fg: 0 75% 50%;
+  --dsm-tint-blue-bg: 226 100% 95%;
+  --dsm-tint-blue-fg: 226 100% 57%;
+  --dsm-tint-green-bg: 138 41% 93%;
+  --dsm-tint-green-fg: 145 63% 32%;
+  --dsm-tint-orange-bg: 32 100% 94%;
+  --dsm-tint-orange-fg: 28 100% 50%;
+  --dsm-tint-purple-bg: 256 100% 95%;
+  --dsm-tint-purple-fg: 258 60% 48%;
+
+  /* ---- Portal / instructor schedule surfaces ---- */
+  --portal-surface: 0 0% 100%;
+  --portal-surface-soft: 210 40% 98%;
+  --portal-border: 214 32% 91%;
+  --portal-border-soft: 214 30% 95%;
+  --portal-text: 222 47% 11%;
+  --portal-text-muted: 220 9% 46%;
+  --portal-text-subtle: 220 9% 65%;
+  --portal-accent: 217 91% 60%;
+  --portal-accent-soft: 214 95% 93%;
+  --portal-accent-deep: 222 47% 18%;
+  --portal-success: 160 84% 32%;
+  --portal-success-soft: 152 81% 96%;
+  --portal-rail: 220 13% 91%;
+  --portal-mobile-blue: 226 45% 44%;
+  --portal-mobile-blue-tint: 220 88% 96%;
+
+  /* ---- Slate canvas convenience colour ---- */
+  --slate-canvas: #EEF1F5;
+
+  /* ---- Ported shadow ramp ---- */
+  --shadow-lift: 0 12px 28px rgba(20, 30, 60, 0.14), 0 4px 8px rgba(20, 30, 60, 0.06);
+  --shadow-lift-hover: 0 16px 36px rgba(20, 30, 60, 0.18), 0 6px 12px rgba(20, 30, 60, 0.08);
+  --shadow-lift-pressed: 0 4px 10px rgba(20, 30, 60, 0.1), 0 1px 2px rgba(20, 30, 60, 0.05);
+  --shadow-card: 0 1px 3px rgba(20, 30, 50, 0.06), 0 1px 2px rgba(20, 30, 50, 0.04);
+  --shadow-card-pressed: 0 1px 2px rgba(20, 30, 50, 0.05);
+  --shadow-card-floating: 0 2px 8px rgba(20, 30, 50, 0.08);
+  --shadow-fab: 0 2px 8px rgba(30, 111, 184, 0.25);
+}
+
+@theme {
+  --font-heading: "Poppins", "Accord", -apple-system, BlinkMacSystemFont,
+    "SF Pro Display", system-ui, sans-serif;
+  --font-body: "Poppins", "Inter", -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", system-ui, sans-serif;
+
+  --color-slate-canvas: #EEF1F5;
+
+  --shadow-lift: 0 12px 28px rgba(20, 30, 60, 0.14),
+    0 4px 8px rgba(20, 30, 60, 0.06);
+  --shadow-lift-hover: 0 16px 36px rgba(20, 30, 60, 0.18),
+    0 6px 12px rgba(20, 30, 60, 0.08);
+  --shadow-card: 0 1px 3px rgba(20, 30, 50, 0.06),
+    0 1px 2px rgba(20, 30, 50, 0.04);
+  --shadow-card-floating: 0 2px 8px rgba(20, 30, 50, 0.08);
+  --shadow-fab: 0 2px 8px rgba(30, 111, 184, 0.25);
+}
 
 /*
  * Design system definition.
