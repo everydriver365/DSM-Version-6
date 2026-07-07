@@ -3018,6 +3018,43 @@ function PupilRatesAndColour({
             </button>
           </div>
         )}
+        {/* Custom buffer times */}
+        <div style={{ marginTop: 12 }}>
+          <div className="text-[14px] font-semibold" style={{ color: "#0F2044", marginBottom: 8, ...POPPINS }}>
+            Custom buffer times
+          </div>
+          <div className="text-[12px]" style={{ color: "#9CA3AF", marginBottom: 8, ...POPPINS }}>
+            Override default buffer times for this pupil
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>Before lesson</span>
+            <select
+              value={pupil.buffer_before_minutes ?? ""}
+              onChange={(e) => void saveBuffer("before", e.target.value)}
+              className="text-[13px]"
+              style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+            >
+              <option value="">Use default</option>
+              {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+                <option key={m} value={m}>{m} min</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center justify-between" style={{ marginTop: 8 }}>
+            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>After lesson</span>
+            <select
+              value={pupil.buffer_after_minutes ?? ""}
+              onChange={(e) => void saveBuffer("after", e.target.value)}
+              className="text-[13px]"
+              style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+            >
+              <option value="">Use default</option>
+              {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+                <option key={m} value={m}>{m} min</option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Calendar colour */}
