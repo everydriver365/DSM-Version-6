@@ -2945,6 +2945,18 @@ function PupilRatesAndColour({
     }
   }
 
+  async function saveBuffer(type: "before" | "after", raw: string) {
+    const value = raw === "" ? null : Number(raw);
+    const patch = type === "before"
+      ? { buffer_before_minutes: value }
+      : { buffer_after_minutes: value };
+    const ok = await patchPupil(patch);
+    if (ok) {
+      onUpdated(patch);
+      toast.success("Buffer updated");
+    }
+  }
+
   return (
     <>
       {/* Custom rates */}
