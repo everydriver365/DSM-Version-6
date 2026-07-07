@@ -2354,6 +2354,19 @@ function HomePage() {
       }
       return instructorBufferAfter;
     };
+    // Earliest slot we're willing to surface today: 30 mins from now, rounded up to the next 15.
+    const nowMinPlusLead = (() => {
+      const n = new Date();
+      const raw = n.getHours() * 60 + n.getMinutes() + 30;
+      return Math.ceil(raw / 15) * 15;
+    })();
+    const clampToday = (d: Date) => {
+      const mins = d.getHours() * 60 + d.getMinutes();
+      if (mins >= nowMinPlusLead) return d;
+      const clamped = new Date(d);
+      clamped.setHours(Math.floor(nowMinPlusLead / 60), nowMinPlusLead % 60, 0, 0);
+      return clamped;
+    };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
     const tomorrowWorks = workingHours
       ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
@@ -2366,13 +2379,21 @@ function HomePage() {
     if (todayLessons.length > 0) {
       const last = todayLessons[todayLessons.length - 1];
       const afterBuf = resolveAfter(last.pupil_id);
-      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
+      const end = clampToday(new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000));
       if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
-        return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
+        // Only surface today if at least an hour still fits before the working day ends.
+        const endMins = end.getHours() * 60 + end.getMinutes();
+        const [eh, em] = (todayEndTime ?? "23:59").split(":").map(Number);
+        if ((eh * 60 + em) - endMins >= 60) {
+          return { time: fmt(end), dayLabel: formatDayLabel(todayStart) };
+        }
       }
     } else if (todayEndTime) {
-      // No lessons today but working — whole day is free
-      return { time: "FREE", dayLabel: formatDayLabel(todayStart) };
+      // No lessons today but working — surface the earliest still-future slot.
+      const [eh, em] = todayEndTime.split(":").map(Number);
+      if ((eh * 60 + em) - nowMinPlusLead >= 60) {
+        return { time: "FREE", dayLabel: formatDayLabel(todayStart) };
+      }
     }
 
     // No free slot today — check tomorrow
