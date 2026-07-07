@@ -1,20 +1,18 @@
-## Why it still looks like nothing happens
+# Fix: gap-row threshold too low
 
-The click is now working: the logs show `pupils fetched: 7`, `settings fetched: 0`, and `ranked result: 7`.
+You're right — a 30-min gap isn't a bookable lesson slot. Revert both files to only show the "Free slot" row when the gap is **≥ 60 minutes** (long enough for at least one standard lesson).
 
-The problem is layout/scroll position: the ranked results are rendering far down the page, below a very long list of detected free slots. On mobile, after clicking the floating `Find pupils for 1 slot →` button, the page stays where it is, so the new results are off-screen and it appears that nothing happened.
+## Changes
 
-## Plan
+**`src/routes/home.tsx`** (SchedulePanel timeline)
+- `const showGap = next && gapMins >= 30;` → `>= 60`
 
-1. Update only `src/routes/gaps.tsx`.
-2. Add a results anchor/ref near the ranked results block.
-3. After `findPupils()` sets the ranked results and selected search slots, automatically scroll the user to the results section.
-4. Make the scroll happen after React has rendered the results, so it reliably lands on `7 pupils ranked for 1 slot`.
-5. Keep the existing ranking logic, pupil query, button labels, and results UI unchanged.
+**`src/routes/schedule.tsx`** (day-view rows)
+- `if (gapMins >= 30) {` → `>= 60`
+- Gaps of 30–59 min will fall through to the existing thin `hr` divider between lessons, same as before.
 
-## Technical detail
+## Consequence for your current data
 
-- Use `useRef` alongside the existing React hooks.
-- Attach the ref to the `{ranked !== null && (...)}` results container.
-- In `findPupils`, after `setRanked(scored)` and `setSearchSlots(slotsToScore)`, call `requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))`.
-- This fixes the perceived “nothing happens” issue without changing database logic or ranking behaviour.
+Your fetched lessons only contain one 30-min gap (2026-07-06 13:00→13:30). With the ≥60 rule, no gap row will render today — which is correct: there's genuinely no fillable slot. The row will appear as soon as your diary has an hour-or-more window between two lessons.
+
+No other logic, styling, or data-fetching changes.
