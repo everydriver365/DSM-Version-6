@@ -2983,12 +2983,8 @@ function HomePage() {
                     const availableHours = Math.round((totalMinutes / 60) * 10) / 10;
                     const hourlyRate = 40;
                     const potential = Math.round(availableHours * hourlyRate);
-                    const fmt12 = (h: number, m: number) => {
-                      const ampm = h >= 12 ? "pm" : "am";
-                      const hr = h % 12 === 0 ? 12 : h % 12;
-                      return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
-                    };
-                    const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "Not working today";
+                    const fmt24 = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+                    const workingLabel = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : "Not working today";
                     const AVATAR_PALETTE = ["#1A52A0", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
                     const pupils = outstandingBreakdown.slice(0, 5);
                     const extraPupils = Math.max(0, activePupilsCount - pupils.length);
@@ -3963,13 +3959,9 @@ function HomePage() {
               const availableHours = Math.round((totalMinutes / 60) * 10) / 10;
               const hourlyRate = 40;
               const potential = Math.round(availableHours * hourlyRate);
-              const fmt12 = (h: number, m: number) => {
-                const ampm = h >= 12 ? "pm" : "am";
-                const hr = h % 12 === 0 ? 12 : h % 12;
-                return m === 0 ? `${hr}:00${ampm}` : `${hr}:${String(m).padStart(2, "0")}${ampm}`;
-              };
-              const workingLabel = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : `Not working ${dayNoun}`;
-              const fmtWindow = todayWorks ? `${fmt12(sh, sm)} – ${fmt12(eh, em)}` : "—";
+              const fmt24 = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+              const workingLabel = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : `Not working ${dayNoun}`;
+              const fmtWindow = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : "—";
               return (
                 <div style={{
                   margin: "4px 16px 12px",
