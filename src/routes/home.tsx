@@ -1448,6 +1448,33 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Load pupils + availability once for free-slot matching in Schedule panel
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [p, a] = await Promise.all([
+          supabase
+            .from("pupils")
+            .select("id,name,first_name,calendar_colour")
+            .eq("instructor_id", userId)
+            .eq("status", "active")
+            .is("deleted_at", null)
+            .limit(50),
+          supabase
+            .from("pupil_ready_to_learn_settings")
+            .select("*")
+            .eq("instructor_id", userId),
+        ]);
+        if (cancelled) return;
+        setMatchPupils(((p as any).data as any[]) ?? []);
+        setMatchAvailability(((a as any).data as any[]) ?? []);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
