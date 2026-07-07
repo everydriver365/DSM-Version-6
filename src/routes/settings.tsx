@@ -280,6 +280,11 @@ function SettingsPage() {
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
       }
+      if (instructor && typeof (instructor as { min_gap_minutes?: number }).min_gap_minutes === "number") {
+        const v = (instructor as { min_gap_minutes: number }).min_gap_minutes;
+        setMinGapMinutes(v);
+        writeMinGapMinutes(v);
+      }
       if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
         setHomePostcode((instructor as { home_postcode: string }).home_postcode);
       }
