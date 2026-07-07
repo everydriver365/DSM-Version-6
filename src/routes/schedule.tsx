@@ -974,22 +974,35 @@ function SchedulePage() {
         );
       };
 
-      const firstStartMs = lessonStart(items[0]).getTime();
-      const preGap = renderGapRow(
-        `gap-pre-${items[0].id}`,
-        dayWindowStart.getTime(),
-        firstStartMs,
-      );
-      if (preGap) rows.push(preGap);
+      // Pre-gap: reserve the first lesson's before-buffer AND the new lesson's own after-buffer.
+      {
+        const firstStartMs = lessonStart(items[0]).getTime();
+        const firstBufBefore = resolveBuf(items[0].pupil_id, "before");
+        const rightReserveMin = firstBufBefore + instructorBufferAfter;
+        const usableEndMs = firstStartMs - rightReserveMin * 60000;
+        const preGap = renderGapRow(
+          `gap-pre-${items[0].id}`,
+          dayWindowStart.getTime(),
+          usableEndMs,
+          rightReserveMin,
+        );
+        if (preGap) rows.push(preGap);
+      }
 
       items.forEach((l, i) => {
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
         if (next) {
-          const gapMins = Math.round(
-            (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
-          );
-          if (gapMins >= minGapMinutes) {
+          const lBufAfter = resolveBuf(l.pupil_id, "after");
+          const nBufBefore = resolveBuf(next.pupil_id, "before");
+          // Reserve existing lessons' buffers on both sides + new lesson's own buffers.
+          const leftReserveMin = lBufAfter + instructorBufferBefore;
+          const rightReserveMin = nBufBefore + instructorBufferAfter;
+          const bufferTotalMin = leftReserveMin + rightReserveMin;
+          const usableStartMs = lessonEnd(l).getTime() + leftReserveMin * 60000;
+          const usableEndMs = lessonStart(next).getTime() - rightReserveMin * 60000;
+          const usableMins = Math.round((usableEndMs - usableStartMs) / 60000);
+          if (usableMins >= Math.max(minGapMinutes, 60)) {
             rows.push(
               <div
                 key={`gap-${l.id}`}
@@ -1030,7 +1043,9 @@ function SchedulePage() {
                       ...POPPINS,
                     }}
                   >
-                    {gapMins} mins free
+                    {bufferTotalMin > 0
+                      ? `${Math.floor(usableMins / 60)}h${usableMins % 60 ? ` ${usableMins % 60}m` : ""} usable`
+                      : `${usableMins} mins free`}
                   </div>
                   <div
                     style={{
@@ -1040,8 +1055,9 @@ function SchedulePage() {
                       marginTop: 2,
                     }}
                   >
-                    {formatTimeFromDate(lessonEnd(l))} –{" "}
-                    {formatTimeFromDate(lessonStart(next))} · tap to fill
+                    {formatTimeFromDate(new Date(usableStartMs))} –{" "}
+                    {formatTimeFromDate(new Date(usableEndMs))} · tap to fill
+                    {bufferTotalMin > 0 ? ` · ${bufferTotalMin} min buffer` : ""}
                   </div>
                 </div>
                 <button
@@ -1076,14 +1092,21 @@ function SchedulePage() {
         }
       });
 
-      const lastLesson = items[items.length - 1];
-      const lastEndMs = lessonEnd(lastLesson).getTime();
-      const postGap = renderGapRow(
-        `gap-post-${lastLesson.id}`,
-        lastEndMs,
-        dayWindowEnd.getTime(),
-      );
-      if (postGap) rows.push(postGap);
+      // Post-gap: reserve the last lesson's after-buffer AND the new lesson's own before-buffer.
+      {
+        const lastLesson = items[items.length - 1];
+        const lastEndMs = lessonEnd(lastLesson).getTime();
+        const lastBufAfter = resolveBuf(lastLesson.pupil_id, "after");
+        const leftReserveMin = lastBufAfter + instructorBufferBefore;
+        const usableStartMs = lastEndMs + leftReserveMin * 60000;
+        const postGap = renderGapRow(
+          `gap-post-${lastLesson.id}`,
+          usableStartMs,
+          dayWindowEnd.getTime(),
+          leftReserveMin,
+        );
+        if (postGap) rows.push(postGap);
+      }
     }
 
     void isFirst;
