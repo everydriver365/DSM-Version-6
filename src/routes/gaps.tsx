@@ -1280,6 +1280,9 @@ function GapsPage() {
                           >
                             {minToHm(hmToMin(slot.startTime))} –{" "}
                             {minToHm(hmToMin(slot.endTime))} · tap to fill
+                            {slot.bufferMinutes && slot.bufferMinutes > 0
+                              ? ` · ${slot.bufferMinutes} min buffer applied`
+                              : ""}
                           </div>
                         </div>
                         <RefreshCw size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
