@@ -209,6 +209,11 @@ function SchedulePage() {
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
+  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
+  const [pupilBufferMap, setPupilBufferMap] = useState<
+    Record<string, { before: number | null; after: number | null }>
+  >({});
 
   useEffect(() => {
     const sync = () => setMinGapMinutes(readMinGapMinutes());
@@ -228,7 +233,7 @@ function SchedulePage() {
       if (!uid) return;
       const { data, error } = await supabase
         .from("instructors")
-        .select("min_gap_minutes")
+        .select("min_gap_minutes, lesson_buffer_before, lesson_buffer_after")
         .eq("id", uid)
         .maybeSingle();
       if (cancelled || error || !data) return;
@@ -237,6 +242,10 @@ function SchedulePage() {
         setMinGapMinutes(v);
         writeMinGapMinutes(v);
       }
+      const bb = (data as unknown as { lesson_buffer_before?: number }).lesson_buffer_before;
+      const ba = (data as unknown as { lesson_buffer_after?: number }).lesson_buffer_after;
+      if (typeof bb === "number") setInstructorBufferBefore(bb);
+      if (typeof ba === "number") setInstructorBufferAfter(ba);
     })();
     return () => { cancelled = true; };
   }, []);
