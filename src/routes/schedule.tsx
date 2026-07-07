@@ -850,12 +850,12 @@ function SchedulePage() {
         endMs: number,
       ) => {
         const gapMins = Math.round((endMs - startMs) / 60000);
-        if (gapMins <= 30) return null;
+        if (gapMins < minGapMinutes) return null;
         if (isPast) return null;
         if (isToday && endMs <= nowMs) return null;
         const displayStart = isToday && startMs < nowMs ? nowMs : startMs;
         const displayMins = Math.round((endMs - displayStart) / 60000);
-        if (displayMins <= 30) return null;
+        if (displayMins < minGapMinutes) return null;
         return (
           <div
             key={key}
@@ -931,7 +931,7 @@ function SchedulePage() {
           const gapMins = Math.round(
             (lessonStart(next).getTime() - lessonEnd(l).getTime()) / 60000,
           );
-          if (gapMins > 30) {
+          if (gapMins >= minGapMinutes) {
             rows.push(
               <div
                 key={`gap-${l.id}`}
