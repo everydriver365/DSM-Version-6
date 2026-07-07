@@ -439,7 +439,7 @@ export function WeekTimelineView({
               })}
             </div>
         </div>
-
+      </div>
     </div>
   );
 }
