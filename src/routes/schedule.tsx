@@ -783,6 +783,42 @@ function SchedulePage() {
     const dateKey = ymd(d);
     const items = lessonsByDate.get(dateKey) ?? [];
     const { main, suffix } = dayHeaderLabel(d, today);
+    const isToday = dateKey === ymd(today);
+    const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    const nowIndicator = isToday ? (
+      <div
+        key="now-indicator"
+        style={{
+          margin: "8px 16px 4px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          ...POPPINS,
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3 }}>
+          NOW {nowLabel}
+        </span>
+        <span
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 999,
+            background: "#E53935",
+            boxShadow: "0 0 0 3px rgba(229,57,53,0.18)",
+            flexShrink: 0,
+          }}
+        />
+        <div
+          style={{
+            flex: 1,
+            height: 2,
+            borderRadius: 2,
+            background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))",
+          }}
+        />
+      </div>
+    ) : null;
 
     const rows: React.ReactNode[] = [];
     if (items.length === 0) {
@@ -801,6 +837,11 @@ function SchedulePage() {
       );
     } else {
       items.forEach((l, i) => {
+        // Insert NOW indicator before the first lesson that starts after `now` (today only)
+        if (isToday && lessonStart(l).getTime() > now.getTime()) {
+          const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
+          if (!alreadyPlaced && nowIndicator) rows.push(nowIndicator);
+        }
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
         if (next) {
@@ -905,6 +946,10 @@ function SchedulePage() {
           }
         }
       });
+      // If today and NOW is after every lesson, place indicator at the end
+      if (isToday && nowIndicator && !rows.some((r: any) => r?.key === "now-indicator")) {
+        rows.push(nowIndicator);
+      }
     }
 
     return (
