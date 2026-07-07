@@ -1163,6 +1163,8 @@ function SchedulePage() {
         </Popover>
       </div>
 
+      {renderDayPicker()}
+
       {lessons === null ? (
         <div style={{ padding: 16 }}>
           {[1, 2, 3].map((i) => (
@@ -1179,26 +1181,7 @@ function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div>{days.map((d, i) => renderDay(d, i === 0))}</div>
-      )}
-
-      {lessons !== null && (
-        <div style={{ display: "flex", justifyContent: "center", padding: "16px 16px 24px" }}>
-          <button
-            type="button"
-            onClick={() => setDaysAhead((n) => n + 7)}
-            style={{
-              ...POPPINS,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#1877D6",
-              backgroundColor: "transparent",
-              padding: "8px 16px",
-            }}
-          >
-            Load more →
-          </button>
-        </div>
+        <div>{renderDay(selectedDate, true)}</div>
       )}
 
       {/* FAB */}
