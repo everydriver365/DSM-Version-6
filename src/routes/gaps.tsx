@@ -473,18 +473,24 @@ function GapsPage() {
             });
             continue;
           }
-          // Build gap boundaries
-          const gaps: { start: number; end: number }[] = [];
+          // Build gap boundaries — use per-lesson buffers (pupil override or instructor default)
+          const gaps: { start: number; end: number; bufferMinutes: number }[] = [];
           let cursor = wsMin;
+          let prevAfterBuffer = 0;
           for (const l of dayLessons) {
-            const gapEnd = l.start - buffer;
+            const gapEnd = l.start - l.bufBefore;
             if (gapEnd - cursor >= 60) {
-              gaps.push({ start: cursor, end: gapEnd });
+              gaps.push({
+                start: cursor,
+                end: gapEnd,
+                bufferMinutes: Math.max(prevAfterBuffer, l.bufBefore),
+              });
             }
-            cursor = Math.max(cursor, l.end + buffer);
+            cursor = Math.max(cursor, l.end + l.bufAfter);
+            prevAfterBuffer = l.bufAfter;
           }
           if (weMin - cursor >= 60) {
-            gaps.push({ start: cursor, end: weMin });
+            gaps.push({ start: cursor, end: weMin, bufferMinutes: prevAfterBuffer });
           }
           const daySlots: FreeSlot[] = [];
           let dayFree = 0;
@@ -504,6 +510,7 @@ function GapsPage() {
               endTime: minToHm(g.end),
               gapMinutes,
               possibleDurations: possible,
+              bufferMinutes: g.bufferMinutes,
             };
             slots.push(slot);
             daySlots.push(slot);
