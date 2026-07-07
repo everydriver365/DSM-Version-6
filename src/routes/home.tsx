@@ -2010,7 +2010,6 @@ function HomePage() {
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
         .neq("status", "cancelled")
-        .neq("status", "completed")
         .gte("lesson_date", todayYmd)
         .lte("lesson_date", ymd(addDays(todayStart, 14)))
         .order("lesson_date", { ascending: true })
@@ -2019,6 +2018,7 @@ function HomePage() {
       if (lessonRows && lessonRows.length > 0) {
         console.log("[home] first lesson row sample:", lessonRows[0]);
       }
+      console.log("[home] lessons fetched:", lessonRows?.length, "todayYmd:", todayYmd);
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
 
@@ -3879,6 +3879,11 @@ function HomePage() {
             : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
           days.push({ date: d, key, label, lessons: dayLessons });
         }
+
+        const todayISO = ymd(todayStart);
+        console.log("[schedule-panel] todayLessons:", todayLessons?.length, todayLessons);
+        console.log("[schedule-panel] lessons state:", lessons?.length);
+        console.log("[schedule-panel] today ISO:", todayISO);
 
         const isEmpty = days.length === 0;
 
