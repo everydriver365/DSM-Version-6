@@ -2298,6 +2298,12 @@ function HomePage() {
     const needsPayment = paymentStatus === "unpaid" || paymentStatus === "";
     return needsEol || needsPayment;
   });
+  const todayISO = ymd(todayStart);
+  console.log("[today-panel] todayLessons:", todayLessons?.length, todayLessons);
+  console.log("[today-panel] lessons:", lessons?.length);
+  console.log("[today-panel] todayISO:", todayISO);
+  console.log("[today-panel] sample lesson date:", lessons?.[0]?.lesson_date);
+  console.log("[today-panel] sample lesson dt parsed:", lessons?.[0] ? lessonDateTime(lessons[0]).toString() : null);
   const tomorrowLessons = lessons.filter((l) => {
     const d = lessonDateTime(l);
     return d >= tomorrowStart && d < dayAfter;
