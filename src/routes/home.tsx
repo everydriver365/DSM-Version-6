@@ -2215,7 +2215,7 @@ function HomePage() {
 
       const { data: wh } = await supabase
         .from("working_hours")
-        .select("mon, tue, wed, thu, fri, sat, sun, end_time")
+        .select("mon, tue, wed, thu, fri, sat, sun, start_time, end_time")
         .eq("instructor_id", userId)
         .maybeSingle();
       if (wh) {
