@@ -5,7 +5,6 @@ import {
   Calendar as CalendarIcon,
   MapPin,
   ChevronRight,
-  Clock,
   PoundSterling,
   CheckCircle,
   X,
