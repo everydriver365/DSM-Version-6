@@ -10,6 +10,7 @@ import {
   CheckCircle,
   X,
 } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import type React from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
