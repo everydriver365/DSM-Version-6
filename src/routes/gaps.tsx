@@ -47,6 +47,23 @@ const DAYS = [
   "Saturday",
 ];
 
+const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function normaliseDayName(day: string): string {
+  if (!day) return day;
+  const trimmed = day.trim();
+  const lower = trimmed.toLowerCase();
+  const fullIdx = DAYS.findIndex((d) => d.toLowerCase() === lower);
+  if (fullIdx >= 0) return DAYS[fullIdx];
+  const shortIdx = SHORT_DAYS.findIndex((d) => d.toLowerCase() === lower);
+  if (shortIdx >= 0) return DAYS[shortIdx];
+  // Try first 3 chars as short-day match (e.g. "monday" -> "Mon" -> "Monday")
+  const first3 = lower.slice(0, 3);
+  const s2 = SHORT_DAYS.findIndex((d) => d.toLowerCase() === first3);
+  if (s2 >= 0) return DAYS[s2];
+  return trimmed;
+}
+
 interface FreeSlot {
   date: string;
   startTime: string;
@@ -396,6 +413,16 @@ function GapsPage() {
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const normalisedWorkDays = workDays.map(normaliseDayName);
+        console.log("[gaps] working days:", workDays, "->", normalisedWorkDays);
+        console.log("[gaps] working hours:", workStart, workEnd, "buffer:", buffer);
+        console.log(
+          "[gaps] lessons fetched:",
+          lessonsRes.data?.length ?? 0,
+          lessonsRes.data,
+        );
+        if (lessonsRes.error)
+          console.error("[gaps] lessons fetch error:", lessonsRes.error);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
@@ -427,7 +454,17 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const isWorkDay = workDays.includes(dayName);
+          const isWorkDay = normalisedWorkDays.includes(dayName);
+          console.log(
+            "[gaps] date:",
+            iso,
+            "day:",
+            dayName,
+            "isWorkDay:",
+            isWorkDay,
+            "lessons:",
+            (byDay.get(iso) ?? []).length,
+          );
           const dayLessons = (byDay.get(iso) ?? []).slice().sort(
             (a, b) => a.start - b.start,
           );
@@ -504,6 +541,7 @@ function GapsPage() {
           setFreeSlots(slots);
           setDayGroups(groups);
         }
+        console.log("[gaps] free slots computed:", slots.length, slots);
       } catch (err) {
         console.error("[gaps] free-slot detection failed:", err);
         if (!cancelled) {
