@@ -47,6 +47,23 @@ const DAYS = [
   "Saturday",
 ];
 
+const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function normaliseDayName(day: string): string {
+  if (!day) return day;
+  const trimmed = day.trim();
+  const lower = trimmed.toLowerCase();
+  const fullIdx = DAYS.findIndex((d) => d.toLowerCase() === lower);
+  if (fullIdx >= 0) return DAYS[fullIdx];
+  const shortIdx = SHORT_DAYS.findIndex((d) => d.toLowerCase() === lower);
+  if (shortIdx >= 0) return DAYS[shortIdx];
+  // Try first 3 chars as short-day match (e.g. "monday" -> "Mon" -> "Monday")
+  const first3 = lower.slice(0, 3);
+  const s2 = SHORT_DAYS.findIndex((d) => d.toLowerCase() === first3);
+  if (s2 >= 0) return DAYS[s2];
+  return trimmed;
+}
+
 interface FreeSlot {
   date: string;
   startTime: string;
