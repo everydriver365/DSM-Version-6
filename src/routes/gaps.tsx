@@ -1270,7 +1270,9 @@ function GapsPage() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {fmtGap(slot.gapMinutes)} free
+                            {slot.bufferMinutes && slot.bufferMinutes > 0
+                              ? `${fmtGap(slot.gapMinutes)} usable`
+                              : `${fmtGap(slot.gapMinutes)} free`}
                             {hourlyRate > 0
                               ? ` · £${Math.round((slot.gapMinutes / 60) * hourlyRate)}`
                               : ""}
@@ -1285,7 +1287,7 @@ function GapsPage() {
                             {minToHm(hmToMin(slot.startTime))} –{" "}
                             {minToHm(hmToMin(slot.endTime))} · tap to fill
                             {slot.bufferMinutes && slot.bufferMinutes > 0
-                              ? ` · ${slot.bufferMinutes} min buffer applied`
+                              ? ` · ${fmtGap(slot.gapMinutes + slot.bufferMinutes)} gap − ${slot.bufferMinutes} min buffer`
                               : ""}
                           </div>
                         </div>
