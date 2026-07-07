@@ -116,6 +116,8 @@ interface Pupil {
   custom_rate: number | null;
   custom_rate_90: number | null;
   custom_rate_120: number | null;
+  buffer_before_minutes: number | null;
+  buffer_after_minutes: number | null;
   calendar_colour: string | null;
   theory_status: string | null;
   theory_test_date: string | null;
