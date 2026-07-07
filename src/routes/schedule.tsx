@@ -5,11 +5,11 @@ import {
   Calendar as CalendarIcon,
   MapPin,
   ChevronRight,
-  Clock,
   PoundSterling,
   CheckCircle,
   X,
 } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import type React from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
@@ -548,19 +548,17 @@ function SchedulePage() {
           className="cursor-pointer select-none"
           style={{
             display: "flex",
-            gap: 12,
-            padding: "12px 16px",
+            gap: 14,
+            padding: "14px 16px",
             alignItems: "stretch",
-            borderLeft: `4px solid ${lessonColour}`,
-            background: `${lessonColour}15`,
+            background: isCurrent ? `${lessonColour}10` : "#FFFFFF",
           }}
         >
-
           <div
             style={{
-              width: 48,
+              width: 62,
               flexShrink: 0,
-              textAlign: "right",
+              textAlign: "left",
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -568,25 +566,34 @@ function SchedulePage() {
           >
             <div
               style={{
-                fontSize: 13,
+                fontSize: 20,
                 fontWeight: 700,
                 color: timeColor,
                 ...POPPINS,
+                lineHeight: 1.1,
+                letterSpacing: "-0.01em",
                 textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
               {formatLessonTime(l)}
             </div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 4 }}>
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              width: 4,
+              borderRadius: 3,
+              background: lessonColour,
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
             <div
-
               style={{
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: 15,
+                fontWeight: 700,
                 color: nameColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
@@ -595,31 +602,37 @@ function SchedulePage() {
             >
               {name}
             </div>
-            {l.pickup_location && (
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "#6B7280",
-                  ...POPPINS,
-                  marginTop: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-                className="truncate"
-              >
-                <MapPin size={10} color="#6B7280" />
-                <span className="truncate">{l.pickup_location}</span>
-              </div>
-            )}
+            <div
+              style={{
+                fontSize: 13,
+                color: "#94A3B8",
+                ...POPPINS,
+                marginTop: 3,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+              className="truncate"
+            >
+              {l.pickup_location ? (
+                <>
+                  <MapPin size={11} color="#94A3B8" />
+                  <span className="truncate">{l.pickup_location}</span>
+                </>
+              ) : (
+                <span>Lesson</span>
+              )}
+            </div>
             {badges.length > 0 && (
-              <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
+              <div
+                style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}
+              >
                 {badges}
               </div>
             )}
           </div>
           <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <ChevronRight size={16} color="#D1D5DB" />
+            <ChevronRight size={18} color="#CBD5E1" />
           </div>
         </div>
 
@@ -628,8 +641,8 @@ function SchedulePage() {
             style={{
               display: "flex",
               gap: 8,
-              padding: "8px 16px 12px 80px",
-              backgroundColor: "#F8F9FB",
+              padding: "8px 16px 14px 92px",
+              backgroundColor: "#F8FAFC",
             }}
 
           >
@@ -723,13 +736,14 @@ function SchedulePage() {
         <div
           key="empty"
           style={{
-            padding: "12px 16px",
+            padding: "20px 18px",
             fontSize: 13,
-            color: "#9CA3AF",
+            color: "#94A3B8",
             ...POPPINS,
+            textAlign: "center",
           }}
         >
-          No lessons
+          Nothing scheduled
         </div>,
       );
     } else {
@@ -745,20 +759,71 @@ function SchedulePage() {
               <div
                 key={`gap-${l.id}`}
                 style={{
-                  margin: "4px 16px 8px 16px",
-                  backgroundColor: "#F8F9FB",
-                  borderRadius: 8,
-                  padding: "8px 12px",
+                  margin: "6px 12px",
+                  background:
+                    "linear-gradient(180deg, #F8FAFC 0%, #EAF3FF 100%)",
+                  border: "1px solid #EEF2F7",
+                  borderRadius: 14,
+                  padding: "10px 12px",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 12,
                 }}
               >
-                <Clock size={12} color="#9CA3AF" />
-                <span style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                  {gapMins} mins free · {formatTimeFromDate(lessonEnd(l))} –{" "}
-                  {formatTimeFromDate(lessonStart(next))}
-                </span>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 999,
+                    background: "#FFFFFF",
+                    border: "1px solid #E2E8F0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#3B82F6",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Sparkles size={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#0F2044",
+                      ...POPPINS,
+                    }}
+                  >
+                    {gapMins} mins free
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#94A3B8",
+                      ...POPPINS,
+                      marginTop: 2,
+                    }}
+                  >
+                    {formatTimeFromDate(lessonEnd(l))} –{" "}
+                    {formatTimeFromDate(lessonStart(next))} · tap to fill
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate({ to: "/gaps" });
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  <ChevronRight size={18} color="#94A3B8" />
+                </button>
               </div>,
             );
           } else {
@@ -767,7 +832,7 @@ function SchedulePage() {
                 key={`hr-${l.id}`}
                 style={{
                   height: 0,
-                  borderTop: "0.5px solid #F3F4F6",
+                  borderTop: "1px solid #F1F5F9",
                   margin: "0 16px",
                 }}
               />,
@@ -777,57 +842,161 @@ function SchedulePage() {
       });
     }
 
+    void isFirst;
     return (
       <div key={dateKey}>
+        {/* Day header row */}
         <div
           style={{
-            position: "sticky",
-            top: 52,
-            zIndex: 20,
-            backgroundColor: "#FFFFFF",
-            borderBottom: "0.5px solid #E5E5EA",
-            padding: "8px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "4px 4px 10px",
+            margin: "0 16px",
             ...POPPINS,
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            marginTop: isFirst ? 0 : 0,
           }}
         >
-          <span>{main}</span>
-          {suffix && (
-            <span style={{ color: "#9CA3AF", fontWeight: 500 }}> · {suffix}</span>
-          )}
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#94A3B8",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 999,
+                background: "#CBD5E1",
+                display: "inline-block",
+              }}
+            />
+            {main}
+            {suffix && (
+              <span style={{ color: "#CBD5E1", fontSize: 12 }}>
+                · {suffix}
+              </span>
+            )}
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              navigate({
+                to: `/lessons/new?date=${dateKey}` as unknown as "/lessons/new",
+              })
+            }
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              background: "#FFFFFF",
+              border: "1px solid #E2E6ED",
+              borderRadius: 999,
+              padding: "5px 12px 5px 10px",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#0F2044",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <Plus size={14} /> Add
+          </button>
         </div>
-        {rows}
+
+        {/* Timeline card */}
+        <div
+          style={{
+            margin: "0 16px 14px",
+            background: "#FFFFFF",
+            border: "1px solid #E2E6ED",
+            borderRadius: 20,
+            padding: "6px 0",
+            boxShadow: "0 1px 2px rgba(15,32,68,0.03)",
+            overflow: "hidden",
+          }}
+        >
+          {rows}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen pb-24 pb-safe relative" style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}>
-      {/* Top bar */}
+    <div
+      className="min-h-screen pb-24 pb-safe relative"
+      style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}
+    >
+      {/* Top bar — light theme */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="sticky top-0 z-40"
+        style={{
+          background: "#FFFFFF",
+          borderBottom: "0.5px solid #E2E6ED",
+          padding: "14px 20px 12px",
+        }}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold text-white" style={POPPINS}>
-            DSM
-          </span>
-          <span className="text-[15px] text-white" style={POPPINS}>
-            Schedule
-          </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={() => navigate({ to: "/home" })}
+            aria-label="Back"
+            style={{
+              background: "#F1F5F9",
+              border: "none",
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#0F2044",
+            }}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div style={{ flex: 1 }}>
+            <h1
+              style={{
+                ...POPPINS,
+                color: "#0F2044",
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                margin: 0,
+                lineHeight: 1.1,
+              }}
+            >
+              Schedule
+            </h1>
+            <div style={{ color: "#94A3B8", fontSize: 13, marginTop: 2 }}>
+              Your lessons at a glance
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-label="Open calendar"
+            onClick={() => navigate({ to: "/diary" })}
+            style={{
+              background: "#F1F5F9",
+              border: "none",
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#0F2044",
+            }}
+          >
+            <CalendarIcon size={18} />
+          </button>
         </div>
-        <button
-          type="button"
-          aria-label="Open calendar"
-          onClick={() => navigate({ to: "/diary" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <CalendarIcon size={20} color="#FFFFFF" />
-        </button>
       </div>
 
       {lessons === null ? (
@@ -846,7 +1015,9 @@ function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div>{days.map((d, i) => renderDay(d, i === 0))}</div>
+        <div style={{ paddingTop: 16 }}>
+          {days.map((d, i) => renderDay(d, i === 0))}
+        </div>
       )}
 
       {lessons !== null && (
