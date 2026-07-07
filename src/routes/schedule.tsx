@@ -732,20 +732,97 @@ function SchedulePage() {
 
     const rows: React.ReactNode[] = [];
     if (items.length === 0) {
-      rows.push(
-        <div
-          key="empty"
-          style={{
-            padding: "20px 18px",
-            fontSize: 13,
-            color: "#94A3B8",
-            ...POPPINS,
-            textAlign: "center",
-          }}
-        >
-          Nothing scheduled
-        </div>,
-      );
+      const isPast = d.getTime() < today.getTime();
+      if (isPast) {
+        rows.push(
+          <div
+            key="empty"
+            style={{
+              padding: "16px 18px",
+              fontSize: 12,
+              color: "#94A3B8",
+              ...POPPINS,
+              textAlign: "center",
+            }}
+          >
+            Nothing scheduled
+          </div>,
+        );
+      } else {
+        const hoursFree = 9;
+        const potential = hoursFree * 40;
+        const dayNoun = d.getTime() === today.getTime() ? "today" : "on this day";
+        rows.push(
+          <div
+            key="empty-free"
+            style={{
+              margin: "6px 12px",
+              background: "#FFFFFF",
+              border: "0.5px solid #EEF2F7",
+              borderRadius: 12,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              ...POPPINS,
+            }}
+          >
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                background: "rgba(0,181,165,0.10)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#00B5A5",
+                flexShrink: 0,
+              }}
+            >
+              <CalendarIcon size={14} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", lineHeight: 1.2 }}>
+                Free day · {hoursFree} hrs open
+              </div>
+              <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                Potential <span style={{ color: "#00B5A5", fontWeight: 600 }}>£{potential}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              aria-label="Fill slots"
+              onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
+              style={{
+                width: 30, height: 30, borderRadius: 8,
+                background: "#1877D6", color: "#FFFFFF", border: "none",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", flexShrink: 0,
+              }}
+            >
+              <Plus size={14} strokeWidth={2.6} />
+            </button>
+            <button
+              type="button"
+              aria-label="Broadcast availability"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.location.href = `sms:?body=${encodeURIComponent(`Hi everyone, I have lesson availability ${dayNoun}. Reply to book!`)}`;
+              }}
+              style={{
+                width: 30, height: 30, borderRadius: 8,
+                background: "#FFFFFF", color: "#0F2044",
+                border: "1px solid #E5E7EB",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", flexShrink: 0,
+              }}
+            >
+              <Sparkles size={14} />
+            </button>
+          </div>,
+        );
+      }
     } else {
       items.forEach((l, i) => {
         rows.push(renderLessonRow(l));
