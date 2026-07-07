@@ -3999,7 +3999,7 @@ function HomePage() {
                   </div>
 
                   {/* Stats row */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: 16 }}>
                     {[
                       { label: "Window", value: fmtWindow, color: "#0F2044" },
                       { label: "Potential", value: `£${potential}`, color: "#00B5A5" },
@@ -4008,10 +4008,11 @@ function HomePage() {
                       <div key={s.label} style={{
                         display: "flex", flexDirection: "column",
                         borderLeft: i === 0 ? "none" : "1px solid #F1F3F7",
-                        paddingLeft: i === 0 ? 0 : 12,
+                        paddingLeft: i === 0 ? 0 : 16,
+                        minWidth: 0,
                       }}>
                         <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>{s.label}</span>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: s.color, marginTop: 2 }}>{s.value}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: s.color, marginTop: 2, whiteSpace: "nowrap" }}>{s.value}</span>
                       </div>
                     ))}
                   </div>
