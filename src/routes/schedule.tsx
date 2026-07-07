@@ -518,8 +518,11 @@ function SchedulePage() {
     const isSelected = isCurrent || showActions;
 
     const lessonColour = l.pupil_id ? (colourMap[l.pupil_id] || "#1A52A0") : "#1A52A0";
-    const timeColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : lessonColour;
+    const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
     const nameColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : "#0B1F3A";
+    const subtitle =
+      l.pickup_location ||
+      (l.lesson_type ? l.lesson_type : null);
 
     const badges: React.ReactNode[] = [];
 
@@ -606,45 +609,54 @@ function SchedulePage() {
           className="cursor-pointer select-none"
           style={{
             display: "flex",
-            gap: 12,
-            padding: "12px 16px",
+            gap: 14,
+            padding: "14px 16px",
             alignItems: "stretch",
-            borderLeft: `4px solid ${lessonColour}`,
-            background: `${lessonColour}15`,
+            background: "#FFFFFF",
           }}
         >
 
           <div
             style={{
-              width: 48,
+              width: 52,
               flexShrink: 0,
-              textAlign: "right",
+              textAlign: "left",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "flex-start",
+              justifyContent: "center",
             }}
           >
             <div
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: 18,
+                fontWeight: 800,
                 color: timeColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
+                letterSpacing: -0.3,
               }}
             >
               {formatLessonTime(l)}
             </div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS, marginTop: 2, fontWeight: 600 }}>
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
+          <div
+            style={{
+              width: 3,
+              alignSelf: "stretch",
+              borderRadius: 2,
+              background: lessonColour,
+              flexShrink: 0,
+            }}
+          />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
 
               style={{
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: 15,
+                fontWeight: 700,
                 color: nameColor,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
@@ -653,21 +665,21 @@ function SchedulePage() {
             >
               {name}
             </div>
-            {l.pickup_location && (
+            {subtitle && (
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   color: "#6B7280",
                   ...POPPINS,
-                  marginTop: 2,
+                  marginTop: 3,
                   display: "flex",
                   alignItems: "center",
                   gap: 4,
                 }}
                 className="truncate"
               >
-                <MapPin size={10} color="#6B7280" />
-                <span className="truncate">{l.pickup_location}</span>
+                {l.pickup_location && <MapPin size={11} color="#9CA3AF" />}
+                <span className="truncate">{subtitle}</span>
               </div>
             )}
             {badges.length > 0 && (
@@ -675,9 +687,6 @@ function SchedulePage() {
                 {badges}
               </div>
             )}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <ChevronRight size={16} color="#D1D5DB" />
           </div>
         </div>
 
@@ -774,6 +783,42 @@ function SchedulePage() {
     const dateKey = ymd(d);
     const items = lessonsByDate.get(dateKey) ?? [];
     const { main, suffix } = dayHeaderLabel(d, today);
+    const isToday = dateKey === ymd(today);
+    const nowLabel = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    const nowIndicator = isToday ? (
+      <div
+        key="now-indicator"
+        style={{
+          margin: "8px 16px 4px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          ...POPPINS,
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 800, color: "#E53935", letterSpacing: 0.3 }}>
+          NOW {nowLabel}
+        </span>
+        <span
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 999,
+            background: "#E53935",
+            boxShadow: "0 0 0 3px rgba(229,57,53,0.18)",
+            flexShrink: 0,
+          }}
+        />
+        <div
+          style={{
+            flex: 1,
+            height: 2,
+            borderRadius: 2,
+            background: "linear-gradient(to right, #E53935, rgba(229,57,53,0.15))",
+          }}
+        />
+      </div>
+    ) : null;
 
     const rows: React.ReactNode[] = [];
     if (items.length === 0) {
@@ -792,6 +837,11 @@ function SchedulePage() {
       );
     } else {
       items.forEach((l, i) => {
+        // Insert NOW indicator before the first lesson that starts after `now` (today only)
+        if (isToday && lessonStart(l).getTime() > now.getTime()) {
+          const alreadyPlaced = rows.some((r: any) => r?.key === "now-indicator");
+          if (!alreadyPlaced && nowIndicator) rows.push(nowIndicator);
+        }
         rows.push(renderLessonRow(l));
         const next = items[i + 1];
         if (next) {
@@ -896,6 +946,10 @@ function SchedulePage() {
           }
         }
       });
+      // If today and NOW is after every lesson, place indicator at the end
+      if (isToday && nowIndicator && !rows.some((r: any) => r?.key === "now-indicator")) {
+        rows.push(nowIndicator);
+      }
     }
 
     return (
