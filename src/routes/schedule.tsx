@@ -18,6 +18,8 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
+import { Calendar as ShadcnCalendar } from "../components/ui/calendar";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -224,12 +226,21 @@ function dayHeaderLabel(d: Date, today: Date) {
   return { main, suffix };
 }
 
+function emptyDayMessage(d: Date, today: Date) {
+  const diff = Math.round((startOfDay(d).getTime() - today.getTime()) / 86400000);
+  if (diff === 0) return "You’re free today";
+  if (diff === 1) return "You’re free tomorrow";
+  if (diff === -1) return "You were free yesterday";
+  return "No lessons on this day";
+}
+
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
-  const [daysAhead, setDaysAhead] = useState<number>(6); // today + 6 = 7 days (with today-1 = 8 total)
-  const rangeStart = useMemo(() => addDays(today, -1), [today]);
-  const rangeEnd = useMemo(() => addDays(today, daysAhead), [today, daysAhead]);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const pickerStart = useMemo(() => addDays(selectedDate, -7), [selectedDate]);
+  const pickerEnd = useMemo(() => addDays(selectedDate, 7), [selectedDate]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [now, setNow] = useState<Date>(() => new Date());
@@ -239,6 +250,15 @@ function SchedulePage() {
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [matchPupils, setMatchPupils] = useState<any[]>([]);
   const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
+  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const selectedKey = ymd(selectedDate);
+    const el = chipRefs.current[selectedKey];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -276,8 +296,8 @@ function SchedulePage() {
   useEffect(() => {
     let cancelled = false;
     setLessons(null);
-    const windowStart = ymd(rangeStart);
-    const windowEnd = ymd(rangeEnd);
+    const windowStart = ymd(pickerStart);
+    const windowEnd = ymd(pickerEnd);
     console.log("[schedule] date window:", windowStart, windowEnd);
 
     (async () => {
@@ -326,7 +346,7 @@ function SchedulePage() {
     return () => {
       cancelled = true;
     };
-  }, [rangeStart, rangeEnd]);
+  }, [pickerStart, pickerEnd]);
 
 
   const lessonsByDate = useMemo(() => {
@@ -348,17 +368,17 @@ function SchedulePage() {
     console.log("[schedule] grouped lessons for first day:", Object.values(grouped)?.[0]);
     console.log(
       "[schedule] day keys being rendered:",
-      Array.from({ length: 8 }).map((_, i) => ymd(addDays(rangeStart, i))),
+      Array.from({ length: 15 }).map((_, i) => ymd(addDays(pickerStart, i))),
     );
     return map;
-  }, [lessons, rangeStart]);
+  }, [lessons, pickerStart]);
 
-  const days = useMemo(() => {
+  const pickerDays = useMemo(() => {
     const out: Date[] = [];
-    const total = Math.round((rangeEnd.getTime() - rangeStart.getTime()) / 86400000) + 1;
-    for (let i = 0; i < total; i++) out.push(addDays(rangeStart, i));
+    const total = Math.round((pickerEnd.getTime() - pickerStart.getTime()) / 86400000) + 1;
+    for (let i = 0; i < total; i++) out.push(addDays(pickerStart, i));
     return out;
-  }, [rangeStart, rangeEnd]);
+  }, [pickerStart, pickerEnd]);
 
   const currentId = useMemo(() => {
     if (!lessons) return null;
@@ -370,6 +390,80 @@ function SchedulePage() {
     }
     return null;
   }, [lessons, now]);
+
+  const renderDayPicker = () => {
+    return (
+      <div
+        className="hide-scrollbar"
+        style={{
+          display: "flex",
+          gap: 8,
+          padding: "10px 16px",
+          backgroundColor: "#FFFFFF",
+          borderBottom: "0.5px solid #E5E5EA",
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {pickerDays.map((d) => {
+          const dateKey = ymd(d);
+          const isSelected = dateKey === ymd(selectedDate);
+          const isToday = dateKey === ymd(today);
+          const hasLessons = (lessonsByDate.get(dateKey)?.length ?? 0) > 0;
+          const dayName = d.toLocaleDateString("en-GB", { weekday: "narrow" });
+          return (
+            <button
+              key={dateKey}
+              ref={(el) => {
+                chipRefs.current[dateKey] = el;
+              }}
+              type="button"
+              onClick={() => setSelectedDate(d)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: 52,
+                height: 68,
+                flexShrink: 0,
+                borderRadius: 14,
+                border: isToday && !isSelected ? "1px solid #0B1F3A" : "1px solid transparent",
+                padding: "8px 10px",
+                background: isSelected ? "#0B1F3A" : "#F8F9FB",
+                color: isSelected ? "#FFFFFF" : isToday ? "#0B1F3A" : "#6B7280",
+                cursor: "pointer",
+                position: "relative",
+                scrollSnapAlign: "center",
+                ...POPPINS,
+              }}
+            >
+              <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3 }}>
+                {dayName}
+              </span>
+              <span style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>
+                {d.getDate()}
+              </span>
+              {(hasLessons || isSelected) && (
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: 8,
+                    width: 4,
+                    height: 4,
+                    borderRadius: 999,
+                    background: isSelected ? "#FFFFFF" : "#0B1F3A",
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
 
   const markPaid = async (l: Lesson) => {
     const prev = lessons;
@@ -856,7 +950,7 @@ function SchedulePage() {
             No lessons scheduled
           </div>
           <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
-            You&apos;re free today
+            {emptyDayMessage(d, today)}
           </div>
           <button
             type="button"
@@ -1040,16 +1134,35 @@ function SchedulePage() {
             Schedule
           </span>
         </div>
-        <button
-          type="button"
-          aria-label="Open calendar"
-          onClick={() => navigate({ to: "/diary" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <CalendarIcon size={20} color="#FFFFFF" />
-        </button>
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              aria-label="Open calendar"
+              className="flex items-center justify-center"
+              style={{ width: 32, height: 32 }}
+            >
+              <CalendarIcon size={20} color="#FFFFFF" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <ShadcnCalendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(d) => {
+                if (d) {
+                  setSelectedDate(startOfDay(d));
+                  setCalendarOpen(false);
+                }
+              }}
+              initialFocus
+              className="pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
       </div>
+
+      {renderDayPicker()}
 
       {lessons === null ? (
         <div style={{ padding: 16 }}>
@@ -1067,26 +1180,7 @@ function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div>{days.map((d, i) => renderDay(d, i === 0))}</div>
-      )}
-
-      {lessons !== null && (
-        <div style={{ display: "flex", justifyContent: "center", padding: "16px 16px 24px" }}>
-          <button
-            type="button"
-            onClick={() => setDaysAhead((n) => n + 7)}
-            style={{
-              ...POPPINS,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#1877D6",
-              backgroundColor: "transparent",
-              padding: "8px 16px",
-            }}
-          >
-            Load more →
-          </button>
-        </div>
+        <div>{renderDay(selectedDate, true)}</div>
       )}
 
       {/* FAB */}
@@ -1149,6 +1243,13 @@ function SchedulePage() {
         }
         .skeleton-pulse {
           animation: skeleton-pulse 1.5s ease-in-out infinite;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </div>
