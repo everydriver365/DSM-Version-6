@@ -156,6 +156,33 @@ function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   return "bronze";
 }
 
+function getMatchingPupils(
+  gapDate: string,
+  gapStartTime: string,
+  gapMinutes: number,
+  pupils: any[],
+  availabilitySettings: any[],
+) {
+  const dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(gapDate).getDay()];
+  const gapHour = parseInt((gapStartTime || "00:00").split(":")[0], 10);
+  return (pupils || [])
+    .filter((p) => {
+      const settings = (availabilitySettings || []).find((s) => s.pupil_id === p.id);
+      if (!settings) return true;
+      const availDays: string[] = settings.available_days || [];
+      const fromHour = parseInt((settings.available_from || "08:00").split(":")[0], 10);
+      const untilHour = parseInt((settings.available_until || "18:00").split(":")[0], 10);
+      const prefDuration = settings.preferred_duration_minutes || 60;
+      return (
+        availDays.includes(dayOfWeek) &&
+        gapHour >= fromHour &&
+        gapHour < untilHour &&
+        gapMinutes >= prefDuration
+      );
+    })
+    .slice(0, 5);
+}
+
 function CircleIconBtn({
   children, onClick, ariaLabel,
 }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) {
@@ -1337,6 +1364,8 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [matchPupils, setMatchPupils] = useState<any[]>([]);
+  const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
@@ -1442,6 +1471,33 @@ function HomePage() {
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  // Load pupils + availability once for free-slot matching in Schedule panel
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [p, a] = await Promise.all([
+          supabase
+            .from("pupils")
+            .select("id,name,first_name,calendar_colour")
+            .eq("instructor_id", userId)
+            .eq("status", "active")
+            .is("deleted_at", null)
+            .limit(50),
+          supabase
+            .from("pupil_ready_to_learn_settings")
+            .select("*")
+            .eq("instructor_id", userId),
+        ]);
+        if (cancelled) return;
+        setMatchPupils(((p as any).data as any[]) ?? []);
+        setMatchAvailability(((a as any).data as any[]) ?? []);
       } catch {}
     })();
     return () => { cancelled = true; };
@@ -4075,38 +4131,86 @@ function HomePage() {
                               </div>
 
                               {showGap && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate({ to: "/gaps" });
-                                  }}
-                                  style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 10,
-                                    padding: "8px 16px 8px 60px",
-                                    background: "#FFFBEB",
-                                    borderTop: "1px solid #FEF3C7",
-                                    borderBottom: "1px solid #FEF3C7",
-                                    borderLeft: 0,
-                                    borderRight: 0,
-                                    cursor: "pointer",
-                                    fontFamily: "Inter, sans-serif",
-                                    textAlign: "left",
-                                  }}
-                                >
-                                  <span style={{ fontSize: 11, fontWeight: 700, color: "#92400E" }}>
-                                    Free · {gapMins >= 60 ? `${Math.floor(gapMins / 60)}h${gapMins % 60 ? ` ${gapMins % 60}m` : ""}` : `${gapMins}m`}
-                                  </span>
-                                  <span style={{ fontSize: 11, fontWeight: 700, color: "#B45309" }}>
-                                    £{potential}
-                                  </span>
-                                  <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#D97706" }}>
-                                    Fill →
-                                  </span>
-                                </button>
+                                (() => {
+                                  const gapStartT = fmtT(end);
+                                  const gapEndT = fmtT(new Date(end.getTime() + gapMins * 60000));
+                                  const matches = getMatchingPupils(day.key, gapStartT, gapMins, matchPupils, matchAvailability);
+                                  const durationLabel = gapMins >= 60
+                                    ? `${Math.floor(gapMins / 60)}hr${gapMins % 60 ? ` ${gapMins % 60}m` : ""}`
+                                    : `${gapMins}min`;
+                                  return (
+                                    <div style={{
+                                      background: "#FFFBEB",
+                                      border: "0.5px solid #FDE68A",
+                                      borderRadius: 12,
+                                      padding: "12px 14px",
+                                      margin: "4px 16px",
+                                    }}>
+                                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                          <Zap size={14} color="#D97706" />
+                                          <span style={{ fontSize: 13, fontWeight: 600, color: "#78350F" }}>
+                                            Free slot · {durationLabel}
+                                          </span>
+                                          <span style={{ fontSize: 12, color: "#92400E", marginLeft: 6 }}>
+                                            {gapStartT} – {gapEndT}
+                                          </span>
+                                        </div>
+                                        <span style={{ fontSize: 13, fontWeight: 700, color: "#16A34A" }}>
+                                          £{potential}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                          {matches.slice(0, 3).map((pupil, i) => (
+                                            <div key={pupil.id} style={{
+                                              width: 28, height: 28, borderRadius: "50%",
+                                              background: pupil.calendar_colour || "#1A52A0",
+                                              border: "2px solid #FFFBEB",
+                                              marginLeft: i > 0 ? -8 : 0,
+                                              display: "flex", alignItems: "center", justifyContent: "center",
+                                              color: "white", fontSize: 10, fontWeight: 700,
+                                              zIndex: 3 - i, position: "relative",
+                                            }}>
+                                              {((pupil.first_name || pupil.name || "?")[0] || "?").toUpperCase()}
+                                            </div>
+                                          ))}
+                                          {matches.length > 3 && (
+                                            <div style={{
+                                              width: 28, height: 28, borderRadius: "50%",
+                                              background: "#E5E7EB", border: "2px solid #FFFBEB",
+                                              marginLeft: -8, display: "flex", alignItems: "center",
+                                              justifyContent: "center", color: "#6B7280",
+                                              fontSize: 10, fontWeight: 700, position: "relative", zIndex: 0,
+                                            }}>
+                                              +{matches.length - 3}
+                                            </div>
+                                          )}
+                                          {matches.length > 0 ? (
+                                            <span style={{ fontSize: 11, color: "#92400E", marginLeft: 8, fontWeight: 500 }}>
+                                              {matches.length} match{matches.length !== 1 ? "es" : ""}
+                                            </span>
+                                          ) : (
+                                            <span style={{ fontSize: 11, color: "#92400E" }}>
+                                              No matches — post to EveryDriver?
+                                            </span>
+                                          )}
+                                        </div>
+                                        <button
+                                          onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
+                                          style={{
+                                            background: "#D97706", color: "white", border: "none",
+                                            borderRadius: 8, padding: "6px 14px",
+                                            fontSize: 12, fontWeight: 700, cursor: "pointer",
+                                            fontFamily: "Poppins, sans-serif",
+                                          }}
+                                        >
+                                          Fill slot →
+                                        </button>
+                                      </div>
+                                    </div>
+                                  );
+                                })()
                               )}
                             </Fragment>
                           );
