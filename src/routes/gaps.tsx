@@ -12,6 +12,7 @@ import {
   ChevronUp,
   AlertTriangle,
 } from "lucide-react";
+import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -61,6 +62,27 @@ interface DayGroup {
   slots: FreeSlot[];
   totalFreeMinutes: number;
   busyMinutes: number;
+  busy: BusyEntry[];
+}
+
+interface BusyEntry {
+  start: number; // minutes from midnight
+  end: number;
+  title: string;
+  color: string;
+}
+
+const BUSY_PALETTE = ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#10B981", "#EC4899"];
+function pickBusyColor(preferred: string | null | undefined, idx: number) {
+  if (preferred && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(preferred)) return preferred;
+  return BUSY_PALETTE[idx % BUSY_PALETTE.length];
+}
+function fmtGap(mins: number) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
 }
 
 function addDaysIso(base: Date, n: number) {
@@ -327,7 +349,7 @@ function GapsPage() {
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes")
+            .select("lesson_date,lesson_time,duration_minutes,notes,pupils(name,first_name,calendar_colour)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
             .in("status", ["confirmed", "pending"])
@@ -365,20 +387,30 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number }[]
+          { start: number; end: number; title: string; color: string | null }[]
         >();
+        let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
           lesson_date: string | null;
           lesson_time: string | null;
           duration_minutes: number | null;
+          notes: string | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
           const e = s + (l.duration_minutes ?? 60);
+          const title =
+            l.pupils?.name ||
+            l.pupils?.first_name ||
+            (l.notes ? l.notes.split("\n")[0].slice(0, 40) : null) ||
+            "Lesson";
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null });
           byDay.set(l.lesson_date, arr);
+          busyIdx++;
         }
+        void busyIdx;
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
@@ -405,6 +437,12 @@ function GapsPage() {
               slots: [],
               totalFreeMinutes: 0,
               busyMinutes,
+              busy: dayLessons.map((l, i) => ({
+                start: l.start,
+                end: l.end,
+                title: l.title,
+                color: pickBusyColor(l.color, i),
+              })),
             });
             continue;
           }
@@ -451,6 +489,12 @@ function GapsPage() {
             slots: daySlots,
             totalFreeMinutes: dayFree,
             busyMinutes,
+            busy: dayLessons.map((l, i) => ({
+              start: l.start,
+              end: l.end,
+              title: l.title,
+              color: pickBusyColor(l.color, i),
+            })),
           });
         }
         if (!cancelled) {
@@ -912,147 +956,304 @@ function GapsPage() {
         )}
 
         {dayGroups.map((g) => {
-          const dLabel = new Date(g.iso + "T00:00:00").toLocaleDateString(
+          const shortLabel = new Date(g.iso + "T00:00:00").toLocaleDateString(
             "en-GB",
-            { weekday: "long", day: "numeric", month: "long" },
+            { weekday: "short", day: "numeric", month: "short" },
           );
-          // Off-day or fully-booked: single muted row
-          if (!g.isWorkDay || g.slots.length === 0) {
-            const rightLabel = !g.isWorkDay ? "Day off" : "Fully booked";
-            const clickable = !g.isWorkDay;
-            return (
-              <div
-                key={g.iso}
-                onClick={
-                  clickable
-                    ? () => {
-                        setManualMode(true);
-                        setSlotDate(g.iso);
-                        setSelectedSlots([]);
-                      }
-                    : undefined
-                }
-                style={{
-                  padding: "10px 20px",
-                  margin: "0 20px 6px",
-                  borderRadius: 12,
-                  background: "#F8FAFC",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  cursor: clickable ? "pointer" : "default",
-                }}
-              >
-                <span style={{ color: "#9CA3AF", fontSize: 13 }}>{dLabel}</span>
-                <span style={{ color: "#9CA3AF", fontSize: 12 }}>
-                  {rightLabel}
-                </span>
-              </div>
-            );
-          }
+
+          // Build a merged, chronological list of entries: busy lessons + free-slot cards
+          type Entry =
+            | { kind: "busy"; start: number; end: number; title: string; color: string }
+            | { kind: "gap"; slot: FreeSlot };
+          const entries: Entry[] = [];
+          for (const b of g.busy) entries.push({ kind: "busy", ...b });
+          for (const s of g.slots) entries.push({ kind: "gap", slot: s });
+          entries.sort((a, b) => {
+            const as = a.kind === "busy" ? a.start : hmToMin(a.slot.startTime);
+            const bs = b.kind === "busy" ? b.start : hmToMin(b.slot.startTime);
+            return as - bs;
+          });
+
+          const hasNothing = entries.length === 0;
 
           return (
-            <div key={g.iso} style={{ marginBottom: 18 }}>
+            <div key={g.iso} style={{ margin: "0 16px 14px" }}>
+              {/* Day header row */}
               <div
                 style={{
-                  padding: "6px 20px 10px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  padding: "4px 4px 10px",
                 }}
               >
                 <span
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
                     color: "#94A3B8",
-                    fontWeight: 700,
-                    fontSize: 11,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
+                    fontSize: 13,
+                    fontWeight: 600,
                   }}
                 >
-                  {dLabel}
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: "#CBD5E1",
+                      display: "inline-block",
+                    }}
+                  />
+                  {shortLabel}
+                  {!g.isWorkDay && (
+                    <span style={{ color: "#CBD5E1", fontSize: 12 }}>· day off</span>
+                  )}
                 </span>
-                <span style={{ color: "#94A3B8", fontSize: 11 }}>
-                  {g.slots.length} slot{g.slots.length === 1 ? "" : "s"}
-                </span>
+                <button
+                  onClick={() => {
+                    setManualMode(true);
+                    setSlotDate(g.iso);
+                    setSelectedSlots([]);
+                  }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    background: "#FFFFFF",
+                    border: `1px solid ${BORDER}`,
+                    borderRadius: 999,
+                    padding: "5px 12px 5px 10px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: NAVY,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Plus size={14} /> Add
+                </button>
               </div>
+
+              {/* Timeline card */}
               <div
                 style={{
-                  padding: "0 20px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
+                  background: "#FFFFFF",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 20,
+                  padding: "6px 0",
+                  boxShadow: "0 1px 2px rgba(15,32,68,0.03)",
                 }}
               >
-                {g.slots.map((slot) => {
+                {hasNothing && (
+                  <div
+                    style={{
+                      padding: "20px 18px",
+                      color: "#94A3B8",
+                      fontSize: 13,
+                      textAlign: "center",
+                    }}
+                  >
+                    {g.isWorkDay ? "Nothing scheduled" : "Day off — tap Add to open"}
+                  </div>
+                )}
+
+                {entries.map((entry, i) => {
+                  const isLast = i === entries.length - 1;
+                  if (entry.kind === "busy") {
+                    const dur = entry.end - entry.start;
+                    return (
+                      <div
+                        key={`busy-${i}`}
+                        style={{
+                          padding: "14px 16px",
+                          borderBottom: isLast
+                            ? "none"
+                            : `1px solid #F1F5F9`,
+                          display: "flex",
+                          alignItems: "stretch",
+                          gap: 14,
+                        }}
+                      >
+                        <div style={{ width: 62, flexShrink: 0 }}>
+                          <div
+                            style={{
+                              color: NAVY,
+                              fontWeight: 700,
+                              fontSize: 20,
+                              lineHeight: 1.1,
+                              letterSpacing: "-0.01em",
+                            }}
+                          >
+                            {minToHm(entry.start)}
+                          </div>
+                          <div
+                            style={{
+                              color: "#94A3B8",
+                              fontSize: 12,
+                              marginTop: 4,
+                            }}
+                          >
+                            {fmtGap(dur)}
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            width: 4,
+                            borderRadius: 3,
+                            background: entry.color,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                          <div
+                            style={{
+                              color: NAVY,
+                              fontWeight: 700,
+                              fontSize: 15,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {entry.title}
+                          </div>
+                          <div
+                            style={{
+                              color: "#94A3B8",
+                              fontSize: 13,
+                              marginTop: 4,
+                            }}
+                          >
+                            Lesson
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Gap-filler inline card
+                  const slot = entry.slot;
                   const anySelected = slot.possibleDurations.some((d) =>
                     selectedSlots.some(
                       (s) =>
                         slotKey(s) ===
-                        slotKey({
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: d,
-                        }),
+                        slotKey({ date: slot.date, time: slot.startTime, duration: d }),
                     ),
                   );
+                  const default60Key = slotKey({
+                    date: slot.date,
+                    time: slot.startTime,
+                    duration: 60,
+                  });
                   return (
                     <div
-                      key={`${slot.date}|${slot.startTime}`}
+                      key={`gap-${slot.startTime}`}
                       style={{
-                        background: "#FFFFFF",
-                        border: anySelected
-                          ? `2px solid ${BLUE_BRIGHT}`
-                          : `1px solid #EEF2F7`,
-                        borderRadius: 16,
-                        padding: "14px 14px",
-                        boxShadow:
-                          "0 1px 2px rgba(15, 32, 68, 0.04)",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
+                        padding: "10px 12px",
+                        borderBottom: isLast ? "none" : `1px solid #F1F5F9`,
                       }}
                     >
-                      {/* Radio dot */}
-                      <div
+                      <button
+                        onClick={() => {
+                          setSelectedSlots((prev) => {
+                            const exists = prev.some(
+                              (s) => slotKey(s) === default60Key,
+                            );
+                            if (exists)
+                              return prev.filter(
+                                (s) =>
+                                  !(
+                                    s.date === slot.date &&
+                                    s.time === slot.startTime
+                                  ),
+                              );
+                            return [
+                              ...prev,
+                              {
+                                date: slot.date,
+                                time: slot.startTime,
+                                duration: 60,
+                              },
+                            ];
+                          });
+                        }}
                         style={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 999,
-                          border: `2px solid ${anySelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                          width: "100%",
+                          textAlign: "left",
+                          background: anySelected
+                            ? "linear-gradient(180deg, #EAF3FF 0%, #E0F4FF 100%)"
+                            : "#F8FAFC",
+                          border: anySelected
+                            ? `1.5px solid ${BLUE_BRIGHT}`
+                            : `1px solid #EEF2F7`,
+                          borderRadius: 14,
+                          padding: "12px 12px",
                           display: "flex",
                           alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
+                          gap: 12,
+                          cursor: "pointer",
                         }}
                       >
-                        {anySelected && (
-                          <div
-                            style={{
-                              width: 10,
-                              height: 10,
-                              borderRadius: 999,
-                              background: BLUE_BRIGHT,
-                            }}
-                          />
-                        )}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
-                            color: NAVY,
-                            fontWeight: 700,
-                            fontSize: 14,
+                            width: 40,
+                            height: 40,
+                            borderRadius: 999,
+                            background: anySelected ? BLUE_BRIGHT : "#FFFFFF",
+                            border: `1px solid ${anySelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            color: anySelected ? "#FFFFFF" : BLUE_BRIGHT,
                           }}
                         >
-                          {fmt12h(slot.startTime)} – {fmt12h(slot.endTime)}
+                          <Sparkles size={18} />
                         </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div
+                            style={{
+                              color: NAVY,
+                              fontWeight: 700,
+                              fontSize: 15,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {fmtGap(slot.gapMinutes)} free
+                            {hourlyRate > 0
+                              ? ` · £${Math.round((slot.gapMinutes / 60) * hourlyRate)}`
+                              : ""}
+                          </div>
+                          <div
+                            style={{
+                              color: "#94A3B8",
+                              fontSize: 13,
+                              marginTop: 3,
+                            }}
+                          >
+                            {minToHm(hmToMin(slot.startTime))} –{" "}
+                            {minToHm(hmToMin(slot.endTime))} · tap to fill
+                          </div>
+                        </div>
+                        <RefreshCw size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
+                        <ChevronRight
+                          size={18}
+                          color="#94A3B8"
+                          style={{ flexShrink: 0, marginLeft: 2 }}
+                        />
+                      </button>
+
+                      {anySelected && slot.possibleDurations.length > 1 && (
                         <div
                           style={{
                             display: "flex",
                             flexWrap: "wrap",
                             gap: 6,
                             marginTop: 8,
+                            paddingLeft: 4,
                           }}
                         >
                           {slot.possibleDurations.map((d) => {
@@ -1067,17 +1268,20 @@ function GapsPage() {
                             return (
                               <button
                                 key={d}
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedSlots((prev) => {
-                                    const exists = prev.some(
-                                      (s) => slotKey(s) === key,
+                                    // remove any other duration for this slot start
+                                    const filtered = prev.filter(
+                                      (s) =>
+                                        !(
+                                          s.date === slot.date &&
+                                          s.time === slot.startTime
+                                        ),
                                     );
-                                    if (exists)
-                                      return prev.filter(
-                                        (s) => slotKey(s) !== key,
-                                      );
+                                    if (isSelected) return filtered;
                                     return [
-                                      ...prev,
+                                      ...filtered,
                                       {
                                         date: slot.date,
                                         time: slot.startTime,
@@ -1087,14 +1291,12 @@ function GapsPage() {
                                   });
                                 }}
                                 style={{
-                                  background: isSelected
-                                    ? BLUE_BRIGHT
-                                    : "#F1F5F9",
+                                  background: isSelected ? BLUE_BRIGHT : "#FFFFFF",
                                   color: isSelected ? "#FFFFFF" : "#475569",
-                                  border: "none",
-                                  borderRadius: 6,
-                                  padding: "3px 8px",
-                                  fontSize: 10,
+                                  border: `1px solid ${isSelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                                  borderRadius: 999,
+                                  padding: "4px 10px",
+                                  fontSize: 11,
                                   fontWeight: 700,
                                   letterSpacing: "0.04em",
                                   cursor: "pointer",
@@ -1104,22 +1306,6 @@ function GapsPage() {
                               </button>
                             );
                           })}
-                        </div>
-                      </div>
-                      {hourlyRate > 0 && (
-                        <div
-                          style={{
-                            color: BLUE,
-                            fontWeight: 700,
-                            fontSize: 13,
-                            textAlign: "right",
-                          }}
-                        >
-                          £
-                          {(
-                            (slot.gapMinutes / 60) *
-                            hourlyRate
-                          ).toFixed(0)}
                         </div>
                       )}
                     </div>
