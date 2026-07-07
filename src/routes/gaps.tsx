@@ -498,7 +498,9 @@ function GapsPage() {
             let gStart = g.start;
             if (i === 0) {
               const nowMins = today.getHours() * 60 + today.getMinutes();
-              if (gStart < nowMins) gStart = Math.ceil(nowMins / 15) * 15;
+              const minStartMins = nowMins + 30; // at least 30 mins from now
+              if (gStart < minStartMins) gStart = Math.ceil(minStartMins / 15) * 15;
+              if (gStart >= g.end) continue; // slot fully in the past / too soon
             }
             const gapMinutes = g.end - gStart;
             if (gapMinutes < 60) continue;
