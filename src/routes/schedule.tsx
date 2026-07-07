@@ -737,13 +737,14 @@ function SchedulePage() {
         <div
           key="empty"
           style={{
-            padding: "12px 16px",
+            padding: "20px 18px",
             fontSize: 13,
-            color: "#9CA3AF",
+            color: "#94A3B8",
             ...POPPINS,
+            textAlign: "center",
           }}
         >
-          No lessons
+          Nothing scheduled
         </div>,
       );
     } else {
@@ -759,20 +760,71 @@ function SchedulePage() {
               <div
                 key={`gap-${l.id}`}
                 style={{
-                  margin: "4px 16px 8px 16px",
-                  backgroundColor: "#F8F9FB",
-                  borderRadius: 8,
-                  padding: "8px 12px",
+                  margin: "6px 12px",
+                  background:
+                    "linear-gradient(180deg, #F8FAFC 0%, #EAF3FF 100%)",
+                  border: "1px solid #EEF2F7",
+                  borderRadius: 14,
+                  padding: "10px 12px",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 12,
                 }}
               >
-                <Clock size={12} color="#9CA3AF" />
-                <span style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                  {gapMins} mins free · {formatTimeFromDate(lessonEnd(l))} –{" "}
-                  {formatTimeFromDate(lessonStart(next))}
-                </span>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 999,
+                    background: "#FFFFFF",
+                    border: "1px solid #E2E8F0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#3B82F6",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Sparkles size={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#0F2044",
+                      ...POPPINS,
+                    }}
+                  >
+                    {gapMins} mins free
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#94A3B8",
+                      ...POPPINS,
+                      marginTop: 2,
+                    }}
+                  >
+                    {formatTimeFromDate(lessonEnd(l))} –{" "}
+                    {formatTimeFromDate(lessonStart(next))} · tap to fill
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate({ to: "/gaps" });
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  <ChevronRight size={18} color="#94A3B8" />
+                </button>
               </div>,
             );
           } else {
@@ -781,7 +833,7 @@ function SchedulePage() {
                 key={`hr-${l.id}`}
                 style={{
                   height: 0,
-                  borderTop: "0.5px solid #F3F4F6",
+                  borderTop: "1px solid #F1F5F9",
                   margin: "0 16px",
                 }}
               />,
@@ -791,29 +843,86 @@ function SchedulePage() {
       });
     }
 
+    void isFirst;
     return (
       <div key={dateKey}>
+        {/* Day header row */}
         <div
           style={{
-            position: "sticky",
-            top: 52,
-            zIndex: 20,
-            backgroundColor: "#FFFFFF",
-            borderBottom: "0.5px solid #E5E5EA",
-            padding: "8px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "4px 4px 10px",
+            margin: "0 16px",
             ...POPPINS,
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            marginTop: isFirst ? 0 : 0,
           }}
         >
-          <span>{main}</span>
-          {suffix && (
-            <span style={{ color: "#9CA3AF", fontWeight: 500 }}> · {suffix}</span>
-          )}
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#94A3B8",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 999,
+                background: "#CBD5E1",
+                display: "inline-block",
+              }}
+            />
+            {main}
+            {suffix && (
+              <span style={{ color: "#CBD5E1", fontSize: 12 }}>
+                · {suffix}
+              </span>
+            )}
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              navigate({
+                to: `/lessons/new?date=${dateKey}` as unknown as "/lessons/new",
+              })
+            }
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              background: "#FFFFFF",
+              border: "1px solid #E2E6ED",
+              borderRadius: 999,
+              padding: "5px 12px 5px 10px",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#0F2044",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <Plus size={14} /> Add
+          </button>
         </div>
-        {rows}
+
+        {/* Timeline card */}
+        <div
+          style={{
+            margin: "0 16px 14px",
+            background: "#FFFFFF",
+            border: "1px solid #E2E6ED",
+            borderRadius: 20,
+            padding: "6px 0",
+            boxShadow: "0 1px 2px rgba(15,32,68,0.03)",
+            overflow: "hidden",
+          }}
+        >
+          {rows}
+        </div>
       </div>
     );
   };
