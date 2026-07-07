@@ -392,6 +392,80 @@ function SchedulePage() {
     return null;
   }, [lessons, now]);
 
+  const renderDayPicker = () => {
+    return (
+      <div
+        className="hide-scrollbar"
+        style={{
+          display: "flex",
+          gap: 8,
+          padding: "10px 16px",
+          backgroundColor: "#FFFFFF",
+          borderBottom: "0.5px solid #E5E5EA",
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {pickerDays.map((d) => {
+          const dateKey = ymd(d);
+          const isSelected = dateKey === ymd(selectedDate);
+          const isToday = dateKey === ymd(today);
+          const hasLessons = (lessonsByDate.get(dateKey)?.length ?? 0) > 0;
+          const dayName = d.toLocaleDateString("en-GB", { weekday: "narrow" });
+          return (
+            <button
+              key={dateKey}
+              ref={(el) => {
+                chipRefs.current[dateKey] = el;
+              }}
+              type="button"
+              onClick={() => setSelectedDate(d)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: 52,
+                height: 68,
+                flexShrink: 0,
+                borderRadius: 14,
+                border: isToday && !isSelected ? "1px solid #0B1F3A" : "1px solid transparent",
+                padding: "8px 10px",
+                background: isSelected ? "#0B1F3A" : "#F8F9FB",
+                color: isSelected ? "#FFFFFF" : isToday ? "#0B1F3A" : "#6B7280",
+                cursor: "pointer",
+                position: "relative",
+                scrollSnapAlign: "center",
+                ...POPPINS,
+              }}
+            >
+              <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3 }}>
+                {dayName}
+              </span>
+              <span style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>
+                {d.getDate()}
+              </span>
+              {(hasLessons || isSelected) && (
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: 8,
+                    width: 4,
+                    height: 4,
+                    borderRadius: 999,
+                    background: isSelected ? "#FFFFFF" : "#0B1F3A",
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   const markPaid = async (l: Lesson) => {
     const prev = lessons;
     setLessons((cur) =>
