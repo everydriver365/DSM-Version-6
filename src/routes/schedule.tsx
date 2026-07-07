@@ -251,6 +251,15 @@ function SchedulePage() {
   const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [matchPupils, setMatchPupils] = useState<any[]>([]);
   const [matchAvailability, setMatchAvailability] = useState<any[]>([]);
+  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const selectedKey = ymd(selectedDate);
+    const el = chipRefs.current[selectedKey];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     let cancelled = false;
