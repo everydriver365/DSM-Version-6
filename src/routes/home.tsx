@@ -2486,31 +2486,37 @@ function HomePage() {
     const isCancelled = (l.status ?? "").toLowerCase() === "cancelled";
     const amount = Number(l.amount_due ?? 0);
     const color = lessonColour(l);
-    const subtitle = l.pickup_location ?? "";
-    const badges: React.ReactNode[] = [];
+    const name = pupilName(l);
+    const initials = name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((s) => s[0]?.toUpperCase() ?? "")
+      .join("") || "?";
+    let badge: React.ReactNode = null;
     if (isCancelled) {
-      badges.push(
-        <span key="cancelled" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#DC2626", fontFamily: "Inter, sans-serif" }}>
+      badge = (
+        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#FEE2E2", color: "#DC2626", fontFamily: "Inter, sans-serif" }}>
           Cancelled
-        </span>,
+        </span>
       );
     } else if (paid) {
-      badges.push(
-        <span key="paid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF2F7", color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}>
+      badge = (
+        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#DCFCE7", color: "#166534", fontFamily: "Inter, sans-serif" }}>
           Paid
-        </span>,
+        </span>
       );
     } else if (isPrepaid) {
-      badges.push(
-        <span key="prepaid" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#EEF4FB", color: "#1A52A0", fontFamily: "Inter, sans-serif" }}>
+      badge = (
+        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#DBEAFE", color: "#1D4ED8", fontFamily: "Inter, sans-serif" }}>
           Prepaid
-        </span>,
+        </span>
       );
     } else if (amount > 0) {
-      badges.push(
-        <span key="due" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 6, background: "#FEE2E2", color: "#1877D6", fontFamily: "Inter, sans-serif" }}>
+      badge = (
+        <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, background: "#FEE2E2", color: "#B91C1C", fontFamily: "Inter, sans-serif" }}>
           £{amount.toFixed(0)}
-        </span>,
+        </span>
       );
     }
     return (
@@ -2519,37 +2525,35 @@ function HomePage() {
         type="button"
         onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
         style={{
-          display: "flex", gap: 12, alignItems: "stretch", padding: "14px 16px",
+          display: "flex", gap: 12, alignItems: "center", padding: "14px 16px",
           background: "#FFFFFF", border: "none", borderBottom: "0.5px solid #F3F4F6",
           cursor: "pointer", textAlign: "left", width: "100%", fontFamily: "Inter, sans-serif",
           opacity: isCancelled ? 0.6 : 1,
         }}
       >
-        <div style={{ width: 52, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
-            {formatTime(l)}
+        <div style={{ fontSize: 17, fontWeight: 800, color: "#0F2044", letterSpacing: -0.3, fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none", flexShrink: 0, minWidth: 52 }}>
+          {formatTime(l)}
+        </div>
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: color, flexShrink: 0 }} />
+        <div style={{
+          width: 40, height: 40, borderRadius: "50%",
+          background: color, color: "#FFFFFF",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 13, fontWeight: 800, letterSpacing: 0.3,
+          flexShrink: 0, fontFamily: "Inter, sans-serif",
+        }}>
+          {initials}
+        </div>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
+            {name}
           </div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", marginTop: 2, fontFamily: "Inter, sans-serif" }}>
             {formatDurationShort(l.duration_minutes)}
           </div>
         </div>
-        <div style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: color, flexShrink: 0 }} />
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Inter, sans-serif", textDecoration: isCancelled ? "line-through" : "none" }}>
-            {pupilName(l)}
-          </div>
-          {subtitle && (
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginTop: 2, display: "flex", alignItems: "center", gap: 4, fontFamily: "Inter, sans-serif" }}>
-              <MapPin size={11} color="#9CA3AF" />
-              <span className="truncate">{subtitle}</span>
-            </div>
-          )}
-          {badges.length > 0 && (
-            <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
-              {badges}
-            </div>
-          )}
-        </div>
+        {badge}
+        <ChevronRight size={18} color="#C7CDD6" style={{ flexShrink: 0 }} />
       </button>
     );
   };
