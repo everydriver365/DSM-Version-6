@@ -88,6 +88,8 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
+  const [bufferBefore, setBufferBefore] = useState<number>(0);
+  const [bufferAfter, setBufferAfter] = useState<number>(15);
 
   useEffect(() => {
     setMinGapMinutes(readMinGapMinutes());
@@ -262,7 +264,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -279,6 +281,12 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
+      }
+      if (instructor && typeof (instructor as { lesson_buffer_before?: number }).lesson_buffer_before === "number") {
+        setBufferBefore((instructor as { lesson_buffer_before: number }).lesson_buffer_before);
+      }
+      if (instructor && typeof (instructor as { lesson_buffer_after?: number }).lesson_buffer_after === "number") {
+        setBufferAfter((instructor as { lesson_buffer_after: number }).lesson_buffer_after);
       }
       const mgm = (instructor as unknown as { min_gap_minutes?: number } | null)?.min_gap_minutes;
       if (typeof mgm === "number") {
