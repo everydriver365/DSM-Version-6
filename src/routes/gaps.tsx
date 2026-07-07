@@ -349,7 +349,7 @@ function GapsPage() {
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes")
+            .select("lesson_date,lesson_time,duration_minutes,notes,pupils(name,first_name,calendar_colour)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
             .in("status", ["confirmed", "pending"])
@@ -387,20 +387,30 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number }[]
+          { start: number; end: number; title: string; color: string | null }[]
         >();
+        let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
           lesson_date: string | null;
           lesson_time: string | null;
           duration_minutes: number | null;
+          notes: string | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
           const e = s + (l.duration_minutes ?? 60);
+          const title =
+            l.pupils?.name ||
+            l.pupils?.first_name ||
+            (l.notes ? l.notes.split("\n")[0].slice(0, 40) : null) ||
+            "Lesson";
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null });
           byDay.set(l.lesson_date, arr);
+          busyIdx++;
         }
+        void busyIdx;
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
@@ -427,6 +437,12 @@ function GapsPage() {
               slots: [],
               totalFreeMinutes: 0,
               busyMinutes,
+              busy: dayLessons.map((l, i) => ({
+                start: l.start,
+                end: l.end,
+                title: l.title,
+                color: pickBusyColor(l.color, i),
+              })),
             });
             continue;
           }
@@ -473,6 +489,12 @@ function GapsPage() {
             slots: daySlots,
             totalFreeMinutes: dayFree,
             busyMinutes,
+            busy: dayLessons.map((l, i) => ({
+              start: l.start,
+              end: l.end,
+              title: l.title,
+              color: pickBusyColor(l.color, i),
+            })),
           });
         }
         if (!cancelled) {
