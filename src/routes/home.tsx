@@ -1927,30 +1927,55 @@ function HomePage() {
     if (!userId) return;
     (async () => {
       const todayYmd = ymd(todayStart);
-      const { data: lessonRows, error: lessonsErr } = await supabase
+      const yesterdayYmd = ymd(addDays(todayStart, -1));
+      const in60Ymd = ymd(addDays(todayStart, 60));
+      const weekStartYmd = ymd(weekStart);
+      const weekEndYmd = ymd(weekEnd);
+
+      // ============================================================
+      // SINGLE LESSONS FETCH — 60-day window, all statuses.
+      // Every lesson-derived panel (Today, Tomorrow, Next-tab, Week
+      // count, Week breakdown modal, Week earnings) is derived from
+      // `allLessons` in-memory below. The only separate lessons reads
+      // are: (a) unbounded "nextLesson" hero, (b) all-time unpaid
+      // totals, (c) lifetime completed-count in the money glance,
+      // (d) hero-expanded prev-lesson lookup — each has a different
+      // predicate that can't be derived from this window.
+      // ============================================================
+      const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
+        .select(
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+        )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
-        .is("pupils.deleted_at", null)
-        .neq("status", "cancelled")
-        .neq("status", "completed")
-        .gte("lesson_date", todayYmd)
-        .lte("lesson_date", ymd(addDays(todayStart, 14)))
+        .gte("lesson_date", yesterdayYmd)
+        .lte("lesson_date", in60Ymd)
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
       if (lessonsErr) console.error("[home] lessons fetch error", lessonsErr);
-      if (lessonRows && lessonRows.length > 0) {
-        console.log("[home] first lesson row sample:", lessonRows[0]);
-      }
-      setLessons((lessonRows ?? []) as unknown as LessonRow[]);
 
+      // Drop rows whose pupil is soft-deleted (matches previous
+      // `pupils!inner` + `pupils.deleted_at IS NULL` behaviour).
+      const allLessons = (allLessonsRaw ?? []).filter(
+        (l: any) => !l.pupils || l.pupils.deleted_at == null,
+      );
 
+      // `lessons` state keeps its previous semantics: active scheduled
+      // (not cancelled, not completed). Today/Tomorrow/Next/Week UI
+      // derives from this array via existing filters at the bottom of
+      // the component — behaviour unchanged.
+      const activeLessons = allLessons.filter(
+        (l: any) => l.status !== "cancelled" && l.status !== "completed",
+      );
+      setLessons(activeLessons as unknown as LessonRow[]);
 
-
+      // ---- Next lesson (unbounded — may be beyond the 60-day window) ----
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name,phone,postcode,address,prepaid_hours,deleted_at)")
+        .select(
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, deleted_at)"
+        )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
         .is("pupils.deleted_at", null)
@@ -1958,9 +1983,9 @@ function HomePage() {
         .neq("status", "completed")
         .gte("lesson_date", todayYmd)
         .order("lesson_date", { ascending: true })
-        .order("lesson_time", { ascending: true });
+        .order("lesson_time", { ascending: true })
+        .limit(5);
       if (nextErr) console.error("[home] next lesson fetch error", nextErr);
-      // If lesson is today, ensure its time is still in the future (London)
       const nowTime = londonTimeString();
       const validNext = (nextRows ?? []).find((l) => {
         if (l.lesson_date > todayYmd) return true;
@@ -1970,19 +1995,29 @@ function HomePage() {
       });
       setNextLesson((validNext ?? null) as unknown as LessonRow | null);
 
-
+      // ---- Unpaid lessons (all time, exclude cancelled) ----
       const { data: unpaidLessons } = await supabase
         .from("lessons")
         .select("pupil_id, amount_due")
         .eq("instructor_id", userId)
         .eq("payment_status", "unpaid")
+        .neq("status", "cancelled")
         .gt("amount_due", 0)
         .is("deleted_at", null);
 
+      // ---- Single pupils fetch (P1 + P4 + P5 consolidated) ----
       const { data: pupilsData } = await supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid")
+        .select(
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at"
+        )
         .eq("instructor_id", userId);
+      setActivePupilsCount(
+        (pupilsData || []).filter((p: any) => p.status === "active").length,
+      );
+      setGlancePupilCount(
+        (pupilsData || []).filter((p: any) => p.deleted_at == null).length,
+      );
 
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
@@ -2053,21 +2088,17 @@ function HomePage() {
       setOutstandingBreakdown(breakdown);
       setOutstanding(outstandingAmt + niOutstanding);
 
-
-
-      // Source 1: lessons delivered this week (completed or past end time),
-      // valued at each lesson's amount_due (reflects custom / postcode /
-      // default rate at creation). Covers prepaid pupils where no
-      // lesson_history row is written per lesson.
+      // ============================================================
+      // WEEK EARNINGS + WEEK COUNT + WEEK MODAL ROWS — all derived
+      // from the single `allLessons` array above. No separate fetches.
+      // ============================================================
       const nowMs = Date.now();
-      const { data: weekLessonRowsForEarnings } = await supabase
-        .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, amount_due, pupil_id, payment_status, pupils(name, custom_rate, custom_rate_90, custom_rate_120)")
-        .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .neq("status", "cancelled")
-        .gte("lesson_date", ymd(weekStart))
-        .lt("lesson_date", ymd(weekEnd));
+      const weekLessonRowsForEarnings = allLessons.filter(
+        (l: any) =>
+          l.status !== "cancelled" &&
+          l.lesson_date >= weekStartYmd &&
+          l.lesson_date < weekEndYmd,
+      );
 
       // Source 2: Course booking deposits from public site
       const { data: bookingRows } = await supabase
@@ -2132,30 +2163,16 @@ function HomePage() {
 
       setWeekEarnings(wk);
       setTodayEarnings(td);
+      setWeekLessonCount(weekLessonRowsForEarnings.length);
 
-
-      const { count: wkLessonCount } = await supabase
-        .from("lessons")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .neq("status", "cancelled")
-        .gte("lesson_date", ymd(weekStart))
-        .lt("lesson_date", ymd(weekEnd));
-      setWeekLessonCount(wkLessonCount ?? 0);
-
-      // Full week lesson list for the breakdown modal
-      const { data: weekLessonData } = await supabase
-        .from("lessons")
-        .select("id, lesson_date, lesson_time, duration_minutes, status, pupil_id, pupils(name, first_name)")
-        .eq("instructor_id", userId)
-        .gte("lesson_date", ymd(weekStart))
-        .lt("lesson_date", ymd(weekEnd))
-        .is("deleted_at", null)
-        .order("lesson_date", { ascending: true })
-        .order("lesson_time", { ascending: true });
+      // Full week lesson list for the breakdown modal (all statuses,
+      // derived from the single fetch above).
+      const weekLessonData = allLessons.filter(
+        (l: any) =>
+          l.lesson_date >= weekStartYmd && l.lesson_date < weekEndYmd,
+      );
       setWeekLessonRows(
-        (weekLessonData ?? []).map((l: any) => ({
+        weekLessonData.map((l: any) => ({
           id: l.id,
           lesson_date: l.lesson_date,
           lesson_time: l.lesson_time,
