@@ -3535,11 +3535,35 @@ function HomePage() {
         </div>
       )}
 
+      {/* WORKSPACE DOTS — fixed under top bar, always visible */}
+      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:5, padding:'6px 0 8px', background:'#0F2044', flexShrink:0, zIndex:10 }}>
+        {['Today','Schedule','Pupils','Money','Market','DSM','Tools'].map((_lbl, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={`Go to ${_lbl}`}
+            onClick={() => setActiveWs(i)}
+            style={{
+              width: activeWs === i ? 22 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: activeWs === i ? '#FFFFFF' : 'rgba(255,255,255,0.25)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'all 0.25s ease',
+            }}
+          />
+        ))}
+      </div>
+
       {/* WORKSPACES CAROUSEL */}
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
         style={{
+          flex: 1,
+          minHeight: 0,
           display:'flex',
           overflowX:'auto',
           overflowY:'hidden',
@@ -3548,6 +3572,7 @@ function HomePage() {
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
+          background:'#F3F8FF',
         }}
         className="hide-scrollbar"
       >
