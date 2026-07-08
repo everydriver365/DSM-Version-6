@@ -1160,50 +1160,99 @@ function SchedulePage() {
         </div>
       ) : (
         <div style={{ paddingTop: 16 }}>
-          {/* Gap-filler summary card */}
-          {dayInfo.gaps.length > 0 && (
+          {/*
+            Gap-filler summary card — amber "open slot" treatment.
+            FLAG: waitlist/gap-match pupil data and per-slot potential earnings
+            are not fetched on this screen today, so the avatar stack and
+            "potential to earn £X" clause are intentionally omitted rather
+            than fabricated. Wire them in when a matching data source lands.
+          */}
+          {dayInfo.gaps.length > 0 && (() => {
+            const firstGap = [...dayInfo.gaps].sort((a, b) => a.startMs - b.startMs)[0];
+            return (
+              <div
+                style={{
+                  margin: "0 16px 12px",
+                  background: "#FBEFE1",
+                  borderRadius: 14,
+                  padding: "14px 16px",
+                  ...POPPINS,
+                }}
+              >
+                <div style={{ fontSize: 14, fontWeight: 500, color: "#7A4813" }}>
+                  You have an open slot today
+                </div>
+                <div style={{ fontSize: 12, color: "#B5661E", marginTop: 4 }}>
+                  {formatTimeFromDate(new Date(firstGap.startMs))} – {formatTimeFromDate(new Date(firstGap.endMs))}
+                  {" ("}{formatOpenMins(firstGap.usableMins)}{")"}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/gaps" })}
+                  style={{
+                    marginTop: 12,
+                    background: "#EFAF2C",
+                    color: "#3D2408",
+                    border: "none",
+                    borderRadius: 10,
+                    padding: "8px 14px",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                >
+                  Fill slot <ChevronRight size={14} />
+                </button>
+              </div>
+            );
+          })()}
+
+          {/*
+            AI insight card — no insight-generation source exists on this
+            screen today; card intentionally omitted rather than shown as
+            a placeholder. Wire in when an insight source lands.
+          */}
+
+          {/* Section header — Today's timeline (only on today tab). */}
+          {dayTab === "today" && (
             <div
-              role="button"
-              tabIndex={0}
-              onClick={() => navigate({ to: "/gaps" })}
               style={{
-                margin: "0 16px 12px",
-                border: `0.5px solid ${BORDER}`,
-                borderRadius: 12,
-                padding: "14px 16px",
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                minHeight: 56,
-                cursor: "pointer",
-                background: "#FFFFFF",
+                justifyContent: "space-between",
+                margin: "0 16px 8px",
                 ...POPPINS,
               }}
             >
-              <div
+              <span style={{ fontSize: 18, fontWeight: 500, color: NAVY }}>
+                Today&apos;s timeline
+              </span>
+              {/*
+                FLAG: no separate "full schedule" route exists — this page
+                IS the schedule. Link points to /schedule (self) as the
+                closest existing route; revisit when a distinct full/week
+                schedule view is introduced.
+              */}
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/schedule" })}
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 12,
-                  background: "#FBEFE1",
-                  color: "#B5661E",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  color: ACCENT,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  ...POPPINS,
                 }}
               >
-                <IconBolt size={20} stroke={1.75} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>
-                  Gap filler
-                </div>
-                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }} className="truncate">
-                  {formatOpenMins(dayInfo.totalMins)} open · matched to waitlist
-                </div>
-              </div>
-              <ChevronRight size={18} color="#CBD5E1" />
+                View full schedule →
+              </button>
             </div>
           )}
 
@@ -1252,8 +1301,20 @@ function SchedulePage() {
           )}
 
           {renderTimeline()}
+
+          {/*
+            Recent activity section — no unified activity feed data source
+            (payments received / lessons completed timeline) is fetched on
+            this screen today; section intentionally omitted rather than
+            shown as a placeholder. Wire in when an activity source lands.
+
+            Floating add button — a "+" add-lesson control already exists
+            in the sticky header (IconPlus); a duplicate FAB is intentionally
+            not added to avoid two entry points for the same action.
+          */}
         </div>
       )}
+
 
       {eolLesson && (
         <EndLessonWizard
