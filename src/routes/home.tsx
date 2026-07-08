@@ -80,6 +80,23 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
+  IconCurrencyPound,
+  IconCalendarStats,
+  IconClockHour4,
+  IconAlertTriangle,
+  IconBolt,
+  IconChevronRight,
+  IconSparkles,
+  IconPhone,
+  IconMessage,
+  IconPlayerPlay,
+  IconCalendarEvent,
+  IconUsers,
+  IconWallet,
+  IconMessageCircle,
+  IconLayoutGrid,
+} from "@tabler/icons-react";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
