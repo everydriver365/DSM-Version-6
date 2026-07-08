@@ -2448,10 +2448,40 @@ function HomePage() {
     return null;
   })();
 
+  const freeSlotCount = (() => {
+    const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+    const startMins = timeToMins(workingHours?.start_time ? String(workingHours.start_time) : "09:00");
+    const endMins = timeToMins(todayEndTime ?? "18:00");
+    const resolveAfter = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.after != null ? pupilBufferMap[pid].after as number : instructorBufferAfter);
+    const resolveBefore = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.before != null ? pupilBufferMap[pid].before as number : 0);
+    if (sorted.length === 0) return Math.max(0, Math.floor((endMins - startMins) / 60));
+    let count = 0;
+    const first = sorted[0];
+    const firstStart = lessonDateTime(first);
+    const firstStartMins = firstStart.getHours() * 60 + firstStart.getMinutes();
+    if (firstStartMins - resolveBefore(first.pupil_id) - startMins >= 60) count++;
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const l = sorted[i];
+      const next = sorted[i + 1];
+      const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+      const gapStartMins = endThis.getHours() * 60 + endThis.getMinutes() + resolveAfter(l.pupil_id);
+      const nextStart = lessonDateTime(next);
+      const gapEndMins = nextStart.getHours() * 60 + nextStart.getMinutes() - resolveBefore(next.pupil_id);
+      if (gapEndMins - gapStartMins >= 60) count++;
+    }
+    const last = sorted[sorted.length - 1];
+    const endLast = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+    const lastEndMins = endLast.getHours() * 60 + endLast.getMinutes() + resolveAfter(last.pupil_id);
+    if (endMins - lastEndMins >= 60) count++;
+    return count;
+  })();
+
   console.log("[next-free] todayLessons:", todayLessons?.length);
   console.log("[next-free] workStart:", workingHours?.start_time, "workEnd:", workingHours?.end_time);
   console.log("[next-free] todayEndTime:", todayEndTime, "instructorBufferAfter:", instructorBufferAfter);
   console.log("[next-free] result:", nextFreeSlot);
+  console.log("[home] freeSlotCount:", freeSlotCount);
+
 
   const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
@@ -3972,19 +4002,29 @@ function HomePage() {
           </>
         )}
       </div>
-      {/* TODAY STRIP — 3 white tiles */}
-      <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
-        <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+      {/* TODAY STRIP — 2 white tiles */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, padding: '12px 16px 0' }}>
+        <TodayTile
+          value={nextFreeSlot ?? 'None'}
+          label="Next free"
+          valueColor={nextFreeSlot ? '#D97706' : '#9CA3AF'}
+          valueSize={nextFreeSlot ? 13 : 14}
+        />
         <div
-          style={{ flex: 1, display: 'flex', cursor: 'pointer' }}
+          style={{ display: 'flex', cursor: 'pointer' }}
           onClick={() => setOutstandingOpen(true)}
           role="button"
           tabIndex={0}
         >
-          <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
+          <TodayTile
+            value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : 'Clear ✓'}
+            label="Outstanding"
+            valueColor={outstanding > 0 ? '#c9302c' : '#16A34A'}
+            valueSize={13}
+          />
         </div>
       </div>
+
 
         {/* Smart business card */}
         <div style={{ margin:'16px 16px 0', borderRadius:16, padding:'14px 16px', background:'linear-gradient(135deg, #FFFFFF 0%, #F3F8FF 100%)', border:'0.5px solid #E2E6ED', boxShadow:'0 4px 14px rgba(11,31,58,0.06)', display:'flex', alignItems:'center', gap:12 }}>
@@ -4162,14 +4202,15 @@ function HomePage() {
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: '#0B1F3A', marginBottom: 8 }}>Quick actions</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
             {[
+              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706', prominent: true },
               { label: 'Schedule', to: '/schedule', icon: CalendarIcon, bg: '#E0F4FF', color: '#1A52A0' },
               { label: 'Pupils', to: '/pupils', icon: Users, bg: '#EDE9FE', color: '#7C3AED' },
               { label: 'Payments', to: '/payments', icon: PoundSterling, bg: '#DCFCE7', color: '#16A34A' },
               { label: 'Messages', to: '/messages', icon: MessageSquare, bg: '#E0FFF4', color: '#00B5A5' },
-              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706' },
               { label: 'More', to: '/tools', icon: LayoutGrid, bg: '#F3F4F6', color: '#6B7280' },
             ].map((t) => {
               const Icon = t.icon;
+              const isFill = t.label === 'Fill slots';
               return (
                 <button
                   key={t.label}
@@ -4177,7 +4218,7 @@ function HomePage() {
                   onClick={() => navigate({ to: t.to as never })}
                   style={{
                     background: '#FFFFFF',
-                    border: '0.5px solid #E2E6ED',
+                    border: t.prominent ? '1px solid #FDE68A' : '0.5px solid #E2E6ED',
                     borderRadius: 16,
                     padding: '16px 12px',
                     display: 'flex',
@@ -4188,8 +4229,28 @@ function HomePage() {
                     cursor: 'pointer',
                     boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
                     fontFamily: 'Inter, sans-serif',
+                    position: 'relative',
                   }}
                 >
+                  {isFill && freeSlotCount > 0 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        background: '#D97706',
+                        color: '#FFFFFF',
+                        fontSize: 9,
+                        fontWeight: 700,
+                        padding: '2px 6px',
+                        borderRadius: 999,
+                        lineHeight: 1,
+                        letterSpacing: 0.2,
+                      }}
+                    >
+                      ⚡ {freeSlotCount} free today
+                    </div>
+                  )}
                   <div
                     style={{
                       width: 48,
@@ -4204,12 +4265,13 @@ function HomePage() {
                   >
                     <Icon size={24} color={t.color} />
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044', marginTop: 2 }}>{t.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: t.prominent ? 700 : 600, color: t.prominent ? t.color : '#0F2044', marginTop: 2 }}>{t.label}</div>
                 </button>
               );
             })}
           </div>
         </div>
+
 
         </section>
 <section
