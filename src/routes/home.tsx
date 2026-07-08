@@ -2832,7 +2832,7 @@ function HomePage() {
         id,
         name,
         initials,
-        avatar: (l.pupils as any)?.profile_image_url ?? null,
+        avatar: ((l.pupils as any)?.profile_image_url ?? (l.pupils as any)?.photo_url) ?? null,
         timeLabel: `${String(l.lesson_time || "").slice(0,5)} · ${formatDuration(l.duration_minutes)}`,
       });
     }
