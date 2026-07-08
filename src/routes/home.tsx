@@ -3923,6 +3923,14 @@ function HomePage() {
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            {/* 1. TODAY'S LESSONS TILE */}
+            <div style={{ marginBottom: 14 }}>
+              <TodayLessonsTile
+                todayLessons={todayLessons}
+                onNavigate={() => navigate({ to: '/schedule' })}
+              />
+            </div>
+
             {/* 2. STATS 2×2 */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <StatCard label="Earnings this week" value={`£${weekEarnings.toFixed(0)}${earningsEstimated ? ' est' : ''}`} onClick={() => setEarningsOpen(true)} />
