@@ -4159,36 +4159,8 @@ function HomePage() {
               );
             })()}
 
-            {/* 5. EARNINGS */}
-            <div
-              onClick={() => setEarningsOpen(true)}
-              role="button"
-              tabIndex={0}
-              style={{
-                ...cardBase,
-                marginTop: 10,
-                padding: '14px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                cursor: 'pointer',
-                width: '100%',
-              }}
-            >
-              <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', color: '#3B6D11', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <IconCurrencyPound size={18} stroke={1.5} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>Earnings</div>
-                <div style={{ fontSize: 19, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.15, fontVariantNumeric: 'tabular-nums' }}>
-                  £{weekEarnings.toFixed(2)}{earningsEstimated ? ' est' : ''}
-                </div>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 2, lineHeight: 1.2 }}>This week</div>
-              </div>
-              <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
-            </div>
-
             {/* 5. AI INSIGHT */}
+
             {aiInsight && (() => {
               const insightAccent = '#6B4FD6';
               const insightBg = '#F3EEFD';
