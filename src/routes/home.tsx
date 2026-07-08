@@ -435,7 +435,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         >
           Categories
         </h2>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, scrollbarWidth: "none" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, paddingBottom: 4 }}>
           {categoryNames.map((cat) => {
             const active = activeCategory === cat;
             return (
