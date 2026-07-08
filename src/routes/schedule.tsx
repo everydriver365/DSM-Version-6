@@ -281,7 +281,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url)",
+          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url, photo_url)",
         )
         .is("deleted_at", null)
         .gte("lesson_date", windowStart)
@@ -329,7 +329,7 @@ function SchedulePage() {
             const [{ data: allPupils }, { data: availRows }] = await Promise.all([
               supabase
                 .from("pupils")
-                .select("id, name, first_name, profile_image_url, calendar_colour")
+                .select("id, name, first_name, profile_image_url, photo_url, calendar_colour")
                 .eq("instructor_id", uid)
                 .is("deleted_at", null)
                 .not("status", "in", "(inactive,archived,cancelled)"),
@@ -344,7 +344,7 @@ function SchedulePage() {
                 info[p.id] = {
                   first_name: p.first_name ?? null,
                   name: p.name ?? null,
-                  profile_image_url: p.profile_image_url ?? null,
+                  profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
                   calendar_colour: p.calendar_colour ?? null,
                 };
               });
@@ -712,12 +712,13 @@ function SchedulePage() {
               ...POPPINS,
             }}
           >
-            {l.pupil?.profile_image_url ? (
+            {(l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url) ? (
               <img
-                src={l.pupil.profile_image_url}
+                src={l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url}
                 alt=""
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
+
             ) : (
               initials
             )}

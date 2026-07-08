@@ -138,7 +138,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -156,14 +156,16 @@ function PupilsIndexPage() {
       const { data, error } = await q;
       if (error) console.error("[pupils] fetch error", error);
       console.log("[pupils] fetch result:", data, error);
-      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null }>;
+      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null; photo_url?: string | null }>;
       const normalized: Pupil[] = rows.map((p) => ({
         ...p,
+        profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
         name:
           p.name && p.name.trim()
             ? p.name
             : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
       }));
+
       setPupils(normalized);
       console.log("[pupils] first pupil prepaid_hours:", normalized[0]?.prepaid_hours, normalized[0]?.name);
       const joseph = normalized.find((p) => /joseph/i.test(p.name) && /thorne/i.test(p.name));

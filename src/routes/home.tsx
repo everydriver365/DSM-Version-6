@@ -1255,7 +1255,7 @@ function HomePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url)`,
+          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url,photo_url)`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -1773,7 +1773,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -1851,7 +1851,7 @@ function HomePage() {
       const { data: pupilsData } = await supabase
         .from("pupils")
         .select(
-          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes, profile_image_url, calendar_colour"
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes, profile_image_url, photo_url, calendar_colour"
         )
         .eq("instructor_id", userId);
       setActivePupilsCount(
@@ -1868,7 +1868,8 @@ function HomePage() {
             name: p.name ?? '',
             first_name: p.first_name ?? null,
             status: normalizePupilStatus(p.status),
-            profile_image_url: p.profile_image_url ?? null,
+            profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
+
             calendar_colour: p.calendar_colour ?? null,
             last_lesson_date: null,
             phone: p.phone ?? null,
@@ -1889,7 +1890,7 @@ function HomePage() {
           infoMap[p.id] = {
             first_name: p.first_name ?? null,
             name: p.name ?? null,
-            profile_image_url: p.profile_image_url ?? null,
+            profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
             calendar_colour: p.calendar_colour ?? null,
             last_lesson_date: null,
           };
@@ -2831,7 +2832,7 @@ function HomePage() {
         id,
         name,
         initials,
-        avatar: (l.pupils as any)?.profile_image_url ?? null,
+        avatar: ((l.pupils as any)?.profile_image_url ?? (l.pupils as any)?.photo_url) ?? null,
         timeLabel: `${String(l.lesson_time || "").slice(0,5)} · ${formatDuration(l.duration_minutes)}`,
       });
     }
@@ -4033,9 +4034,10 @@ function HomePage() {
                               }}
                             />
                           )}
-                          {l.pupils?.profile_image_url ? (
+                          {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
                             <img
-                              src={l.pupils.profile_image_url}
+                              src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
+
                               alt=""
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
@@ -4900,9 +4902,10 @@ function HomePage() {
                           }}
                         />
                       )}
-                      {(l.pupils as any)?.profile_image_url ? (
+                      {((l.pupils as any)?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
                         <img
-                          src={(l.pupils as any).profile_image_url}
+                          src={(l.pupils as any).profile_image_url ?? (l.pupils as any).photo_url}
+
                           alt=""
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
@@ -6121,10 +6124,11 @@ function HomePage() {
                   background: "#1A52A0",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
-                  backgroundImage: m.pupils?.profile_image_url ? `url(${m.pupils.profile_image_url})` : undefined,
+                  backgroundImage: (m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url) ? `url(${m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url})` : undefined,
                   backgroundSize: "cover", backgroundPosition: "center",
                 }}>
-                  {!m.pupils?.profile_image_url && initials}
+                  {!(m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url) && initials}
+
                 </div>
                 <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>

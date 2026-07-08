@@ -886,10 +886,11 @@ function PupilDetailPage() {
       const publicUrl = pub.publicUrl;
       const { error } = await supabase
         .from("pupils")
-        .update({ photo_url: publicUrl })
+        .update({ photo_url: publicUrl, profile_image_url: publicUrl })
         .eq("id", id);
       if (error) throw error;
-      setPupil((p) => (p ? { ...p, photo_url: publicUrl } : p));
+      setPupil((p) => (p ? { ...p, photo_url: publicUrl, profile_image_url: publicUrl } : p));
+
       toast.success("Photo uploaded");
     } catch (err) {
       console.error("[pupil] photo upload", err);
