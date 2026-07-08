@@ -1773,7 +1773,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
