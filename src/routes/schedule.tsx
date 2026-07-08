@@ -329,7 +329,7 @@ function SchedulePage() {
             const [{ data: allPupils }, { data: availRows }] = await Promise.all([
               supabase
                 .from("pupils")
-                .select("id, name, first_name, profile_image_url, calendar_colour")
+                .select("id, name, first_name, profile_image_url, photo_url, calendar_colour")
                 .eq("instructor_id", uid)
                 .is("deleted_at", null)
                 .not("status", "in", "(inactive,archived,cancelled)"),
