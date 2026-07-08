@@ -3740,472 +3740,331 @@ function HomePage() {
         </Dialog>
 
 
-        {/* STATS STRIP on navy */}
-        {loading ? (
+      </div>
+      {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
+      {(() => {
+        const PF = 'Poppins, Inter, sans-serif';
+        const BORDER = 'rgba(15,32,68,0.10)';
+        const MUTED = '#64748B';
+        const NAVY = '#0F2044';
+        const ACCENT = '#1A52A0';
+        const DANGER = '#C9302C';
+        const AMBER_BG = '#FEF3C7';
+        const AMBER_FG = '#92400E';
+        const PURPLE_BG = '#EDE9FE';
+        const PURPLE_FG = '#6D28D9';
+
+        const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+        const nowT = new Date();
+        const fmt24 = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+        type Row = { kind: 'lesson'; l: LessonRow } | { kind: 'gap'; start: Date; mins: number };
+        const rows: Row[] = [];
+        for (let i = 0; i < sorted.length; i++) {
+          const l = sorted[i];
+          rows.push({ kind: 'lesson', l });
+          const next = sorted[i + 1];
+          if (!next) continue;
+          const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+          const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
+          const beforeBuf = (next.pupil_id && pupilBufferMap[next.pupil_id]?.before) || 0;
+          const gapStart = new Date(endThis.getTime() + afterBuf * 60000);
+          const nextStart = new Date(lessonDateTime(next).getTime() - beforeBuf * 60000);
+          const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
+          if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
+        }
+        const todayGapCount = rows.filter((r) => r.kind === 'gap').length;
+
+        const currentLesson = sorted.find((l) => {
+          const s = lessonDateTime(l);
+          const e = new Date(s.getTime() + (l.duration_minutes ?? 60) * 60000);
+          return nowT >= s && nowT < e;
+        });
+        const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT);
+        const owedPupil = (() => {
+          for (const l of sorted) {
+            const amt = Number(l.amount_due ?? 0);
+            const paid = (l.payment_status ?? '').toLowerCase() === 'paid';
+            if (amt > 0 && !paid) return { name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0], amount: amt, phone: l.pupils?.phone ?? '' };
+          }
+          return null;
+        })();
+        let aiInsight: { text: string; cta?: string; to?: string; onAction?: () => void; actionLabel?: string } | null = null;
+        if (currentLesson) {
+          aiInsight = { text: `Lesson with ${(currentLesson.pupils?.first_name ?? pupilName(currentLesson)).split(' ')[0]} in progress. Log end-of-lesson notes when you finish.`, cta: 'Open', to: '/live' };
+        } else if (owedPupil) {
+          aiInsight = {
+            text: `${owedPupil.name} owes £${owedPupil.amount.toFixed(0)}.`,
+            actionLabel: 'Remind',
+            onAction: () => {
+              if (!owedPupil.phone) { toast('No phone number'); return; }
+              const body = encodeURIComponent(`Hi ${owedPupil.name}, just a friendly reminder your lesson balance of £${owedPupil.amount.toFixed(0)} is outstanding. Thanks!`);
+              window.location.href = `sms:${owedPupil.phone}?&body=${body}`;
+            },
+          };
+        } else if (nextLesson) {
+          aiInsight = { text: `Next up: ${(nextLesson.pupils?.first_name ?? pupilName(nextLesson)).split(' ')[0]} at ${fmt24(lessonDateTime(nextLesson))}. Check the route before you set off.`, cta: 'Route', to: '/satnav' };
+        }
+
+        const cardBase: React.CSSProperties = {
+          background: '#FFFFFF',
+          border: `0.5px solid ${BORDER}`,
+          borderRadius: 16,
+          fontFamily: PF,
+        };
+        const rowTap: React.CSSProperties = {
+          minHeight: 56,
+          display: 'flex',
+          alignItems: 'center',
+          cursor: 'pointer',
+          width: '100%',
+        };
+
+        const StatCard = ({ label, value, danger, onClick }: { label: string; value: string; danger?: boolean; onClick?: () => void }) => (
           <div
-            className="skeleton-pulse"
-            style={{ margin: '10px 16px 0', height: 78, borderRadius: 12, backgroundColor: '#F3F8FF' }}
-          />
-        ) : (
-          <>
-          <div style={{ margin: '10px 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-              Weekly goals
-            </div>
-          </div>
-          <div
+            onClick={onClick}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
             style={{
-              margin: '6px 16px 0',
-              backgroundColor: '#FFFFFF',
-              border: '1px solid rgba(11,31,58,0.08)',
-              borderRadius: 12,
-              overflow: 'hidden',
-              boxShadow: '0 2px 10px rgba(11,31,58,0.06)',
+              ...cardBase,
+              borderRadius: 14,
+              padding: '12px 14px',
+              minHeight: 66,
               display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              cursor: onClick ? 'pointer' : 'default',
             }}
           >
-            <div
-              onClick={() => setEarningsOpen(true)}
-              role="button"
-              tabIndex={0}
-              style={{ flex: 1, padding: '10px 12px', borderRight: '1px solid rgba(11,31,58,0.08)', cursor: 'pointer' }}
-            >
-              <div style={{ fontSize: 9, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-                EARNINGS · WEEK
-              </div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: '#1877D6', marginTop: 2, lineHeight: 1.1 }}>
-                £{weekEarnings.toFixed(0)}
-                {earningsEstimated && (
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(11,31,58,0.5)', marginLeft: 4 }}>
-                    (est.)
-                  </span>
-                )}
-              </div>
-              {weekEarnings === 0 ? (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
-                  style={{ fontSize: 10, color: '#1877D6', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer' }}
-                >
-                  Record payments via EOL →
-                </button>
-              ) : earningsEstimated ? (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); navigate({ to: '/schedule' }); }}
-                  style={{ fontSize: 10, color: 'rgba(11,31,58,0.7)', marginTop: 2, background: 'none', border: 'none', padding: 0, textDecoration: 'underline', cursor: 'pointer', textAlign: 'left' }}
-                >
-                  Complete EOL
-                </button>
-              ) : (
-                <div style={{ fontSize: 10, color: 'rgba(11,31,58,0.6)', marginTop: 2 }}>
-                  £{todayEarnings.toFixed(0)} today
-                </div>
-              )}
-              <div style={{ height: 4, borderRadius: 2, backgroundColor: '#F3F8FF', marginTop: 6, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${earningsPct}%`, backgroundColor: '#1877D6' }} />
-              </div>
-            </div>
-            <div
-              onClick={() => setLessonsOpen(true)}
-              role="button"
-              tabIndex={0}
-              style={{ flex: 1, padding: '10px 12px', cursor: 'pointer' }}
-            >
-              <div style={{ fontSize: 9, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-                LESSONS · WEEK
-              </div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: '#1877D6', marginTop: 2, lineHeight: 1.1 }}>
-                {weekLessonsTotal}
-              </div>
-              <div style={{ fontSize: 10, color: 'rgba(11,31,58,0.6)', marginTop: 2 }}>
-                {todayLessons.length} today
-              </div>
-              <div style={{ height: 4, borderRadius: 2, backgroundColor: '#F3F8FF', marginTop: 6, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${lessonsPct}%`, backgroundColor: '#1877D6' }} />
-              </div>
-            </div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: MUTED, letterSpacing: -0.1 }}>{label}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: danger ? DANGER : NAVY, marginTop: 4, letterSpacing: -0.3, lineHeight: 1.1 }}>{value}</div>
           </div>
-          </>
-        )}
-      </div>
-      {/* TODAY STRIP — 2 white tiles */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, padding: '12px 16px 0' }}>
-        <TodayTile
-          value={nextFreeSlot ?? 'None'}
-          label="Next free"
-          valueColor={nextFreeSlot ? '#D97706' : '#9CA3AF'}
-          valueSize={nextFreeSlot ? 13 : 14}
-        />
-        <div
-          style={{ display: 'flex', cursor: 'pointer' }}
-          onClick={() => setOutstandingOpen(true)}
-          role="button"
-          tabIndex={0}
-        >
-          <TodayTile
-            value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : 'Clear ✓'}
-            label="Outstanding"
-            valueColor={outstanding > 0 ? '#c9302c' : '#16A34A'}
-            valueSize={13}
-          />
-        </div>
-      </div>
+        );
 
+        return (
+          <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            {/* 2. STATS 2×2 */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <StatCard label="Earnings this week" value={`£${weekEarnings.toFixed(0)}${earningsEstimated ? ' est' : ''}`} onClick={() => setEarningsOpen(true)} />
+              <StatCard label="Lessons this week" value={String(weekLessonsTotal)} />
+              <StatCard label="Next free slot" value={nextFreeSlot ?? '—'} onClick={() => navigate({ to: '/gaps' })} />
+              <StatCard label="Outstanding balance" value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : '£0'} danger={outstanding > 0} onClick={() => setOutstandingOpen(true)} />
+            </div>
 
+            {/* 3. TODAY'S TIMELINE */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>Today's timeline</div>
+              <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
+            </div>
 
-        {/* TODAY'S TIMELINE CARD — premium iOS */}
-        {(() => {
-          const nowT = new Date();
-          const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
-          const fmt = (t?: string | null) => {
-            if (!t) return '—';
-            const [hh, mm] = t.split(':');
-            const h = parseInt(hh || '0', 10);
-            const m = parseInt(mm || '0', 10);
-            const p = h >= 12 ? 'pm' : 'am';
-            const dh = h > 12 ? h - 12 : h === 0 ? 12 : h;
-            return `${dh}:${String(m).padStart(2, '0')}${p}`;
-          };
-          const initials = (n?: string | null) => (n || '?').trim().split(/\s+/).slice(0, 2).map(s => s[0]?.toUpperCase() || '').join('') || '?';
-          const colorFor = (id?: string | null) => {
-            const palette = ['#1A52A0', '#1877D6', '#16A34A', '#F59E0B', '#8B5CF6', '#DC2626', '#0EA5E9', '#EA580C'];
-            const key = String(id ?? '');
-            let h = 0;
-            for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
-            return palette[h % palette.length];
-          };
-          type Row = { kind: 'lesson'; l: LessonRow } | { kind: 'gap'; start: Date; mins: number };
-          const rows: Row[] = [];
-          for (let i = 0; i < sorted.length; i++) {
-            const l = sorted[i];
-            rows.push({ kind: 'lesson', l });
-            const next = sorted[i + 1];
-            if (!next) continue;
-            const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-            const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
-            const beforeBuf = (next.pupil_id && pupilBufferMap[next.pupil_id]?.before) || 0;
-            const gapStart = new Date(endThis.getTime() + afterBuf * 60000);
-            const nextStart = new Date(lessonDateTime(next).getTime() - beforeBuf * 60000);
-            const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
-            if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
-          }
-          const stop = (e: React.MouseEvent) => e.stopPropagation();
+            {sorted.length === 0 ? (
+              <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>No lessons today</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {rows.map((row, idx) => {
+                  if (row.kind === 'gap') {
+                    return (
+                      <div
+                        key={`gap-${idx}`}
+                        onClick={() => navigate({ to: '/gaps' })}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                          borderRadius: 14,
+                          border: `1px dashed ${BORDER}`,
+                          background: '#FAFBFC',
+                          padding: '12px 14px',
+                          minHeight: 56,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          cursor: 'pointer',
+                          fontFamily: PF,
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: NAVY, fontVariantNumeric: 'tabular-nums' }}>{fmt24(row.start)}</span>
+                          <span style={{ fontSize: 13, color: MUTED }}>— open · {row.mins}m</span>
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: ACCENT }}>Tap to fill →</span>
+                      </div>
+                    );
+                  }
+                  const l = row.l;
+                  const start = lessonDateTime(l);
+                  const dur = l.duration_minutes ?? 60;
+                  const end = new Date(start.getTime() + dur * 60000);
+                  const isLive = nowT >= start && nowT < end;
+                  const payStatus = (l.payment_status ?? '').toLowerCase();
+                  const amt = Number(l.amount_due ?? 0);
+                  const dueUnpaid = amt > 0 && payStatus !== 'paid' && payStatus !== 'prepaid';
+                  const phone = l.pupils?.phone ?? '';
+                  const stop = (e: React.MouseEvent) => e.stopPropagation();
 
-          // Pick one AI insight from real data (no mocks)
-          const currentLesson = sorted.find((l) => {
-            const s = lessonDateTime(l);
-            const e = new Date(s.getTime() + (l.duration_minutes ?? 60) * 60000);
-            return nowT >= s && nowT < e;
-          });
-          const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT);
-          const owedPupil = (() => {
-            for (const l of sorted) {
-              const amt = Number(l.amount_due ?? 0);
-              const paid = (l.payment_status ?? '').toLowerCase() === 'paid';
-              if (amt > 0 && !paid) return { name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0], amount: amt };
-            }
-            return null;
-          })();
-          const firstGap = rows.find((r) => r.kind === 'gap') as Extract<Row, {kind:'gap'}> | undefined;
-          let aiInsight: { text: string; cta: string; to: string } | null = null;
-          if (currentLesson) {
-            aiInsight = { text: `Lesson with ${(currentLesson.pupils?.first_name ?? pupilName(currentLesson)).split(' ')[0]} in progress. Log end-of-lesson notes when you finish.`, cta: 'Open lesson →', to: '/schedule' };
-          } else if (owedPupil) {
-            aiInsight = { text: `${owedPupil.name} owes £${owedPupil.amount.toFixed(0)}.`, cta: 'Send Reminder →', to: '/payments' };
-          } else if (firstGap) {
-            aiInsight = { text: `${firstGap.mins} min free at ${fmt(`${String(firstGap.start.getHours()).padStart(2,'0')}:${String(firstGap.start.getMinutes()).padStart(2,'0')}`)}. Fill it from the waiting list?`, cta: 'View suggestions →', to: '/gaps' };
-          } else if (nextLesson) {
-            aiInsight = { text: `Next up: ${(nextLesson.pupils?.first_name ?? pupilName(nextLesson)).split(' ')[0]} at ${fmt(nextLesson.lesson_time)}. Check the route before you set off.`, cta: 'View suggestions →', to: '/satnav' };
-          }
+                  return (
+                    <div
+                      key={l.id}
+                      onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
+                      role="button"
+                      tabIndex={0}
+                      style={{
+                        ...cardBase,
+                        padding: '10px 12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        minHeight: 64,
+                        cursor: 'pointer',
+                        borderColor: isLive ? ACCENT : BORDER,
+                        borderWidth: isLive ? 1 : 0.5,
+                        borderStyle: 'solid',
+                      }}
+                    >
+                      {/* Time chip */}
+                      <div style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: isLive ? ACCENT : '#F1F5F9',
+                        color: isLive ? '#FFFFFF' : NAVY,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1 }}>{fmt24(start)}</span>
+                        {isLive && <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 0.6, marginTop: 2, textTransform: 'uppercase' }}>Live</span>}
+                      </div>
 
-          const CARD_RADIUS = 24;
-          const CARD_SHADOW = '0 8px 24px rgba(15,32,68,0.06), 0 2px 6px rgba(15,32,68,0.04)';
-
-          return (
-            <>
-              {/* TIMELINE CARD */}
-              <div style={{ background: '#FFFFFF', borderRadius: CARD_RADIUS, margin: '16px 16px 0', boxShadow: CARD_SHADOW, overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                <div style={{ padding: '20px 22px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ fontSize: 17, fontWeight: 700, color: '#0F2044', letterSpacing: -0.2 }}>Today's Timeline</div>
-                  <button type="button" onClick={() => setActiveWs(1)} style={{ fontSize: 13, color: '#1A52A0', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Full Schedule →</button>
-                </div>
-                {sorted.length === 0 ? (
-                  <div style={{ padding: '28px 24px 32px', textAlign: 'center' }}>
-                    <CalendarDays size={32} color="#D1D5DB" style={{ marginBottom: 8 }} />
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7280' }}>No lessons today</div>
-                    <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 6, fontSize: 13, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
-                  </div>
-                ) : (
-                  <div style={{ padding: '4px 16px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {rows.map((row, idx) => {
-                      const fmtRange = (start: Date, mins: number) => {
-                        const end = new Date(start.getTime() + mins * 60000);
-                        const p = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-                        return `${p(start)} — ${p(end)}`;
-                      };
-
-                      if (row.kind === 'gap') {
-                        const potentialLow = Math.round((row.mins / 60) * 40);
-                        const potentialHigh = Math.round((row.mins / 60) * 55);
-                        const seen = new Set<string>();
-                        const nearbyPupils: { id: string; name: string }[] = [];
-                        for (const s of sorted) {
-                          const id = String(s.pupil_id ?? pupilName(s));
-                          if (seen.has(id)) continue;
-                          seen.add(id);
-                          nearbyPupils.push({ id, name: pupilName(s) });
-                          if (nearbyPupils.length >= 3) break;
-                        }
-                        const nearbyCount = nearbyPupils.length + Math.max(0, sorted.length - nearbyPupils.length);
-                        return (
-                          <div key={`gap-${idx}`} style={{
-                            background: 'rgba(239,246,255,0.55)',
-                            border: '2px dashed #BFDBFE',
-                            borderRadius: 24,
-                            padding: 18,
-                            minWidth: 0,
-                          }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 14 }}>
-                              <div style={{ minWidth: 0, flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6', animation: 'dsmPulseDot 1.6s ease-in-out infinite', flexShrink: 0 }} />
-                                  <span style={{ fontSize: 15, fontWeight: 700, color: '#0F2044', letterSpacing: -0.2 }}>Available Slot</span>
-                                </div>
-                                <div style={{ fontSize: 12, fontWeight: 600, color: '#3B82F6', marginTop: 4 }}>{fmtRange(row.start, row.mins)} · {row.mins}m</div>
-                              </div>
-                              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', letterSpacing: -0.3, whiteSpace: 'nowrap' }}>£{potentialLow}–£{potentialHigh}</div>
-                                <div style={{ fontSize: 11, fontWeight: 500, color: '#64748B', marginTop: 2, whiteSpace: 'nowrap' }}>{nearbyCount} nearby</div>
-                              </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                              <button type="button" onClick={(e) => { stop(e); navigate({ to: '/availability' }); }} style={{
-                                background: '#FFFFFF', border: '1px solid #DBEAFE', color: '#1D4ED8',
-                                fontSize: 13, fontWeight: 700, padding: '11px 12px', borderRadius: 16, cursor: 'pointer',
-                              }}>Block</button>
-                              <button type="button" onClick={(e) => { stop(e); navigate({ to: '/gaps' }); }} style={{
-                                background: '#1D4ED8', border: 'none', color: '#FFFFFF',
-                                fontSize: 13, fontWeight: 700, padding: '11px 12px', borderRadius: 16, cursor: 'pointer',
-                                boxShadow: '0 6px 14px rgba(29,78,216,0.28)',
-                              }}>Fill Gap</button>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      const l = row.l;
-                      const lessonStart = lessonDateTime(l);
-                      const dur = l.duration_minutes ?? 60;
-                      const lessonEnd = new Date(lessonStart.getTime() + dur * 60000);
-                      const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
-                      const isCompleted = nowT >= lessonEnd || l.status === 'completed';
-                      const payStatus = (l.payment_status ?? '').toLowerCase();
-                      const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
-                      const isPaid = payStatus === 'paid';
-                      const amt = Number(l.amount_due ?? 0);
-                      const pName = pupilName(l);
-                      const phone = l.pupils?.phone ?? '';
-
-                      // Payment badge
-                      let badge: { label: string; bg: string; fg: string } | null = null;
-                      if (isCancelled) badge = { label: 'Cancelled', bg: '#FEE2E2', fg: '#B91C1C' };
-                      else if (isPaid) badge = { label: 'Paid', bg: '#DCFCE7', fg: '#15803D' };
-                      else if (payStatus === 'prepaid' || (l.pupils?.prepaid_hours ?? 0) > 0) badge = { label: 'Prepaid', bg: '#E0E7FF', fg: '#3730A3' };
-                      else if (amt > 0) badge = { label: 'Payment Due', bg: '#FEF3C7', fg: '#92400E' };
-                      else if (isCompleted) badge = { label: 'Complete', bg: '#F1F5F9', fg: '#475569' };
-
-                      const actionBtn = (
-                        icon: React.ReactNode, label: string, onClick: (e: React.MouseEvent) => void,
-                        primary = false, disabled = false,
-                      ) => (
-                        <button type="button" aria-label={label} onClick={onClick} disabled={disabled} style={{
-                          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                          padding: '9px 6px', borderRadius: 12,
-                          border: primary ? 'none' : '1px solid #E2E8F0',
-                          background: primary ? '#1A52A0' : '#FFFFFF',
-                          color: primary ? '#FFFFFF' : '#0F2044',
-                          fontSize: 11, fontWeight: 600, cursor: disabled ? 'not-allowed' : 'pointer',
-                          opacity: disabled ? 0.5 : 1, minWidth: 0,
-                        }}>{icon}<span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span></button>
-                      );
-
-                      return (
-                        <div
-                          key={l.id}
-                          onClick={() => navigate({ to: '/schedule' })}
-                          role="button"
-                          tabIndex={0}
-                          style={{
-                            background: isCurrent ? '#FFFFFF' : '#F9F9FB',
-                            border: isCurrent ? '1.5px solid #1A52A0' : '1px solid #F1F1F4',
-                            boxShadow: isCurrent ? '0 8px 22px rgba(26,82,160,0.14)' : '0 1px 2px rgba(15,32,68,0.03)',
-                            borderRadius: 24,
-                            padding: isCurrent ? 18 : 16,
-                            cursor: 'pointer',
-                            opacity: (isCompleted && !isCurrent) || isCancelled ? 0.68 : 1,
-                            minWidth: 0,
-                            display: 'flex', flexDirection: 'column', gap: 10,
-                          }}
-                        >
-                          {/* Top row: time range + payment pill */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1 }}>
-                              <span style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5, whiteSpace: 'nowrap' }}>{fmtRange(lessonStart, dur)}</span>
-                              {isCurrent && (
-                                <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Live</span>
-                              )}
-                            </div>
-                            {badge && (
-                              <span style={{ background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 800, padding: '4px 9px', borderRadius: 999, letterSpacing: 0.4, textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>{badge.label}</span>
-                            )}
-                          </div>
-
-                          {/* Name */}
-                          <div style={{ fontSize: isCurrent ? 19 : 18, fontWeight: 700, color: '#0F2044', letterSpacing: -0.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
-
-                          {/* Bottom row: duration + amount */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, paddingTop: 2 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#64748B', minWidth: 0 }}>
-                              <Clock size={14} color="#94A3B8" />
-                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{dur} min{l.lesson_type ? ` · ${l.lesson_type}` : ''}</span>
-                            </div>
-                            {amt > 0 && !isCancelled && (
-                              <span style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', letterSpacing: -0.3, flexShrink: 0 }}>£{amt.toFixed(2)}</span>
-                            )}
-                          </div>
-
-                          {isCurrent && !isCancelled && (
-                            <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-                              {actionBtn(<Phone size={12} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
-                              {actionBtn(<MessageSquare size={12} />, 'Msg', (e) => { stop(e); navigate({ to: '/messages' }); })}
-                              {actionBtn(<Navigation size={12} />, 'Nav', (e) => { stop(e); navigate({ to: '/satnav' }); })}
-                              {actionBtn(<PlayCircle size={12} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
-                            </div>
+                      {/* Middle */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                          <span style={{ fontSize: 15, fontWeight: 500, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pupilName(l)}</span>
+                          {dueUnpaid && (
+                            <span style={{ background: AMBER_BG, color: AMBER_FG, fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 999 }}>Due</span>
                           )}
                         </div>
-                      );
-                    })}
-                    <style>{`@keyframes dsmPulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }`}</style>
-                  </div>
-                )}
+                        <div style={{ fontSize: 12, color: MUTED, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                          {dur} min{amt > 0 ? ` · £${amt.toFixed(0)}` : ''}
+                        </div>
+                      </div>
+
+                      {/* Right */}
+                      {isLive ? (
+                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                          <button type="button" aria-label="Call" onClick={(e) => { stop(e); if (phone) window.location.href = `tel:${phone}`; else toast('No phone number'); }} style={{ width: 34, height: 34, borderRadius: 10, border: `0.5px solid ${BORDER}`, background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: NAVY }}>
+                            <IconPhone size={16} stroke={1.75} />
+                          </button>
+                          <button type="button" aria-label="Text" onClick={(e) => { stop(e); if (phone) window.location.href = `sms:${phone}`; else navigate({ to: '/messages' }); }} style={{ width: 34, height: 34, borderRadius: 10, border: `0.5px solid ${BORDER}`, background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: NAVY }}>
+                            <IconMessage size={16} stroke={1.75} />
+                          </button>
+                          <button type="button" aria-label="Start" onClick={(e) => { stop(e); navigate({ to: '/live' }); }} style={{ width: 34, height: 34, borderRadius: 10, border: 'none', background: ACCENT, color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                            <IconPlayerPlay size={16} stroke={1.75} />
+                          </button>
+                        </div>
+                      ) : (
+                        <IconChevronRight size={18} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
+            )}
 
-
-              {/* AI INSIGHT CARD */}
-              {aiInsight && (
-                <div style={{
-                  margin: '12px 16px 0',
-                  background: 'linear-gradient(180deg, #F0FDF4 0%, #ECFDF5 100%)',
-                  border: '1px solid #BBF7D0',
-                  borderRadius: CARD_RADIUS,
-                  padding: 16,
+            {/* 4. GAP FILLER */}
+            {todayGapCount > 0 ? (
+              <div
+                onClick={() => navigate({ to: '/gaps' })}
+                role="button"
+                tabIndex={0}
+                style={{
+                  ...cardBase,
+                  marginTop: 14,
+                  padding: '12px 14px',
+                  minHeight: 64,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 14,
-                  boxShadow: CARD_SHADOW,
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
-                  }}>
-                    <Sparkles size={20} color="#FFFFFF" />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: 0.8 }}>AI Insight</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#064E3B', marginTop: 3, lineHeight: 1.35 }}>{aiInsight.text}</div>
-                  </div>
-                  <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} aria-label={aiInsight.cta} style={{
-                    background: '#FFFFFF', border: '1px solid #A7F3D0', borderRadius: 12,
-                    padding: '8px 12px', fontSize: 12, fontWeight: 700, color: '#047857',
-                    cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
-                  }}>{aiInsight.cta}</button>
+                  gap: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: AMBER_BG, color: AMBER_FG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconBolt size={20} stroke={1.75} />
                 </div>
-              )}
-            </>
-          );
-        })()}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>Gap filler</div>
+                  <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>{todayGapCount} open slot{todayGapCount === 1 ? '' : 's'} today · matched to waitlist</div>
+                </div>
+                <IconChevronRight size={18} stroke={1.75} color={MUTED} />
+              </div>
+            ) : (
+              <div style={{ marginTop: 14, fontSize: 12, color: MUTED, fontFamily: PF, textAlign: 'center' }}>No gaps today</div>
+            )}
 
+            {/* 5. AI INSIGHT */}
+            {aiInsight && (
+              <div style={{
+                ...cardBase,
+                marginTop: 14,
+                padding: '12px 14px',
+                minHeight: 64,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}>
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: PURPLE_BG, color: PURPLE_FG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconSparkles size={20} stroke={1.75} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: PURPLE_FG, letterSpacing: 0.4, textTransform: 'uppercase' }}>AI insight</div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>{aiInsight.text}</div>
+                </div>
+                {aiInsight.actionLabel && aiInsight.onAction && (
+                  <button type="button" onClick={aiInsight.onAction} style={{ background: NAVY, color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.actionLabel}</button>
+                )}
+                {aiInsight.cta && aiInsight.to && (
+                  <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: '#F8FAFC', color: NAVY, border: `0.5px solid ${BORDER}`, borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.cta}</button>
+                )}
+              </div>
+            )}
 
-
-
-        {/* Quick access 2×3 grid */}
-        <div style={{ padding: '16px 16px 24px' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: '#0B1F3A', marginBottom: 8 }}>Quick actions</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-            {[
-              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706', prominent: true },
-              { label: 'Schedule', to: '/schedule', icon: CalendarIcon, bg: '#E0F4FF', color: '#1A52A0' },
-              { label: 'Pupils', to: '/pupils', icon: Users, bg: '#EDE9FE', color: '#7C3AED' },
-              { label: 'Payments', to: '/payments', icon: PoundSterling, bg: '#DCFCE7', color: '#16A34A' },
-              { label: 'Messages', to: '/messages', icon: MessageSquare, bg: '#E0FFF4', color: '#00B5A5' },
-              { label: 'More', to: '/tools', icon: LayoutGrid, bg: '#F3F4F6', color: '#6B7280' },
-            ].map((t) => {
-              const Icon = t.icon;
-              const isFill = t.label === 'Fill slots';
-              return (
+            {/* 6. QUICK ACTIONS */}
+            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 22, marginBottom: 10, letterSpacing: -0.2 }}>Quick actions</div>
+            <div style={{ ...cardBase, overflow: 'hidden' }}>
+              {[
+                { label: 'Schedule', to: '/schedule', Icon: IconCalendarEvent },
+                { label: 'Pupils', to: '/pupils', Icon: IconUsers },
+                { label: 'Payments', to: '/payments', Icon: IconWallet },
+                { label: 'Messages', to: '/messages', Icon: IconMessageCircle },
+                { label: 'More', to: '/tools', Icon: IconLayoutGrid },
+              ].map((t, i, arr) => (
                 <button
                   key={t.label}
                   type="button"
                   onClick={() => navigate({ to: t.to as never })}
                   style={{
+                    ...rowTap,
+                    padding: '14px 14px',
+                    borderTop: i === 0 ? 'none' : `0.5px solid ${BORDER}`,
+                    borderBottom: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
                     background: '#FFFFFF',
-                    border: t.prominent ? '1px solid #FDE68A' : '0.5px solid #E2E6ED',
-                    borderRadius: 16,
-                    padding: '16px 12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: 90,
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
-                    fontFamily: 'Inter, sans-serif',
-                    position: 'relative',
+                    fontFamily: PF,
+                    textAlign: 'left',
                   }}
                 >
-                  {isFill && freeSlotCount > 0 && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        background: '#D97706',
-                        color: '#FFFFFF',
-                        fontSize: 9,
-                        fontWeight: 700,
-                        padding: '2px 6px',
-                        borderRadius: 999,
-                        lineHeight: 1,
-                        letterSpacing: 0.2,
-                      }}
-                    >
-                      ⚡ {freeSlotCount} free today
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 16,
-                      background: t.bg,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 8px',
-                    }}
-                  >
-                    <Icon size={24} color={t.color} />
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: t.prominent ? 700 : 600, color: t.prominent ? t.color : '#0F2044', marginTop: 2 }}>{t.label}</div>
+                  <t.Icon size={20} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
+                  <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: NAVY, marginLeft: 12 }}>{t.label}</span>
+                  <IconChevronRight size={18} stroke={1.75} color={MUTED} />
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
+        );
+      })()}
 
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
