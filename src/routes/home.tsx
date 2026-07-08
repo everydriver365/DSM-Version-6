@@ -4019,7 +4019,7 @@ function HomePage() {
 
 
 
-        {/* TODAY'S TIMELINE CARD */}
+        {/* TODAY'S TIMELINE CARD — premium iOS */}
         {(() => {
           const nowT = new Date();
           const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
@@ -4055,133 +4055,305 @@ function HomePage() {
             const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
             if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
           }
-          return (
-            <div style={{ background: '#FFFFFF', borderRadius: 20, margin: '12px 16px 0', boxShadow: '0 2px 12px rgba(15,32,68,0.06)', overflow: 'hidden' }}>
-              <div style={{ padding: '16px 20px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Today's timeline</div>
-                <button type="button" onClick={() => setActiveWs(1)} style={{ fontSize: 12, color: '#1A52A0', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Full schedule →</button>
-              </div>
-              {sorted.length === 0 ? (
-                <div style={{ padding: 24, textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
-                  <CalendarDays size={32} color="#D1D5DB" style={{ marginBottom: 8 }} />
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280' }}>No lessons today</div>
-                  <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 4, fontSize: 12, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
-                </div>
-              ) : (
-                <div style={{ padding: '16px 20px 12px', position: 'relative' }}>
-                  {rows.map((row, idx) => {
-                    let railColor = '#E5E7EB';
-                    let railShadow = 'none';
-                    if (row.kind === 'lesson') {
-                      const ls = lessonDateTime(row.l);
-                      const le = new Date(ls.getTime() + (row.l.duration_minutes ?? 60) * 60000);
-                      if (nowT >= le || row.l.status === 'completed') { railColor = '#CBD5E1'; }
-                      else if (nowT >= ls && nowT < le) { railColor = '#1A52A0'; railShadow = '0 0 10px rgba(26,82,160,0.35)'; }
-                      else { railColor = '#E5E7EB'; }
-                    } else {
-                      railColor = '#FDE68A';
-                    }
-                    const isFirst = idx === 0;
-                    const isLast = idx === rows.length - 1;
+          const stop = (e: React.MouseEvent) => e.stopPropagation();
 
-                    if (row.kind === 'gap') {
-                      return (
-                        <div key={`gap-${idx}`} style={{ display: 'flex', gap: 12, minHeight: 48, position: 'relative', fontFamily: 'Inter, sans-serif' }}>
-                          <div style={{ width: 44, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 14 }}>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>
-                              {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)}
+          // Pick one AI insight from real data (no mocks)
+          const currentLesson = sorted.find((l) => {
+            const s = lessonDateTime(l);
+            const e = new Date(s.getTime() + (l.duration_minutes ?? 60) * 60000);
+            return nowT >= s && nowT < e;
+          });
+          const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT);
+          const owedPupil = (() => {
+            for (const l of sorted) {
+              const amt = Number(l.amount_due ?? 0);
+              const paid = (l.payment_status ?? '').toLowerCase() === 'paid';
+              if (amt > 0 && !paid) return { name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0], amount: amt };
+            }
+            return null;
+          })();
+          const firstGap = rows.find((r) => r.kind === 'gap') as Extract<Row, {kind:'gap'}> | undefined;
+          let aiInsight: { text: string; cta: string; to: string } | null = null;
+          if (currentLesson) {
+            aiInsight = { text: `Lesson with ${(currentLesson.pupils?.first_name ?? pupilName(currentLesson)).split(' ')[0]} in progress. Log end-of-lesson notes when you finish.`, cta: 'Open lesson →', to: '/schedule' };
+          } else if (owedPupil) {
+            aiInsight = { text: `${owedPupil.name} owes £${owedPupil.amount.toFixed(0)}. Send a payment reminder?`, cta: 'View suggestions →', to: '/payments' };
+          } else if (firstGap) {
+            aiInsight = { text: `${firstGap.mins} min free at ${fmt(`${String(firstGap.start.getHours()).padStart(2,'0')}:${String(firstGap.start.getMinutes()).padStart(2,'0')}`)}. Fill it from the waiting list?`, cta: 'View suggestions →', to: '/gaps' };
+          } else if (nextLesson) {
+            aiInsight = { text: `Next up: ${(nextLesson.pupils?.first_name ?? pupilName(nextLesson)).split(' ')[0]} at ${fmt(nextLesson.lesson_time)}. Check the route before you set off.`, cta: 'View suggestions →', to: '/satnav' };
+          }
+
+          const CARD_RADIUS = 24;
+          const CARD_SHADOW = '0 8px 24px rgba(15,32,68,0.06), 0 2px 6px rgba(15,32,68,0.04)';
+
+          return (
+            <>
+              {/* TIMELINE CARD */}
+              <div style={{ background: '#FFFFFF', borderRadius: CARD_RADIUS, margin: '16px 16px 0', boxShadow: CARD_SHADOW, overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                <div style={{ padding: '20px 22px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: '#0F2044', letterSpacing: -0.2 }}>Today's Timeline</div>
+                  <button type="button" onClick={() => setActiveWs(1)} style={{ fontSize: 13, color: '#1A52A0', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Full Schedule →</button>
+                </div>
+                {sorted.length === 0 ? (
+                  <div style={{ padding: '28px 24px 32px', textAlign: 'center' }}>
+                    <CalendarDays size={32} color="#D1D5DB" style={{ marginBottom: 8 }} />
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7280' }}>No lessons today</div>
+                    <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 6, fontSize: 13, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
+                  </div>
+                ) : (
+                  <div style={{ padding: '8px 20px 20px' }}>
+                    {rows.map((row, idx) => {
+                      const isFirst = idx === 0;
+                      const isLast = idx === rows.length - 1;
+
+                      // Dotted rail column
+                      const railCol = (color: string, dotFill: string, dotBorder: string, dotSize = 12, glow = false) => (
+                        <div style={{ width: 28, flexShrink: 0, position: 'relative', alignSelf: 'stretch' }}>
+                          {/* dotted line */}
+                          <div style={{
+                            position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+                            top: isFirst ? 22 : 0,
+                            bottom: isLast ? 'calc(100% - 22px)' : 0,
+                            width: 0,
+                            borderLeft: `2px dotted ${color}`,
+                          }} />
+                          {/* marker dot */}
+                          <div style={{
+                            position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)',
+                            width: dotSize, height: dotSize, borderRadius: '50%',
+                            background: dotFill, border: `2px solid ${dotBorder}`,
+                            boxShadow: glow ? '0 0 0 4px rgba(26,82,160,0.15)' : 'none',
+                          }} />
+                        </div>
+                      );
+
+                      if (row.kind === 'gap') {
+                        const potentialLow = Math.round((row.mins / 60) * 40);
+                        const potentialHigh = Math.round((row.mins / 60) * 55);
+                        const seen = new Set<string>();
+                        const nearbyPupils: { id: string; name: string }[] = [];
+                        for (const s of sorted) {
+                          const id = String(s.pupil_id ?? pupilName(s));
+                          if (seen.has(id)) continue;
+                          seen.add(id);
+                          nearbyPupils.push({ id, name: pupilName(s) });
+                          if (nearbyPupils.length >= 3) break;
+                        }
+                        const extra = Math.max(0, sorted.length - nearbyPupils.length);
+                        return (
+                          <div key={`gap-${idx}`} style={{ display: 'flex', gap: 10, minHeight: 96 }}>
+                            <div style={{ width: 52, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                                {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)}
+                              </div>
+                            </div>
+                            {railCol('#FCD34D', '#FDE68A', '#F59E0B', 12)}
+                            <div style={{ flex: 1, padding: '8px 0 16px', minWidth: 0 }}>
+                              <div style={{
+                                background: 'linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%)',
+                                border: '1px solid #FDE68A',
+                                borderRadius: 20,
+                                padding: 14,
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                                  <div style={{ minWidth: 0 }}>
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.6 }}>Available Slot</div>
+                                    <div style={{ fontSize: 15, fontWeight: 700, color: '#78350F', marginTop: 2, letterSpacing: -0.1 }}>{row.mins} minutes available</div>
+                                  </div>
+                                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                                    <div style={{ fontSize: 10, fontWeight: 600, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.4 }}>Potential</div>
+                                    <div style={{ fontSize: 14, fontWeight: 800, color: '#78350F' }}>£{potentialLow}–£{potentialHigh}</div>
+                                  </div>
+                                </div>
+                                {nearbyPupils.length > 0 && (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                                    <div style={{ display: 'flex' }}>
+                                      {nearbyPupils.map((p, i) => (
+                                        <div key={p.id ?? i} style={{
+                                          width: 26, height: 26, borderRadius: '50%',
+                                          background: colorFor(p.id ?? p.name),
+                                          color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                          border: '2px solid #FFFBEB', marginLeft: i === 0 ? 0 : -8,
+                                        }}>{initials(p.name)}</div>
+                                      ))}
+                                      {extra > 0 && (
+                                        <div style={{
+                                          width: 26, height: 26, borderRadius: '50%',
+                                          background: '#FEF3C7', color: '#92400E', fontSize: 10, fontWeight: 700,
+                                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                          border: '2px solid #FFFBEB', marginLeft: -8,
+                                        }}>+{extra}</div>
+                                      )}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: '#92400E', fontWeight: 500 }}>Nearby matching pupils</div>
+                                  </div>
+                                )}
+                                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                                  <button type="button" onClick={(e) => { stop(e); navigate({ to: '/availability' }); }} style={{
+                                    flex: 1, padding: '10px 12px', borderRadius: 12, border: '1px solid #FDE68A',
+                                    background: '#FFFFFF', color: '#92400E', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                                  }}>Block Time</button>
+                                  <button type="button" onClick={(e) => { stop(e); navigate({ to: '/gaps' }); }} style={{
+                                    flex: 1, padding: '10px 12px', borderRadius: 12, border: 'none',
+                                    background: '#D97706', color: '#FFFFFF', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                                  }}>Fill Slot →</button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          <div style={{ width: 6, flexShrink: 0, position: 'relative' }}>
-                            <div style={{ position: 'absolute', left: 0, right: 0, top: isFirst ? 10 : 0, bottom: isLast ? 10 : 0, background: railColor, borderRadius: 3, boxShadow: railShadow }} />
+                        );
+                      }
+
+                      const l = row.l;
+                      const lessonStart = lessonDateTime(l);
+                      const lessonEnd = new Date(lessonStart.getTime() + (l.duration_minutes ?? 60) * 60000);
+                      const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
+                      const isCompleted = nowT >= lessonEnd || l.status === 'completed';
+                      const payStatus = (l.payment_status ?? '').toLowerCase();
+                      const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
+                      const isPaid = payStatus === 'paid';
+                      const amt = Number(l.amount_due ?? 0);
+                      const pName = pupilName(l);
+                      const pColor = colorFor(l.pupil_id ?? pName);
+                      const phone = l.pupils?.phone ?? '';
+
+                      let railColor = '#E5E7EB';
+                      let dotFill = '#FFFFFF';
+                      let dotBorder = '#CBD5E1';
+                      let glow = false;
+                      if (isCancelled) { railColor = '#E5E7EB'; dotBorder = '#CBD5E1'; }
+                      else if (isCompleted && !isCurrent) { railColor = '#CBD5E1'; dotFill = '#CBD5E1'; dotBorder = '#94A3B8'; }
+                      else if (isCurrent) { railColor = '#1A52A0'; dotFill = '#1A52A0'; dotBorder = '#1A52A0'; glow = true; }
+
+                      // Payment badge
+                      let badge: { label: string; bg: string; fg: string } | null = null;
+                      if (isCancelled) badge = { label: 'Cancelled', bg: '#FEE2E2', fg: '#B91C1C' };
+                      else if (isPaid) badge = { label: 'Paid', bg: '#DCFCE7', fg: '#15803D' };
+                      else if (payStatus === 'prepaid' || (l.pupils?.prepaid_hours ?? 0) > 0) badge = { label: 'Prepaid', bg: '#E0E7FF', fg: '#3730A3' };
+                      else if (amt > 0) badge = { label: 'Payment Due', bg: '#FEF3C7', fg: '#92400E' };
+                      else if (isCompleted) badge = { label: 'Complete', bg: '#F1F5F9', fg: '#475569' };
+
+                      const actionBtn = (
+                        icon: React.ReactNode, label: string, onClick: (e: React.MouseEvent) => void,
+                        primary = false, disabled = false,
+                      ) => (
+                        <button type="button" aria-label={label} onClick={onClick} disabled={disabled} style={{
+                          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                          padding: '9px 6px', borderRadius: 12,
+                          border: primary ? 'none' : '1px solid #E2E8F0',
+                          background: primary ? '#1A52A0' : '#FFFFFF',
+                          color: primary ? '#FFFFFF' : '#0F2044',
+                          fontSize: 11, fontWeight: 600, cursor: disabled ? 'not-allowed' : 'pointer',
+                          opacity: disabled ? 0.5 : 1, minWidth: 0,
+                        }}>{icon}<span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span></button>
+                      );
+
+                      return (
+                        <div
+                          key={l.id}
+                          onClick={() => navigate({ to: '/schedule' })}
+                          role="button"
+                          tabIndex={0}
+                          style={{ display: 'flex', gap: 10, minHeight: isCurrent ? 148 : 108, cursor: 'pointer' }}
+                        >
+                          <div style={{ width: 52, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5 }}>{fmt(l.lesson_time)}</div>
+                            <div style={{ fontSize: 10, color: '#CBD5E1', marginTop: 2, fontWeight: 500 }}>{l.duration_minutes ?? 60}m</div>
                           </div>
-                          <div style={{ flex: 1, padding: '6px 0' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(254,243,199,0.4)', border: '1px dashed #FCD34D', borderRadius: 10, padding: '8px 12px' }}>
-                              <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.4 }}>{row.mins} min gap</span>
-                              <button type="button" onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' }); }} style={{ fontSize: 12, fontWeight: 700, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                Fill →
-                              </button>
+                          {railCol(railColor, dotFill, dotBorder, isCurrent ? 14 : 12, glow)}
+                          <div style={{ flex: 1, padding: '8px 0 12px', minWidth: 0 }}>
+                            <div style={{
+                              background: '#FFFFFF',
+                              border: isCurrent ? '1.5px solid #1A52A0' : '1px solid #F1F5F9',
+                              boxShadow: isCurrent ? '0 4px 16px rgba(26,82,160,0.12)' : '0 1px 3px rgba(15,32,68,0.04)',
+                              borderRadius: 20,
+                              padding: isCurrent ? 16 : 14,
+                              opacity: (isCompleted && !isCurrent) || isCancelled ? 0.72 : 1,
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <div style={{
+                                  width: isCurrent ? 48 : 42, height: isCurrent ? 48 : 42, borderRadius: '50%',
+                                  background: pColor, color: '#FFFFFF',
+                                  fontSize: isCurrent ? 15 : 13, fontWeight: 700,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  flexShrink: 0, boxShadow: '0 2px 6px rgba(15,32,68,0.12)',
+                                }}>{initials(pName)}</div>
+                                <div style={{ minWidth: 0, flex: 1 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                    <div style={{ fontSize: isCurrent ? 16 : 15, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: -0.2 }}>{pName}</div>
+                                    {isCurrent && (
+                                      <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live</span>
+                                    )}
+                                  </div>
+                                  <div style={{ fontSize: 12, color: '#64748B', marginTop: 2, fontWeight: 500 }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
+                                </div>
+                                {badge && (
+                                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                                    <span style={{ display: 'inline-block', background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 700, padding: '4px 8px', borderRadius: 999, letterSpacing: 0.3 }}>{badge.label}</span>
+                                    {amt > 0 && !isCancelled && (
+                                      <div style={{ fontSize: 12, fontWeight: 700, color: '#0F2044', marginTop: 4 }}>£{amt.toFixed(0)}</div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {isCurrent && !isCancelled && (
+                                <div style={{ display: 'flex', gap: 6, marginTop: 14 }}>
+                                  {actionBtn(<Phone size={13} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
+                                  {actionBtn(<MessageSquare size={13} />, 'Message', (e) => { stop(e); navigate({ to: '/messages' }); })}
+                                  {actionBtn(<Navigation size={13} />, 'Navigate', (e) => { stop(e); navigate({ to: '/satnav' }); })}
+                                  {actionBtn(<PlayCircle size={13} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
                       );
-                    }
+                    })}
+                  </div>
+                )}
+              </div>
 
-                    const l = row.l;
-                    const lessonStart = lessonDateTime(l);
-                    const lessonEnd = new Date(lessonStart.getTime() + (l.duration_minutes ?? 60) * 60000);
-                    const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
-                    const isCompleted = nowT >= lessonEnd || l.status === 'completed';
-                    const payStatus = (l.payment_status ?? '').toLowerCase();
-                    const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
-                    const isPaid = payStatus === 'paid';
-                    const amt = Number(l.amount_due ?? 0);
-                    const pName = pupilName(l);
-                    const pColor = colorFor(l.pupil_id ?? pName);
-
-                    return (
-                      <div
-                        key={l.id}
-                        onClick={() => navigate({ to: '/schedule' })}
-                        role="button"
-                        tabIndex={0}
-                        style={{ display: 'flex', gap: 12, minHeight: 72, cursor: 'pointer', fontFamily: 'Inter, sans-serif', position: 'relative' }}
-                      >
-                        <div style={{ width: 44, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 14 }}>
-                          <div style={{ fontSize: 10, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>{fmt(l.lesson_time)}</div>
-                        </div>
-                        <div style={{ width: 6, flexShrink: 0, position: 'relative' }}>
-                          <div style={{ position: 'absolute', left: 0, right: 0, top: isFirst ? 10 : 0, bottom: isLast ? 10 : 0, background: railColor, borderRadius: 3, boxShadow: railShadow }} />
-                        </div>
-                        <div style={{ flex: 1, padding: '6px 0', minWidth: 0 }}>
-                          <div style={{
-                            background: '#FFFFFF',
-                            border: isCurrent ? '2px solid #1A52A0' : '1px solid #F1F5F9',
-                            boxShadow: isCurrent ? '0 0 0 4px #EFF6FF' : 'none',
-                            borderRadius: 12,
-                            padding: 12,
-                            opacity: isCompleted && !isCurrent ? 0.65 : 1,
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                              <div style={{ minWidth: 0, flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                  <div style={{ fontSize: 13, fontWeight: 700, color: isCompleted && !isCurrent ? '#64748B' : '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
-                                  {isCurrent && (
-                                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live</span>
-                                  )}
-                                </div>
-                                <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
-                              </div>
-                              <div style={{ width: 36, height: 36, borderRadius: 18, background: pColor, color: '#FFFFFF', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '2px solid #FFFFFF', outline: '1px solid #E2E8F0' }}>
-                                {initials(pName)}
-                              </div>
-                            </div>
-                            {(isCurrent || isPaid || isCancelled || amt > 0 || isCompleted) && (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 8, marginTop: 8, borderTop: '1px solid #F1F5F9', fontSize: 10, fontWeight: 600 }}>
-                                {isCompleted && !isCurrent && (
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: '#059669' }}>
-                                    <CheckCircle2 size={11} /> Done
-                                  </span>
-                                )}
-                                {isCancelled ? (
-                                  <span style={{ color: '#CC2229' }}>Cancelled</span>
-                                ) : isPaid ? (
-                                  <span style={{ color: '#059669' }}>Paid ✓</span>
-                                ) : amt > 0 ? (
-                                  <span style={{ color: '#92400E' }}>£{amt.toFixed(0)} due</span>
-                                ) : null}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+              {/* AI INSIGHT CARD */}
+              {aiInsight && (
+                <div style={{
+                  margin: '12px 16px 0',
+                  background: 'linear-gradient(180deg, #F0FDF4 0%, #ECFDF5 100%)',
+                  border: '1px solid #BBF7D0',
+                  borderRadius: CARD_RADIUS,
+                  padding: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  boxShadow: CARD_SHADOW,
+                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0, boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
+                  }}>
+                    <Sparkles size={20} color="#FFFFFF" />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: 0.8 }}>AI Insight</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#064E3B', marginTop: 3, lineHeight: 1.35 }}>{aiInsight.text}</div>
+                  </div>
+                  <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} aria-label={aiInsight.cta} style={{
+                    background: '#FFFFFF', border: '1px solid #A7F3D0', borderRadius: 12,
+                    padding: '8px 12px', fontSize: 12, fontWeight: 700, color: '#047857',
+                    cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
+                  }}>{aiInsight.cta}</button>
                 </div>
               )}
-            </div>
+            </>
           );
         })()}
+
+
 
 
         {/* Quick access 2×3 grid */}
