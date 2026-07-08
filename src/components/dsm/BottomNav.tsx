@@ -1,5 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Users, Calendar, MessageSquare, CreditCard, Settings } from "lucide-react";
+import type { ComponentType } from "react";
+import {
+  HomeIcon,
+  PupilsIcon,
+  ScheduleIcon,
+  MessagesIcon,
+  PaymentsIcon,
+  SettingsIcon,
+} from "@/components/icons/DrivingIcons";
 
 export type NavKey = "home" | "pupils" | "schedule" | "messages" | "payments" | "settings";
 
@@ -7,14 +15,16 @@ interface Props {
   active?: NavKey;
 }
 
-const items: { key: NavKey; to: string; label: string; Icon: typeof Home }[] = [
-  { key: "home", to: "/home", label: "Home", Icon: Home },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
-  { key: "schedule", to: "/schedule", label: "Schedule", Icon: Calendar },
-  { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
-  { key: "payments", to: "/payments", label: "Payments", Icon: CreditCard },
-  { key: "settings", to: "/settings", label: "Settings", Icon: Settings },
+const items: { key: NavKey; to: string; label: string; Icon: ComponentType<{ size?: number; color?: string }> }[] = [
+  { key: "home", to: "/home", label: "Home", Icon: HomeIcon },
+  { key: "pupils", to: "/pupils", label: "Pupils", Icon: PupilsIcon },
+  { key: "schedule", to: "/schedule", label: "Schedule", Icon: ScheduleIcon },
+  { key: "messages", to: "/messages", label: "Messages", Icon: MessagesIcon },
+  { key: "payments", to: "/payments", label: "Payments", Icon: PaymentsIcon },
+  { key: "settings", to: "/settings", label: "Settings", Icon: SettingsIcon },
 ];
+
+
 
 
 export function BottomNav({ active }: Props) {

@@ -9,11 +9,14 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import {
-  Home,
-  Users,
-  Calendar,
-  MessageSquare,
-  Settings,
+  HomeIcon,
+  PupilsIcon,
+  ScheduleIcon,
+  MessagesIcon,
+  PaymentsIcon,
+  SettingsIcon,
+} from "@/components/icons/DrivingIcons";
+import {
   Receipt,
   StickyNote,
   Inbox,
@@ -30,18 +33,20 @@ import {
   ShieldCheck,
   Bell,
   HelpCircle,
+  Users,
 } from "lucide-react";
+
 import { supabase } from "@/lib/supabaseClient";
 import { haptic } from "@/lib/haptics";
 
 type Nav = { label: string; route: string; icon: React.ComponentType<{ size?: number }>; keywords?: string };
 
 const NAV: Nav[] = [
-  { label: "Home", route: "/home", icon: Home },
-  { label: "Pupils", route: "/pupils", icon: Users },
-  { label: "Schedule", route: "/schedule", icon: Calendar },
-  { label: "Messages", route: "/messages", icon: MessageSquare },
-  { label: "Payments", route: "/payments", icon: PoundSterling },
+  { label: "Home", route: "/home", icon: HomeIcon },
+  { label: "Pupils", route: "/pupils", icon: PupilsIcon },
+  { label: "Schedule", route: "/schedule", icon: ScheduleIcon },
+  { label: "Messages", route: "/messages", icon: MessagesIcon },
+  { label: "Payments", route: "/payments", icon: PaymentsIcon },
   { label: "Expenses", route: "/expenses", icon: Receipt },
   { label: "Notes", route: "/notes", icon: StickyNote },
   { label: "Enquiries", route: "/enquiries", icon: Inbox },
@@ -57,8 +62,9 @@ const NAV: Nav[] = [
   { label: "Waivers", route: "/waivers", icon: ShieldCheck },
   { label: "Notifications", route: "/notifications", icon: Bell },
   { label: "Help", route: "/help", icon: HelpCircle },
-  { label: "Settings", route: "/settings", icon: Settings },
+  { label: "Settings", route: "/settings", icon: SettingsIcon },
 ];
+
 
 const ACTIONS: Nav[] = [
   { label: "New lesson", route: "/lessons/new", icon: Plus },
