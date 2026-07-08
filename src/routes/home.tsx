@@ -732,28 +732,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     };
   }, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  };
-
-  const scrollBy = (direction: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * 170, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    updateScrollState();
-  }, [sessions, podcasts]);
-
-  if (sessions.length === 0 && podcasts.length === 0) return null;
+  const fmtDate = (d: string) => {
 
   const fmtDate = (d: string) => {
     try {
