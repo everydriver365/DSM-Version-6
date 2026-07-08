@@ -4105,12 +4105,34 @@ function HomePage() {
             {/* 4. GAP WITH MATCHED PUPILS */}
             {(() => {
               const firstGap = rows.find((r): r is { kind: 'gap'; start: Date; mins: number } => r.kind === 'gap');
-              if (!firstGap) return null;
-              const gapH = firstGap.start.getHours();
-              const gapM = firstGap.start.getMinutes();
+              let gapStart: Date | null = null;
+              let gapMins = 0;
+              if (firstGap) {
+                gapStart = firstGap.start;
+                gapMins = firstGap.mins;
+              } else if (sorted.length === 0 && tab !== 'next') {
+                // Whole working day is free — use working-hours window, fallback 9am–6pm.
+                const startStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
+                const endStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
+                const [sh, sm] = startStr.split(':').map(Number);
+                const [eh, em] = endStr.split(':').map(Number);
+                const base = tab === 'today' ? new Date() : (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })();
+                base.setHours(sh || 9, sm || 0, 0, 0);
+                gapStart = base;
+                gapMins = ((eh || 18) * 60 + (em || 0)) - ((sh || 9) * 60 + (sm || 0));
+                if (gapMins < 60) return null;
+              } else {
+                return null;
+              }
+              const gapH = gapStart.getHours();
+              const gapM = gapStart.getMinutes();
               const period = gapH >= 12 ? 'PM' : 'AM';
               const h12 = gapH % 12 === 0 ? 12 : gapH % 12;
               const gapTimeLabel = `${h12}:${String(gapM).padStart(2, '0')} ${period}`;
+              const isWholeDay = !firstGap;
+              const titleText = isWholeDay
+                ? `${Math.floor(gapMins / 60)} hrs free · ${gapTimeLabel}`
+                : `${gapMins} mins free · ${gapTimeLabel}`;
               // No per-gap waitlist match data available on dashboard — omit avatars per spec.
               const matchedCount: number = 0;
               return (
@@ -4134,7 +4156,7 @@ function HomePage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.3 }}>
-                      {firstGap.mins} mins free · {gapTimeLabel}
+                      {titleText}
                     </div>
                     <div style={{ fontSize: 11, color: MUTED, marginTop: 3, lineHeight: 1.3 }}>
                       {matchedCount > 0 ? `${matchedCount} pupil${matchedCount === 1 ? '' : 's'} may fit` : 'No waitlist match'}
