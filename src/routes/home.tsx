@@ -377,228 +377,263 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
+  const sora = "'Sora', system-ui, -apple-system, sans-serif";
+  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
   return (
-    <div style={{ padding: 16, paddingBottom: 80, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        padding: "24px 20px 96px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 24,
+        background: "#F3F8FF",
+        minHeight: "100%",
+        fontFamily: manrope,
+      }}
+    >
       {/* Search */}
-      <button
-        type="button"
-        onClick={() => navigate({ to: "/marketplace" as never })}
-        style={{
-          width: "100%",
-          background: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
-          borderRadius: 14,
-          padding: "12px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          cursor: "pointer",
-          marginBottom: 12,
-        }}
-      >
-        <Search size={18} color="#9CA3AF" />
-        <span style={{ fontSize: 14, color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Search marketplace...</span>
-      </button>
-
-      {/* Category pills */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-          marginBottom: 12,
-        }}
-      >
-        {categoryNames.map((cat) => {
-          const active = activeCategory === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              style={{
-                flexShrink: 0,
-                background: active ? "#0F2044" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#6B7280",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 20,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 600,
-                fontFamily: "Inter, sans-serif",
-                cursor: "pointer",
-              }}
-            >
-              {cat}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Listings */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {filteredListings.map((tile) => {
-          const img = firstImageUrl(tile.image_urls);
-          const category = tile.marketplace_categories?.name ?? "";
-          const supplier = tile.marketplace_suppliers?.name ?? "";
-          return (
-            <button
-              key={tile.id}
-              type="button"
-              onClick={() => openListing(tile.id)}
-              style={{
-                width: "100%",
-                background: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 14,
-                padding: "14px 16px",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                cursor: "pointer",
-                boxShadow: "0 1px 4px rgba(15,32,68,0.04)",
-                textAlign: "left",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {img && (
-                <img
-                  src={img}
-                  alt={tile.title}
-                  style={{ width: 64, height: 64, borderRadius: 10, objectFit: "cover", flexShrink: 0 }}
-                />
-              )}
-              <div style={{ flex: 1, minWidth: 0, paddingLeft: img ? 12 : 0 }}>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0F2044",
-                    lineHeight: 1.35,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  {tile.title}
-                </div>
-                {supplier && (
-                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, fontFamily: "Inter, sans-serif" }}>
-                    {supplier}
-                  </div>
-                )}
-                {tile.price_display && (
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", marginTop: 4, fontFamily: "Inter, sans-serif" }}>
-                    {tile.price_display}
-                  </div>
-                )}
-                {category && (
-                  <span
-                    style={{
-                      fontSize: 10,
-                      color: "#1A52A0",
-                      background: "#E0F4FF",
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      marginTop: 4,
-                      display: "inline-block",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {category}
-                  </span>
-                )}
-              </div>
-              {tile.is_featured && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    fontSize: 9,
-                    fontWeight: 700,
-                    color: "#D97706",
-                    background: "#FEF3C7",
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Featured
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* View all */}
-      <button
-        type="button"
-        onClick={() => navigate({ to: "/marketplace" as never })}
-        style={{
-          width: "100%",
-          background: "#0F2044",
-          color: "#FFFFFF",
-          borderRadius: 12,
-          padding: "12px 0",
-          fontSize: 14,
-          fontWeight: 600,
-          border: "none",
-          cursor: "pointer",
-          marginTop: 8,
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        View all listings →
-      </button>
-
-      {/* List your product */}
-      <button
-        type="button"
-        onClick={() => navigate({ to: "/marketplace/list" as never })}
-        style={{
-          width: "100%",
-          background: "#F7FAFC",
-          border: "0.5px solid #E2E6ED",
-          borderRadius: 14,
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginTop: 4,
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <div
+      <div style={{ position: "relative" }}>
+        <Search
+          size={16}
+          color="rgba(15,32,68,0.4)"
+          style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+        />
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/marketplace" as never })}
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: "50%",
-            background: "#FEF3C7",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+            width: "100%",
+            background: "#FFFFFF",
+            border: "1px solid #E2E6ED",
+            borderRadius: 12,
+            padding: "14px 16px 14px 44px",
+            fontSize: 14,
+            color: "rgba(15,32,68,0.4)",
+            textAlign: "left",
+            cursor: "pointer",
+            boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+            fontFamily: manrope,
           }}
         >
-          <Tag size={18} color="#D97706" />
+          Search products...
+        </button>
+      </div>
+
+      {/* Categories */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <h2
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: "rgba(15,32,68,0.6)",
+            fontFamily: sora,
+            margin: 0,
+          }}
+        >
+          Categories
+        </h2>
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, scrollbarWidth: "none" }}>
+          {categoryNames.map((cat) => {
+            const active = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                style={{
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                  background: active ? "#1877D6" : "#FFFFFF",
+                  color: active ? "#FFFFFF" : "#0F2044",
+                  border: active ? "1px solid #1877D6" : "1px solid #E2E6ED",
+                  borderRadius: 999,
+                  padding: "10px 20px",
+                  fontSize: 12,
+                  fontWeight: active ? 600 : 500,
+                  fontFamily: manrope,
+                  cursor: "pointer",
+                  boxShadow: active ? "0 4px 12px rgba(24,119,214,0.2)" : "none",
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", fontFamily: "Inter, sans-serif" }}>
-            List your product or service
-          </div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-            Reach thousands of ADIs →
-          </div>
+      </div>
+
+      {/* Grid header */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora, margin: 0 }}>
+            Top Marketplace
+          </h2>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/marketplace" as never })}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#1877D6",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: manrope,
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            View All
+          </button>
         </div>
-        <ChevronRight size={18} color="#D1D5DB" />
-      </button>
+
+        {/* Listings 2-col grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {filteredListings.map((tile) => {
+            const img = firstImageUrl(tile.image_urls);
+            const category = tile.marketplace_categories?.name ?? "";
+            const badgeText = (category || "LISTING").toUpperCase();
+            const badgeIsBlue = tile.is_featured;
+            return (
+              <button
+                key={tile.id}
+                type="button"
+                onClick={() => openListing(tile.id)}
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E2E6ED",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: "0 1px 3px rgba(15,32,68,0.05)",
+                  cursor: "pointer",
+                  padding: 0,
+                  textAlign: "left",
+                }}
+              >
+                <div style={{ height: 128, background: "#F1F5F9", position: "relative" }}>
+                  {img ? (
+                    <img src={img} alt={tile.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        background: "linear-gradient(135deg,#E0F0FF,#F3F8FF)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Tag size={24} color="#1877D6" />
+                    </div>
+                  )}
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      background: badgeIsBlue ? "#1877D6" : "rgba(255,255,255,0.92)",
+                      color: badgeIsBlue ? "#FFFFFF" : "#0F2044",
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      fontFamily: manrope,
+                      letterSpacing: "0.02em",
+                      boxShadow: "0 1px 2px rgba(15,32,68,0.08)",
+                      backdropFilter: badgeIsBlue ? undefined : "blur(4px)",
+                    }}
+                  >
+                    {tile.is_featured ? "FEATURED" : badgeText}
+                  </span>
+                </div>
+                <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0F2044",
+                      fontFamily: manrope,
+                      lineHeight: 1.3,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {tile.title}
+                  </div>
+                  {tile.marketplace_suppliers?.name && (
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontSize: 10,
+                        color: "rgba(15,32,68,0.6)",
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        letterSpacing: "-0.01em",
+                        fontFamily: manrope,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {tile.marketplace_suppliers.name}
+                    </div>
+                  )}
+                  <div style={{ marginTop: "auto", paddingTop: 8 }}>
+                    <span style={{ color: "#CC2229", fontWeight: 700, fontSize: 14, fontFamily: sora }}>
+                      {tile.price_display || "Enquire"}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Footer CTAs */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 8 }}>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/marketplace/list" as never })}
+          style={{
+            width: "100%",
+            background: "#1877D6",
+            color: "#FFFFFF",
+            fontWeight: 700,
+            padding: "16px 0",
+            borderRadius: 12,
+            border: "none",
+            fontFamily: sora,
+            fontSize: 15,
+            cursor: "pointer",
+            boxShadow: "0 8px 20px rgba(24,119,214,0.25)",
+          }}
+        >
+          List Your Product
+        </button>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+          <p
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "rgba(15,32,68,0.4)",
+              fontFamily: manrope,
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              margin: 0,
+            }}
+          >
+            Verified marketplace
+          </p>
+          <div style={{ height: 2, width: 32, background: "#E2E6ED", borderRadius: 999 }} />
+        </div>
+      </div>
     </div>
   );
 }
