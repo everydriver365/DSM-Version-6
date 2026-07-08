@@ -3642,7 +3642,7 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
@@ -4406,7 +4406,7 @@ function HomePage() {
         </div>
 
 
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="schedule"
@@ -4420,7 +4420,7 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
@@ -5240,7 +5240,7 @@ function HomePage() {
           </button>
         </div>
 
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="pupils"
@@ -5254,7 +5254,7 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
@@ -5356,7 +5356,7 @@ function HomePage() {
           </button>
         </div>
 
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="money"
@@ -5370,7 +5370,7 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
@@ -5582,7 +5582,7 @@ function HomePage() {
         </div>
       </div>
 
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="marketplace"
@@ -5596,12 +5596,12 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
         <MarketplaceSection navigate={navigate} />
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="dsm"
@@ -5615,12 +5615,12 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
         <DsmLiveSection navigate={navigate} />
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
           data-workspace="tools"
@@ -5634,7 +5634,7 @@ function HomePage() {
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
         >
@@ -5761,7 +5761,7 @@ function HomePage() {
         }
       `}</style>
 
-        <div style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }} />
+        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
       </div>
 
