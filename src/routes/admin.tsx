@@ -230,17 +230,17 @@ function AdminHub() {
           <AdminSectionTile
             icon={<Users size={18} />}
             label="All instructors"
-            onClick={() => navigate({ to: "/admin/instructors" as never })}
+            onClick={() => navigate({ to: "/admin/applications" as never })}
           />
           <AdminSectionTile
             icon={<BookOpen size={18} />}
             label="All bookings"
-            onClick={() => navigate({ to: "/admin/bookings" as never })}
+            onClick={() => navigate({ to: "/bookings" as never })}
           />
           <AdminSectionTile
             icon={<Settings size={18} />}
             label="Platform settings"
-            onClick={() => navigate({ to: "/admin/settings" as never })}
+            onClick={() => navigate({ to: "/settings" as never })}
           />
         </div>
       </div>
