@@ -34,7 +34,7 @@ export const Route = createFileRoute("/schedule")({
   component: SchedulePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
