@@ -952,6 +952,15 @@ function PupilDetailPage() {
           </a>
           <button
             type="button"
+            aria-label="Edit pupil"
+            onClick={openEditSheet}
+            className="flex items-center justify-center text-slate-600 hover:text-blue-600"
+            style={{ width: 40, height: 40 }}
+          >
+            <Pencil size={18} />
+          </button>
+          <button
+            type="button"
             aria-label="Remove pupil"
             onClick={() => setRemoveOpen(true)}
             className="flex items-center justify-center text-slate-400 hover:text-red-600"
