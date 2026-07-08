@@ -28,7 +28,9 @@ interface Pupil {
   ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
+  profile_image_url: string | null;
 }
+
 
 type StatusKey = "active" | "passed" | "archived";
 
@@ -136,7 +138,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -473,7 +475,7 @@ function PupilsIndexPage() {
                       style={{ gap: 12, padding: "12px 16px", minHeight: 64 }}
                     >
                       <div
-                        className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold self-center"
+                        className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold self-center overflow-hidden"
                         style={{
                           width: 40,
                           height: 40,
@@ -482,8 +484,17 @@ function PupilsIndexPage() {
                           ...POPPINS,
                         }}
                       >
-                        {initials(p.name)}
+                        {p.profile_image_url ? (
+                          <img
+                            src={p.profile_image_url}
+                            alt=""
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        ) : (
+                          initials(p.name)
+                        )}
                       </div>
+
                       <div
                         className="shrink-0"
                         style={{ width: 3, borderRadius: 2, backgroundColor: accent, alignSelf: "stretch" }}
