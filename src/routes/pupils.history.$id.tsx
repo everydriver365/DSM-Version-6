@@ -120,62 +120,60 @@ function PupilHistoryPage() {
           groups.map((g) => (
             <div key={g.key}>
               <SectionHeader>{g.label}</SectionHeader>
-              <div className="flex flex-col gap-2">
-                {g.items.map((l) => {
+              <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
+                {g.items.map((l, idx) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isCompleted = l.status === "completed";
+                  const isCancelled = l.status === "cancelled";
+                  const bg = isCancelled ? "#E5E7EB" : "#1A52A0";
                   return (
-                    <Card
+                    <div
                       key={l.id}
                       onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        width: "100%", display: "flex", alignItems: "center", gap: 12,
+                        padding: "12px 16px", cursor: "pointer",
+                        borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+                        ...POPPINS,
+                      }}
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div
-                            className="text-[14px] font-semibold text-[#0B1F3A]"
-                            style={POPPINS}
-                          >
-                            {formatDateShort(d)}
-                          </div>
-                          <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>
-                            {formatTime(l.lesson_time)}
-                          </div>
-                          <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                            {l.duration_minutes ?? 60} min
-                          </div>
+                      <div style={{ width: 40, height: 40, borderRadius: "50%", background: bg, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                        <Calendar size={18} color="#FFFFFF" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: isCancelled ? "#6B7280" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                          {formatDateShort(d)}
                         </div>
-                        <div className="flex flex-col items-end gap-2 shrink-0">
-                          <span
-                            className="text-[11px] text-white px-2 py-1 rounded-full capitalize"
-                            style={{ backgroundColor: statusColor(l.status), ...POPPINS }}
-                          >
-                            {l.status}
-                          </span>
-                          {isCompleted && (
-                            <Button
-                              variant="ghost"
-                              inline
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate({
-                                  to: "/lessons/feedback/$id",
-                                  params: { id: l.id },
-                                });
-                              }}
-                              style={{ height: 32, fontSize: 12 }}
-                            >
-                              View feedback
-                            </Button>
-                          )}
+                        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                          {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                         </div>
                       </div>
-                    </Card>
+                      {isCancelled ? (
+                        <span style={{ background: "#FEE2E2", color: "#991B1B", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Cancelled</span>
+                      ) : isCompleted ? (
+                        <Button
+                          variant="ghost"
+                          inline
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate({ to: "/lessons/feedback/$id", params: { id: l.id } });
+                          }}
+                          style={{ height: 28, fontSize: 12, padding: "0 10px" }}
+                        >
+                          Feedback
+                        </Button>
+                      ) : (
+                        <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS, textTransform: "capitalize" }}>
+                          {l.status}
+                        </span>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
           ))
+
         )}
       </div>
     </div>
