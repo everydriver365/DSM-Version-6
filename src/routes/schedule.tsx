@@ -961,35 +961,69 @@ function SchedulePage() {
     const gapNodes: React.ReactNode[] = [];
 
     const pushGapNode = (g: typeof sortedGaps[number]) => {
+      const openGap = () => navigate({ to: "/gaps" });
       gapNodes.push(
         <div
           key={g.key}
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/gaps" })}
+          onClick={openGap}
+          onKeyDown={(e) => { if (e.key === "Enter") openGap(); }}
           style={{
             margin: "10px 16px",
-            border: "1.5px dashed #CBD5E1",
-            borderRadius: 12,
-            padding: "14px 16px",
+            borderRadius: 16,
+            padding: "16px 18px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            minHeight: 56,
+            gap: 14,
             cursor: "pointer",
             ...POPPINS,
-            background: "transparent",
+            background: "#EAF2FE",
           }}
         >
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 500, color: MUTED }}>
+          <div
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 14,
+              background: "#185FA5",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconClock size={21} stroke={1.75} color="#FFFFFF" />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 500, color: "#0C3E6E" }}>
               {formatOpenMins(g.usableMins)} open
             </div>
-            <div style={{ fontSize: 12, color: SUB, marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#185FA5", marginTop: 2 }}>
               {formatTimeFromDate(new Date(g.startMs))} – {formatTimeFromDate(new Date(g.endMs))}
             </div>
           </div>
-          <div style={{ fontSize: 12, fontWeight: 500, color: ACCENT }}>Fill →</div>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); openGap(); }}
+            style={{
+              background: "#185FA5",
+              border: "none",
+              borderRadius: 10,
+              padding: "9px 16px",
+              fontSize: 13,
+              fontWeight: 500,
+              color: "#FFFFFF",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              cursor: "pointer",
+              ...POPPINS,
+              flexShrink: 0,
+            }}
+          >
+            Fill <IconChevronRight size={14} stroke={1.75} />
+          </button>
         </div>,
       );
     };
