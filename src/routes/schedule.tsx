@@ -400,12 +400,21 @@ function SchedulePage() {
     if (!cancelLesson) return;
     const id = cancelLesson.id;
     const lessonSnapshot = cancelLesson;
+    const isPrepaid = (cancelLesson.payment_status ?? "").toLowerCase() === "prepaid";
+    const amountDue = Number(cancelLesson.amount_due ?? 0);
+    const pupilId = cancelLesson.pupil_id ?? null;
     const prev = lessons;
     setLessons((cur) =>
       cur
         ? cur.map((x) =>
             x.id === id
-              ? { ...x, status: "cancelled", cancelled_at: new Date().toISOString() }
+              ? {
+                  ...x,
+                  status: "cancelled",
+                  cancelled_at: new Date().toISOString(),
+                  payment_status: "cancelled",
+                  amount_due: 0,
+                }
               : x,
           )
         : cur,
@@ -414,7 +423,12 @@ function SchedulePage() {
     setOpenActionsId(null);
     const { error } = await supabase
       .from("lessons")
-      .update({ status: "cancelled", cancelled_at: new Date().toISOString() })
+      .update({
+        status: "cancelled",
+        cancelled_at: new Date().toISOString(),
+        payment_status: "cancelled",
+        amount_due: 0,
+      })
       .eq("id", id);
     if (error) {
       console.error("[schedule] cancel error", error);
@@ -422,6 +436,24 @@ function SchedulePage() {
       toast.error("Couldn't cancel lesson");
       return;
     }
+
+    // Refund prepaid amount back to pupil credit. Legacy pupils.balance_owed
+    // is intentionally NOT written — outstanding is derived from unpaid lessons.
+    if (isPrepaid && amountDue > 0 && pupilId) {
+      const { data: pupilRow, error: readErr } = await supabase
+        .from("pupils")
+        .select("account_balance")
+        .eq("id", pupilId)
+        .maybeSingle();
+      if (readErr) console.error("[schedule] cancel refund read error", readErr);
+      const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
+      const { error: refundErr } = await supabase
+        .from("pupils")
+        .update({ account_balance: current + amountDue })
+        .eq("id", pupilId);
+      if (refundErr) console.error("[schedule] cancel refund write error", refundErr);
+    }
+
     toast.success("Lesson cancelled");
     // Late cancellation → negative points
     try {
