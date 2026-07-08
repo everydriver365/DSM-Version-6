@@ -853,6 +853,9 @@ function SchedulePage() {
         lessonEnd(last).getTime() + (resolveBuf(last.pupil_id, "after") + instructorBufferBefore) * 60000,
         dayEnd.getTime(),
       );
+    } else {
+      // Nothing scheduled: expose the entire working day as a single gap.
+      pushGap(`day-${ymd(selectedDate)}`, dayStart.getTime(), dayEnd.getTime());
     }
     const totalMins = gaps.reduce((sum, g) => sum + g.usableMins, 0);
     return { items, gaps, totalMins, isPast, isToday };
