@@ -73,6 +73,7 @@ import {
   Camera,
   Activity,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import {
   Dialog,
@@ -2940,6 +2941,60 @@ function HomePage() {
   }
 
   // ============ DESKTOP LAYOUT (>=768px) ============
+  // ===== Mobile workspaces carousel state =====
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [activeWs, setActiveWsState] = useState(0);
+  const wsIsProgrammatic = useRef(false);
+  const setActiveWs = (i: number) => {
+    setActiveWsState(i);
+    const el = carouselRef.current;
+    if (!el) return;
+    wsIsProgrammatic.current = true;
+    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
+  };
+  const handleCarouselScroll = () => {
+    if (wsIsProgrammatic.current) return;
+    const el = carouselRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(6, i)));
+  };
+  const [pupilQuery, setPupilQuery] = useState("");
+  const todaysPupilsFiltered = (() => {
+    const seen = new Set<string>();
+    const rows: Array<{ id: string; name: string; initials: string; avatar: string | null; timeLabel: string }> = [];
+    for (const l of todayLessons) {
+      const id = l.pupil_id ?? "";
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      const name = l.pupils?.name || "Pupil";
+      const initials = name.split(/\s+/).map((s: string) => s.charAt(0)).join("").slice(0,2).toUpperCase();
+      rows.push({
+        id,
+        name,
+        initials,
+        avatar: (l.pupils as any)?.profile_image_url ?? null,
+        timeLabel: `${String(l.lesson_time || "").slice(0,5)} · ${formatDuration(l.duration_minutes)}`,
+      });
+    }
+    const q = pupilQuery.trim().toLowerCase();
+    return q ? rows.filter((r) => r.name.toLowerCase().includes(q)) : rows;
+  })();
+  const outstandingBreakdownFiltered = (() => {
+    const q = pupilQuery.trim().toLowerCase();
+    if (!q) return outstandingBreakdown;
+    return outstandingBreakdown.filter((p) => p.name.toLowerCase().includes(q));
+  })();
+  const todayBriefingHeadline = todayLessons.length === 0
+    ? "No lessons today — enjoy the breather"
+    : `${todayLessons.length} lesson${todayLessons.length===1?'':'s'} today · £${todayEarnings.toFixed(0)} in`;
+  const todayBriefingSub = nextFreeSlot
+    ? `Next free slot ${nextFreeSlot}`
+    : outstanding > 0
+      ? `£${outstanding.toFixed(0)} outstanding across ${outstandingBreakdown.length} pupil${outstandingBreakdown.length===1?'':'s'}`
+      : "You're all caught up";
+
   if (isDesktop) {
     const now = new Date();
     const in7 = new Date(now.getTime() + 7 * 86400000);
@@ -3345,6 +3400,7 @@ function HomePage() {
   return (
     <div className="min-h-screen pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {notifBanner}
+      <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
@@ -3478,6 +3534,37 @@ function HomePage() {
         </div>
       )}
 
+      {/* WORKSPACES CAROUSEL */}
+      <div
+        ref={carouselRef}
+        onScroll={handleCarouselScroll}
+        style={{
+          display:'flex',
+          overflowX:'auto',
+          overflowY:'hidden',
+          scrollSnapType:'x mandatory',
+          overscrollBehaviorX:'contain',
+          WebkitOverflowScrolling:'touch',
+          scrollbarWidth:'none',
+          msOverflowStyle:'none',
+        }}
+        className="hide-scrollbar"
+      >
+<section
+          data-workspace="today"
+          data-ws-index={0}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0B1F3A', marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px) + 12px)', paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
@@ -3859,7 +3946,6 @@ function HomePage() {
           </>
         )}
       </div>
-
       {/* TODAY STRIP — 3 white tiles */}
       <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
         <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
@@ -3874,6 +3960,70 @@ function HomePage() {
         </div>
       </div>
 
+        {/* Smart business card */}
+        <div style={{ margin:'16px 16px 0', borderRadius:16, padding:'14px 16px', background:'linear-gradient(135deg, #FFFFFF 0%, #F3F8FF 100%)', border:'0.5px solid #E2E6ED', boxShadow:'0 4px 14px rgba(11,31,58,0.06)', display:'flex', alignItems:'center', gap:12 }}>
+          <div style={{ width:48, height:48, borderRadius:14, background:'linear-gradient(135deg, #1877D6 0%, #1A52A0 100%)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <Sparkles size={22} color="#fff" />
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:13, fontWeight:800, color:'#0B1F3A', fontFamily:'Inter, sans-serif' }}>
+              {todayBriefingHeadline}
+            </div>
+            <div style={{ fontSize:11, color:'rgba(11,31,58,0.65)', marginTop:2, fontFamily:'Inter, sans-serif' }}>
+              {todayBriefingSub}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/briefing' })}
+            aria-label="Open briefing"
+            style={{ width:32, height:32, borderRadius:10, border:'none', background:'rgba(11,31,58,0.06)', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0 }}
+          >
+            <ChevronRight size={16} color="#0B1F3A" />
+          </button>
+        </div>
+
+        {/* Mini quick access 2x3 */}
+        <div style={{ padding:'16px 16px 24px' }}>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A', marginBottom:8 }}>Quick actions</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
+            {[
+              { label:'Schedule', to:'/schedule', icon:'📅', bg:'#1877D6' },
+              { label:'Pupils', to:'/pupils', icon:'👥', bg:'#1A52A0' },
+              { label:'Messages', to:'/messages', icon:'💬', bg:'#16A34A' },
+              { label:'Gaps', to:'/gaps', icon:'🕒', bg:'#F59E0B' },
+              { label:'Payments', to:'/payments', icon:'💳', bg:'#8B5CF6' },
+              { label:'Tests', to:'/tests', icon:'🎯', bg:'#DC2626' },
+            ].map((t) => (
+              <button
+                key={t.label}
+                type="button"
+                onClick={() => navigate({ to: t.to as never })}
+                style={{ background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, padding:'14px 8px', display:'flex', flexDirection:'column', alignItems:'center', gap:6, cursor:'pointer', fontFamily:'Inter, sans-serif' }}
+              >
+                <div style={{ width:36, height:36, borderRadius:10, background:t.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>{t.icon}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:'#0B1F3A' }}>{t.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        </section>
+<section
+          data-workspace="schedule"
+          data-ws-index={1}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
       {/* ENABLE NOTIFICATIONS PROMPT */}
       {notificationsSupported() && notifPermission === "default" && !notifPromptDismissed && (
         <div
@@ -4672,127 +4822,226 @@ function HomePage() {
 
       <EndOfDayBanner />
 
-
-
-
-      {/* QUICK ACCESS */}
-      <div className="mx-4 mt-4">
-        <div className="flex items-center justify-between">
-          {searchOpen ? (
-            <div className="flex items-center flex-1 gap-2" style={{ height: 32 }}>
-              <Search size={16} color="#6B7280" />
-              <input
-                autoFocus
-                type="text"
-                placeholder="Search…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 text-[13px] text-[#0B1F3A] outline-none bg-transparent"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              />
-              <button
-                type="button"
-                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
-                className="text-[12px] text-[#6B7280]"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-[11px] uppercase"
-                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-                >
-                  QUICK ACCESS
-                </span>
-                <button
-                  type="button"
-                  aria-label="Search quick access"
-                  onClick={() => setSearchOpen(true)}
-                  className="flex items-center justify-center"
-                  style={{ width: 24, height: 24 }}
-                >
-                  <Search size={14} color="#6B7280" />
-                </button>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/quickaccess" as never })}
-                  className="text-[13px]"
-                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
-                >
-                  See all
-                </button>
-                <button
-                  type="button"
-                  onClick={() => alert("Coming soon")}
-                  className="text-[13px]"
-                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
-                >
-                  Edit pins
-                </button>
-              </div>
-            </>
-
-          )}
+        {/* Schedule CTAs */}
+        <div style={{ display:'flex', gap:10, padding:'8px 16px 24px' }}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/schedule' })}
+            style={{ flex:1, height:52, borderRadius:14, border:'none', background:'linear-gradient(180deg, #1877D6 0%, #1A52A0 100%)', color:'#fff', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', boxShadow:'0 6px 18px rgba(24,119,214,0.30)', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+          >
+            <Plus size={18} /> Add lesson
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/gaps' })}
+            style={{ flex:1, height:52, borderRadius:14, border:'0.5px solid #1877D6', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+          >
+            <Clock size={18} /> Fill slots
+          </button>
         </div>
-        <div
-          className="quick-access-scroll"
+
+        </section>
+<section
+          data-workspace="pupils"
+          data-ws-index={2}
           style={{
-            marginTop: 10,
-            display: "grid",
-            gridTemplateRows: "repeat(2, 80px)",
-            gridAutoFlow: "column",
-            gridAutoColumns: "calc((100% - 16px) / 3)",
-            columnGap: 8,
-            rowGap: 8,
-            overflowX: "auto",
-            overflowY: "hidden",
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
           }}
         >
-          {quickAccessTiles
-            .filter((t) => t.label.toLowerCase().includes(searchQuery.toLowerCase()))
-            .map((t) => (
-              <AccessTile
-                key={`${t.route}-${t.label}`}
-                icon={t.icon}
-                route={t.route}
-                label={t.label}
-                onClick={() => navigate({ to: t.route })}
-              />
-            ))}
-          {quickAccessTiles.filter((t) =>
-            t.label.toLowerCase().includes(searchQuery.toLowerCase())
-          ).length === 0 && (
-            <div
-              className="flex items-center justify-center text-[12px] text-[#6B7280]"
-              style={{ width: "100%", height: 168 }}
-            >
-              No results for “{searchQuery}”
+
+        {/* Search bar */}
+        <div style={{ padding: '4px 16px 12px' }}>
+          <div style={{ position:'relative' }}>
+            <Search size={16} color="#6B7280" style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)' }} />
+            <input
+              type="text"
+              value={pupilQuery}
+              onChange={(e) => setPupilQuery(e.target.value)}
+              placeholder="Search pupils"
+              style={{ width:'100%', height:44, borderRadius:12, border:'0.5px solid #E2E6ED', background:'#FFFFFF', paddingLeft:36, paddingRight:14, fontSize:14, fontFamily:'Inter, sans-serif', color:'#0B1F3A', outline:'none' }}
+            />
+          </div>
+        </div>
+
+        {/* Today's pupils */}
+        <div style={{ padding:'0 16px 12px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A' }}>Today's pupils</div>
+            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)' }}>{todaysPupilsFiltered.length}</div>
+          </div>
+          {todaysPupilsFiltered.length === 0 ? (
+            <div style={{ padding:'20px 14px', border:'0.5px dashed rgba(11,31,58,0.20)', borderRadius:12, textAlign:'center', color:'rgba(11,31,58,0.60)', fontSize:13, fontFamily:'Inter, sans-serif', background:'#FFFFFF' }}>
+              No lessons booked for today
+            </div>
+          ) : (
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {todaysPupilsFiltered.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => navigate({ to: '/pupils/$id', params: { id: p.id } })}
+                  style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, cursor:'pointer', textAlign:'left', fontFamily:'Inter, sans-serif' }}
+                >
+                  <div style={{ width:40, height:40, borderRadius:'50%', background:'#1A52A0', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0, backgroundImage: p.avatar ? `url(${p.avatar})` : undefined, backgroundSize:'cover', backgroundPosition:'center' }}>
+                    {!p.avatar && p.initials}
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:14, fontWeight:700, color:'#0B1F3A' }}>{p.name}</div>
+                    <div style={{ fontSize:12, color:'rgba(11,31,58,0.60)' }}>{p.timeLabel}</div>
+                  </div>
+                  <ChevronRight size={16} color="#9CA3AF" />
+                </button>
+              ))}
             </div>
           )}
         </div>
-      </div>
-      <style>{`
-        .quick-access-scroll::-webkit-scrollbar {
-          display: none;
-        }
-        @keyframes skeleton-pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        .skeleton-pulse {
-          animation: skeleton-pulse 1.5s ease-in-out infinite;
-        }
-      `}</style>
 
+        {/* Outstanding balances */}
+        <div style={{ padding:'0 16px 20px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A' }}>Outstanding balances</div>
+            <button
+              type="button"
+              onClick={() => setOutstandingOpen(true)}
+              style={{ background:'none', border:'none', color:'#1877D6', fontSize:12, fontWeight:600, cursor:'pointer' }}
+            >
+              See all →
+            </button>
+          </div>
+          {outstandingBreakdownFiltered.length === 0 ? (
+            <div style={{ padding:'20px 14px', border:'0.5px dashed rgba(11,31,58,0.20)', borderRadius:12, textAlign:'center', color:'rgba(11,31,58,0.60)', fontSize:13, fontFamily:'Inter, sans-serif', background:'#FFFFFF' }}>
+              All paid up
+            </div>
+          ) : (
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {outstandingBreakdownFiltered.slice(0, 6).map((p) => (
+                <button
+                  key={p.pupilId}
+                  type="button"
+                  onClick={() => navigate({ to: '/pupils/$id', params: { id: p.pupilId } })}
+                  style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, cursor:'pointer', textAlign:'left', fontFamily:'Inter, sans-serif' }}
+                >
+                  <div style={{ width:40, height:40, borderRadius:'50%', background:'#FEE2E2', color:'#DC2626', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <AlertCircle size={18} />
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:14, fontWeight:700, color:'#0B1F3A' }}>{p.name}</div>
+                    <div style={{ fontSize:12, color:'rgba(11,31,58,0.60)' }}>Outstanding</div>
+                  </div>
+                  <div style={{ fontSize:14, fontWeight:800, color:'#DC2626' }}>£{p.amount.toFixed(0)}</div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Add pupil */}
+        <div style={{ padding:'0 16px 24px' }}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/pupils' })}
+            style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'linear-gradient(180deg, #1877D6 0%, #1A52A0 100%)', color:'#fff', fontSize:15, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', boxShadow:'0 6px 18px rgba(24,119,214,0.35)', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}
+          >
+            <Plus size={18} /> Add pupil
+          </button>
+        </div>
+
+        </section>
+<section
+          data-workspace="money"
+          data-ws-index={3}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
+
+        {/* Earnings hero */}
+        <div style={{ margin:'4px 16px 16px', borderRadius:20, padding:'20px 20px 22px', background:'linear-gradient(135deg, #0B1F3A 0%, #1A52A0 100%)', color:'#fff', boxShadow:'0 10px 30px rgba(11,31,58,0.25)', position:'relative', overflow:'hidden' }}>
+          <div style={{ position:'absolute', right:-30, top:-30, width:160, height:160, borderRadius:'50%', background:'radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%)' }} />
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:1, textTransform:'uppercase', opacity:0.80, fontFamily:'Inter, sans-serif' }}>This week</div>
+          <div style={{ display:'flex', alignItems:'baseline', gap:8, marginTop:6 }}>
+            <div style={{ fontSize:40, fontWeight:900, letterSpacing:-1.5, lineHeight:1, fontFamily:'Inter, sans-serif' }}>£{weekEarnings.toFixed(0)}</div>
+            {earningsEstimated && <div style={{ fontSize:12, opacity:0.75, fontWeight:600 }}>(est.)</div>}
+          </div>
+          <div style={{ marginTop:12, height:6, borderRadius:3, background:'rgba(255,255,255,0.15)', overflow:'hidden' }}>
+            <div style={{ height:'100%', width:`${earningsPct}%`, background:'linear-gradient(90deg, #4ADE80 0%, #22C55E 100%)', borderRadius:3, transition:'width .4s ease' }} />
+          </div>
+          <div style={{ marginTop:8, fontSize:12, opacity:0.85, fontWeight:500 }}>
+            Goal £{weeklyEarningsGoal.toFixed(0)} · {Math.round(earningsPct)}%
+          </div>
+          <button
+            type="button"
+            onClick={() => setEarningsOpen(true)}
+            style={{ marginTop:14, width:'100%', height:40, borderRadius:10, border:'1px solid rgba(255,255,255,0.28)', background:'rgba(255,255,255,0.10)', color:'#fff', fontSize:13, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer' }}
+          >
+            View earnings breakdown
+          </button>
+        </div>
+
+        {/* KPI grid */}
+        <div style={{ padding:'0 16px 16px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+          <div onClick={() => setLessonsOpen(true)} role="button" tabIndex={0} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer' }}>
+            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Lessons · Week</div>
+            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>{weekLessonsTotal}</div>
+            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>{todayLessons.length} today</div>
+          </div>
+          <div onClick={() => setOutstandingOpen(true)} role="button" tabIndex={0} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer' }}>
+            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Outstanding</div>
+            <div style={{ fontSize:24, fontWeight:800, color: outstanding>0?'#DC2626':'#0B1F3A', marginTop:4, lineHeight:1 }}>£{outstanding.toFixed(0)}</div>
+            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>{outstandingBreakdown.length} pupil{outstandingBreakdown.length===1?'':'s'}</div>
+          </div>
+          <div style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED' }}>
+            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Today</div>
+            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>£{todayEarnings.toFixed(0)}</div>
+            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>Received</div>
+          </div>
+          <button type="button" onClick={() => navigate({ to: '/month-to-date' })} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer', textAlign:'left' }}>
+            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Month to date</div>
+            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>View →</div>
+            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>Full report</div>
+          </button>
+        </div>
+
+        {/* Quick links */}
+        <div style={{ padding:'0 16px 20px' }}>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A', marginBottom:8 }}>Quick links</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8 }}>
+            {[
+              { label:'Payments', to:'/payments', icon:'💳' },
+              { label:'MTD', to:'/mtd', icon:'📊' },
+              { label:'Expenses', to:'/expenses', icon:'🧾' },
+              { label:'Tax', to:'/tax', icon:'📈' },
+              { label:'Reports', to:'/reports', icon:'📑' },
+              { label:'Mileage', to:'/mileage', icon:'🚗' },
+            ].map((l) => (
+              <button
+                key={l.label}
+                type="button"
+                onClick={() => navigate({ to: l.to as never })}
+                style={{ background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, padding:'14px 8px', display:'flex', flexDirection:'column', alignItems:'center', gap:6, cursor:'pointer', fontFamily:'Inter, sans-serif' }}
+              >
+                <div style={{ fontSize:22, lineHeight:1 }}>{l.icon}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:'#0B1F3A' }}>{l.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
       {/* AT A GLANCE */}
       <div className="mx-4 mt-4">
         <div className="flex items-center justify-between px-1" style={{ fontFamily: "Inter, sans-serif" }}>
@@ -4929,6 +5178,292 @@ function HomePage() {
         </div>
       </div>
 
+        </section>
+<section
+          data-workspace="marketplace"
+          data-ws-index={4}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
+        <MarketplaceSection navigate={navigate} />
+        </section>
+<section
+          data-workspace="dsm"
+          data-ws-index={5}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
+        <DsmLiveSection navigate={navigate} />
+        </section>
+<section
+          data-workspace="tools"
+          data-ws-index={6}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            
+          }}
+        >
+
+        <div style={{ padding:'4px 16px 8px' }}>
+          <div style={{ fontSize:22, fontWeight:900, color:'#0B1F3A', letterSpacing:-0.5, fontFamily:'Inter, sans-serif' }}>Tools</div>
+          <div style={{ fontSize:13, color:'rgba(11,31,58,0.60)', marginTop:2 }}>Everything, in one place</div>
+        </div>
+      {/* QUICK ACCESS */}
+      <div className="mx-4 mt-4">
+        <div className="flex items-center justify-between">
+          {searchOpen ? (
+            <div className="flex items-center flex-1 gap-2" style={{ height: 32 }}>
+              <Search size={16} color="#6B7280" />
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 text-[13px] text-[#0B1F3A] outline-none bg-transparent"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              />
+              <button
+                type="button"
+                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+                className="text-[12px] text-[#6B7280]"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[11px] uppercase"
+                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
+                >
+                  QUICK ACCESS
+                </span>
+                <button
+                  type="button"
+                  aria-label="Search quick access"
+                  onClick={() => setSearchOpen(true)}
+                  className="flex items-center justify-center"
+                  style={{ width: 24, height: 24 }}
+                >
+                  <Search size={14} color="#6B7280" />
+                </button>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/quickaccess" as never })}
+                  className="text-[13px]"
+                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
+                >
+                  See all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert("Coming soon")}
+                  className="text-[13px]"
+                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
+                >
+                  Edit pins
+                </button>
+              </div>
+            </>
+
+          )}
+        </div>
+        <div
+          className="quick-access-scroll"
+          style={{
+            marginTop: 10,
+            display: "grid",
+            gridTemplateRows: "repeat(2, 80px)",
+            gridAutoFlow: "column",
+            gridAutoColumns: "calc((100% - 16px) / 3)",
+            columnGap: 8,
+            rowGap: 8,
+            overflowX: "auto",
+            overflowY: "hidden",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
+          {quickAccessTiles
+            .filter((t) => t.label.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map((t) => (
+              <AccessTile
+                key={`${t.route}-${t.label}`}
+                icon={t.icon}
+                route={t.route}
+                label={t.label}
+                onClick={() => navigate({ to: t.route })}
+              />
+            ))}
+          {quickAccessTiles.filter((t) =>
+            t.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 && (
+            <div
+              className="flex items-center justify-center text-[12px] text-[#6B7280]"
+              style={{ width: "100%", height: 168 }}
+            >
+              No results for “{searchQuery}”
+            </div>
+          )}
+        </div>
+      </div>
+      <style>{`
+        .quick-access-scroll::-webkit-scrollbar {
+          display: none;
+        }
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: skeleton-pulse 1.5s ease-in-out infinite;
+        }
+      `}</style>
+
+        </section>
+      </div>
+
+      {/* WORKSPACE DOTS */}
+      <div style={{ position:'sticky', bottom:0, background:'linear-gradient(180deg, rgba(243,248,255,0) 0%, #F3F8FF 40%)', paddingTop:12, paddingBottom:'calc(8px + env(safe-area-inset-bottom, 0px))', zIndex:20 }}>
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'flex-end', gap:2, overflowX:'auto' }} className="hide-scrollbar">
+            <button key="today" type="button" onClick={() => setActiveWs(0)} aria-label="Go to Today" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===0 ? 22 : 6, height:6, borderRadius:3, background: activeWs===0 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===0 ? 700 : 500, color: activeWs===0 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Today</div>
+            </button>
+            <button key="schedule" type="button" onClick={() => setActiveWs(1)} aria-label="Go to Schedule" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===1 ? 22 : 6, height:6, borderRadius:3, background: activeWs===1 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===1 ? 700 : 500, color: activeWs===1 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Schedule</div>
+            </button>
+            <button key="pupils" type="button" onClick={() => setActiveWs(2)} aria-label="Go to Pupils" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===2 ? 22 : 6, height:6, borderRadius:3, background: activeWs===2 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===2 ? 700 : 500, color: activeWs===2 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Pupils</div>
+            </button>
+            <button key="money" type="button" onClick={() => setActiveWs(3)} aria-label="Go to Money" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===3 ? 22 : 6, height:6, borderRadius:3, background: activeWs===3 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===3 ? 700 : 500, color: activeWs===3 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Money</div>
+            </button>
+            <button key="marketplace" type="button" onClick={() => setActiveWs(4)} aria-label="Go to Market" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===4 ? 22 : 6, height:6, borderRadius:3, background: activeWs===4 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===4 ? 700 : 500, color: activeWs===4 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Market</div>
+            </button>
+            <button key="dsm" type="button" onClick={() => setActiveWs(5)} aria-label="Go to DSM Live" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===5 ? 22 : 6, height:6, borderRadius:3, background: activeWs===5 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===5 ? 700 : 500, color: activeWs===5 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>DSM Live</div>
+            </button>
+            <button key="tools" type="button" onClick={() => setActiveWs(6)} aria-label="Go to Tools" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
+              <div style={{ width: activeWs===6 ? 22 : 6, height:6, borderRadius:3, background: activeWs===6 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
+              <div style={{ fontSize:10, fontWeight: activeWs===6 ? 700 : 500, color: activeWs===6 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Tools</div>
+            </button>
+        </div>
+      </div>
+
+
+      {unreadMsgs.length > 0 && (
+        <div style={{ padding: "0 16px", marginTop: 16, fontFamily: "Inter, sans-serif" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <MessageSquare size={18} color="#0F2044" />
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Messages</div>
+              <span style={{ background: "#CC2229", color: "#FFFFFF", fontSize: 12, borderRadius: 999, padding: "2px 8px", fontWeight: 600 }}>
+                {unreadMsgs.length}
+              </span>
+            </div>
+            <button
+              onClick={() => navigate({ to: "/messages" as never })}
+              style={{ background: "none", border: "none", color: "#1877D6", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              See all →
+            </button>
+          </div>
+          {unreadMsgs.map((m) => {
+            const displayName = m.pupils?.first_name || m.pupils?.name || "Pupil";
+            const initials = displayName
+              .split(/\s+/)
+              .map((s) => s.charAt(0))
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
+            return (
+              <div
+                key={m.id}
+                onClick={() => navigate({ to: "/messages/$pupilId" as never, params: { pupilId: m.pupil_id } as never })}
+                style={{
+                  background: "#FFFFFF",
+                  border: "0.5px solid #E2E6ED",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  marginBottom: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: "#1A52A0",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
+                  backgroundImage: m.pupils?.profile_image_url ? `url(${m.pupils.profile_image_url})` : undefined,
+                  backgroundSize: "cover", backgroundPosition: "center",
+                }}>
+                  {!m.pupils?.profile_image_url && initials}
+                </div>
+                <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {m.body || ""}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{(() => {
+                    const diff = Math.max(0, Date.now() - new Date(m.created_at).getTime());
+                    const mm = Math.floor(diff / 60000);
+                    if (mm < 1) return "just now";
+                    if (mm < 60) return `${mm}m ago`;
+                    const h = Math.floor(mm / 60);
+                    if (h < 24) return `${h}h ago`;
+                    return `${Math.floor(h / 24)}d ago`;
+                  })()}</div>
+                </div>
+                {!m.read_at && (
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", flexShrink: 0, marginLeft: 8 }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+
       {eolLesson && (
         <EndLessonWizard
           open={!!eolLesson}
@@ -5059,83 +5594,6 @@ function HomePage() {
         }}
       />
 
-      {unreadMsgs.length > 0 && (
-        <div style={{ padding: "0 16px", marginTop: 16, fontFamily: "Inter, sans-serif" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <MessageSquare size={18} color="#0F2044" />
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Messages</div>
-              <span style={{ background: "#CC2229", color: "#FFFFFF", fontSize: 12, borderRadius: 999, padding: "2px 8px", fontWeight: 600 }}>
-                {unreadMsgs.length}
-              </span>
-            </div>
-            <button
-              onClick={() => navigate({ to: "/messages" as never })}
-              style={{ background: "none", border: "none", color: "#1877D6", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-            >
-              See all →
-            </button>
-          </div>
-          {unreadMsgs.map((m) => {
-            const displayName = m.pupils?.first_name || m.pupils?.name || "Pupil";
-            const initials = displayName
-              .split(/\s+/)
-              .map((s) => s.charAt(0))
-              .join("")
-              .slice(0, 2)
-              .toUpperCase();
-            return (
-              <div
-                key={m.id}
-                onClick={() => navigate({ to: "/messages/$pupilId" as never, params: { pupilId: m.pupil_id } as never })}
-                style={{
-                  background: "#FFFFFF",
-                  border: "0.5px solid #E2E6ED",
-                  borderRadius: 12,
-                  padding: "12px 14px",
-                  marginBottom: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{
-                  width: 36, height: 36, borderRadius: "50%",
-                  background: "#1A52A0",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
-                  backgroundImage: m.pupils?.profile_image_url ? `url(${m.pupils.profile_image_url})` : undefined,
-                  backgroundSize: "cover", backgroundPosition: "center",
-                }}>
-                  {!m.pupils?.profile_image_url && initials}
-                </div>
-                <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {m.body || ""}
-                  </div>
-                  <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{(() => {
-                    const diff = Math.max(0, Date.now() - new Date(m.created_at).getTime());
-                    const mm = Math.floor(diff / 60000);
-                    if (mm < 1) return "just now";
-                    if (mm < 60) return `${mm}m ago`;
-                    const h = Math.floor(mm / 60);
-                    if (h < 24) return `${h}h ago`;
-                    return `${Math.floor(h / 24)}d ago`;
-                  })()}</div>
-                </div>
-                {!m.read_at && (
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", flexShrink: 0, marginLeft: 8 }} />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <MarketplaceSection navigate={navigate} />
-
-      <DsmLiveSection navigate={navigate} />
 
     </div>
 
