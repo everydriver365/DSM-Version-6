@@ -37,7 +37,8 @@ const contacts: ContactItem[] = [
     label: "WhatsApp",
     icon: <MessageSquare size={18} color="#1877D6" />,
     iconBg: "#EEF2F7",
-    href: "https://wa.me/447700000000",
+    // TODO: replace with real WhatsApp business number (E.164, no +)
+    href: "https://wa.me/447XXXXXXXXX",
   },
 ];
 
