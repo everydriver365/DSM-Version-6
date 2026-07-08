@@ -98,7 +98,12 @@ import {
   IconX,
   IconCalendar,
   IconDots,
+  IconCalendarPlus,
+  IconSteeringWheel,
+  IconClipboardCheck,
+  IconMicrophone,
 } from "@tabler/icons-react";
+
 
 import {
   Dialog,
