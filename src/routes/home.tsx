@@ -1389,6 +1389,16 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  const [allPupilsList, setAllPupilsList] = useState<Array<{
+    id: string;
+    name: string;
+    first_name: string | null;
+    status: string;
+    profile_image_url: string | null;
+    calendar_colour: string | null;
+    last_lesson_date: string | null;
+    phone: string | null;
+  }>>([]);
   const [recentActivity, setRecentActivity] = useState<Array<{
     id: string;
     title: string;
