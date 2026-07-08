@@ -2982,12 +2982,16 @@ function HomePage() {
             </div>
           </div>
 
+          {/* TODAY'S LESSONS TILE */}
+          <div style={{ marginBottom: 16 }}>
+            <TodayLessonsTile
+              todayLessons={todayLessons}
+              onNavigate={() => navigate({ to: "/schedule" })}
+            />
+          </div>
+
           {/* STATS ROW */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
-            <div style={cardStyle}>
-              <div style={statValue}>{todayLessons.length}</div>
-              <div style={statLabel}>Lessons today</div>
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
             <div style={cardStyle}>
               <div style={{ ...statValue, color: "#16A34A" }}>£{Math.round(weekEarnings)}</div>
               <div style={statLabel}>This week</div>
