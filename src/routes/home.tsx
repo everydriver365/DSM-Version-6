@@ -58,7 +58,6 @@ import {
   UserCircle,
   PlayCircle,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
   Send,
   CheckCheck,
@@ -732,29 +731,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     };
   }, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  };
-
-  const scrollBy = (direction: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * 170, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    updateScrollState();
-  }, [sessions, podcasts]);
-
-  if (sessions.length === 0 && podcasts.length === 0) return null;
-
   const fmtDate = (d: string) => {
     try {
       return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
@@ -823,84 +799,31 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             DSM Live
           </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dsm-live" as never })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 700,
-              fontFamily: manrope,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            View All
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              disabled={!canScrollLeft}
-              aria-label="Scroll left"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollLeft ? "pointer" : "default",
-                opacity: canScrollLeft ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronLeft size={16} color="#0F2044" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              disabled={!canScrollRight}
-              aria-label="Scroll right"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollRight ? "pointer" : "default",
-                opacity: canScrollRight ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronRight size={16} color="#0F2044" />
-            </button>
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dsm-live" as never })}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#1877D6",
+            fontSize: 12,
+            fontWeight: 700,
+            fontFamily: manrope,
+            cursor: "pointer",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          View All
+        </button>
       </div>
 
       <div
-        ref={scrollRef}
-        onScroll={updateScrollState}
         style={{
-          display: "flex",
-          flexDirection: "row",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
           gap: 12,
-          overflowX: "auto",
           padding: "4px 20px 12px",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
         }}
       >
         {tiles.map((tile) => {
@@ -925,9 +848,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                   }
                 }}
                 style={{
-                  width: 200,
-                  flexShrink: 0,
-                  scrollSnapAlign: "start",
+                  minWidth: 0,
                   borderRadius: 16,
                   overflow: "hidden",
                   cursor: "pointer",
@@ -1026,9 +947,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 }
               }}
               style={{
-                width: 200,
-                flexShrink: 0,
-                scrollSnapAlign: "start",
+                minWidth: 0,
                 borderRadius: 16,
                 overflow: "hidden",
                 cursor: "pointer",
