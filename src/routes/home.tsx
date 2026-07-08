@@ -98,7 +98,7 @@ import {
   IconX,
   IconCalendar,
   IconDots,
-  IconCalendarPlus,
+  
   IconSteeringWheel,
   IconClipboardCheck,
   IconMicrophone,
@@ -830,7 +830,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=4&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=12&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
           { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
         );
         const data = (await res.json()) as LiveTile[];
@@ -871,63 +871,58 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     if (c.includes("meet") || c.includes("dsm")) return "meet";
     return "other";
   };
-  const FeaturedIcon = ({ category }: { category: string | null }) => {
-    const t = sessionType(category);
-    const props = { size: 52, stroke: 1.5, color: "#3D7BE0", style: { opacity: 0.5 } } as const;
-    if (t === "standards") return <IconSteeringWheel {...props} aria-hidden />;
-    if (t === "meet") return <IconUsers {...props} aria-hidden />;
-    return <IconCalendar {...props} aria-hidden />;
-  };
-  const RowChip = ({ category }: { category: string | null }) => {
-    const t = sessionType(category);
-    if (t === "meet") {
-      return (
-        <div
-          aria-hidden
-          style={{
-            width: 38, height: 38, borderRadius: 11, background: "#185FA5",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0, color: "#FFFFFF", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
-          }}
-        >
-          DSM
-        </div>
-      );
-    }
-    // Standards Check + fallback share the navy chip; icon differs.
-    const Icon = t === "standards" ? IconClipboardCheck : IconCalendar;
-    return (
-      <div
-        aria-hidden
-        style={{
-          width: 38, height: 38, borderRadius: 11, background: "#0F2044",
-          display: "inline-flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <Icon size={17} stroke={1.75} color="#3D7BE0" />
-      </div>
-    );
-  };
-
   const open = (id: string) =>
     navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
-  // No standalone client-side registration handler exists — the existing
-  // "register" flow lives on the session detail page. Reuse it here.
-  const registerForSession = open;
 
   // Sort chronologically ascending (fetch is already ordered, but sort defensively).
   const sortedSessions = [...sessions].sort((a, b) => {
     const ka = `${a.session_date}T${(a.session_time || "00:00:00").slice(0, 8)}`;
     const kb = `${b.session_date}T${(b.session_time || "00:00:00").slice(0, 8)}`;
     return ka.localeCompare(kb);
-  });
-  const featured = sortedSessions[0];
-  const rest = sortedSessions.slice(1);
+  }).slice(0, 12);
+
   const latestPodcast = podcasts[0] ?? null;
 
   // Empty state: no upcoming sessions AND no podcast → render nothing.
-  if (!featured && !latestPodcast) return null;
+  if (sortedSessions.length === 0 && !latestPodcast) return null;
+
+  // If any session has is_live true, use those; otherwise mark the 2 soonest.
+  const anyLive = sortedSessions.some((s) => s.is_live);
+  const liveIds = new Set<string>(
+    anyLive
+      ? sortedSessions.filter((s) => s.is_live).map((s) => s.id)
+      : sortedSessions.slice(0, 2).map((s) => s.id),
+  );
+
+  const Thumbnail = ({ category }: { category: string | null }) => {
+    const t = sessionType(category);
+    if (t === "meet") {
+      return (
+        <div
+          style={{
+            height: 90, background: "#185FA5",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#FFFFFF", fontSize: 28, fontWeight: 500, letterSpacing: "-0.02em",
+            fontFamily: POPPINS,
+          }}
+        >
+          DSM
+        </div>
+      );
+    }
+    const Icon = t === "standards" ? IconClipboardCheck : IconSteeringWheel;
+    const bg = t === "standards" ? "#0F2044" : "#0F2044";
+    return (
+      <div
+        style={{
+          height: 90, background: bg,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        <Icon size={36} stroke={1.5} color="#3D7BE0" />
+      </div>
+    );
+  };
 
   return (
     <div style={{ marginTop: 8, fontFamily: POPPINS }}>
@@ -962,105 +957,74 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         </button>
       </div>
 
-      {featured ? (
+      {sortedSessions.length > 0 ? (
         <div
-          role="button"
-          tabIndex={0}
-          onClick={() => open(featured.id)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
-          }}
           style={{
             margin: "0 20px 10px",
-            background: "#0F2044",
-            borderRadius: 20,
-            padding: 20,
-            cursor: "pointer",
-            userSelect: "none",
-            fontFamily: POPPINS,
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 10,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
-            <span aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "#E24B4A" }} />
-            <span style={{ fontSize: 11, fontWeight: 500, color: "#E24B4A", letterSpacing: "0.03em" }}>
-              Next up
-            </span>
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 500, color: "#FFFFFF", marginBottom: 4, lineHeight: 1.2 }}>
-            {featured.title}
-          </div>
-          <div style={{ fontSize: 13, color: "#9AA7C4", marginBottom: 18 }}>
-            {fmtDateTime(featured.session_date, featured.session_time)}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); registerForSession(featured.id); }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                background: "#FFFFFF", color: "#0F2044",
-                border: "none", borderRadius: 100,
-                padding: "10px 20px",
-                fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
-                cursor: "pointer",
-              }}
-            >
-              <IconCalendarPlus size={15} stroke={1.75} />
-              Register
-            </button>
-            <FeaturedIcon category={featured.category} />
-          </div>
+          {sortedSessions.map((s) => {
+            const isLive = liveIds.has(s.id);
+            return (
+              <div
+                key={s.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => open(s.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(s.id); }
+                }}
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(15,32,68,0.10)",
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  fontFamily: POPPINS,
+                  position: "relative",
+                }}
+              >
+                <Thumbnail category={s.category} />
+                {isLive && (
+                  <div
+                    style={{
+                      position: "absolute", top: 8, left: 8,
+                      display: "inline-flex", alignItems: "center", gap: 3,
+                      background: "#E24B4A", borderRadius: 20,
+                      padding: "2px 7px",
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }}
+                    />
+                    <span style={{ fontSize: 8, fontWeight: 500, color: "#FFFFFF" }}>Live</span>
+                  </div>
+                )}
+                <div style={{ padding: "8px 10px 10px" }}>
+                  <div
+                    style={{
+                      fontSize: 12, fontWeight: 500, color: "#0F2044",
+                      marginBottom: 2,
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    }}
+                  >
+                    {s.title}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#64748B" }}>
+                    {fmtDateTime(s.session_date, s.session_time)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : null}
 
-      {rest.length > 0 && (
-        <div
-          style={{
-            margin: "0 20px 10px",
-            background: "#FFFFFF",
-            border: "1px solid rgba(15,32,68,0.10)",
-            borderRadius: 16,
-            overflow: "hidden",
-            fontFamily: POPPINS,
-          }}
-        >
-          {rest.map((s, idx) => (
-            <div
-              key={s.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => open(s.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(s.id); }
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "12px 16px",
-                cursor: "pointer",
-                borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)",
-              }}
-            >
-              <RowChip category={s.category} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontSize: 14, fontWeight: 500, color: "#0F2044",
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  }}
-                >
-                  {s.title}
-                </div>
-                <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
-                  {fmtDateTime(s.session_date, s.session_time)}
-                </div>
-              </div>
-              <IconChevronRight size={15} stroke={1.75} color="#64748B" style={{ flexShrink: 0 }} />
-            </div>
-          ))}
-        </div>
-      )}
 
       {latestPodcast && (
         <div
