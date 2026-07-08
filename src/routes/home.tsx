@@ -4061,35 +4061,77 @@ function HomePage() {
               </div>
             )}
 
-            {/* 4. GAP FILLER */}
-            {todayGapCount > 0 ? (
-              <div
-                onClick={() => navigate({ to: '/gaps' })}
-                role="button"
-                tabIndex={0}
-                style={{
-                  ...cardBase,
-                  marginTop: 14,
-                  padding: '12px 14px',
-                  minHeight: 64,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ width: 40, height: 40, borderRadius: 12, background: AMBER_BG, color: AMBER_FG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <IconBolt size={20} stroke={1.75} />
+            {/* 4. GAP WITH MATCHED PUPILS */}
+            {(() => {
+              const firstGap = rows.find((r): r is { kind: 'gap'; start: Date; mins: number } => r.kind === 'gap');
+              if (!firstGap) return null;
+              const gapH = firstGap.start.getHours();
+              const gapM = firstGap.start.getMinutes();
+              const period = gapH >= 12 ? 'PM' : 'AM';
+              const h12 = gapH % 12 === 0 ? 12 : gapH % 12;
+              const gapTimeLabel = `${h12}:${String(gapM).padStart(2, '0')} ${period}`;
+              // No per-gap waitlist match data available on dashboard — omit avatars per spec.
+              const matchedCount: number = 0;
+              return (
+                <div
+                  onClick={() => navigate({ to: '/gaps' })}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    ...cardBase,
+                    marginTop: 14,
+                    padding: '14px 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: 11, background: '#FBEFE1', color: '#B5661E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <IconBolt size={18} stroke={1.5} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.3 }}>
+                      {firstGap.mins} mins free · {gapTimeLabel}
+                    </div>
+                    <div style={{ fontSize: 11, color: MUTED, marginTop: 3, lineHeight: 1.3 }}>
+                      {matchedCount > 0 ? `${matchedCount} pupil${matchedCount === 1 ? '' : 's'} may fit` : 'No waitlist match'}
+                    </div>
+                  </div>
+                  <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>Gap filler</div>
-                  <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>{todayGapCount} open slot{todayGapCount === 1 ? '' : 's'} today · matched to waitlist</div>
-                </div>
-                <IconChevronRight size={18} stroke={1.75} color={MUTED} />
+              );
+            })()}
+
+            {/* 5. EARNINGS */}
+            <div
+              onClick={() => setEarningsOpen(true)}
+              role="button"
+              tabIndex={0}
+              style={{
+                ...cardBase,
+                marginTop: 10,
+                padding: '14px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                cursor: 'pointer',
+                width: '100%',
+              }}
+            >
+              <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', color: '#3B6D11', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <IconCurrencyPound size={18} stroke={1.5} />
               </div>
-            ) : (
-              <div style={{ marginTop: 14, fontSize: 12, color: MUTED, fontFamily: PF, textAlign: 'center' }}>No gaps today</div>
-            )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>Earnings</div>
+                <div style={{ fontSize: 19, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.15, fontVariantNumeric: 'tabular-nums' }}>
+                  £{weekEarnings.toFixed(2)}{earningsEstimated ? ' est' : ''}
+                </div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 2, lineHeight: 1.2 }}>This week</div>
+              </div>
+              <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
+            </div>
 
             {/* 5. AI INSIGHT */}
             {aiInsight && dismissedInsight !== aiInsight.text && (() => {
