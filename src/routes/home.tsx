@@ -4102,31 +4102,13 @@ function HomePage() {
                     <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 6, fontSize: 13, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
                   </div>
                 ) : (
-                  <div style={{ padding: '8px 20px 20px' }}>
+                  <div style={{ padding: '4px 16px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {rows.map((row, idx) => {
-                      const isFirst = idx === 0;
-                      const isLast = idx === rows.length - 1;
-
-                      // Dotted rail column
-                      const railCol = (color: string, dotFill: string, dotBorder: string, dotSize = 12, glow = false) => (
-                        <div style={{ width: 28, flexShrink: 0, position: 'relative', alignSelf: 'stretch' }}>
-                          {/* dotted line */}
-                          <div style={{
-                            position: 'absolute', left: '50%', transform: 'translateX(-50%)',
-                            top: isFirst ? 22 : 0,
-                            bottom: isLast ? 'calc(100% - 22px)' : 0,
-                            width: 0,
-                            borderLeft: `2px dotted ${color}`,
-                          }} />
-                          {/* marker dot */}
-                          <div style={{
-                            position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)',
-                            width: dotSize, height: dotSize, borderRadius: '50%',
-                            background: dotFill, border: `2px solid ${dotBorder}`,
-                            boxShadow: glow ? '0 0 0 4px rgba(26,82,160,0.15)' : 'none',
-                          }} />
-                        </div>
-                      );
+                      const fmtRange = (start: Date, mins: number) => {
+                        const end = new Date(start.getTime() + mins * 60000);
+                        const p = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                        return `${p(start)} — ${p(end)}`;
+                      };
 
                       if (row.kind === 'gap') {
                         const potentialLow = Math.round((row.mins / 60) * 40);
@@ -4140,69 +4122,38 @@ function HomePage() {
                           nearbyPupils.push({ id, name: pupilName(s) });
                           if (nearbyPupils.length >= 3) break;
                         }
-                        const extra = Math.max(0, sorted.length - nearbyPupils.length);
+                        const nearbyCount = nearbyPupils.length + Math.max(0, sorted.length - nearbyPupils.length);
                         return (
-                          <div key={`gap-${idx}`} style={{ display: 'flex', gap: 10, minHeight: 96 }}>
-                            <div style={{ width: 44, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>
-                                {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)}
+                          <div key={`gap-${idx}`} style={{
+                            background: 'rgba(239,246,255,0.55)',
+                            border: '2px dashed #BFDBFE',
+                            borderRadius: 24,
+                            padding: 18,
+                            minWidth: 0,
+                          }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 14 }}>
+                              <div style={{ minWidth: 0, flex: 1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6', animation: 'dsmPulseDot 1.6s ease-in-out infinite', flexShrink: 0 }} />
+                                  <span style={{ fontSize: 15, fontWeight: 700, color: '#0F2044', letterSpacing: -0.2 }}>Available Slot</span>
+                                </div>
+                                <div style={{ fontSize: 12, fontWeight: 600, color: '#3B82F6', marginTop: 4 }}>{fmtRange(row.start, row.mins)} · {row.mins}m</div>
+                              </div>
+                              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                                <div style={{ fontSize: 15, fontWeight: 800, color: '#0F2044', letterSpacing: -0.3, whiteSpace: 'nowrap' }}>£{potentialLow}–£{potentialHigh}</div>
+                                <div style={{ fontSize: 11, fontWeight: 500, color: '#64748B', marginTop: 2, whiteSpace: 'nowrap' }}>{nearbyCount} nearby</div>
                               </div>
                             </div>
-                            {railCol('#FCD34D', '#FDE68A', '#F59E0B', 12)}
-                            <div style={{ flex: 1, padding: '8px 0 16px', minWidth: 0 }}>
-                              <div style={{
-                                background: 'linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%)',
-                                border: '1px solid #FDE68A',
-                                borderRadius: 20,
-                                padding: 14,
-                                minWidth: 0,
-                              }}>
-                                {/* Header */}
-                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, minWidth: 0 }}>
-                                  <div style={{ fontSize: 10, fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.6, whiteSpace: 'nowrap' }}>Available Slot</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: '#78350F', whiteSpace: 'nowrap', flexShrink: 0 }}>£{potentialLow}–£{potentialHigh}</div>
-                                </div>
-                                <div style={{ fontSize: 16, fontWeight: 700, color: '#78350F', marginTop: 4, letterSpacing: -0.2 }}>{row.mins} min free</div>
-                                <div style={{ fontSize: 11, color: '#92400E', marginTop: 1, fontWeight: 500 }}>Potential earnings</div>
-
-                                {nearbyPupils.length > 0 && (
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, minWidth: 0 }}>
-                                    <div style={{ display: 'flex', flexShrink: 0 }}>
-                                      {nearbyPupils.map((p, i) => (
-                                        <div key={p.id ?? i} style={{
-                                          width: 24, height: 24, borderRadius: '50%',
-                                          background: colorFor(p.id ?? p.name),
-                                          color: '#FFFFFF', fontSize: 9, fontWeight: 700,
-                                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                          border: '2px solid #FFFBEB', marginLeft: i === 0 ? 0 : -8,
-                                        }}>{initials(p.name)}</div>
-                                      ))}
-                                      {extra > 0 && (
-                                        <div style={{
-                                          width: 24, height: 24, borderRadius: '50%',
-                                          background: '#FEF3C7', color: '#92400E', fontSize: 9, fontWeight: 700,
-                                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                          border: '2px solid #FFFBEB', marginLeft: -8,
-                                        }}>+{extra}</div>
-                                      )}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: '#92400E', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Nearby pupils</div>
-                                  </div>
-                                )}
-                                <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-                                  <button type="button" onClick={(e) => { stop(e); navigate({ to: '/availability' }); }} style={{
-                                    flex: 1, padding: '9px 8px', borderRadius: 12, border: '1px solid #FDE68A',
-                                    background: '#FFFFFF', color: '#92400E', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                                    whiteSpace: 'nowrap',
-                                  }}>Block</button>
-                                  <button type="button" onClick={(e) => { stop(e); navigate({ to: '/gaps' }); }} style={{
-                                    flex: 2, padding: '9px 8px', borderRadius: 12, border: 'none',
-                                    background: '#D97706', color: '#FFFFFF', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                                    whiteSpace: 'nowrap',
-
-                                  }}>Fill Slot →</button>
-                                </div>
-                              </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                              <button type="button" onClick={(e) => { stop(e); navigate({ to: '/availability' }); }} style={{
+                                background: '#FFFFFF', border: '1px solid #DBEAFE', color: '#1D4ED8',
+                                fontSize: 13, fontWeight: 700, padding: '11px 12px', borderRadius: 16, cursor: 'pointer',
+                              }}>Block</button>
+                              <button type="button" onClick={(e) => { stop(e); navigate({ to: '/gaps' }); }} style={{
+                                background: '#1D4ED8', border: 'none', color: '#FFFFFF',
+                                fontSize: 13, fontWeight: 700, padding: '11px 12px', borderRadius: 16, cursor: 'pointer',
+                                boxShadow: '0 6px 14px rgba(29,78,216,0.28)',
+                              }}>Fill Gap</button>
                             </div>
                           </div>
                         );
@@ -4210,7 +4161,8 @@ function HomePage() {
 
                       const l = row.l;
                       const lessonStart = lessonDateTime(l);
-                      const lessonEnd = new Date(lessonStart.getTime() + (l.duration_minutes ?? 60) * 60000);
+                      const dur = l.duration_minutes ?? 60;
+                      const lessonEnd = new Date(lessonStart.getTime() + dur * 60000);
                       const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
                       const isCompleted = nowT >= lessonEnd || l.status === 'completed';
                       const payStatus = (l.payment_status ?? '').toLowerCase();
@@ -4218,16 +4170,7 @@ function HomePage() {
                       const isPaid = payStatus === 'paid';
                       const amt = Number(l.amount_due ?? 0);
                       const pName = pupilName(l);
-                      const pColor = colorFor(l.pupil_id ?? pName);
                       const phone = l.pupils?.phone ?? '';
-
-                      let railColor = '#E5E7EB';
-                      let dotFill = '#FFFFFF';
-                      let dotBorder = '#CBD5E1';
-                      let glow = false;
-                      if (isCancelled) { railColor = '#E5E7EB'; dotBorder = '#CBD5E1'; }
-                      else if (isCompleted && !isCurrent) { railColor = '#CBD5E1'; dotFill = '#CBD5E1'; dotBorder = '#94A3B8'; }
-                      else if (isCurrent) { railColor = '#1A52A0'; dotFill = '#1A52A0'; dotBorder = '#1A52A0'; glow = true; }
 
                       // Payment badge
                       let badge: { label: string; bg: string; fg: string } | null = null;
@@ -4258,69 +4201,61 @@ function HomePage() {
                           onClick={() => navigate({ to: '/schedule' })}
                           role="button"
                           tabIndex={0}
-                          style={{ display: 'flex', gap: 8, minHeight: isCurrent ? 148 : 96, cursor: 'pointer' }}
+                          style={{
+                            background: isCurrent ? '#FFFFFF' : '#F9F9FB',
+                            border: isCurrent ? '1.5px solid #1A52A0' : '1px solid #F1F1F4',
+                            boxShadow: isCurrent ? '0 8px 22px rgba(26,82,160,0.14)' : '0 1px 2px rgba(15,32,68,0.03)',
+                            borderRadius: 24,
+                            padding: isCurrent ? 18 : 16,
+                            cursor: 'pointer',
+                            opacity: (isCompleted && !isCurrent) || isCancelled ? 0.68 : 1,
+                            minWidth: 0,
+                            display: 'flex', flexDirection: 'column', gap: 10,
+                          }}
                         >
-                          <div style={{ width: 44, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>{fmt(l.lesson_time)}</div>
-                            <div style={{ fontSize: 10, color: '#CBD5E1', marginTop: 2, fontWeight: 500 }}>{l.duration_minutes ?? 60}m</div>
-                          </div>
-                          {railCol(railColor, dotFill, dotBorder, isCurrent ? 14 : 12, glow)}
-                          <div style={{ flex: 1, padding: '8px 0 12px', minWidth: 0 }}>
-                            <div style={{
-                              background: '#FFFFFF',
-                              border: isCurrent ? '1.5px solid #1A52A0' : '1px solid #F1F5F9',
-                              boxShadow: isCurrent ? '0 4px 16px rgba(26,82,160,0.12)' : '0 1px 3px rgba(15,32,68,0.04)',
-                              borderRadius: 20,
-                              padding: isCurrent ? 14 : 12,
-                              opacity: (isCompleted && !isCurrent) || isCancelled ? 0.72 : 1,
-                              minWidth: 0,
-                            }}>
-                              {/* Row 1: avatar + name/duration + amount */}
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-                                <div style={{
-                                  width: isCurrent ? 44 : 38, height: isCurrent ? 44 : 38, borderRadius: '50%',
-                                  background: pColor, color: '#FFFFFF',
-                                  fontSize: isCurrent ? 14 : 12, fontWeight: 700,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  flexShrink: 0, boxShadow: '0 2px 6px rgba(15,32,68,0.12)',
-                                }}>{initials(pName)}</div>
-                                <div style={{ minWidth: 0, flex: 1 }}>
-                                  <div style={{ fontSize: isCurrent ? 15 : 14, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: -0.2 }}>{pName}</div>
-                                  <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
-                                </div>
-                                {amt > 0 && !isCancelled && !isPaid && (
-                                  <div style={{ fontSize: 14, fontWeight: 800, color: '#0F2044', flexShrink: 0, letterSpacing: -0.3 }}>£{amt.toFixed(0)}</div>
-                                )}
-                              </div>
-
-                              {/* Row 2: status pills */}
-                              {(badge || isCurrent) && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-                                  {isCurrent && (
-                                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 8px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live now</span>
-                                  )}
-                                  {badge && (
-                                    <span style={{ background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 999, letterSpacing: 0.3, whiteSpace: 'nowrap' }}>{badge.label}</span>
-                                  )}
-                                </div>
-                              )}
-
-                              {isCurrent && !isCancelled && (
-                                <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-                                  {actionBtn(<Phone size={12} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
-                                  {actionBtn(<MessageSquare size={12} />, 'Msg', (e) => { stop(e); navigate({ to: '/messages' }); })}
-                                  {actionBtn(<Navigation size={12} />, 'Nav', (e) => { stop(e); navigate({ to: '/satnav' }); })}
-                                  {actionBtn(<PlayCircle size={12} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
-                                </div>
+                          {/* Top row: time range + payment pill */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1 }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5, whiteSpace: 'nowrap' }}>{fmtRange(lessonStart, dur)}</span>
+                              {isCurrent && (
+                                <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Live</span>
                               )}
                             </div>
+                            {badge && (
+                              <span style={{ background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 800, padding: '4px 9px', borderRadius: 999, letterSpacing: 0.4, textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>{badge.label}</span>
+                            )}
                           </div>
+
+                          {/* Name */}
+                          <div style={{ fontSize: isCurrent ? 19 : 18, fontWeight: 700, color: '#0F2044', letterSpacing: -0.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
+
+                          {/* Bottom row: duration + amount */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, paddingTop: 2 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#64748B', minWidth: 0 }}>
+                              <Clock size={14} color="#94A3B8" />
+                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{dur} min{l.lesson_type ? ` · ${l.lesson_type}` : ''}</span>
+                            </div>
+                            {amt > 0 && !isCancelled && (
+                              <span style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', letterSpacing: -0.3, flexShrink: 0 }}>£{amt.toFixed(2)}</span>
+                            )}
+                          </div>
+
+                          {isCurrent && !isCancelled && (
+                            <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                              {actionBtn(<Phone size={12} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
+                              {actionBtn(<MessageSquare size={12} />, 'Msg', (e) => { stop(e); navigate({ to: '/messages' }); })}
+                              {actionBtn(<Navigation size={12} />, 'Nav', (e) => { stop(e); navigate({ to: '/satnav' }); })}
+                              {actionBtn(<PlayCircle size={12} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
+                    <style>{`@keyframes dsmPulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }`}</style>
                   </div>
                 )}
               </div>
+
 
               {/* AI INSIGHT CARD */}
               {aiInsight && (
