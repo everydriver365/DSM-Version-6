@@ -3399,7 +3399,7 @@ function HomePage() {
   }
 
   return (
-    <div className="min-h-screen pb-safe" style={{ ...POPPINS, backgroundColor: '#F3F8FF', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+    <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#0F2044', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {notifBanner}
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
@@ -3535,11 +3535,35 @@ function HomePage() {
         </div>
       )}
 
+      {/* WORKSPACE DOTS — fixed under top bar, always visible */}
+      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:5, padding:'6px 0 8px', background:'#0F2044', flexShrink:0, zIndex:10 }}>
+        {['Today','Schedule','Pupils','Money','Market','DSM','Tools'].map((_lbl, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={`Go to ${_lbl}`}
+            onClick={() => setActiveWs(i)}
+            style={{
+              width: activeWs === i ? 22 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: activeWs === i ? '#FFFFFF' : 'rgba(255,255,255,0.25)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'all 0.25s ease',
+            }}
+          />
+        ))}
+      </div>
+
       {/* WORKSPACES CAROUSEL */}
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
         style={{
+          flex: 1,
+          minHeight: 0,
           display:'flex',
           overflowX:'auto',
           overflowY:'hidden',
@@ -3548,6 +3572,7 @@ function HomePage() {
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
+          background:'#F3F8FF',
         }}
         className="hide-scrollbar"
       >
@@ -5355,39 +5380,8 @@ function HomePage() {
         </section>
       </div>
 
-      {/* WORKSPACE DOTS */}
-      <div style={{ position:'sticky', bottom:0, background:'linear-gradient(180deg, rgba(243,248,255,0) 0%, #F3F8FF 40%)', paddingTop:12, paddingBottom:'calc(8px + env(safe-area-inset-bottom, 0px))', zIndex:20 }}>
-        <div style={{ display:'flex', justifyContent:'center', alignItems:'flex-end', gap:2, overflowX:'auto' }} className="hide-scrollbar">
-            <button key="today" type="button" onClick={() => setActiveWs(0)} aria-label="Go to Today" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===0 ? 22 : 6, height:6, borderRadius:3, background: activeWs===0 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===0 ? 700 : 500, color: activeWs===0 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Today</div>
-            </button>
-            <button key="schedule" type="button" onClick={() => setActiveWs(1)} aria-label="Go to Schedule" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===1 ? 22 : 6, height:6, borderRadius:3, background: activeWs===1 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===1 ? 700 : 500, color: activeWs===1 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Schedule</div>
-            </button>
-            <button key="pupils" type="button" onClick={() => setActiveWs(2)} aria-label="Go to Pupils" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===2 ? 22 : 6, height:6, borderRadius:3, background: activeWs===2 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===2 ? 700 : 500, color: activeWs===2 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Pupils</div>
-            </button>
-            <button key="money" type="button" onClick={() => setActiveWs(3)} aria-label="Go to Money" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===3 ? 22 : 6, height:6, borderRadius:3, background: activeWs===3 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===3 ? 700 : 500, color: activeWs===3 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Money</div>
-            </button>
-            <button key="marketplace" type="button" onClick={() => setActiveWs(4)} aria-label="Go to Market" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===4 ? 22 : 6, height:6, borderRadius:3, background: activeWs===4 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===4 ? 700 : 500, color: activeWs===4 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Market</div>
-            </button>
-            <button key="dsm" type="button" onClick={() => setActiveWs(5)} aria-label="Go to DSM Live" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===5 ? 22 : 6, height:6, borderRadius:3, background: activeWs===5 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===5 ? 700 : 500, color: activeWs===5 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>DSM Live</div>
-            </button>
-            <button key="tools" type="button" onClick={() => setActiveWs(6)} aria-label="Go to Tools" style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'none', border:'none', padding:'4px 6px', cursor:'pointer' }}>
-              <div style={{ width: activeWs===6 ? 22 : 6, height:6, borderRadius:3, background: activeWs===6 ? '#1877D6' : 'rgba(11,31,58,0.20)', transition:'width .25s ease, background .25s ease' }} />
-              <div style={{ fontSize:10, fontWeight: activeWs===6 ? 700 : 500, color: activeWs===6 ? '#0B1F3A' : 'rgba(11,31,58,0.55)', fontFamily:'Inter, sans-serif' }}>Tools</div>
-            </button>
-        </div>
-      </div>
+
+
 
 
       {unreadMsgs.length > 0 && (
