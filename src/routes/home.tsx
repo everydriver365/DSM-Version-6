@@ -1355,21 +1355,48 @@ function HomePage() {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [activeWs, setActiveWsState] = useState(0);
   const wsIsProgrammatic = useRef(false);
-  const setActiveWs = (i: number) => {
-    setActiveWsState(i);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const WS_COUNT = 7;
+  const scrollToWs = (i: number) => {
+    const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+    setActiveWsState(clamped);
     const el = carouselRef.current;
     if (!el) return;
     wsIsProgrammatic.current = true;
-    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
+  const setActiveWs = (i: number) => scrollToWs(i);
   const handleCarouselScroll = () => {
     if (wsIsProgrammatic.current) return;
     const el = carouselRef.current;
     if (!el) return;
     const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(6, i)));
+    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(WS_COUNT - 1, i)));
   };
+  const handleCarouselTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleCarouselTouchEnd = (e: React.TouchEvent) => {
+    const dx = touchStartX.current - e.changedTouches[0].clientX;
+    const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
+    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
+      if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
+      else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
+    }
+  };
+  useEffect(() => {
+    const log = () => {
+      // eslint-disable-next-line no-console
+      console.log("[home] carousel height:", carouselRef.current?.clientHeight, "window innerHeight:", window.innerHeight);
+    };
+    log();
+    window.addEventListener('resize', log);
+    return () => window.removeEventListener('resize', log);
+  }, []);
+
   const [pupilQuery, setPupilQuery] = useState("");
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
