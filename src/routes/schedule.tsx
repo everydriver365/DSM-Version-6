@@ -281,7 +281,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url, photo_url)",
+          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url, photo_url, prepaid_hours)",
         )
         .is("deleted_at", null)
         .gte("lesson_date", windowStart)
@@ -626,10 +626,11 @@ function SchedulePage() {
 
     const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const amountDue = l.amount_due ?? 0;
+    const isPrepaidPupil = Number((l.pupil as any)?.prepaid_hours ?? 0) > 0;
     // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due / Paid pills.
-    const overdue = pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
-    const isPrepaid = paymentStatus === "prepaid";
-    const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const overdue = !isPrepaidPupil && pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const isPrepaid = paymentStatus === "prepaid" || isPrepaidPupil;
+    const isPaymentDue = !overdue && !isPrepaid && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
     const isPaid = paymentStatus === "paid";
 
     const avatarBg = NAVY;
