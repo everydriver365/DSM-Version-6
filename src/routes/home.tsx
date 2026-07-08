@@ -4001,6 +4001,11 @@ function HomePage() {
                           {initialsOf(name)}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
+                          {tab === 'next' && (
+                            <div style={{ fontSize: 11, fontWeight: 600, color: ACCENT, marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                              {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
+                            </div>
+                          )}
                           <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {name}
                           </div>
