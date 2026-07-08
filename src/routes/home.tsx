@@ -4002,9 +4002,31 @@ function HomePage() {
           </>
         )}
       </div>
+      {/* TODAY STRIP — 2 white tiles */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, padding: '12px 16px 0' }}>
+        <TodayTile
+          value={nextFreeSlot ?? 'None'}
+          label="Next free"
+          valueColor={nextFreeSlot ? '#D97706' : '#9CA3AF'}
+          valueSize={nextFreeSlot ? 13 : 14}
+        />
+        <div
+          style={{ display: 'flex', cursor: 'pointer' }}
+          onClick={() => setOutstandingOpen(true)}
+          role="button"
+          tabIndex={0}
+        >
+          <TodayTile
+            value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : 'Clear ✓'}
+            label="Outstanding"
+            valueColor={outstanding > 0 ? '#c9302c' : '#16A34A'}
+            valueSize={13}
+          />
+        </div>
+      </div>
+
 
         {/* Smart business card */}
-
         <div style={{ margin:'16px 16px 0', borderRadius:16, padding:'14px 16px', background:'linear-gradient(135deg, #FFFFFF 0%, #F3F8FF 100%)', border:'0.5px solid #E2E6ED', boxShadow:'0 4px 14px rgba(11,31,58,0.06)', display:'flex', alignItems:'center', gap:12 }}>
           <div style={{ width:48, height:48, borderRadius:14, background:'linear-gradient(135deg, #1877D6 0%, #1A52A0 100%)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
             <Sparkles size={22} color="#fff" />
