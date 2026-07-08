@@ -2315,7 +2315,7 @@ function PupilDetailPage() {
               <div className="mt-3 flex items-center gap-4">
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  onClick={openEditSheet}
                   className="text-[13px] font-medium"
                   style={{ color: "#1877D6", ...POPPINS }}
                 >
@@ -2323,7 +2323,16 @@ function PupilDetailPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  onClick={async () => {
+                    const next = !pupil.wants_swap;
+                    const { error } = await supabase
+                      .from("pupils")
+                      .update({ wants_swap: next })
+                      .eq("id", pupil.id);
+                    if (error) { toast.error("Failed to save — please try again"); return; }
+                    setPupil({ ...pupil, wants_swap: next });
+                    toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
+                  }}
                   className="text-[13px] font-medium"
                   style={{ color: "#1877D6", ...POPPINS }}
                 >
