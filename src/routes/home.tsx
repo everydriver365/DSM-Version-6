@@ -4202,14 +4202,15 @@ function HomePage() {
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: '#0B1F3A', marginBottom: 8 }}>Quick actions</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
             {[
+              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706', prominent: true },
               { label: 'Schedule', to: '/schedule', icon: CalendarIcon, bg: '#E0F4FF', color: '#1A52A0' },
               { label: 'Pupils', to: '/pupils', icon: Users, bg: '#EDE9FE', color: '#7C3AED' },
               { label: 'Payments', to: '/payments', icon: PoundSterling, bg: '#DCFCE7', color: '#16A34A' },
               { label: 'Messages', to: '/messages', icon: MessageSquare, bg: '#E0FFF4', color: '#00B5A5' },
-              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706' },
               { label: 'More', to: '/tools', icon: LayoutGrid, bg: '#F3F4F6', color: '#6B7280' },
             ].map((t) => {
               const Icon = t.icon;
+              const isFill = t.label === 'Fill slots';
               return (
                 <button
                   key={t.label}
@@ -4217,7 +4218,7 @@ function HomePage() {
                   onClick={() => navigate({ to: t.to as never })}
                   style={{
                     background: '#FFFFFF',
-                    border: '0.5px solid #E2E6ED',
+                    border: t.prominent ? '1px solid #FDE68A' : '0.5px solid #E2E6ED',
                     borderRadius: 16,
                     padding: '16px 12px',
                     display: 'flex',
@@ -4228,8 +4229,28 @@ function HomePage() {
                     cursor: 'pointer',
                     boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
                     fontFamily: 'Inter, sans-serif',
+                    position: 'relative',
                   }}
                 >
+                  {isFill && freeSlotCount > 0 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        background: '#D97706',
+                        color: '#FFFFFF',
+                        fontSize: 9,
+                        fontWeight: 700,
+                        padding: '2px 6px',
+                        borderRadius: 999,
+                        lineHeight: 1,
+                        letterSpacing: 0.2,
+                      }}
+                    >
+                      ⚡ {freeSlotCount} free today
+                    </div>
+                  )}
                   <div
                     style={{
                       width: 48,
@@ -4244,12 +4265,13 @@ function HomePage() {
                   >
                     <Icon size={24} color={t.color} />
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044', marginTop: 2 }}>{t.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: t.prominent ? 700 : 600, color: t.prominent ? t.color : '#0F2044', marginTop: 2 }}>{t.label}</div>
                 </button>
               );
             })}
           </div>
         </div>
+
 
         </section>
 <section
