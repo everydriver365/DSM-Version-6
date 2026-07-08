@@ -1,5 +1,6 @@
 import React from "react";
-import { Phone, Car, Bell, Menu, ChevronRight, ChevronLeft, PoundSterling } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { PhoneIcon, CarIcon, BellIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
 export type InstructorTopBarProps = {
