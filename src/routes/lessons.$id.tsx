@@ -202,6 +202,32 @@ function LessonDetailPage() {
   const pupilName = lesson?.pupils?.name ?? "Unknown pupil";
   const phone = lesson?.pupils?.phone ?? "";
 
+  const lessonInsight = lesson
+    ? (() => {
+        const amount = Number(lesson.amount_due ?? 0);
+        const paid = (lesson.payment_status ?? "").toLowerCase() === "paid";
+        if (amount > 0 && !paid) {
+          const firstName = pupilName.split(" ")[0];
+          return {
+            text: `${firstName} owes £${amount.toFixed(0)} for this lesson.`,
+            actionLabel: "Remind" as const,
+            onAction: () => {
+              if (!phone) {
+                toast("No phone number");
+                return;
+              }
+              const body = encodeURIComponent(
+                `Hi ${firstName}, just a friendly reminder your lesson balance of £${amount.toFixed(0)} is outstanding. Thanks!`,
+              );
+              window.location.href = `sms:${phone}?&body=${body}`;
+            },
+          };
+        }
+        return null;
+      })()
+    : null;
+
+
   return (
     <div className="min-h-screen bg-white pb-8" style={POPPINS}>
       {/* Top bar */}
