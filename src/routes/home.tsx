@@ -96,6 +96,7 @@ import {
   IconMessageCircle,
   IconLayoutGrid,
   IconX,
+  IconCalendar,
 } from "@tabler/icons-react";
 import {
   Dialog,
@@ -285,6 +286,79 @@ function statusColor(status: string) {
   if (status === "pending") return "#1877D6";
   if (status === "cancelled") return "#1877D6";
   return "#6B7280";
+}
+
+function TodayLessonsTile({
+  todayLessons,
+  onNavigate,
+}: {
+  todayLessons: LessonRow[];
+  onNavigate: () => void;
+}) {
+  const total = todayLessons.length;
+  const upcoming = todayLessons.filter((l) =>
+    ["confirmed", "pending", "in_progress"].includes(l.status),
+  ).length;
+  const completed = todayLessons.filter((l) => l.status === "completed").length;
+  const subtitle =
+    total === 0
+      ? "No lessons today"
+      : `${upcoming} upcoming · ${completed} completed`;
+
+  return (
+    <button
+      type="button"
+      onClick={onNavigate}
+      style={{
+        width: "100%",
+        background: "#FFFFFF",
+        border: "0.5px solid rgba(15,32,68,0.10)",
+        borderRadius: 16,
+        padding: "14px 16px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: "Poppins, Inter, sans-serif",
+      }}
+    >
+      <span
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 11,
+          background: "#E6F1FB",
+          color: "#185FA5",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <IconCalendar size={18} strokeWidth={1.5} />
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 500, color: "#0F2044", lineHeight: 1.3 }}>
+          Today's lessons
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 400, color: "#64748B", marginTop: 2, lineHeight: 1.3 }}>
+          {subtitle}
+        </div>
+      </div>
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 500,
+          color: "#0F2044",
+          lineHeight: 1,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {total}
+      </div>
+    </button>
+  );
 }
 
 type TabKey = "today" | "tomorrow" | "next";
@@ -2908,12 +2982,16 @@ function HomePage() {
             </div>
           </div>
 
+          {/* TODAY'S LESSONS TILE */}
+          <div style={{ marginBottom: 16 }}>
+            <TodayLessonsTile
+              todayLessons={todayLessons}
+              onNavigate={() => navigate({ to: "/schedule" })}
+            />
+          </div>
+
           {/* STATS ROW */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
-            <div style={cardStyle}>
-              <div style={statValue}>{todayLessons.length}</div>
-              <div style={statLabel}>Lessons today</div>
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
             <div style={cardStyle}>
               <div style={{ ...statValue, color: "#16A34A" }}>£{Math.round(weekEarnings)}</div>
               <div style={statLabel}>This week</div>
@@ -3845,6 +3923,14 @@ function HomePage() {
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            {/* 1. TODAY'S LESSONS TILE */}
+            <div style={{ marginBottom: 14 }}>
+              <TodayLessonsTile
+                todayLessons={todayLessons}
+                onNavigate={() => navigate({ to: '/schedule' })}
+              />
+            </div>
+
             {/* 2. STATS 2×2 */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <StatCard label="Earnings this week" value={`£${weekEarnings.toFixed(0)}${earningsEstimated ? ' est' : ''}`} onClick={() => setEarningsOpen(true)} />
