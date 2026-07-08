@@ -274,20 +274,38 @@ function NewLessonPage() {
 
           <div>
             <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <select
+            <div
               id="duration"
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+              role="radiogroup"
+              aria-label="Lesson duration"
+              className="grid grid-cols-6 gap-2"
             >
-              {DURATIONS.map((m) => (
-                <option key={m} value={m}>
-                  {m} min
-                </option>
-              ))}
-            </select>
+              {DURATION_HOURS.map((h) => {
+                const minutes = h * 60;
+                const selected = duration === minutes;
+                return (
+                  <button
+                    key={h}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setDuration(minutes)}
+                    className="cf-tap rounded-[12px] text-[14px] font-medium transition-colors"
+                    style={{
+                      padding: "14px 2px",
+                      fontFamily: "Inter, sans-serif",
+                      background: selected ? "#185FA5" : "#F3F8FF",
+                      color: selected ? "#FFFFFF" : "#0B1F3A",
+                      border: selected ? "none" : "1px solid #EEF2F7",
+                    }}
+                  >
+                    {h}h
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
 
           <div>
             <FieldLabel htmlFor="pickup">Pickup location</FieldLabel>
