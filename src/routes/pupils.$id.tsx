@@ -328,6 +328,80 @@ function PupilDetailPage() {
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editDraft, setEditDraft] = useState<{
+    first_name: string;
+    last_name: string;
+    phone: string;
+    email: string;
+    prepaid_hours: string;
+    prepaid_amount_paid: string;
+    custom_rate: string;
+    custom_rate_90: string;
+    custom_rate_120: string;
+  }>({
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+    prepaid_hours: "",
+    prepaid_amount_paid: "",
+    custom_rate: "",
+    custom_rate_90: "",
+    custom_rate_120: "",
+  });
+
+  const openEditSheet = () => {
+    if (!pupil) return;
+    setEditDraft({
+      first_name: pupil.first_name ?? "",
+      last_name: pupil.last_name ?? "",
+      phone: pupil.phone ?? "",
+      email: pupil.email ?? "",
+      prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
+      prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
+      custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
+      custom_rate_90: pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "",
+      custom_rate_120: pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "",
+    });
+    setEditSheetOpen(true);
+  };
+
+  const saveEditSheet = async () => {
+    if (!pupil) return;
+    setEditSaving(true);
+    const numOrNull = (v: string) => {
+      const t = v.trim();
+      if (t === "") return null;
+      const n = Number(t);
+      return Number.isFinite(n) ? n : null;
+    };
+    const first = editDraft.first_name.trim();
+    const last = editDraft.last_name.trim();
+    const patch = {
+      first_name: first || null,
+      last_name: last || null,
+      name: [first, last].filter(Boolean).join(" ") || pupil.name,
+      phone: editDraft.phone.trim() || null,
+      email: editDraft.email.trim() || null,
+      prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
+      prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
+      custom_rate: numOrNull(editDraft.custom_rate),
+      custom_rate_90: numOrNull(editDraft.custom_rate_90),
+      custom_rate_120: numOrNull(editDraft.custom_rate_120),
+    };
+    const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+    setEditSaving(false);
+    if (error) {
+      toast.error("Failed to save — please try again");
+      return;
+    }
+    setPupil({ ...pupil, ...patch });
+    setEditSheetOpen(false);
+    toast.success("Pupil updated");
+  };
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -876,6 +950,15 @@ function PupilDetailPage() {
           >
             <Phone size={18} />
           </a>
+          <button
+            type="button"
+            aria-label="Edit pupil"
+            onClick={openEditSheet}
+            className="flex items-center justify-center text-slate-600 hover:text-blue-600"
+            style={{ width: 40, height: 40 }}
+          >
+            <Pencil size={18} />
+          </button>
           <button
             type="button"
             aria-label="Remove pupil"
@@ -2232,7 +2315,7 @@ function PupilDetailPage() {
               <div className="mt-3 flex items-center gap-4">
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  onClick={openEditSheet}
                   className="text-[13px] font-medium"
                   style={{ color: "#1877D6", ...POPPINS }}
                 >
@@ -2240,7 +2323,16 @@ function PupilDetailPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/pupils/edit/$id", params: { id } })}
+                  onClick={async () => {
+                    const next = !pupil.wants_swap;
+                    const { error } = await supabase
+                      .from("pupils")
+                      .update({ wants_swap: next })
+                      .eq("id", pupil.id);
+                    if (error) { toast.error("Failed to save — please try again"); return; }
+                    setPupil({ ...pupil, wants_swap: next });
+                    toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
+                  }}
                   className="text-[13px] font-medium"
                   style={{ color: "#1877D6", ...POPPINS }}
                 >
@@ -2404,6 +2496,158 @@ function PupilDetailPage() {
           </div>
         </div>
       )}
+
+      {editSheetOpen && pupil && (
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/40" onClick={() => !editSaving && setEditSheetOpen(false)} />
+          <div
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
+            style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Pencil size={18} color="#1877D6" />
+                <div className="text-[16px] font-semibold text-[#0B1F3A]">Edit pupil</div>
+              </div>
+              <button type="button" onClick={() => !editSaving && setEditSheetOpen(false)} aria-label="Close">
+                <X size={20} color="#6B7280" />
+              </button>
+            </div>
+
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Record</div>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <label className="text-[12px] text-[#6B7280]">
+                First name
+                <input
+                  type="text"
+                  value={editDraft.first_name}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, first_name: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280]">
+                Last name
+                <input
+                  type="text"
+                  value={editDraft.last_name}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, last_name: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            </div>
+            <label className="block text-[12px] text-[#6B7280] mb-3">
+              Phone
+              <input
+                type="tel"
+                value={editDraft.phone}
+                onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              />
+            </label>
+            <label className="block text-[12px] text-[#6B7280] mb-4">
+              Email
+              <input
+                type="email"
+                value={editDraft.email}
+                onChange={(e) => setEditDraft((d) => ({ ...d, email: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              />
+            </label>
+
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Payment details</div>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <label className="text-[12px] text-[#6B7280]">
+                Prepaid hours
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.5"
+                  value={editDraft.prepaid_hours}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_hours: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280]">
+                Prepaid amount paid (£)
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  value={editDraft.prepaid_amount_paid}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_amount_paid: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            </div>
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              <label className="text-[12px] text-[#6B7280]">
+                Rate 60m (£)
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  placeholder={instructorRate != null ? String(instructorRate) : "—"}
+                  value={editDraft.custom_rate}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280]">
+                Rate 90m (£)
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  value={editDraft.custom_rate_90}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_90: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280]">
+                Rate 120m (£)
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  value={editDraft.custom_rate_120}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_120: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setEditSheetOpen(false)}
+                disabled={editSaving}
+                className="flex-1 h-11 rounded-lg text-[14px] font-medium text-[#0B1F3A] bg-white disabled:opacity-60"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={saveEditSheet}
+                disabled={editSaving}
+                className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white bg-[#1877D6] disabled:opacity-60"
+              >
+                {editSaving ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
