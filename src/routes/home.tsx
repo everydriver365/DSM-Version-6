@@ -3017,14 +3017,6 @@ function HomePage() {
     if (!q) return outstandingBreakdown;
     return outstandingBreakdown.filter((p) => p.name.toLowerCase().includes(q));
   })();
-  const todayBriefingHeadline = todayLessons.length === 0
-    ? "No lessons today — enjoy the breather"
-    : `${todayLessons.length} lesson${todayLessons.length===1?'':'s'} today · £${todayEarnings.toFixed(0)} in`;
-  const todayBriefingSub = nextFreeSlot
-    ? `Next free slot ${nextFreeSlot}`
-    : outstanding > 0
-      ? `£${outstanding.toFixed(0)} outstanding across ${outstandingBreakdown.length} pupil${outstandingBreakdown.length===1?'':'s'}`
-      : "You're all caught up";
 
   if (isDesktop) {
     const now = new Date();
