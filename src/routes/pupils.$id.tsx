@@ -2566,7 +2566,23 @@ function PupilDetailPage() {
               />
             </label>
 
+            <label className="text-[12px] text-[#6B7280] block mb-4">
+              Status
+              <select
+                value={editDraft.status}
+                onChange={(e) => setEditDraft((d) => ({ ...d, status: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              >
+                <option value="active">Active</option>
+                <option value="passed">Passed</option>
+                <option value="inactive">Inactive</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </label>
+
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Payment details</div>
+
             <div className="grid grid-cols-2 gap-3 mb-3">
               <label className="text-[12px] text-[#6B7280]">
                 Prepaid hours
