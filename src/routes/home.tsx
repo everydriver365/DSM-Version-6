@@ -4009,6 +4009,154 @@ function HomePage() {
           </button>
         </div>
 
+        {/* TODAY'S TIMELINE CARD */}
+        {(() => {
+          const nowT = new Date();
+          const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+          const fmt = (t?: string | null) => {
+            if (!t) return '—';
+            const [hh, mm] = t.split(':');
+            const h = parseInt(hh || '0', 10);
+            const m = parseInt(mm || '0', 10);
+            const p = h >= 12 ? 'pm' : 'am';
+            const dh = h > 12 ? h - 12 : h === 0 ? 12 : h;
+            return `${dh}:${String(m).padStart(2, '0')}${p}`;
+          };
+          const initials = (n?: string | null) => (n || '?').trim().split(/\s+/).slice(0, 2).map(s => s[0]?.toUpperCase() || '').join('') || '?';
+          const colorFor = (id?: string | null) => {
+            const palette = ['#1A52A0', '#1877D6', '#16A34A', '#F59E0B', '#8B5CF6', '#DC2626', '#0EA5E9', '#EA580C'];
+            const key = String(id ?? '');
+            let h = 0;
+            for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+            return palette[h % palette.length];
+          };
+          type Row = { kind: 'lesson'; l: LessonRow } | { kind: 'gap'; start: Date; mins: number };
+          const rows: Row[] = [];
+          for (let i = 0; i < sorted.length; i++) {
+            const l = sorted[i];
+            rows.push({ kind: 'lesson', l });
+            const next = sorted[i + 1];
+            if (!next) continue;
+            const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+            const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
+            const beforeBuf = (next.pupil_id && pupilBufferMap[next.pupil_id]?.before) || 0;
+            const gapStart = new Date(endThis.getTime() + afterBuf * 60000);
+            const nextStart = new Date(lessonDateTime(next).getTime() - beforeBuf * 60000);
+            const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
+            if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
+          }
+          return (
+            <div style={{ background: '#FFFFFF', borderRadius: 20, margin: '12px 16px 0', boxShadow: '0 2px 12px rgba(15,32,68,0.06)', overflow: 'hidden' }}>
+              <div style={{ padding: '16px 20px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Today's timeline</div>
+                <button type="button" onClick={() => setActiveWs(1)} style={{ fontSize: 12, color: '#1A52A0', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Full schedule →</button>
+              </div>
+              {sorted.length === 0 ? (
+                <div style={{ padding: 24, textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
+                  <CalendarDays size={32} color="#D1D5DB" style={{ marginBottom: 8 }} />
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280' }}>No lessons today</div>
+                  <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 4, fontSize: 12, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
+                </div>
+              ) : (
+                <div style={{ padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 56, top: 24, bottom: 24, borderLeft: '1.5px dashed #E5E7EB' }} />
+                  {rows.map((row, idx) => {
+                    if (row.kind === 'gap') {
+                      return (
+                        <div key={`gap-${idx}`} style={{ background: '#FFFBEB', borderRadius: 8, padding: '8px 12px', margin: '2px 0', display: 'flex', alignItems: 'center', gap: 8, position: 'relative', zIndex: 1 }}>
+                          <Zap size={12} color="#D97706" />
+                          <div style={{ flex: 1, fontSize: 12, color: '#78350F', fontWeight: 500, fontFamily: 'Inter, sans-serif' }}>
+                            {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)} free · {row.mins} mins
+                          </div>
+                          <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ fontSize: 12, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill →</button>
+                        </div>
+                      );
+                    }
+                    const l = row.l;
+                    const lessonStart = lessonDateTime(l);
+                    const lessonEnd = new Date(lessonStart.getTime() + (l.duration_minutes ?? 60) * 60000);
+                    const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
+                    const isCompleted = nowT >= lessonEnd || l.status === 'completed';
+                    const isFuture = nowT < lessonStart;
+                    const payStatus = (l.payment_status ?? '').toLowerCase();
+                    const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
+                    const isPaid = payStatus === 'paid';
+                    const amt = Number(l.amount_due ?? 0);
+                    const pName = pupilName(l);
+                    const pColor = colorFor(l.pupil_id ?? pName);
+                    return (
+                      <div
+                        key={l.id}
+                        onClick={() => navigate({ to: '/schedule' })}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                          display: 'flex',
+                          minHeight: 72,
+                          padding: '8px 0',
+                          position: 'relative',
+                          borderRadius: 12,
+                          marginBottom: 4,
+                          background: isCurrent ? '#EFF6FF' : 'transparent',
+                          borderLeft: isCurrent ? '3px solid #1A52A0' : '3px solid transparent',
+                          opacity: isCompleted ? 0.5 : 1,
+                          cursor: 'pointer',
+                          fontFamily: 'Inter, sans-serif',
+                        }}
+                      >
+                        <div style={{ width: 52, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 4 }}>
+                          <div style={{
+                            fontSize: 11,
+                            fontWeight: isCurrent ? 700 : 600,
+                            color: isCurrent ? '#1A52A0' : isCompleted ? '#9CA3AF' : '#6B7280',
+                          }}>{fmt(l.lesson_time)}</div>
+                          <div style={{ position: 'relative', zIndex: 2, marginTop: 4 }}>
+                            {isCurrent ? (
+                              <div style={{ width: 14, height: 14, borderRadius: 7, background: '#1A52A0', boxShadow: '0 0 0 4px rgba(26,82,160,0.15)' }} />
+                            ) : isCompleted ? (
+                              <div style={{ width: 10, height: 10, borderRadius: 5, background: '#D1D5DB' }} />
+                            ) : (
+                              <div style={{ width: 10, height: 10, borderRadius: 5, background: '#FFFFFF', border: '2px solid #E5E7EB' }} />
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ flex: 1, paddingLeft: 12, paddingTop: 4, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <div style={{ width: 28, height: 28, borderRadius: 14, background: pColor, color: '#FFFFFF', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              {initials(pName)}
+                            </div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: isCompleted ? '#9CA3AF' : '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                            <div style={{ fontSize: 12, color: '#9CA3AF' }}>{l.duration_minutes ?? 60} min</div>
+                            {isCompleted && (
+                              <span style={{ background: '#E0FFF4', color: '#065F46', fontSize: 10, padding: '1px 8px', borderRadius: 999, fontWeight: 600 }}>✓ Done</span>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ flexShrink: 0, paddingLeft: 8, paddingTop: 6, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                          {isCurrent && (
+                            <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 999, letterSpacing: 0.4 }}>NOW</span>
+                          )}
+                          {isCancelled ? (
+                            <span style={{ background: '#FEF2F2', color: '#CC2229', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>Cancelled</span>
+                          ) : isPaid ? (
+                            <span style={{ background: '#E0FFF4', color: '#065F46', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>Paid ✓</span>
+                          ) : amt > 0 ? (
+                            <span style={{ background: '#FEF3C7', color: '#92400E', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>£{amt.toFixed(0)}</span>
+                          ) : null}
+                          <ChevronRight size={14} color="#D1D5DB" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+
         {/* Mini quick access 2x3 */}
         <div style={{ padding:'16px 16px 24px' }}>
           <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A', marginBottom:8 }}>Quick actions</div>
