@@ -1389,6 +1389,17 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
+  const [allPupilsList, setAllPupilsList] = useState<Array<{
+    id: string;
+    name: string;
+    first_name: string | null;
+    status: string;
+    profile_image_url: string | null;
+    calendar_colour: string | null;
+    last_lesson_date: string | null;
+    phone: string | null;
+  }>>([]);
   const [recentActivity, setRecentActivity] = useState<Array<{
     id: string;
     title: string;
@@ -2018,6 +2029,21 @@ function HomePage() {
       setGlancePupilCount(
         (pupilsData || []).filter((p: any) => p.deleted_at == null).length,
       );
+      setAllPupilsList(
+        (pupilsData || [])
+          .filter((p: any) => p.deleted_at == null)
+          .map((p: any) => ({
+            id: p.id,
+            name: p.name ?? '',
+            first_name: p.first_name ?? null,
+            status: (p.status ?? 'active').toLowerCase(),
+            profile_image_url: p.profile_image_url ?? null,
+            calendar_colour: p.calendar_colour ?? null,
+            last_lesson_date: p.last_lesson_date ?? null,
+            phone: p.phone ?? null,
+          })),
+      );
+
 
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
@@ -5390,6 +5416,130 @@ function HomePage() {
                   </div>
                 ))}
               </div>
+
+              {/* 2b. ALL PUPILS WITH TABS */}
+              {(() => {
+                const counts = {
+                  current: allPupilsList.filter((p) => p.status === 'active').length,
+                  passed: allPupilsList.filter((p) => p.status === 'passed').length,
+                  cancelled: allPupilsList.filter((p) => p.status === 'cancelled').length,
+                  inactive: allPupilsList.filter((p) => p.status === 'inactive' || p.status === 'archived').length,
+                };
+                const tabKey = pupilsTab;
+                const filtered = allPupilsList.filter((p) => {
+                  if (tabKey === 'current') return p.status === 'active';
+                  if (tabKey === 'inactive') return p.status === 'inactive' || p.status === 'archived';
+                  return p.status === tabKey;
+                }).sort((a, b) => a.name.localeCompare(b.name));
+                const tabs: Array<{ key: typeof pupilsTab; label: string; count: number }> = [
+                  { key: 'current', label: 'Current', count: counts.current },
+                  { key: 'passed', label: 'Passed', count: counts.passed },
+                  { key: 'cancelled', label: 'Cancelled', count: counts.cancelled },
+                  { key: 'inactive', label: 'Inactive', count: counts.inactive },
+                ];
+                const fmtLastLesson = (d: string | null) => {
+                  if (!d) return 'No lessons yet';
+                  const dt = new Date(d + 'T00:00:00');
+                  const now = new Date();
+                  const days = Math.floor((now.getTime() - dt.getTime()) / 86400000);
+                  if (days <= 0) return 'Last lesson today';
+                  if (days === 1) return 'Last lesson yesterday';
+                  if (days < 7) return `Last lesson ${days} days ago`;
+                  if (days < 30) return `Last lesson ${Math.floor(days / 7)}w ago`;
+                  return `Last lesson ${dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`;
+                };
+                return (
+                  <div style={{ background: '#FFFFFF', borderRadius: 16, overflow: 'hidden', border: '0.5px solid #F3F4F6', fontFamily: 'Poppins, Inter, sans-serif' }}>
+                    <div style={{ padding: '14px 16px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ fontSize: 15, fontWeight: 500, color: '#0F2044' }}>Pupils</div>
+                      <button
+                        type="button"
+                        onClick={() => navigate({ to: '/pupils' })}
+                        style={{ fontSize: 13, fontWeight: 500, color: '#1877D6', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'Poppins, Inter, sans-serif' }}
+                      >
+                        View all →
+                      </button>
+                    </div>
+                    {/* Tabs */}
+                    <div style={{ display: 'flex', gap: 4, margin: '0 12px 8px', padding: 3, background: '#F1F5F9', borderRadius: 10 }}>
+                      {tabs.map((t) => {
+                        const active = tabKey === t.key;
+                        return (
+                          <button
+                            key={t.key}
+                            type="button"
+                            onClick={() => setPupilsTab(t.key)}
+                            style={{
+                              flex: 1,
+                              background: active ? '#FFFFFF' : 'transparent',
+                              color: active ? '#0B1F3A' : '#6B7280',
+                              borderRadius: 8,
+                              padding: '7px 4px',
+                              fontWeight: 500,
+                              fontSize: 12,
+                              border: 'none',
+                              cursor: 'pointer',
+                              boxShadow: active ? 'inset 0 0 0 0.5px rgba(15,32,68,0.10)' : 'none',
+                              fontFamily: 'Poppins, Inter, sans-serif',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                            }}
+                          >
+                            <span>{t.label}</span>
+                            <span style={{ fontSize: 11, color: active ? '#6B7280' : '#9CA3AF', fontVariantNumeric: 'tabular-nums' }}>{t.count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {filtered.length === 0 ? (
+                      <div style={{ padding: '20px 16px', textAlign: 'center', color: '#9CA3AF', fontSize: 13 }}>
+                        No {tabKey === 'current' ? 'current' : tabKey} pupils
+                      </div>
+                    ) : (
+                      <div>
+                        {filtered.map((p, idx) => {
+                          const first = p.first_name || p.name.split(/\s+/)[0] || '?';
+                          const initial = (first[0] || '?').toUpperCase();
+                          const bg = p.calendar_colour || '#1A52A0';
+                          return (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => navigate({ to: '/pupils/$id', params: { id: p.id } })}
+                              style={{
+                                width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                                padding: '12px 16px', background: 'none', border: 'none',
+                                borderTop: idx === 0 ? '0.5px solid #F3F4F6' : '0.5px solid #F3F4F6',
+                                cursor: 'pointer', textAlign: 'left',
+                                fontFamily: 'Poppins, Inter, sans-serif',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: 36, height: 36, borderRadius: '50%',
+                                  background: bg, color: '#FFFFFF',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  fontSize: 13, fontWeight: 600, flexShrink: 0,
+                                  backgroundImage: p.profile_image_url ? `url(${p.profile_image_url})` : undefined,
+                                  backgroundSize: 'cover', backgroundPosition: 'center',
+                                }}
+                              >
+                                {p.profile_image_url ? '' : initial}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                                <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>{fmtLastLesson(p.last_lesson_date)}</div>
+                              </div>
+                              <ChevronRight size={16} color="#9CA3AF" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+
 
               {/* 3. TODAY'S PUPILS */}
               {todayLessons.length > 0 && (
