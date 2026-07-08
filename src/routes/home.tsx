@@ -97,7 +97,9 @@ import {
   IconLayoutGrid,
   IconX,
   IconCalendar,
+  IconDots,
 } from "@tabler/icons-react";
+
 import {
   Dialog,
   DialogContent,
