@@ -4559,30 +4559,30 @@ function HomePage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EEF2F7",
-          borderRadius: 16,
-          padding: "12px 0",
-          fontFamily: "Inter, sans-serif",
+          padding: "0",
+          fontFamily: "Poppins, Inter, sans-serif",
         }}
       >
         {/* Header */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: "0 16px 8px 16px" }}
+          style={{ padding: "4px 4px 12px 4px" }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: 20, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, Inter, sans-serif", letterSpacing: "-0.01em" }}>
             Schedule
           </div>
           <button
             type="button"
             onClick={() => navigate({ to: "/schedule" })}
             style={{
-              fontSize: 12,
-              fontWeight: 600,
+              fontSize: 13,
+              fontWeight: 500,
               color: "#1877D6",
               background: "transparent",
+              border: "none",
+              padding: 0,
               cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, Inter, sans-serif",
             }}
           >
             View all →
@@ -4594,10 +4594,11 @@ function HomePage() {
           style={{
             display: "flex",
             gap: 4,
-            margin: "0 16px 8px 16px",
+            margin: "0 0 10px 0",
             padding: 3,
-            backgroundColor: "#F3F4F6",
+            backgroundColor: "#F1F5F9",
             borderRadius: 10,
+            fontFamily: "Poppins, Inter, sans-serif",
           }}
         >
           <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
@@ -4610,6 +4611,7 @@ function HomePage() {
             Next
           </TabBtn>
         </div>
+
 
 
         {tabLessons.length === 0 ? (
