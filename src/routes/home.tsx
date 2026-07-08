@@ -3940,9 +3940,8 @@ function HomePage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <StatCard label="Earnings this week" value={`£${weekEarnings.toFixed(0)}${earningsEstimated ? ' est' : ''}`} onClick={() => setEarningsOpen(true)} />
               <StatCard label="Lessons this week" value={String(weekLessonsTotal)} />
-              <StatCard label="Next free slot" value={nextFreeSlot ?? '—'} onClick={() => navigate({ to: '/gaps' })} />
-              <StatCard label="Outstanding balance" value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : '£0'} danger={outstanding > 0} onClick={() => setOutstandingOpen(true)} />
             </div>
+
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
