@@ -4034,9 +4034,10 @@ function HomePage() {
                               }}
                             />
                           )}
-                          {l.pupils?.profile_image_url ? (
+                          {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
                             <img
-                              src={l.pupils.profile_image_url}
+                              src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
+
                               alt=""
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
