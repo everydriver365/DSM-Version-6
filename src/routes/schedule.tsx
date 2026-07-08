@@ -736,53 +736,55 @@ function SchedulePage() {
             >
               {formatDurationShort(l.duration_minutes)}
             </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+              {overdue && (
+                <span
+                  style={{
+                    ...POPPINS,
+                    fontSize: 10,
+                    fontWeight: 500,
+                    backgroundColor: DANGER_BG,
+                    color: DANGER,
+                    padding: "3px 8px",
+                    borderRadius: 999,
+                  }}
+                >
+                  Overdue
+                </span>
+              )}
+              {isPrepaid && (
+                <span
+                  style={{
+                    ...POPPINS,
+                    fontSize: 10,
+                    fontWeight: 500,
+                    backgroundColor: "#E6F1FB",
+                    color: "#185FA5",
+                    padding: "3px 8px",
+                    borderRadius: 999,
+                  }}
+                >
+                  Prepaid
+                </span>
+              )}
+              {isPaymentDue && (
+                <span
+                  style={{
+                    ...POPPINS,
+                    fontSize: 10,
+                    fontWeight: 500,
+                    backgroundColor: "#FBEFE1",
+                    color: "#B5661E",
+                    padding: "3px 8px",
+                    borderRadius: 999,
+                  }}
+                >
+                  Payment due
+                </span>
+              )}
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            {overdue && (
-              <span
-                style={{
-                  ...POPPINS,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  backgroundColor: DANGER_BG,
-                  color: DANGER,
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                }}
-              >
-                Overdue
-              </span>
-            )}
-            {isPrepaid && (
-              <span
-                style={{
-                  ...POPPINS,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  backgroundColor: "#E6F1FB",
-                  color: "#185FA5",
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                }}
-              >
-                Prepaid
-              </span>
-            )}
-            {isPaymentDue && (
-              <span
-                style={{
-                  ...POPPINS,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  backgroundColor: "#FBEFE1",
-                  color: "#B5661E",
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                }}
-              >
-                Payment due
-              </span>
-            )}
+          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
             <ChevronRight size={16} color="#CBD5E1" />
           </div>
         </div>
