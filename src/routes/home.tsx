@@ -791,7 +791,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     published_at: string | null;
   };
   const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
-  const [communityExpanded, setCommunityExpanded] = useState(false);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -1190,166 +1190,12 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               );
             })}
         </div>
-      <div className="mx-4 mt-4 mb-2">
-        <span
-          className="text-[11px] uppercase"
-          style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-        >
-          DSM Community
-        </span>
-      </div>
-      <div
-        style={{
-          width: "calc(100% - 32px)",
-          margin: "8px 16px 0",
-          background: "#FFFFFF",
-          borderRadius: 12,
-          padding: 0,
-          border: "1px solid #EEF2F7",
-          textAlign: "left",
-          overflow: "hidden",
-          boxShadow: "0 2px 10px rgba(11, 31, 58, 0.05)",
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dsm-live", hash: "community" } as never)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            padding: "10px 14px",
-            border: "none",
-            borderBottom: "1px solid #EEF2F7",
-            background: "transparent",
-            cursor: "pointer",
-            textAlign: "left",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 10,
-                background: "#EAF3FB",
-                border: "1px solid #E0ECF8",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <Users color="#0C2340" size={18} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: "#0B1F3A", fontWeight: 700, fontSize: 14, letterSpacing: -0.2 }}>
-                DSM Community
-              </div>
-              <div style={{ color: "#5A6B82", fontSize: 10, marginTop: 1 }}>
-                Forum for ADIs
-              </div>
-            </div>
-          </div>
-          <span
-            style={{
-              background: "#CC2229",
-              color: "#fff",
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "4px 10px",
-              borderRadius: 999,
-              flexShrink: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 3,
-            }}
-          >
-            Open
-            <ChevronRight size={12} />
-          </span>
-        </button>
-
-        <div
-          style={{
-            padding: "2px 14px",
-          }}
-        >
-          {([
-            { title: "Standards check advice — anyone had part 3 recently?", cat: "Standards Check", replies: 12, activity: "2h" },
-            { title: "Best diary app for a solo ADI in 2026?", cat: "Business", replies: 8, activity: "5h" },
-            { title: "Pupil no-show policy — what do you charge?", cat: "General", replies: 24, activity: "1d" },
-          ] as const)
-            .slice(0, communityExpanded ? 3 : 1)
-            .map((t, i, arr) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 0",
-                  borderBottom: i < arr.length - 1 || communityExpanded ? "1px solid #EEF2F7" : "none",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      color: "#0B1F3A",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      lineHeight: 1.35,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {t.title}
-                  </div>
-                  <div style={{ color: "#1877D6", fontSize: 10, marginTop: 2, fontWeight: 500 }}>
-                    {t.cat} · {t.replies} replies · {t.activity}
-                  </div>
-                </div>
-              </div>
-            ))}
         </div>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setCommunityExpanded((v) => !v);
-          }}
-          style={{
-            width: "100%",
-            padding: "8px 14px",
-            border: "none",
-            borderTop: "1px solid #EEF2F7",
-            background: "transparent",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 4,
-          }}
-        >
-          <span style={{ color: "#1877D6", fontSize: 10, fontWeight: 700 }}>
-            {communityExpanded ? "Show less" : "Show more"}
-          </span>
-          <ChevronDown
-            size={14}
-            color="#1877D6"
-            style={{
-              transform: communityExpanded ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 200ms ease",
-            }}
-          />
-        </button>
       </div>
     </div>
   );
 }
+
 
 function HomePage() {
   const navigate = useNavigate();
