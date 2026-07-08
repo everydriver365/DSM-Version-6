@@ -33,7 +33,10 @@ interface Pupil {
 }
 
 
-const DURATIONS = [30, 45, 60, 90, 120];
+// NOTE: Previous durations [30, 45, 60, 90, 120] were replaced with whole-hour
+// options only (1h–6h = 60/120/180/240/300/360 min). If any existing bookings
+// or availability logic relies on 30/45/90 minute lessons, review before removing.
+const DURATION_HOURS = [1, 2, 3, 4, 5, 6];
 
 const fieldBorder: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
