@@ -1315,6 +1315,8 @@ function HomePage() {
   const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
   const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
+  const [pupilAvailMap, setPupilAvailMap] = useState<Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>>({});
+  const [pupilInfoMap, setPupilInfoMap] = useState<Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null; last_lesson_date: string | null }>>({});
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
   const [notifCount, setNotifCount] = useState(0);
   const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
