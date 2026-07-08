@@ -4002,19 +4002,29 @@ function HomePage() {
           </>
         )}
       </div>
-      {/* TODAY STRIP — 3 white tiles */}
-      <div style={{ display: 'flex', gap: 8, padding: '12px 16px 0' }}>
-        <TodayTile value={String(todayLessons.length)} label="Lessons today" valueColor="#1a1a1f" valueSize={22} />
-        <TodayTile value={nextFreeSlot ?? '—'} label="Next free slot" valueColor="#2952b3" valueSize={13} />
+      {/* TODAY STRIP — 2 white tiles */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, padding: '12px 16px 0' }}>
+        <TodayTile
+          value={nextFreeSlot ?? 'None'}
+          label="Next free"
+          valueColor={nextFreeSlot ? '#D97706' : '#9CA3AF'}
+          valueSize={nextFreeSlot ? 13 : 14}
+        />
         <div
-          style={{ flex: 1, display: 'flex', cursor: 'pointer' }}
+          style={{ display: 'flex', cursor: 'pointer' }}
           onClick={() => setOutstandingOpen(true)}
           role="button"
           tabIndex={0}
         >
-          <TodayTile value={`£${outstanding.toFixed(0)}`} label="Outstanding" valueColor={outstanding > 0 ? '#c9302c' : '#1a1a1f'} valueSize={13} />
+          <TodayTile
+            value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : 'Clear ✓'}
+            label="Outstanding"
+            valueColor={outstanding > 0 ? '#c9302c' : '#16A34A'}
+            valueSize={13}
+          />
         </div>
       </div>
+
 
         {/* Smart business card */}
         <div style={{ margin:'16px 16px 0', borderRadius:16, padding:'14px 16px', background:'linear-gradient(135deg, #FFFFFF 0%, #F3F8FF 100%)', border:'0.5px solid #E2E6ED', boxShadow:'0 4px 14px rgba(11,31,58,0.06)', display:'flex', alignItems:'center', gap:12 }}>
