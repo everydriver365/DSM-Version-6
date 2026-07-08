@@ -328,6 +328,80 @@ function PupilDetailPage() {
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editDraft, setEditDraft] = useState<{
+    first_name: string;
+    last_name: string;
+    phone: string;
+    email: string;
+    prepaid_hours: string;
+    prepaid_amount_paid: string;
+    custom_rate: string;
+    custom_rate_90: string;
+    custom_rate_120: string;
+  }>({
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+    prepaid_hours: "",
+    prepaid_amount_paid: "",
+    custom_rate: "",
+    custom_rate_90: "",
+    custom_rate_120: "",
+  });
+
+  const openEditSheet = () => {
+    if (!pupil) return;
+    setEditDraft({
+      first_name: pupil.first_name ?? "",
+      last_name: pupil.last_name ?? "",
+      phone: pupil.phone ?? "",
+      email: pupil.email ?? "",
+      prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
+      prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
+      custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
+      custom_rate_90: pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "",
+      custom_rate_120: pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "",
+    });
+    setEditSheetOpen(true);
+  };
+
+  const saveEditSheet = async () => {
+    if (!pupil) return;
+    setEditSaving(true);
+    const numOrNull = (v: string) => {
+      const t = v.trim();
+      if (t === "") return null;
+      const n = Number(t);
+      return Number.isFinite(n) ? n : null;
+    };
+    const first = editDraft.first_name.trim();
+    const last = editDraft.last_name.trim();
+    const patch = {
+      first_name: first || null,
+      last_name: last || null,
+      name: [first, last].filter(Boolean).join(" ") || pupil.name,
+      phone: editDraft.phone.trim() || null,
+      email: editDraft.email.trim() || null,
+      prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
+      prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
+      custom_rate: numOrNull(editDraft.custom_rate),
+      custom_rate_90: numOrNull(editDraft.custom_rate_90),
+      custom_rate_120: numOrNull(editDraft.custom_rate_120),
+    };
+    const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+    setEditSaving(false);
+    if (error) {
+      toast.error("Failed to save — please try again");
+      return;
+    }
+    setPupil({ ...pupil, ...patch });
+    setEditSheetOpen(false);
+    toast.success("Pupil updated");
+  };
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
