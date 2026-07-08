@@ -4014,6 +4014,7 @@ function HomePage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
                             flexShrink: 0,
+                            overflow: 'hidden',
                           }}
                         >
                           {isLive && (
@@ -4028,10 +4029,19 @@ function HomePage() {
                                 borderRadius: 999,
                                 backgroundColor: '#DC2626',
                                 boxShadow: '0 0 0 2px #FFFFFF',
+                                zIndex: 1,
                               }}
                             />
                           )}
-                          {initials}
+                          {l.pupils?.profile_image_url ? (
+                            <img
+                              src={l.pupils.profile_image_url}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            initials
+                          )}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
