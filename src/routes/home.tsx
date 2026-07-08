@@ -3636,12 +3636,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -4412,12 +4413,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5244,12 +5246,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5358,12 +5361,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5582,12 +5586,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5599,12 +5604,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5616,12 +5622,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
