@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
+
 
 export const Route = createFileRoute("/messages/")({
   head: () => ({
