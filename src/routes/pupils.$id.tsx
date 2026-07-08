@@ -335,6 +335,7 @@ function PupilDetailPage() {
     last_name: string;
     phone: string;
     email: string;
+    status: string;
     prepaid_hours: string;
     prepaid_amount_paid: string;
     custom_rate: string;
@@ -345,12 +346,14 @@ function PupilDetailPage() {
     last_name: "",
     phone: "",
     email: "",
+    status: "active",
     prepaid_hours: "",
     prepaid_amount_paid: "",
     custom_rate: "",
     custom_rate_90: "",
     custom_rate_120: "",
   });
+
 
   const openEditSheet = () => {
     if (!pupil) return;
@@ -359,6 +362,7 @@ function PupilDetailPage() {
       last_name: pupil.last_name ?? "",
       phone: pupil.phone ?? "",
       email: pupil.email ?? "",
+      status: (pupil.status ?? "active") || "active",
       prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
       prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
       custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
@@ -367,6 +371,7 @@ function PupilDetailPage() {
     });
     setEditSheetOpen(true);
   };
+
 
   const saveEditSheet = async () => {
     if (!pupil) return;
@@ -385,12 +390,14 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      status: editDraft.status || "active",
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
       custom_rate: numOrNull(editDraft.custom_rate),
       custom_rate_90: numOrNull(editDraft.custom_rate_90),
       custom_rate_120: numOrNull(editDraft.custom_rate_120),
     };
+
     const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
     setEditSaving(false);
     if (error) {
@@ -2559,7 +2566,23 @@ function PupilDetailPage() {
               />
             </label>
 
+            <label className="text-[12px] text-[#6B7280] block mb-4">
+              Status
+              <select
+                value={editDraft.status}
+                onChange={(e) => setEditDraft((d) => ({ ...d, status: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              >
+                <option value="active">Active</option>
+                <option value="passed">Passed</option>
+                <option value="inactive">Inactive</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </label>
+
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Payment details</div>
+
             <div className="grid grid-cols-2 gap-3 mb-3">
               <label className="text-[12px] text-[#6B7280]">
                 Prepaid hours
