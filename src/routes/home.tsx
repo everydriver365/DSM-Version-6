@@ -95,6 +95,7 @@ import {
   IconWallet,
   IconMessageCircle,
   IconLayoutGrid,
+  IconX,
 } from "@tabler/icons-react";
 import {
   Dialog,
