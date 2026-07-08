@@ -323,6 +323,48 @@ function SchedulePage() {
             setColourMap(map);
             setPupilBufferMap(bufMap);
           }
+
+          // Load instructor-wide pupil info + availability for gap matching.
+          const { data: authData2 } = await supabase.auth.getUser();
+          const uid = authData2.user?.id;
+          if (uid) {
+            const [{ data: allPupils }, { data: availRows }] = await Promise.all([
+              supabase
+                .from("pupils")
+                .select("id, name, first_name, profile_image_url, calendar_colour")
+                .eq("instructor_id", uid)
+                .is("deleted_at", null)
+                .not("status", "in", "(inactive,archived,cancelled)"),
+              supabase
+                .from("pupil_ready_to_learn_settings")
+                .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in")
+                .eq("instructor_id", uid),
+            ]);
+            if (!cancelled) {
+              const info: typeof pupilInfoMap = {};
+              (allPupils || []).forEach((p: any) => {
+                info[p.id] = {
+                  first_name: p.first_name ?? null,
+                  name: p.name ?? null,
+                  profile_image_url: p.profile_image_url ?? null,
+                  calendar_colour: p.calendar_colour ?? null,
+                };
+              });
+              setPupilInfoMap(info);
+              const avail: typeof pupilAvailMap = {};
+              (availRows || []).forEach((a: any) => {
+                if (a.pupil_id)
+                  avail[a.pupil_id] = {
+                    available_days: a.available_days ?? null,
+                    available_from: a.available_from ?? null,
+                    available_until: a.available_until ?? null,
+                    min_notice_hours: a.min_notice_hours ?? null,
+                    short_notice_opt_in: a.short_notice_opt_in ?? null,
+                  };
+              });
+              setPupilAvailMap(avail);
+            }
+          }
         }
       }
     })();
