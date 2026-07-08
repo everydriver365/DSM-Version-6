@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import type { ComponentType } from "react";
 import {
   HomeIcon,
   PupilsIcon,
@@ -14,7 +15,7 @@ interface Props {
   active?: NavKey;
 }
 
-const items: { key: NavKey; to: string; label: string; Icon: React.ComponentType<{ size?: number; color?: string }> }[] = [
+const items: { key: NavKey; to: string; label: string; Icon: ComponentType<{ size?: number; color?: string }> }[] = [
   { key: "home", to: "/home", label: "Home", Icon: HomeIcon },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: PupilsIcon },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: ScheduleIcon },
@@ -22,6 +23,7 @@ const items: { key: NavKey; to: string; label: string; Icon: React.ComponentType
   { key: "payments", to: "/payments", label: "Payments", Icon: PaymentsIcon },
   { key: "settings", to: "/settings", label: "Settings", Icon: SettingsIcon },
 ];
+
 
 
 
