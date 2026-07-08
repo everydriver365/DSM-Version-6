@@ -434,26 +434,31 @@ function DrivingTestPage() {
         const rows = await r.json();
         testResultId = Array.isArray(rows) ? rows[0]?.id ?? null : rows?.id ?? null;
       } catch {}
-      // If passed and practical, mark pupil status
-      if (result === "pass" && testType === "practical") {
+      // Update pupil status consistently for both pass and fail (practical only)
+      if (testType === "practical") {
         try {
+          const pupilPatch = result === "pass"
+            ? { status: "passed", test_status: "passed", passed_at: testDate, test_date: null }
+            : { status: "active", test_status: "failed" };
           await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=eq.${pupilId}`, {
             method: "PATCH",
             headers,
-            body: JSON.stringify({ status: "passed", test_date: testDate }),
+            body: JSON.stringify(pupilPatch),
           });
         } catch {}
-        try {
-          const { data: sess } = await supabase.auth.getSession();
-          const token = sess.session?.access_token;
-          if (token && userId) {
-            await awardPoints(userId, "LESSON_PUPIL_PASS", token, {
-              referenceId: testResultId,
-              referenceType: "driving_test",
-            });
+        if (result === "pass") {
+          try {
+            const { data: sess } = await supabase.auth.getSession();
+            const token = sess.session?.access_token;
+            if (token && userId) {
+              await awardPoints(userId, "LESSON_PUPIL_PASS", token, {
+                referenceId: testResultId,
+                referenceType: "driving_test",
+              });
+            }
+          } catch (e) {
+            console.warn("[rewards] pass award skipped", e);
           }
-        } catch (e) {
-          console.warn("[rewards] pass award skipped", e);
         }
       }
       toast.success("Test result saved");
