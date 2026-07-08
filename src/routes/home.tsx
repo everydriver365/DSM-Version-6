@@ -4157,28 +4157,57 @@ function HomePage() {
         })()}
 
 
-        {/* Mini quick access 2x3 */}
-        <div style={{ padding:'16px 16px 24px' }}>
-          <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A', marginBottom:8 }}>Quick actions</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
+        {/* Quick access 2×3 grid */}
+        <div style={{ padding: '16px 16px 24px' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: '#0B1F3A', marginBottom: 8 }}>Quick actions</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
             {[
-              { label:'Schedule', to:'/schedule', icon:'📅', bg:'#1877D6' },
-              { label:'Pupils', to:'/pupils', icon:'👥', bg:'#1A52A0' },
-              { label:'Messages', to:'/messages', icon:'💬', bg:'#16A34A' },
-              { label:'Gaps', to:'/gaps', icon:'🕒', bg:'#F59E0B' },
-              { label:'Payments', to:'/payments', icon:'💳', bg:'#8B5CF6' },
-              { label:'Tests', to:'/tests', icon:'🎯', bg:'#DC2626' },
-            ].map((t) => (
-              <button
-                key={t.label}
-                type="button"
-                onClick={() => navigate({ to: t.to as never })}
-                style={{ background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, padding:'14px 8px', display:'flex', flexDirection:'column', alignItems:'center', gap:6, cursor:'pointer', fontFamily:'Inter, sans-serif' }}
-              >
-                <div style={{ width:36, height:36, borderRadius:10, background:t.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>{t.icon}</div>
-                <div style={{ fontSize:11, fontWeight:700, color:'#0B1F3A' }}>{t.label}</div>
-              </button>
-            ))}
+              { label: 'Schedule', to: '/schedule', icon: CalendarIcon, bg: '#E0F4FF', color: '#1A52A0' },
+              { label: 'Pupils', to: '/pupils', icon: Users, bg: '#EDE9FE', color: '#7C3AED' },
+              { label: 'Payments', to: '/payments', icon: PoundSterling, bg: '#DCFCE7', color: '#16A34A' },
+              { label: 'Messages', to: '/messages', icon: MessageSquare, bg: '#E0FFF4', color: '#00B5A5' },
+              { label: 'Fill slots', to: '/gaps', icon: Zap, bg: '#FEF3C7', color: '#D97706' },
+              { label: 'More', to: '/tools', icon: LayoutGrid, bg: '#F3F4F6', color: '#6B7280' },
+            ].map((t) => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={t.label}
+                  type="button"
+                  onClick={() => navigate({ to: t.to as never })}
+                  style={{
+                    background: '#FFFFFF',
+                    border: '0.5px solid #E2E6ED',
+                    borderRadius: 16,
+                    padding: '16px 12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 90,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 16,
+                      background: t.bg,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 8px',
+                    }}
+                  >
+                    <Icon size={24} color={t.color} />
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044', marginTop: 2 }}>{t.label}</div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
