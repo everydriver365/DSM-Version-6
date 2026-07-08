@@ -5220,16 +5220,42 @@ function HomePage() {
                   rows.push(
                     <div
                       key={`gap-${l.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate({ to: "/gaps" })}
                       style={{
-                        margin: "2px 16px 6px 16px",
-                        padding: "4px 10px",
-                        fontSize: 11,
-                        color: "#6B7280",
-                        backgroundColor: "#F8F9FB",
-                        borderRadius: 6,
+                        display: "grid",
+                        gridTemplateColumns: "44px minmax(0,1fr) auto",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "12px 14px",
+                        background: "#fff",
+                        borderTop: "0.5px dashed #D1D5DB",
+                        borderBottom: "0.5px dashed #D1D5DB",
+                        cursor: "pointer",
+                        fontFamily: "Poppins, Inter, sans-serif",
                       }}
                     >
-                      {gapMins} mins free
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 13,
+                          border: "1.5px dashed #CBD5E1",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#9CA3AF",
+                        }}
+                      >
+                        <Plus size={16} strokeWidth={1.75} />
+                      </div>
+                      <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
+                        {gapMins} mins free
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 500, color: "#1877D6", fontFamily: "Poppins, Inter, sans-serif" }}>
+                        Fill →
+                      </div>
                     </div>,
                   );
                 } else {
@@ -5237,12 +5263,12 @@ function HomePage() {
                     <div
                       key={`hr-${l.id}`}
                       style={{
-                        borderTop: "0.5px solid #F3F4F6",
-                        margin: "0 16px",
+                        borderTop: "0.5px solid #EEF2F7",
                       }}
                     />,
                   );
                 }
+
               }
             });
 
