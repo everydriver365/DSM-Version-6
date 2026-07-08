@@ -99,8 +99,11 @@ function DsmLivePage() {
     return sessions.filter((s) => s.category === category);
   }, [sessions, category]);
 
+  const sora = "'Sora', system-ui, -apple-system, sans-serif";
+  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
   return (
-    <div style={{ background: "#fff", minHeight: "calc(100vh - 80px)" }}>
+    <div style={{ background: "#F3F8FF", minHeight: "calc(100vh - 80px)", fontFamily: manrope }}>
       <div
         style={{
           background: "#0F2044",
@@ -119,7 +122,7 @@ function DsmLivePage() {
         >
           <ArrowLeft size={22} />
         </button>
-        <div style={{ fontWeight: 700, fontSize: 16, flex: 1 }}>DSM Live</div>
+        <div style={{ fontWeight: 700, fontSize: 16, flex: 1, fontFamily: sora }}>DSM Live</div>
         <span
           style={{
             background: "#CC2229",
@@ -128,6 +131,7 @@ function DsmLivePage() {
             fontWeight: 700,
             padding: "4px 8px",
             borderRadius: 999,
+            fontFamily: manrope,
           }}
         >
           🔴 LIVE
@@ -136,59 +140,82 @@ function DsmLivePage() {
 
       <div
         style={{
-          background: "linear-gradient(135deg, #CC2229, #0F2044)",
-          padding: "24px 16px",
-          color: "#fff",
-        }}
-      >
-        <div style={{ fontWeight: 900, fontSize: 24 }}>DSM Live</div>
-        <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginTop: 8 }}>
-          Live coaching sessions, CPD webinars and standards check prep — join from anywhere.
-        </div>
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, marginTop: 4 }}>
-          Hosted by DSM instructors and industry experts
-        </div>
-      </div>
-
-      <div
-        style={{
+          padding: "24px 20px 8px",
           display: "flex",
+          flexDirection: "column",
           gap: 8,
-          overflowX: "auto",
-          padding: "16px 16px 12px",
-          scrollbarWidth: "none",
         }}
       >
-        {CATEGORIES.map((c) => {
-          const active = category === c;
-          return (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setCategory(c)}
-              style={{
-                flexShrink: 0,
-                padding: "8px 14px",
-                borderRadius: 999,
-                border: `1px solid ${active ? "#0F2044" : "#E2E6ED"}`,
-                background: active ? "#0F2044" : "#fff",
-                color: active ? "#fff" : "#0F2044",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              {c}
-            </button>
-          );
-        })}
+        <h1 style={{ margin: 0, fontFamily: sora, fontSize: 24, fontWeight: 800, color: "#0F2044" }}>
+          DSM Live
+        </h1>
+        <p style={{ margin: 0, fontSize: 13, color: "rgba(15,32,68,0.6)", lineHeight: 1.5 }}>
+          Live coaching sessions, CPD webinars and standards check prep — join from anywhere.
+        </p>
       </div>
 
-      <div style={{ padding: "8px 16px" }}>
+      {/* Categories */}
+      <div style={{ padding: "16px 20px 4px", display: "flex", flexDirection: "column", gap: 12 }}>
+        <h2
+          style={{
+            margin: 0,
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: "rgba(15,32,68,0.6)",
+            fontFamily: sora,
+          }}
+        >
+          Categories
+        </h2>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {CATEGORIES.map((c) => {
+            const active = category === c;
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCategory(c)}
+                style={{
+                  background: active ? "#1877D6" : "#FFFFFF",
+                  color: active ? "#FFFFFF" : "#0F2044",
+                  border: active ? "1px solid #1877D6" : "1px solid #E2E6ED",
+                  borderRadius: 999,
+                  padding: "10px 20px",
+                  fontSize: 12,
+                  fontWeight: active ? 600 : 500,
+                  fontFamily: manrope,
+                  cursor: "pointer",
+                  boxShadow: active ? "0 4px 12px rgba(24,119,214,0.2)" : "none",
+                }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sessions */}
+      <div style={{ padding: "20px 20px 8px" }}>
+        <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
+          Upcoming Sessions
+        </h2>
         {sessions === null ? null : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "48px 16px", color: "#6B7280" }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "48px 16px",
+              color: "#6B7280",
+              background: "#fff",
+              border: "1px solid #E2E6ED",
+              borderRadius: 16,
+              boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+            }}
+          >
             <Video size={48} style={{ margin: "0 auto", opacity: 0.4 }} />
-            <div style={{ fontWeight: 600, marginTop: 12, color: "#0F2044" }}>
+            <div style={{ fontWeight: 700, marginTop: 12, color: "#0F2044", fontFamily: sora }}>
               No sessions scheduled yet
             </div>
             <div style={{ fontSize: 13, marginTop: 4 }}>
@@ -196,27 +223,29 @@ function DsmLivePage() {
             </div>
           </div>
         ) : (
-          filtered.map((s) => (
-            <SessionCard
-              key={s.id}
-              session={s}
-              booked={bookedIds.has(s.id)}
-              onOpen={() =>
-                navigate({
-                  to: "/dsm-live/$sessionId",
-                  params: { sessionId: s.id },
-                })
-              }
-            />
-          ))
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {filtered.map((s) => (
+              <SessionCard
+                key={s.id}
+                session={s}
+                booked={bookedIds.has(s.id)}
+                onOpen={() =>
+                  navigate({
+                    to: "/dsm-live/$sessionId",
+                    params: { sessionId: s.id },
+                  })
+                }
+              />
+            ))}
+          </div>
         )}
       </div>
 
-      <div id="podcasts" style={{ padding: "4px 16px 8px" }}>
-        <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044" }}>
+      <div id="podcasts" style={{ padding: "20px 20px 8px" }}>
+        <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
           🎙️ DSM Podcast
-        </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, marginBottom: 12 }}>
+        </h2>
+        <div style={{ fontSize: 12, color: "rgba(15,32,68,0.5)", marginBottom: 16 }}>
           Listen to our latest episodes
         </div>
         {podcasts.length === 0 ? (
@@ -527,7 +556,7 @@ function SessionCard({
 
   const categoryGradient = (c: string | null): string => {
     if (!c) return "linear-gradient(135deg, #CC2229, #7A1419)";
-    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
+    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1877D6, #0F2044)";
     if (c.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
     if (c.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
     if (c.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
@@ -541,11 +570,21 @@ function SessionCard({
     : categoryGradient(session.category);
   const imagePosition = (session as any).image_position || "center center";
 
+  const sora = "'Sora', system-ui, -apple-system, sans-serif";
+  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
   return (
     <div
       onClick={onOpen}
-      className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer mb-3"
-      style={{ background: "#fff" }}
+      style={{
+        background: "#fff",
+        border: "1px solid #E2E6ED",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+        cursor: "pointer",
+        fontFamily: manrope,
+      }}
     >
       <div
         style={{
@@ -567,27 +606,35 @@ function SessionCard({
           />
         )}
         <span
-          className="text-xs font-semibold px-2 py-1 rounded-full"
           style={{
             position: "absolute",
             top: 12,
             left: 12,
-            background: "rgba(255,255,255,0.2)",
-            color: "#fff",
+            background: "rgba(255,255,255,0.95)",
+            color: "#0F2044",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            padding: "5px 10px",
+            borderRadius: 999,
+            fontFamily: sora,
           }}
         >
           {session.category ?? "Session"}
         </span>
 
         <span
-          className="text-xs px-2 py-1 rounded-full"
           style={{
             position: "absolute",
             top: 12,
             right: 12,
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.45)",
             color: spaceIsLow ? "#FCD34D" : "#fff",
+            fontSize: 11,
             fontWeight: 600,
+            padding: "5px 10px",
+            borderRadius: 999,
           }}
         >
           {spaceText}
@@ -595,12 +642,13 @@ function SessionCard({
 
         {session.host_name && (
           <span
-            className="text-sm font-medium"
             style={{
               position: "absolute",
               bottom: 12,
               left: 12,
-              color: "rgba(255,255,255,0.8)",
+              color: "rgba(255,255,255,0.92)",
+              fontSize: 13,
+              fontWeight: 500,
             }}
           >
             with {session.host_name}
@@ -609,13 +657,16 @@ function SessionCard({
 
         {session.is_live && (
           <span
-            className="text-xs font-bold px-2 py-1 rounded-full"
             style={{
               position: "absolute",
               bottom: 12,
               right: 12,
               background: "#CC2229",
               color: "#fff",
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "4px 10px",
+              borderRadius: 999,
             }}
           >
             🔴 LIVE NOW
@@ -623,41 +674,58 @@ function SessionCard({
         )}
       </div>
 
-      <div className="bg-white p-4">
-        <div className="font-bold text-base mb-2" style={{ color: "#0F2044" }}>
+      <div style={{ padding: 16 }}>
+        <div style={{ fontFamily: sora, fontWeight: 700, fontSize: 16, color: "#0F2044", marginBottom: 10, lineHeight: 1.3 }}>
           {session.title}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <CalendarIcon size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
+          <CalendarIcon size={14} />
           {formatSessionDate(session.session_date)}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <Clock size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
+          <Clock size={14} />
           {formatSessionTime(session.session_time)}
           {session.duration_minutes ? ` · ${session.duration_minutes} minutes` : ""}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <Video size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)" }}>
+          <Video size={14} />
           Zoom
         </div>
 
-        <div className="flex justify-between items-center mt-3">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, paddingTop: 14, borderTop: "1px solid #E2E6ED" }}>
           <div
-            className="font-black text-lg"
-            style={{ color: isFree ? "#16A34A" : "#0F2044" }}
+            style={{
+              fontFamily: sora,
+              fontWeight: 800,
+              fontSize: 18,
+              color: isFree ? "#16A34A" : "#CC2229",
+            }}
           >
             {session.price_display ?? (isFree ? "Free" : `£${session.price_amount}`)}
           </div>
           <button
             type="button"
-            onClick={onOpen}
-            className="font-semibold text-sm px-4 py-2 rounded-xl"
-            style={{ background: "#CC2229", color: "#fff" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 13,
+              padding: "10px 18px",
+              borderRadius: 12,
+              border: 0,
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(24,119,214,0.25)",
+              fontFamily: manrope,
+            }}
           >
-            Book now →
+            {booked ? "Booked ✓" : "Book now →"}
           </button>
         </div>
       </div>
