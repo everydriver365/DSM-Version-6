@@ -307,6 +307,13 @@ function TodayLessonsTile({
       ? "No lessons today"
       : `${upcoming} upcoming · ${completed} completed`;
 
+  const progress = total === 0 ? 0 : completed / total;
+  const size = 48;
+  const stroke = 4;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - progress);
+
   return (
     <button
       type="button"
@@ -350,14 +357,52 @@ function TodayLessonsTile({
       </div>
       <div
         style={{
-          fontSize: 22,
-          fontWeight: 500,
-          color: "#0F2044",
-          lineHeight: 1,
-          fontVariantNumeric: "tabular-nums",
+          position: "relative",
+          width: size,
+          height: size,
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {total}
+        <svg
+          width={size}
+          height={size}
+          style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}
+        >
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="#E6F1FB"
+            strokeWidth={stroke}
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="#185FA5"
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 0.4s ease" }}
+          />
+        </svg>
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+            color: "#0F2044",
+            lineHeight: 1,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {total}
+        </div>
       </div>
     </button>
   );
