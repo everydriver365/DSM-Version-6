@@ -3930,9 +3930,9 @@ function HomePage() {
               };
 
               return (
-                <div style={{ ...cardBase, overflow: 'hidden' }}>
+                <div style={{ fontFamily: PF }}>
                   {/* Card header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
@@ -3951,6 +3951,7 @@ function HomePage() {
                     const dueUnpaid = amt > 0 && !isPaid;
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
+                    const initials = initialsOf(name);
 
                     let pill: React.ReactNode = null;
                     if (isLive) {
@@ -3980,25 +3981,46 @@ function HomePage() {
                         role="button"
                         tabIndex={0}
                         style={{
+                          minHeight: 64,
+                          margin: '0 0 10px',
                           padding: '12px 16px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 12,
                           cursor: 'pointer',
-                          borderTop: `0.5px solid ${BORDER}`,
+                          background: '#FFFFFF',
+                          border: `0.5px solid ${BORDER}`,
+                          borderRadius: 16,
+                          boxSizing: 'border-box',
                         }}
                       >
                         <div
                           aria-hidden
                           style={{
+                            position: 'relative',
                             width: 40, height: 40, borderRadius: 999,
-                            background: ACCENT, color: '#FFFFFF',
+                            background: NAVY, color: '#FFFFFF',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
                             flexShrink: 0,
                           }}
                         >
-                          {initialsOf(name)}
+                          {isLive && (
+                            <span
+                              aria-label="Live"
+                              style={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                width: 8,
+                                height: 8,
+                                borderRadius: 999,
+                                backgroundColor: '#DC2626',
+                                boxShadow: '0 0 0 2px #FFFFFF',
+                              }}
+                            />
+                          )}
+                          {initials}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
@@ -4639,9 +4661,7 @@ function HomePage() {
 
               
 
-              const nameColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
-
-              const timeColor = isCancelled ? "#9CA3AF" : "#0B1F3A";
+              const nameColor = isCancelled ? "#9CA3AF" : "#0F2044";
 
               const badges: React.ReactNode[] = [];
               if (isCurrent) {
@@ -4692,7 +4712,7 @@ function HomePage() {
                         color: "#0B1F3A",
                         border: 0,
                         cursor: "pointer",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, Inter, sans-serif",
                       }}
                     >
                       Complete EOL
@@ -4705,7 +4725,7 @@ function HomePage() {
                       style={{
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#0B1F3A",
+                          color: "#0F2044",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 3,
@@ -4725,7 +4745,7 @@ function HomePage() {
                       style={{
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#0B1F3A",
+                          color: "#0F2044",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 3,
@@ -4749,8 +4769,8 @@ function HomePage() {
                         fontWeight: 700,
                         padding: "1px 6px",
                         borderRadius: 999,
-                        backgroundColor: "#FEE2E2",
-                        color: "#1877D6",
+                        backgroundColor: "#FDECC8",
+                        color: "#8A5A00",
                       }}
                     >
                       £{amt.toFixed(2)} unpaid
@@ -4775,6 +4795,20 @@ function HomePage() {
                 );
               }
 
+              const displayName = l.pupils?.name ?? "Pupil";
+              const initials = (() => {
+                const parts = displayName.trim().split(/\s+/).filter(Boolean);
+                if (parts.length === 0) return "?";
+                if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+                return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+              })();
+              const dateLabel = startD.toLocaleDateString("en-GB", {
+                weekday: "short",
+                day: "2-digit",
+                month: "short",
+              });
+              const timeLabel = fmtT(startD);
+
               rows.push(
                 <Fragment key={l.id}>
                   <div
@@ -4793,59 +4827,74 @@ function HomePage() {
                         );
                       }
                     }}
-                    className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 cursor-pointer"
+                    className="cursor-pointer"
                     style={{
-                      padding: "12px 14px",
+                      width: "100%",
+                      minHeight: 64,
+                      margin: "0 0 10px",
+                      padding: "12px 16px",
                       background: "#fff",
+                      border: "0.5px solid rgba(15,32,68,0.10)",
+                      borderRadius: 16,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
                       fontFamily: "Poppins, Inter, sans-serif",
+                      boxSizing: "border-box",
                     }}
                   >
-                    {(() => {
-                      const chipBg = isCurrent ? "#FCEBEB" : "#E6F1FB";
-                      const chipFg = isCurrent ? "#A32D2D" : "#185FA5";
-                      return (
-                        <div
-                          className="relative shrink-0"
+                    <div
+                      aria-hidden
+                      style={{
+                        position: "relative",
+                        width: 40,
+                        height: 40,
+                        borderRadius: 999,
+                        background: "#0F2044",
+                        color: "#FFFFFF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        letterSpacing: 0.2,
+                        flexShrink: 0,
+                        fontFamily: "Poppins, Inter, sans-serif",
+                      }}
+                    >
+                      {isCurrent && (
+                        <span
+                          aria-label="Live"
                           style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 13,
-                            background: chipBg,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            width: 8,
+                            height: 8,
+                            borderRadius: 999,
+                            backgroundColor: "#DC2626",
+                            boxShadow: "0 0 0 2px #FFFFFF",
+                          }}
+                        />
+                      )}
+                      {initials}
+                    </div>
+
+                    <div className="min-w-0" style={{ flex: 1 }}>
+                      {tab === "next" && (
+                        <div
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#1A52A0",
+                            marginBottom: 2,
+                            fontFamily: "Poppins, Inter, sans-serif",
+                            fontVariantNumeric: "tabular-nums",
                           }}
                         >
-                          {isCurrent && (
-                            <span
-                              aria-label="Live"
-                              style={{
-                                position: "absolute",
-                                top: 4,
-                                right: 4,
-                                width: 6,
-                                height: 6,
-                                borderRadius: 999,
-                                backgroundColor: "#DC2626",
-                              }}
-                            />
-                          )}
-                          <div
-                            style={{
-                              fontSize: 11,
-                              fontWeight: 500,
-                              color: chipFg,
-                              fontFamily: "Poppins, Inter, sans-serif",
-                              fontVariantNumeric: "tabular-nums",
-                              textDecoration: isCancelled ? "line-through" : "none",
-                            }}
-                          >
-                            {fmtT(startD)}
-                          </div>
+                          {dateLabel}
                         </div>
-                      );
-                    })()}
-                    <div className="min-w-0">
+                      )}
                       <div
                         className="truncate"
                         style={{
@@ -4856,14 +4905,14 @@ function HomePage() {
                           textDecoration: isCancelled ? "line-through" : "none",
                         }}
                       >
-                        {l.pupils?.name ?? "Pupil"}
+                        {displayName}
                       </div>
                       <div
                         className="flex items-center gap-2 flex-wrap"
                         style={{ marginTop: 2 }}
                       >
                         <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
-                          {durShort(l.duration_minutes)}
+                          {timeLabel} · {l.duration_minutes ?? 60} mins
                         </span>
                         {badges.length > 0 && badges}
                       </div>
@@ -4878,9 +4927,10 @@ function HomePage() {
                       )}
                     </div>
                     <div className="flex shrink-0 items-center">
-                      <ChevronRight
-                        size={16}
-                        color="#9CA3AF"
+                      <IconChevronRight
+                        size={18}
+                        stroke={1.75}
+                        color="#64748B"
                         style={{
                           transform:
                             expandedLessonId === l.id
@@ -5146,7 +5196,7 @@ function HomePage() {
               );
             }
 
-            return <div style={{ border: '1px solid #E5E7EB', borderRadius: 14, overflow: 'hidden', background: '#fff', fontFamily: 'Poppins, Inter, sans-serif' }}>{rows}</div>;
+              return <div style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>{rows}</div>;
           })()
         )}
       </div>
