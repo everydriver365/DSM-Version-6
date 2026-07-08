@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Search as SearchIcon,
   Star,
-  Tag,
   MapPin,
   Camera,
   Heart,
@@ -17,13 +16,13 @@ import {
   Briefcase,
   Megaphone,
   Package,
-  X,
-  CheckCircle2,
 } from "lucide-react";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+const POPPINS = "'Poppins', system-ui, -apple-system, sans-serif";
 
 export const Route = createFileRoute("/marketplace")({
   head: () => ({
@@ -71,6 +70,7 @@ interface Listing {
 
 type IconCmp = ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
 
+// Reuse existing slug → icon mapping.
 const CATEGORY_ICONS: Record<string, IconCmp> = {
   tracking: MapPin,
   hardware: Camera,
@@ -88,9 +88,33 @@ const CATEGORY_ICONS: Record<string, IconCmp> = {
   promotion: Star,
 };
 
+// Category → thumbnail background colour. Mapped from spec categories onto
+// the existing slug taxonomy; anything unknown falls back to brand blue.
+const CATEGORY_COLOR: Record<string, string> = {
+  tracking: "#0F2044",
+  hardware: "#0F2044",
+  dashcams: "#0F2044",
+  services: "#185FA5",
+  marketing: "#185FA5",
+  learning: "#6B4FD6",
+  cpd: "#6B4FD6",
+  courses: "#6B4FD6",
+  insurance: "#3B6D11",
+  maintenance: "#854F0B",
+  promotion: "#A32D2D",
+  vehicles: "#0C6E7A",
+  cars: "#0C6E7A",
+  health: "#185FA5",
+};
+
 function iconFor(slug?: string | null): IconCmp {
   if (!slug) return Package;
   return CATEGORY_ICONS[slug] ?? Package;
+}
+
+function colorFor(slug?: string | null): string {
+  if (!slug) return "#185FA5";
+  return CATEGORY_COLOR[slug] ?? "#185FA5";
 }
 
 async function sbGet<T>(path: string): Promise<T> {
@@ -102,14 +126,6 @@ async function sbGet<T>(path: string): Promise<T> {
   });
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   return (await res.json()) as T;
-}
-
-function firstImageUrl(listing: Listing): string | null {
-  const raw = listing.image_urls;
-  const images = Array.isArray(raw)
-    ? raw
-    : (typeof raw === "string" ? JSON.parse(raw) : []);
-  return images[0] ?? null;
 }
 
 function MarketplacePage() {
@@ -151,11 +167,6 @@ function MarketplacePage() {
     };
   }, []);
 
-  const activeCategoryName = useMemo(
-    () => categories.find((c) => c.slug === activeCategory)?.name ?? null,
-    [activeCategory, categories],
-  );
-
   const filteredAll = useMemo(() => {
     const q = query.trim().toLowerCase();
     return listings.filter((l) => {
@@ -188,11 +199,28 @@ function MarketplacePage() {
     [listings, activeCategory, query],
   );
 
+  // "Top marketplace" — featured listings, filtered by active category/query
+  // using the same rules as the main grid, so filters still work.
+  const topMarketplace = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const source = featured.length > 0 ? featured : filteredAll;
+    return source.filter((l) => {
+      if (activeCategory && l.marketplace_categories?.slug !== activeCategory)
+        return false;
+      if (q) {
+        const t = l.title?.toLowerCase() ?? "";
+        const d = l.description?.toLowerCase() ?? "";
+        if (!t.includes(q) && !d.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [featured, filteredAll, activeCategory, query]);
+
   const openListing = (id: string) =>
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId: id } as never });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96 }}>
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96, fontFamily: POPPINS }}>
       {/* Top bar */}
       <div
         style={{
@@ -222,54 +250,29 @@ function MarketplacePage() {
         >
           <ArrowLeft size={22} />
         </button>
-        <div style={{ fontSize: 16, fontWeight: 700 }}>DSM Marketplace</div>
+        <div style={{ fontSize: 16, fontWeight: 500, fontFamily: POPPINS }}>DSM Marketplace</div>
       </div>
 
-      {/* Hero */}
-      <div
-        style={{
-          background: "#F7FAFC",
-          padding: "20px 16px",
-          borderBottom: "0.5px solid #E2E6ED",
-        }}
-      >
-        <h2
-          style={{
-            margin: 0,
-            fontSize: 18,
-            fontWeight: 700,
-            color: "#0F2044",
-          }}
-        >
-          DSM Marketplace
-        </h2>
-        <p
-          style={{
-            margin: "4px 0 12px",
-            fontSize: 13,
-            color: "#6B7280",
-          }}
-        >
-          Products and services for driving instructors — all in one place.
-        </p>
-
+      <div style={{ padding: "20px 16px 8px" }}>
+        {/* Search bar */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: 10,
             background: "#FFFFFF",
-            border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
-            padding: "10px 14px",
+            border: "1px solid rgba(15,32,68,0.10)",
+            borderRadius: 14,
+            padding: "11px 14px",
+            marginBottom: 20,
           }}
         >
-          <SearchIcon size={16} color="#9CA3AF" />
+          <SearchIcon size={18} color="#64748B" strokeWidth={1.75} />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search listings…"
+            placeholder="Search products..."
             style={{
               border: "none",
               outline: "none",
@@ -277,563 +280,282 @@ function MarketplacePage() {
               fontSize: 14,
               color: "#0F2044",
               background: "transparent",
+              fontFamily: POPPINS,
             }}
           />
         </div>
 
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); navigate({ to: "/marketplace/list" as never }); }}
-          style={{ background: "none", border: "none", color: "#1A52A0", fontSize: 13, cursor: "pointer", padding: 0, fontFamily: "Poppins, sans-serif", textDecoration: "underline" }}
-        >
-          List your product or service →
-        </button>
-      </div>
-
-      {/* Categories */}
-      <div style={{ padding: 16 }}>
+        {/* Categories */}
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#0F2044",
-            marginBottom: 12,
+            fontSize: 12,
+            fontWeight: 500,
+            color: "#64748B",
+            letterSpacing: "0.04em",
+            marginBottom: 10,
           }}
         >
-          Browse by category
+          CATEGORIES
         </div>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            display: "flex",
+            flexWrap: "wrap",
             gap: 8,
+            marginBottom: 22,
           }}
         >
           {categories.map((cat) => {
-            const Icon = iconFor(cat.slug);
             const isActive = activeCategory === cat.slug;
             return (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() =>
-                  setActiveCategory(isActive ? null : cat.slug)
-                }
+                onClick={() => setActiveCategory(isActive ? null : cat.slug)}
                 style={{
-                  background: isActive ? "#0F2044" : "#FFFFFF",
-                  border: "0.5px solid #E2E6ED",
-                  borderRadius: 12,
-                  padding: "12px 8px",
-                  textAlign: "center",
+                  background: isActive ? "#185FA5" : "#FFFFFF",
+                  border: isActive ? "none" : "1px solid rgba(15,32,68,0.10)",
+                  borderRadius: 100,
+                  padding: "8px 16px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: isActive ? "#FFFFFF" : "#334155",
                   cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
+                  fontFamily: POPPINS,
                 }}
               >
-                <Icon size={20} color={isActive ? "#FFFFFF" : "#0F2044"} />
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: isActive ? "#FFFFFF" : "#0F2044",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {cat.name}
-                </span>
+                {cat.name}
               </button>
             );
           })}
         </div>
-      </div>
 
-      {/* Featured */}
-      {featured.length > 0 && (
-        <div style={{ padding: "4px 16px 0" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              marginBottom: 12,
-            }}
-          >
-            <Star size={16} color="#D97706" fill="#D97706" />
-            <span
-              style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}
-            >
-              Featured
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              paddingBottom: 8,
-              scrollbarWidth: "none",
-            }}
-          >
-            {featured.map((l) => (
-              <FeaturedCard key={l.id} listing={l} onOpen={openListing} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* All listings */}
-      <div style={{ padding: "16px", marginTop: 8 }}>
+        {/* Top marketplace */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 12,
+            marginBottom: 14,
           }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-            All listings
-          </div>
-          <div style={{ fontSize: 12, color: "#6B7280" }}>
-            {filteredAll.length} {filteredAll.length === 1 ? "listing" : "listings"}
-          </div>
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: "#0F2044", fontFamily: POPPINS }}>
+            Top marketplace
+          </h2>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/marketplace/list" as never })}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              color: "#185FA5",
+              fontSize: 13,
+              fontWeight: 500,
+              fontFamily: POPPINS,
+            }}
+          >
+            View all →
+          </button>
         </div>
-
-        {activeCategory && (
-          <div style={{ marginBottom: 12 }}>
-            <button
-              type="button"
-              onClick={() => setActiveCategory(null)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "#EEF2F7",
-                border: "none",
-                borderRadius: 999,
-                padding: "6px 10px",
-                fontSize: 12,
-                color: "#0F2044",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Showing: {activeCategoryName}
-              <X size={12} />
-            </button>
-          </div>
-        )}
 
         {loading ? (
-          <div style={{ fontSize: 13, color: "#6B7280" }}>Loading…</div>
-        ) : filteredAll.length === 0 ? (
           <div
             style={{
-              border: "0.5px dashed #E2E6ED",
-              borderRadius: 12,
-              padding: 24,
-              textAlign: "center",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
             }}
           >
-            <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 6 }}>
-              No listings yet in this category
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  height: 158,
+                  background: "#F1F5F9",
+                  borderRadius: 16,
+                  border: "1px solid rgba(15,32,68,0.10)",
+                }}
+              />
+            ))}
+          </div>
+        ) : topMarketplace.length === 0 ? (
+          <div style={{ fontSize: 13, color: "#64748B" }}>No products yet.</div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+            }}
+          >
+            {topMarketplace.map((l) => (
+              <ProductCard key={l.id} listing={l} onOpen={openListing} />
+            ))}
+          </div>
+        )}
+
+        {/* For sale by instructors */}
+        {forSale.length > 0 && (
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "28px 0 14px",
+              }}
+            >
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: "#0F2044", fontFamily: POPPINS }}>
+                For sale by instructors
+              </h2>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate({
+                    to: "/marketplace/list" as never,
+                    search: { type: "for-sale" } as never,
+                  })
+                }
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  color: "#185FA5",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  fontFamily: POPPINS,
+                }}
+              >
+                List free →
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/marketplace/list" as never })}
+            <div
               style={{
-                background: "none",
-                border: "none",
-                color: "#1A52A0",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 10,
               }}
             >
-              Be the first to list →
-            </button>
-          </div>
-        ) : (
-          filteredAll.map((l) => (
-            <ListingRow key={l.id} listing={l} onOpen={openListing} />
-          ))
-        )}
-      </div>
-
-      {/* For sale by instructors */}
-      <div
-        style={{
-          background: "#FFFBEB",
-          borderTop: "0.5px solid #FDE68A",
-          padding: 16,
-          marginTop: 8,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 4,
-          }}
-        >
-          <Tag size={16} color="#D97706" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>
-            For sale by instructors
-          </span>
-        </div>
-        <button
-          type="button"
-          onClick={() =>
-            navigate({
-              to: "/marketplace/list" as never,
-              search: { type: "for-sale" } as never,
-            })
-          }
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            color: "#1A52A0",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            marginBottom: 12,
-          }}
-        >
-          Got something to sell? List it free →
-        </button>
-
-        {forSale.length === 0 ? (
-          <div style={{ fontSize: 12, color: "#6B7280" }}>
-            No instructor listings yet.
-          </div>
-        ) : (
-          forSale.map((l) => (
-            <ListingRow key={l.id} listing={l} onOpen={openListing} />
-          ))
+              {forSale.map((l) => (
+                <ProductCard key={l.id} listing={l} onOpen={openListing} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
   );
 }
 
-function VerifiedBadge() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 3,
-        color: "#059669",
-        fontSize: 11,
-        fontWeight: 600,
-      }}
-    >
-      <CheckCircle2 size={11} />
-      Verified
-    </span>
-  );
-}
-
-function CategoryBadge({ name }: { name: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        background: "#EEF2F7",
-        color: "#0F2044",
-        fontSize: 10,
-        fontWeight: 600,
-        padding: "2px 8px",
-        borderRadius: 999,
-      }}
-    >
-      {name}
-    </span>
-  );
-}
-
-function FeaturedCard({
+function ProductCard({
   listing,
   onOpen,
 }: {
   listing: Listing;
   onOpen: (id: string) => void;
 }) {
-  const supplier = listing.marketplace_suppliers;
   const cat = listing.marketplace_categories;
   const Icon = iconFor(cat?.slug);
-  return (
-    <div
-      style={{
-        width: 240,
-        flexShrink: 0,
-        scrollSnapAlign: "start",
-      }}
-    >
-      <div
-        style={{
-          height: 120,
-          borderRadius: "12px 12px 0 0",
-          background: firstImageUrl(listing)
-            ? `#F3F8FF url(${firstImageUrl(listing)}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {!firstImageUrl(listing) && <Icon size={40} color="#FFFFFF" />}
-      </div>
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
-          borderTop: "none",
-          borderRadius: "0 0 12px 12px",
-          padding: 12,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 11,
-            color: "#6B7280",
-            marginBottom: 4,
-          }}
-        >
-          <span
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {supplier?.name ?? "—"}
-          </span>
-          {supplier?.is_verified && <VerifiedBadge />}
-        </div>
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#0F2044",
-            marginBottom: 4,
-            lineHeight: 1.3,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {listing.title}
-        </div>
-        <div
-          style={{
-            fontSize: 12,
-            color: "#6B7280",
-            marginBottom: 8,
-          }}
-        >
-          {listing.price_display ?? "—"}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {cat && <CategoryBadge name={cat.name} />}
-          <button
-            type="button"
-            onClick={() => onOpen(listing.id)}
-            style={{
-              background: "#0F2044",
-              color: "#FFFFFF",
-              border: "none",
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "6px 12px",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            View →
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+  const bg = colorFor(cat?.slug);
+  const iconColor = bg === "#0F2044" ? "#3D7BE0" : "#FFFFFF";
 
-function ListingRow({
-  listing,
-  onOpen,
-}: {
-  listing: Listing;
-  onOpen: (id: string) => void;
-}) {
-  const supplier = listing.marketplace_suppliers;
-  const cat = listing.marketplace_categories;
-  const Icon = iconFor(cat?.slug);
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => onOpen(listing.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(listing.id);
+        }
+      }}
       style={{
-        position: "relative",
         background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 8,
-        display: "flex",
-        gap: 12,
+        border: "1px solid rgba(15,32,68,0.10)",
+        borderRadius: 16,
+        overflow: "hidden",
         cursor: "pointer",
+        userSelect: "none",
+        fontFamily: POPPINS,
+        position: "relative",
       }}
     >
       <div
         style={{
-          width: 80,
-          height: 80,
-          borderRadius: 8,
-          flexShrink: 0,
-          background: firstImageUrl(listing)
-            ? `#F3F8FF url(${firstImageUrl(listing)}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+          height: 100,
+          background: bg,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!firstImageUrl(listing) && <Icon size={28} color="#FFFFFF" />}
+        <Icon size={40} color={iconColor} strokeWidth={1.75} />
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#0F2044",
-            lineHeight: 1.3,
-            paddingRight: listing.is_featured ? 60 : 0,
-          }}
-        >
-          {listing.title}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 12,
-            color: "#6B7280",
-            marginTop: 2,
-          }}
-        >
-          <span
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              maxWidth: 160,
-            }}
-          >
-            {supplier?.name ?? "—"}
-          </span>
-          {supplier?.is_verified && <VerifiedBadge />}
-        </div>
-        {listing.description && (
-          <div
-            style={{
-              fontSize: 12,
-              color: "#6B7280",
-              marginTop: 4,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {listing.description}
-          </div>
-        )}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-            marginTop: 8,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              minWidth: 0,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#0F2044",
-              }}
-            >
-              {listing.price_display ?? "—"}
-            </span>
-            {cat && <CategoryBadge name={cat.name} />}
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen(listing.id);
-            }}
-            style={{
-              background: "#0F2044",
-              color: "#FFFFFF",
-              border: "none",
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "6px 10px",
-              borderRadius: 8,
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            View →
-          </button>
-        </div>
-      </div>
-
-      {listing.is_featured && (
+      {listing.is_featured ? (
         <span
           style={{
             position: "absolute",
             top: 8,
-            right: 8,
-            background: "#D97706",
+            left: 8,
+            background: "#E24B4A",
             color: "#FFFFFF",
-            fontSize: 9,
-            fontWeight: 700,
-            padding: "2px 6px",
-            borderRadius: 4,
-            letterSpacing: "0.04em",
+            fontSize: 8,
+            fontWeight: 500,
+            padding: "3px 8px",
+            borderRadius: 20,
           }}
         >
-          FEATURED
+          Featured
         </span>
-      )}
+      ) : cat ? (
+        <span
+          style={{
+            position: "absolute",
+            top: 8,
+            left: 8,
+            background: "#FFFFFF",
+            color: bg,
+            fontSize: 8,
+            fontWeight: 500,
+            padding: "3px 8px",
+            borderRadius: 20,
+          }}
+        >
+          {cat.name}
+        </span>
+      ) : null}
+
+      <div style={{ padding: "10px 12px 12px" }}>
+        {cat && (
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#64748B",
+              marginBottom: 4,
+            }}
+          >
+            {cat.name}
+          </div>
+        )}
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#0F2044",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {listing.title}
+        </div>
+      </div>
     </div>
   );
 }
