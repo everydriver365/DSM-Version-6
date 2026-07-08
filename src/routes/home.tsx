@@ -3,7 +3,10 @@ import type React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { BottomNav, type BottomNavItem } from "@/components/dsm/BottomNav";
+import { HomeIcon, ScheduleIcon, PupilsIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
+
 import {
   Phone,
   Car,
