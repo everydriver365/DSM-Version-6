@@ -3971,7 +3971,8 @@ function HomePage() {
                     const isLive = nowT >= start && nowT < end;
                     const payStatus = (l.payment_status ?? '').toLowerCase();
                     const amt = Number(l.amount_due ?? 0);
-                    const isPaid = payStatus === 'paid' || payStatus === 'prepaid';
+                    const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
+                    const isPaid = payStatus === 'paid' || payStatus === 'prepaid' || isPrepaidPupil;
                     const dueUnpaid = amt > 0 && !isPaid;
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
@@ -3982,6 +3983,12 @@ function HomePage() {
                       pill = (
                         <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
                           Live
+                        </span>
+                      );
+                    } else if (isPrepaidPupil) {
+                      pill = (
+                        <span style={{ background: '#EEF4FB', color: '#1877D6', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                          Prepaid
                         </span>
                       );
                     } else if (isPaid) {
