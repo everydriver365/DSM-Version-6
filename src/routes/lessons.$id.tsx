@@ -34,6 +34,8 @@ interface Lesson {
   notes: string | null;
   pickup_address: string | null;
   pupil_id: string;
+  payment_status: string | null;
+  amount_due: number | null;
   pupils: { id: string; name: string; phone: string | null } | null;
 }
 
