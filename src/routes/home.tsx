@@ -4881,6 +4881,7 @@ function HomePage() {
                         letterSpacing: 0.2,
                         flexShrink: 0,
                         fontFamily: "Poppins, Inter, sans-serif",
+                        overflow: "hidden",
                       }}
                     >
                       {isCurrent && (
@@ -4895,11 +4896,21 @@ function HomePage() {
                             borderRadius: 999,
                             backgroundColor: "#DC2626",
                             boxShadow: "0 0 0 2px #FFFFFF",
+                            zIndex: 1,
                           }}
                         />
                       )}
-                      {initials}
+                      {(l.pupils as any)?.profile_image_url ? (
+                        <img
+                          src={(l.pupils as any).profile_image_url}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        initials
+                      )}
                     </div>
+
 
                     <div className="min-w-0" style={{ flex: 1 }}>
                       {tab === "next" && (
