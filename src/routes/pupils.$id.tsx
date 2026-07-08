@@ -1474,14 +1474,13 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
             {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
               const prev = idx > 0 ? lessons[idx - 1] : null;
               const gapDays = prev ? daysBetween(prev.lesson_date, l.lesson_date) : 0;
               const live = isLessonLive(l);
               const past = isLessonPast(l);
-              const accent = accentColor(l);
               const stored = Number(l.amount_due ?? 0);
               const computed = resolveHourlyRate({
                 pupilCustomRate: pupil?.custom_rate ?? null,
@@ -1496,101 +1495,55 @@ function PupilDetailPage() {
               const isPaid = l.payment_status === "paid";
               const unpaid = !isPaid && price > 0;
               const showGap = gapDays > 7;
+              const colour = pupil?.calendar_colour || "#1A52A0";
+              const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
 
               return (
                 <Fragment key={l.id}>
                   {showGap && (
-                    <div className="flex items-center justify-center py-3">
+                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6" }}>
                       <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                         {gapDays} day{gapDays > 1 ? "s" : ""} gap
                       </span>
                     </div>
                   )}
                   <div
-                    className="flex items-stretch cursor-pointer"
-                    style={{ minHeight: 56 }}
                     onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                    style={{
+                      width: "100%", display: "flex", alignItems: "center", gap: 12,
+                      padding: "12px 16px", cursor: "pointer",
+                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid #F3F4F6",
+                      ...POPPINS,
+                    }}
                   >
-                    {/* Left time column */}
-                    <div
-                      className="flex flex-col items-center justify-center shrink-0"
-                      style={{ width: 40, padding: "8px 0" }}
-                    >
-                      <span className="text-[12px] font-bold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                        {formatTime(l.lesson_time)}
-                      </span>
-                      <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-                        {l.duration_minutes ?? 60}m
-                      </span>
+                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                      {initials}
                     </div>
-
-                    {/* Accent bar */}
-                    <div className="shrink-0" style={{ width: 3, backgroundColor: accent, borderRadius: 2 }} />
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
-                      <div className="text-[13px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
-                      {l.notes && (
-                        <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
-                          {l.notes}
-                        </div>
-                      )}
-
-                      {/* Badges */}
-                      <div className="flex flex-wrap items-center gap-1 mt-1">
-                        {live && (
-                          <span
-                            className="inline-flex items-center gap-1 text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
-                          >
-                            <span className="relative flex h-1.5 w-1.5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
-                            </span>
-                            Live
-                          </span>
-                        )}
-                       {past && l.status !== "cancelled" && !l.eol_completed && (
-                          <span
-                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
-                          >
-                            EOL pending
-                          </span>
-                        )}
-                        {isPaid && (
-                          <span
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
-                            style={{ backgroundColor: "#E7F8EF", color: "#067647", borderColor: "#B8ECCF", ...POPPINS }}
-                          >
-                            Paid ✓
-                          </span>
-                        )}
-                        {unpaid && past && (
-                          <span
-                            className="text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: "#1877D6", ...POPPINS }}
-                          >
-                            £{price.toFixed(2)} due
-                          </span>
-                        )}
+                      <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                        {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                       </div>
                     </div>
-
-                    {/* Chevron */}
-                    <div className="flex items-center justify-center shrink-0 px-2">
-                      <ChevronRight size={14} color="#9CA3AF" />
-                    </div>
+                    {live ? (
+                      <span style={{ background: "#1877D6", color: "#FFFFFF", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Live</span>
+                    ) : unpaid && past ? (
+                      <span style={{ background: "#FEF3C7", color: "#92400E", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>£{price.toFixed(0)}</span>
+                    ) : isPaid ? (
+                      <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Paid ✓</span>
+                    ) : past && l.status !== "cancelled" && !l.eol_completed ? (
+                      <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>EOL</span>
+                    ) : null}
+                    <ChevronRight size={14} color="#D1D5DB" />
                   </div>
-                  {/* Hairline divider */}
-                  <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
                 </Fragment>
               );
             })}
           </div>
         )}
+
 
         <SectionHeader>LAST LESSONS</SectionHeader>
         {pastLessons === null ? null : pastLessons.length === 0 ? (
@@ -1600,108 +1553,65 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
+              const colour = pupil?.calendar_colour || "#1A52A0";
+              const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
               return (
                 <>
                   {visible.map((l, idx) => {
-                  const d = new Date(`${l.lesson_date}T00:00:00`);
-                  const isPaid = l.payment_status === "paid";
-                  const isCancelled = l.status === "cancelled";
-                  const prev = idx > 0 ? visible[idx - 1] : null;
-                  const gapDays = prev ? daysBetween(l.lesson_date, prev.lesson_date) : 0;
-                  const showGap = gapDays > 7;
-                  return (
-                    <Fragment key={l.id}>
-                      {showGap && (
-                        <div className="flex items-center justify-center py-3">
-                          <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-                            {gapDays} day{gapDays > 1 ? "s" : ""} gap
-                          </span>
-                        </div>
-                      )}
-                      <div
-                        className="flex items-stretch cursor-pointer"
-                        style={{ minHeight: 56 }}
-                        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
-                      >
-                        {/* Left time column */}
+                    const d = new Date(`${l.lesson_date}T00:00:00`);
+                    const isPaid = l.payment_status === "paid";
+                    const isCancelled = l.status === "cancelled";
+                    const prev = idx > 0 ? visible[idx - 1] : null;
+                    const gapDays = prev ? daysBetween(l.lesson_date, prev.lesson_date) : 0;
+                    const showGap = gapDays > 7;
+                    return (
+                      <Fragment key={l.id}>
+                        {showGap && (
+                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6" }}>
+                            <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                              {gapDays} day{gapDays > 1 ? "s" : ""} gap
+                            </span>
+                          </div>
+                        )}
                         <div
-                          className="flex flex-col items-center justify-center shrink-0"
-                          style={{ width: 40, padding: "8px 0" }}
+                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                          style={{
+                            width: "100%", display: "flex", alignItems: "center", gap: 12,
+                            padding: "12px 16px", cursor: "pointer",
+                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid #F3F4F6",
+                            ...POPPINS,
+                          }}
                         >
-                          <span className="text-[12px] font-bold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                            {formatTime(l.lesson_time)}
-                          </span>
-                          <span className="text-[10px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-                            {l.duration_minutes ?? 60}m
-                          </span>
-                        </div>
-
-                        {/* Accent bar */}
-                        <div className="shrink-0" style={{ width: 3, backgroundColor: accentColor(l), borderRadius: 2 }} />
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-2">
-                          <div className="text-[13px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
-                            {formatDateShort(d)}
+                          <div style={{ width: 40, height: 40, borderRadius: "50%", background: isCancelled ? "#E5E7EB" : colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                            {initials}
                           </div>
-                          {isCancelled && l.cancellation_reason && (
-                            <div className="text-[11px] truncate" style={{ color: "#DC2626", ...POPPINS }}>
-                              {l.cancellation_reason}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: isCancelled ? "#6B7280" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                              {formatDateShort(d)}
                             </div>
-                          )}
-                          {!isCancelled && l.notes && (
-                            <div className="text-[11px] truncate" style={{ color: "#9CA3AF", ...POPPINS }}>
-                              {l.notes}
+                            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                              {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                             </div>
-                          )}
-
-                          {/* Badges */}
-                          <div className="flex flex-wrap items-center gap-1 mt-1">
-                            {isCancelled ? (
-                              <span
-                                className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                                style={{ backgroundColor: "#FEE2E2", color: "#991B1B", ...POPPINS }}
-                              >
-                                Cancelled
-                              </span>
-                            ) : (
-                              <span
-                                className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                                style={{ backgroundColor: "#E5E7EB", color: "#374151", ...POPPINS }}
-                              >
-                                {l.status}
-                              </span>
-                            )}
-                            {isPaid && (
-                              <span
-                                className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
-                                style={{ backgroundColor: "#E7F8EF", color: "#067647", borderColor: "#B8ECCF", ...POPPINS }}
-                              >
-                                Paid ✓
-                              </span>
-                            )}
                           </div>
+                          {isCancelled ? (
+                            <span style={{ background: "#FEE2E2", color: "#991B1B", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Cancelled</span>
+                          ) : isPaid ? (
+                            <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Paid ✓</span>
+                          ) : null}
+                          <ChevronRight size={14} color="#D1D5DB" />
                         </div>
-
-                        {/* Chevron */}
-                        <div className="flex items-center justify-center shrink-0 px-2">
-                          <ChevronRight size={14} color="#9CA3AF" />
-                        </div>
-                      </div>
-                      {/* Hairline divider */}
-                      <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 43 }} />
-                    </Fragment>
-                  );
+                      </Fragment>
+                    );
                   })}
                   {pastLessons.length > 5 && (
                     <button
                       type="button"
                       onClick={() => setPastExpanded((v) => !v)}
-                      className="flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
-                      style={POPPINS}
+                      className="w-full flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
+                      style={{ borderTop: "0.5px solid #F3F4F6", background: "none", border: "none", ...POPPINS }}
                     >
                       {pastExpanded
                         ? "Show less"
@@ -1718,6 +1628,7 @@ function PupilDetailPage() {
             })()}
           </div>
         )}
+
 
         <SectionHeader>NOTES</SectionHeader>
         <button

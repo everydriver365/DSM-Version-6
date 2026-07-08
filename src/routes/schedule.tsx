@@ -630,12 +630,44 @@ function SchedulePage() {
 
     const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const amountDue = l.amount_due ?? 0;
-    // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due pills.
+    // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due / Paid pills.
     const overdue = pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
     const isPrepaid = paymentStatus === "prepaid";
     const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const isPaid = paymentStatus === "paid";
 
-    const avatarBg = (l.pupil_id && colourMap[l.pupil_id]) || "#E2E8F0";
+    const avatarBg = (l.pupil_id && colourMap[l.pupil_id]) || "#1A52A0";
+    const initials = initialsOf(name);
+    const timeText = formatLessonTime(l);
+    const durationText = formatDurationShort(l.duration_minutes);
+
+    // Payment pill — matches home "Teaching today" tile treatment.
+    let pill: React.ReactNode = null;
+    if (overdue) {
+      pill = (
+        <span style={{ background: DANGER_BG, color: DANGER, fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
+          £{Math.round(amountDue)}
+        </span>
+      );
+    } else if (isPaymentDue) {
+      pill = (
+        <span style={{ background: "#FEF3C7", color: "#92400E", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
+          £{Math.round(amountDue)}
+        </span>
+      );
+    } else if (isPrepaid) {
+      pill = (
+        <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
+          Prepaid
+        </span>
+      );
+    } else if (isPaid) {
+      pill = (
+        <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
+          Paid ✓
+        </span>
+      );
+    }
 
     return (
       <div key={l.id}>
@@ -662,46 +694,33 @@ function SchedulePage() {
           }}
           className="cursor-pointer select-none"
           style={{
+            width: "100%",
             display: "flex",
-            gap: 12,
-            padding: "12px 14px 12px 11px",
             alignItems: "center",
-            minHeight: 56,
+            gap: 12,
+            padding: "12px 16px",
             background: "#FFFFFF",
-            borderLeft: `3px solid ${avatarBg}`,
+            textAlign: "left",
+            ...POPPINS,
           }}
         >
-          <div style={{ width: 44, flexShrink: 0 }}>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 500,
-                color: NAVY,
-                ...POPPINS,
-                lineHeight: 1.1,
-                textDecoration: isCancelled ? "line-through" : "none",
-              }}
-            >
-              {formatLessonTime(l)}
-            </div>
-          </div>
-          {/* Pupil avatar — background comes from existing pupil.calendar_colour (colourMap). */}
+          {/* Pupil avatar circle — pupil calendar_colour, matching home "Teaching today" tile. */}
           <div
             aria-hidden
             style={{
-              width: 34,
-              height: 34,
-              borderRadius: 999,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
               background: avatarBg,
               color: "#FFFFFF",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 12,
-              fontWeight: 500,
-              ...POPPINS,
+              fontSize: 14,
+              fontWeight: 700,
               flexShrink: 0,
               overflow: "hidden",
+              ...POPPINS,
             }}
           >
             {l.pupil?.profile_image_url ? (
@@ -711,84 +730,32 @@ function SchedulePage() {
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             ) : (
-              initialsOf(name)
+              initials
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
                 fontSize: 14,
-                fontWeight: 500,
-                color: isCancelled ? MUTED : NAVY,
+                fontWeight: 600,
+                color: isCancelled ? MUTED : "#0F2044",
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
-              className="truncate"
             >
               {name}
             </div>
             <div
-              style={{
-                fontSize: 11,
-                color: MUTED,
-                ...POPPINS,
-                marginTop: 2,
-              }}
-              className="truncate"
+              style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}
             >
-              {formatDurationShort(l.duration_minutes)}
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
-              {overdue && (
-                <span
-                  style={{
-                    ...POPPINS,
-                    fontSize: 10,
-                    fontWeight: 500,
-                    backgroundColor: DANGER_BG,
-                    color: DANGER,
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                  }}
-                >
-                  Overdue
-                </span>
-              )}
-              {isPrepaid && (
-                <span
-                  style={{
-                    ...POPPINS,
-                    fontSize: 10,
-                    fontWeight: 500,
-                    backgroundColor: "#E6F1FB",
-                    color: "#185FA5",
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                  }}
-                >
-                  Prepaid
-                </span>
-              )}
-              {isPaymentDue && (
-                <span
-                  style={{
-                    ...POPPINS,
-                    fontSize: 10,
-                    fontWeight: 500,
-                    backgroundColor: "#FBEFE1",
-                    color: "#B5661E",
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                  }}
-                >
-                  Payment due
-                </span>
-              )}
+              {timeText} · {durationText}
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <ChevronRight size={16} color="#CBD5E1" />
-          </div>
+          {pill}
+          <ChevronRight size={14} color="#D1D5DB" />
         </div>
 
         {showActions && (
@@ -796,7 +763,7 @@ function SchedulePage() {
             style={{
               display: "flex",
               gap: 8,
-              padding: "8px 14px 12px 70px",
+              padding: "8px 16px 12px 68px",
               backgroundColor: "#F8FAFC",
             }}
           >
@@ -837,6 +804,7 @@ function SchedulePage() {
       </div>
     );
   };
+
 
 
   // Compute gaps for the selected day (reusing existing buffer logic).
@@ -1061,9 +1029,9 @@ function SchedulePage() {
           <div
             key={`seg-${segIdx}`}
             style={{
-              margin: "0 16px",
-              border: `0.5px solid ${BORDER}`,
-              borderRadius: 12,
+              margin: "0 16px 12px",
+              border: `0.5px solid #F3F4F6`,
+              borderRadius: 16,
               background: "#FFFFFF",
               overflow: "hidden",
             }}
@@ -1074,9 +1042,10 @@ function SchedulePage() {
                 i > 0 ? (
                   <div
                     key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid ${BORDER}` }}
+                    style={{ height: 0, borderTop: `0.5px solid #F3F4F6` }}
                   />
                 ) : null;
+
               if (row.kind === "now") {
                 return (
                   <div key={`now-${row.startMs}`}>
