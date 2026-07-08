@@ -98,7 +98,12 @@ import {
   IconX,
   IconCalendar,
   IconDots,
+  IconCalendarPlus,
+  IconSteeringWheel,
+  IconClipboardCheck,
+  IconMicrophone,
 } from "@tabler/icons-react";
+
 
 import {
   Dialog,
@@ -785,8 +790,6 @@ function _RemovedMarketplaceLegacy() {
 
 
 function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
-
-
   type LiveTile = {
     id: string;
     title: string;
@@ -802,17 +805,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     spaces_taken: number | null;
     duration_minutes: number | null;
   };
-
-  const categoryColor = (category: string | null): string => {
-    if (!category) return "#CC2229";
-    if (category.startsWith("Standards Check")) return "#1A52A0";
-    if (category.startsWith("Business Coaching")) return "#16A34A";
-    if (category.startsWith("CPD Webinar")) return "#7C3AED";
-    if (category.startsWith("New ADI")) return "#D97706";
-    return "#CC2229";
-  };
-
-  const [sessions, setSessions] = useState<LiveTile[]>([]);
   type PodcastTile = {
     id: string;
     episode_number: number | null;
@@ -826,8 +818,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     audio_url: string | null;
     published_at: string | null;
   };
-  const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
+  const [sessions, setSessions] = useState<LiveTile[]>([]);
+  const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -838,100 +831,110 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       try {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=4&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-          },
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
         );
         const data = (await res.json()) as LiveTile[];
         if (!cancelled && Array.isArray(data)) setSessions(data);
-      } catch {
-        /* ignore */
-      }
+      } catch { /* ignore */ }
       try {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,guest_title,duration_minutes,image_url,spotify_url,apple_url,audio_url,published_at`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-          },
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
         );
         const data = (await res.json()) as PodcastTile[];
         if (!cancelled && Array.isArray(data)) setPodcasts(data);
-      } catch {
-        /* ignore */
-      }
+      } catch { /* ignore */ }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const POPPINS = "'Poppins', system-ui, -apple-system, sans-serif";
 
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  };
-
-  const scrollBy = (direction: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * 170, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    updateScrollState();
-  }, [sessions, podcasts]);
-
-  const fmtDate = (d: string) => {
+  // "Tue 21 Jul · 10:10am" (sentence case)
+  const fmtDateTime = (d: string, t: string) => {
     try {
-      return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-      });
+      const date = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`);
+      const dateStr = date.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+      let timeStr = date.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true });
+      timeStr = timeStr.replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
+      return `${dateStr} · ${timeStr}`;
     } catch {
-      return d;
+      return `${d} · ${t}`;
     }
   };
-  const fmtTime = (t: string) => {
-    try {
-      const [h, m] = t.split(":");
-      const d = new Date();
-      d.setHours(Number(h), Number(m), 0, 0);
-      return d.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true });
-    } catch {
-      return t;
+
+  // Session-type → chip / decorative icon mapping.
+  // Reuses categoryColor semantics from the previous implementation.
+  const sessionType = (category: string | null): "standards" | "meet" | "other" => {
+    const c = (category ?? "").toLowerCase();
+    if (c.includes("standards")) return "standards";
+    if (c.includes("meet") || c.includes("dsm")) return "meet";
+    return "other";
+  };
+  const FeaturedIcon = ({ category }: { category: string | null }) => {
+    const t = sessionType(category);
+    const props = { size: 52, stroke: 1.5, color: "#3D7BE0", style: { opacity: 0.5 } } as const;
+    if (t === "standards") return <IconSteeringWheel {...props} aria-hidden />;
+    if (t === "meet") return <IconUsers {...props} aria-hidden />;
+    return <IconCalendar {...props} aria-hidden />;
+  };
+  const RowChip = ({ category }: { category: string | null }) => {
+    const t = sessionType(category);
+    if (t === "meet") {
+      return (
+        <div
+          aria-hidden
+          style={{
+            width: 38, height: 38, borderRadius: 11, background: "#185FA5",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, color: "#FFFFFF", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
+          }}
+        >
+          DSM
+        </div>
+      );
     }
+    // Standards Check + fallback share the navy chip; icon differs.
+    const Icon = t === "standards" ? IconClipboardCheck : IconCalendar;
+    return (
+      <div
+        aria-hidden
+        style={{
+          width: 38, height: 38, borderRadius: 11, background: "#0F2044",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Icon size={17} stroke={1.75} color="#3D7BE0" />
+      </div>
+    );
   };
 
   const open = (id: string) =>
     navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
+  // No standalone client-side registration handler exists — the existing
+  // "register" flow lives on the session detail page. Reuse it here.
+  const registerForSession = open;
 
-  const tiles = [
-    ...sessions.map((s) => ({ kind: "session" as const, item: s })),
-    ...podcasts.map((p) => ({ kind: "podcast" as const, item: p })),
-  ];
+  // Sort chronologically ascending (fetch is already ordered, but sort defensively).
+  const sortedSessions = [...sessions].sort((a, b) => {
+    const ka = `${a.session_date}T${(a.session_time || "00:00:00").slice(0, 8)}`;
+    const kb = `${b.session_date}T${(b.session_time || "00:00:00").slice(0, 8)}`;
+    return ka.localeCompare(kb);
+  });
+  const featured = sortedSessions[0];
+  const rest = sortedSessions.slice(1);
+  const latestPodcast = podcasts[0] ?? null;
 
-  if (tiles.length === 0) return null;
-
-  const sora = "'Sora', system-ui, -apple-system, sans-serif";
-  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+  // Empty state: no upcoming sessions AND no podcast → render nothing.
+  if (!featured && !latestPodcast) return null;
 
   return (
-    <div style={{ marginTop: 8, fontFamily: manrope }}>
+    <div style={{ marginTop: 8, fontFamily: POPPINS }}>
+      {/* Section header */}
       <div
         style={{
-          margin: "0 20px 16px",
+          margin: "0 20px 12px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -940,321 +943,174 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
           <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: "#CC2229",
-              flexShrink: 0,
-            }}
+            aria-hidden
+            style={{ width: 8, height: 8, borderRadius: "50%", background: "#E24B4A", flexShrink: 0 }}
           />
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: sora,
-              fontSize: 18,
-              fontWeight: 700,
-              color: "#0F2044",
-            }}
-          >
+          <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 18, fontWeight: 500, color: "#0F2044" }}>
             DSM Live
           </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dsm-live" as never })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 700,
-              fontFamily: manrope,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            View All
-          </button>
-          <div className="dsm-live-arrows" style={{ alignItems: "center", gap: 4 }}>
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              disabled={!canScrollLeft}
-              aria-label="Scroll left"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollLeft ? "pointer" : "default",
-                opacity: canScrollLeft ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronLeft size={16} color="#0F2044" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              disabled={!canScrollRight}
-              aria-label="Scroll right"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollRight ? "pointer" : "default",
-                opacity: canScrollRight ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronRight size={16} color="#0F2044" />
-            </button>
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dsm-live" as never })}
+          style={{
+            background: "none", border: "none", padding: 0, cursor: "pointer",
+            color: "#185FA5", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
+          }}
+        >
+          View all →
+        </button>
       </div>
 
-      <div
-        ref={scrollRef}
-        onScroll={updateScrollState}
-        className="dsm-live-track"
-        style={{
-          gap: 12,
-          padding: "4px 20px 12px",
-        }}
-      >
-        {tiles.map((tile) => {
-          if (tile.kind === "session") {
-            const s = tile.item;
-            const bandColor = categoryColor(s.category);
-            const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
-            const typeLabel = isWebinar ? "WEBINAR" : "LIVE SESSION";
-            const hero = s.image_url
-              ? `url(${s.image_url}) center/cover no-repeat`
-              : `linear-gradient(135deg, ${bandColor}, #0F2044)`;
-            return (
-              <div
-                key={s.id}
-                className="dsm-live-card"
-                onClick={() => open(s.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    open(s.id);
-                  }
-                }}
-                style={{
-                  minWidth: 0,
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  userSelect: "none",
-                  background: "#FFFFFF",
-                  border: "1px solid #E2E6ED",
-                  boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div style={{ position: "relative", height: 110, background: hero }}>
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 8,
-                      left: 8,
-                      fontSize: 9,
-                      letterSpacing: "0.08em",
-                      color: "#0F2044",
-                      background: "rgba(255,255,255,0.95)",
-                      fontFamily: sora,
-                      padding: "4px 8px",
-                      borderRadius: 999,
-                      textTransform: "uppercase",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {typeLabel}
-                  </span>
-                  {s.is_live && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        fontSize: 9,
-                        background: "#CC2229",
-                        color: "#fff",
-                        padding: "4px 8px",
-                        borderRadius: 999,
-                        fontWeight: 700,
-                      }}
-                    >
-                      LIVE
-                    </span>
-                  )}
-                </div>
-                <div style={{ padding: "10px 12px 12px" }}>
-                  <div
-                    style={{
-                      fontFamily: sora,
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0F2044",
-                      lineHeight: 1.3,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      minHeight: 34,
-                    }}
-                  >
-                    {s.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "rgba(15,32,68,0.55)",
-                      marginTop: 4,
-                      fontWeight: 500,
-                    }}
-                  >
-                    {fmtDate(s.session_date)} · {fmtTime(s.session_time).replace(" ", "")}
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          const p = tile.item;
-          const hero = p.image_url
-            ? `url(${p.image_url}) center/cover no-repeat`
-            : "linear-gradient(135deg, #7C3AED, #0F2044)";
-          return (
-            <div
-              key={`pod-${p.id}`}
-              className="dsm-live-card"
-              onClick={() =>
-                navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never })
-              }
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
-                }
-              }}
+      {featured ? (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => open(featured.id)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
+          }}
+          style={{
+            margin: "0 20px 10px",
+            background: "#0F2044",
+            borderRadius: 20,
+            padding: 20,
+            cursor: "pointer",
+            userSelect: "none",
+            fontFamily: POPPINS,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+            <span aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "#E24B4A" }} />
+            <span style={{ fontSize: 11, fontWeight: 500, color: "#E24B4A", letterSpacing: "0.03em" }}>
+              Next up
+            </span>
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 500, color: "#FFFFFF", marginBottom: 4, lineHeight: 1.2 }}>
+            {featured.title}
+          </div>
+          <div style={{ fontSize: 13, color: "#9AA7C4", marginBottom: 18 }}>
+            {fmtDateTime(featured.session_date, featured.session_time)}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); registerForSession(featured.id); }}
               style={{
-                minWidth: 0,
-                borderRadius: 16,
-                overflow: "hidden",
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "#FFFFFF", color: "#0F2044",
+                border: "none", borderRadius: 100,
+                padding: "10px 20px",
+                fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
                 cursor: "pointer",
-                userSelect: "none",
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                flexDirection: "column",
               }}
             >
-              <div style={{ position: "relative", height: 110, background: hero }}>
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    fontSize: 9,
-                    letterSpacing: "0.08em",
-                    color: "#0F2044",
-                    background: "rgba(255,255,255,0.95)",
-                    fontFamily: sora,
-                    padding: "4px 8px",
-                    borderRadius: 999,
-                    textTransform: "uppercase",
-                    fontWeight: 700,
-                  }}
-                >
-                  🎙️ Podcast
-                </span>
-              </div>
-              <div style={{ padding: "10px 12px 12px" }}>
+              <IconCalendarPlus size={15} stroke={1.75} />
+              Register
+            </button>
+            <FeaturedIcon category={featured.category} />
+          </div>
+        </div>
+      ) : null}
+
+      {rest.length > 0 && (
+        <div
+          style={{
+            margin: "0 20px 10px",
+            background: "#FFFFFF",
+            border: "1px solid rgba(15,32,68,0.10)",
+            borderRadius: 16,
+            overflow: "hidden",
+            fontFamily: POPPINS,
+          }}
+        >
+          {rest.map((s, idx) => (
+            <div
+              key={s.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => open(s.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(s.id); }
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 16px",
+                cursor: "pointer",
+                borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)",
+              }}
+            >
+              <RowChip category={s.category} />
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontFamily: sora,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "#0F2044",
-                    lineHeight: 1.3,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    minHeight: 34,
+                    fontSize: 14, fontWeight: 500, color: "#0F2044",
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}
                 >
-                  {p.title}
+                  {s.title}
                 </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "rgba(15,32,68,0.55)",
-                    marginTop: 4,
-                    fontWeight: 500,
-                  }}
-                >
-                  {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
+                <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
+                  {fmtDateTime(s.session_date, s.session_time)}
                 </div>
               </div>
+              <IconChevronRight size={15} stroke={1.75} color="#64748B" style={{ flexShrink: 0 }} />
             </div>
-          );
-        })}
-      </div>
-      <style>{`
-        .dsm-live-track {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .dsm-live-card {
-          min-width: 0;
-        }
-        .dsm-live-arrows {
-          display: none;
-        }
-        @media (min-width: 768px) {
-          .dsm-live-track {
-            display: flex;
-            flex-direction: row;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
+          ))}
+        </div>
+      )}
+
+      {latestPodcast && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() =>
+            navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never })
           }
-          .dsm-live-card {
-            width: 200px;
-            flex-shrink: 0;
-            scroll-snap-align: start;
-          }
-          .dsm-live-arrows {
-            display: flex;
-          }
-        }
-      `}</style>
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
+            }
+          }}
+          style={{
+            margin: "0 20px 4px",
+            background: "#F0EBFF",
+            borderRadius: 16,
+            padding: "14px 18px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            cursor: "pointer",
+            userSelect: "none",
+            fontFamily: POPPINS,
+          }}
+        >
+          <div
+            aria-hidden
+            style={{
+              width: 38, height: 38, borderRadius: 12, background: "#6B4FD6",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconMicrophone size={20} stroke={1.75} color="#FFFFFF" />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: "#3C2580" }}>Podcast</div>
+            <div style={{ fontSize: 11, color: "#6B4FD6", marginTop: 1 }}>
+              Latest episodes for instructors
+            </div>
+          </div>
+          <IconChevronRight size={17} stroke={1.75} color="#6B4FD6" style={{ flexShrink: 0 }} />
+        </div>
+      )}
     </div>
   );
 }
+
 
 
 
