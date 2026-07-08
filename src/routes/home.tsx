@@ -5283,8 +5283,9 @@ function HomePage() {
         >
         {(() => {
           // Payment lookup by pupilId from outstandingBreakdown
-          const owedByPupil = new Map<string, number>();
-          for (const o of outstandingBreakdown) owedByPupil.set(o.pupilId, (owedByPupil.get(o.pupilId) ?? 0) + o.amount);
+          const owedByPupil: Record<string, number> = {};
+          for (const o of outstandingBreakdown) owedByPupil[o.pupilId] = (owedByPupil[o.pupilId] ?? 0) + o.amount;
+
 
           const fmtTestWhen = (dateStr: string, timeStr: string | null) => {
             const d = new Date(`${dateStr}T${(timeStr || '09:00').slice(0,5)}:00`);
