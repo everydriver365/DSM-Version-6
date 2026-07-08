@@ -131,8 +131,14 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>) => {
+    const raw = search.ws;
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
+    return { ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined };
+  },
   component: HomePage,
 });
+
 
 interface LessonRow {
   id: string;
