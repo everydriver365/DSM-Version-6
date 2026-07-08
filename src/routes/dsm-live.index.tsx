@@ -556,7 +556,7 @@ function SessionCard({
 
   const categoryGradient = (c: string | null): string => {
     if (!c) return "linear-gradient(135deg, #CC2229, #7A1419)";
-    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
+    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1877D6, #0F2044)";
     if (c.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
     if (c.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
     if (c.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
@@ -570,11 +570,21 @@ function SessionCard({
     : categoryGradient(session.category);
   const imagePosition = (session as any).image_position || "center center";
 
+  const sora = "'Sora', system-ui, -apple-system, sans-serif";
+  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
   return (
     <div
       onClick={onOpen}
-      className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer mb-3"
-      style={{ background: "#fff" }}
+      style={{
+        background: "#fff",
+        border: "1px solid #E2E6ED",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+        cursor: "pointer",
+        fontFamily: manrope,
+      }}
     >
       <div
         style={{
@@ -596,27 +606,35 @@ function SessionCard({
           />
         )}
         <span
-          className="text-xs font-semibold px-2 py-1 rounded-full"
           style={{
             position: "absolute",
             top: 12,
             left: 12,
-            background: "rgba(255,255,255,0.2)",
-            color: "#fff",
+            background: "rgba(255,255,255,0.95)",
+            color: "#0F2044",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            padding: "5px 10px",
+            borderRadius: 999,
+            fontFamily: sora,
           }}
         >
           {session.category ?? "Session"}
         </span>
 
         <span
-          className="text-xs px-2 py-1 rounded-full"
           style={{
             position: "absolute",
             top: 12,
             right: 12,
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.45)",
             color: spaceIsLow ? "#FCD34D" : "#fff",
+            fontSize: 11,
             fontWeight: 600,
+            padding: "5px 10px",
+            borderRadius: 999,
           }}
         >
           {spaceText}
@@ -624,12 +642,13 @@ function SessionCard({
 
         {session.host_name && (
           <span
-            className="text-sm font-medium"
             style={{
               position: "absolute",
               bottom: 12,
               left: 12,
-              color: "rgba(255,255,255,0.8)",
+              color: "rgba(255,255,255,0.92)",
+              fontSize: 13,
+              fontWeight: 500,
             }}
           >
             with {session.host_name}
@@ -638,13 +657,16 @@ function SessionCard({
 
         {session.is_live && (
           <span
-            className="text-xs font-bold px-2 py-1 rounded-full"
             style={{
               position: "absolute",
               bottom: 12,
               right: 12,
               background: "#CC2229",
               color: "#fff",
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "4px 10px",
+              borderRadius: 999,
             }}
           >
             🔴 LIVE NOW
@@ -652,41 +674,58 @@ function SessionCard({
         )}
       </div>
 
-      <div className="bg-white p-4">
-        <div className="font-bold text-base mb-2" style={{ color: "#0F2044" }}>
+      <div style={{ padding: 16 }}>
+        <div style={{ fontFamily: sora, fontWeight: 700, fontSize: 16, color: "#0F2044", marginBottom: 10, lineHeight: 1.3 }}>
           {session.title}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <CalendarIcon size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
+          <CalendarIcon size={14} />
           {formatSessionDate(session.session_date)}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <Clock size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
+          <Clock size={14} />
           {formatSessionTime(session.session_time)}
           {session.duration_minutes ? ` · ${session.duration_minutes} minutes` : ""}
         </div>
 
-        <div className="flex items-center gap-2 text-sm mb-2" style={{ color: "#6B7280" }}>
-          <Video size={14} color="#6B7280" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)" }}>
+          <Video size={14} />
           Zoom
         </div>
 
-        <div className="flex justify-between items-center mt-3">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, paddingTop: 14, borderTop: "1px solid #E2E6ED" }}>
           <div
-            className="font-black text-lg"
-            style={{ color: isFree ? "#16A34A" : "#0F2044" }}
+            style={{
+              fontFamily: sora,
+              fontWeight: 800,
+              fontSize: 18,
+              color: isFree ? "#16A34A" : "#CC2229",
+            }}
           >
             {session.price_display ?? (isFree ? "Free" : `£${session.price_amount}`)}
           </div>
           <button
             type="button"
-            onClick={onOpen}
-            className="font-semibold text-sm px-4 py-2 rounded-xl"
-            style={{ background: "#CC2229", color: "#fff" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 13,
+              padding: "10px 18px",
+              borderRadius: 12,
+              border: 0,
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(24,119,214,0.25)",
+              fontFamily: manrope,
+            }}
           >
-            Book now →
+            {booked ? "Booked ✓" : "Book now →"}
           </button>
         </div>
       </div>
