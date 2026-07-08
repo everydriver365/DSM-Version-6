@@ -176,6 +176,36 @@ function NewLessonPage() {
     }
 
 
+    // If pupil has enough remaining prepaid hours, mark as prepaid so
+    // balance/pill logic across the app treats it as covered.
+    const lessonHours = duration / 60;
+    let paymentStatus: "unpaid" | "prepaid" = "unpaid";
+    let prepaidHoursUsed = 0;
+    const prepaidTotal = Number(selected?.prepaid_hours ?? 0);
+    if (prepaidTotal > 0) {
+      try {
+        const { data: existing } = await supabase
+          .from("lessons")
+          .select("duration_minutes")
+          .eq("pupil_id", pupilId)
+          .eq("instructor_id", user.id)
+          .is("deleted_at", null);
+        const usedHours =
+          (existing ?? []).reduce(
+            (s: number, r: { duration_minutes: number | null }) =>
+              s + (Number(r.duration_minutes) || 0) / 60,
+            0,
+          );
+        const remaining = prepaidTotal - usedHours;
+        if (remaining >= lessonHours) {
+          paymentStatus = "prepaid";
+          prepaidHoursUsed = lessonHours;
+        }
+      } catch (e) {
+        console.warn("[lessons.new] prepaid check failed", e);
+      }
+    }
+
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -185,6 +215,8 @@ function NewLessonPage() {
       status: "confirmed",
       notes: fullNotes,
       amount_due: amountDue,
+      payment_status: paymentStatus,
+      prepaid_hours_used: prepaidHoursUsed,
     });
     if (error) {
       setErrors({ form: error.message });
