@@ -1964,7 +1964,7 @@ function HomePage() {
       const { data: pupilsData } = await supabase
         .from("pupils")
         .select(
-          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes"
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes, profile_image_url, calendar_colour, last_lesson_date"
         )
         .eq("instructor_id", userId);
       setActivePupilsCount(
@@ -1977,13 +1977,41 @@ function HomePage() {
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
       const bufMap: Record<string, { before: number | null; after: number | null }> = {};
+      const infoMap: Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null; last_lesson_date: string | null }> = {};
       (pupilsData || []).forEach((p: any) => {
         bufMap[p.id] = {
           before: p.buffer_before_minutes ?? null,
           after: p.buffer_after_minutes ?? null,
         };
+        if (p.deleted_at == null && p.status === "active") {
+          infoMap[p.id] = {
+            first_name: p.first_name ?? null,
+            name: p.name ?? null,
+            profile_image_url: p.profile_image_url ?? null,
+            calendar_colour: p.calendar_colour ?? null,
+            last_lesson_date: p.last_lesson_date ?? null,
+          };
+        }
       });
       setPupilBufferMap(bufMap);
+      setPupilInfoMap(infoMap);
+
+      // Availability for gap-matching on today's timeline
+      const { data: availData } = await supabase
+        .from("pupil_ready_to_learn_settings")
+        .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in")
+        .eq("instructor_id", userId);
+      const availMap: Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }> = {};
+      (availData || []).forEach((a: any) => {
+        if (a.pupil_id) availMap[a.pupil_id] = {
+          available_days: a.available_days ?? null,
+          available_from: a.available_from ?? null,
+          available_until: a.available_until ?? null,
+          min_notice_hours: a.min_notice_hours ?? null,
+          short_notice_opt_in: a.short_notice_opt_in ?? null,
+        };
+      });
+      setPupilAvailMap(availMap);
       const prepaidPupilIds = new Set<string>(
         (pupilsData || [])
           .filter((p: any) => Number(p.prepaid_hours || 0) > 0)
