@@ -5486,212 +5486,161 @@ function HomePage() {
           }}
         >
 
-        {/* Earnings hero */}
-        <div style={{ margin:'4px 16px 16px', borderRadius:20, padding:'20px 20px 22px', background:'linear-gradient(135deg, #0B1F3A 0%, #1A52A0 100%)', color:'#fff', boxShadow:'0 10px 30px rgba(11,31,58,0.25)', position:'relative', overflow:'hidden' }}>
-          <div style={{ position:'absolute', right:-30, top:-30, width:160, height:160, borderRadius:'50%', background:'radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%)' }} />
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:1, textTransform:'uppercase', opacity:0.80, fontFamily:'Inter, sans-serif' }}>This week</div>
-          <div style={{ display:'flex', alignItems:'baseline', gap:8, marginTop:6 }}>
-            <div style={{ fontSize:40, fontWeight:900, letterSpacing:-1.5, lineHeight:1, fontFamily:'Inter, sans-serif' }}>£{weekEarnings.toFixed(0)}</div>
-            {earningsEstimated && <div style={{ fontSize:12, opacity:0.75, fontWeight:600 }}>(est.)</div>}
-          </div>
-          <div style={{ marginTop:12, height:6, borderRadius:3, background:'rgba(255,255,255,0.15)', overflow:'hidden' }}>
-            <div style={{ height:'100%', width:`${earningsPct}%`, background:'linear-gradient(90deg, #4ADE80 0%, #22C55E 100%)', borderRadius:3, transition:'width .4s ease' }} />
-          </div>
-          <div style={{ marginTop:8, fontSize:12, opacity:0.85, fontWeight:500 }}>
-            Goal £{weeklyEarningsGoal.toFixed(0)} · {Math.round(earningsPct)}%
-          </div>
-          <button
-            type="button"
-            onClick={() => setEarningsOpen(true)}
-            style={{ marginTop:14, width:'100%', height:40, borderRadius:10, border:'1px solid rgba(255,255,255,0.28)', background:'rgba(255,255,255,0.10)', color:'#fff', fontSize:13, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer' }}
-          >
-            View earnings breakdown
-          </button>
-        </div>
-
-        {/* KPI grid */}
-        <div style={{ padding:'0 16px 16px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-          <div onClick={() => setLessonsOpen(true)} role="button" tabIndex={0} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer' }}>
-            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Lessons · Week</div>
-            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>{weekLessonsTotal}</div>
-            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>{todayLessons.length} today</div>
-          </div>
-          <div onClick={() => setOutstandingOpen(true)} role="button" tabIndex={0} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer' }}>
-            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Outstanding</div>
-            <div style={{ fontSize:24, fontWeight:800, color: outstanding>0?'#DC2626':'#0B1F3A', marginTop:4, lineHeight:1 }}>£{outstanding.toFixed(0)}</div>
-            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>{outstandingBreakdown.length} pupil{outstandingBreakdown.length===1?'':'s'}</div>
-          </div>
-          <div style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED' }}>
-            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Today</div>
-            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>£{todayEarnings.toFixed(0)}</div>
-            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>Received</div>
-          </div>
-          <button type="button" onClick={() => navigate({ to: '/month-to-date' })} style={{ background:'#FFFFFF', borderRadius:14, padding:'12px 14px', border:'0.5px solid #E2E6ED', cursor:'pointer', textAlign:'left' }}>
-            <div style={{ fontSize:9, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'rgba(11,31,58,0.55)' }}>Month to date</div>
-            <div style={{ fontSize:24, fontWeight:800, color:'#0B1F3A', marginTop:4, lineHeight:1 }}>View →</div>
-            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)', marginTop:2 }}>Full report</div>
-          </button>
-        </div>
-
-        {/* Quick links */}
-        <div style={{ padding:'0 16px 20px' }}>
-          <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A', marginBottom:8 }}>Quick links</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8 }}>
-            {[
-              { label:'Payments', to:'/payments', icon:'💳' },
-              { label:'MTD', to:'/mtd', icon:'📊' },
-              { label:'Expenses', to:'/expenses', icon:'🧾' },
-              { label:'Tax', to:'/tax', icon:'📈' },
-              { label:'Reports', to:'/reports', icon:'📑' },
-              { label:'Mileage', to:'/mileage', icon:'🚗' },
-            ].map((l) => (
-              <button
-                key={l.label}
-                type="button"
-                onClick={() => navigate({ to: l.to as never })}
-                style={{ background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, padding:'14px 8px', display:'flex', flexDirection:'column', alignItems:'center', gap:6, cursor:'pointer', fontFamily:'Inter, sans-serif' }}
-              >
-                <div style={{ fontSize:22, lineHeight:1 }}>{l.icon}</div>
-                <div style={{ fontSize:11, fontWeight:700, color:'#0B1F3A' }}>{l.label}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      {/* AT A GLANCE */}
-      <div className="mx-4 mt-4">
-        <div className="flex items-center justify-between px-1" style={{ fontFamily: "Inter, sans-serif" }}>
-          <h2 className="text-[11px] font-bold uppercase" style={{ letterSpacing: "0.1em", color: "rgba(11,31,58,0.6)" }}>
-            At a Glance
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5 mt-3" style={{ fontFamily: "Inter, sans-serif" }}>
-          {/* Tax Estimate Hero (full width) */}
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/tax" })}
-            className="col-span-2 text-left active:scale-[0.98] transition-transform flex flex-col justify-between"
-            style={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: 20,
-              padding: 14,
-              border: "1px solid rgba(11,31,58,0.05)",
-              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
-            }}
-          >
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex items-center gap-2.5">
-                <div
-                  className="flex items-center justify-center"
-                  style={{ width: 32, height: 32, borderRadius: 12, backgroundColor: "#F3F8FF" }}
-                >
-                  <Calculator size={18} color="#1877D6" />
+        {(() => {
+          const pct = Math.min(100, Math.round((weekEarnings / (weeklyEarningsGoal || 1)) * 100));
+          const recentPayments = [...earningsRows]
+            .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+            .slice(0, 5);
+          const fmtDate = (d: string) => {
+            if (!d) return '';
+            try {
+              return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+            } catch { return d; }
+          };
+          const links: Array<{ icon: React.ReactNode; bg: string; label: string; to: string }> = [
+            { icon: <BarChart3 size={16} color="#1A52A0" />, bg: '#EFF6FF', label: 'MTD', to: '/mtd' },
+            { icon: <Calculator size={16} color="#16A34A" />, bg: '#DCFCE7', label: 'Tax report', to: '/tax-report' },
+            { icon: <Receipt size={16} color="#CC2229" />, bg: '#FEE2E2', label: 'Expenses', to: '/expenses' },
+            { icon: <CalendarIcon size={16} color="#7C3AED" />, bg: '#F5F3FF', label: 'Weekly report', to: '/weekly-report' },
+            { icon: <Moon size={16} color="#D97706" />, bg: '#FEF3C7', label: 'End of day', to: '/end-of-day' },
+            { icon: <FileText size={16} color="#6B7280" />, bg: '#F3F4F6', label: 'Invoices', to: '/invoices' },
+          ];
+          return (
+            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
+              {/* 1. EARNINGS HERO */}
+              <div style={{ background: '#0F2044', borderRadius: 20, padding: 20, marginBottom: 4, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+                <div style={{ position: 'relative' }}>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 600 }}>This week</div>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: '#FFFFFF', marginTop: 4, lineHeight: 1 }}>£{Math.round(weekEarnings)}</div>
+                  <div style={{ marginTop: 12, height: 4, background: 'rgba(255,255,255,0.10)', borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${pct}%`, background: '#FFFFFF', borderRadius: 2 }} />
+                  </div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{pct}% of £{weeklyEarningsGoal} goal</div>
                 </div>
-                <div>
-                  <p className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>Est. tax + NI</p>
-                  <p className="text-[10px] font-medium" style={{ color: "rgba(11,31,58,0.5)" }}>Tax Year {taxYearLabel}</p>
+                <div style={{ position: 'absolute', right: 20, top: 20, textAlign: 'right' }}>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Today</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF', marginTop: 2 }}>£{Math.round(todayEarnings)}</div>
                 </div>
               </div>
-              <ChevronRight size={18} color="rgba(11,31,58,0.2)" />
-            </div>
 
-            <div className="mb-3">
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold" style={{ color: "#0B1F3A" }}>
-                  £{glanceTaxAndNi.toLocaleString("en-GB", { maximumFractionDigits: 0 })}
-                </span>
-                <span className="text-[11px] font-medium" style={{ color: "rgba(11,31,58,0.4)" }}>projected</span>
+              {/* 2. OUTSTANDING */}
+              {outstanding > 0 && (
+                <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, overflow: 'hidden' }}>
+                  <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <AlertCircle size={16} color="#CC2229" />
+                      <span style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginLeft: 6 }}>Outstanding</span>
+                    </div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: '#CC2229' }}>£{Math.round(outstanding)}</div>
+                  </div>
+                  {outstandingBreakdown.map((p) => {
+                    const initials = p.name.split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
+                    return (
+                      <div key={p.pupilId} style={{ padding: '12px 16px', borderTop: '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#1A52A0', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{initials}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>{p.name}</div>
+                          <div style={{ fontSize: 12, color: '#CC2229' }}>Owes £{p.amount.toFixed(0)}</div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (p.phone) {
+                                window.location.href = `sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder you have an outstanding lesson payment of £${p.amount.toFixed(0)} due. Could you arrange payment when you get a chance? Thanks!`)}`;
+                              } else {
+                                toast.error('No phone number on file');
+                              }
+                            }}
+                            style={{ background: '#FEF3C7', color: '#92400E', fontSize: 10, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
+                          >
+                            💬 Chase
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => navigate({ to: '/payments' as never })}
+                            style={{ background: '#0F2044', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
+                          >
+                            💳 Pay
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div style={{ padding: '12px 16px', borderTop: '0.5px solid #F3F4F6', background: '#FEF2F2', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: 12, color: '#CC2229', fontWeight: 600 }}>{outstandingBreakdown.length} pupils · Total £{Math.round(outstanding)}</div>
+                    <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#1A52A0', fontWeight: 600, cursor: 'pointer' }}>Record payment →</button>
+                  </div>
+                </div>
+              )}
+
+              {/* 3. RECENT PAYMENTS */}
+              <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, overflow: 'hidden' }}>
+                <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Recent payments</div>
+                  <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#1A52A0', fontWeight: 600, cursor: 'pointer' }}>View all →</button>
+                </div>
+                {recentPayments.length === 0 ? (
+                  <div style={{ padding: 16, textAlign: 'center', color: '#9CA3AF', fontSize: 13 }}>No payments recorded yet</div>
+                ) : (
+                  recentPayments.map((r, idx) => (
+                    <div key={r.id} style={{ padding: '12px 16px', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <PoundSterling size={16} color="#16A34A" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>{r.pupilName || 'Payment received'}</div>
+                        <div style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtDate(r.date)}{r.method ? ` · ${r.method}` : ''}</div>
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#16A34A' }}>£{r.amount.toFixed(0)}</div>
+                    </div>
+                  ))
+                )}
               </div>
-              <p className="text-[11px] mt-0.5" style={{ color: "rgba(11,31,58,0.6)" }}>
-                Income Tax + Class 4 NI. Estimate only — consult an accountant.
-              </p>
-            </div>
 
-            <div className="space-y-1.5">
-              <div className="w-full" style={{ height: 4, backgroundColor: "#F3F8FF", borderRadius: 999, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${(monthsElapsed / 12) * 100}%`, backgroundColor: "#1877D6", borderRadius: 999 }} />
+              {/* 4. SEND REMINDERS */}
+              {outstanding > 0 && outstandingBreakdown.length > 0 && (
+                <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, padding: 16 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginBottom: 4 }}>Send payment reminders</div>
+                  <div style={{ fontSize: 12, color: '#9CA3AF', marginBottom: 12 }}>Remind all pupils with outstanding balances</div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const first = outstandingBreakdown.find((p) => p.phone);
+                      if (!first) { toast.error('No phone numbers on file'); return; }
+                      const msg = encodeURIComponent('Hi, just a reminder you have an outstanding driving lesson payment. Could you arrange payment when convenient? Thanks!');
+                      window.location.href = `sms:${first.phone}?body=${msg}`;
+                    }}
+                    style={{ width: '100%', background: '#0F2044', color: '#FFFFFF', padding: '12px 16px', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    📱 Send to all ({outstandingBreakdown.length})
+                  </button>
+                </div>
+              )}
+
+              {/* 5. FINANCIAL QUICK LINKS */}
+              <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, overflow: 'hidden' }}>
+                <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Finance</div>
+                {links.map((l, idx) => (
+                  <button
+                    key={l.label}
+                    type="button"
+                    onClick={() => navigate({ to: l.to as never })}
+                    style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'Inter, sans-serif' }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: l.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{l.icon}</div>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#0F2044' }}>{l.label}</span>
+                    </div>
+                    <ChevronRight size={16} color="#D1D5DB" />
+                  </button>
+                ))}
               </div>
-              <div className="flex justify-between text-[9px] font-bold uppercase" style={{ letterSpacing: "0.08em", color: "rgba(11,31,58,0.4)" }}>
-                <span>Year Progress</span>
-                <span>{Math.round((monthsElapsed / 12) * 100)}%</span>
-              </div>
             </div>
-          </button>
+          );
+        })()}
 
-          {/* Rewards */}
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/rewards" })}
-            className="text-left flex flex-col active:scale-[0.98] transition-transform"
-            style={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: 20,
-              padding: 12,
-              height: 132,
-              border: "1px solid rgba(11,31,58,0.05)",
-              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
-            }}
-          >
-            <div
-              className="flex items-center justify-center mb-2.5"
-              style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: "#FFF7ED" }}
-            >
-              <Trophy size={18} color="#EA580C" />
-            </div>
-            <p className="text-[12px] font-semibold mb-1" style={{ color: "#0B1F3A" }}>Rewards</p>
-            <div className="mt-auto">
-              <p className="text-lg font-bold" style={{ color: "#0B1F3A" }}>
-                {glancePoints}{" "}
-                <span className="text-[10px] font-medium uppercase" style={{ color: "rgba(11,31,58,0.4)" }}>pts</span>
-              </p>
-              <span
-                className="inline-block mt-1.5 px-2 py-0.5 text-[9px] font-bold rounded-full uppercase"
-                style={{ backgroundColor: glanceTierColor, color: "#FFFFFF", letterSpacing: "-0.01em" }}
-              >
-                {glanceTier}
-              </span>
-            </div>
-          </button>
-
-          {/* MTD */}
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/mtd" })}
-            className="text-left flex flex-col active:scale-[0.98] transition-transform"
-            style={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: 20,
-              padding: 12,
-              height: 132,
-              border: "1px solid rgba(11,31,58,0.05)",
-              boxShadow: "0 2px 8px rgba(11,31,58,0.04)",
-            }}
-          >
-            <div
-              className="flex items-center justify-center mb-2.5"
-              style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: "#F3F8FF" }}
-            >
-              <FileSpreadsheet size={18} color="#1877D6" />
-            </div>
-            <p className="text-[12px] font-semibold mb-1" style={{ color: "#0B1F3A" }}>MTD Status</p>
-            <div className="mt-auto">
-              <p className="text-[11px] leading-tight font-medium mb-2" style={{ color: "rgba(11,31,58,0.7)" }}>
-                Making Tax Digital
-              </p>
-              <span
-                className="inline-block px-2 py-0.5 text-[9px] font-bold rounded-full uppercase"
-                style={{
-                  backgroundColor: glanceMtdEnrolled ? "#F3F8FF" : "#FFFBEB",
-                  color: glanceMtdEnrolled ? "#0B1F3A" : "#0B1F3A",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                {glanceMtdEnrolled ? "Enrolled" : "Not Enrolled"}
-              </span>
-            </div>
-          </button>
-        </div>
-      </div>
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
