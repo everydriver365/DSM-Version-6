@@ -561,19 +561,30 @@ function SchedulePage() {
   const DANGER_BG = "#FEE2E2";
   const ACCENT = "#1877D6";
 
+  // Initials from a pupil display name (reuses pupilDisplayName for source of truth).
+  const initialsOf = (name: string) => {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return "?";
+    if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   const renderLessonRow = (l: Lesson, opts: { isLast: boolean }) => {
+    void opts.isLast;
     const name = pupilDisplayName(l.pupil);
     const endD = lessonEnd(l);
     const pastEnd = endD.getTime() < now.getTime();
     const isCancelled = l.status === "cancelled";
     const showActions = openActionsId === l.id;
 
-    // Overdue pill (matches "Payment due" treatment: rounded pill, danger tint)
-    const overdue =
-      pastEnd &&
-      l.payment_status === "unpaid" &&
-      (l.amount_due ?? 0) > 0 &&
-      !isCancelled;
+    const paymentStatus = (l.payment_status ?? "").toLowerCase();
+    const amountDue = l.amount_due ?? 0;
+    // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due pills.
+    const overdue = pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const isPrepaid = paymentStatus === "prepaid";
+    const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+
+    const avatarBg = (l.pupil_id && colourMap[l.pupil_id]) || "#E2E8F0";
 
     return (
       <div key={l.id}>
@@ -606,7 +617,6 @@ function SchedulePage() {
             alignItems: "center",
             minHeight: 56,
             background: "#FFFFFF",
-            borderTop: opts.isLast ? undefined : undefined,
           }}
         >
           <div style={{ width: 44, flexShrink: 0 }}>
@@ -622,16 +632,35 @@ function SchedulePage() {
             >
               {formatLessonTime(l)}
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: MUTED,
-                ...POPPINS,
-                marginTop: 3,
-              }}
-            >
-              {formatDurationShort(l.duration_minutes)}
-            </div>
+          </div>
+          {/* Pupil avatar — background comes from existing pupil.calendar_colour (colourMap). */}
+          <div
+            aria-hidden
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 999,
+              background: avatarBg,
+              color: "#FFFFFF",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              fontWeight: 500,
+              ...POPPINS,
+              flexShrink: 0,
+              overflow: "hidden",
+            }}
+          >
+            {l.pupil?.profile_image_url ? (
+              <img
+                src={l.pupil.profile_image_url}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              initialsOf(name)
+            )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -655,11 +684,11 @@ function SchedulePage() {
               }}
               className="truncate"
             >
-              {l.lesson_type || l.pickup_location || "Lesson"}
+              {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            {overdue ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+            {overdue && (
               <span
                 style={{
                   ...POPPINS,
@@ -673,9 +702,38 @@ function SchedulePage() {
               >
                 Overdue
               </span>
-            ) : (
-              <ChevronRight size={16} color="#CBD5E1" />
             )}
+            {isPrepaid && (
+              <span
+                style={{
+                  ...POPPINS,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  backgroundColor: "#E6F1FB",
+                  color: "#185FA5",
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                }}
+              >
+                Prepaid
+              </span>
+            )}
+            {isPaymentDue && (
+              <span
+                style={{
+                  ...POPPINS,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  backgroundColor: "#FBEFE1",
+                  color: "#B5661E",
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                }}
+              >
+                Payment due
+              </span>
+            )}
+            <ChevronRight size={16} color="#CBD5E1" />
           </div>
         </div>
 
@@ -725,6 +783,7 @@ function SchedulePage() {
       </div>
     );
   };
+
 
   // Compute gaps for the selected day (reusing existing buffer logic).
   const dayInfo = useMemo(() => {
