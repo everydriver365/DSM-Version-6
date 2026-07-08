@@ -3944,11 +3944,6 @@ function HomePage() {
               <StatCard label="Outstanding balance" value={outstanding > 0 ? `£${outstanding.toFixed(0)}` : '£0'} danger={outstanding > 0} onClick={() => setOutstandingOpen(true)} />
             </div>
 
-            {/* 3. TODAY'S TIMELINE */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>Today's timeline</div>
-              <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
-            </div>
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>
