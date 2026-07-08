@@ -13,7 +13,14 @@ export const Route = createFileRoute("/pay")({
 });
 
 const RYFT_PUBLIC_KEY =
+  (import.meta.env.VITE_RYFT_PUBLIC_KEY as string | undefined) ||
   "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
+
+if (typeof window !== "undefined" && !import.meta.env.VITE_RYFT_PUBLIC_KEY) {
+  console.warn(
+    "[pay] VITE_RYFT_PUBLIC_KEY is not set — falling back to Ryft sandbox key. Set VITE_RYFT_PUBLIC_KEY for production.",
+  );
+}
 
 declare global {
   interface Window {
