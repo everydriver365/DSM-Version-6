@@ -787,49 +787,58 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   if (tiles.length === 0) return null;
 
+  const sora = "'Sora', system-ui, -apple-system, sans-serif";
+  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
   return (
-    <div className="mt-2">
-      <div className="mx-4 flex items-end justify-between mb-4">
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
-            <span
-              className="text-[11px] uppercase"
-              style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-            >
-              DSM Live
-            </span>
-          </div>
-          <p
-            className="font-semibold uppercase"
+    <div style={{ marginTop: 8, fontFamily: manrope }}>
+      <div
+        style={{
+          margin: "0 20px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <span
             style={{
-              fontSize: 10,
-              color: "#9CA3AF",
-              letterSpacing: 1,
-              fontFamily: "Inter, sans-serif",
-              marginTop: 3,
-              marginLeft: 14,
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: "#CC2229",
+              flexShrink: 0,
+            }}
+          />
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: sora,
+              fontSize: 18,
+              fontWeight: 700,
+              color: "#0F2044",
             }}
           >
-            Live events, podcasts and webinars
-          </p>
+            DSM Live
+          </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
           <button
             type="button"
             onClick={() => navigate({ to: "/dsm-live" as never })}
-            className="font-bold"
             style={{
-              fontSize: 13,
-              color: "#1877D6",
-              fontFamily: "Inter, sans-serif",
               background: "none",
               border: "none",
+              color: "#1877D6",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: manrope,
               cursor: "pointer",
               padding: 0,
             }}
           >
-            See all →
+            View All
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <button
@@ -838,17 +847,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               disabled={!canScrollLeft}
               aria-label="Scroll left"
               style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
+                width: 28,
+                height: 28,
+                borderRadius: 999,
                 background: "#FFFFFF",
                 border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: canScrollLeft ? "pointer" : "default",
-                opacity: canScrollLeft ? 1 : 0.45,
+                opacity: canScrollLeft ? 1 : 0.4,
                 padding: 0,
               }}
             >
@@ -860,17 +869,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               disabled={!canScrollRight}
               aria-label="Scroll right"
               style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
+                width: 28,
+                height: 28,
+                borderRadius: 999,
                 background: "#FFFFFF",
                 border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: canScrollRight ? "pointer" : "default",
-                opacity: canScrollRight ? 1 : 0.45,
+                opacity: canScrollRight ? 1 : 0.4,
                 padding: 0,
               }}
             >
@@ -879,213 +888,209 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         </div>
       </div>
+
       <div
         ref={scrollRef}
         onScroll={updateScrollState}
         style={{
           display: "flex",
           flexDirection: "row",
-          gap: 10,
+          gap: 12,
           overflowX: "auto",
-          marginLeft: 16,
-          marginRight: 16,
-          paddingBottom: 8,
+          padding: "4px 20px 12px",
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
         {tiles.map((tile) => {
-              if (tile.kind === "session") {
-                const s = tile.item;
-                const bandColor = categoryColor(s.category);
-                const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
-                const typeLabel = isWebinar ? "WEBINAR" : "ZOOM";
-                const hero = s.image_url
-                  ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${s.image_url}) center/cover no-repeat`
-                  : `linear-gradient(135deg, ${bandColor}, #0F2044)`;
-                return (
-                  <div
-                    key={s.id}
-                    onClick={() => open(s.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        open(s.id);
-                      }
-                    }}
-                    style={{
-                      width: 160,
-                      height: 120,
-                      flexShrink: 0,
-                      scrollSnapAlign: "start",
-                      borderRadius: 12,
-                      overflow: "hidden",
-                      position: "relative",
-                      cursor: "pointer",
-                      userSelect: "none",
-                      background: hero,
-                      border: "1px solid #EEF2F7",
-                      boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 8,
-                        left: 8,
-                        fontSize: 9,
-                        letterSpacing: 0.6,
-                        color: bandColor,
-                        backgroundColor: "#FFFFFF",
-                        fontFamily: "Inter, sans-serif",
-                        padding: "2px 8px",
-                        borderRadius: 999,
-                        textTransform: "uppercase",
-                        fontWeight: 700,
-                        boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
-                      }}
-                    >
-                      {typeLabel}
-                    </span>
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        padding: "8px 10px",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: "#FFFFFF",
-                          lineHeight: 1.3,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          fontWeight: 700,
-                          fontFamily: "Inter, sans-serif",
-                          letterSpacing: -0.1,
-                        }}
-                      >
-                        {s.title}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: 10,
-                          color: "rgba(255,255,255,0.7)",
-                          marginTop: 2,
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {fmtDate(s.session_date)} · {fmtTime(s.session_time).replace(" ", "")}
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
-              const p = tile.item;
-              const hero = p.image_url
-                ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${p.image_url}) center/cover no-repeat`
-                : "linear-gradient(135deg, #7C3AED, #0F2044)";
-              return (
-                <div
-                  key={`pod-${p.id}`}
-                  onClick={() =>
-                    navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never })
+          if (tile.kind === "session") {
+            const s = tile.item;
+            const bandColor = categoryColor(s.category);
+            const isWebinar = (s.category ?? "").toLowerCase().includes("webinar");
+            const typeLabel = isWebinar ? "WEBINAR" : "LIVE SESSION";
+            const hero = s.image_url
+              ? `url(${s.image_url}) center/cover no-repeat`
+              : `linear-gradient(135deg, ${bandColor}, #0F2044)`;
+            return (
+              <div
+                key={s.id}
+                onClick={() => open(s.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    open(s.id);
                   }
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
-                    }
-                  }}
-                  style={{
-                    width: 160,
-                    height: 120,
-                    flexShrink: 0,
-                    scrollSnapAlign: "start",
-                    borderRadius: 12,
-                    overflow: "hidden",
-                    position: "relative",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    background: hero,
-                    border: "1px solid #EEF2F7",
-                    boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
-                  }}
-                >
+                }}
+                style={{
+                  width: 200,
+                  flexShrink: 0,
+                  scrollSnapAlign: "start",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2E6ED",
+                  boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ position: "relative", height: 110, background: hero }}>
                   <span
                     style={{
                       position: "absolute",
                       top: 8,
                       left: 8,
                       fontSize: 9,
-                      letterSpacing: 0.6,
-                      color: "#7C3AED",
-                      backgroundColor: "#FFFFFF",
-                      fontFamily: "Inter, sans-serif",
-                      padding: "2px 8px",
+                      letterSpacing: "0.08em",
+                      color: "#0F2044",
+                      background: "rgba(255,255,255,0.95)",
+                      fontFamily: sora,
+                      padding: "4px 8px",
                       borderRadius: 999,
                       textTransform: "uppercase",
                       fontWeight: 700,
-                      boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
                     }}
                   >
-                    PODCAST
+                    {typeLabel}
                   </span>
+                  {s.is_live && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        fontSize: 9,
+                        background: "#CC2229",
+                        color: "#fff",
+                        padding: "4px 8px",
+                        borderRadius: 999,
+                        fontWeight: 700,
+                      }}
+                    >
+                      LIVE
+                    </span>
+                  )}
+                </div>
+                <div style={{ padding: "10px 12px 12px" }}>
                   <div
                     style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      padding: "8px 10px",
-                      display: "flex",
-                      flexDirection: "column",
+                      fontFamily: sora,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#0F2044",
+                      lineHeight: 1.3,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      minHeight: 34,
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#FFFFFF",
-                        lineHeight: 1.3,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                        letterSpacing: -0.1,
-                      }}
-                    >
-                      {p.title}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 10,
-                        color: "rgba(255,255,255,0.7)",
-                        marginTop: 2,
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
-                    </span>
+                    {s.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(15,32,68,0.55)",
+                      marginTop: 4,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {fmtDate(s.session_date)} · {fmtTime(s.session_time).replace(" ", "")}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          }
+          const p = tile.item;
+          const hero = p.image_url
+            ? `url(${p.image_url}) center/cover no-repeat`
+            : "linear-gradient(135deg, #7C3AED, #0F2044)";
+          return (
+            <div
+              key={`pod-${p.id}`}
+              onClick={() =>
+                navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never })
+              }
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: p.id } as never });
+                }
+              }}
+              style={{
+                width: 200,
+                flexShrink: 0,
+                scrollSnapAlign: "start",
+                borderRadius: 16,
+                overflow: "hidden",
+                cursor: "pointer",
+                userSelect: "none",
+                background: "#FFFFFF",
+                border: "1px solid #E2E6ED",
+                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div style={{ position: "relative", height: 110, background: hero }}>
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    fontSize: 9,
+                    letterSpacing: "0.08em",
+                    color: "#0F2044",
+                    background: "rgba(255,255,255,0.95)",
+                    fontFamily: sora,
+                    padding: "4px 8px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                  }}
+                >
+                  🎙️ Podcast
+                </span>
+              </div>
+              <div style={{ padding: "10px 12px 12px" }}>
+                <div
+                  style={{
+                    fontFamily: sora,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "#0F2044",
+                    lineHeight: 1.3,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    minHeight: 34,
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "rgba(15,32,68,0.55)",
+                    marginTop: 4,
+                    fontWeight: 500,
+                  }}
+                >
+                  {p.guest_name ? `with ${p.guest_name}` : "DSM Podcast"}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
