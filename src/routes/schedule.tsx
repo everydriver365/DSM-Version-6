@@ -641,32 +641,23 @@ function SchedulePage() {
     const timeText = formatLessonTime(l);
     const durationText = formatDurationShort(l.duration_minutes);
 
-    // Payment pill — matches home "Teaching today" tile treatment.
+    // Payment pill — matches home "Today's timeline" tile treatment (rounded pills, muted palette).
+    const PILL_BASE: React.CSSProperties = {
+      fontSize: 12,
+      fontWeight: 600,
+      padding: "4px 10px",
+      borderRadius: 999,
+      ...POPPINS,
+    };
     let pill: React.ReactNode = null;
     if (overdue) {
-      pill = (
-        <span style={{ background: DANGER_BG, color: DANGER, fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
-          £{Math.round(amountDue)}
-        </span>
-      );
+      pill = <span style={{ ...PILL_BASE, background: "#FDECC8", color: "#8A5A00" }}>£{Math.round(amountDue)}</span>;
     } else if (isPaymentDue) {
-      pill = (
-        <span style={{ background: "#FEF3C7", color: "#92400E", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
-          £{Math.round(amountDue)}
-        </span>
-      );
+      pill = <span style={{ ...PILL_BASE, background: "#FDECC8", color: "#8A5A00" }}>£{Math.round(amountDue)}</span>;
     } else if (isPrepaid) {
-      pill = (
-        <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
-          Prepaid
-        </span>
-      );
+      pill = <span style={{ ...PILL_BASE, background: "#E7F7EC", color: "#137333" }}>Prepaid</span>;
     } else if (isPaid) {
-      pill = (
-        <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>
-          Paid ✓
-        </span>
-      );
+      pill = <span style={{ ...PILL_BASE, background: "#E7F7EC", color: "#137333" }}>Paid ✓</span>;
     }
 
     return (
@@ -701,23 +692,25 @@ function SchedulePage() {
             padding: "12px 16px",
             background: "#FFFFFF",
             textAlign: "left",
+            minHeight: 56,
             ...POPPINS,
           }}
         >
-          {/* Pupil avatar circle — pupil calendar_colour, matching home "Teaching today" tile. */}
+          {/* Pupil avatar circle — pupil calendar_colour, matching home "Today's timeline" tile. */}
           <div
             aria-hidden
             style={{
               width: 40,
               height: 40,
-              borderRadius: "50%",
+              borderRadius: 999,
               background: avatarBg,
               color: "#FFFFFF",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 700,
+              letterSpacing: 0.2,
               flexShrink: 0,
               overflow: "hidden",
               ...POPPINS,
@@ -736,9 +729,9 @@ function SchedulePage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 14,
+                fontSize: 15,
                 fontWeight: 600,
-                color: isCancelled ? MUTED : "#0F2044",
+                color: isCancelled ? "#64748B" : "#0F2044",
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
                 overflow: "hidden",
@@ -749,14 +742,15 @@ function SchedulePage() {
               {name}
             </div>
             <div
-              style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}
+              style={{ fontSize: 12, color: "#64748B", ...POPPINS, marginTop: 2, fontVariantNumeric: "tabular-nums" }}
             >
-              {timeText} · {durationText}
+              {timeText} · {l.duration_minutes ?? 60} mins
             </div>
           </div>
           {pill}
-          <ChevronRight size={14} color="#D1D5DB" />
+          <IconChevronRight size={18} stroke={1.75} color="#64748B" style={{ flexShrink: 0 }} />
         </div>
+
 
         {showActions && (
           <div
@@ -1030,7 +1024,7 @@ function SchedulePage() {
             key={`seg-${segIdx}`}
             style={{
               margin: "0 16px 12px",
-              border: `0.5px solid #F3F4F6`,
+              border: `0.5px solid rgba(15,32,68,0.10)`,
               borderRadius: 16,
               background: "#FFFFFF",
               overflow: "hidden",
@@ -1042,7 +1036,7 @@ function SchedulePage() {
                 i > 0 ? (
                   <div
                     key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid #F3F4F6` }}
+                    style={{ height: 0, borderTop: `0.5px solid rgba(15,32,68,0.10)` }}
                   />
                 ) : null;
 

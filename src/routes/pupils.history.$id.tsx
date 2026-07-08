@@ -120,7 +120,7 @@ function PupilHistoryPage() {
           groups.map((g) => (
             <div key={g.key}>
               <SectionHeader>{g.label}</SectionHeader>
-              <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
+              <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
                 {g.items.map((l, idx) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isCompleted = l.status === "completed";
@@ -133,23 +133,23 @@ function PupilHistoryPage() {
                       style={{
                         width: "100%", display: "flex", alignItems: "center", gap: 12,
                         padding: "12px 16px", cursor: "pointer",
-                        borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+                        borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)",
                         ...POPPINS,
                       }}
                     >
-                      <div style={{ width: 40, height: 40, borderRadius: "50%", background: bg, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 999, background: bg, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
                         <Calendar size={18} color="#FFFFFF" />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: isCancelled ? "#6B7280" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                           {formatDateShort(d)}
                         </div>
-                        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                        <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
                           {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                         </div>
                       </div>
                       {isCancelled ? (
-                        <span style={{ background: "#FEE2E2", color: "#991B1B", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Cancelled</span>
+                        <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                       ) : isCompleted ? (
                         <Button
                           variant="ghost"
@@ -163,7 +163,7 @@ function PupilHistoryPage() {
                           Feedback
                         </Button>
                       ) : (
-                        <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS, textTransform: "capitalize" }}>
+                        <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS, textTransform: "capitalize" }}>
                           {l.status}
                         </span>
                       )}
