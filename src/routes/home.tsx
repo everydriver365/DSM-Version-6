@@ -58,7 +58,6 @@ import {
   UserCircle,
   PlayCircle,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
   Send,
   CheckCheck,
