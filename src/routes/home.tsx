@@ -3017,14 +3017,6 @@ function HomePage() {
     if (!q) return outstandingBreakdown;
     return outstandingBreakdown.filter((p) => p.name.toLowerCase().includes(q));
   })();
-  const todayBriefingHeadline = todayLessons.length === 0
-    ? "No lessons today — enjoy the breather"
-    : `${todayLessons.length} lesson${todayLessons.length===1?'':'s'} today · £${todayEarnings.toFixed(0)} in`;
-  const todayBriefingSub = nextFreeSlot
-    ? `Next free slot ${nextFreeSlot}`
-    : outstanding > 0
-      ? `£${outstanding.toFixed(0)} outstanding across ${outstandingBreakdown.length} pupil${outstandingBreakdown.length===1?'':'s'}`
-      : "You're all caught up";
 
   if (isDesktop) {
     const now = new Date();
@@ -4026,28 +4018,6 @@ function HomePage() {
       </div>
 
 
-        {/* Smart business card */}
-        <div style={{ margin:'16px 16px 0', borderRadius:16, padding:'14px 16px', background:'linear-gradient(135deg, #FFFFFF 0%, #F3F8FF 100%)', border:'0.5px solid #E2E6ED', boxShadow:'0 4px 14px rgba(11,31,58,0.06)', display:'flex', alignItems:'center', gap:12 }}>
-          <div style={{ width:48, height:48, borderRadius:14, background:'linear-gradient(135deg, #1877D6 0%, #1A52A0 100%)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-            <Sparkles size={22} color="#fff" />
-          </div>
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:13, fontWeight:800, color:'#0B1F3A', fontFamily:'Inter, sans-serif' }}>
-              {todayBriefingHeadline}
-            </div>
-            <div style={{ fontSize:11, color:'rgba(11,31,58,0.65)', marginTop:2, fontFamily:'Inter, sans-serif' }}>
-              {todayBriefingSub}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/briefing' })}
-            aria-label="Open briefing"
-            style={{ width:32, height:32, borderRadius:10, border:'none', background:'rgba(11,31,58,0.06)', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0 }}
-          >
-            <ChevronRight size={16} color="#0B1F3A" />
-          </button>
-        </div>
 
         {/* TODAY'S TIMELINE CARD */}
         {(() => {
