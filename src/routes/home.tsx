@@ -4131,8 +4131,16 @@ function HomePage() {
                       if (row.kind === 'gap') {
                         const potentialLow = Math.round((row.mins / 60) * 40);
                         const potentialHigh = Math.round((row.mins / 60) * 55);
-                        const nearbyPupils = pupils.slice(0, 3);
-                        const extra = Math.max(0, pupils.length - 3);
+                        const seen = new Set<string>();
+                        const nearbyPupils: { id: string; name: string }[] = [];
+                        for (const s of sorted) {
+                          const id = String(s.pupil_id ?? pupilName(s));
+                          if (seen.has(id)) continue;
+                          seen.add(id);
+                          nearbyPupils.push({ id, name: pupilName(s) });
+                          if (nearbyPupils.length >= 3) break;
+                        }
+                        const extra = Math.max(0, sorted.length - nearbyPupils.length);
                         return (
                           <div key={`gap-${idx}`} style={{ display: 'flex', gap: 10, minHeight: 96 }}>
                             <div style={{ width: 52, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
