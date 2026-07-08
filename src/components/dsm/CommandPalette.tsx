@@ -33,7 +33,9 @@ import {
   ShieldCheck,
   Bell,
   HelpCircle,
+  Users,
 } from "lucide-react";
+
 import { supabase } from "@/lib/supabaseClient";
 import { haptic } from "@/lib/haptics";
 
