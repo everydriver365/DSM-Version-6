@@ -3930,9 +3930,9 @@ function HomePage() {
               };
 
               return (
-                <div style={{ ...cardBase, overflow: 'hidden' }}>
+                <div style={{ fontFamily: PF }}>
                   {/* Card header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
@@ -3951,6 +3951,7 @@ function HomePage() {
                     const dueUnpaid = amt > 0 && !isPaid;
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
+                    const initials = initialsOf(name);
 
                     let pill: React.ReactNode = null;
                     if (isLive) {
@@ -3980,25 +3981,46 @@ function HomePage() {
                         role="button"
                         tabIndex={0}
                         style={{
+                          minHeight: 64,
+                          margin: '0 0 10px',
                           padding: '12px 16px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 12,
                           cursor: 'pointer',
-                          borderTop: `0.5px solid ${BORDER}`,
+                          background: '#FFFFFF',
+                          border: `0.5px solid ${BORDER}`,
+                          borderRadius: 16,
+                          boxSizing: 'border-box',
                         }}
                       >
                         <div
                           aria-hidden
                           style={{
+                            position: 'relative',
                             width: 40, height: 40, borderRadius: 999,
-                            background: ACCENT, color: '#FFFFFF',
+                            background: NAVY, color: '#FFFFFF',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
                             flexShrink: 0,
                           }}
                         >
-                          {initialsOf(name)}
+                          {isLive && (
+                            <span
+                              aria-label="Live"
+                              style={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                width: 8,
+                                height: 8,
+                                borderRadius: 999,
+                                backgroundColor: '#DC2626',
+                                boxShadow: '0 0 0 2px #FFFFFF',
+                              }}
+                            />
+                          )}
+                          {initials}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
