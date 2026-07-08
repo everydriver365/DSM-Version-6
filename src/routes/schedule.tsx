@@ -214,7 +214,6 @@ function SchedulePage() {
   const [openActionsId, setOpenActionsId] = useState<string | null>(null);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
-  const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
   const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
