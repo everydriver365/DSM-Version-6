@@ -3984,123 +3984,116 @@ function HomePage() {
               })}
             </div>
 
-            {sorted.length === 0 ? (
-              <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
-                {tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons'}
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {rows.map((row, idx) => {
-                  if (row.kind === 'gap') {
+            {(() => {
+              const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
+              const headerLabel = tab === 'today' ? 'Teaching today' : tab === 'tomorrow' ? 'Teaching tomorrow' : 'Upcoming lessons';
+              const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
+
+              if (lessonRows.length === 0) {
+                return (
+                  <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
+                    {emptyLabel}
+                  </div>
+                );
+              }
+
+              const initialsOf = (name: string) => {
+                const parts = name.trim().split(/\s+/).filter(Boolean);
+                if (parts.length === 0) return '?';
+                if (parts.length === 1) {
+                  const p = parts[0];
+                  return (p[0] + (p[1] ?? '')).toUpperCase();
+                }
+                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+              };
+
+              return (
+                <div style={{ ...cardBase, overflow: 'hidden' }}>
+                  {/* Card header */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 12px' }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>{headerLabel}</div>
+                    <div style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                      {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
+                    </div>
+                  </div>
+
+                  {lessonRows.map((row, idx) => {
+                    const l = row.l;
+                    const start = lessonDateTime(l);
+                    const dur = l.duration_minutes ?? 60;
+                    const end = new Date(start.getTime() + dur * 60000);
+                    const isLive = nowT >= start && nowT < end;
+                    const payStatus = (l.payment_status ?? '').toLowerCase();
+                    const amt = Number(l.amount_due ?? 0);
+                    const isPaid = payStatus === 'paid' || payStatus === 'prepaid';
+                    const dueUnpaid = amt > 0 && !isPaid;
+                    const name = pupilName(l);
+                    const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
+
+                    let pill: React.ReactNode = null;
+                    if (isLive) {
+                      pill = (
+                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                          Live
+                        </span>
+                      );
+                    } else if (isPaid) {
+                      pill = (
+                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                          Paid ✓
+                        </span>
+                      );
+                    } else if (dueUnpaid) {
+                      pill = (
+                        <span style={{ background: '#FDECC8', color: '#8A5A00', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                          £{amt.toFixed(0)}
+                        </span>
+                      );
+                    }
+
                     return (
                       <div
-                        key={`gap-${idx}`}
-                        onClick={() => navigate({ to: '/gaps' })}
+                        key={l.id}
+                        onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
                         role="button"
                         tabIndex={0}
                         style={{
-                          borderRadius: 14,
-                          border: `1px dashed ${BORDER}`,
-                          background: '#FAFBFC',
-                          padding: '12px 14px',
-                          minHeight: 56,
+                          padding: '12px 16px',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'space-between',
+                          gap: 12,
                           cursor: 'pointer',
-                          fontFamily: PF,
+                          borderTop: `0.5px solid ${BORDER}`,
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: NAVY, fontVariantNumeric: 'tabular-nums' }}>{fmt24(row.start)}</span>
-                          <span style={{ fontSize: 13, color: MUTED }}>— open · {row.mins}m</span>
+                        <div
+                          aria-hidden
+                          style={{
+                            width: 40, height: 40, borderRadius: 999,
+                            background: ACCENT, color: '#FFFFFF',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {initialsOf(name)}
                         </div>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: ACCENT }}>Tap to fill →</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {name}
+                          </div>
+                          <div style={{ fontSize: 12, color: MUTED, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                            {timeLabel} · {dur} mins
+                          </div>
+                        </div>
+                        {pill}
+                        <IconChevronRight size={18} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
                       </div>
                     );
-                  }
-                  const l = row.l;
-                  const start = lessonDateTime(l);
-                  const dur = l.duration_minutes ?? 60;
-                  const end = new Date(start.getTime() + dur * 60000);
-                  const isLive = nowT >= start && nowT < end;
-                  const payStatus = (l.payment_status ?? '').toLowerCase();
-                  const amt = Number(l.amount_due ?? 0);
-                  const dueUnpaid = amt > 0 && payStatus !== 'paid' && payStatus !== 'prepaid';
-                  const phone = l.pupils?.phone ?? '';
-                  const stop = (e: React.MouseEvent) => e.stopPropagation();
-
-                  return (
-                    <div
-                      key={l.id}
-                      onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
-                      role="button"
-                      tabIndex={0}
-                      style={{
-                        ...cardBase,
-                        padding: '10px 12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                        minHeight: 64,
-                        cursor: 'pointer',
-                        borderColor: isLive ? ACCENT : BORDER,
-                        borderWidth: isLive ? 1 : 0.5,
-                        borderStyle: 'solid',
-                      }}
-                    >
-                      {/* Time chip */}
-                      <div style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
-                        background: isLive ? ACCENT : '#F1F5F9',
-                        color: isLive ? '#FFFFFF' : NAVY,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        fontVariantNumeric: 'tabular-nums',
-                      }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1 }}>{fmt24(start)}</span>
-                        {isLive && <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 0.6, marginTop: 2, textTransform: 'uppercase' }}>Live</span>}
-                      </div>
-
-                      {/* Middle */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                          <span style={{ fontSize: 15, fontWeight: 500, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pupilName(l)}</span>
-                          {dueUnpaid && (
-                            <span style={{ background: AMBER_BG, color: AMBER_FG, fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 999 }}>Due</span>
-                          )}
-                        </div>
-                        <div style={{ fontSize: 12, color: MUTED, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                          {dur} min{amt > 0 ? ` · £${amt.toFixed(0)}` : ''}
-                        </div>
-                      </div>
-
-                      {/* Right */}
-                      {isLive ? (
-                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                          <button type="button" aria-label="Call" onClick={(e) => { stop(e); if (phone) window.location.href = `tel:${phone}`; else toast('No phone number'); }} style={{ width: 34, height: 34, borderRadius: 10, border: `0.5px solid ${BORDER}`, background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: NAVY }}>
-                            <IconPhone size={16} stroke={1.75} />
-                          </button>
-                          <button type="button" aria-label="Text" onClick={(e) => { stop(e); if (phone) window.location.href = `sms:${phone}`; else navigate({ to: '/messages' }); }} style={{ width: 34, height: 34, borderRadius: 10, border: `0.5px solid ${BORDER}`, background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: NAVY }}>
-                            <IconMessage size={16} stroke={1.75} />
-                          </button>
-                          <button type="button" aria-label="Start" onClick={(e) => { stop(e); navigate({ to: '/live' }); }} style={{ width: 34, height: 34, borderRadius: 10, border: 'none', background: ACCENT, color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                            <IconPlayerPlay size={16} stroke={1.75} />
-                          </button>
-                        </div>
-                      ) : (
-                        <IconChevronRight size={18} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                  })}
+                </div>
+              );
+            })()}
 
             {/* 4. GAP WITH MATCHED PUPILS */}
             {(() => {
