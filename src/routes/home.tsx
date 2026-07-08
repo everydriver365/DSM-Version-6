@@ -849,9 +849,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                   }
                 }}
                 style={{
-                  width: 200,
-                  flexShrink: 0,
-                  scrollSnapAlign: "start",
+                  minWidth: 0,
                   borderRadius: 16,
                   overflow: "hidden",
                   cursor: "pointer",
