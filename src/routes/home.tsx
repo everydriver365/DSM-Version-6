@@ -4156,7 +4156,7 @@ function HomePage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.3 }}>
-                      {firstGap.mins} mins free · {gapTimeLabel}
+                      {titleText}
                     </div>
                     <div style={{ fontSize: 11, color: MUTED, marginTop: 3, lineHeight: 1.3 }}>
                       {matchedCount > 0 ? `${matchedCount} pupil${matchedCount === 1 ? '' : 's'} may fit` : 'No waitlist match'}
