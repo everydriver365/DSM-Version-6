@@ -5295,7 +5295,7 @@ function HomePage() {
               );
             }
 
-            return <>{rows}</>;
+            return <div style={{ border: '1px solid #E5E7EB', borderRadius: 14, overflow: 'hidden', background: '#fff', fontFamily: 'Poppins, Inter, sans-serif' }}>{rows}</div>;
           })()
         )}
       </div>
