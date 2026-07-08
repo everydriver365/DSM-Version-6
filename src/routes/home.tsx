@@ -1350,6 +1350,27 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
 function HomePage() {
   const navigate = useNavigate();
+
+  // ===== Mobile workspaces carousel state =====
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [activeWs, setActiveWsState] = useState(0);
+  const wsIsProgrammatic = useRef(false);
+  const setActiveWs = (i: number) => {
+    setActiveWsState(i);
+    const el = carouselRef.current;
+    if (!el) return;
+    wsIsProgrammatic.current = true;
+    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
+  };
+  const handleCarouselScroll = () => {
+    if (wsIsProgrammatic.current) return;
+    const el = carouselRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(6, i)));
+  };
+  const [pupilQuery, setPupilQuery] = useState("");
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -2941,26 +2962,6 @@ function HomePage() {
   }
 
   // ============ DESKTOP LAYOUT (>=768px) ============
-  // ===== Mobile workspaces carousel state =====
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  const [activeWs, setActiveWsState] = useState(0);
-  const wsIsProgrammatic = useRef(false);
-  const setActiveWs = (i: number) => {
-    setActiveWsState(i);
-    const el = carouselRef.current;
-    if (!el) return;
-    wsIsProgrammatic.current = true;
-    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
-    window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
-  };
-  const handleCarouselScroll = () => {
-    if (wsIsProgrammatic.current) return;
-    const el = carouselRef.current;
-    if (!el) return;
-    const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(6, i)));
-  };
-  const [pupilQuery, setPupilQuery] = useState("");
   const todaysPupilsFiltered = (() => {
     const seen = new Set<string>();
     const rows: Array<{ id: string; name: string; initials: string; avatar: string | null; timeLabel: string }> = [];
