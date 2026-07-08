@@ -5643,115 +5643,106 @@ function HomePage() {
           <div style={{ fontSize:22, fontWeight:900, color:'#0B1F3A', letterSpacing:-0.5, fontFamily:'Inter, sans-serif' }}>Tools</div>
           <div style={{ fontSize:13, color:'rgba(11,31,58,0.60)', marginTop:2 }}>Everything, in one place</div>
         </div>
-      {/* QUICK ACCESS */}
-      <div className="mx-4 mt-4">
-        <div className="flex items-center justify-between">
-          {searchOpen ? (
-            <div className="flex items-center flex-1 gap-2" style={{ height: 32 }}>
-              <Search size={16} color="#6B7280" />
-              <input
-                autoFocus
-                type="text"
-                placeholder="Search…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 text-[13px] text-[#0B1F3A] outline-none bg-transparent"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              />
-              <button
-                type="button"
-                onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
-                className="text-[12px] text-[#6B7280]"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-[11px] uppercase"
-                  style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-                >
-                  QUICK ACCESS
-                </span>
-                <button
-                  type="button"
-                  aria-label="Search quick access"
-                  onClick={() => setSearchOpen(true)}
-                  className="flex items-center justify-center"
-                  style={{ width: 24, height: 24 }}
-                >
-                  <Search size={14} color="#6B7280" />
-                </button>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/quickaccess" as never })}
-                  className="text-[13px]"
-                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
-                >
-                  See all
-                </button>
-                <button
-                  type="button"
-                  onClick={() => alert("Coming soon")}
-                  className="text-[13px]"
-                  style={{ color: "#1877D6", fontFamily: "Inter, sans-serif" }}
-                >
-                  Edit pins
-                </button>
-              </div>
-            </>
-
-          )}
-        </div>
-        <div
-          className="quick-access-scroll"
-          style={{
-            marginTop: 10,
-            display: "grid",
-            gridTemplateRows: "repeat(2, 80px)",
-            gridAutoFlow: "column",
-            gridAutoColumns: "calc((100% - 16px) / 3)",
-            columnGap: 8,
-            rowGap: 8,
-            overflowX: "auto",
-            overflowY: "hidden",
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          {quickAccessTiles
-            .filter((t) => t.label.toLowerCase().includes(searchQuery.toLowerCase()))
-            .map((t) => (
-              <AccessTile
-                key={`${t.route}-${t.label}`}
-                icon={t.icon}
-                route={t.route}
-                label={t.label}
-                onClick={() => navigate({ to: t.route })}
-              />
-            ))}
-          {quickAccessTiles.filter((t) =>
-            t.label.toLowerCase().includes(searchQuery.toLowerCase())
-          ).length === 0 && (
-            <div
-              className="flex items-center justify-center text-[12px] text-[#6B7280]"
-              style={{ width: "100%", height: 168 }}
-            >
-              No results for “{searchQuery}”
-            </div>
+      {/* SEARCH */}
+      <div className="mx-4 mt-2">
+        <div className="flex items-center gap-2 rounded-xl bg-white" style={{ border: '0.5px solid #EEF2F7', padding: '8px 12px' }}>
+          <Search size={16} color="#6B7280" />
+          <input
+            type="text"
+            placeholder="Search tools…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 text-[13px] text-[#0B1F3A] outline-none bg-transparent"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          />
+          {searchQuery && (
+            <button type="button" onClick={() => setSearchQuery("")} className="text-[12px] text-[#6B7280]">Clear</button>
           )}
         </div>
       </div>
-      <style>{`
-        .quick-access-scroll::-webkit-scrollbar {
-          display: none;
+
+      {/* TOOL GROUPS */}
+      {(() => {
+        const groups: Array<{ title: string; tiles: Array<{ icon: React.ReactNode; label: string; route: string }> }> = [
+          { title: 'Teaching', tiles: [
+            { icon: <ClipboardCheck size={20} color="#FFFFFF" />, label: 'EOL wizard', route: '/lessons' },
+            { icon: <BookOpen size={20} color="#FFFFFF" />, label: 'Syllabus', route: '/standards' },
+            { icon: <GraduationCap size={20} color="#FFFFFF" />, label: 'Test day', route: '/testday' },
+            { icon: <ClipboardList size={20} color="#FFFFFF" />, label: 'Mock tests', route: '/mock-tests' },
+            { icon: <FileText size={20} color="#FFFFFF" />, label: 'Reflective logs', route: '/reflective-log' },
+            { icon: <FileSignature size={20} color="#FFFFFF" />, label: 'Lesson notes', route: '/lesson-notes' },
+            { icon: <Clock size={20} color="#FFFFFF" />, label: 'Running late', route: '/running-late' },
+            { icon: <CalendarIcon size={20} color="#FFFFFF" />, label: 'Lesson plan', route: '/lesson-plan' },
+          ]},
+          { title: 'Business', tiles: [
+            { icon: <BookOpen size={20} color="#FFFFFF" />, label: 'CPD log', route: '/cpd' },
+            { icon: <Award size={20} color="#FFFFFF" />, label: 'Certifications', route: '/certifications' },
+            { icon: <FolderOpen size={20} color="#FFFFFF" />, label: 'Document vault', route: '/documents' },
+            { icon: <Receipt size={20} color="#FFFFFF" />, label: 'Expenses', route: '/expenses' },
+            { icon: <Car size={20} color="#FFFFFF" />, label: 'Mileage', route: '/mileage' },
+            { icon: <Car size={20} color="#FFFFFF" />, label: 'Vehicle', route: '/vehicle' },
+            { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, label: 'Invoices', route: '/invoices' },
+            { icon: <CalendarCheck size={20} color="#FFFFFF" />, label: 'Month end', route: '/monthend' },
+          ]},
+          { title: 'Admin', tiles: [
+            { icon: <SettingsIcon size={20} color="#FFFFFF" />, label: 'Settings', route: '/settings' },
+            { icon: <HelpCircle size={20} color="#FFFFFF" />, label: 'Intake questions', route: '/intake-questions' },
+            { icon: <CalendarOff size={20} color="#FFFFFF" />, label: 'No-show policy', route: '/no-show-policy' },
+            { icon: <MapPin size={20} color="#FFFFFF" />, label: 'Postcode rates', route: '/postcode-rates' },
+            { icon: <Gift size={20} color="#FFFFFF" />, label: 'Discount codes', route: '/discount-codes' },
+            { icon: <Zap size={20} color="#FFFFFF" />, label: 'Automations', route: '/automations' },
+            { icon: <FileText size={20} color="#FFFFFF" />, label: 'T&Cs', route: '/terms' },
+          ]},
+          { title: 'Reports', tiles: [
+            { icon: <BarChart3 size={20} color="#FFFFFF" />, label: 'MTD', route: '/month-to-date' },
+            { icon: <Calculator size={20} color="#FFFFFF" />, label: 'Tax report', route: '/tax-report' },
+            { icon: <BarChart2 size={20} color="#FFFFFF" />, label: 'Weekly report', route: '/weekly-report' },
+            { icon: <CalendarDays size={20} color="#FFFFFF" />, label: 'End of day', route: '/end-of-day' },
+            { icon: <FileText size={20} color="#FFFFFF" />, label: 'Annual report', route: '/reports' },
+            { icon: <TrendingUp size={20} color="#FFFFFF" />, label: 'Earnings forecast', route: '/earnings-forecast' },
+            { icon: <Activity size={20} color="#FFFFFF" />, label: 'Business health', route: '/business-health' },
+          ]},
+        ];
+        const q = searchQuery.trim().toLowerCase();
+        const filtered = groups
+          .map((g) => ({ ...g, tiles: q ? g.tiles.filter((t) => t.label.toLowerCase().includes(q)) : g.tiles }))
+          .filter((g) => g.tiles.length > 0);
+        if (filtered.length === 0) {
+          return (
+            <div className="mx-4 mt-6 text-center text-[13px] text-[#6B7280]">
+              No tools match “{searchQuery}”
+            </div>
+          );
         }
+        return filtered.map((g) => (
+          <div key={g.title} className="mx-4 mt-5">
+            <div
+              className="text-[11px] uppercase mb-2"
+              style={{ color: '#6B7280', letterSpacing: 0.8, fontFamily: 'Inter, sans-serif', fontWeight: 700 }}
+            >
+              {g.title}
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 8,
+              }}
+            >
+              {g.tiles.map((t) => (
+                <AccessTile
+                  key={`${g.title}-${t.route}-${t.label}`}
+                  icon={t.icon}
+                  route={t.route}
+                  label={t.label}
+                  onClick={() => navigate({ to: t.route as never })}
+                />
+              ))}
+            </div>
+          </div>
+        ));
+      })()}
+      <style>{`
         @keyframes skeleton-pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
@@ -5760,6 +5751,7 @@ function HomePage() {
           animation: skeleton-pulse 1.5s ease-in-out infinite;
         }
       `}</style>
+
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
