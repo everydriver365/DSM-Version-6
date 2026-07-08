@@ -99,7 +99,7 @@ function FuelPage() {
       setAllJourneysMonth(monthLogs || []);
 
       const { data: recentLogs } = await supabase
-        .from("mileage_log")
+        .from("mileage_logs")
         .select("id, trip_date, distance_miles, fuel_cost, purpose")
         .eq("instructor_id", uid)
         .order("trip_date", { ascending: false })
