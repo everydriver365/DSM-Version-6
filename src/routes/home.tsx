@@ -4559,30 +4559,30 @@ function HomePage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EEF2F7",
-          borderRadius: 16,
-          padding: "12px 0",
-          fontFamily: "Inter, sans-serif",
+          padding: "0",
+          fontFamily: "Poppins, Inter, sans-serif",
         }}
       >
         {/* Header */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: "0 16px 8px 16px" }}
+          style={{ padding: "4px 4px 12px 4px" }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: 20, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, Inter, sans-serif", letterSpacing: "-0.01em" }}>
             Schedule
           </div>
           <button
             type="button"
             onClick={() => navigate({ to: "/schedule" })}
             style={{
-              fontSize: 12,
-              fontWeight: 600,
+              fontSize: 13,
+              fontWeight: 500,
               color: "#1877D6",
               background: "transparent",
+              border: "none",
+              padding: 0,
               cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, Inter, sans-serif",
             }}
           >
             View all →
@@ -4594,10 +4594,11 @@ function HomePage() {
           style={{
             display: "flex",
             gap: 4,
-            margin: "0 16px 8px 16px",
+            margin: "0 0 10px 0",
             padding: 3,
-            backgroundColor: "#F3F4F6",
+            backgroundColor: "#F1F5F9",
             borderRadius: 10,
+            fontFamily: "Poppins, Inter, sans-serif",
           }}
         >
           <TabBtn active={tab === "today"} onClick={() => setTab("today")}>
@@ -4610,6 +4611,7 @@ function HomePage() {
             Next
           </TabBtn>
         </div>
+
 
 
         {tabLessons.length === 0 ? (
@@ -4940,87 +4942,94 @@ function HomePage() {
                         );
                       }
                     }}
-                    className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
+                    className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 cursor-pointer"
                     style={{
-                      padding: "10px 16px",
-                      borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                      padding: "12px 14px",
                       background: "#fff",
+                      fontFamily: "Poppins, Inter, sans-serif",
                     }}
                   >
                     {(() => {
-                      const needsAttention =
-                        !isCancelled &&
-                        ((pastEnd && !l.eol_completed) ||
-                          (l.payment_status === "unpaid" || !l.payment_status));
+                      const chipBg = isCurrent ? "#FCEBEB" : "#E6F1FB";
+                      const chipFg = isCurrent ? "#A32D2D" : "#185FA5";
                       return (
                         <div
-                          className="relative shrink-0 text-right"
-                          style={{ width: 40 }}
+                          className="relative shrink-0"
+                          style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 13,
+                            background: chipBg,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          {needsAttention && (
+                          {isCurrent && (
                             <span
-                              aria-label="Needs attention"
+                              aria-label="Live"
                               style={{
                                 position: "absolute",
-                                top: -2,
-                                left: -2,
-                                width: 8,
-                                height: 8,
+                                top: 4,
+                                right: 4,
+                                width: 6,
+                                height: 6,
                                 borderRadius: 999,
-                                backgroundColor: "#1877D6",
+                                backgroundColor: "#DC2626",
                               }}
                             />
                           )}
                           <div
-                            className="truncate text-xs font-bold"
                             style={{
-                              color: timeColor,
+                              fontSize: 11,
+                              fontWeight: 500,
+                              color: chipFg,
+                              fontFamily: "Poppins, Inter, sans-serif",
+                              fontVariantNumeric: "tabular-nums",
                               textDecoration: isCancelled ? "line-through" : "none",
                             }}
                           >
                             {fmtT(startD)}
-                          </div>
-                          <div
-                            className="truncate text-[10px] text-[#9CA3AF]"
-                            style={{ marginTop: 2 }}
-                          >
-                            {durShort(l.duration_minutes)}
                           </div>
                         </div>
                       );
                     })()}
                     <div className="min-w-0">
                       <div
-                        className="truncate text-[13px] font-semibold"
+                        className="truncate"
                         style={{
+                          fontSize: 15,
+                          fontWeight: 500,
                           color: nameColor,
+                          fontFamily: "Poppins, Inter, sans-serif",
                           textDecoration: isCancelled ? "line-through" : "none",
                         }}
                       >
                         {l.pupils?.name ?? "Pupil"}
                       </div>
+                      <div
+                        className="flex items-center gap-2 flex-wrap"
+                        style={{ marginTop: 2 }}
+                      >
+                        <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
+                          {durShort(l.duration_minutes)}
+                        </span>
+                        {badges.length > 0 && badges}
+                      </div>
                       {l.pickup_location && (
                         <div
-                          className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
-                          style={{ marginTop: 2 }}
+                          className="flex min-w-0 items-center gap-1 truncate"
+                          style={{ marginTop: 2, fontSize: 11, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}
                         >
                           <MapPin size={10} color="#6B7280" />
                           <span className="truncate">{l.pickup_location}</span>
                         </div>
                       )}
-                      {badges.length > 0 && (
-                        <div
-                          className="flex flex-wrap gap-1.5"
-                          style={{ marginTop: 4 }}
-                        >
-                          {badges}
-                        </div>
-                      )}
                     </div>
                     <div className="flex shrink-0 items-center">
                       <ChevronRight
-                        size={14}
-                        color="#D1D5DB"
+                        size={16}
+                        color="#9CA3AF"
                         style={{
                           transform:
                             expandedLessonId === l.id
@@ -5031,6 +5040,7 @@ function HomePage() {
                       />
                     </div>
                   </div>
+
 
                   {expandedLessonId === l.id && (
                     <div
@@ -5210,16 +5220,42 @@ function HomePage() {
                   rows.push(
                     <div
                       key={`gap-${l.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate({ to: "/gaps" })}
                       style={{
-                        margin: "2px 16px 6px 16px",
-                        padding: "4px 10px",
-                        fontSize: 11,
-                        color: "#6B7280",
-                        backgroundColor: "#F8F9FB",
-                        borderRadius: 6,
+                        display: "grid",
+                        gridTemplateColumns: "44px minmax(0,1fr) auto",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "12px 14px",
+                        background: "#fff",
+                        borderTop: "0.5px dashed #D1D5DB",
+                        borderBottom: "0.5px dashed #D1D5DB",
+                        cursor: "pointer",
+                        fontFamily: "Poppins, Inter, sans-serif",
                       }}
                     >
-                      {gapMins} mins free
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 13,
+                          border: "1.5px dashed #CBD5E1",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#9CA3AF",
+                        }}
+                      >
+                        <Plus size={16} strokeWidth={1.75} />
+                      </div>
+                      <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
+                        {gapMins} mins free
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 500, color: "#1877D6", fontFamily: "Poppins, Inter, sans-serif" }}>
+                        Fill →
+                      </div>
                     </div>,
                   );
                 } else {
@@ -5227,12 +5263,12 @@ function HomePage() {
                     <div
                       key={`hr-${l.id}`}
                       style={{
-                        borderTop: "0.5px solid #F3F4F6",
-                        margin: "0 16px",
+                        borderTop: "0.5px solid #EEF2F7",
                       }}
                     />,
                   );
                 }
+
               }
             });
 
@@ -5259,7 +5295,7 @@ function HomePage() {
               );
             }
 
-            return <>{rows}</>;
+            return <div style={{ border: '1px solid #E5E7EB', borderRadius: 14, overflow: 'hidden', background: '#fff', fontFamily: 'Poppins, Inter, sans-serif' }}>{rows}</div>;
           })()
         )}
       </div>
@@ -5267,22 +5303,23 @@ function HomePage() {
       <EndOfDayBanner />
 
         {/* Schedule CTAs */}
-        <div style={{ display:'flex', gap:10, padding:'8px 16px 24px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
           <button
             type="button"
             onClick={() => navigate({ to: '/schedule' })}
-            style={{ flex:1, height:52, borderRadius:14, border:'none', background:'linear-gradient(180deg, #1877D6 0%, #1A52A0 100%)', color:'#fff', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', boxShadow:'0 6px 18px rgba(24,119,214,0.30)', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
           >
-            <Plus size={18} /> Add lesson
+            <Plus size={18} strokeWidth={2} /> Add lesson
           </button>
           <button
             type="button"
             onClick={() => navigate({ to: '/gaps' })}
-            style={{ flex:1, height:52, borderRadius:14, border:'0.5px solid #1877D6', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
           >
-            <Clock size={18} /> Fill slots
+            <Clock size={18} strokeWidth={2} /> Fill slots
           </button>
         </div>
+
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
@@ -6539,23 +6576,24 @@ function TabBtn({
       className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
-        color: active ? "#0B1F3A" : "#9CA3AF",
+        color: active ? "#0B1F3A" : "#6B7280",
         borderRadius: 8,
         padding: "8px 6px",
-        fontWeight: active ? 600 : 400,
+        fontWeight: 500,
         fontSize: 13,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, Inter, sans-serif",
         lineHeight: 1.2,
         border: "none",
         cursor: "pointer",
-        boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-        transition: "all 150ms ease",
+        boxShadow: active ? "inset 0 0 0 0.5px rgba(15,32,68,0.10)" : "none",
+        transition: "background 150ms ease",
       }}
     >
       {children}
     </button>
   );
 }
+
 
 function iconTint(solid: string) {
   switch (solid.toUpperCase()) {
