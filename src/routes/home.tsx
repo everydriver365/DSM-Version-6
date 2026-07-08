@@ -820,17 +820,11 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
 
       <div
-        ref={scrollRef}
-        onScroll={updateScrollState}
         style={{
-          display: "flex",
-          flexDirection: "row",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
           gap: 12,
-          overflowX: "auto",
           padding: "4px 20px 12px",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
         }}
       >
         {tiles.map((tile) => {
