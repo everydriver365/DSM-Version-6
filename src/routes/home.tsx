@@ -211,6 +211,17 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function normalizePupilStatus(status: string | null | undefined) {
+  const normalized = (status ?? "active").toLowerCase();
+  return normalized || "active";
+}
+
+function isCurrentPupil(pupil: { status?: string | null; deleted_at?: string | null }) {
+  if (pupil.deleted_at != null) return false;
+  const status = normalizePupilStatus(pupil.status);
+  return status !== "inactive" && status !== "passed" && status !== "cancelled" && status !== "archived";
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -1840,11 +1851,11 @@ function HomePage() {
       const { data: pupilsData } = await supabase
         .from("pupils")
         .select(
-          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes, profile_image_url, calendar_colour, last_lesson_date"
+          "id, name, first_name, last_name, phone, email, prepaid_hours, ni_amount_total, ni_amount_paid, status, deleted_at, buffer_before_minutes, buffer_after_minutes, profile_image_url, calendar_colour"
         )
         .eq("instructor_id", userId);
       setActivePupilsCount(
-        (pupilsData || []).filter((p: any) => p.status === "active").length,
+        (pupilsData || []).filter(isCurrentPupil).length,
       );
       setGlancePupilCount(
         (pupilsData || []).filter((p: any) => p.deleted_at == null).length,
@@ -1856,10 +1867,10 @@ function HomePage() {
             id: p.id,
             name: p.name ?? '',
             first_name: p.first_name ?? null,
-            status: (p.status ?? 'active').toLowerCase(),
+            status: normalizePupilStatus(p.status),
             profile_image_url: p.profile_image_url ?? null,
             calendar_colour: p.calendar_colour ?? null,
-            last_lesson_date: p.last_lesson_date ?? null,
+            last_lesson_date: null,
             phone: p.phone ?? null,
           })),
       );
@@ -1874,13 +1885,13 @@ function HomePage() {
           before: p.buffer_before_minutes ?? null,
           after: p.buffer_after_minutes ?? null,
         };
-        if (p.deleted_at == null && p.status === "active") {
+        if (isCurrentPupil(p)) {
           infoMap[p.id] = {
             first_name: p.first_name ?? null,
             name: p.name ?? null,
             profile_image_url: p.profile_image_url ?? null,
             calendar_colour: p.calendar_colour ?? null,
-            last_lesson_date: p.last_lesson_date ?? null,
+            last_lesson_date: null,
           };
         }
       });
