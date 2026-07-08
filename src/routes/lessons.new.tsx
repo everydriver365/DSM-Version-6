@@ -83,7 +83,7 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120")
+        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120, prepaid_hours")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
