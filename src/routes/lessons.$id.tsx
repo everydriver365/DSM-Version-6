@@ -559,6 +559,8 @@ function LessonDetailPage() {
           pupilName={pupilName}
           pupilId={lesson.pupil_id}
           lessonId={lesson.id}
+          paymentStatus={lesson.payment_status}
+          amountDue={Number(lesson.amount_due ?? 0)}
           when={`${formatDateLong(dateObj)} · ${formatTime(lesson.lesson_time)}`}
           onCancelled={() => {
             toast.success("Lesson cancelled");
