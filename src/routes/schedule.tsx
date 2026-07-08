@@ -219,6 +219,14 @@ function SchedulePage() {
   const [pupilBufferMap, setPupilBufferMap] = useState<
     Record<string, { before: number | null; after: number | null }>
   >({});
+  // Pupil info + availability — reused from the same matching approach the
+  // home page uses to surface waitlist matches for open gaps.
+  const [pupilInfoMap, setPupilInfoMap] = useState<
+    Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null }>
+  >({});
+  const [pupilAvailMap, setPupilAvailMap] = useState<
+    Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>
+  >({});
 
   useEffect(() => {
     const sync = () => setMinGapMinutes(readMinGapMinutes());
@@ -314,6 +322,48 @@ function SchedulePage() {
           if (!cancelled) {
             setColourMap(map);
             setPupilBufferMap(bufMap);
+          }
+
+          // Load instructor-wide pupil info + availability for gap matching.
+          const { data: authData2 } = await supabase.auth.getUser();
+          const uid = authData2.user?.id;
+          if (uid) {
+            const [{ data: allPupils }, { data: availRows }] = await Promise.all([
+              supabase
+                .from("pupils")
+                .select("id, name, first_name, profile_image_url, calendar_colour")
+                .eq("instructor_id", uid)
+                .is("deleted_at", null)
+                .not("status", "in", "(inactive,archived,cancelled)"),
+              supabase
+                .from("pupil_ready_to_learn_settings")
+                .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in")
+                .eq("instructor_id", uid),
+            ]);
+            if (!cancelled) {
+              const info: typeof pupilInfoMap = {};
+              (allPupils || []).forEach((p: any) => {
+                info[p.id] = {
+                  first_name: p.first_name ?? null,
+                  name: p.name ?? null,
+                  profile_image_url: p.profile_image_url ?? null,
+                  calendar_colour: p.calendar_colour ?? null,
+                };
+              });
+              setPupilInfoMap(info);
+              const avail: typeof pupilAvailMap = {};
+              (availRows || []).forEach((a: any) => {
+                if (a.pupil_id)
+                  avail[a.pupil_id] = {
+                    available_days: a.available_days ?? null,
+                    available_from: a.available_from ?? null,
+                    available_until: a.available_until ?? null,
+                    min_notice_hours: a.min_notice_hours ?? null,
+                    short_notice_opt_in: a.short_notice_opt_in ?? null,
+                  };
+              });
+              setPupilAvailMap(avail);
+            }
           }
         }
       }
@@ -612,10 +662,11 @@ function SchedulePage() {
           style={{
             display: "flex",
             gap: 12,
-            padding: "12px 14px",
+            padding: "12px 14px 12px 11px",
             alignItems: "center",
             minHeight: 56,
             background: "#FFFFFF",
+            borderLeft: `3px solid ${avatarBg}`,
           }}
         >
           <div style={{ width: 44, flexShrink: 0 }}>
@@ -1161,13 +1212,43 @@ function SchedulePage() {
         <div style={{ paddingTop: 16 }}>
           {/*
             Gap-filler summary card — amber "open slot" treatment.
-            FLAG: waitlist/gap-match pupil data and per-slot potential earnings
-            are not fetched on this screen today, so the avatar stack and
-            "potential to earn £X" clause are intentionally omitted rather
-            than fabricated. Wire them in when a matching data source lands.
+            Matched pupil avatars use the same availability-matching logic
+            the home page uses (pupil_ready_to_learn_settings). Per-slot
+            potential earnings are still not fetched here, so that clause
+            is intentionally omitted rather than fabricated.
           */}
           {dayInfo.gaps.length > 0 && (() => {
             const firstGap = [...dayInfo.gaps].sort((a, b) => a.startMs - b.startMs)[0];
+            const gapStart = new Date(firstGap.startMs);
+            const gapMins = firstGap.usableMins;
+            const DAYS_ABBR = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+            const dayKey = DAYS_ABBR[gapStart.getDay()];
+            const gapStartMins = gapStart.getHours() * 60 + gapStart.getMinutes();
+            const gapEndMins = gapStartMins + gapMins;
+            const hoursUntilGap = (gapStart.getTime() - Date.now()) / 3600000;
+            const parseHM = (t: string | null | undefined, fallback: number) => {
+              if (!t) return fallback;
+              const [h, m] = t.split(":").map(Number);
+              return (h || 0) * 60 + (m || 0);
+            };
+            type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
+            const matches: Matched[] = [];
+            Object.entries(pupilAvailMap).forEach(([pid, a]) => {
+              const info = pupilInfoMap[pid];
+              if (!info) return;
+              const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
+              if (days.length && !days.includes(dayKey)) return;
+              const fromMins = parseHM(a.available_from, 0);
+              const untilMins = parseHM(a.available_until, 24 * 60);
+              if (gapEndMins <= fromMins || gapStartMins >= untilMins) return;
+              const minNotice = a.min_notice_hours ?? 24;
+              if (hoursUntilGap < minNotice && !a.short_notice_opt_in) return;
+              const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
+              matches.push({ id: pid, first, avatar: info.profile_image_url, colour: info.calendar_colour });
+            });
+            const shown = matches.slice(0, 3);
+            const extra = Math.max(0, matches.length - shown.length);
+            const avatarInitials = (name: string) => name.slice(0, 1).toUpperCase();
             return (
               <div
                 style={{
@@ -1184,7 +1265,61 @@ function SchedulePage() {
                 <div style={{ fontSize: 12, color: "#B5661E", marginTop: 4 }}>
                   {formatTimeFromDate(new Date(firstGap.startMs))} – {formatTimeFromDate(new Date(firstGap.endMs))}
                   {" ("}{formatOpenMins(firstGap.usableMins)}{")"}
+                  {matches.length === 0 && " · no waitlist match"}
                 </div>
+                {shown.length > 0 && (
+                  <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
+                    {shown.map((m, i) => (
+                      <div
+                        key={m.id}
+                        title={m.first}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 999,
+                          background: m.colour || "#E2E8F0",
+                          color: "#FFFFFF",
+                          border: "2px solid #FBEFE1",
+                          marginLeft: i === 0 ? 0 : -8,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 500,
+                          overflow: "hidden",
+                          ...POPPINS,
+                        }}
+                      >
+                        {m.avatar ? (
+                          <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          avatarInitials(m.first)
+                        )}
+                      </div>
+                    ))}
+                    {extra > 0 && (
+                      <div
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 999,
+                          background: "#EFAF2C",
+                          color: "#3D2408",
+                          border: "2px solid #FBEFE1",
+                          marginLeft: -8,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 10,
+                          fontWeight: 500,
+                          ...POPPINS,
+                        }}
+                      >
+                        +{extra}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => navigate({ to: "/gaps" })}
@@ -1209,6 +1344,7 @@ function SchedulePage() {
               </div>
             );
           })()}
+
 
           {/*
             AI insight card — no insight-generation source exists on this
