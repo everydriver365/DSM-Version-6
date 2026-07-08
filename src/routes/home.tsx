@@ -1355,21 +1355,48 @@ function HomePage() {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [activeWs, setActiveWsState] = useState(0);
   const wsIsProgrammatic = useRef(false);
-  const setActiveWs = (i: number) => {
-    setActiveWsState(i);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const WS_COUNT = 7;
+  const scrollToWs = (i: number) => {
+    const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+    setActiveWsState(clamped);
     const el = carouselRef.current;
     if (!el) return;
     wsIsProgrammatic.current = true;
-    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
+  const setActiveWs = (i: number) => scrollToWs(i);
   const handleCarouselScroll = () => {
     if (wsIsProgrammatic.current) return;
     const el = carouselRef.current;
     if (!el) return;
     const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(6, i)));
+    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(WS_COUNT - 1, i)));
   };
+  const handleCarouselTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleCarouselTouchEnd = (e: React.TouchEvent) => {
+    const dx = touchStartX.current - e.changedTouches[0].clientX;
+    const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
+    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
+      if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
+      else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
+    }
+  };
+  useEffect(() => {
+    const log = () => {
+      // eslint-disable-next-line no-console
+      console.log("[home] carousel height:", carouselRef.current?.clientHeight, "window innerHeight:", window.innerHeight);
+    };
+    log();
+    window.addEventListener('resize', log);
+    return () => window.removeEventListener('resize', log);
+  }, []);
+
   const [pupilQuery, setPupilQuery] = useState("");
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -3421,9 +3448,9 @@ function HomePage() {
   }
 
   return (
-    <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#0F2044', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+    <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#0F2044', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
       {notifBanner}
-      <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
+      <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
@@ -3583,33 +3610,39 @@ function HomePage() {
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
+        onTouchStart={handleCarouselTouchStart}
+        onTouchEnd={handleCarouselTouchEnd}
         style={{
           flex: 1,
           minHeight: 0,
           display:'flex',
-          overflowX:'auto',
+          overflowX:'scroll',
           overflowY:'hidden',
           scrollSnapType:'x mandatory',
+          scrollBehavior:'smooth',
           overscrollBehaviorX:'contain',
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
+          touchAction:'pan-x',
           background:'#F3F8FF',
         }}
-        className="hide-scrollbar"
+        className="hide-scrollbar carousel-hide-scrollbar"
       >
+
 <section
           data-workspace="today"
           data-ws-index={0}
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -4380,12 +4413,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5212,12 +5246,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5326,12 +5361,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5550,12 +5586,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5567,12 +5604,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
@@ -5584,12 +5622,13 @@ function HomePage() {
           style={{
             flex:'0 0 100vw',
             width:'100vw',
+            height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
             touchAction:'pan-y',
-            paddingBottom:'calc(24px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom:'calc(80px + env(safe-area-inset-bottom, 0px))',
             
           }}
         >
