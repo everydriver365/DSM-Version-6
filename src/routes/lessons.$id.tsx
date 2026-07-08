@@ -34,6 +34,8 @@ interface Lesson {
   notes: string | null;
   pickup_address: string | null;
   pupil_id: string;
+  payment_status: string | null;
+  amount_due: number | null;
   pupils: { id: string; name: string; phone: string | null } | null;
 }
 
@@ -119,7 +121,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -557,6 +559,8 @@ function LessonDetailPage() {
           pupilName={pupilName}
           pupilId={lesson.pupil_id}
           lessonId={lesson.id}
+          paymentStatus={lesson.payment_status}
+          amountDue={Number(lesson.amount_due ?? 0)}
           when={`${formatDateLong(dateObj)} · ${formatTime(lesson.lesson_time)}`}
           onCancelled={() => {
             toast.success("Lesson cancelled");
@@ -574,6 +578,8 @@ function CancelLessonSheet({
   pupilName,
   pupilId,
   lessonId,
+  paymentStatus,
+  amountDue,
   when,
   onCancelled,
 }: {
@@ -582,6 +588,8 @@ function CancelLessonSheet({
   pupilName: string;
   pupilId: string;
   lessonId: string;
+  paymentStatus: string | null;
+  amountDue: number;
   when: string;
   onCancelled: () => void;
 }) {
@@ -604,14 +612,26 @@ function CancelLessonSheet({
   async function submit() {
     if (!reason || submitting) return;
     setSubmitting(true);
+
+    const isPrepaid = (paymentStatus ?? "").toLowerCase() === "prepaid";
+    const isNoShow =
+      reason === "Pupil no-show" || reason.toLowerCase().includes("no-show") || reason.toLowerCase().includes("no_show");
+    const feeNum = charge && isNoShow ? parseFloat(fee) || 0 : 0;
+
+    // Step 2: cancel the lesson and clear the billing state.
+    // If a no-show fee is being applied, keep the lesson billable so it flows
+    // into the derived outstanding total (SUM amount_due WHERE payment_status='unpaid').
+    const lessonPatch: Record<string, unknown> = {
+      status: "cancelled",
+      cancellation_reason: reason,
+      cancellation_notes: notes || null,
+      cancelled_at: new Date().toISOString(),
+      payment_status: feeNum > 0 ? "unpaid" : "cancelled",
+      amount_due: feeNum > 0 ? feeNum : 0,
+    };
     const { error } = await supabase
       .from("lessons")
-      .update({
-        status: "cancelled",
-        cancellation_reason: reason,
-        cancellation_notes: notes || null,
-        cancelled_at: new Date().toISOString(),
-      })
+      .update(lessonPatch)
       .eq("id", lessonId);
     if (error) {
       console.error("[cancel] update lesson error", error);
@@ -620,21 +640,25 @@ function CancelLessonSheet({
       return;
     }
 
-    const feeNum = charge ? parseFloat(fee) || 0 : 0;
-    if (feeNum > 0) {
-      const { data: pupil, error: readErr } = await supabase
+    // Step 3: refund prepaid amount back to pupil credit.
+    if (isPrepaid && amountDue > 0) {
+      const { data: pupilRow, error: readErr } = await supabase
         .from("pupils")
-        .select("balance_owed")
+        .select("account_balance")
         .eq("id", pupilId)
         .maybeSingle();
       if (readErr) console.error("[cancel] pupil read error", readErr);
-      const current = Number((pupil as { balance_owed: number } | null)?.balance_owed ?? 0);
-      const { error: updErr } = await supabase
+      const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
+      const { error: refundErr } = await supabase
         .from("pupils")
-        .update({ balance_owed: current + feeNum })
+        .update({ account_balance: current + amountDue })
         .eq("id", pupilId);
-      if (updErr) console.error("[cancel] pupil balance update error", updErr);
+      if (refundErr) console.error("[cancel] account_balance refund error", refundErr);
     }
+
+    // Step 4: no-show fee is captured on the lesson itself (see lessonPatch
+    // above). We deliberately do NOT touch the legacy pupils.balance_owed
+    // column — outstanding is derived from unpaid lesson amount_due.
 
     const { data: userRes } = await supabase.auth.getUser();
     const instructorId = userRes.user?.id ?? null;
