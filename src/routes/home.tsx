@@ -3610,21 +3610,26 @@ function HomePage() {
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
+        onTouchStart={handleCarouselTouchStart}
+        onTouchEnd={handleCarouselTouchEnd}
         style={{
           flex: 1,
           minHeight: 0,
           display:'flex',
-          overflowX:'auto',
+          overflowX:'scroll',
           overflowY:'hidden',
           scrollSnapType:'x mandatory',
+          scrollBehavior:'smooth',
           overscrollBehaviorX:'contain',
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
+          touchAction:'pan-x',
           background:'#F3F8FF',
         }}
-        className="hide-scrollbar"
+        className="hide-scrollbar carousel-hide-scrollbar"
       >
+
 <section
           data-workspace="today"
           data-ws-index={0}
