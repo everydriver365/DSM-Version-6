@@ -10,6 +10,12 @@ import {
   X,
 } from "lucide-react";
 import { ArrowLeft, Sparkles } from "lucide-react";
+import {
+  IconPhone,
+  IconBell,
+  IconPlus,
+  IconBolt,
+} from "@tabler/icons-react";
 import type React from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
@@ -530,80 +536,45 @@ function SchedulePage() {
     }
   };
 
-  const renderLessonRow = (l: Lesson) => {
+  // NOTE: This screen currently only sources native `lessons` from Supabase.
+  // The spec references external calendar-event rows (Google Calendar sync)
+  // and multi-pupil / group-slot rows — no data source for those exists on
+  // this screen today, so those row variants are intentionally omitted
+  // rather than mocked. Wire them in when a sync/group data source lands.
+  // FLAG: If in future a lesson appears both as a native `lessons` row AND
+  // as an ingested external-calendar row for the same pupil/time, that is a
+  // data/sync issue — do not silently dedupe here; investigate the sync.
+
+  type DayTab = "today" | "tomorrow" | "next";
+  const [dayTab, setDayTab] = useState<DayTab>("today");
+  const selectedDate = useMemo(() => {
+    const offset = dayTab === "today" ? 0 : dayTab === "tomorrow" ? 1 : 2;
+    return addDays(today, offset);
+  }, [today, dayTab]);
+
+  const NAVY = "#0F2044";
+  const MUTED = "#6B7280";
+  const SUB = "#94A3B8";
+  const BORDER = "#E5E7EB";
+  const SURFACE_1 = "#F1F5F9";
+  const DANGER = "#DC2626";
+  const DANGER_BG = "#FEE2E2";
+  const ACCENT = "#1877D6";
+
+  const renderLessonRow = (l: Lesson, opts: { isLast: boolean }) => {
     const name = pupilDisplayName(l.pupil);
-    const startD = lessonStart(l);
     const endD = lessonEnd(l);
     const pastEnd = endD.getTime() < now.getTime();
-    const isCurrent = l.id === currentId;
     const isCancelled = l.status === "cancelled";
-    const isCompleted = l.status === "completed" || l.eol_completed === true;
     const showActions = openActionsId === l.id;
-    const isSelected = isCurrent || showActions;
 
-    const lessonColour = l.pupil_id ? (colourMap[l.pupil_id] || "#1A52A0") : "#1A52A0";
-    const timeColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : lessonColour;
-    const nameColor = isSelected ? lessonColour : isCancelled ? "#9CA3AF" : "#0B1F3A";
+    // Overdue pill (matches "Payment due" treatment: rounded pill, danger tint)
+    const overdue =
+      pastEnd &&
+      l.payment_status === "unpaid" &&
+      (l.amount_due ?? 0) > 0 &&
+      !isCancelled;
 
-    const badges: React.ReactNode[] = [];
-
-    if (isCurrent) {
-      badges.push(
-        <span
-          key="live"
-          className="text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse"
-          style={{ backgroundColor: `${lessonColour}20`, color: lessonColour, ...POPPINS, fontWeight: 700 }}
-        >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              backgroundColor: lessonColour,
-              display: "inline-block",
-            }}
-          />
-          Live
-        </span>,
-      );
-    }
-    if (pastEnd && !l.eol_completed && !isCancelled) {
-      badges.push(
-        <button
-          key="eol"
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setEolLesson(l);
-          }}
-          className="text-[10px] px-2 py-0.5 rounded-full cursor-pointer"
-          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600, border: 0 }}
-        >
-          EOL pending
-        </button>,
-      );
-    }
-    if (l.payment_status === "paid") {
-      badges.push(
-        <span
-          key="paid"
-          className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: isSelected ? `${lessonColour}18` : "#EEF2F7", color: isSelected ? lessonColour : "#0B1F3A", ...POPPINS, fontWeight: 600 }}
-        >
-          Paid
-        </span>,
-      );
-    } else if (pastEnd && l.payment_status === "unpaid" && (l.amount_due ?? 0) > 0) {
-      badges.push(
-        <span
-          key="due"
-          className="text-[10px] px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: isSelected ? `${lessonColour}20` : "#FEE2E2", color: isSelected ? lessonColour : "#1877D6", ...POPPINS, fontWeight: 700 }}
-        >
-          £{Number(l.amount_due).toFixed(2)}
-        </span>,
-      );
-    }
     return (
       <div key={l.id}>
         <div
@@ -630,53 +601,44 @@ function SchedulePage() {
           className="cursor-pointer select-none"
           style={{
             display: "flex",
-            gap: 14,
-            padding: "14px 16px",
-            alignItems: "stretch",
-            background: isCurrent ? `${lessonColour}10` : "#FFFFFF",
+            gap: 12,
+            padding: "12px 14px",
+            alignItems: "center",
+            minHeight: 56,
+            background: "#FFFFFF",
+            borderTop: opts.isLast ? undefined : undefined,
           }}
         >
-          <div
-            style={{
-              width: 62,
-              flexShrink: 0,
-              textAlign: "left",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-            }}
-          >
+          <div style={{ width: 44, flexShrink: 0 }}>
             <div
               style={{
-                fontSize: 20,
-                fontWeight: 700,
-                color: timeColor,
+                fontSize: 13,
+                fontWeight: 500,
+                color: NAVY,
                 ...POPPINS,
                 lineHeight: 1.1,
-                letterSpacing: "-0.01em",
                 textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
               {formatLessonTime(l)}
             </div>
-            <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 4 }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: MUTED,
+                ...POPPINS,
+                marginTop: 3,
+              }}
+            >
               {formatDurationShort(l.duration_minutes)}
             </div>
           </div>
-          <div
-            style={{
-              width: 4,
-              borderRadius: 3,
-              background: lessonColour,
-              flexShrink: 0,
-            }}
-          />
-          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: 700,
-                color: nameColor,
+                fontSize: 14,
+                fontWeight: 500,
+                color: isCancelled ? MUTED : NAVY,
                 ...POPPINS,
                 textDecoration: isCancelled ? "line-through" : "none",
               }}
@@ -686,35 +648,34 @@ function SchedulePage() {
             </div>
             <div
               style={{
-                fontSize: 13,
-                color: "#94A3B8",
+                fontSize: 11,
+                color: MUTED,
                 ...POPPINS,
-                marginTop: 3,
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
+                marginTop: 2,
               }}
               className="truncate"
             >
-              {l.pickup_location ? (
-                <>
-                  <MapPin size={11} color="#94A3B8" />
-                  <span className="truncate">{l.pickup_location}</span>
-                </>
-              ) : (
-                <span>Lesson</span>
-              )}
+              {l.lesson_type || l.pickup_location || "Lesson"}
             </div>
-            {badges.length > 0 && (
-              <div
-                style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}
-              >
-                {badges}
-              </div>
-            )}
           </div>
           <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <ChevronRight size={18} color="#CBD5E1" />
+            {overdue ? (
+              <span
+                style={{
+                  ...POPPINS,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  backgroundColor: DANGER_BG,
+                  color: DANGER,
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                }}
+              >
+                Overdue
+              </span>
+            ) : (
+              <ChevronRight size={16} color="#CBD5E1" />
+            )}
           </div>
         </div>
 
@@ -723,81 +684,39 @@ function SchedulePage() {
             style={{
               display: "flex",
               gap: 8,
-              padding: "8px 16px 14px 92px",
+              padding: "8px 14px 12px 70px",
               backgroundColor: "#F8FAFC",
             }}
-
           >
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                markPaid(l);
-              }}
+              onClick={(e) => { e.stopPropagation(); markPaid(l); }}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{
-                ...POPPINS,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#1877D6",
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E5E7EB",
-              }}
+              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: ACCENT, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
             >
               <PoundSterling size={14} /> Paid
             </button>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEolLesson(l);
-                setOpenActionsId(null);
-              }}
+              onClick={(e) => { e.stopPropagation(); setEolLesson(l); setOpenActionsId(null); }}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{
-                ...POPPINS,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#1D4ED8",
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E5E7EB",
-              }}
+              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: NAVY, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
             >
               <CheckCircle size={14} /> EOL
             </button>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCancelLesson(l);
-              }}
+              onClick={(e) => { e.stopPropagation(); setCancelLesson(l); }}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{
-                ...POPPINS,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#1877D6",
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E5E7EB",
-              }}
+              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: NAVY, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
             >
               <X size={14} /> Cancel
             </button>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                markNoShow(l);
-              }}
+              onClick={(e) => { e.stopPropagation(); markNoShow(l); }}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{
-                ...POPPINS,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#B91C1C",
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E5E7EB",
-              }}
+              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: DANGER, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
             >
               <X size={14} /> No-show
             </button>
@@ -807,494 +726,361 @@ function SchedulePage() {
     );
   };
 
-  const renderDay = (d: Date, isFirst: boolean) => {
-    const dateKey = ymd(d);
-    const items = lessonsByDate.get(dateKey) ?? [];
-    const { main, suffix } = dayHeaderLabel(d, today);
+  // Compute gaps for the selected day (reusing existing buffer logic).
+  const dayInfo = useMemo(() => {
+    const items = lessonsByDate.get(ymd(selectedDate)) ?? [];
+    const isPast = selectedDate.getTime() < today.getTime();
+    const isToday = selectedDate.getTime() === today.getTime();
+    const nowMs = Date.now();
+    const dayStart = new Date(selectedDate);
+    dayStart.setHours(9, 0, 0, 0);
+    const dayEnd = new Date(selectedDate);
+    dayEnd.setHours(18, 0, 0, 0);
+    const minUsable = 60;
+    const threshold = Math.max(minGapMinutes, minUsable);
 
-    const rows: React.ReactNode[] = [];
-    if (items.length === 0) {
-      const isPast = d.getTime() < today.getTime();
-      if (isPast) {
-        rows.push(
-          <div
-            key="empty"
-            style={{
-              padding: "16px 18px",
-              fontSize: 12,
-              color: "#94A3B8",
-              ...POPPINS,
-              textAlign: "center",
-            }}
-          >
-            Nothing scheduled
-          </div>,
-        );
-      } else {
-        const hoursFree = 9;
-        const potential = hoursFree * 40;
-        const dayNoun = d.getTime() === today.getTime() ? "today" : "on this day";
-        rows.push(
-          <div
-            key="empty-free"
-            style={{
-              margin: "6px 12px",
-              background: "#FFFFFF",
-              border: "0.5px solid #EEF2F7",
-              borderRadius: 12,
-              padding: "10px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              ...POPPINS,
-            }}
-          >
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                background: "rgba(0,181,165,0.10)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#00B5A5",
-                flexShrink: 0,
-              }}
-            >
-              <CalendarIcon size={14} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", lineHeight: 1.2 }}>
-                Free day · {hoursFree} hrs open
-              </div>
-              <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
-                Potential <span style={{ color: "#00B5A5", fontWeight: 600 }}>£{potential}</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              aria-label="Fill slots"
-              onClick={(e) => { e.stopPropagation(); navigate({ to: "/gaps" }); }}
-              style={{
-                width: 30, height: 30, borderRadius: 8,
-                background: "#1877D6", color: "#FFFFFF", border: "none",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0,
-              }}
-            >
-              <Plus size={14} strokeWidth={2.6} />
-            </button>
-            <button
-              type="button"
-              aria-label="Broadcast availability"
-              onClick={(e) => {
-                e.stopPropagation();
-                window.location.href = `sms:?body=${encodeURIComponent(`Hi everyone, I have lesson availability ${dayNoun}. Reply to book!`)}`;
-              }}
-              style={{
-                width: 30, height: 30, borderRadius: 8,
-                background: "#FFFFFF", color: "#0F2044",
-                border: "1px solid #E5E7EB",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0,
-              }}
-            >
-              <Sparkles size={14} />
-            </button>
-          </div>,
-        );
+    const resolveBuf = (pupilId: string | null | undefined, type: "before" | "after") => {
+      if (pupilId && pupilBufferMap[pupilId]) {
+        const v = type === "before" ? pupilBufferMap[pupilId].before : pupilBufferMap[pupilId].after;
+        if (v != null) return v;
       }
-    } else {
-      const isPast = d.getTime() < today.getTime();
-      const isToday = d.getTime() === today.getTime();
-      const nowMs = Date.now();
-      const dayWindowStart = new Date(d);
-      dayWindowStart.setHours(9, 0, 0, 0);
-      const dayWindowEnd = new Date(d);
-      dayWindowEnd.setHours(18, 0, 0, 0);
+      return type === "before" ? instructorBufferBefore : instructorBufferAfter;
+    };
 
-      // Resolve per-lesson buffers (pupil override → instructor default).
-      const resolveBuf = (pupilId: string | null | undefined, type: "before" | "after") => {
-        if (pupilId && pupilBufferMap[pupilId]) {
-          const v = type === "before"
-            ? pupilBufferMap[pupilId].before
-            : pupilBufferMap[pupilId].after;
-          if (v != null) return v;
-        }
-        return type === "before" ? instructorBufferBefore : instructorBufferAfter;
-      };
-      // Total buffer reserved around any proposed slot = existing lesson buffer + new lesson's own default buffer.
-      const minUsable = 60; // usable window must fit ≥60 min lesson
+    type Gap = { key: string; startMs: number; endMs: number; usableMins: number };
+    const gaps: Gap[] = [];
+    const pushGap = (key: string, startMs: number, endMs: number) => {
+      if (isPast) return;
+      if (isToday && endMs <= nowMs) return;
+      const minStart = isToday ? Math.max(startMs, nowMs + 30 * 60000) : startMs;
+      const mins = Math.round((endMs - minStart) / 60000);
+      if (mins < threshold) return;
+      gaps.push({ key, startMs: minStart, endMs, usableMins: mins });
+    };
 
-      const renderGapRow = (
-        key: string,
-        startMs: number,
-        endMs: number,
-        bufferTotalMins = 0,
-      ) => {
-        const gapMins = Math.round((endMs - startMs) / 60000);
-        const threshold = Math.max(minGapMinutes, minUsable);
-        if (gapMins < threshold) return null;
-        if (isPast) return null;
-        if (isToday && endMs <= nowMs) return null;
-        // On today, don't surface slots that start in the past; give at least 30 mins from now.
-        const minStartMs = isToday ? nowMs + 30 * 60000 : startMs;
-        const displayStart = Math.max(startMs, minStartMs);
-        const displayMins = Math.round((endMs - displayStart) / 60000);
-        if (displayMins < threshold) return null;
-        return (
-          <div
-            key={key}
-            style={{
-              margin: "6px 12px",
-              background: "linear-gradient(180deg, #F8FAFC 0%, #EAF3FF 100%)",
-              border: "1px solid #EEF2F7",
-              borderRadius: 14,
-              padding: "10px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E8F0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#3B82F6",
-                flexShrink: 0,
-              }}
-            >
-              <Sparkles size={16} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", ...POPPINS }}>
-                {bufferTotalMins > 0
-                  ? `${Math.floor(displayMins / 60)}h${displayMins % 60 ? ` ${displayMins % 60}m` : ""} usable`
-                  : displayMins >= 60
-                    ? `${Math.round((displayMins / 60) * 10) / 10} hrs free`
-                    : `${displayMins} mins free`}
-              </div>
-              <div style={{ fontSize: 12, color: "#94A3B8", ...POPPINS, marginTop: 2 }}>
-                {formatTimeFromDate(new Date(displayStart))} –{" "}
-                {formatTimeFromDate(new Date(endMs))} · tap to fill
-                {bufferTotalMins > 0 ? ` · ${bufferTotalMins} min buffer` : ""}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate({ to: "/gaps" });
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                padding: 4,
-                cursor: "pointer",
-              }}
-            >
-              <ChevronRight size={18} color="#94A3B8" />
-            </button>
-          </div>
-        );
-      };
-
-      // Pre-gap: reserve the first lesson's before-buffer AND the new lesson's own after-buffer.
-      {
-        const firstStartMs = lessonStart(items[0]).getTime();
-        const firstBufBefore = resolveBuf(items[0].pupil_id, "before");
-        const rightReserveMin = firstBufBefore + instructorBufferAfter;
-        const usableEndMs = firstStartMs - rightReserveMin * 60000;
-        const preGap = renderGapRow(
-          `gap-pre-${items[0].id}`,
-          dayWindowStart.getTime(),
-          usableEndMs,
-          rightReserveMin,
-        );
-        if (preGap) rows.push(preGap);
-      }
-
+    if (items.length > 0) {
+      const first = items[0];
+      pushGap(
+        `pre-${first.id}`,
+        dayStart.getTime(),
+        lessonStart(first).getTime() - (resolveBuf(first.pupil_id, "before") + instructorBufferAfter) * 60000,
+      );
       items.forEach((l, i) => {
-        rows.push(renderLessonRow(l));
         const next = items[i + 1];
-        if (next) {
-          const lBufAfter = resolveBuf(l.pupil_id, "after");
-          const nBufBefore = resolveBuf(next.pupil_id, "before");
-          // Reserve existing lessons' buffers on both sides + new lesson's own buffers.
-          const leftReserveMin = lBufAfter + instructorBufferBefore;
-          const rightReserveMin = nBufBefore + instructorBufferAfter;
-          const bufferTotalMin = leftReserveMin + rightReserveMin;
-          const usableStartMs = lessonEnd(l).getTime() + leftReserveMin * 60000;
-          const usableEndMs = lessonStart(next).getTime() - rightReserveMin * 60000;
-          const usableMins = Math.round((usableEndMs - usableStartMs) / 60000);
-          if (usableMins >= Math.max(minGapMinutes, 60)) {
-            rows.push(
-              <div
-                key={`gap-${l.id}`}
-                style={{
-                  margin: "6px 12px",
-                  background:
-                    "linear-gradient(180deg, #F8FAFC 0%, #EAF3FF 100%)",
-                  border: "1px solid #EEF2F7",
-                  borderRadius: 14,
-                  padding: "10px 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 999,
-                    background: "#FFFFFF",
-                    border: "1px solid #E2E8F0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#3B82F6",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Sparkles size={16} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "#0F2044",
-                      ...POPPINS,
-                    }}
-                  >
-                    {bufferTotalMin > 0
-                      ? `${Math.floor(usableMins / 60)}h${usableMins % 60 ? ` ${usableMins % 60}m` : ""} usable`
-                      : `${usableMins} mins free`}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#94A3B8",
-                      ...POPPINS,
-                      marginTop: 2,
-                    }}
-                  >
-                    {formatTimeFromDate(new Date(usableStartMs))} –{" "}
-                    {formatTimeFromDate(new Date(usableEndMs))} · tap to fill
-                    {bufferTotalMin > 0 ? ` · ${bufferTotalMin} min buffer` : ""}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate({ to: "/gaps" });
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  <ChevronRight size={18} color="#94A3B8" />
-                </button>
-              </div>,
-            );
-          } else {
-            rows.push(
-              <div
-                key={`hr-${l.id}`}
-                style={{
-                  height: 0,
-                  borderTop: "1px solid #F1F5F9",
-                  margin: "0 16px",
-                }}
-              />,
-            );
-          }
-        }
-      });
-
-      // Post-gap: reserve the last lesson's after-buffer AND the new lesson's own before-buffer.
-      {
-        const lastLesson = items[items.length - 1];
-        const lastEndMs = lessonEnd(lastLesson).getTime();
-        const lastBufAfter = resolveBuf(lastLesson.pupil_id, "after");
-        const leftReserveMin = lastBufAfter + instructorBufferBefore;
-        const usableStartMs = lastEndMs + leftReserveMin * 60000;
-        const postGap = renderGapRow(
-          `gap-post-${lastLesson.id}`,
-          usableStartMs,
-          dayWindowEnd.getTime(),
-          leftReserveMin,
+        if (!next) return;
+        const leftReserve = resolveBuf(l.pupil_id, "after") + instructorBufferBefore;
+        const rightReserve = resolveBuf(next.pupil_id, "before") + instructorBufferAfter;
+        pushGap(
+          `gap-${l.id}`,
+          lessonEnd(l).getTime() + leftReserve * 60000,
+          lessonStart(next).getTime() - rightReserve * 60000,
         );
-        if (postGap) rows.push(postGap);
+      });
+      const last = items[items.length - 1];
+      pushGap(
+        `post-${last.id}`,
+        lessonEnd(last).getTime() + (resolveBuf(last.pupil_id, "after") + instructorBufferBefore) * 60000,
+        dayEnd.getTime(),
+      );
+    }
+    const totalMins = gaps.reduce((sum, g) => sum + g.usableMins, 0);
+    return { items, gaps, totalMins, isPast, isToday };
+  }, [lessonsByDate, selectedDate, today, minGapMinutes, pupilBufferMap, instructorBufferBefore, instructorBufferAfter]);
+
+  const formatOpenMins = (mins: number) => {
+    if (mins <= 0) return "0m";
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    if (h && m) return `${h}h ${m}m`;
+    if (h) return `${h}h`;
+    return `${m}m`;
+  };
+
+  const renderTimeline = () => {
+    const { items, gaps, isToday } = dayInfo;
+    if (items.length === 0 && gaps.length === 0) {
+      return (
+        <div
+          style={{
+            margin: "0 16px",
+            border: `0.5px solid ${BORDER}`,
+            borderRadius: 12,
+            padding: "22px 16px",
+            textAlign: "center",
+            fontSize: 13,
+            color: MUTED,
+            ...POPPINS,
+            background: "#FFFFFF",
+          }}
+        >
+          Nothing scheduled
+        </div>
+      );
+    }
+
+    // Build a chronological sequence: lessons and now-strip in the solid
+    // bordered container; gaps rendered as separate dashed cards inserted
+    // between the container segments.
+    type SolidRow =
+      | { kind: "lesson"; lesson: Lesson; startMs: number }
+      | { kind: "now"; startMs: number };
+
+    const nowMs = Date.now();
+    const solid: SolidRow[] = items.map((l) => ({
+      kind: "lesson" as const,
+      lesson: l,
+      startMs: lessonStart(l).getTime(),
+    }));
+    if (isToday && items.length > 0) {
+      const firstMs = lessonStart(items[0]).getTime();
+      const lastMs = lessonEnd(items[items.length - 1]).getTime();
+      if (nowMs >= firstMs && nowMs <= lastMs) {
+        solid.push({ kind: "now", startMs: nowMs });
+        solid.sort((a, b) => a.startMs - b.startMs);
       }
     }
 
-    void isFirst;
-    return (
-      <div key={dateKey}>
-        {/* Day header row */}
+    // Group solid rows separated by gaps into segments.
+    const sortedGaps = [...gaps].sort((a, b) => a.startMs - b.startMs);
+    const segments: SolidRow[][] = [];
+    let current: SolidRow[] = [];
+    let gapIdx = 0;
+    const gapNodes: React.ReactNode[] = [];
+
+    const pushGapNode = (g: typeof sortedGaps[number]) => {
+      gapNodes.push(
         <div
+          key={g.key}
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/gaps" })}
           style={{
+            margin: "10px 16px",
+            border: "1.5px dashed #CBD5E1",
+            borderRadius: 12,
+            padding: "14px 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "4px 4px 10px",
-            margin: "0 16px",
+            minHeight: 56,
+            cursor: "pointer",
             ...POPPINS,
+            background: "transparent",
           }}
         >
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              color: "#94A3B8",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 999,
-                background: "#CBD5E1",
-                display: "inline-block",
-              }}
-            />
-            {main}
-            {suffix && (
-              <span style={{ color: "#CBD5E1", fontSize: 12 }}>
-                · {suffix}
-              </span>
-            )}
-          </span>
-          <button
-            type="button"
-            onClick={() =>
-              navigate({
-                to: `/lessons/new?date=${dateKey}` as unknown as "/lessons/new",
-              })
-            }
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              background: "#FFFFFF",
-              border: "1px solid #E2E6ED",
-              borderRadius: 999,
-              padding: "5px 12px 5px 10px",
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#0F2044",
-              cursor: "pointer",
-              ...POPPINS,
-            }}
-          >
-            <Plus size={14} /> Add
-          </button>
-        </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 500, color: MUTED }}>
+              {formatOpenMins(g.usableMins)} open
+            </div>
+            <div style={{ fontSize: 12, color: SUB, marginTop: 2 }}>
+              {formatTimeFromDate(new Date(g.startMs))} – {formatTimeFromDate(new Date(g.endMs))}
+            </div>
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 500, color: ACCENT }}>Fill →</div>
+        </div>,
+      );
+    };
 
-        {/* Timeline card */}
-        <div
-          style={{
-            margin: "0 16px 14px",
-            background: "#FFFFFF",
-            border: "1px solid #E2E6ED",
-            borderRadius: 20,
-            padding: "6px 0",
-            boxShadow: "0 1px 2px rgba(15,32,68,0.03)",
-            overflow: "hidden",
-          }}
-        >
-          {rows}
-        </div>
-      </div>
-    );
+    for (const row of solid) {
+      while (gapIdx < sortedGaps.length && sortedGaps[gapIdx].endMs <= row.startMs) {
+        if (current.length) segments.push(current);
+        current = [];
+        pushGapNode(sortedGaps[gapIdx]);
+        gapIdx++;
+      }
+      current.push(row);
+    }
+    if (current.length) segments.push(current);
+    while (gapIdx < sortedGaps.length) {
+      pushGapNode(sortedGaps[gapIdx]);
+      gapIdx++;
+    }
+
+    // Build interleaved output: alternating segments (solid cards) and gaps.
+    const output: React.ReactNode[] = [];
+    let g = 0;
+    // If a gap starts before any lesson, it comes first.
+    // We already pushed gaps into gapNodes in chronological order; interleave
+    // with segments by comparing timing.
+    const segmentStart = (seg: SolidRow[]) => seg[0].startMs;
+    const gapStart = (idx: number) => sortedGaps[idx]?.startMs ?? Infinity;
+
+    let segIdx = 0;
+    while (segIdx < segments.length || g < gapNodes.length) {
+      const nextSeg = segments[segIdx];
+      const useSeg = nextSeg && segmentStart(nextSeg) <= gapStart(g);
+      if (useSeg) {
+        output.push(
+          <div
+            key={`seg-${segIdx}`}
+            style={{
+              margin: "0 16px",
+              border: `0.5px solid ${BORDER}`,
+              borderRadius: 12,
+              background: "#FFFFFF",
+              overflow: "hidden",
+            }}
+          >
+            {nextSeg.map((row, i) => {
+              const isLast = i === nextSeg.length - 1;
+              const divider =
+                i > 0 ? (
+                  <div
+                    key={`hr-${segIdx}-${i}`}
+                    style={{ height: 0, borderTop: `0.5px solid ${BORDER}` }}
+                  />
+                ) : null;
+              if (row.kind === "now") {
+                return (
+                  <div key={`now-${row.startMs}`}>
+                    {divider}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "6px 14px",
+                        background: DANGER_BG,
+                        ...POPPINS,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: 999,
+                          background: DANGER,
+                          display: "inline-block",
+                        }}
+                      />
+                      <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
+                        NOW · {formatTimeFromDate(new Date(row.startMs))}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <div key={row.lesson.id}>
+                  {divider}
+                  {renderLessonRow(row.lesson, { isLast })}
+                </div>
+              );
+            })}
+          </div>,
+        );
+        segIdx++;
+      } else {
+        output.push(gapNodes[g]);
+        g++;
+      }
+    }
+    return <>{output}</>;
   };
+
+  const tabs: { key: DayTab; label: string }[] = [
+    { key: "today", label: "Today" },
+    { key: "tomorrow", label: "Tomorrow" },
+    { key: "next", label: "Next" },
+  ];
+
+  const showDateHeader = dayTab !== "today";
+  const dateHeaderLabel = selectedDate
+    .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+    .toUpperCase();
 
   return (
     <div
       className="min-h-screen pb-24 pb-safe relative"
       style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}
     >
-      {/* Top bar — light theme */}
+      {/* Header */}
       <div
         className="sticky top-0 z-40"
         style={{
           background: "#FFFFFF",
-          borderBottom: "0.5px solid #E2E6ED",
-          padding: "14px 20px 12px",
+          borderBottom: `0.5px solid ${BORDER}`,
+          padding: "14px 16px 12px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button
-            onClick={() => navigate({ to: "/home" })}
-            aria-label="Back"
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h1
             style={{
-              background: "#F1F5F9",
-              border: "none",
-              width: 36,
-              height: 36,
-              borderRadius: 999,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#0F2044",
+              ...POPPINS,
+              color: NAVY,
+              fontSize: 20,
+              fontWeight: 500,
+              margin: 0,
+              lineHeight: 1.1,
             }}
           >
-            <ArrowLeft size={18} />
-          </button>
-          <div style={{ flex: 1 }}>
-            <h1
-              style={{
-                ...POPPINS,
-                color: "#0F2044",
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
-                margin: 0,
-                lineHeight: 1.1,
-              }}
+            Schedule
+          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <button
+              type="button"
+              aria-label="Call"
+              onClick={() => navigate({ to: "/messages" as never })}
+              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex" }}
             >
-              Schedule
-            </h1>
-            <div style={{ color: "#94A3B8", fontSize: 13, marginTop: 2 }}>
-              Your lessons at a glance
-            </div>
+              <IconPhone size={19} stroke={1.75} />
+            </button>
+            <button
+              type="button"
+              aria-label="Notifications"
+              onClick={() => navigate({ to: "/notifications" as never })}
+              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex", position: "relative" }}
+            >
+              <IconBell size={19} stroke={1.75} />
+              {/* Notification unread-count data source not present on this screen; badge omitted until wired. */}
+            </button>
+            <button
+              type="button"
+              aria-label="Add lesson"
+              onClick={() => navigate({ to: "/lessons/new" })}
+              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex" }}
+            >
+              <IconPlus size={19} stroke={1.75} />
+            </button>
           </div>
-          <button
-            type="button"
-            aria-label="Open calendar"
-            onClick={() => navigate({ to: "/diary" })}
-            style={{
-              background: "#F1F5F9",
-              border: "none",
-              width: 36,
-              height: 36,
-              borderRadius: 999,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#0F2044",
-            }}
-          >
-            <CalendarIcon size={18} />
-          </button>
+        </div>
+
+        {/* Day tabs */}
+        <div
+          style={{
+            marginTop: 12,
+            background: SURFACE_1,
+            padding: 3,
+            borderRadius: 10,
+            display: "flex",
+            gap: 2,
+          }}
+        >
+          {tabs.map((t) => {
+            const active = dayTab === t.key;
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setDayTab(t.key)}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 8,
+                  border: "none",
+                  background: active ? "#FFFFFF" : "transparent",
+                  boxShadow: active ? "inset 0 0 0 0.5px rgba(15,32,68,0.08), 0 1px 2px rgba(15,32,68,0.04)" : "none",
+                  color: active ? NAVY : MUTED,
+                  fontSize: 13,
+                  fontWeight: active ? 500 : 400,
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -1315,52 +1101,100 @@ function SchedulePage() {
         </div>
       ) : (
         <div style={{ paddingTop: 16 }}>
-          {days.map((d, i) => renderDay(d, i === 0))}
+          {/* Gap-filler summary card */}
+          {dayInfo.gaps.length > 0 && (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/gaps" })}
+              style={{
+                margin: "0 16px 12px",
+                border: `0.5px solid ${BORDER}`,
+                borderRadius: 12,
+                padding: "14px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                minHeight: 56,
+                cursor: "pointer",
+                background: "#FFFFFF",
+                ...POPPINS,
+              }}
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  background: "#FBEFE1",
+                  color: "#B5661E",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconBolt size={20} stroke={1.75} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>
+                  Gap filler
+                </div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }} className="truncate">
+                  {formatOpenMins(dayInfo.totalMins)} open · matched to waitlist
+                </div>
+              </div>
+              <ChevronRight size={18} color="#CBD5E1" />
+            </div>
+          )}
+
+          {/* Date section header for Tomorrow / Next */}
+          {showDateHeader && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "0 16px 8px",
+                ...POPPINS,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: MUTED,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {dateHeaderLabel}
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate({
+                    to: `/lessons/new?date=${ymd(selectedDate)}` as unknown as "/lessons/new",
+                  })
+                }
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  color: ACCENT,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                + Add
+              </button>
+            </div>
+          )}
+
+          {renderTimeline()}
         </div>
       )}
-
-      {lessons !== null && (
-        <div style={{ display: "flex", justifyContent: "center", padding: "16px 16px 24px" }}>
-          <button
-            type="button"
-            onClick={() => setDaysAhead((n) => n + 7)}
-            style={{
-              ...POPPINS,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#1877D6",
-              backgroundColor: "transparent",
-              padding: "8px 16px",
-            }}
-          >
-            Load more →
-          </button>
-        </div>
-      )}
-
-      {/* FAB */}
-      <button
-        type="button"
-        aria-label="Add lesson"
-        onClick={() => navigate({ to: "/lessons/new" })}
-        style={{
-          position: "fixed",
-          right: 20,
-          bottom: 88,
-          width: 52,
-          height: 52,
-          borderRadius: 999,
-          backgroundColor: "#0B1F3A",
-          color: "#FFFFFF",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 6px 16px rgba(11,31,58,0.35)",
-          zIndex: 30,
-        }}
-      >
-        <Plus size={24} color="#FFFFFF" />
-      </button>
 
       {eolLesson && (
         <EndLessonWizard
