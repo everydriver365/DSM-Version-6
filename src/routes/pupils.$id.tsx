@@ -311,7 +311,7 @@ function PupilDetailPage() {
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [paymentHistory, setPaymentHistory] = useState<
-    { id: string; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
+    { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
   >([]);
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
@@ -643,7 +643,7 @@ function PupilDetailPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_cost, payment_method, created_at, notes")
+      .select("id, lesson_id, lesson_cost, payment_method, created_at, notes")
       .eq("pupil_id", id)
       .eq("payment_status", "paid")
       .is("deleted_at", null)
@@ -1313,7 +1313,18 @@ function PupilDetailPage() {
                               const uid = userData.user?.id;
                               if (!uid) return;
                               const ok = await deletePaymentRecord(p.id, token, uid);
-                              if (ok) setPaymentHistoryRefresh((n) => n + 1);
+                              if (ok) {
+                                // Fix 2: also soft-delete the legacy `payments` row for this lesson
+                                if (p.lesson_id) {
+                                  const { error: payDelErr } = await supabase
+                                    .from("payments")
+                                    .update({ deleted_at: new Date().toISOString() })
+                                    .eq("lesson_id", p.lesson_id)
+                                    .is("deleted_at", null);
+                                  if (payDelErr) console.error("[pupil] payments soft-delete error", payDelErr);
+                                }
+                                setPaymentHistoryRefresh((n) => n + 1);
+                              }
                             }}
                             className="inline-flex items-center justify-center rounded-full"
                             style={{

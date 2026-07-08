@@ -5878,15 +5878,83 @@ function HomePage() {
           toast.success("Payment updated");
         }}
         onDelete={async (row) => {
-          const { error } = await supabase
-            .from("lesson_history")
-            .update({ deleted_at: new Date().toISOString() })
-            .eq("id", row.id);
-          if (error) {
-            console.error("[home] earnings delete failed", error);
-            toast.error("Couldn't delete payment");
-            return;
+          const nowIso = new Date().toISOString();
+
+          if (row.source === "lesson-earned") {
+            // Fix 2: reverse lesson to unpaid, restore amount_due,
+            // reverse account_balance if applicable, and soft-delete the
+            // corresponding payments + lesson_history rows.
+            const { data: lessonRow, error: lessonFetchErr } = await supabase
+              .from("lessons")
+              .select("id, pupil_id, payment_status, amount_due, paid_amount")
+              .eq("id", row.id)
+              .maybeSingle();
+            if (lessonFetchErr) {
+              console.error("[home] earnings delete: lesson fetch failed", lessonFetchErr);
+              toast.error("Couldn't delete payment");
+              return;
+            }
+
+            const restoreAmount = Number(row.amount) || 0;
+            const wasPrepaid = lessonRow?.payment_status === "prepaid";
+
+            const { error: lErr } = await supabase
+              .from("lessons")
+              .update({
+                payment_status: "unpaid",
+                amount_due: restoreAmount,
+                paid_at: null,
+                paid_amount: null,
+                payment_method: null,
+              })
+              .eq("id", row.id);
+            if (lErr) {
+              console.error("[home] earnings delete: lesson update failed", lErr);
+              toast.error("Couldn't delete payment");
+              return;
+            }
+
+            // Reverse account_balance credit if the lesson was prepaid from credit
+            if (wasPrepaid && lessonRow?.pupil_id) {
+              const { data: pRow } = await supabase
+                .from("pupils")
+                .select("account_balance")
+                .eq("id", lessonRow.pupil_id)
+                .maybeSingle();
+              const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
+              await supabase
+                .from("pupils")
+                .update({ account_balance: current + restoreAmount })
+                .eq("id", lessonRow.pupil_id);
+            }
+
+            // Soft-delete legacy payments row(s) for this lesson
+            const { error: payErr } = await supabase
+              .from("payments")
+              .update({ deleted_at: nowIso })
+              .eq("lesson_id", row.id)
+              .is("deleted_at", null);
+            if (payErr) console.error("[home] payments soft-delete error", payErr);
+
+            // Soft-delete lesson_history row(s) for this lesson
+            const { error: histErr } = await supabase
+              .from("lesson_history")
+              .update({ deleted_at: nowIso })
+              .eq("lesson_id", row.id)
+              .is("deleted_at", null);
+            if (histErr) console.error("[home] lesson_history soft-delete error", histErr);
+          } else if (row.source === "booking") {
+            const { error } = await supabase
+              .from("course_bookings")
+              .update({ status: "cancelled" })
+              .eq("id", row.id);
+            if (error) {
+              console.error("[home] booking cancel failed", error);
+              toast.error("Couldn't delete payment");
+              return;
+            }
           }
+
           setEarningsRows((rs) => rs.filter((r) => !(r.id === row.id && r.source === row.source)));
           setWeekEarnings((n) => Math.max(0, n - row.amount));
           toast.success("Payment deleted");
