@@ -1029,9 +1029,9 @@ function SchedulePage() {
           <div
             key={`seg-${segIdx}`}
             style={{
-              margin: "0 16px",
-              border: `0.5px solid ${BORDER}`,
-              borderRadius: 12,
+              margin: "0 16px 12px",
+              border: `0.5px solid #F3F4F6`,
+              borderRadius: 16,
               background: "#FFFFFF",
               overflow: "hidden",
             }}
@@ -1042,9 +1042,10 @@ function SchedulePage() {
                 i > 0 ? (
                   <div
                     key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid ${BORDER}` }}
+                    style={{ height: 0, borderTop: `0.5px solid #F3F4F6` }}
                   />
                 ) : null;
+
               if (row.kind === "now") {
                 return (
                   <div key={`now-${row.startMs}`}>
