@@ -390,12 +390,14 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      status: editDraft.status || "active",
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
       custom_rate: numOrNull(editDraft.custom_rate),
       custom_rate_90: numOrNull(editDraft.custom_rate_90),
       custom_rate_120: numOrNull(editDraft.custom_rate_120),
     };
+
     const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
     setEditSaving(false);
     if (error) {
