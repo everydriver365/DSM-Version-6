@@ -219,6 +219,14 @@ function SchedulePage() {
   const [pupilBufferMap, setPupilBufferMap] = useState<
     Record<string, { before: number | null; after: number | null }>
   >({});
+  // Pupil info + availability — reused from the same matching approach the
+  // home page uses to surface waitlist matches for open gaps.
+  const [pupilInfoMap, setPupilInfoMap] = useState<
+    Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null }>
+  >({});
+  const [pupilAvailMap, setPupilAvailMap] = useState<
+    Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>
+  >({});
 
   useEffect(() => {
     const sync = () => setMinGapMinutes(readMinGapMinutes());
