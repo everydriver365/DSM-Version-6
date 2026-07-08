@@ -4068,94 +4068,111 @@ function HomePage() {
                   <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ marginTop: 4, fontSize: 12, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill your diary →</button>
                 </div>
               ) : (
-                <div style={{ padding: '16px 20px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', left: 56, top: 24, bottom: 24, borderLeft: '1.5px dashed #E5E7EB' }} />
+                <div style={{ padding: '16px 20px 12px', position: 'relative' }}>
                   {rows.map((row, idx) => {
+                    let railColor = '#E5E7EB';
+                    let railShadow = 'none';
+                    if (row.kind === 'lesson') {
+                      const ls = lessonDateTime(row.l);
+                      const le = new Date(ls.getTime() + (row.l.duration_minutes ?? 60) * 60000);
+                      if (nowT >= le || row.l.status === 'completed') { railColor = '#CBD5E1'; }
+                      else if (nowT >= ls && nowT < le) { railColor = '#1A52A0'; railShadow = '0 0 10px rgba(26,82,160,0.35)'; }
+                      else { railColor = '#E5E7EB'; }
+                    } else {
+                      railColor = '#FDE68A';
+                    }
+                    const isFirst = idx === 0;
+                    const isLast = idx === rows.length - 1;
+
                     if (row.kind === 'gap') {
                       return (
-                        <div key={`gap-${idx}`} style={{ background: '#FFFBEB', borderRadius: 8, padding: '8px 12px', margin: '2px 0', display: 'flex', alignItems: 'center', gap: 8, position: 'relative', zIndex: 1 }}>
-                          <Zap size={12} color="#D97706" />
-                          <div style={{ flex: 1, fontSize: 12, color: '#78350F', fontWeight: 500, fontFamily: 'Inter, sans-serif' }}>
-                            {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)} free · {row.mins} mins
+                        <div key={`gap-${idx}`} style={{ display: 'flex', gap: 12, minHeight: 48, position: 'relative', fontFamily: 'Inter, sans-serif' }}>
+                          <div style={{ width: 44, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 14 }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                              {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)}
+                            </div>
                           </div>
-                          <button type="button" onClick={() => navigate({ to: '/gaps' })} style={{ fontSize: 12, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontWeight: 600 }}>Fill →</button>
+                          <div style={{ width: 6, flexShrink: 0, position: 'relative' }}>
+                            <div style={{ position: 'absolute', left: 0, right: 0, top: isFirst ? 10 : 0, bottom: isLast ? 10 : 0, background: railColor, borderRadius: 3, boxShadow: railShadow }} />
+                          </div>
+                          <div style={{ flex: 1, padding: '6px 0' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(254,243,199,0.4)', border: '1px dashed #FCD34D', borderRadius: 10, padding: '8px 12px' }}>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.4 }}>{row.mins} min gap</span>
+                              <button type="button" onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' }); }} style={{ fontSize: 12, fontWeight: 700, color: '#D97706', background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                Fill →
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       );
                     }
+
                     const l = row.l;
                     const lessonStart = lessonDateTime(l);
                     const lessonEnd = new Date(lessonStart.getTime() + (l.duration_minutes ?? 60) * 60000);
                     const isCurrent = nowT >= lessonStart && nowT < lessonEnd;
                     const isCompleted = nowT >= lessonEnd || l.status === 'completed';
-                    const isFuture = nowT < lessonStart;
                     const payStatus = (l.payment_status ?? '').toLowerCase();
                     const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
                     const isPaid = payStatus === 'paid';
                     const amt = Number(l.amount_due ?? 0);
                     const pName = pupilName(l);
                     const pColor = colorFor(l.pupil_id ?? pName);
+
                     return (
                       <div
                         key={l.id}
                         onClick={() => navigate({ to: '/schedule' })}
                         role="button"
                         tabIndex={0}
-                        style={{
-                          display: 'flex',
-                          minHeight: 72,
-                          padding: '8px 0',
-                          position: 'relative',
-                          borderRadius: 12,
-                          marginBottom: 4,
-                          background: isCurrent ? '#EFF6FF' : 'transparent',
-                          borderLeft: isCurrent ? '3px solid #1A52A0' : '3px solid transparent',
-                          opacity: isCompleted ? 0.5 : 1,
-                          cursor: 'pointer',
-                          fontFamily: 'Inter, sans-serif',
-                        }}
+                        style={{ display: 'flex', gap: 12, minHeight: 72, cursor: 'pointer', fontFamily: 'Inter, sans-serif', position: 'relative' }}
                       >
-                        <div style={{ width: 52, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 4 }}>
+                        <div style={{ width: 44, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 14 }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>{fmt(l.lesson_time)}</div>
+                        </div>
+                        <div style={{ width: 6, flexShrink: 0, position: 'relative' }}>
+                          <div style={{ position: 'absolute', left: 0, right: 0, top: isFirst ? 10 : 0, bottom: isLast ? 10 : 0, background: railColor, borderRadius: 3, boxShadow: railShadow }} />
+                        </div>
+                        <div style={{ flex: 1, padding: '6px 0', minWidth: 0 }}>
                           <div style={{
-                            fontSize: 11,
-                            fontWeight: isCurrent ? 700 : 600,
-                            color: isCurrent ? '#1A52A0' : isCompleted ? '#9CA3AF' : '#6B7280',
-                          }}>{fmt(l.lesson_time)}</div>
-                          <div style={{ position: 'relative', zIndex: 2, marginTop: 4 }}>
-                            {isCurrent ? (
-                              <div style={{ width: 14, height: 14, borderRadius: 7, background: '#1A52A0', boxShadow: '0 0 0 4px rgba(26,82,160,0.15)' }} />
-                            ) : isCompleted ? (
-                              <div style={{ width: 10, height: 10, borderRadius: 5, background: '#D1D5DB' }} />
-                            ) : (
-                              <div style={{ width: 10, height: 10, borderRadius: 5, background: '#FFFFFF', border: '2px solid #E5E7EB' }} />
-                            )}
-                          </div>
-                        </div>
-                        <div style={{ flex: 1, paddingLeft: 12, paddingTop: 4, minWidth: 0 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <div style={{ width: 28, height: 28, borderRadius: 14, background: pColor, color: '#FFFFFF', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                              {initials(pName)}
+                            background: '#FFFFFF',
+                            border: isCurrent ? '2px solid #1A52A0' : '1px solid #F1F5F9',
+                            boxShadow: isCurrent ? '0 0 0 4px #EFF6FF' : 'none',
+                            borderRadius: 12,
+                            padding: 12,
+                            opacity: isCompleted && !isCurrent ? 0.65 : 1,
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                              <div style={{ minWidth: 0, flex: 1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                  <div style={{ fontSize: 13, fontWeight: 700, color: isCompleted && !isCurrent ? '#64748B' : '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
+                                  {isCurrent && (
+                                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live</span>
+                                  )}
+                                </div>
+                                <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
+                              </div>
+                              <div style={{ width: 36, height: 36, borderRadius: 18, background: pColor, color: '#FFFFFF', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '2px solid #FFFFFF', outline: '1px solid #E2E8F0' }}>
+                                {initials(pName)}
+                              </div>
                             </div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: isCompleted ? '#9CA3AF' : '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pName}</div>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                            <div style={{ fontSize: 12, color: '#9CA3AF' }}>{l.duration_minutes ?? 60} min</div>
-                            {isCompleted && (
-                              <span style={{ background: '#E0FFF4', color: '#065F46', fontSize: 10, padding: '1px 8px', borderRadius: 999, fontWeight: 600 }}>✓ Done</span>
+                            {(isCurrent || isPaid || isCancelled || amt > 0 || isCompleted) && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 8, marginTop: 8, borderTop: '1px solid #F1F5F9', fontSize: 10, fontWeight: 600 }}>
+                                {isCompleted && !isCurrent && (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: '#059669' }}>
+                                    <CheckCircle2 size={11} /> Done
+                                  </span>
+                                )}
+                                {isCancelled ? (
+                                  <span style={{ color: '#CC2229' }}>Cancelled</span>
+                                ) : isPaid ? (
+                                  <span style={{ color: '#059669' }}>Paid ✓</span>
+                                ) : amt > 0 ? (
+                                  <span style={{ color: '#92400E' }}>£{amt.toFixed(0)} due</span>
+                                ) : null}
+                              </div>
                             )}
                           </div>
-                        </div>
-                        <div style={{ flexShrink: 0, paddingLeft: 8, paddingTop: 6, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-                          {isCurrent && (
-                            <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 999, letterSpacing: 0.4 }}>NOW</span>
-                          )}
-                          {isCancelled ? (
-                            <span style={{ background: '#FEF2F2', color: '#CC2229', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>Cancelled</span>
-                          ) : isPaid ? (
-                            <span style={{ background: '#E0FFF4', color: '#065F46', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>Paid ✓</span>
-                          ) : amt > 0 ? (
-                            <span style={{ background: '#FEF3C7', color: '#92400E', fontSize: 10, padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>£{amt.toFixed(0)}</span>
-                          ) : null}
-                          <ChevronRight size={14} color="#D1D5DB" />
                         </div>
                       </div>
                     );
