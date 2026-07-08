@@ -1116,6 +1116,12 @@ function HomePage() {
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
   const setActiveWs = (i: number) => scrollToWs(i);
+  const search = Route.useSearch();
+  useEffect(() => {
+    if (typeof search.ws === 'number') scrollToWs(search.ws);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.ws]);
+
   const handleCarouselScroll = () => {
     if (wsIsProgrammatic.current) return;
     const el = carouselRef.current;
