@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
+
 import {
   User,
   Clock,
