@@ -111,3 +111,70 @@ export function SettingsIcon(props: IconProps) {
     { ...defaultProps, ...props },
   );
 }
+
+export function CarIcon(props: IconProps) {
+  return wrap(
+    <>
+      {/* Side-view car silhouette */}
+      <path d="M3 15l1.5-5A2.5 2.5 0 017 8h10a2.5 2.5 0 012.5 2L21 15" />
+      <path d="M3 15v3h18v-3" />
+      <path d="M3 15h18" />
+      <circle cx="7.5" cy="18" r="1.5" />
+      <circle cx="16.5" cy="18" r="1.5" />
+    </>,
+    { ...defaultProps, ...props },
+  );
+}
+
+export function PhoneIcon(props: IconProps) {
+  return wrap(
+    <>
+      {/* Headset with driving mic */}
+      <path d="M4 13v-1a8 8 0 0116 0v1" />
+      <rect x="3" y="13" width="4" height="6" rx="1.5" />
+      <rect x="17" y="13" width="4" height="6" rx="1.5" />
+      <path d="M19 19v1a2 2 0 01-2 2h-3" />
+    </>,
+    { ...defaultProps, ...props },
+  );
+}
+
+export function BellIcon(props: IconProps) {
+  return wrap(
+    <>
+      {/* Dashboard warning bell */}
+      <path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15L6 16z" />
+      <path d="M10 20a2 2 0 004 0" />
+    </>,
+    { ...defaultProps, ...props },
+  );
+}
+
+export function MenuIcon(props: IconProps) {
+  return wrap(
+    <>
+      {/* Gear-stick style menu */}
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+      <circle cx="8" cy="6" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="14" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="18" r="1.4" fill="currentColor" stroke="none" />
+    </>,
+    { ...defaultProps, ...props },
+  );
+}
+
+export function PoundIcon(props: IconProps) {
+  return wrap(
+    <>
+      {/* Bold pound sign in a coin */}
+      <circle cx="12" cy="12" r="9" />
+      <path d="M14.5 8.5A2.5 2.5 0 0010 10v2H8.5" />
+      <path d="M8.5 15.5h7" />
+      <path d="M10 12h3" />
+      <path d="M10 12v3.5" />
+    </>,
+    { ...defaultProps, ...props },
+  );
+}
