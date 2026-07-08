@@ -50,6 +50,7 @@ import {
   Award,
   ToggleLeft,
   Sun,
+  Tag,
   Zap,
   CalendarDays,
   Crown,
@@ -295,15 +296,19 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     marketplace_suppliers: { name: string; logo_url: string | null } | null;
   };
 
-  const [listings, setListings] = useState<ListingTile[] | null>(null);
-  const [legacyTiles, setLegacyTiles] = useState<MarketplaceTile[]>([]);
+  type CategoryRow = { id: string; name: string };
+
+  const [listings, setListings] = useState<ListingTile[]>([]);
+  const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
 
   useEffect(() => {
     let cancelled = false;
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
     (async () => {
-      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc&limit=6`,
@@ -321,39 +326,29 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         if (!cancelled) setListings([]);
       }
     })();
+
     (async () => {
-      const { data } = await supabase
-        .from("marketplace_tiles")
-        .select("*")
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
-      if (!cancelled && data) setLegacyTiles(data as MarketplaceTile[]);
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/marketplace_categories?select=id,name&order=name.asc`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          },
+        );
+        const data = (await res.json()) as CategoryRow[];
+        if (!cancelled) setCategories(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("[home] categories fetch failed", err);
+      }
     })();
+
     return () => {
       cancelled = true;
     };
   }, []);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  };
-
-  const scrollBy = (direction: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * 170, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    updateScrollState();
-  }, [listings, legacyTiles]);
 
   const firstImageUrl = (raw: ListingTile["image_urls"]): string | null => {
     const arr = Array.isArray(raw)
@@ -370,375 +365,244 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     return arr[0] ?? null;
   };
 
-  const CATEGORY_GRADIENTS: Record<string, string> = {
-    "ADI Training": "linear-gradient(135deg, #1A52A0, #0F2044)",
-    "Vehicles": "linear-gradient(135deg, #0891B2, #164E63)",
-    "Equipment": "linear-gradient(135deg, #6B7280, #374151)",
-    "Technology": "linear-gradient(135deg, #7C3AED, #4C1D95)",
-    "Insurance": "linear-gradient(135deg, #16A34A, #14532D)",
-    "Business Services": "linear-gradient(135deg, #D97706, #92400E)",
-    "For Sale": "linear-gradient(135deg, #CC2229, #7A1419)",
-  };
-  const DEFAULT_GRADIENT = "linear-gradient(135deg, #0F2044, #1A52A0)";
-  const gradientFor = (categoryName: string | undefined): string =>
-    (categoryName && CATEGORY_GRADIENTS[categoryName]) || DEFAULT_GRADIENT;
+  const staticCategories = ["All", "ADI Training", "Vehicles", "Equipment", "Technology", "Insurance", "Business", "For Sale"];
+  const categoryNames = categories.length > 0 ? ["All", ...categories.map((c) => c.name)] : staticCategories;
+
+  const filteredListings = useMemo(() => {
+    if (activeCategory === "All") return listings;
+    return listings.filter((l) => l.marketplace_categories?.name === activeCategory);
+  }, [listings, activeCategory]);
 
   const openListing = (listingId: string) => {
-    navigate({
-      to: "/marketplace/$listingId" as never,
-      params: { listingId } as never,
-    });
+    navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
-
-  const handleLegacyNav = (url: string) => {
-    if (!url) return;
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      window.open(url, "_blank", "noopener,noreferrer");
-    } else {
-      navigate({ to: url as never });
-    }
-  };
-
-  const showListings = (listings?.length ?? 0) > 0;
-  const showLegacy = !showListings && legacyTiles.length > 0;
-  // While listings are still loading (null) and there are no legacy tiles yet, render nothing.
-  if (!showListings && !showLegacy) return null;
 
   return (
-    <div className="mt-2">
-      <div className="mx-4 flex items-end justify-between mb-4">
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#CC2229", display: "inline-block" }} />
-            <span
-              className="text-[11px] uppercase"
-              style={{ color: "#6B7280", letterSpacing: 0.8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}
-            >
-              Marketplace
-            </span>
-          </div>
-          <p
-            className="font-semibold uppercase"
-            style={{
-              fontSize: 10,
-              color: "#9CA3AF",
-              letterSpacing: 1,
-              fontFamily: "Inter, sans-serif",
-              marginTop: 3,
-              marginLeft: 14,
-            }}
-          >
-            Curated for you
-          </p>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/marketplace" as never })}
-            className="font-bold"
-            style={{
-              fontSize: 13,
-              color: "#1877D6",
-              fontFamily: "Inter, sans-serif",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            Get Listed
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/marketplace" as never })}
-            className="font-bold"
-            style={{
-              fontSize: 13,
-              color: "#1877D6",
-              fontFamily: "Inter, sans-serif",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            See all →
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              disabled={!canScrollLeft}
-              aria-label="Scroll left"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollLeft ? "pointer" : "default",
-                opacity: canScrollLeft ? 1 : 0.45,
-                padding: 0,
-              }}
-            >
-              <ChevronLeft size={16} color="#0F2044" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              disabled={!canScrollRight}
-              aria-label="Scroll right"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollRight ? "pointer" : "default",
-                opacity: canScrollRight ? 1 : 0.45,
-                padding: 0,
-              }}
-            >
-              <ChevronRight size={16} color="#0F2044" />
-            </button>
-          </div>
-        </div>
-      </div>
-        <div
-          ref={scrollRef}
-          onScroll={updateScrollState}
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 10,
-            overflowX: "auto",
-            marginLeft: 16,
-            marginRight: 16,
-            paddingBottom: 8,
-            scrollSnapType: "x mandatory",
-            scrollbarWidth: "none",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
-        {showListings && listings!.map((tile) => {
-              const img = firstImageUrl(tile.image_urls);
-              const gradient = gradientFor(tile.marketplace_categories?.name);
-              const hero = img
-                ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${img}) center/cover no-repeat`
-                : gradient;
-              const showFeatured = !!tile.is_featured;
-              return (
-                <div
-                  key={tile.id}
-                  onClick={() => openListing(tile.id)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      openListing(tile.id);
-                    }
-                  }}
-                  style={{
-                    width: 160,
-                    height: 120,
-                    flexShrink: 0,
-                    scrollSnapAlign: "start",
-                    borderRadius: 12,
-                    overflow: "hidden",
-                    position: "relative",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    background: hero,
-                    border: "1px solid #EEF2F7",
-                    boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
-                  }}
-                >
-                  {showFeatured && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 8,
-                        left: 8,
-                        fontSize: 9,
-                        letterSpacing: 0.6,
-                        color: "#D97706",
-                        backgroundColor: "#FFFFFF",
-                        fontFamily: "Inter, sans-serif",
-                        padding: "2px 8px",
-                        borderRadius: 999,
-                        textTransform: "uppercase",
-                        fontWeight: 700,
-                        boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
-                      }}
-                    >
-                      Featured
-                    </span>
-                  )}
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      padding: "8px 10px",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#FFFFFF",
-                        lineHeight: 1.3,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                        letterSpacing: -0.1,
-                      }}
-                    >
-                      {tile.title}
-                    </span>
-                    {tile.price_display && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          color: "rgba(255,255,255,0.7)",
-                          marginTop: 2,
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {tile.price_display}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+    <div style={{ padding: 16, paddingBottom: 80, display: "flex", flexDirection: "column", gap: 12 }}>
+      {/* Search */}
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/marketplace" as never })}
+        style={{
+          width: "100%",
+          background: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 14,
+          padding: "12px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          cursor: "pointer",
+          marginBottom: 12,
+        }}
+      >
+        <Search size={18} color="#9CA3AF" />
+        <span style={{ fontSize: 14, color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Search marketplace...</span>
+      </button>
 
-        {showLegacy && legacyTiles.map((tile) => {
-          const accentColor = tile.color || "#4DA3FF";
-          const hero = tile.image_url
-            ? `linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%), url(${tile.image_url}) center/cover no-repeat`
-            : tile.gradient || `linear-gradient(135deg, ${accentColor}, #0B1F3A)`;
-          const badgeLabel = tile.badge?.trim();
-          const badgeIsNew = badgeLabel?.toUpperCase() === "NEW";
+      {/* Category pills */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          marginBottom: 12,
+        }}
+      >
+        {categoryNames.map((cat) => {
+          const active = activeCategory === cat;
           return (
-            <div
-              key={tile.id}
-              onClick={() => handleLegacyNav(tile.link_url)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleLegacyNav(tile.link_url);
-                }
-              }}
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveCategory(cat)}
               style={{
-                width: 160,
-                height: 120,
                 flexShrink: 0,
-                scrollSnapAlign: "start",
-                borderRadius: 12,
-                overflow: "hidden",
-                position: "relative",
+                background: active ? "#0F2044" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#6B7280",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 20,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 600,
+                fontFamily: "Inter, sans-serif",
                 cursor: "pointer",
-                userSelect: "none",
-                background: hero,
-                border: "1px solid #EEF2F7",
-                boxShadow: "0 4px 14px rgba(11,31,58,0.08)",
               }}
             >
-              {badgeLabel && (
-                <span
-                  className="font-bold"
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    fontSize: 9,
-                    letterSpacing: 0.6,
-                    color: "#FFFFFF",
-                    backgroundColor: badgeIsNew
-                      ? "rgba(11,31,58,0.92)"
-                      : "rgba(24,119,214,0.92)",
-                    backdropFilter: "blur(6px)",
-                    WebkitBackdropFilter: "blur(6px)",
-                    fontFamily: "Inter, sans-serif",
-                    padding: "2px 7px",
-                    borderRadius: 999,
-                    textTransform: "uppercase",
-                    boxShadow: "0 2px 6px rgba(11,31,58,0.18)",
-                  }}
-                >
-                  {badgeLabel}
-                </span>
+              {cat}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Listings */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {filteredListings.map((tile) => {
+          const img = firstImageUrl(tile.image_urls);
+          const category = tile.marketplace_categories?.name ?? "";
+          const supplier = tile.marketplace_suppliers?.name ?? "";
+          return (
+            <button
+              key={tile.id}
+              type="button"
+              onClick={() => openListing(tile.id)}
+              style={{
+                width: "100%",
+                background: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 14,
+                padding: "14px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                cursor: "pointer",
+                boxShadow: "0 1px 4px rgba(15,32,68,0.04)",
+                textAlign: "left",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              {img && (
+                <img
+                  src={img}
+                  alt={tile.title}
+                  style={{ width: 64, height: 64, borderRadius: 10, objectFit: "cover", flexShrink: 0 }}
+                />
               )}
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  padding: "8px 10px",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <span
+              <div style={{ flex: 1, minWidth: 0, paddingLeft: img ? 12 : 0 }}>
+                <div
                   style={{
-                    fontSize: 12,
-                    color: "#FFFFFF",
-                    lineHeight: 1.3,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#0F2044",
+                    lineHeight: 1.35,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    fontWeight: 700,
                     fontFamily: "Inter, sans-serif",
-                    letterSpacing: -0.1,
                   }}
                 >
                   {tile.title}
-                </span>
-                {tile.subtitle && (
+                </div>
+                {supplier && (
+                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, fontFamily: "Inter, sans-serif" }}>
+                    {supplier}
+                  </div>
+                )}
+                {tile.price_display && (
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", marginTop: 4, fontFamily: "Inter, sans-serif" }}>
+                    {tile.price_display}
+                  </div>
+                )}
+                {category && (
                   <span
                     style={{
                       fontSize: 10,
-                      color: "rgba(255,255,255,0.7)",
-                      marginTop: 2,
-                      fontFamily: "Inter, sans-serif",
-                      overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: "vertical",
-                      fontWeight: 500,
+                      color: "#1A52A0",
+                      background: "#E0F4FF",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      marginTop: 4,
+                      display: "inline-block",
+                      fontWeight: 600,
                     }}
                   >
-                    {tile.subtitle}
+                    {category}
                   </span>
                 )}
               </div>
-            </div>
+              {tile.is_featured && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: "#D97706",
+                    background: "#FEF3C7",
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Featured
+                </span>
+              )}
+            </button>
           );
         })}
       </div>
+
+      {/* View all */}
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/marketplace" as never })}
+        style={{
+          width: "100%",
+          background: "#0F2044",
+          color: "#FFFFFF",
+          borderRadius: 12,
+          padding: "12px 0",
+          fontSize: 14,
+          fontWeight: 600,
+          border: "none",
+          cursor: "pointer",
+          marginTop: 8,
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
+        View all listings →
+      </button>
+
+      {/* List your product */}
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/marketplace/list" as never })}
+        style={{
+          width: "100%",
+          background: "#F7FAFC",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 14,
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          marginTop: 4,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "#FEF3C7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Tag size={18} color="#D97706" />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", fontFamily: "Inter, sans-serif" }}>
+            List your product or service
+          </div>
+          <div style={{ fontSize: 12, color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
+            Reach thousands of ADIs →
+          </div>
+        </div>
+        <ChevronRight size={18} color="#D1D5DB" />
+      </button>
     </div>
   );
 }
+
 
 function _RemovedMarketplaceLegacy() {
   return null;
