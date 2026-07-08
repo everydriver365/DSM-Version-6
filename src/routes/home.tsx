@@ -1189,12 +1189,11 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 </div>
               );
             })}
-        </div>
-        </div>
       </div>
     </div>
   );
 }
+
 
 
 function HomePage() {
