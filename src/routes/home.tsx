@@ -4110,7 +4110,7 @@ function HomePage() {
           if (currentLesson) {
             aiInsight = { text: `Lesson with ${(currentLesson.pupils?.first_name ?? pupilName(currentLesson)).split(' ')[0]} in progress. Log end-of-lesson notes when you finish.`, cta: 'Open lesson →', to: '/schedule' };
           } else if (owedPupil) {
-            aiInsight = { text: `${owedPupil.name} owes £${owedPupil.amount.toFixed(0)}. Send a payment reminder?`, cta: 'View suggestions →', to: '/payments' };
+            aiInsight = { text: `${owedPupil.name} owes £${owedPupil.amount.toFixed(0)}.`, cta: 'Send Reminder →', to: '/payments' };
           } else if (firstGap) {
             aiInsight = { text: `${firstGap.mins} min free at ${fmt(`${String(firstGap.start.getHours()).padStart(2,'0')}:${String(firstGap.start.getMinutes()).padStart(2,'0')}`)}. Fill it from the waiting list?`, cta: 'View suggestions →', to: '/gaps' };
           } else if (nextLesson) {
