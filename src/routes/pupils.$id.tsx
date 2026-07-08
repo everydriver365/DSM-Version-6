@@ -1536,7 +1536,7 @@ function PupilDetailPage() {
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
                       <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>EOL</span>
                     ) : null}
-                    <ChevronRight size={14} color="#D1D5DB" />
+                    <ChevronRight size={18} color="#64748B" />
                   </div>
                 </Fragment>
               );
@@ -1601,7 +1601,7 @@ function PupilDetailPage() {
                           ) : isPaid ? (
                             <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Paid ✓</span>
                           ) : null}
-                          <ChevronRight size={14} color="#D1D5DB" />
+                          <ChevronRight size={18} color="#64748B" />
                         </div>
                       </Fragment>
                     );
