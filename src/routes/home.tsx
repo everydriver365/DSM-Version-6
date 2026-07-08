@@ -1360,7 +1360,8 @@ function HomePage() {
   const wsIsProgrammatic = useRef(false);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
-  const WS_COUNT = 7;
+  const WS_COUNT = 8;
+  const [communityEmail, setCommunityEmail] = useState('');
   const scrollToWs = (i: number) => {
     const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
     setActiveWsState(clamped);
@@ -3589,7 +3590,7 @@ function HomePage() {
 
       {/* WORKSPACE DOTS + ACTIVE LABEL */}
       {(() => {
-        const WORKSPACES = ['Today','Schedule','Pupils','Money','Market','DSM','Tools'];
+        const WORKSPACES = ['Today','Schedule','Pupils','Money','Market','DSM','Community','Tools'];
         return (
           <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:5, padding:'4px 16px 8px', background:'#0F2044', flexShrink:0, zIndex:10 }}>
             {WORKSPACES.map((lbl, i) => (
@@ -5683,8 +5684,148 @@ function HomePage() {
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
 <section
-          data-workspace="tools"
+          data-workspace="community"
           data-ws-index={6}
+          style={{
+            flex:'0 0 100vw',
+            width:'100vw',
+            height:'100%',
+            scrollSnapAlign:'start',
+            overflowY:'auto',
+            overflowX:'hidden',
+            WebkitOverflowScrolling:'touch',
+            touchAction:'pan-y',
+            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
+          }}
+        >
+          <div style={{ padding:16, display:'flex', flexDirection:'column', gap:12, paddingBottom:80 }}>
+            {/* 1. HERO */}
+            <div style={{ background:'linear-gradient(135deg, #0F2044, #1A52A0)', borderRadius:20, padding:20, marginBottom:4 }}>
+              <Users color="#fff" size={28} style={{ marginBottom:8 }} />
+              <div style={{ color:'#fff', fontWeight:900, fontSize:20 }}>DSM Community</div>
+              <div style={{ color:'rgba(255,255,255,0.7)', fontSize:14, marginTop:4 }}>Connect with ADIs across the UK</div>
+              <div style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginTop:6, lineHeight:1.5 }}>
+                Forum for driving instructors — share tips, get advice, discuss standards checks.
+              </div>
+              <div style={{ marginTop:12 }}>
+                <span style={{ background:'#D97706', color:'#fff', fontSize:12, fontWeight:700, padding:'4px 12px', borderRadius:999 }}>
+                  Coming soon
+                </span>
+              </div>
+              <input
+                type="email"
+                value={communityEmail}
+                onChange={(e) => setCommunityEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="community-hero-email"
+                style={{
+                  width:'100%', boxSizing:'border-box',
+                  background:'rgba(255,255,255,0.1)',
+                  border:'1px solid rgba(255,255,255,0.2)',
+                  color:'#fff', padding:'10px 14px', borderRadius:10,
+                  marginTop:12, fontSize:14, outline:'none',
+                }}
+              />
+              <style>{`.community-hero-email::placeholder{color:rgba(255,255,255,0.4);}`}</style>
+              <button
+                type="button"
+                onClick={() => {
+                  toast("You're on the list! We'll notify you when DSM Community launches.");
+                  setCommunityEmail('');
+                }}
+                style={{
+                  background:'#fff', color:'#0F2044', fontWeight:600,
+                  width:'100%', borderRadius:12, padding:'10px 0',
+                  fontSize:14, marginTop:8, border:0, cursor:'pointer',
+                }}
+              >
+                Notify me when it launches →
+              </button>
+            </div>
+
+            {/* 2. PLACEHOLDER TOPICS */}
+            <div style={{ background:'#fff', border:'0.5px solid #E2E6ED', borderRadius:16, overflow:'hidden' }}>
+              <div style={{ padding:'14px 16px', borderBottom:'0.5px solid #F3F4F6', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <div style={{ fontWeight:600, fontSize:14, color:'#0F2044' }}>Hot topics</div>
+                <span style={{ background:'#F3F4F6', color:'#6B7280', fontSize:12, padding:'2px 8px', borderRadius:999 }}>Preview</span>
+              </div>
+              {[
+                { title:'Standards check — Grade 6 tips?', meta:'23 replies · ADI Training', hot:true },
+                { title:'Best dashcam for instructor cars 2026?', meta:'18 replies · Equipment', hot:false },
+                { title:'How do you handle nervous pupils?', meta:'31 replies · Teaching', hot:false },
+              ].map((t, i) => (
+                <div key={i} style={{ padding:'12px 16px', borderTop: i === 0 ? '0' : '0.5px solid #F3F4F6', display:'flex', justifyContent:'space-between', alignItems:'center', gap:10 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontWeight:600, fontSize:13, color:'#0F2044' }}>{t.title}</div>
+                    <div style={{ fontSize:12, color:'#9CA3AF', marginTop:2 }}>{t.meta}</div>
+                  </div>
+                  {t.hot && (
+                    <span style={{ background:'#FEF2F2', color:'#CC2229', fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:999, flexShrink:0 }}>
+                      🔥 Hot
+                    </span>
+                  )}
+                </div>
+              ))}
+              <div style={{ padding:'12px 16px', borderTop:'0.5px solid #F3F4F6', textAlign:'center' }}>
+                <span style={{ fontSize:12, color:'#1A52A0', fontWeight:600 }}>Join the waitlist to access the community →</span>
+              </div>
+            </div>
+
+            {/* 3. CPD & DEVELOPMENT */}
+            <div style={{ background:'#fff', border:'0.5px solid #E2E6ED', borderRadius:16, overflow:'hidden' }}>
+              <div style={{ padding:'14px 16px', borderBottom:'0.5px solid #F3F4F6', fontWeight:600, fontSize:14, color:'#0F2044' }}>
+                CPD & development
+              </div>
+              {[
+                { Icon: GraduationCap, color:'#16A34A', label:'CPD log', to:'/cpd' },
+                { Icon: ClipboardCheck, color:'#1A52A0', label:'Standards check tracker', to:'/standards' },
+                { Icon: Award, color:'#D97706', label:'Certifications', to:'/certifications' },
+                { Icon: BookOpen, color:'#7C3AED', label:'Training resources', to:'/resources' },
+              ].map((r, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => navigate({ to: r.to as never })}
+                  style={{
+                    width:'100%', background:'#fff', border:0,
+                    padding:'12px 16px', borderTop: i === 0 ? '0' : '0.5px solid #F3F4F6',
+                    display:'flex', justifyContent:'space-between', alignItems:'center',
+                    cursor:'pointer', textAlign:'left',
+                  }}
+                >
+                  <span style={{ display:'flex', alignItems:'center', gap:12 }}>
+                    <r.Icon size={18} color={r.color} />
+                    <span style={{ fontSize:13, fontWeight:500, color:'#0F2044' }}>{r.label}</span>
+                  </span>
+                  <ChevronRight size={16} color="#D1D5DB" />
+                </button>
+              ))}
+            </div>
+
+            {/* 4. STANDARDS CHECK CARD */}
+            <div style={{ background:'#F0F4FF', border:'0.5px solid #BFDBFE', borderRadius:16, padding:16 }}>
+              <ClipboardCheck size={20} color="#1A52A0" style={{ marginBottom:6 }} />
+              <div style={{ fontWeight:600, fontSize:14, color:'#0F2044' }}>Standards check prep</div>
+              <div style={{ fontSize:12, color:'#6B7280', marginTop:4, lineHeight:1.5 }}>
+                Access guides, mock check resources and expert tips to nail your next standards check.
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/standards' as never })}
+                style={{
+                  background:'#1A52A0', color:'#fff', fontSize:14, fontWeight:600,
+                  width:'100%', borderRadius:12, padding:'10px 0',
+                  border:0, cursor:'pointer', marginTop:12,
+                }}
+              >
+                View resources →
+              </button>
+            </div>
+          </div>
+        </section>
+<section
+          data-workspace="tools"
+          data-ws-index={7}
           style={{
             flex:'0 0 100vw',
             width:'100vw',
@@ -6034,9 +6175,9 @@ function HomePage() {
           { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => scrollToWs(1) },
           { key: 'pupils', label: 'Pupils', Icon: PupilsIcon, onClick: () => scrollToWs(2) },
           { key: 'messages', label: 'Messages', Icon: MessagesIcon, onClick: () => navigate({ to: '/messages' as never }) },
-          { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(6) },
+          { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(7) },
         ];
-        const activeIndex = activeWs === 0 ? 0 : activeWs === 1 ? 1 : activeWs === 2 ? 2 : activeWs === 6 ? 4 : -1;
+        const activeIndex = activeWs === 0 ? 0 : activeWs === 1 ? 1 : activeWs === 2 ? 2 : activeWs === 7 ? 4 : -1;
         return (
           <BottomNav
             items={navItems}
