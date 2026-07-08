@@ -34,7 +34,7 @@ export const Route = createFileRoute("/schedule")({
   component: SchedulePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -214,7 +214,6 @@ function SchedulePage() {
   const [openActionsId, setOpenActionsId] = useState<string | null>(null);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
-  const [colourMap, setColourMap] = useState<Record<string, string>>({});
   const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
   const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
@@ -306,23 +305,20 @@ function SchedulePage() {
         const token = (await supabase.auth.getSession()).data.session?.access_token;
         if (token) {
           const pupilRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,calendar_colour,buffer_before_minutes,buffer_after_minutes`,
+            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,buffer_before_minutes,buffer_after_minutes`,
             {
               headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
             },
           );
           const pupilData = await pupilRes.json();
-          const map: Record<string, string> = {};
           const bufMap: Record<string, { before: number | null; after: number | null }> = {};
           (pupilData || []).forEach((p: any) => {
-            if (p.calendar_colour) map[p.id] = p.calendar_colour;
             bufMap[p.id] = {
               before: p.buffer_before_minutes ?? null,
               after: p.buffer_after_minutes ?? null,
             };
           });
           if (!cancelled) {
-            setColourMap(map);
             setPupilBufferMap(bufMap);
           }
 
@@ -636,7 +632,7 @@ function SchedulePage() {
     const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
     const isPaid = paymentStatus === "paid";
 
-    const avatarBg = (l.pupil_id && colourMap[l.pupil_id]) || "#1A52A0";
+    const avatarBg = NAVY;
     const initials = initialsOf(name);
     const timeText = formatLessonTime(l);
     const durationText = formatDurationShort(l.duration_minutes);
@@ -1019,66 +1015,62 @@ function SchedulePage() {
       const nextSeg = segments[segIdx];
       const useSeg = nextSeg && segmentStart(nextSeg) <= gapStart(g);
       if (useSeg) {
-        output.push(
-          <div
-            key={`seg-${segIdx}`}
-            style={{
-              margin: "0 16px 12px",
-              border: `0.5px solid rgba(15,32,68,0.10)`,
-              borderRadius: 16,
-              background: "#FFFFFF",
-              overflow: "hidden",
-            }}
-          >
-            {nextSeg.map((row, i) => {
-              const isLast = i === nextSeg.length - 1;
-              const divider =
-                i > 0 ? (
-                  <div
-                    key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid rgba(15,32,68,0.10)` }}
+        nextSeg.forEach((row, i) => {
+          const isLast = i === nextSeg.length - 1;
+          if (row.kind === "now") {
+            output.push(
+              <div
+                key={`now-${row.startMs}`}
+                style={{
+                  margin: "0 16px 10px",
+                  border: `0.5px solid rgba(15,32,68,0.10)`,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "#FFFFFF",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "6px 14px",
+                    background: DANGER_BG,
+                    ...POPPINS,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: DANGER,
+                      display: "inline-block",
+                    }}
                   />
-                ) : null;
-
-              if (row.kind === "now") {
-                return (
-                  <div key={`now-${row.startMs}`}>
-                    {divider}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "6px 14px",
-                        background: DANGER_BG,
-                        ...POPPINS,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: 999,
-                          background: DANGER,
-                          display: "inline-block",
-                        }}
-                      />
-                      <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
-                        NOW · {formatTimeFromDate(new Date(row.startMs))}
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <div key={row.lesson.id}>
-                  {divider}
-                  {renderLessonRow(row.lesson, { isLast })}
+                  <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
+                    NOW · {formatTimeFromDate(new Date(row.startMs))}
+                  </span>
                 </div>
-              );
-            })}
-          </div>,
-        );
+              </div>,
+            );
+          } else {
+            output.push(
+              <div
+                key={row.lesson.id}
+                style={{
+                  margin: "0 16px 10px",
+                  border: `0.5px solid rgba(15,32,68,0.10)`,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "#FFFFFF",
+                }}
+              >
+                {renderLessonRow(row.lesson, { isLast })}
+              </div>,
+            );
+          }
+        });
         segIdx++;
       } else {
         output.push(gapNodes[g]);
