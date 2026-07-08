@@ -1313,7 +1313,18 @@ function PupilDetailPage() {
                               const uid = userData.user?.id;
                               if (!uid) return;
                               const ok = await deletePaymentRecord(p.id, token, uid);
-                              if (ok) setPaymentHistoryRefresh((n) => n + 1);
+                              if (ok) {
+                                // Fix 2: also soft-delete the legacy `payments` row for this lesson
+                                if (p.lesson_id) {
+                                  const { error: payDelErr } = await supabase
+                                    .from("payments")
+                                    .update({ deleted_at: new Date().toISOString() })
+                                    .eq("lesson_id", p.lesson_id)
+                                    .is("deleted_at", null);
+                                  if (payDelErr) console.error("[pupil] payments soft-delete error", payDelErr);
+                                }
+                                setPaymentHistoryRefresh((n) => n + 1);
+                              }
                             }}
                             className="inline-flex items-center justify-center rounded-full"
                             style={{
