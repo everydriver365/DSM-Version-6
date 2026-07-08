@@ -712,12 +712,13 @@ function SchedulePage() {
               ...POPPINS,
             }}
           >
-            {l.pupil?.profile_image_url ? (
+            {(l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url) ? (
               <img
-                src={l.pupil.profile_image_url}
+                src={l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url}
                 alt=""
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
+
             ) : (
               initials
             )}
