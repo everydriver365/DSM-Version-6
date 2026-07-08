@@ -1255,7 +1255,7 @@ function HomePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url)`,
+          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url,photo_url)`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
