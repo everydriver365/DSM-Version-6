@@ -4143,8 +4143,8 @@ function HomePage() {
                         const extra = Math.max(0, sorted.length - nearbyPupils.length);
                         return (
                           <div key={`gap-${idx}`} style={{ display: 'flex', gap: 10, minHeight: 96 }}>
-                            <div style={{ width: 52, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                            <div style={{ width: 44, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>
                                 {fmt(`${String(row.start.getHours()).padStart(2, '0')}:${String(row.start.getMinutes()).padStart(2, '0')}`)}
                               </div>
                             </div>
@@ -4155,49 +4155,51 @@ function HomePage() {
                                 border: '1px solid #FDE68A',
                                 borderRadius: 20,
                                 padding: 14,
+                                minWidth: 0,
                               }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                                  <div style={{ minWidth: 0 }}>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.6 }}>Available Slot</div>
-                                    <div style={{ fontSize: 15, fontWeight: 700, color: '#78350F', marginTop: 2, letterSpacing: -0.1 }}>{row.mins} minutes available</div>
-                                  </div>
-                                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                                    <div style={{ fontSize: 10, fontWeight: 600, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.4 }}>Potential</div>
-                                    <div style={{ fontSize: 14, fontWeight: 800, color: '#78350F' }}>£{potentialLow}–£{potentialHigh}</div>
-                                  </div>
+                                {/* Header */}
+                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, minWidth: 0 }}>
+                                  <div style={{ fontSize: 10, fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: 0.6, whiteSpace: 'nowrap' }}>Available Slot</div>
+                                  <div style={{ fontSize: 13, fontWeight: 800, color: '#78350F', whiteSpace: 'nowrap', flexShrink: 0 }}>£{potentialLow}–£{potentialHigh}</div>
                                 </div>
+                                <div style={{ fontSize: 16, fontWeight: 700, color: '#78350F', marginTop: 4, letterSpacing: -0.2 }}>{row.mins} min free</div>
+                                <div style={{ fontSize: 11, color: '#92400E', marginTop: 1, fontWeight: 500 }}>Potential earnings</div>
+
                                 {nearbyPupils.length > 0 && (
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
-                                    <div style={{ display: 'flex' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, minWidth: 0 }}>
+                                    <div style={{ display: 'flex', flexShrink: 0 }}>
                                       {nearbyPupils.map((p, i) => (
                                         <div key={p.id ?? i} style={{
-                                          width: 26, height: 26, borderRadius: '50%',
+                                          width: 24, height: 24, borderRadius: '50%',
                                           background: colorFor(p.id ?? p.name),
-                                          color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                                          color: '#FFFFFF', fontSize: 9, fontWeight: 700,
                                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                                           border: '2px solid #FFFBEB', marginLeft: i === 0 ? 0 : -8,
                                         }}>{initials(p.name)}</div>
                                       ))}
                                       {extra > 0 && (
                                         <div style={{
-                                          width: 26, height: 26, borderRadius: '50%',
-                                          background: '#FEF3C7', color: '#92400E', fontSize: 10, fontWeight: 700,
+                                          width: 24, height: 24, borderRadius: '50%',
+                                          background: '#FEF3C7', color: '#92400E', fontSize: 9, fontWeight: 700,
                                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                                           border: '2px solid #FFFBEB', marginLeft: -8,
                                         }}>+{extra}</div>
                                       )}
                                     </div>
-                                    <div style={{ fontSize: 11, color: '#92400E', fontWeight: 500 }}>Nearby matching pupils</div>
+                                    <div style={{ fontSize: 11, color: '#92400E', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Nearby pupils</div>
                                   </div>
                                 )}
-                                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                                <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
                                   <button type="button" onClick={(e) => { stop(e); navigate({ to: '/availability' }); }} style={{
-                                    flex: 1, padding: '10px 12px', borderRadius: 12, border: '1px solid #FDE68A',
-                                    background: '#FFFFFF', color: '#92400E', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                                  }}>Block Time</button>
+                                    flex: 1, padding: '9px 8px', borderRadius: 12, border: '1px solid #FDE68A',
+                                    background: '#FFFFFF', color: '#92400E', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                  }}>Block</button>
                                   <button type="button" onClick={(e) => { stop(e); navigate({ to: '/gaps' }); }} style={{
-                                    flex: 1, padding: '10px 12px', borderRadius: 12, border: 'none',
-                                    background: '#D97706', color: '#FFFFFF', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                                    flex: 2, padding: '9px 8px', borderRadius: 12, border: 'none',
+                                    background: '#D97706', color: '#FFFFFF', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+
                                   }}>Fill Slot →</button>
                                 </div>
                               </div>
