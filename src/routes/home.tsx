@@ -3834,7 +3834,12 @@ function HomePage() {
         const PURPLE_BG = '#EDE9FE';
         const PURPLE_FG = '#6D28D9';
 
-        const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+        const activeList = tab === 'today' ? todayLessons : tab === 'tomorrow' ? tomorrowLessons : nextTabLessons;
+        const sorted = [...activeList].sort((a, b) => {
+          const ad = `${a.lesson_date}T${a.lesson_time ?? '00:00'}`;
+          const bd = `${b.lesson_date}T${b.lesson_time ?? '00:00'}`;
+          return ad.localeCompare(bd);
+        });
         const nowT = new Date();
         const fmt24 = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
