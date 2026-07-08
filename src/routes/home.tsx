@@ -97,7 +97,9 @@ import {
   IconLayoutGrid,
   IconX,
   IconCalendar,
+  IconDots,
 } from "@tabler/icons-react";
+
 import {
   Dialog,
   DialogContent,
@@ -4202,75 +4204,96 @@ function HomePage() {
 
 
             {/* 6. QUICK ACTIONS */}
-            <div style={{ fontSize: 18, fontWeight: 500, color: NAVY, marginTop: 22, marginBottom: 12, letterSpacing: -0.2 }}>Quick actions</div>
-            {(() => {
-              const unread = unreadMsgs.length;
-              const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
-              const items: Array<{
-                label: string; to: string; Icon: typeof IconCalendarEvent;
-                chipBg: string; chipFg: string; badge?: React.ReactNode;
-              }> = [
-                { label: 'Schedule', to: '/schedule', Icon: IconCalendarEvent, chipBg: '#DBEAFE', chipFg: '#1D4ED8' },
-                { label: 'Pupils', to: '/pupils', Icon: IconUsers, chipBg: '#EDE9FE', chipFg: '#6D28D9' },
-                {
-                  label: 'Payments', to: '/payments', Icon: IconWallet, chipBg: '#FEE2E2', chipFg: '#B91C1C',
-                  badge: outstandingBadge ? (
-                    <span style={{ background: '#FEE2E2', color: '#B91C1C', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>{outstandingBadge}</span>
-                  ) : null,
-                },
-                {
-                  label: 'Messages', to: '/messages', Icon: IconMessageCircle, chipBg: '#DCFCE7', chipFg: '#15803D',
-                  badge: unread > 0 ? (
-                    <span style={{ background: ACCENT, color: '#FFFFFF', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>
-                  ) : null,
-                },
-              ];
-              const cardStyle: React.CSSProperties = {
-                background: '#FFFFFF',
-                border: `0.5px solid ${BORDER}`,
-                borderRadius: 14,
-                padding: 16,
-                cursor: 'pointer',
-                fontFamily: PF,
-                textAlign: 'left',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 84,
-              };
-              return (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  {items.map((t) => (
-                    <button key={t.label} type="button" onClick={() => navigate({ to: t.to as never })} style={cardStyle}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                        <span style={{ width: 36, height: 36, borderRadius: 11, background: t.chipBg, color: t.chipFg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <t.Icon size={18} stroke={1.75} />
-                        </span>
-                        {t.badge}
-                      </div>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 12 }}>{t.label}</div>
-                    </button>
-                  ))}
-                  <button
-                    key="More"
-                    type="button"
-                    onClick={() => navigate({ to: '/tools' as never })}
-                    style={{
-                      ...cardStyle,
-                      gridColumn: 'span 2',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      minHeight: 60,
-                      gap: 12,
-                    }}
-                  >
-                    <span style={{ width: 36, height: 36, borderRadius: 11, background: '#F1F5F9', color: '#475569', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <IconLayoutGrid size={18} stroke={1.75} />
-                    </span>
-                    <span style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>More</span>
-                  </button>
-                </div>
-              );
-            })()}
+            <div style={{ marginTop: 22, padding: 16, background: '#F1F5F9', borderRadius: 26, fontFamily: PF }}>
+              <div style={{ fontSize: 20, fontWeight: 500, color: NAVY, letterSpacing: '-0.01em', marginBottom: 14 }}>Quick actions</div>
+              {(() => {
+                const unread = unreadMsgs.length;
+                const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
+                const showFillSlots = freeSlotCount > 0;
+                type Tile = {
+                  key: string;
+                  label: string;
+                  to: string;
+                  icon: React.ReactNode;
+                  chipBg: string;
+                  badge?: React.ReactNode;
+                  span?: boolean;
+                };
+                const tiles: Tile[] = [];
+                if (showFillSlots) {
+                  tiles.push({
+                    key: 'fill',
+                    label: 'Fill slots',
+                    to: '/gaps',
+                    icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />,
+                    chipBg: '#FBEFE1',
+                    badge: (
+                      <span style={{ background: '#FBEFE1', color: '#B5661E', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>
+                        {freeSlotCount} free
+                      </span>
+                    ),
+                  });
+                }
+                tiles.push(
+                  { key: 'schedule', label: 'Schedule', to: '/schedule', icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                  { key: 'pupils', label: 'Pupils', to: '/pupils', icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                  {
+                    key: 'payments',
+                    label: 'Payments',
+                    to: '/payments',
+                    icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />,
+                    chipBg: '#FCEBEB',
+                    badge: outstandingBadge ? (
+                      <span style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>{outstandingBadge}</span>
+                    ) : undefined,
+                  },
+                  {
+                    key: 'messages',
+                    label: 'Messages',
+                    to: '/messages',
+                    icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />,
+                    chipBg: '#EAF3DE',
+                    badge: unread > 0 ? (
+                      <span style={{ background: '#185FA5', color: '#FFFFFF', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>
+                    ) : undefined,
+                  },
+                  { key: 'more', label: 'More', to: '/tools', icon: <IconDots size={20} stroke={1.5} color="#6B7280" />, chipBg: '#F1F5F9', span: !showFillSlots },
+                );
+                return (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    {tiles.map((t) => (
+                      <button
+                        key={t.key}
+                        type="button"
+                        onClick={() => navigate({ to: t.to as never })}
+                        style={{
+                          gridColumn: t.span ? 'span 2' : undefined,
+                          background: '#FFFFFF',
+                          borderRadius: 20,
+                          padding: 18,
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontFamily: PF,
+                          textAlign: 'left',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          minHeight: 96,
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                          <span style={{ width: 42, height: 42, borderRadius: 14, background: t.chipBg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {t.icon}
+                          </span>
+                          {t.badge}
+                        </div>
+                        <div style={{ fontSize: 15, fontWeight: 500, color: NAVY, marginTop: 14 }}>{t.label}</div>
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+
           </div>
         );
       })()}
