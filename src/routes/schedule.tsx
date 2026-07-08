@@ -1187,18 +1187,36 @@ function SchedulePage() {
       </div>
 
       {lessons === null ? (
-        <div style={{ padding: 16 }}>
+        <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
               className="skeleton-pulse"
               style={{
-                height: 56,
-                marginBottom: 8,
-                backgroundColor: "#F3F4F6",
-                borderRadius: 8,
+                height: 64,
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #F1F5F9",
+                borderRadius: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 16px",
               }}
-            />
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  backgroundColor: "#E2E8F0",
+                  flexShrink: 0,
+                }}
+              />
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div style={{ height: 14, width: "55%", borderRadius: 6, backgroundColor: "#E2E8F0" }} />
+                <div style={{ height: 12, width: "35%", borderRadius: 6, backgroundColor: "#E2E8F0" }} />
+              </div>
+            </div>
           ))}
         </div>
       ) : (
