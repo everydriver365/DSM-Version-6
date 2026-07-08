@@ -95,6 +95,7 @@ import {
   IconWallet,
   IconMessageCircle,
   IconLayoutGrid,
+  IconX,
 } from "@tabler/icons-react";
 import {
   Dialog,
@@ -1197,6 +1198,7 @@ function HomePage() {
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [outstandingOpen, setOutstandingOpen] = useState(false);
+  const [dismissedInsight, setDismissedInsight] = useState<string | null>(null);
   const [outstandingBreakdown, setOutstandingBreakdown] = useState<Array<{
     pupilId: string;
     name: string;
@@ -4004,7 +4006,7 @@ function HomePage() {
             )}
 
             {/* 5. AI INSIGHT */}
-            {aiInsight && (() => {
+            {aiInsight && dismissedInsight !== aiInsight.text && (() => {
               const ACCENT_INSIGHT = '#6B4FD6';
               return (
                 <div style={{
@@ -4015,23 +4017,45 @@ function HomePage() {
                   borderRadius: 10,
                   padding: '13px 16px 13px 19px',
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
                   gap: 12,
                   fontFamily: PF,
                 }}>
                   <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '10px 0 0 10px' }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 500, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4 }}>{aiInsight.text}</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4, marginBottom: 8 }}>{aiInsight.text}</div>
+                    {(aiInsight.actionLabel && aiInsight.onAction) ? (
+                      <button type="button" onClick={aiInsight.onAction} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 12, fontWeight: 500, color: ACCENT, cursor: 'pointer' }}>{aiInsight.actionLabel} →</button>
+                    ) : aiInsight.cta && aiInsight.to ? (
+                      <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 12, fontWeight: 500, color: ACCENT, cursor: 'pointer' }}>{aiInsight.cta} →</button>
+                    ) : null}
                   </div>
-                  {(aiInsight.actionLabel && aiInsight.onAction) ? (
-                    <button type="button" onClick={aiInsight.onAction} style={{ background: '#F1F5F9', color: NAVY, border: 'none', borderRadius: 9, padding: '8px 13px', fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.actionLabel}</button>
-                  ) : aiInsight.cta && aiInsight.to ? (
-                    <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: '#F1F5F9', color: NAVY, border: 'none', borderRadius: 9, padding: '8px 13px', fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.cta}</button>
-                  ) : null}
+                  <button
+                    type="button"
+                    aria-label="Dismiss"
+                    onClick={() => setDismissedInsight(aiInsight.text)}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: 999,
+                      border: 'none',
+                      background: 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      padding: 0,
+                    }}
+                  >
+                    <IconX size={15} color={MUTED} />
+                  </button>
                 </div>
               );
             })()}
+
 
             {/* 6. QUICK ACTIONS */}
             <div style={{ fontSize: 18, fontWeight: 500, color: NAVY, marginTop: 22, marginBottom: 12, letterSpacing: -0.2 }}>Quick actions</div>
