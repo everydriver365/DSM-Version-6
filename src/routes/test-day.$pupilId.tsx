@@ -340,14 +340,86 @@ function TestDayPage() {
 
   const recordResult = async (passed: boolean) => {
     if (!pupil) return;
+    const testDate = pupil.test_date ?? new Date().toISOString().slice(0, 10);
+
+    const pupilPatch = passed
+      ? { status: "passed", test_status: "passed", passed_at: testDate, test_date: null }
+      : { status: "active", test_status: "failed" };
+
     const { error } = await supabase
       .from("pupils")
-      .update({ status: passed ? "passed" : "failed" })
+      .update(pupilPatch)
       .eq("id", pupil.id);
     if (error) {
       toast.error("Could not save result");
       return;
     }
+
+    // Insert a driving_test_results row so history matches driving-test route
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+
+      if (userId) {
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        const headers = {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token ?? SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        };
+
+        let testResultId: string | null = null;
+        try {
+          const r = await fetch(`${SUPABASE_URL}/rest/v1/driving_test_results`, {
+            method: "POST",
+            headers: { ...headers, Prefer: "return=representation" },
+            body: JSON.stringify({
+              pupil_id: pupil.id,
+              instructor_id: userId,
+              test_type: "practical",
+              test_date: testDate,
+              test_time: pupil.test_time || null,
+              test_centre_id: pupil.test_centre_id ?? null,
+              test_centre_name: pupil.test_centre ?? null,
+              result: passed ? "pass" : "fail",
+            }),
+          });
+          if (r.ok) {
+            const rows = await r.json();
+            testResultId = Array.isArray(rows) ? rows[0]?.id ?? null : rows?.id ?? null;
+          }
+        } catch (e) {
+          console.warn("[test-day] driving_test_results insert failed", e);
+        }
+
+        // Award points on pass
+        if (passed && token) {
+          try {
+            await fetch(`${SUPABASE_URL}/functions/v1/award-points`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                apikey: SUPABASE_ANON_KEY,
+              },
+              body: JSON.stringify({
+                instructorId: userId,
+                event: "LESSON_PUPIL_PASS",
+                metadata: { referenceId: testResultId ?? pupil.id, referenceType: "driving_test" },
+              }),
+            });
+          } catch (e) {
+            console.warn("[test-day] award-points failed", e);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[test-day] post-save side effects failed", e);
+    }
+
     if (passed) {
       setConfetti(true);
       toast.success("Congratulations! 🎉");
