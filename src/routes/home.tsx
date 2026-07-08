@@ -4034,37 +4034,75 @@ function HomePage() {
             })()}
 
             {/* 6. QUICK ACTIONS */}
-            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 22, marginBottom: 10, letterSpacing: -0.2 }}>Quick actions</div>
-            <div style={{ ...cardBase, overflow: 'hidden' }}>
-              {[
-                { label: 'Schedule', to: '/schedule', Icon: IconCalendarEvent },
-                { label: 'Pupils', to: '/pupils', Icon: IconUsers },
-                { label: 'Payments', to: '/payments', Icon: IconWallet },
-                { label: 'Messages', to: '/messages', Icon: IconMessageCircle },
-                { label: 'More', to: '/tools', Icon: IconLayoutGrid },
-              ].map((t, i, arr) => (
-                <button
-                  key={t.label}
-                  type="button"
-                  onClick={() => navigate({ to: t.to as never })}
-                  style={{
-                    ...rowTap,
-                    padding: '14px 14px',
-                    borderTop: i === 0 ? 'none' : `0.5px solid ${BORDER}`,
-                    borderBottom: 'none',
-                    borderLeft: 'none',
-                    borderRight: 'none',
-                    background: '#FFFFFF',
-                    fontFamily: PF,
-                    textAlign: 'left',
-                  }}
-                >
-                  <t.Icon size={20} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
-                  <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: NAVY, marginLeft: 12 }}>{t.label}</span>
-                  <IconChevronRight size={18} stroke={1.75} color={MUTED} />
-                </button>
-              ))}
-            </div>
+            <div style={{ fontSize: 18, fontWeight: 500, color: NAVY, marginTop: 22, marginBottom: 12, letterSpacing: -0.2 }}>Quick actions</div>
+            {(() => {
+              const unread = unreadMsgs.length;
+              const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
+              const items: Array<{
+                label: string; to: string; Icon: typeof IconCalendarEvent;
+                chipBg: string; chipFg: string; badge?: React.ReactNode;
+              }> = [
+                { label: 'Schedule', to: '/schedule', Icon: IconCalendarEvent, chipBg: '#DBEAFE', chipFg: '#1D4ED8' },
+                { label: 'Pupils', to: '/pupils', Icon: IconUsers, chipBg: '#EDE9FE', chipFg: '#6D28D9' },
+                {
+                  label: 'Payments', to: '/payments', Icon: IconWallet, chipBg: '#FEE2E2', chipFg: '#B91C1C',
+                  badge: outstandingBadge ? (
+                    <span style={{ background: '#FEE2E2', color: '#B91C1C', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>{outstandingBadge}</span>
+                  ) : null,
+                },
+                {
+                  label: 'Messages', to: '/messages', Icon: IconMessageCircle, chipBg: '#DCFCE7', chipFg: '#15803D',
+                  badge: unread > 0 ? (
+                    <span style={{ background: ACCENT, color: '#FFFFFF', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>
+                  ) : null,
+                },
+              ];
+              const cardStyle: React.CSSProperties = {
+                background: '#FFFFFF',
+                border: `0.5px solid ${BORDER}`,
+                borderRadius: 14,
+                padding: 16,
+                cursor: 'pointer',
+                fontFamily: PF,
+                textAlign: 'left',
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 84,
+              };
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {items.map((t) => (
+                    <button key={t.label} type="button" onClick={() => navigate({ to: t.to as never })} style={cardStyle}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                        <span style={{ width: 36, height: 36, borderRadius: 11, background: t.chipBg, color: t.chipFg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <t.Icon size={18} stroke={1.75} />
+                        </span>
+                        {t.badge}
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 12 }}>{t.label}</div>
+                    </button>
+                  ))}
+                  <button
+                    key="More"
+                    type="button"
+                    onClick={() => navigate({ to: '/tools' as never })}
+                    style={{
+                      ...cardStyle,
+                      gridColumn: 'span 2',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      minHeight: 60,
+                      gap: 12,
+                    }}
+                  >
+                    <span style={{ width: 36, height: 36, borderRadius: 11, background: '#F1F5F9', color: '#475569', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <IconLayoutGrid size={18} stroke={1.75} />
+                    </span>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>More</span>
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         );
       })()}
