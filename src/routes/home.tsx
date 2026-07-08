@@ -1272,8 +1272,8 @@ function HomePage() {
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [outstandingOpen, setOutstandingOpen] = useState(false);
-  const [dismissedInsight, setDismissedInsight] = useState<string | null>(null);
   const [outstandingBreakdown, setOutstandingBreakdown] = useState<Array<{
+
     pupilId: string;
     name: string;
     firstName: string;
@@ -4189,55 +4189,44 @@ function HomePage() {
             </div>
 
             {/* 5. AI INSIGHT */}
-            {aiInsight && dismissedInsight !== aiInsight.text && (() => {
-              const ACCENT_INSIGHT = '#6B4FD6';
+            {aiInsight && (() => {
+              const insightAccent = '#6B4FD6';
+              const insightBg = '#F3EEFD';
+              const handleClick = () => {
+                if (aiInsight.onAction) aiInsight.onAction();
+                else if (aiInsight.to) navigate({ to: aiInsight.to as never });
+              };
+              const hasAction = Boolean(aiInsight.onAction || aiInsight.to);
               return (
-                <div style={{
-                  position: 'relative',
-                  marginTop: 14,
-                  background: '#FFFFFF',
-                  border: `0.5px solid ${BORDER}`,
-                  borderRadius: 10,
-                  padding: '13px 16px 13px 19px',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                  fontFamily: PF,
-                }}>
-                  <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '10px 0 0 10px' }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4, marginBottom: 8 }}>{aiInsight.text}</div>
-                    {(aiInsight.actionLabel && aiInsight.onAction) ? (
-                      <button type="button" onClick={aiInsight.onAction} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 12, fontWeight: 500, color: ACCENT, cursor: 'pointer' }}>{aiInsight.actionLabel} →</button>
-                    ) : aiInsight.cta && aiInsight.to ? (
-                      <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 12, fontWeight: 500, color: ACCENT, cursor: 'pointer' }}>{aiInsight.cta} →</button>
-                    ) : null}
+                <div
+                  onClick={hasAction ? handleClick : undefined}
+                  role={hasAction ? "button" : undefined}
+                  tabIndex={hasAction ? 0 : undefined}
+                  style={{
+                    ...cardBase,
+                    marginTop: 10,
+                    padding: '14px 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    cursor: hasAction ? 'pointer' : 'default',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: 11, background: insightBg, color: insightAccent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <IconSparkles size={18} stroke={1.5} />
                   </div>
-                  <button
-                    type="button"
-                    aria-label="Dismiss"
-                    onClick={() => setDismissedInsight(aiInsight.text)}
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 999,
-                      border: 'none',
-                      background: 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      flexShrink: 0,
-                      padding: 0,
-                    }}
-                  >
-                    <IconX size={15} color={MUTED} />
-                  </button>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>AI INSIGHT</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>
+                      {aiInsight.text}
+                    </div>
+                  </div>
+                  {hasAction && <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />}
                 </div>
               );
             })()}
+
 
 
             {/* 6. QUICK ACTIONS */}
