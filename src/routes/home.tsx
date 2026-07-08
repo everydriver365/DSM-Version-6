@@ -3590,7 +3590,7 @@ function HomePage() {
 
       {/* WORKSPACE DOTS + ACTIVE LABEL */}
       {(() => {
-        const WORKSPACES = ['Today','Schedule','Pupils','Money','Market','DSM','Tools'];
+        const WORKSPACES = ['Today','Schedule','Pupils','Money','Market','DSM','Community','Tools'];
         return (
           <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:5, padding:'4px 16px 8px', background:'#0F2044', flexShrink:0, zIndex:10 }}>
             {WORKSPACES.map((lbl, i) => (
