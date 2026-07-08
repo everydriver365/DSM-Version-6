@@ -626,10 +626,11 @@ function SchedulePage() {
 
     const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const amountDue = l.amount_due ?? 0;
+    const isPrepaidPupil = Number((l.pupil as any)?.prepaid_hours ?? 0) > 0;
     // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due / Paid pills.
-    const overdue = pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
-    const isPrepaid = paymentStatus === "prepaid";
-    const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const overdue = !isPrepaidPupil && pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
+    const isPrepaid = paymentStatus === "prepaid" || isPrepaidPupil;
+    const isPaymentDue = !overdue && !isPrepaid && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
     const isPaid = paymentStatus === "paid";
 
     const avatarBg = NAVY;
