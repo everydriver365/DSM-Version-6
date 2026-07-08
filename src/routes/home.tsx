@@ -5990,9 +5990,29 @@ function HomePage() {
       />
 
 
+      {/* HOME BOTTOM NAV — controls the workspace carousel */}
+      {(() => {
+        const navItems: BottomNavItem[] = [
+          { key: 'today', label: 'Today', Icon: HomeIcon, onClick: () => scrollToWs(0) },
+          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => scrollToWs(1) },
+          { key: 'pupils', label: 'Pupils', Icon: PupilsIcon, onClick: () => scrollToWs(2) },
+          { key: 'messages', label: 'Messages', Icon: MessagesIcon, onClick: () => navigate({ to: '/messages' as never }) },
+          { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(6) },
+        ];
+        const activeIndex = activeWs === 0 ? 0 : activeWs === 1 ? 1 : activeWs === 2 ? 2 : activeWs === 6 ? 4 : -1;
+        return (
+          <BottomNav
+            items={navItems}
+            activeIndex={activeIndex}
+            activeColor="#0F2044"
+            inactiveColor="#9CA3AF"
+          />
+        );
+      })()}
     </div>
 
   );
+
 }
 
 function HeroExpandedPanel({
