@@ -138,7 +138,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
