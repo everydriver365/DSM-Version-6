@@ -140,6 +140,8 @@ function MessagesIndexPage() {
         </button>
         <h1 style={{ fontSize: 17, fontWeight: 600, margin: 0 }}>Messages</h1>
       </div>
+      <WorkspaceDots />
+
 
       {loading ? (
         <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>Loading…</div>
