@@ -121,7 +121,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
