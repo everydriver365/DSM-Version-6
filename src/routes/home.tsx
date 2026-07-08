@@ -4004,31 +4004,34 @@ function HomePage() {
             )}
 
             {/* 5. AI INSIGHT */}
-            {aiInsight && (
-              <div style={{
-                ...cardBase,
-                marginTop: 14,
-                padding: '12px 14px',
-                minHeight: 64,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}>
-                <div style={{ width: 40, height: 40, borderRadius: 12, background: PURPLE_BG, color: PURPLE_FG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <IconSparkles size={20} stroke={1.75} />
+            {aiInsight && (() => {
+              const ACCENT_INSIGHT = '#6B4FD6';
+              return (
+                <div style={{
+                  position: 'relative',
+                  marginTop: 14,
+                  background: '#FFFFFF',
+                  border: `0.5px solid ${BORDER}`,
+                  borderRadius: 10,
+                  padding: '13px 16px 13px 19px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  fontFamily: PF,
+                }}>
+                  <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '10px 0 0 10px' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4 }}>{aiInsight.text}</div>
+                  </div>
+                  {(aiInsight.actionLabel && aiInsight.onAction) ? (
+                    <button type="button" onClick={aiInsight.onAction} style={{ background: '#F1F5F9', color: NAVY, border: 'none', borderRadius: 9, padding: '8px 13px', fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.actionLabel}</button>
+                  ) : aiInsight.cta && aiInsight.to ? (
+                    <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: '#F1F5F9', color: NAVY, border: 'none', borderRadius: 9, padding: '8px 13px', fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.cta}</button>
+                  ) : null}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: PURPLE_FG, letterSpacing: 0.4, textTransform: 'uppercase' }}>AI insight</div>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>{aiInsight.text}</div>
-                </div>
-                {aiInsight.actionLabel && aiInsight.onAction && (
-                  <button type="button" onClick={aiInsight.onAction} style={{ background: NAVY, color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.actionLabel}</button>
-                )}
-                {aiInsight.cta && aiInsight.to && (
-                  <button type="button" onClick={() => navigate({ to: aiInsight!.to as never })} style={{ background: '#F8FAFC', color: NAVY, border: `0.5px solid ${BORDER}`, borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}>{aiInsight.cta}</button>
-                )}
-              </div>
-            )}
+              );
+            })()}
 
             {/* 6. QUICK ACTIONS */}
             <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 22, marginBottom: 10, letterSpacing: -0.2 }}>Quick actions</div>
