@@ -1360,7 +1360,8 @@ function HomePage() {
   const wsIsProgrammatic = useRef(false);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
-  const WS_COUNT = 7;
+  const WS_COUNT = 8;
+  const [communityEmail, setCommunityEmail] = useState('');
   const scrollToWs = (i: number) => {
     const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
     setActiveWsState(clamped);
