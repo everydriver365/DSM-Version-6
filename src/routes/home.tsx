@@ -3735,13 +3735,6 @@ function HomePage() {
             <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', textTransform: 'uppercase', letterSpacing: 0.8 }}>
               Weekly goals
             </div>
-            <button
-              type="button"
-              onClick={() => navigate({ to: '/settings' })}
-              style={{ fontSize: 11, fontWeight: 600, color: '#1877D6', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
-            >
-              Set goals
-            </button>
           </div>
           <div
             style={{
