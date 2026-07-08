@@ -156,14 +156,16 @@ function PupilsIndexPage() {
       const { data, error } = await q;
       if (error) console.error("[pupils] fetch error", error);
       console.log("[pupils] fetch result:", data, error);
-      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null }>;
+      const rows = (data ?? []) as Array<Pupil & { first_name?: string | null; last_name?: string | null; deleted_at?: string | null; photo_url?: string | null }>;
       const normalized: Pupil[] = rows.map((p) => ({
         ...p,
+        profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
         name:
           p.name && p.name.trim()
             ? p.name
             : `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() || "Unnamed",
       }));
+
       setPupils(normalized);
       console.log("[pupils] first pupil prepaid_hours:", normalized[0]?.prepaid_hours, normalized[0]?.name);
       const joseph = normalized.find((p) => /joseph/i.test(p.name) && /thorne/i.test(p.name));
