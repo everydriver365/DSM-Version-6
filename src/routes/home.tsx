@@ -1272,8 +1272,8 @@ function HomePage() {
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
   const [outstandingOpen, setOutstandingOpen] = useState(false);
-  const [dismissedInsight, setDismissedInsight] = useState<string | null>(null);
   const [outstandingBreakdown, setOutstandingBreakdown] = useState<Array<{
+
     pupilId: string;
     name: string;
     firstName: string;
