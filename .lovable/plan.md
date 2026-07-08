@@ -1,29 +1,30 @@
-## Fix — gap tile on empty days
+## Problem
 
-**Scope:** mobile home only (`src/routes/home.tsx`, redesigned body block). No changes to data fetching, gap-matching logic, or routes.
+On `/pupils`, the Active tab queries:
 
-### Behaviour
+```
+.is("deleted_at", null)
+.neq("status", "inactive")
+.neq("status", "passed")
+.neq("status", "cancelled")
+```
 
-When the selected tab (Today / Tomorrow / Next) has **zero lessons**, the gap tile becomes a single full-day gap using the instructor's working-hours window, and taps through to `/gaps` as it does today.
+In PostgREST/SQL, `status != 'inactive'` evaluates to NULL (not TRUE) when `status IS NULL`. Rows with NULL status are therefore excluded, so pupils who were never assigned a status don't show up as Active — even though they should be the default.
 
-### Data source
+## Fix
 
-- Reuse the existing working-hours values already loaded on this page (`workStart` / `workEnd` on the instructor row). If either is missing (per current console logs they're often `undefined`), fall back to **9:00 AM → 6:00 PM**.
-- For the "Next" tab (which shows lessons across several upcoming days), if it happens to be empty we skip the empty-day gap tile — a generic "9h free" tile isn't tied to a real date and would be misleading.
+In `src/routes/pupils.index.tsx`, change the Active branch of the tab query so NULL statuses are treated as active. Replace the three chained `.neq(...)` calls with a single PostgREST `or` filter that explicitly includes NULL:
 
-### Tile content
+```ts
+q = q
+  .is("deleted_at", null)
+  .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)");
+```
 
-- Icon chip, colours, radius, chevron: unchanged from the current gap tile.
-- Title: `"{N} hrs free · {start time}"` e.g. `9 hrs free · 9:00 AM` (using the same 12h format helper already added).
-- Caption: `"No waitlist match"` — same as today, since per-gap waitlist data isn't fetched on the dashboard.
-- Tap target: `navigate({ to: '/gaps' })` — unchanged.
+Leave the Passed and Archived branches unchanged. No other files touched, no schema/backend changes, no logic changes to lesson counts, balances, hours, or realtime subscriptions.
 
-### Where the change lives
+## Verification
 
-Inside the existing `firstGap` IIFE around line 4064 in `src/routes/home.tsx`:
-
-1. If `firstGap` exists → render as today (unchanged).
-2. Else if `tab !== 'next'` and `sorted.length === 0` → build a synthetic gap from work-window start/end and render the same tile with the "N hrs free" title.
-3. Else → render nothing (current behaviour).
-
-No other tiles, no other files, no new state or fetches.
+- Reload `/pupils`, confirm pupils with NULL status now appear under Active.
+- Confirm Passed tab still only shows `status = 'passed'`.
+- Confirm Archived tab still shows deleted / inactive / cancelled.

@@ -145,12 +145,10 @@ function PupilsIndexPage() {
       } else if (tab === "passed") {
         q = q.is("deleted_at", null).eq("status", "passed");
       } else {
-        // active: not deleted and not passed/inactive/cancelled
+        // active: not deleted and not passed/inactive/cancelled (NULL status counts as active)
         q = q
           .is("deleted_at", null)
-          .neq("status", "inactive")
-          .neq("status", "passed")
-          .neq("status", "cancelled");
+          .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)");
       }
 
       const { data, error } = await q;
