@@ -643,7 +643,7 @@ function PupilDetailPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_cost, payment_method, created_at, notes")
+      .select("id, lesson_id, lesson_cost, payment_method, created_at, notes")
       .eq("pupil_id", id)
       .eq("payment_status", "paid")
       .is("deleted_at", null)
