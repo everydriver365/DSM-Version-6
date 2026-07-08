@@ -5281,103 +5281,191 @@ function HomePage() {
             
           }}
         >
+        {(() => {
+          // Payment lookup by pupilId from outstandingBreakdown
+          const owedByPupil: Record<string, number> = {};
+          for (const o of outstandingBreakdown) owedByPupil[o.pupilId] = (owedByPupil[o.pupilId] ?? 0) + o.amount;
 
-        {/* Search bar */}
-        <div style={{ padding: '4px 16px 12px' }}>
-          <div style={{ position:'relative' }}>
-            <Search size={16} color="#6B7280" style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)' }} />
-            <input
-              type="text"
-              value={pupilQuery}
-              onChange={(e) => setPupilQuery(e.target.value)}
-              placeholder="Search pupils"
-              style={{ width:'100%', height:44, borderRadius:12, border:'0.5px solid #E2E6ED', background:'#FFFFFF', paddingLeft:36, paddingRight:14, fontSize:14, fontFamily:'Inter, sans-serif', color:'#0B1F3A', outline:'none' }}
-            />
-          </div>
-        </div>
 
-        {/* Today's pupils */}
-        <div style={{ padding:'0 16px 12px' }}>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
-            <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A' }}>Today's pupils</div>
-            <div style={{ fontSize:11, fontWeight:600, color:'rgba(11,31,58,0.55)' }}>{todaysPupilsFiltered.length}</div>
-          </div>
-          {todaysPupilsFiltered.length === 0 ? (
-            <div style={{ padding:'20px 14px', border:'0.5px dashed rgba(11,31,58,0.20)', borderRadius:12, textAlign:'center', color:'rgba(11,31,58,0.60)', fontSize:13, fontFamily:'Inter, sans-serif', background:'#FFFFFF' }}>
-              No lessons booked for today
-            </div>
-          ) : (
-            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              {todaysPupilsFiltered.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => navigate({ to: '/pupils/$id', params: { id: p.id } })}
-                  style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, cursor:'pointer', textAlign:'left', fontFamily:'Inter, sans-serif' }}
-                >
-                  <div style={{ width:40, height:40, borderRadius:'50%', background:'#1A52A0', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0, backgroundImage: p.avatar ? `url(${p.avatar})` : undefined, backgroundSize:'cover', backgroundPosition:'center' }}>
-                    {!p.avatar && p.initials}
-                  </div>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:14, fontWeight:700, color:'#0B1F3A' }}>{p.name}</div>
-                    <div style={{ fontSize:12, color:'rgba(11,31,58,0.60)' }}>{p.timeLabel}</div>
-                  </div>
-                  <ChevronRight size={16} color="#9CA3AF" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+          const fmtTestWhen = (dateStr: string, timeStr: string | null) => {
+            const d = new Date(`${dateStr}T${(timeStr || '09:00').slice(0,5)}:00`);
+            const day = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            const time = d.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase().replace(' ', '');
+            return `${day} at ${time}`;
+          };
+          const daysUntil = (dateStr: string) => {
+            const d = new Date(`${dateStr}T00:00:00`);
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            return Math.max(0, Math.round((d.getTime() - today.getTime()) / 86400000));
+          };
+          const testsSorted = [...(upcomingTests ?? [])].sort((a, b) => a.test_date.localeCompare(b.test_date));
+          const shownOwed = outstandingBreakdown.slice(0, 3);
 
-        {/* Outstanding balances */}
-        <div style={{ padding:'0 16px 20px' }}>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
-            <div style={{ fontSize:11, fontWeight:700, letterSpacing:0.8, textTransform:'uppercase', color:'#0B1F3A' }}>Outstanding balances</div>
-            <button
-              type="button"
-              onClick={() => setOutstandingOpen(true)}
-              style={{ background:'none', border:'none', color:'#1877D6', fontSize:12, fontWeight:600, cursor:'pointer' }}
-            >
-              See all →
-            </button>
-          </div>
-          {outstandingBreakdownFiltered.length === 0 ? (
-            <div style={{ padding:'20px 14px', border:'0.5px dashed rgba(11,31,58,0.20)', borderRadius:12, textAlign:'center', color:'rgba(11,31,58,0.60)', fontSize:13, fontFamily:'Inter, sans-serif', background:'#FFFFFF' }}>
-              All paid up
-            </div>
-          ) : (
-            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              {outstandingBreakdownFiltered.slice(0, 6).map((p) => (
-                <button
-                  key={p.pupilId}
-                  type="button"
-                  onClick={() => navigate({ to: '/pupils/$id', params: { id: p.pupilId } })}
-                  style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#FFFFFF', border:'0.5px solid #E2E6ED', borderRadius:14, cursor:'pointer', textAlign:'left', fontFamily:'Inter, sans-serif' }}
-                >
-                  <div style={{ width:40, height:40, borderRadius:'50%', background:'#FEE2E2', color:'#DC2626', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                    <AlertCircle size={18} />
-                  </div>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:14, fontWeight:700, color:'#0B1F3A' }}>{p.name}</div>
-                    <div style={{ fontSize:12, color:'rgba(11,31,58,0.60)' }}>Outstanding</div>
-                  </div>
-                  <div style={{ fontSize:14, fontWeight:800, color:'#DC2626' }}>£{p.amount.toFixed(0)}</div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+          return (
+            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* 1. SEARCH */}
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/pupils' as never })}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', gap: 8,
+                  background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 14,
+                  padding: '12px 16px', cursor: 'pointer', textAlign: 'left',
+                  boxShadow: '0 2px 8px rgba(15,32,68,0.04)', fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                <Search size={16} color="#9CA3AF" />
+                <span style={{ fontSize: 14, color: '#9CA3AF' }}>Search pupils…</span>
+              </button>
 
-        {/* Add pupil */}
-        <div style={{ padding:'0 16px 24px' }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/pupils' })}
-            style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'linear-gradient(180deg, #1877D6 0%, #1A52A0 100%)', color:'#fff', fontSize:15, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', boxShadow:'0 6px 18px rgba(24,119,214,0.35)', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}
-          >
-            <Plus size={18} /> Add pupil
-          </button>
-        </div>
+              {/* 2. QUICK STATS */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                {[
+                  { value: activePupilsCount, label: 'Active', color: '#0F2044' },
+                  { value: todayLessons.length, label: 'Today', color: '#1A52A0' },
+                  { value: upcomingTests?.length ?? 0, label: 'Tests due', color: '#7C3AED' },
+                ].map((s) => (
+                  <div key={s.label} style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12, padding: 12, textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
+                    <div style={{ fontSize: 20, fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                    <div style={{ fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.6, marginTop: 4, fontWeight: 700 }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 3. TODAY'S PUPILS */}
+              {todayLessons.length > 0 && (
+                <div style={{ background: '#FFFFFF', borderRadius: 16, overflow: 'hidden', border: '0.5px solid #F3F4F6', fontFamily: 'Inter, sans-serif' }}>
+                  <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Teaching today</div>
+                    <div style={{ fontSize: 12, color: '#9CA3AF' }}>{todayLessons.length} lesson{todayLessons.length === 1 ? '' : 's'}</div>
+                  </div>
+                  {todayLessons.length === 0 ? (
+                    <div style={{ padding: 16, textAlign: 'center', color: '#9CA3AF', fontSize: 13 }}>No lessons today</div>
+                  ) : (
+                    todayLessons.map((l, idx) => {
+                      const pid = l.pupil_id ?? '';
+                      const name = l.pupils?.name || 'Pupil';
+                      const initials = name.split(/\s+/).map((s: string) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
+                      const colour = (l.pupils as any)?.calendar_colour || '#1A52A0';
+                      const owed = owedByPupil[pid] ?? 0;
+                      return (
+                        <button
+                          key={l.id ?? idx}
+                          type="button"
+                          onClick={() => pid && navigate({ to: '/pupils/$id', params: { id: pid } })}
+                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6', cursor: 'pointer', textAlign: 'left', fontFamily: 'Inter, sans-serif' }}
+                        >
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', background: colour, color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{initials}</div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>{name}</div>
+                            <div style={{ fontSize: 12, color: '#9CA3AF' }}>{String(l.lesson_time || '').slice(0, 5)} · {l.duration_minutes ?? 60} mins</div>
+                          </div>
+                          {owed > 0 ? (
+                            <span style={{ background: '#FEF3C7', color: '#92400E', fontSize: 12, fontWeight: 700, padding: '4px 8px', borderRadius: 8 }}>£{owed.toFixed(0)}</span>
+                          ) : (
+                            <span style={{ background: '#E0FFF4', color: '#065F46', fontSize: 12, fontWeight: 700, padding: '4px 8px', borderRadius: 8 }}>Paid ✓</span>
+                          )}
+                          <ChevronRight size={14} color="#D1D5DB" />
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+
+              {/* 4. UPCOMING TESTS */}
+              {testsSorted.length > 0 && (
+                <div style={{ background: '#FFFFFF', borderRadius: 16, overflow: 'hidden', border: '0.5px solid #F3F4F6', fontFamily: 'Inter, sans-serif' }}>
+                  <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Upcoming tests</div>
+                    <span style={{ background: '#F5F3FF', color: '#7C3AED', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>{testsSorted.length}</span>
+                  </div>
+                  {testsSorted.slice(0, 5).map((t, idx) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => navigate({ to: '/pupils/$id', params: { id: t.id } })}
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6', cursor: 'pointer', textAlign: 'left', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <Trophy size={16} color="#7C3AED" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>{t.name}</div>
+                        <div style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTestWhen(t.test_date, t.test_time)}</div>
+                      </div>
+                      <span style={{ background: 'rgba(124,58,237,0.10)', color: '#7C3AED', fontSize: 12, fontWeight: 700, padding: '4px 8px', borderRadius: 8 }}>{daysUntil(t.test_date)} days</span>
+                      <ChevronRight size={14} color="#D1D5DB" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* 5. OUTSTANDING BALANCES */}
+              {outstanding > 0 && (
+                <div style={{ background: '#FFFFFF', borderRadius: 16, overflow: 'hidden', border: '0.5px solid #F3F4F6', fontFamily: 'Inter, sans-serif' }}>
+                  <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#CC2229' }}>Outstanding payments</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: '#CC2229' }}>£{outstanding.toFixed(0)}</div>
+                  </div>
+                  {shownOwed.map((p, idx) => {
+                    const initials = p.name.split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
+                    return (
+                      <div key={p.pupilId} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6' }}>
+                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#FEE2E2', color: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{initials}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>{p.name}</div>
+                          <div style={{ fontSize: 12, color: '#CC2229' }}>owes £{p.amount.toFixed(0)}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (p.phone) window.location.href = `sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(0)} is outstanding on your lessons. Thanks!`)}`;
+                            else toast.error('No phone number on file');
+                          }}
+                          style={{ background: '#FEF2F2', color: '#CC2229', fontSize: 12, fontWeight: 600, padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
+                        >
+                          Chase →
+                        </button>
+                      </div>
+                    );
+                  })}
+                  {outstandingBreakdown.length > 3 && (
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: '/payments' as never })}
+                      style={{ width: '100%', padding: '10px 16px', borderTop: '0.5px solid #F3F4F6', background: 'none', border: 'none', color: '#1877D6', fontSize: 12, fontWeight: 600, cursor: 'pointer', textAlign: 'center' }}
+                    >
+                      View all {outstandingBreakdown.length} →
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* 6. ALL PUPILS LINK */}
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/pupils' })}
+                style={{ background: '#0F2044', color: '#FFFFFF', width: '100%', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', textAlign: 'center', fontFamily: 'Inter, sans-serif' }}
+              >
+                View all {activePupilsCount} pupils →
+              </button>
+
+              {/* 7. ADD PUPIL */}
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/pupils/new' as never })}
+                style={{ background: 'transparent', color: '#0F2044', width: '100%', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, border: '0.5px solid #0F2044', cursor: 'pointer', textAlign: 'center', fontFamily: 'Inter, sans-serif' }}
+              >
+                + Add new pupil
+              </button>
+            </div>
+          );
+        })()}
+
+
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
