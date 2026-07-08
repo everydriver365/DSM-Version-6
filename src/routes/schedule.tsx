@@ -1019,66 +1019,62 @@ function SchedulePage() {
       const nextSeg = segments[segIdx];
       const useSeg = nextSeg && segmentStart(nextSeg) <= gapStart(g);
       if (useSeg) {
-        output.push(
-          <div
-            key={`seg-${segIdx}`}
-            style={{
-              margin: "0 16px 12px",
-              border: `0.5px solid rgba(15,32,68,0.10)`,
-              borderRadius: 16,
-              background: "#FFFFFF",
-              overflow: "hidden",
-            }}
-          >
-            {nextSeg.map((row, i) => {
-              const isLast = i === nextSeg.length - 1;
-              const divider =
-                i > 0 ? (
-                  <div
-                    key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid rgba(15,32,68,0.10)` }}
+        nextSeg.forEach((row, i) => {
+          const isLast = i === nextSeg.length - 1;
+          if (row.kind === "now") {
+            output.push(
+              <div
+                key={`now-${row.startMs}`}
+                style={{
+                  margin: "0 16px 10px",
+                  border: `0.5px solid rgba(15,32,68,0.10)`,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "#FFFFFF",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "6px 14px",
+                    background: DANGER_BG,
+                    ...POPPINS,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: DANGER,
+                      display: "inline-block",
+                    }}
                   />
-                ) : null;
-
-              if (row.kind === "now") {
-                return (
-                  <div key={`now-${row.startMs}`}>
-                    {divider}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "6px 14px",
-                        background: DANGER_BG,
-                        ...POPPINS,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: 999,
-                          background: DANGER,
-                          display: "inline-block",
-                        }}
-                      />
-                      <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
-                        NOW · {formatTimeFromDate(new Date(row.startMs))}
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <div key={row.lesson.id}>
-                  {divider}
-                  {renderLessonRow(row.lesson, { isLast })}
+                  <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
+                    NOW · {formatTimeFromDate(new Date(row.startMs))}
+                  </span>
                 </div>
-              );
-            })}
-          </div>,
-        );
+              </div>,
+            );
+          } else {
+            output.push(
+              <div
+                key={row.lesson.id}
+                style={{
+                  margin: "0 16px 10px",
+                  border: `0.5px solid rgba(15,32,68,0.10)`,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "#FFFFFF",
+                }}
+              >
+                {renderLessonRow(row.lesson, { isLast })}
+              </div>,
+            );
+          }
+        });
         segIdx++;
       } else {
         output.push(gapNodes[g]);
