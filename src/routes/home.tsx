@@ -384,7 +384,7 @@ function TodayLessonsTile({
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#185FA5"
+            stroke="#22C55E"
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={circumference}
