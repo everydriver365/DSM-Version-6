@@ -5303,22 +5303,23 @@ function HomePage() {
       <EndOfDayBanner />
 
         {/* Schedule CTAs */}
-        <div style={{ display:'flex', gap:10, padding:'8px 16px 24px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
           <button
             type="button"
             onClick={() => navigate({ to: '/schedule' })}
-            style={{ flex:1, height:52, borderRadius:14, border:'none', background:'linear-gradient(180deg, #1877D6 0%, #1A52A0 100%)', color:'#fff', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', boxShadow:'0 6px 18px rgba(24,119,214,0.30)', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
           >
-            <Plus size={18} /> Add lesson
+            <Plus size={18} strokeWidth={2} /> Add lesson
           </button>
           <button
             type="button"
             onClick={() => navigate({ to: '/gaps' })}
-            style={{ flex:1, height:52, borderRadius:14, border:'0.5px solid #1877D6', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:700, fontFamily:'Inter, sans-serif', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
           >
-            <Clock size={18} /> Fill slots
+            <Clock size={18} strokeWidth={2} /> Fill slots
           </button>
         </div>
+
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
         </section>
