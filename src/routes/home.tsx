@@ -147,7 +147,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; profile_image_url?: string | null; } | null;
 }
 
 interface PrevLessonRow {
@@ -1773,7 +1773,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -4014,6 +4014,7 @@ function HomePage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
                             flexShrink: 0,
+                            overflow: 'hidden',
                           }}
                         >
                           {isLive && (
@@ -4028,10 +4029,19 @@ function HomePage() {
                                 borderRadius: 999,
                                 backgroundColor: '#DC2626',
                                 boxShadow: '0 0 0 2px #FFFFFF',
+                                zIndex: 1,
                               }}
                             />
                           )}
-                          {initials}
+                          {l.pupils?.profile_image_url ? (
+                            <img
+                              src={l.pupils.profile_image_url}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            initials
+                          )}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
