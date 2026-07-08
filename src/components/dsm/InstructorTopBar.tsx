@@ -1,5 +1,6 @@
 import React from "react";
-import { Phone, Car, Bell, Menu, ChevronRight, ChevronLeft, PoundSterling } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { PhoneIcon, CarIcon, BellIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
 export type InstructorTopBarProps = {
@@ -137,13 +138,13 @@ export default function InstructorTopBar({
       {/* RIGHT */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
-          <Phone size={17} strokeWidth={1.8} color="#ffffff" />
+          <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-          <Car size={17} strokeWidth={1.8} color="#ffffff" />
+          <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
-          <PoundSterling size={17} strokeWidth={1.8} color="#ffffff" />
+          <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <button
           type="button"
@@ -154,7 +155,7 @@ export default function InstructorTopBar({
             animation: unreadCount > 0 ? "dsmBellPulse 1.8s ease-in-out infinite" : "none",
           }}
         >
-          <Bell size={17} strokeWidth={1.8} color="#ffffff" />
+          <BellIcon size={17} strokeWidth={1.8} color="#ffffff" />
           {unreadCount > 0 && (
             <span
               style={{
@@ -187,7 +188,7 @@ export default function InstructorTopBar({
           }
         `}</style>
         <IconBtn ariaLabel="Menu" onClick={onMenu}>
-          <Menu size={17} strokeWidth={1.8} color="#ffffff" />
+          <MenuIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
       </div>
     </div>
