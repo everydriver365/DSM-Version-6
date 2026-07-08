@@ -4942,87 +4942,94 @@ function HomePage() {
                         );
                       }
                     }}
-                    className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5 cursor-pointer"
+                    className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 cursor-pointer"
                     style={{
-                      padding: "10px 16px",
-                      borderLeft: `4px solid ${isCancelled ? "#9CA3AF" : "#1A52A0"}`,
+                      padding: "12px 14px",
                       background: "#fff",
+                      fontFamily: "Poppins, Inter, sans-serif",
                     }}
                   >
                     {(() => {
-                      const needsAttention =
-                        !isCancelled &&
-                        ((pastEnd && !l.eol_completed) ||
-                          (l.payment_status === "unpaid" || !l.payment_status));
+                      const chipBg = isCurrent ? "#FCEBEB" : "#E6F1FB";
+                      const chipFg = isCurrent ? "#A32D2D" : "#185FA5";
                       return (
                         <div
-                          className="relative shrink-0 text-right"
-                          style={{ width: 40 }}
+                          className="relative shrink-0"
+                          style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 13,
+                            background: chipBg,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          {needsAttention && (
+                          {isCurrent && (
                             <span
-                              aria-label="Needs attention"
+                              aria-label="Live"
                               style={{
                                 position: "absolute",
-                                top: -2,
-                                left: -2,
-                                width: 8,
-                                height: 8,
+                                top: 4,
+                                right: 4,
+                                width: 6,
+                                height: 6,
                                 borderRadius: 999,
-                                backgroundColor: "#1877D6",
+                                backgroundColor: "#DC2626",
                               }}
                             />
                           )}
                           <div
-                            className="truncate text-xs font-bold"
                             style={{
-                              color: timeColor,
+                              fontSize: 11,
+                              fontWeight: 500,
+                              color: chipFg,
+                              fontFamily: "Poppins, Inter, sans-serif",
+                              fontVariantNumeric: "tabular-nums",
                               textDecoration: isCancelled ? "line-through" : "none",
                             }}
                           >
                             {fmtT(startD)}
-                          </div>
-                          <div
-                            className="truncate text-[10px] text-[#9CA3AF]"
-                            style={{ marginTop: 2 }}
-                          >
-                            {durShort(l.duration_minutes)}
                           </div>
                         </div>
                       );
                     })()}
                     <div className="min-w-0">
                       <div
-                        className="truncate text-[13px] font-semibold"
+                        className="truncate"
                         style={{
+                          fontSize: 15,
+                          fontWeight: 500,
                           color: nameColor,
+                          fontFamily: "Poppins, Inter, sans-serif",
                           textDecoration: isCancelled ? "line-through" : "none",
                         }}
                       >
                         {l.pupils?.name ?? "Pupil"}
                       </div>
+                      <div
+                        className="flex items-center gap-2 flex-wrap"
+                        style={{ marginTop: 2 }}
+                      >
+                        <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
+                          {durShort(l.duration_minutes)}
+                        </span>
+                        {badges.length > 0 && badges}
+                      </div>
                       {l.pickup_location && (
                         <div
-                          className="flex min-w-0 items-center gap-1 truncate text-[11px] text-[#6B7280]"
-                          style={{ marginTop: 2 }}
+                          className="flex min-w-0 items-center gap-1 truncate"
+                          style={{ marginTop: 2, fontSize: 11, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}
                         >
                           <MapPin size={10} color="#6B7280" />
                           <span className="truncate">{l.pickup_location}</span>
                         </div>
                       )}
-                      {badges.length > 0 && (
-                        <div
-                          className="flex flex-wrap gap-1.5"
-                          style={{ marginTop: 4 }}
-                        >
-                          {badges}
-                        </div>
-                      )}
                     </div>
                     <div className="flex shrink-0 items-center">
                       <ChevronRight
-                        size={14}
-                        color="#D1D5DB"
+                        size={16}
+                        color="#9CA3AF"
                         style={{
                           transform:
                             expandedLessonId === l.id
@@ -5033,6 +5040,7 @@ function HomePage() {
                       />
                     </div>
                   </div>
+
 
                   {expandedLessonId === l.id && (
                     <div
