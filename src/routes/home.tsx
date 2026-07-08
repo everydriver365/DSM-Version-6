@@ -6124,10 +6124,11 @@ function HomePage() {
                   background: "#1A52A0",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
-                  backgroundImage: m.pupils?.profile_image_url ? `url(${m.pupils.profile_image_url})` : undefined,
+                  backgroundImage: (m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url) ? `url(${m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url})` : undefined,
                   backgroundSize: "cover", backgroundPosition: "center",
                 }}>
-                  {!m.pupils?.profile_image_url && initials}
+                  {!(m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url) && initials}
+
                 </div>
                 <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>
