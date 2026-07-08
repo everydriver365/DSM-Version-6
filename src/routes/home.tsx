@@ -4256,10 +4256,10 @@ function HomePage() {
                           onClick={() => navigate({ to: '/schedule' })}
                           role="button"
                           tabIndex={0}
-                          style={{ display: 'flex', gap: 10, minHeight: isCurrent ? 148 : 108, cursor: 'pointer' }}
+                          style={{ display: 'flex', gap: 8, minHeight: isCurrent ? 148 : 96, cursor: 'pointer' }}
                         >
-                          <div style={{ width: 52, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.5 }}>{fmt(l.lesson_time)}</div>
+                          <div style={{ width: 44, flexShrink: 0, paddingTop: 14, textAlign: 'right' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: isCurrent ? '#1A52A0' : '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.4 }}>{fmt(l.lesson_time)}</div>
                             <div style={{ fontSize: 10, color: '#CBD5E1', marginTop: 2, fontWeight: 500 }}>{l.duration_minutes ?? 60}m</div>
                           </div>
                           {railCol(railColor, dotFill, dotBorder, isCurrent ? 14 : 12, glow)}
@@ -4269,42 +4269,46 @@ function HomePage() {
                               border: isCurrent ? '1.5px solid #1A52A0' : '1px solid #F1F5F9',
                               boxShadow: isCurrent ? '0 4px 16px rgba(26,82,160,0.12)' : '0 1px 3px rgba(15,32,68,0.04)',
                               borderRadius: 20,
-                              padding: isCurrent ? 16 : 14,
+                              padding: isCurrent ? 14 : 12,
                               opacity: (isCompleted && !isCurrent) || isCancelled ? 0.72 : 1,
+                              minWidth: 0,
                             }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                              {/* Row 1: avatar + name/duration + amount */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                                 <div style={{
-                                  width: isCurrent ? 48 : 42, height: isCurrent ? 48 : 42, borderRadius: '50%',
+                                  width: isCurrent ? 44 : 38, height: isCurrent ? 44 : 38, borderRadius: '50%',
                                   background: pColor, color: '#FFFFFF',
-                                  fontSize: isCurrent ? 15 : 13, fontWeight: 700,
+                                  fontSize: isCurrent ? 14 : 12, fontWeight: 700,
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                                   flexShrink: 0, boxShadow: '0 2px 6px rgba(15,32,68,0.12)',
                                 }}>{initials(pName)}</div>
                                 <div style={{ minWidth: 0, flex: 1 }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                    <div style={{ fontSize: isCurrent ? 16 : 15, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: -0.2 }}>{pName}</div>
-                                    {isCurrent && (
-                                      <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live</span>
-                                    )}
-                                  </div>
-                                  <div style={{ fontSize: 12, color: '#64748B', marginTop: 2, fontWeight: 500 }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
+                                  <div style={{ fontSize: isCurrent ? 15 : 14, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: -0.2 }}>{pName}</div>
+                                  <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.duration_minutes ?? 60} min{l.lesson_type ? ` • ${l.lesson_type}` : ''}</div>
                                 </div>
-                                {badge && (
-                                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                                    <span style={{ display: 'inline-block', background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 700, padding: '4px 8px', borderRadius: 999, letterSpacing: 0.3 }}>{badge.label}</span>
-                                    {amt > 0 && !isCancelled && (
-                                      <div style={{ fontSize: 12, fontWeight: 700, color: '#0F2044', marginTop: 4 }}>£{amt.toFixed(0)}</div>
-                                    )}
-                                  </div>
+                                {amt > 0 && !isCancelled && !isPaid && (
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: '#0F2044', flexShrink: 0, letterSpacing: -0.3 }}>£{amt.toFixed(0)}</div>
                                 )}
                               </div>
 
+                              {/* Row 2: status pills */}
+                              {(badge || isCurrent) && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                                  {isCurrent && (
+                                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 9, fontWeight: 800, padding: '3px 8px', borderRadius: 999, letterSpacing: 0.6, textTransform: 'uppercase' }}>Live now</span>
+                                  )}
+                                  {badge && (
+                                    <span style={{ background: badge.bg, color: badge.fg, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 999, letterSpacing: 0.3, whiteSpace: 'nowrap' }}>{badge.label}</span>
+                                  )}
+                                </div>
+                              )}
+
                               {isCurrent && !isCancelled && (
-                                <div style={{ display: 'flex', gap: 6, marginTop: 14 }}>
-                                  {actionBtn(<Phone size={13} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
-                                  {actionBtn(<MessageSquare size={13} />, 'Message', (e) => { stop(e); navigate({ to: '/messages' }); })}
-                                  {actionBtn(<Navigation size={13} />, 'Navigate', (e) => { stop(e); navigate({ to: '/satnav' }); })}
-                                  {actionBtn(<PlayCircle size={13} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
+                                <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
+                                  {actionBtn(<Phone size={12} />, 'Call', (e) => { stop(e); if (phone) { window.location.href = `tel:${phone}`; } else { toast('No phone number'); } }, false, !phone)}
+                                  {actionBtn(<MessageSquare size={12} />, 'Msg', (e) => { stop(e); navigate({ to: '/messages' }); })}
+                                  {actionBtn(<Navigation size={12} />, 'Nav', (e) => { stop(e); navigate({ to: '/satnav' }); })}
+                                  {actionBtn(<PlayCircle size={12} />, 'Start', (e) => { stop(e); navigate({ to: '/live' }); }, true)}
                                 </div>
                               )}
                             </div>
