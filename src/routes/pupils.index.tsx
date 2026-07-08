@@ -28,7 +28,9 @@ interface Pupil {
   ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
+  profile_image_url: string | null;
 }
+
 
 type StatusKey = "active" | "passed" | "archived";
 
