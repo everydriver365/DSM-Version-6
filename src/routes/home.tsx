@@ -6576,23 +6576,24 @@ function TabBtn({
       className="flex-1"
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
-        color: active ? "#0B1F3A" : "#9CA3AF",
+        color: active ? "#0B1F3A" : "#6B7280",
         borderRadius: 8,
         padding: "8px 6px",
-        fontWeight: active ? 600 : 400,
+        fontWeight: 500,
         fontSize: 13,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, Inter, sans-serif",
         lineHeight: 1.2,
         border: "none",
         cursor: "pointer",
-        boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-        transition: "all 150ms ease",
+        boxShadow: active ? "inset 0 0 0 0.5px rgba(15,32,68,0.10)" : "none",
+        transition: "background 150ms ease",
       }}
     >
       {children}
     </button>
   );
 }
+
 
 function iconTint(solid: string) {
   switch (solid.toUpperCase()) {
