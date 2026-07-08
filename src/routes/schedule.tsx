@@ -1024,7 +1024,7 @@ function SchedulePage() {
             key={`seg-${segIdx}`}
             style={{
               margin: "0 16px 12px",
-              border: `0.5px solid #F3F4F6`,
+              border: `0.5px solid rgba(15,32,68,0.10)`,
               borderRadius: 16,
               background: "#FFFFFF",
               overflow: "hidden",
