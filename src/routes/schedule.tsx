@@ -10,6 +10,12 @@ import {
   X,
 } from "lucide-react";
 import { ArrowLeft, Sparkles } from "lucide-react";
+import {
+  IconPhone,
+  IconBell,
+  IconPlus,
+  IconBolt,
+} from "@tabler/icons-react";
 import type React from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
