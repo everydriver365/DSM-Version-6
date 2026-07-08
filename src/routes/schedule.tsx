@@ -662,10 +662,11 @@ function SchedulePage() {
           style={{
             display: "flex",
             gap: 12,
-            padding: "12px 14px",
+            padding: "12px 14px 12px 11px",
             alignItems: "center",
             minHeight: 56,
             background: "#FFFFFF",
+            borderLeft: `3px solid ${avatarBg}`,
           }}
         >
           <div style={{ width: 44, flexShrink: 0 }}>
