@@ -636,7 +636,7 @@ function SchedulePage() {
     const isPaymentDue = !overdue && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
     const isPaid = paymentStatus === "paid";
 
-    const avatarBg = (l.pupil_id && colourMap[l.pupil_id]) || "#1A52A0";
+    const avatarBg = NAVY;
     const initials = initialsOf(name);
     const timeText = formatLessonTime(l);
     const durationText = formatDurationShort(l.duration_minutes);
