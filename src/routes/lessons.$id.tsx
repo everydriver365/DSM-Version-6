@@ -97,6 +97,9 @@ function LessonDetailPage() {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [insightDismissed, setInsightDismissed] = useState(false);
+
+
 
   async function confirmDelete() {
     if (deleting) return;
