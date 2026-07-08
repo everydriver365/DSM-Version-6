@@ -5348,7 +5348,7 @@ function HomePage() {
                       const name = l.pupils?.name || 'Pupil';
                       const initials = name.split(/\s+/).map((s: string) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
                       const colour = (l.pupils as any)?.calendar_colour || '#1A52A0';
-                      const owed = owedByPupil.get(pid) ?? 0;
+                      const owed = owedByPupil[pid] ?? 0;
                       return (
                         <button
                           key={l.id ?? idx}
