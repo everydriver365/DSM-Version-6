@@ -83,7 +83,6 @@ interface Pupil {
   last_name: string | null;
   phone: string | null;
   email: string | null;
-  lesson_count: number | null;
   balance_owed: number | null;
   account_balance: number | null;
   prepaid_hours: number | null;
@@ -140,6 +139,7 @@ interface Lesson {
   notes: string | null;
   eol_completed: boolean | null;
   cancellation_reason: string | null;
+  deleted_at: string | null;
 }
 
 function initials(name: string) {
@@ -306,8 +306,6 @@ function PupilDetailPage() {
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [syllabus, setSyllabus] = useState<{ status: string }[] | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [actualLessonCount, setActualLessonCount] = useState<number | null>(null);
-  const [totalLessonsCount, setTotalLessonsCount] = useState<number | null>(null);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [paymentHistory, setPaymentHistory] = useState<
@@ -524,7 +522,7 @@ function PupilDetailPage() {
       .from("pupils")
       .select(`
         id, name, first_name, last_name, phone, email, status,
-        lesson_count, balance_owed, account_balance,
+        balance_owed, account_balance,
         test_date, test_time, test_centre,
         test_centre_id,
         prepaid_hours, prepaid_amount_paid,
@@ -546,7 +544,7 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
-        console.log("[pupils.$id] pupil data:", p, "lesson_count:", p?.lesson_count, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+        console.log("[pupils.$id] pupil data:", p, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
         if (p?.test_centre_id) {
           supabase
             .from("test_centres")
@@ -559,17 +557,6 @@ function PupilDetailPage() {
         }
       });
 
-    supabase
-      .from("lessons")
-      .select("id", { count: "exact", head: true })
-      .eq("pupil_id", id)
-      .in("status", ["completed"])
-      .is("deleted_at", null)
-      .then(({ count, error }) => {
-        if (error) console.error("[pupil] lesson count error", error);
-        setActualLessonCount(count ?? 0);
-        console.log("[pupils.$id] lesson count (completed):", count);
-      });
 
     // Unread messages from this pupil (for Message quick-action badge)
     supabase.auth.getUser().then(({ data: u }) => {
@@ -592,18 +579,6 @@ function PupilDetailPage() {
         });
     });
 
-    // Total lessons figure: count all non-cancelled lessons
-    supabase
-      .from("lessons")
-      .select("id", { count: "exact", head: true })
-      .eq("pupil_id", id)
-      .is("deleted_at", null)
-      .neq("status", "cancelled")
-      .then(({ count, error }) => {
-        if (error) console.error("[pupil] total lessons count error", error);
-        setTotalLessonsCount(count ?? 0);
-        console.log("[pupils.$id] total lessons count:", count);
-      });
 
     // Fetch unpaid, non-cancelled lessons — the "owed" balance is computed
     // from the pupil's CURRENT rates in a separate effect below, so it
@@ -866,7 +841,9 @@ function PupilDetailPage() {
   }
 
   const badge = statusBadge(pupil?.status ?? null);
-  const lessonCount = pupil?.lesson_count ?? 0;
+  const allLessons = (lessons ?? []).concat(pastLessons ?? []);
+  const completedLessonCount = allLessons.filter(l => l.status === 'completed' && l.deleted_at === null).length || 0;
+  const confirmedLessonCount = allLessons.filter(l => ['confirmed', 'completed', 'in_progress'].includes(l.status) && l.deleted_at === null).length || 0;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
@@ -1044,7 +1021,7 @@ function PupilDetailPage() {
                     Lessons bought
                   </p>
                   <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
-                    {lessonCount}
+                    {confirmedLessonCount}
                   </p>
                 </button>
               </div>
@@ -1159,7 +1136,7 @@ function PupilDetailPage() {
                 {/* Readiness dashboard */}
                 {(() => {
                   const readiness = (() => {
-                    const lessonCount = actualLessonCount ?? 0;
+                    const lessonCount = completedLessonCount;
                     const syllabusAchieved = syllabus?.filter((s) => s.status === "achieved")?.length || 0;
                     const theoryPassed = pupil?.theory_status === "Passed";
                     if (lessonCount === 0 && theoryPassed) {
@@ -1209,7 +1186,7 @@ function PupilDetailPage() {
                         <div className="grid grid-cols-3 gap-2">
                           {[
                             { label: "Syllabus", value: Math.round(readiness.syllabusPoints), max: 60 },
-                            { label: "Lessons", value: actualLessonCount ?? 0, max: pupil?.lesson_count ?? 0 },
+                            { label: "Lessons", value: completedLessonCount, max: confirmedLessonCount },
                             { label: "Theory", value: readiness.theoryPoints, max: 10 },
                           ].map((s) => (
                             <div key={s.label} className="flex flex-col">
