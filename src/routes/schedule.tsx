@@ -1449,6 +1449,44 @@ function SchedulePage() {
             </div>
           )}
 
+          {/* Legend: solid white cards = scheduled lessons, blue cards = open slots. */}
+          <div
+            style={{
+              margin: "0 16px 12px",
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              ...POPPINS,
+              fontSize: 12,
+              color: MUTED,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: 6,
+                  border: `0.5px solid rgba(15,32,68,0.10)`,
+                  background: "#FFFFFF",
+                }}
+              />
+              <span>Scheduled</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: 6,
+                  background: "#EAF2FE",
+                  border: `0.5px solid rgba(24,95,165,0.15)`,
+                }}
+              />
+              <span>Open slot</span>
+            </div>
+          </div>
+
           {renderTimeline()}
 
           {/*
