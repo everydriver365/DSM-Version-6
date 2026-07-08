@@ -344,7 +344,7 @@ function SchedulePage() {
                 info[p.id] = {
                   first_name: p.first_name ?? null,
                   name: p.name ?? null,
-                  profile_image_url: p.profile_image_url ?? null,
+                  profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
                   calendar_colour: p.calendar_colour ?? null,
                 };
               });
