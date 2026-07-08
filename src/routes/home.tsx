@@ -3834,7 +3834,12 @@ function HomePage() {
         const PURPLE_BG = '#EDE9FE';
         const PURPLE_FG = '#6D28D9';
 
-        const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+        const activeList = tab === 'today' ? todayLessons : tab === 'tomorrow' ? tomorrowLessons : nextTabLessons;
+        const sorted = [...activeList].sort((a, b) => {
+          const ad = `${a.lesson_date}T${a.lesson_time ?? '00:00'}`;
+          const bd = `${b.lesson_date}T${b.lesson_time ?? '00:00'}`;
+          return ad.localeCompare(bd);
+        });
         const nowT = new Date();
         const fmt24 = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
@@ -3944,9 +3949,50 @@ function HomePage() {
               <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>Today's timeline</div>
               <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
             </div>
+            {/* 3. TIMELINE with TABS */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>
+                {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
+              </div>
+              <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
+            </div>
+
+            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', gap: 6, padding: 3, background: '#EEF3FA', borderRadius: 12, marginBottom: 10 }}>
+              {(['today', 'tomorrow', 'next'] as const).map((t) => {
+                const active = tab === t;
+                const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setTab(t)}
+                    style={{
+                      flex: 1,
+                      height: 34,
+                      borderRadius: 9,
+                      border: 'none',
+                      background: active ? '#FFFFFF' : 'transparent',
+                      color: active ? NAVY : MUTED,
+                      fontFamily: PF,
+                      fontSize: 13,
+                      fontWeight: active ? 600 : 500,
+                      cursor: 'pointer',
+                      boxShadow: active ? '0 1px 2px rgba(15,32,68,0.08)' : 'none',
+                      transition: 'background 120ms ease',
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
 
             {sorted.length === 0 ? (
-              <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>No lessons today</div>
+              <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
+                {tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons'}
+              </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {rows.map((row, idx) => {
