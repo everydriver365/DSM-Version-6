@@ -2448,10 +2448,40 @@ function HomePage() {
     return null;
   })();
 
+  const freeSlotCount = (() => {
+    const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
+    const startMins = timeToMins(workingHours?.start_time ? String(workingHours.start_time) : "09:00");
+    const endMins = timeToMins(todayEndTime ?? "18:00");
+    const resolveAfter = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.after != null ? pupilBufferMap[pid].after as number : instructorBufferAfter);
+    const resolveBefore = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.before != null ? pupilBufferMap[pid].before as number : 0);
+    if (sorted.length === 0) return Math.max(0, Math.floor((endMins - startMins) / 60));
+    let count = 0;
+    const first = sorted[0];
+    const firstStart = lessonDateTime(first);
+    const firstStartMins = firstStart.getHours() * 60 + firstStart.getMinutes();
+    if (firstStartMins - resolveBefore(first.pupil_id) - startMins >= 60) count++;
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const l = sorted[i];
+      const next = sorted[i + 1];
+      const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+      const gapStartMins = endThis.getHours() * 60 + endThis.getMinutes() + resolveAfter(l.pupil_id);
+      const nextStart = lessonDateTime(next);
+      const gapEndMins = nextStart.getHours() * 60 + nextStart.getMinutes() - resolveBefore(next.pupil_id);
+      if (gapEndMins - gapStartMins >= 60) count++;
+    }
+    const last = sorted[sorted.length - 1];
+    const endLast = new Date(lessonDateTime(last).getTime() + (last.duration_minutes ?? 60) * 60000);
+    const lastEndMins = endLast.getHours() * 60 + endLast.getMinutes() + resolveAfter(last.pupil_id);
+    if (endMins - lastEndMins >= 60) count++;
+    return count;
+  })();
+
   console.log("[next-free] todayLessons:", todayLessons?.length);
   console.log("[next-free] workStart:", workingHours?.start_time, "workEnd:", workingHours?.end_time);
   console.log("[next-free] todayEndTime:", todayEndTime, "instructorBufferAfter:", instructorBufferAfter);
   console.log("[next-free] result:", nextFreeSlot);
+  console.log("[home] freeSlotCount:", freeSlotCount);
+
 
   const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
