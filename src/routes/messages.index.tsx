@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
+
 
 export const Route = createFileRoute("/messages/")({
   head: () => ({
@@ -138,6 +140,8 @@ function MessagesIndexPage() {
         </button>
         <h1 style={{ fontSize: 17, fontWeight: 600, margin: 0 }}>Messages</h1>
       </div>
+      <WorkspaceDots />
+
 
       {loading ? (
         <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>Loading…</div>

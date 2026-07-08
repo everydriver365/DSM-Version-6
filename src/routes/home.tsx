@@ -131,8 +131,14 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>) => {
+    const raw = search.ws;
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
+    return { ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined };
+  },
   component: HomePage,
 });
+
 
 interface LessonRow {
   id: string;
@@ -1110,6 +1116,12 @@ function HomePage() {
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
   const setActiveWs = (i: number) => scrollToWs(i);
+  const search = Route.useSearch();
+  useEffect(() => {
+    if (typeof search.ws === 'number') scrollToWs(search.ws);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.ws]);
+
   const handleCarouselScroll = () => {
     if (wsIsProgrammatic.current) return;
     const el = carouselRef.current;
