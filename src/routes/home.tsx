@@ -2028,6 +2028,21 @@ function HomePage() {
       setGlancePupilCount(
         (pupilsData || []).filter((p: any) => p.deleted_at == null).length,
       );
+      setAllPupilsList(
+        (pupilsData || [])
+          .filter((p: any) => p.deleted_at == null)
+          .map((p: any) => ({
+            id: p.id,
+            name: p.name ?? '',
+            first_name: p.first_name ?? null,
+            status: (p.status ?? 'active').toLowerCase(),
+            profile_image_url: p.profile_image_url ?? null,
+            calendar_colour: p.calendar_colour ?? null,
+            last_lesson_date: p.last_lesson_date ?? null,
+            phone: p.phone ?? null,
+          })),
+      );
+
 
       const pupilMap: Record<string, any> = {};
       (pupilsData || []).forEach((p: any) => { pupilMap[p.id] = p; });
