@@ -147,7 +147,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; profile_image_url?: string | null; } | null;
 }
 
 interface PrevLessonRow {
