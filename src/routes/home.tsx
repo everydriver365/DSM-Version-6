@@ -4071,7 +4071,7 @@ function HomePage() {
               const h12 = gapH % 12 === 0 ? 12 : gapH % 12;
               const gapTimeLabel = `${h12}:${String(gapM).padStart(2, '0')} ${period}`;
               // No per-gap waitlist match data available on dashboard — omit avatars per spec.
-              const matchedCount = 0;
+              const matchedCount: number = 0;
               return (
                 <div
                   onClick={() => navigate({ to: '/gaps' })}
