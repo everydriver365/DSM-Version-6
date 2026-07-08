@@ -67,11 +67,11 @@ export const Route = createFileRoute("/")({
         content:
           "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs.",
       },
-      { property: "og:title", content: "Driving School Manager — Free for every driving instructor" },
+      { property: "og:title", content: "Driving School Manager — Free forever for UK driving instructors" },
       {
         property: "og:description",
         content:
-          "The all-in-one diary, payments and pupil management app for UK driving instructors. Free forever.",
+          "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs.",
       },
     ],
   }),
