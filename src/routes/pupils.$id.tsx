@@ -1474,7 +1474,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
             {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
               const prev = idx > 0 ? lessons[idx - 1] : null;
@@ -1501,7 +1501,7 @@ function PupilDetailPage() {
               return (
                 <Fragment key={l.id}>
                   {showGap && (
-                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6" }}>
+                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)" }}>
                       <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                         {gapDays} day{gapDays > 1 ? "s" : ""} gap
                       </span>
@@ -1512,29 +1512,29 @@ function PupilDetailPage() {
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
                       padding: "12px 16px", cursor: "pointer",
-                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid #F3F4F6",
+                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(15,32,68,0.10)",
                       ...POPPINS,
                     }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 999, background: colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
                       {initials}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
-                      <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                      <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
                         {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                       </div>
                     </div>
                     {live ? (
-                      <span style={{ background: "#1877D6", color: "#FFFFFF", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Live</span>
+                      <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
                     ) : unpaid && past ? (
-                      <span style={{ background: "#FEF3C7", color: "#92400E", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>£{price.toFixed(0)}</span>
+                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>£{price.toFixed(0)}</span>
                     ) : isPaid ? (
-                      <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Paid ✓</span>
+                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
-                      <span style={{ background: "#E6F1FB", color: "#185FA5", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>EOL</span>
+                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>EOL</span>
                     ) : null}
                     <ChevronRight size={18} color="#64748B" />
                   </div>
@@ -1553,7 +1553,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid #F3F4F6" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
               const colour = pupil?.calendar_colour || "#1A52A0";
@@ -1570,7 +1570,7 @@ function PupilDetailPage() {
                     return (
                       <Fragment key={l.id}>
                         {showGap && (
-                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6" }}>
+                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)" }}>
                             <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                               {gapDays} day{gapDays > 1 ? "s" : ""} gap
                             </span>
@@ -1581,25 +1581,25 @@ function PupilDetailPage() {
                           style={{
                             width: "100%", display: "flex", alignItems: "center", gap: 12,
                             padding: "12px 16px", cursor: "pointer",
-                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid #F3F4F6",
+                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(15,32,68,0.10)",
                             ...POPPINS,
                           }}
                         >
-                          <div style={{ width: 40, height: 40, borderRadius: "50%", background: isCancelled ? "#E5E7EB" : colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                          <div style={{ width: 40, height: 40, borderRadius: 999, background: isCancelled ? "#E5E7EB" : colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
                             {initials}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: isCancelled ? "#6B7280" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                               {formatDateShort(d)}
                             </div>
-                            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
                               {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
                             </div>
                           </div>
                           {isCancelled ? (
-                            <span style={{ background: "#FEE2E2", color: "#991B1B", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Cancelled</span>
+                            <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                           ) : isPaid ? (
-                            <span style={{ background: "#E0FFF4", color: "#065F46", fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, ...POPPINS }}>Paid ✓</span>
+                            <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                           ) : null}
                           <ChevronRight size={18} color="#64748B" />
                         </div>
@@ -1611,7 +1611,7 @@ function PupilDetailPage() {
                       type="button"
                       onClick={() => setPastExpanded((v) => !v)}
                       className="w-full flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
-                      style={{ borderTop: "0.5px solid #F3F4F6", background: "none", border: "none", ...POPPINS }}
+                      style={{ borderTop: "0.5px solid rgba(15,32,68,0.10)", background: "none", border: "none", ...POPPINS }}
                     >
                       {pastExpanded
                         ? "Show less"
