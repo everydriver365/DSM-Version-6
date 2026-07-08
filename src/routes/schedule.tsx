@@ -1036,7 +1036,7 @@ function SchedulePage() {
                 i > 0 ? (
                   <div
                     key={`hr-${segIdx}-${i}`}
-                    style={{ height: 0, borderTop: `0.5px solid #F3F4F6` }}
+                    style={{ height: 0, borderTop: `0.5px solid rgba(15,32,68,0.10)` }}
                   />
                 ) : null;
 
