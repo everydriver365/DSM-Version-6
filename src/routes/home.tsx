@@ -800,70 +800,23 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             DSM Live
           </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dsm-live" as never })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 700,
-              fontFamily: manrope,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            View All
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              disabled={!canScrollLeft}
-              aria-label="Scroll left"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollLeft ? "pointer" : "default",
-                opacity: canScrollLeft ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronLeft size={16} color="#0F2044" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              disabled={!canScrollRight}
-              aria-label="Scroll right"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E2E6ED",
-                boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: canScrollRight ? "pointer" : "default",
-                opacity: canScrollRight ? 1 : 0.4,
-                padding: 0,
-              }}
-            >
-              <ChevronRight size={16} color="#0F2044" />
-            </button>
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dsm-live" as never })}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#1877D6",
+            fontSize: 12,
+            fontWeight: 700,
+            fontFamily: manrope,
+            cursor: "pointer",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          View All
+        </button>
       </div>
 
       <div
