@@ -352,9 +352,39 @@ function SchedulePage() {
           flex: 1,
           overflowY: "auto",
           overflowX: "hidden",
-          padding: "8px 12px calc(80px + env(safe-area-inset-bottom)) 12px",
+          padding: "0 0 calc(80px + env(safe-area-inset-bottom)) 0",
         }}
       >
+        <MonthCalendar
+          month={calendarMonth}
+          today={today}
+          selectedDateKey={selectedDateKey}
+          dotsByDay={dotsByDay}
+          onSelectDate={scrollToDate}
+          onPrevMonth={() => {
+            const d = new Date(calendarMonth);
+            d.setMonth(d.getMonth() - 1);
+            setCalendarMonth(d);
+          }}
+          onNextMonth={() => {
+            const d = new Date(calendarMonth);
+            d.setMonth(d.getMonth() + 1);
+            setCalendarMonth(d);
+          }}
+          onOpenMonthPicker={() => {
+            // No project-wide month picker exists yet — jump to today as a
+            // useful fallback so the chevron isn't inert. Replace with a real
+            // picker when one lands.
+            const d = new Date(today);
+            d.setDate(1);
+            setCalendarMonth(d);
+            scrollToDate(ymdLocal(today));
+          }}
+          onSearch={() => navigate({ to: "/search" as never })}
+          onAdd={() => navigate({ to: "/lessons/new" as never })}
+        />
+        <div style={{ padding: "8px 12px 0" }}>
+
         {lessons === null ? (
           <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Loading…</div>
         ) : rows.length === 0 ? (
