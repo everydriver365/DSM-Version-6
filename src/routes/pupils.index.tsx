@@ -41,6 +41,13 @@ function initials(name: string) {
   return (a + b).toUpperCase() || "?";
 }
 
+const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+function avatarColor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+}
+
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
   if (status === "passed") return "#1877D6";
