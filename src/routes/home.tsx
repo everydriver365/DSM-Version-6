@@ -100,7 +100,12 @@ import {
   IconX,
   IconCalendar,
   IconDots,
-  
+  IconSearch,
+  IconUserPlus,
+  IconCalendarPlus,
+  IconReceipt,
+  IconSpeakerphone,
+  IconChartBar,
   IconSteeringWheel,
   IconClipboardCheck,
   IconMicrophone,
