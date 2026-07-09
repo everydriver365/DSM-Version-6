@@ -3834,10 +3834,21 @@ function HomePage() {
         });
         const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT);
         const owedPupil = (() => {
+          const top = outstandingBreakdown[0];
+          if (top && top.amount > 0) {
+            return {
+              name: top.firstName || top.name.split(' ')[0],
+              amount: top.amount,
+              phone: top.phone ?? '',
+            };
+          }
           for (const l of sorted) {
             const amt = Number(l.amount_due ?? 0);
-            const paid = (l.payment_status ?? '').toLowerCase() === 'paid';
-            if (amt > 0 && !paid) return { name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0], amount: amt, phone: l.pupils?.phone ?? '' };
+            const status = (l.payment_status ?? '').toLowerCase();
+            const prepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
+            if (amt > 0 && status !== 'paid' && status !== 'prepaid' && !prepaidPupil) {
+              return { name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0], amount: amt, phone: l.pupils?.phone ?? '' };
+            }
           }
           return null;
         })();
