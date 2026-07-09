@@ -4117,10 +4117,15 @@ function HomePage() {
         ).length;
         const todayUpcoming = todayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
         const todayCompleted = todayLessons.filter((l: any) => l.status === 'completed').length;
+        const weekStartStr = (() => {
+          const d = new Date(weekStart);
+          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        })();
         const weekCompletedForAvg = (allLessons ?? []).filter(
-          (l: any) => l.status === 'completed' && l.lesson_date >= (typeof weekStartYmd === 'string' ? weekStartYmd : ''),
+          (l: any) => l.status === 'completed' && typeof l.lesson_date === 'string' && l.lesson_date >= weekStartStr,
         ).length;
         const weekAvg = weekCompletedForAvg > 0 ? weekEarnings / weekCompletedForAvg : 0;
+
 
         const statSlides: StatSlideData[] = [
           {
