@@ -395,38 +395,47 @@ function SchedulePage() {
 
       <div
         style={{
-          display: "flex",
-          gap: 4,
-          padding: "8px 12px 4px",
+          padding: "10px 12px 4px",
           background: "#FFFFFF",
-          borderBottom: "1px solid #F1F5F9",
         }}
       >
-        {(["calendar", "agenda"] as const).map((v) => {
-          const active = view === v;
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setView(v)}
-              style={{
-                flex: 1,
-                padding: "8px 10px",
-                borderRadius: 8,
-                border: 0,
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-                background: active ? "#185FA5" : "transparent",
-                color: active ? "#FFFFFF" : "#6B7280",
-                ...POPPINS,
-              }}
-            >
-              {v === "calendar" ? "Calendar" : "Agenda"}
-            </button>
-          );
-        })}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            background: "#EEF2F7",
+            borderRadius: 12,
+            padding: 3,
+            marginBottom: 14,
+          }}
+        >
+          {(["calendar", "agenda"] as const).map((v) => {
+            const active = view === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                style={{
+                  flex: 1,
+                  padding: "9px 4px",
+                  borderRadius: 9,
+                  border: 0,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  background: active ? "#0F2044" : "transparent",
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  ...POPPINS,
+                }}
+              >
+                {v === "calendar" ? "Calendar" : "Agenda"}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
 
       <div
         ref={scrollRef}
@@ -465,33 +474,43 @@ function SchedulePage() {
             onAdd={() => navigate({ to: "/lessons/new" as never })}
           />
         )}
-        <div style={{ padding: "8px 12px 0" }}>
+        {view === "calendar" && (
+          <div style={{ height: 0.5, background: "#EEF2F7" }} />
+        )}
+        <div style={{ padding: "8px 16px 0" }}>
 
         {lessons === null ? (
-          <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Loading…</div>
+          <div style={{ padding: 24, color: "#B0BAC9", fontSize: 14 }}>Loading…</div>
         ) : rows.length === 0 ? (
-          <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Nothing scheduled.</div>
+          <div style={{ padding: 24, color: "#B0BAC9", fontSize: 14 }}>Nothing scheduled.</div>
         ) : (
-          rows.map((row) => {
+          rows.map((row, rowIdx) => {
             if (row.type === "week") {
+              const isFirstWeek = rowIdx === 0;
               return (
                 <div
                   key={row.key}
                   style={{
                     fontSize: 11,
                     fontWeight: 500,
-                    letterSpacing: "0.06em",
+                    letterSpacing: "0.04em",
                     textTransform: "uppercase",
-                    color: "#94A3B8",
-                    padding: "16px 4px 6px",
+                    color: "#B0BAC9",
+                    marginTop: isFirstWeek ? 4 : 16,
+                    marginBottom: 10,
                   }}
                 >
-                  {row.label}
+                  {row.label.toUpperCase()}
                 </div>
               );
             }
             const isToday = row.key === todayKey;
             const isPast = row.key < todayKey;
+            const weekday = row.date
+              .toLocaleDateString("en-GB", { weekday: "short" })
+              .slice(0, 3)
+              .toUpperCase();
+            const dayNum = row.date.getDate();
             return (
               <div
                 key={row.key}
@@ -504,24 +523,58 @@ function SchedulePage() {
                   }
                 }}
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "48px 1fr",
+                  display: "flex",
+                  flexDirection: "column",
                   gap: 8,
-                  padding: "6px 0",
-                  opacity: isPast ? 0.55 : 1,
+                  marginBottom: 8,
                 }}
               >
-                <DayHeader date={row.date} isToday={isToday} isPast={isPast} />
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {row.entries.map((e) => (
-                    <EntryRow key={e.id} entry={e} onLessonTap={goToLesson} />
-                  ))}
-                </div>
+                {row.entries.map((e, i) => (
+                  <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                    <div
+                      style={{
+                        width: 36,
+                        flexShrink: 0,
+                        textAlign: "right",
+                        paddingTop: 8,
+                      }}
+                    >
+                      {i === 0 ? (
+                        <>
+                          <div
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 500,
+                              color: "#B0BAC9",
+                              letterSpacing: "0.04em",
+                            }}
+                          >
+                            {weekday}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 14,
+                              fontWeight: isToday ? 600 : 500,
+                              color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                              fontVariantNumeric: "tabular-nums",
+                            }}
+                          >
+                            {dayNum}
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <EntryRow entry={e} onLessonTap={goToLesson} />
+                    </div>
+                  </div>
+                ))}
               </div>
             );
           })
         )}
         </div>
+
       </div>
     </div>
   );
@@ -673,8 +726,8 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     width: "100%",
     textAlign: "left",
     border: 0,
-    borderRadius: 8,
-    padding: "8px 12px",
+    borderRadius: 12,
+    padding: "10px 14px",
     background: bg,
     color: "#FFFFFF",
     cursor: "pointer",
@@ -693,10 +746,10 @@ const rowTitle: React.CSSProperties = {
 const rowSub: React.CSSProperties = {
   marginTop: 2,
   fontSize: 11,
-  color: "#FFFFFF",
-  opacity: 0.85,
+  color: "rgba(255,255,255,0.75)",
   fontVariantNumeric: "tabular-nums",
 };
+
 
 // ── Month calendar ────────────────────────────────────────────────────
 function MonthCalendar({
@@ -762,9 +815,9 @@ function MonthCalendar({
           marginBottom: 8,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
           <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calIconBtn}>
-            <IconChevronLeft size={18} stroke={1.75} color="#0B1F3A" />
+            <IconChevronLeft size={18} stroke={1.75} color="#8A94A6" />
           </button>
           <button
             type="button"
@@ -775,38 +828,39 @@ function MonthCalendar({
               gap: 4,
               background: "transparent",
               border: 0,
-              padding: 0,
-              fontSize: 15,
-              fontWeight: 500,
+              padding: "0 4px",
+              fontSize: 16,
+              fontWeight: 600,
               lineHeight: 1,
-              color: "#0B1F3A",
+              color: "#12142B",
               ...POPPINS,
               cursor: "pointer",
             }}
           >
             <span>{monthLabel}</span>
-            <IconChevronDown size={16} stroke={1.75} color="#6B7280" />
+            <IconChevronDown size={14} stroke={1.75} color="#8A94A6" />
           </button>
           <button type="button" aria-label="Next month" onClick={onNextMonth} style={calIconBtn}>
-            <IconChevronRight size={18} stroke={1.75} color="#0B1F3A" />
+            <IconChevronRight size={18} stroke={1.75} color="#8A94A6" />
           </button>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button type="button" aria-label="Search" onClick={onSearch} style={calIconBtn}>
-            <IconSearch size={19} stroke={1.75} color="#0B1F3A" />
+            <IconSearch size={18} stroke={1.75} color="#8A94A6" />
           </button>
           <button type="button" aria-label="Add lesson" onClick={onAdd} style={calIconBtn}>
-            <IconPlus size={19} stroke={1.75} color="#0B1F3A" />
+            <IconPlus size={18} stroke={1.75} color="#185FA5" />
           </button>
         </div>
       </div>
+
 
       {/* Day-of-week header */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 4,
+          marginBottom: 6,
         }}
       >
         {dow.map((d, i) => (
@@ -817,7 +871,7 @@ function MonthCalendar({
               fontSize: 10,
               fontWeight: 500,
               lineHeight: 1,
-              color: "#94A3B8",
+              color: "#B0BAC9",
               padding: "2px 0",
             }}
           >
@@ -825,6 +879,7 @@ function MonthCalendar({
           </div>
         ))}
       </div>
+
 
       {/* Date grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridTemplateRows: "repeat(6, minmax(0, 1fr))", flex: "1 1 0", minHeight: 0, paddingBottom: 0 }}>
@@ -837,9 +892,11 @@ function MonthCalendar({
           const dots = dotsByDay.get(key) ?? [];
           const numColour = isToday
             ? "#FFFFFF"
-            : !inMonth || isPast
-              ? "#94A3B8"
-              : "#0B1F3A";
+            : !inMonth
+              ? "#D0D5DD"
+              : isPast
+                ? "#8A94A6"
+                : "#12142B";
           return (
             <button
               type="button"
@@ -853,7 +910,7 @@ function MonthCalendar({
                 gap: 1,
                 background: "transparent",
                 border: 0,
-                padding: 0,
+                padding: "4px 0",
                 cursor: "pointer",
                 height: "100%",
                 minHeight: 0,
@@ -863,16 +920,17 @@ function MonthCalendar({
               <div
                 style={{
                   position: "relative",
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  margin: "0 auto",
                   background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
                   color: numColour,
                   fontSize: 12,
-                  fontWeight: 500,
+                  fontWeight: isToday ? 600 : 500,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -895,13 +953,15 @@ function MonthCalendar({
                         width: 3,
                         height: 3,
                         borderRadius: "50%",
-                        background: isToday ? "rgba(255,255,255,0.7)" : c,
+                        background: isToday ? "rgba(255,255,255,0.6)" : c,
                         display: "inline-block",
                       }}
                     />
                   ))}
                 </div>
               </div>
+
+
             </button>
           );
         })}
