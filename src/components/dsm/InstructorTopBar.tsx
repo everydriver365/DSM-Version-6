@@ -146,66 +146,44 @@ export default function InstructorTopBar({
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
           <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
-        {unreadCount > 0 ? (
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={onBell}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              background: "#CC2229",
-              borderRadius: 20,
-              padding: "4px 10px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                background: "white",
-                borderRadius: "50%",
-                display: "inline-block",
-                animation: "urgentPulse 1.5s infinite",
-              }}
-            />
-            <span
-              style={{
-                color: "white",
-                fontSize: 11,
-                fontWeight: 700,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {unreadCount} urgent
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={() => navigate({ to: '/notifications' as never })}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 4,
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Bell size={22} color="rgba(255,255,255,0.8)" />
+          {unreadCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: -2,
+              right: -2,
+              background: '#CC2229',
+              color: 'white',
+              fontSize: 10,
+              fontWeight: 700,
+              minWidth: 16,
+              height: 16,
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '2px solid #0F2044',
+              padding: '0 3px',
+              fontFamily: 'Poppins, sans-serif',
+            }}>
+              {unreadCount > 99 ? '99+' : unreadCount}
             </span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={onBell}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 4,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Bell size={22} color="rgba(255,255,255,0.4)" />
-          </button>
-        )}
-        <style>{`
-          @keyframes urgentPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.7; }
-          }
-        `}</style>
+          )}
+        </button>
         <IconBtn ariaLabel="Menu" onClick={onMenu}>
           <MenuIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
