@@ -224,6 +224,34 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function AttentionTile({
+  value, label, active, bg, color, onClick,
+}: {
+  value: number; label: string; active: boolean;
+  bg: string; color: string; onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      style={{
+        background: bg,
+        border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
+        borderRadius: 14,
+        padding: '12px 6px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
+    </div>
+  );
+}
+
 function normalizePupilStatus(status: string | null | undefined) {
   const normalized = (status ?? "active").toLowerCase();
   return normalized || "active";
@@ -3288,6 +3316,17 @@ function HomePage() {
     return outstandingBreakdown.filter((p) => p.name.toLowerCase().includes(q));
   })();
 
+  // Needs Attention counts
+  const naJobs = 0; // TODO: wire enquiries/new course_bookings
+  const naTests = (upcomingTests ?? []).filter((p) => {
+    if (!p.test_date) return false;
+    const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
+    return days >= 0 && days <= 7;
+  }).length;
+  const naCalls = 0; // TODO: wire missed calls
+  const naEnquiries = pendingSwapCount || 0;
+  const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
+
   if (isDesktop) {
     const now = new Date();
     const in7 = new Date(now.getTime() + 7 * 86400000);
@@ -4198,6 +4237,39 @@ function HomePage() {
         </Dialog>
 
 
+        {/* Needs attention strip */}
+        <div style={{ margin: '16px 16px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF' }}>Needs attention</div>
+            {naUrgentCount > 0 && (
+              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>
+                {naUrgentCount} urgent
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+            <AttentionTile
+              value={naJobs} label="Jobs" active={naJobs > 0}
+              bg="#EDF4FF" color="#8AABCC"
+              onClick={() => navigate({ to: '/bookings' as never })}
+            />
+            <AttentionTile
+              value={naTests} label="Tests" active={naTests > 0}
+              bg="#E8F0FE" color="#185FA5"
+              onClick={() => setActiveWs(2)}
+            />
+            <AttentionTile
+              value={naCalls} label="Calls" active={naCalls > 0}
+              bg="#F0EEFF" color="#9B8EC4"
+              onClick={() => navigate({ to: '/messages' as never })}
+            />
+            <AttentionTile
+              value={naEnquiries} label="Enq's" active={naEnquiries > 0}
+              bg="#E8F5F0" color="#5D9E82"
+              onClick={() => navigate({ to: '/waitlist' as never })}
+            />
+          </div>
+        </div>
       </div>
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
@@ -4315,43 +4387,6 @@ function HomePage() {
           </div>
         );
 
-        // Needs Attention counts
-        const naJobs = 0; // TODO: wire enquiries/new course_bookings
-        const naTests = (upcomingTests ?? []).filter((p) => {
-          if (!p.test_date) return false;
-          const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
-          return days >= 0 && days <= 7;
-        }).length;
-        const naCalls = 0; // TODO: wire missed calls
-        const naEnquiries = pendingSwapCount || 0;
-        const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
-
-        const AttentionTile = ({
-          value, label, active, bg, color, onClick,
-        }: {
-          value: number; label: string; active: boolean;
-          bg: string; color: string; onClick: () => void;
-        }) => (
-          <div
-            onClick={onClick}
-            role="button"
-            tabIndex={0}
-            style={{
-              background: bg,
-              border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
-              borderRadius: 14,
-              padding: '12px 6px',
-              textAlign: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-              boxSizing: 'border-box',
-            }}
-          >
-            <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
-            <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
-          </div>
-        );
-
         // Month / YTD earnings from in-memory allLessons (60-day window;
         // YTD is best-effort within that window — we don't have prior-period
         // data here, so vs-comparisons render as "—").
@@ -4456,40 +4491,6 @@ function HomePage() {
               setIndex={setAiInsightIndex}
               setLoading={setAiInsightsLoading}
             />
-
-            {/* 0. NEEDS ATTENTION STRIP */}
-            <div style={{ marginBottom: 14 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#12142B' }}>Needs attention</div>
-                {naUrgentCount > 0 && (
-                  <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>
-                    {naUrgentCount} urgent
-                  </div>
-                )}
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
-                <AttentionTile
-                  value={naJobs} label="Jobs" active={naJobs > 0}
-                  bg="#EDF4FF" color="#8AABCC"
-                  onClick={() => navigate({ to: '/bookings' as never })}
-                />
-                <AttentionTile
-                  value={naTests} label="Tests" active={naTests > 0}
-                  bg="#E8F0FE" color="#185FA5"
-                  onClick={() => setActiveWs(2)}
-                />
-                <AttentionTile
-                  value={naCalls} label="Calls" active={naCalls > 0}
-                  bg="#F0EEFF" color="#9B8EC4"
-                  onClick={() => navigate({ to: '/messages' as never })}
-                />
-                <AttentionTile
-                  value={naEnquiries} label="Enq's" active={naEnquiries > 0}
-                  bg="#E8F5F0" color="#5D9E82"
-                  onClick={() => navigate({ to: '/waitlist' as never })}
-                />
-              </div>
-            </div>
 
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
             <SwipeableStatsCard slides={statSlides} />
