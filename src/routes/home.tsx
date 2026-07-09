@@ -4722,7 +4722,7 @@ function HomePage() {
                         cursor: "pointer", fontFamily: "Poppins, Inter, sans-serif",
                       }}
                     >
-                      <MessageCircle size={16} strokeWidth={2} /> Broadcast
+                      <Megaphone size={16} strokeWidth={2} /> Broadcast
                     </button>
                   </div>
                 </div>
