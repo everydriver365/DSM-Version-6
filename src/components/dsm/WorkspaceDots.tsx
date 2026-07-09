@@ -4,9 +4,10 @@ const WORKSPACES = ["Today", "Schedule", "Pupils", "Money", "Market", "DSM", "Co
 
 type Props = {
   activeIndex?: number;
+  activeLabel?: string;
 };
 
-export default function WorkspaceDots({ activeIndex = 0 }: Props) {
+export default function WorkspaceDots({ activeIndex = 0, activeLabel }: Props) {
   const navigate = useNavigate();
   return (
     <div
@@ -51,7 +52,7 @@ export default function WorkspaceDots({ activeIndex = 0 }: Props) {
           minWidth: 80,
         }}
       >
-        {WORKSPACES[activeIndex] ?? WORKSPACES[0]}
+        {activeLabel ?? WORKSPACES[activeIndex] ?? WORKSPACES[0]}
       </span>
     </div>
   );
