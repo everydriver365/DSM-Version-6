@@ -224,6 +224,34 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function AttentionTile({
+  value, label, active, bg, color, onClick,
+}: {
+  value: number; label: string; active: boolean;
+  bg: string; color: string; onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      style={{
+        background: bg,
+        border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
+        borderRadius: 14,
+        padding: '12px 6px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
+    </div>
+  );
+}
+
 function normalizePupilStatus(status: string | null | undefined) {
   const normalized = (status ?? "active").toLowerCase();
   return normalized || "active";
