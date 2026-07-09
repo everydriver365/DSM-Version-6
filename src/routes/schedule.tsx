@@ -9,6 +9,7 @@ import {
   IconArrowLeft,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -335,6 +336,19 @@ function SchedulePage() {
   // ── Chrome ────────────────────────────────────────────────────────────
   return (
     <div
+      onTouchStart={(e) => {
+        (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }}
+      onTouchEnd={(e) => {
+        const s = (window as any).__wsSwipe;
+        if (!s) return;
+        const dx = e.changedTouches[0].clientX - s.x;
+        const dy = e.changedTouches[0].clientY - s.y;
+        (window as any).__wsSwipe = null;
+        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+        const target = dx < 0 ? 2 : 0; // schedule=1: left→pupils(2), right→today(0)
+        navigate({ to: "/home" as never, search: { ws: target } as any });
+      }}
       style={{
         position: "fixed",
         inset: 0,
@@ -345,36 +359,38 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px",
-          background: "#0F2044",
-          color: "#FFFFFF",
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" as never })}
+      <div style={{ background: "#0F2044", paddingTop: "env(safe-area-inset-top, 0px)" }}>
+        <div
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            border: 0,
-            background: "rgba(255,255,255,0.10)",
-            color: "#FFFFFF",
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
+            gap: 8,
+            padding: "10px 12px 6px",
+            color: "#FFFFFF",
           }}
         >
-          <IconArrowLeft size={20} stroke={2} />
-        </button>
-        <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
+          <button
+            type="button"
+            aria-label="Back"
+            onClick={() => navigate({ to: "/home" as never })}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              border: 0,
+              background: "rgba(255,255,255,0.10)",
+              color: "#FFFFFF",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <IconArrowLeft size={20} stroke={2} />
+          </button>
+          <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
+        </div>
+        <WorkspaceDots activeIndex={1} />
       </div>
 
       <div
