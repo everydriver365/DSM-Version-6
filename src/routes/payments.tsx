@@ -31,6 +31,18 @@ const PURPLE = "#7C3AED";
 const CYAN = "#0891B2";
 const CARD_BLUE = "#1A52A0";
 
+const PUPIL_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+function pupilAvatarColor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return PUPIL_PALETTE[h % PUPIL_PALETTE.length];
+}
+function pupilInitials(name: string | null | undefined) {
+  const n = (name || "?").trim();
+  const parts = n.split(/\s+/);
+  return ((parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")).toUpperCase() || "?";
+}
+
 // ---------- helpers ----------
 function formatGBP(amount: number) {
   const sign = amount < 0 ? "-" : "";
