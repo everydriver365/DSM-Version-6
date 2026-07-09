@@ -3390,13 +3390,13 @@ function HomePage() {
   })();
 
   // Needs Attention counts
-  const naJobs = 0; // TODO: wire enquiries/new course_bookings
+  const naJobs: number = 0; // TODO: wire enquiries/new course_bookings
   const naTests = (upcomingTests ?? []).filter((p) => {
     if (!p.test_date) return false;
     const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
     return days >= 0 && days <= 7;
   }).length;
-  const naCalls = 0; // TODO: wire missed calls
+  const naCalls: number = 0; // TODO: wire missed calls
   const naEnquiries = pendingSwapCount || 0;
   const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
 
