@@ -1235,6 +1235,57 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   );
 }
 
+type AiSuggestion = { title: string; body: string; cta: string | null; route: string | null };
+
+function AiInsightsRunner({
+  payload,
+  fetcher,
+  suggestions,
+  setSuggestions,
+  setIndex,
+  setLoading,
+}: {
+  payload: InsightInput;
+  fetcher: (args: { data: InsightInput }) => Promise<{ suggestions?: AiSuggestion[] } | null | undefined>;
+  suggestions: AiSuggestion[] | null;
+  setSuggestions: (s: AiSuggestion[] | null) => void;
+  setIndex: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: (b: boolean) => void;
+}) {
+  const depKey = `${payload.todayLessons}|${payload.weekLessons}|${payload.monthLessons}|${payload.newPupils}|${payload.upcomingTests}|${payload.pendingSwaps}|${payload.freeSlots}|${payload.unreadMessages}`;
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetcher({ data: payload })
+      .then((result) => {
+        if (cancelled) return;
+        const list = result?.suggestions ?? [];
+        setSuggestions(list.length > 0 ? list : null);
+        setIndex(0);
+      })
+      .catch(() => {
+        if (!cancelled) setSuggestions(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depKey]);
+
+  useEffect(() => {
+    if (!suggestions || suggestions.length <= 1) return;
+    const len = suggestions.length;
+    const interval = window.setInterval(() => {
+      setIndex((i) => (i + 1) % len);
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [suggestions, setIndex]);
+
+  return null;
+}
+
+
 type QaTile = {
   key: string;
   label: string;
@@ -4374,57 +4425,38 @@ function HomePage() {
           },
         ];
 
-        // ===== AI insights: fetch once when dashboard data is stable =====
-        useEffect(() => {
-          let cancelled = false;
-          setAiInsightsLoading(true);
-          const payload: InsightInput = {
-            todayLessons: todayLessons.length,
-            todayUpcoming,
-            todayCompleted,
-            todayEarnings,
-            weekLessons: weekLessonsTotal,
-            weekEarnings,
-            monthLessons: monthLessonsCompleted,
-            monthEarnings,
-            ytdLessons: ytdLessonsCompleted,
-            ytdEarnings,
-            outstanding,
-            newPupils: naJobs,
-            upcomingTests: naTests,
-            pendingSwaps: naEnquiries,
-            freeSlots: freeSlotCount,
-            unreadMessages: unreadMsgs.length,
-            waitlistCount: 0,
-          };
-          generateInsightsFn({ data: payload })
-            .then((result) => {
-              if (cancelled) return;
-              const list = result?.suggestions ?? [];
-              setAiSuggestions(list.length > 0 ? list : null);
-              setAiInsightIndex(0);
-            })
-            .catch(() => {
-              if (!cancelled) setAiSuggestions(null);
-            })
-            .finally(() => {
-              if (!cancelled) setAiInsightsLoading(false);
-            });
-          return () => { cancelled = true; };
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [todayLessons.length, weekLessonsTotal, monthLessonsCompleted, naJobs, naTests, naEnquiries, freeSlotCount, unreadMsgs.length]);
+        const aiInsightsPayload: InsightInput = {
+          todayLessons: todayLessons.length,
+          todayUpcoming,
+          todayCompleted,
+          todayEarnings,
+          weekLessons: weekLessonsTotal,
+          weekEarnings,
+          monthLessons: monthLessonsCompleted,
+          monthEarnings,
+          ytdLessons: ytdLessonsCompleted,
+          ytdEarnings,
+          outstanding,
+          newPupils: naJobs,
+          upcomingTests: naTests,
+          pendingSwaps: naEnquiries,
+          freeSlots: freeSlotCount,
+          unreadMessages: unreadMsgs.length,
+          waitlistCount: 0,
+        };
 
-        // Auto-rotate AI insights
-        useEffect(() => {
-          if (!aiSuggestions || aiSuggestions.length <= 1) return;
-          const interval = window.setInterval(() => {
-            setAiInsightIndex((i) => (i + 1) % aiSuggestions.length);
-          }, 5000);
-          return () => window.clearInterval(interval);
-        }, [aiSuggestions]);
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            <AiInsightsRunner
+              payload={aiInsightsPayload}
+              fetcher={generateInsightsFn}
+              suggestions={aiSuggestions}
+              setSuggestions={setAiSuggestions}
+              setIndex={setAiInsightIndex}
+              setLoading={setAiInsightsLoading}
+            />
+
             {/* 0. NEEDS ATTENTION STRIP */}
             <div style={{ marginBottom: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
