@@ -430,6 +430,142 @@ function TodayLessonsTile({
   );
 }
 
+type StatSlideData = {
+  key: string;
+  title: string;
+  subtitleTop: string;
+  subtitleBottom: React.ReactNode;
+  icon: React.ReactNode;
+  right:
+    | { kind: "circle"; value: string | number; active: boolean }
+    | { kind: "value"; value: string; label?: string };
+};
+
+function SwipeableStatsCard({ slides }: { slides: StatSlideData[] }) {
+  const [idx, setIdx] = useState(0);
+  const startX = useRef<number | null>(null);
+  const deltaRef = useRef(0);
+  const draggingMouse = useRef(false);
+
+  const commit = () => {
+    if (startX.current === null) return;
+    const d = deltaRef.current;
+    startX.current = null;
+    deltaRef.current = 0;
+    draggingMouse.current = false;
+    if (d < -40 && idx < slides.length - 1) setIdx(idx + 1);
+    else if (d > 40 && idx > 0) setIdx(idx - 1);
+  };
+
+  const s = slides[Math.min(idx, slides.length - 1)];
+
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 16,
+        padding: 16,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        marginBottom: 14,
+        userSelect: "none",
+        touchAction: "pan-y",
+      }}
+      onTouchStart={(e) => {
+        startX.current = e.touches[0].clientX;
+        deltaRef.current = 0;
+      }}
+      onTouchMove={(e) => {
+        if (startX.current !== null) deltaRef.current = e.touches[0].clientX - startX.current;
+      }}
+      onTouchEnd={commit}
+      onMouseDown={(e) => {
+        startX.current = e.clientX;
+        deltaRef.current = 0;
+        draggingMouse.current = true;
+      }}
+      onMouseMove={(e) => {
+        if (draggingMouse.current && startX.current !== null) deltaRef.current = e.clientX - startX.current;
+      }}
+      onMouseUp={commit}
+      onMouseLeave={() => {
+        if (draggingMouse.current) commit();
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            background: "#EEF2F7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            color: "#185FA5",
+          }}
+        >
+          {s.icon}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
+          <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
+          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
+          {s.right.kind === "circle" ? (
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                border: "2px solid #EEF2F7",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 20,
+                fontWeight: 600,
+                color: s.right.active ? "#185FA5" : "#B0BAC9",
+              }}
+            >
+              {s.right.value}
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: 20, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
+              {s.right.label && <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.right.label}</div>}
+            </>
+          )}
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 14 }}>
+        {slides.map((sl, i) => {
+          const active = i === idx;
+          return (
+            <button
+              key={sl.key}
+              type="button"
+              aria-label={`Show ${sl.title}`}
+              onClick={() => setIdx(i)}
+              style={{
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                height: 6,
+                width: active ? 16 : 6,
+                borderRadius: active ? 4 : "50%",
+                background: active ? "#185FA5" : "#D0D5DD",
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
+
 type TabKey = "today" | "tomorrow" | "next";
 
 type MarketplaceTile = {
