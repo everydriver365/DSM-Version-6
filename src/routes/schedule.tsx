@@ -815,9 +815,9 @@ function MonthCalendar({
           marginBottom: 8,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
           <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calIconBtn}>
-            <IconChevronLeft size={18} stroke={1.75} color="#0B1F3A" />
+            <IconChevronLeft size={18} stroke={1.75} color="#8A94A6" />
           </button>
           <button
             type="button"
@@ -828,31 +828,32 @@ function MonthCalendar({
               gap: 4,
               background: "transparent",
               border: 0,
-              padding: 0,
-              fontSize: 15,
-              fontWeight: 500,
+              padding: "0 4px",
+              fontSize: 16,
+              fontWeight: 600,
               lineHeight: 1,
-              color: "#0B1F3A",
+              color: "#12142B",
               ...POPPINS,
               cursor: "pointer",
             }}
           >
             <span>{monthLabel}</span>
-            <IconChevronDown size={16} stroke={1.75} color="#6B7280" />
+            <IconChevronDown size={14} stroke={1.75} color="#8A94A6" />
           </button>
           <button type="button" aria-label="Next month" onClick={onNextMonth} style={calIconBtn}>
-            <IconChevronRight size={18} stroke={1.75} color="#0B1F3A" />
+            <IconChevronRight size={18} stroke={1.75} color="#8A94A6" />
           </button>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button type="button" aria-label="Search" onClick={onSearch} style={calIconBtn}>
-            <IconSearch size={19} stroke={1.75} color="#0B1F3A" />
+            <IconSearch size={18} stroke={1.75} color="#8A94A6" />
           </button>
           <button type="button" aria-label="Add lesson" onClick={onAdd} style={calIconBtn}>
-            <IconPlus size={19} stroke={1.75} color="#0B1F3A" />
+            <IconPlus size={18} stroke={1.75} color="#185FA5" />
           </button>
         </div>
       </div>
+
 
       {/* Day-of-week header */}
       <div
