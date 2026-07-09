@@ -4,6 +4,8 @@ import {
   IconSearch,
   IconPlus,
   IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
@@ -132,14 +134,18 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
-  const [visibleMonth, setVisibleMonth] = useState<string>(() =>
-    today.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
-  );
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
+    const d = new Date(today);
+    d.setDate(1);
+    return d;
+  });
+  const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const todayRef = useRef<HTMLDivElement | null>(null);
   const dayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const didScrollToToday = useRef(false);
+  const suppressScrollUpdate = useRef(false);
 
   // Fetch lessons in the full ±window. Uses the same lessons/pupils select
   // pattern already used elsewhere in the app. Range is 210 days of the
@@ -255,30 +261,74 @@ function SchedulePage() {
     didScrollToToday.current = true;
   }, [lessons, orderedDayKeys, todayKey]);
 
-  // Update visible-month header as the user scrolls.
+  // As the agenda scrolls, update the calendar month + selected-date
+  // highlight to follow the top-most visible day.
   const onScroll = useCallback(() => {
+    if (suppressScrollUpdate.current) return;
     const scroller = scrollRef.current;
     if (!scroller) return;
     const scrollerTop = scroller.getBoundingClientRect().top;
-    let currentDate: Date | null = null;
+    let currentKey: string | null = null;
     for (const [key, el] of dayRefs.current) {
       const rect = el.getBoundingClientRect();
-      if (rect.top - scrollerTop <= 48) {
-        const [y, m, d] = key.split("-").map(Number);
-        currentDate = new Date(y, m - 1, d);
+      if (rect.top - scrollerTop <= 120) {
+        currentKey = key;
       } else {
         break;
       }
     }
-    if (currentDate) {
-      const label = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-      setVisibleMonth((prev) => (prev === label ? prev : label));
+    if (currentKey) {
+      const [y, m, d] = currentKey.split("-").map(Number);
+      const date = new Date(y, m - 1, d);
+      setSelectedDateKey((prev) => (prev === currentKey ? prev : currentKey!));
+      setCalendarMonth((prev) => {
+        if (prev.getFullYear() === date.getFullYear() && prev.getMonth() === date.getMonth()) return prev;
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+      });
     }
   }, []);
 
   const goToLesson = (id: string) => {
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
+
+  // Colour dots per date, one per unique pupil, capped at 3.
+  const dotsByDay = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const l of lessons ?? []) {
+      const key = l.lesson_date.substring(0, 10);
+      const arr = map.get(key) ?? [];
+      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+      if (!arr.includes(colour) && arr.length < 3) arr.push(colour);
+      map.set(key, arr);
+    }
+    return map;
+  }, [lessons]);
+
+  const scrollToDate = useCallback(
+    (key: string) => {
+      // If that date has no entries, jump to the nearest future day that does.
+      let targetKey = key;
+      if (!dayRefs.current.has(targetKey)) {
+        const found = orderedDayKeys.find((k) => k >= key);
+        if (!found) return;
+        targetKey = found;
+      }
+      const el = dayRefs.current.get(targetKey);
+      const scroller = scrollRef.current;
+      if (!el || !scroller) return;
+      setSelectedDateKey(key);
+      suppressScrollUpdate.current = true;
+      const top = el.offsetTop - scroller.offsetTop - 8;
+      scroller.scrollTo({ top, behavior: "smooth" });
+      // Release the scroll-driven month/selected updater after the smooth
+      // scroll settles, so the user's tap wins over the scroll observer.
+      window.setTimeout(() => {
+        suppressScrollUpdate.current = false;
+      }, 450);
+    },
+    [orderedDayKeys],
+  );
 
   // ── Chrome ────────────────────────────────────────────────────────────
   return (
@@ -293,53 +343,7 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "12px 16px",
-          borderBottom: "1px solid #EEF2F7",
-          background: "#FFFFFF",
-        }}
-      >
-        <button
-          type="button"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            background: "transparent",
-            border: 0,
-            padding: 0,
-            fontSize: 20,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            ...POPPINS,
-          }}
-        >
-          <span>{visibleMonth}</span>
-          <IconChevronDown size={20} stroke={1.75} />
-        </button>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            type="button"
-            aria-label="Search"
-            onClick={() => navigate({ to: "/search" as never })}
-            style={iconBtn}
-          >
-            <IconSearch size={22} stroke={1.75} color="#0B1F3A" />
-          </button>
-          <button
-            type="button"
-            aria-label="Add lesson"
-            onClick={() => navigate({ to: "/lessons/new" as never })}
-            style={iconBtn}
-          >
-            <IconPlus size={22} stroke={1.75} color="#0B1F3A" />
-          </button>
-        </div>
-      </header>
+
 
       <div
         ref={scrollRef}
@@ -348,9 +352,39 @@ function SchedulePage() {
           flex: 1,
           overflowY: "auto",
           overflowX: "hidden",
-          padding: "8px 12px calc(80px + env(safe-area-inset-bottom)) 12px",
+          padding: "0 0 calc(80px + env(safe-area-inset-bottom)) 0",
         }}
       >
+        <MonthCalendar
+          month={calendarMonth}
+          today={today}
+          selectedDateKey={selectedDateKey}
+          dotsByDay={dotsByDay}
+          onSelectDate={scrollToDate}
+          onPrevMonth={() => {
+            const d = new Date(calendarMonth);
+            d.setMonth(d.getMonth() - 1);
+            setCalendarMonth(d);
+          }}
+          onNextMonth={() => {
+            const d = new Date(calendarMonth);
+            d.setMonth(d.getMonth() + 1);
+            setCalendarMonth(d);
+          }}
+          onOpenMonthPicker={() => {
+            // No project-wide month picker exists yet — jump to today as a
+            // useful fallback so the chevron isn't inert. Replace with a real
+            // picker when one lands.
+            const d = new Date(today);
+            d.setDate(1);
+            setCalendarMonth(d);
+            scrollToDate(ymdLocal(today));
+          }}
+          onSearch={() => navigate({ to: "/search" as never })}
+          onAdd={() => navigate({ to: "/lessons/new" as never })}
+        />
+        <div style={{ padding: "8px 12px 0" }}>
+
         {lessons === null ? (
           <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Loading…</div>
         ) : rows.length === 0 ? (
@@ -405,6 +439,7 @@ function SchedulePage() {
             );
           })
         )}
+        </div>
       </div>
     </div>
   );
@@ -579,4 +614,215 @@ const rowSub: React.CSSProperties = {
   color: "#FFFFFF",
   opacity: 0.85,
   fontVariantNumeric: "tabular-nums",
+};
+
+// ── Month calendar ────────────────────────────────────────────────────
+function MonthCalendar({
+  month,
+  today,
+  selectedDateKey,
+  dotsByDay,
+  onSelectDate,
+  onPrevMonth,
+  onNextMonth,
+  onOpenMonthPicker,
+  onSearch,
+  onAdd,
+}: {
+  month: Date;
+  today: Date;
+  selectedDateKey: string;
+  dotsByDay: Map<string, string[]>;
+  onSelectDate: (key: string) => void;
+  onPrevMonth: () => void;
+  onNextMonth: () => void;
+  onOpenMonthPicker: () => void;
+  onSearch: () => void;
+  onAdd: () => void;
+}) {
+  const monthLabel = month.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  const todayKey = ymdLocal(today);
+
+  // Build a 6-row (Mon-start) grid covering the full visible month.
+  const cells = useMemo(() => {
+    const first = new Date(month.getFullYear(), month.getMonth(), 1);
+    const gridStart = mondayOf(first);
+    const out: Date[] = [];
+    for (let i = 0; i < 42; i++) out.push(addDays(gridStart, i));
+    return out;
+  }, [month]);
+
+  const dow = ["M", "T", "W", "T", "F", "S", "S"];
+
+  return (
+    <div
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 5,
+        background: "#FFFFFF",
+        padding: "16px 16px 0",
+        borderBottom: "0.5px solid #E5E7EB",
+      }}
+    >
+      {/* Top row: month + nav + actions */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calIconBtn}>
+            <IconChevronLeft size={18} stroke={1.75} color="#0B1F3A" />
+          </button>
+          <button
+            type="button"
+            onClick={onOpenMonthPicker}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              background: "transparent",
+              border: 0,
+              padding: "4px 4px",
+              fontSize: 18,
+              fontWeight: 500,
+              color: "#0B1F3A",
+              ...POPPINS,
+              cursor: "pointer",
+            }}
+          >
+            <span>{monthLabel}</span>
+            <IconChevronDown size={16} stroke={1.75} color="#6B7280" />
+          </button>
+          <button type="button" aria-label="Next month" onClick={onNextMonth} style={calIconBtn}>
+            <IconChevronRight size={18} stroke={1.75} color="#0B1F3A" />
+          </button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button type="button" aria-label="Search" onClick={onSearch} style={calIconBtn}>
+            <IconSearch size={19} stroke={1.75} color="#0B1F3A" />
+          </button>
+          <button type="button" aria-label="Add lesson" onClick={onAdd} style={calIconBtn}>
+            <IconPlus size={19} stroke={1.75} color="#0B1F3A" />
+          </button>
+        </div>
+      </div>
+
+      {/* Day-of-week header */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(7, 1fr)",
+          marginBottom: 8,
+        }}
+      >
+        {dow.map((d, i) => (
+          <div
+            key={i}
+            style={{
+              textAlign: "center",
+              fontSize: 11,
+              fontWeight: 500,
+              color: "#94A3B8",
+              padding: "4px 0",
+            }}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
+
+      {/* Date grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", paddingBottom: 8 }}>
+        {cells.map((d) => {
+          const key = ymdLocal(d);
+          const inMonth = d.getMonth() === month.getMonth();
+          const isToday = key === todayKey;
+          const isPast = key < todayKey;
+          const isSelected = key === selectedDateKey && !isToday;
+          const dots = dotsByDay.get(key) ?? [];
+          const numColour = isToday
+            ? "#FFFFFF"
+            : !inMonth || isPast
+              ? "#94A3B8"
+              : "#0B1F3A";
+          return (
+            <button
+              type="button"
+              key={key}
+              onClick={() => onSelectDate(key)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 2,
+                background: "transparent",
+                border: 0,
+                padding: "6px 0",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
+                  color: numColour,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {d.getDate()}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 2,
+                  justifyContent: "center",
+                  height: 6,
+                  marginTop: 2,
+                }}
+              >
+                {dots.map((c, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: isToday ? "rgba(255,255,255,0.7)" : c,
+                      display: "inline-block",
+                    }}
+                  />
+                ))}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const calIconBtn: React.CSSProperties = {
+  width: 32,
+  height: 32,
+  borderRadius: 8,
+  border: 0,
+  background: "transparent",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
 };
