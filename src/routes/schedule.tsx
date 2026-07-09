@@ -348,6 +348,38 @@ function SchedulePage() {
       <div
         style={{
           display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px",
+          background: "#0F2044",
+          color: "#FFFFFF",
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/home" as never })}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            border: 0,
+            background: "rgba(255,255,255,0.10)",
+            color: "#FFFFFF",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconArrowLeft size={20} stroke={2} />
+        </button>
+        <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
           gap: 4,
           padding: "8px 12px 4px",
           background: "#FFFFFF",
