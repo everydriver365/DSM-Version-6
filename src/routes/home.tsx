@@ -4397,6 +4397,15 @@ function HomePage() {
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            <AiInsightsRunner
+              payload={aiInsightsPayload}
+              fetcher={generateInsightsFn}
+              suggestions={aiSuggestions}
+              setSuggestions={setAiSuggestions}
+              setIndex={setAiInsightIndex}
+              setLoading={setAiInsightsLoading}
+            />
+
             {/* 0. NEEDS ATTENTION STRIP */}
             <div style={{ marginBottom: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
