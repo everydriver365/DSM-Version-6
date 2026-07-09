@@ -4264,37 +4264,38 @@ function HomePage() {
 
         {/* Needs attention strip */}
         <div style={{ margin: '16px 16px 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
             {naUrgentCount > 0 && (
-              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>
+              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
                 {naUrgentCount} urgent
               </div>
             )}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
             <AttentionTile
-              value={naJobs} label="Jobs" active={naJobs > 0}
-              color="#8AABCC"
+              value={naJobs} label="Jobs"
+              color="#B5661E"
               onClick={() => navigate({ to: '/bookings' as never })}
             />
             <AttentionTile
-              value={naTests} label="Tests" active={naTests > 0}
+              value={naTests} label="Tests"
               color="#185FA5"
               onClick={() => setActiveWs(2)}
             />
             <AttentionTile
-              value={naCalls} label="Calls" active={naCalls > 0}
-              color="#9B8EC4"
+              value={naCalls} label="Calls"
+              color="#6B4FD6"
               onClick={() => navigate({ to: '/messages' as never })}
             />
             <AttentionTile
-              value={naEnquiries} label="Enq's" active={naEnquiries > 0}
-              color="#5D9E82"
+              value={naEnquiries} label="Enq's"
+              color="#2E9E5B"
               onClick={() => navigate({ to: '/waitlist' as never })}
             />
           </div>
         </div>
+
 
       </div>
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
