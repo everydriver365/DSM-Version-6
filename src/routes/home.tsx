@@ -109,6 +109,8 @@ import {
   IconSteeringWheel,
   IconClipboardCheck,
   IconMicrophone,
+  IconBriefcase,
+  IconCircleCheck,
 } from "@tabler/icons-react";
 
 
@@ -224,56 +226,102 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function AttentionTile({
-  value, label, color, onClick,
-}: {
-  value: number; label: string;
-  color: string; onClick: () => void;
-}) {
-  const isUrgent = value > 0;
+type NAItem = {
+  key: 'tests' | 'jobs' | 'calls' | 'enq';
+  count: number;
+  primary: string;
+  subtitle: string;
+  onClick: () => void;
+};
+
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['tests', 'jobs', 'calls', 'enq'];
+
+const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
+  tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
+  jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
+  calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
+  enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
+};
+
+const NA_CARD_STYLE: React.CSSProperties = {
+  background: '#FFFFFF',
+  borderRadius: 14,
+  padding: '12px 16px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 12,
+  boxSizing: 'border-box',
+};
+
+function NeedsAttentionRow({ item }: { item: NAItem }) {
+  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
   return (
     <div
-      onClick={onClick}
+      onClick={item.onClick}
       role="button"
       tabIndex={0}
       className="cf-tap"
-      style={{
-        background: '#FFFFFF',
-        border: isUrgent ? `2px solid ${color}` : 'none',
-        borderRadius: 16,
-        padding: '14px 4px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        boxSizing: 'border-box',
-        transition: 'all 150ms ease',
-      }}
+      style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
     >
-      <div
-        style={{
-          fontSize: 22,
-          fontWeight: isUrgent ? 700 : 500,
-          color: isUrgent ? color : '#B0BAC9',
-          lineHeight: 1,
-          fontFamily: 'Inter, sans-serif',
-        }}
-      >
-        {value}
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={18} color={accent} />
       </div>
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 500,
-          marginTop: 5,
-          color: isUrgent ? color : '#B0BAC9',
-          fontFamily: 'Inter, sans-serif',
-        }}
-      >
-        {label}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {item.primary}
+        </div>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {item.subtitle}
+        </div>
+      </div>
+      <IconChevronRight size={15} color="#B0BAC9" />
+    </div>
+  );
+}
+
+function NeedsAttentionAllClear() {
+  return (
+    <div style={NA_CARD_STYLE}>
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <IconCircleCheck size={18} color="#2E9E5B" />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif' }}>All clear</div>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif' }}>Nothing needs your attention</div>
       </div>
     </div>
   );
 }
+
+function NeedsAttentionSection({ items }: { items: NAItem[] }) {
+  const active = items.filter((i) => i.count > 0);
+  if (active.length === 0) {
+    return (
+      <div style={{ margin: '16px 16px 0' }}>
+        <NeedsAttentionAllClear />
+      </div>
+    );
+  }
+  const sorted = [...active].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count;
+    return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
+  }).slice(0, 4);
+  return (
+    <div style={{ margin: '16px 16px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
+          {active.length} urgent
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {sorted.map((it) => <NeedsAttentionRow key={it.key} item={it} />)}
+      </div>
+    </div>
+  );
+}
+
 
 
 
@@ -3342,13 +3390,13 @@ function HomePage() {
   })();
 
   // Needs Attention counts
-  const naJobs = 0; // TODO: wire enquiries/new course_bookings
+  const naJobs: number = 0; // TODO: wire enquiries/new course_bookings
   const naTests = (upcomingTests ?? []).filter((p) => {
     if (!p.test_date) return false;
     const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
     return days >= 0 && days <= 7;
   }).length;
-  const naCalls = 0; // TODO: wire missed calls
+  const naCalls: number = 0; // TODO: wire missed calls
   const naEnquiries = pendingSwapCount || 0;
   const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
 
@@ -4262,39 +4310,58 @@ function HomePage() {
         </Dialog>
 
 
-        {/* Needs attention strip */}
-        <div style={{ margin: '16px 16px 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-            {naUrgentCount > 0 && (
-              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
-                {naUrgentCount} urgent
-              </div>
-            )}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-            <AttentionTile
-              value={naJobs} label="Jobs"
-              color="#B5661E"
-              onClick={() => navigate({ to: '/bookings' as never })}
-            />
-            <AttentionTile
-              value={naTests} label="Tests"
-              color="#185FA5"
-              onClick={() => setActiveWs(2)}
-            />
-            <AttentionTile
-              value={naCalls} label="Calls"
-              color="#6B4FD6"
-              onClick={() => navigate({ to: '/messages' as never })}
-            />
-            <AttentionTile
-              value={naEnquiries} label="Enq's"
-              color="#2E9E5B"
-              onClick={() => navigate({ to: '/waitlist' as never })}
-            />
-          </div>
-        </div>
+        {/* Needs attention */}
+        {(() => {
+          const fmtShortDate = (iso: string) => {
+            const d = new Date(iso + 'T00:00:00');
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          };
+          const nowMs = Date.now();
+          const soonestTest = [...(upcomingTests ?? [])]
+            .filter((p) => {
+              if (!p.test_date) return false;
+              const days = Math.floor((new Date(p.test_date).getTime() - nowMs) / 86400000);
+              return days >= 0 && days <= 7;
+            })
+            .sort((a, b) => a.test_date.localeCompare(b.test_date))[0];
+          const latestEnq = [...(swapRequests ?? [])]
+            .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))[0];
+
+          const items: NAItem[] = [
+            {
+              key: 'tests',
+              count: naTests,
+              primary: `${naTests} driving test${naTests === 1 ? '' : 's'} upcoming`,
+              subtitle: soonestTest ? `${soonestTest.name} · ${fmtShortDate(soonestTest.test_date)}` : `${naTests} items need attention`,
+              onClick: () => setActiveWs(2),
+            },
+            {
+              key: 'jobs',
+              count: naJobs,
+              primary: `${naJobs} job${naJobs === 1 ? '' : 's'} pending`,
+              subtitle: `${naJobs} items need attention`,
+              onClick: () => navigate({ to: '/bookings' as never }),
+            },
+            {
+              key: 'calls',
+              count: naCalls,
+              primary: `${naCalls} call${naCalls === 1 ? '' : 's'} to return`,
+              subtitle: `${naCalls} items need attention`,
+              onClick: () => navigate({ to: '/messages' as never }),
+            },
+            {
+              key: 'enq',
+              count: naEnquiries,
+              primary: `${naEnquiries} new ${naEnquiries === 1 ? "enquiry" : "enquiries"}`,
+              subtitle: latestEnq ? latestEnq.name : `${naEnquiries} items need attention`,
+              onClick: () => navigate({ to: '/waitlist' as never }),
+            },
+          ];
+          return <NeedsAttentionSection items={items} />;
+        })()}
+
+
 
 
       </div>
