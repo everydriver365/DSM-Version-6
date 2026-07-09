@@ -4171,6 +4171,55 @@ function HomePage() {
           },
         ];
 
+        // ===== AI insights: fetch once when dashboard data is stable =====
+        useEffect(() => {
+          let cancelled = false;
+          setAiInsightsLoading(true);
+          const payload: InsightInput = {
+            todayLessons: todayLessons.length,
+            todayUpcoming,
+            todayCompleted,
+            todayEarnings,
+            weekLessons: weekLessonsTotal,
+            weekEarnings,
+            monthLessons: monthLessonsCompleted,
+            monthEarnings,
+            ytdLessons: ytdLessonsCompleted,
+            ytdEarnings,
+            outstanding,
+            newPupils: naJobs,
+            upcomingTests: naTests,
+            pendingSwaps: naEnquiries,
+            freeSlots: freeSlotCount,
+            unreadMessages: unreadMsgs.length,
+            waitlistCount: 0,
+          };
+          generateInsightsFn({ data: payload })
+            .then((result) => {
+              if (cancelled) return;
+              const list = result?.suggestions ?? [];
+              setAiSuggestions(list.length > 0 ? list : null);
+              setAiInsightIndex(0);
+            })
+            .catch(() => {
+              if (!cancelled) setAiSuggestions(null);
+            })
+            .finally(() => {
+              if (!cancelled) setAiInsightsLoading(false);
+            });
+          return () => { cancelled = true; };
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [todayLessons.length, weekLessonsTotal, monthLessonsCompleted, naJobs, naTests, naEnquiries, freeSlotCount, unreadMsgs.length]);
+
+        // Auto-rotate AI insights
+        useEffect(() => {
+          if (!aiSuggestions || aiSuggestions.length <= 1) return;
+          const interval = window.setInterval(() => {
+            setAiInsightIndex((i) => (i + 1) % aiSuggestions.length);
+          }, 5000);
+          return () => window.clearInterval(interval);
+        }, [aiSuggestions]);
+
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
             {/* 0. NEEDS ATTENTION STRIP */}
