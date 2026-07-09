@@ -663,6 +663,7 @@ function MonthCalendar({
         background: "#FFFFFF",
         padding: "12px 14px 0",
         borderBottom: "0.5px solid #E5E7EB",
+        height: 220,
         maxHeight: 220,
         boxSizing: "border-box",
         overflow: "hidden",
