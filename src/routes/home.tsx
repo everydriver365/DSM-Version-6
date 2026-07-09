@@ -3497,7 +3497,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -4398,7 +4398,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5309,7 +5309,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5637,7 +5637,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5812,7 +5812,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5831,7 +5831,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5850,7 +5850,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
           }}
         >
@@ -5990,7 +5990,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
