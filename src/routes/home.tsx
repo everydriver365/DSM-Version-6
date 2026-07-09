@@ -1562,7 +1562,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       </div>
 
       {!showFiltered && pages.length > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 16 }}>
           {pages.map((_, i) => {
             const active = i === page;
             return (
