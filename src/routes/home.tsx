@@ -1608,9 +1608,14 @@ function HomePage() {
   const isSwiping = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
+  const dispatchWsChange = (index: number) => {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index } }));
+  };
   const scrollToWs = (i: number) => {
     const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
     setActiveWsState(clamped);
+    dispatchWsChange(clamped);
     const el = carouselRef.current;
     if (!el) return;
     wsIsProgrammatic.current = true;
@@ -1624,12 +1629,29 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.ws]);
 
+  // Listen for external workspace-change requests (e.g. from BottomNav)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ index: number }>).detail;
+      if (!detail || typeof detail.index !== 'number') return;
+      if (detail.index === activeWs) return;
+      scrollToWs(detail.index);
+    };
+    window.addEventListener('dsm-workspace-request', handler as EventListener);
+    return () => window.removeEventListener('dsm-workspace-request', handler as EventListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWs]);
+
   const handleCarouselScroll = () => {
     if (wsIsProgrammatic.current) return;
     const el = carouselRef.current;
     if (!el) return;
     const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    if (i !== activeWs) setActiveWsState(Math.max(0, Math.min(WS_COUNT - 1, i)));
+    const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+    if (clamped !== activeWs) {
+      setActiveWsState(clamped);
+      dispatchWsChange(clamped);
+    }
   };
   const handleCarouselTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
