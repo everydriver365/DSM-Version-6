@@ -100,7 +100,12 @@ import {
   IconX,
   IconCalendar,
   IconDots,
-  
+  IconSearch,
+  IconUserPlus,
+  IconCalendarPlus,
+  IconReceipt,
+  IconSpeakerphone,
+  IconChartBar,
   IconSteeringWheel,
   IconClipboardCheck,
   IconMicrophone,
@@ -1230,6 +1235,204 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   );
 }
 
+type QaTile = {
+  key: string;
+  label: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  chipBg: string;
+  badge?: React.ReactNode;
+};
+
+function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
+  const PF = "'Poppins', system-ui, -apple-system, sans-serif";
+  const NAVY = '#12142B';
+  const [page, setPage] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const dragRef = useRef<{ x: number; active: boolean } | null>(null);
+
+  const flat = useMemo(() => pages.flat(), [pages]);
+  const q = query.trim().toLowerCase();
+  const filtered = q ? flat.filter((t) => t.label.toLowerCase().includes(q)) : [];
+  const showFiltered = searchOpen && q.length > 0;
+
+  const clamp = (n: number) => Math.max(0, Math.min(pages.length - 1, n));
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (showFiltered) return;
+    dragRef.current = { x: e.clientX, active: true };
+  };
+  const onPointerUp = (e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d || !d.active) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 40) {
+      setPage((p) => clamp(p + (dx < 0 ? 1 : -1)));
+    }
+    dragRef.current = null;
+  };
+
+  const tiles = showFiltered ? filtered : pages[page] ?? [];
+
+  const renderTile = (t: QaTile) => (
+    <button
+      key={t.key}
+      type="button"
+      onClick={t.onClick}
+      style={{
+        position: 'relative',
+        background: '#FFFFFF',
+        borderRadius: 16,
+        padding: '14px 8px',
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: PF,
+        textAlign: 'center',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {t.badge ? (
+        <span style={{ position: 'absolute', top: 8, right: 8 }}>{t.badge}</span>
+      ) : null}
+      <span
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 13,
+          background: t.chipBg,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 10px',
+        }}
+      >
+        {t.icon}
+      </span>
+      <div style={{ fontSize: 12, fontWeight: 500, color: NAVY }}>{t.label}</div>
+    </button>
+  );
+
+  return (
+    <div style={{ fontFamily: PF }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Quick actions</div>
+        <button
+          type="button"
+          aria-label="Search actions"
+          onClick={() => {
+            const next = !searchOpen;
+            setSearchOpen(next);
+            if (!next) setQuery('');
+          }}
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: '#fff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            border: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <IconSearch size={16} color="#185FA5" />
+        </button>
+      </div>
+
+      {searchOpen && (
+        <div
+          style={{
+            background: '#fff',
+            borderRadius: 12,
+            padding: '9px 12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginBottom: 14,
+          }}
+        >
+          <IconSearch size={15} color="#B0BAC9" />
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search actions..."
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontSize: 13,
+              fontFamily: PF,
+              color: NAVY,
+              minWidth: 0,
+            }}
+          />
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => {
+              setQuery('');
+              setSearchOpen(false);
+            }}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex' }}
+          >
+            <IconX size={14} color="#B0BAC9" />
+          </button>
+        </div>
+      )}
+
+      <div
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (dragRef.current = null)}
+        style={{ touchAction: 'pan-y' }}
+      >
+        {showFiltered && filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', fontSize: 14, color: '#B0BAC9', padding: '24px 0' }}>
+            No actions found
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            {tiles.map(renderTile)}
+          </div>
+        )}
+      </div>
+
+      {!showFiltered && pages.length > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 14 }}>
+          {pages.map((_, i) => {
+            const active = i === page;
+            return (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Page ${i + 1}`}
+                onClick={() => setPage(i)}
+                style={{
+                  width: active ? 16 : 6,
+                  height: 6,
+                  borderRadius: active ? 4 : 999,
+                  background: active ? '#185FA5' : '#D0D5DD',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 
@@ -4720,95 +4923,53 @@ function HomePage() {
 
 
             {/* 6. QUICK ACTIONS */}
-            <div style={{ marginTop: 22, padding: 16, background: '#F1F5F9', borderRadius: 26, fontFamily: PF }}>
-              <div style={{ fontSize: 20, fontWeight: 500, color: NAVY, letterSpacing: '-0.01em', marginBottom: 14 }}>Quick actions</div>
+            <div style={{ marginTop: 22, padding: 16, background: '#EEF2F7', borderRadius: 26 }}>
               {(() => {
                 const unread = unreadMsgs.length;
                 const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
-                const showFillSlots = freeSlotCount > 0;
-                type Tile = {
-                  key: string;
-                  label: string;
-                  to: string;
-                  icon: React.ReactNode;
-                  chipBg: string;
-                  badge?: React.ReactNode;
-                  span?: boolean;
-                };
-                const tiles: Tile[] = [];
-                if (showFillSlots) {
-                  tiles.push({
-                    key: 'fill',
-                    label: 'Fill slots',
-                    to: '/gaps',
-                    icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />,
-                    chipBg: '#FBEFE1',
-                    badge: (
-                      <span style={{ background: '#FBEFE1', color: '#B5661E', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>
-                        {freeSlotCount} free
-                      </span>
-                    ),
-                  });
-                }
-                tiles.push(
-                  { key: 'schedule', label: 'Schedule', to: '/schedule', icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                  { key: 'pupils', label: 'Pupils', to: '/pupils', icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                  {
-                    key: 'payments',
-                    label: 'Payments',
-                    to: '/payments',
-                    icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />,
-                    chipBg: '#FCEBEB',
-                    badge: outstandingBadge ? (
-                      <span style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>{outstandingBadge}</span>
-                    ) : undefined,
-                  },
-                  {
-                    key: 'messages',
-                    label: 'Messages',
-                    to: '/messages',
-                    icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />,
-                    chipBg: '#EAF3DE',
-                    badge: unread > 0 ? (
-                      <span style={{ background: '#185FA5', color: '#FFFFFF', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>
-                    ) : undefined,
-                  },
-                  { key: 'more', label: 'More', to: '/tools', icon: <IconDots size={20} stroke={1.5} color="#6B7280" />, chipBg: '#F1F5F9', span: !showFillSlots },
+                const pillBadge = (bg: string, color: string, text: React.ReactNode) => (
+                  <span style={{ background: bg, color, fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20, fontVariantNumeric: 'tabular-nums' }}>{text}</span>
                 );
-                return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    {tiles.map((t) => (
-                      <button
-                        key={t.key}
-                        type="button"
-                        onClick={() => navigate({ to: t.to as never })}
-                        style={{
-                          gridColumn: t.span ? 'span 2' : undefined,
-                          background: '#FFFFFF',
-                          borderRadius: 20,
-                          padding: 18,
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontFamily: PF,
-                          textAlign: 'left',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          minHeight: 96,
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                          <span style={{ width: 42, height: 42, borderRadius: 14, background: t.chipBg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {t.icon}
-                          </span>
-                          {t.badge}
-                        </div>
-                        <div style={{ fontSize: 15, fontWeight: 500, color: NAVY, marginTop: 14 }}>{t.label}</div>
-                      </button>
-                    ))}
-                  </div>
+                const dot = (n: number) => (
+                  <span style={{ background: '#185FA5', color: '#fff', width: 16, height: 16, borderRadius: 999, fontSize: 9, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{n}</span>
                 );
+                const pages: QaTile[][] = [
+                  [
+                    {
+                      key: 'fill', label: 'Fill slots',
+                      onClick: () => navigate({ to: '/gaps' as never }),
+                      icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6',
+                      badge: freeSlotCount > 0 ? pillBadge('#FBEFE1', '#B5661E', `${freeSlotCount} free`) : undefined,
+                    },
+                    { key: 'schedule', label: 'Schedule', onClick: () => navigate({ to: '/schedule' as never }), icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'pupils', label: 'Pupils', onClick: () => navigate({ to: '/pupils' as never }), icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    {
+                      key: 'payments', label: 'Payments',
+                      onClick: () => navigate({ to: '/payments' as never }),
+                      icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />, chipBg: '#FCEBEB',
+                      badge: outstandingBadge ? pillBadge('#FCEBEB', '#A32D2D', outstandingBadge) : undefined,
+                    },
+                    {
+                      key: 'messages', label: 'Messages',
+                      onClick: () => navigate({ to: '/messages' as never }),
+                      icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE',
+                      badge: unread > 0 ? dot(unread) : undefined,
+                    },
+                    { key: 'waitlist', label: 'Waitlist', onClick: () => navigate({ to: '/waitlist' as never }), icon: <IconClockHour4 size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                  ],
+                  [
+                    { key: 'add-pupil', label: 'Add pupil', onClick: () => navigate({ to: '/pupils/new' as never }), icon: <IconUserPlus size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'add-lesson', label: 'Add lesson', onClick: () => navigate({ to: '/lessons/new' as never }), icon: <IconCalendarPlus size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'invoices', label: 'Invoices', onClick: () => navigate({ to: '/payments' as never }), icon: <IconReceipt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6' },
+                    { key: 'broadcast', label: 'Broadcast', onClick: () => navigate({ to: '/broadcast' as never }), icon: <IconSpeakerphone size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    { key: 'reports', label: 'Reports', onClick: () => navigate({ to: '/reports' as never }), icon: <IconChartBar size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'more', label: 'More', onClick: () => navigate({ to: '/tools' as never }), icon: <IconDots size={20} stroke={1.5} color="#8A94A6" />, chipBg: '#EEF2F7' },
+                  ],
+                ];
+                return <QuickActionsGrid pages={pages} />;
               })()}
             </div>
+
 
           </div>
         );
