@@ -766,12 +766,14 @@ function MonthCalendar({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "flex-start",
+                justifyContent: "center",
                 gap: 1,
                 background: "transparent",
                 border: 0,
-                padding: "4px 0",
+                padding: 0,
                 cursor: "pointer",
+                height: "100%",
+                minHeight: 0,
                 ...POPPINS,
               }}
             >
