@@ -1596,6 +1596,7 @@ function HomePage() {
   const [aiSuggestions, setAiSuggestions] = useState<Array<{ title: string; body: string; cta: string | null; route: string | null }> | null>(null);
   const [aiInsightIndex, setAiInsightIndex] = useState(0);
   const [aiInsightsLoading, setAiInsightsLoading] = useState(false);
+  const [aiInsightDismissedKey, setAiInsightDismissedKey] = useState<string | null>(null);
 
   // ===== Mobile workspaces carousel state =====
   const carouselRef = useRef<HTMLDivElement | null>(null);
