@@ -4923,95 +4923,53 @@ function HomePage() {
 
 
             {/* 6. QUICK ACTIONS */}
-            <div style={{ marginTop: 22, padding: 16, background: '#F1F5F9', borderRadius: 26, fontFamily: PF }}>
-              <div style={{ fontSize: 20, fontWeight: 500, color: NAVY, letterSpacing: '-0.01em', marginBottom: 14 }}>Quick actions</div>
+            <div style={{ marginTop: 22, padding: 16, background: '#EEF2F7', borderRadius: 26 }}>
               {(() => {
                 const unread = unreadMsgs.length;
                 const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
-                const showFillSlots = freeSlotCount > 0;
-                type Tile = {
-                  key: string;
-                  label: string;
-                  to: string;
-                  icon: React.ReactNode;
-                  chipBg: string;
-                  badge?: React.ReactNode;
-                  span?: boolean;
-                };
-                const tiles: Tile[] = [];
-                if (showFillSlots) {
-                  tiles.push({
-                    key: 'fill',
-                    label: 'Fill slots',
-                    to: '/gaps',
-                    icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />,
-                    chipBg: '#FBEFE1',
-                    badge: (
-                      <span style={{ background: '#FBEFE1', color: '#B5661E', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>
-                        {freeSlotCount} free
-                      </span>
-                    ),
-                  });
-                }
-                tiles.push(
-                  { key: 'schedule', label: 'Schedule', to: '/schedule', icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                  { key: 'pupils', label: 'Pupils', to: '/pupils', icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                  {
-                    key: 'payments',
-                    label: 'Payments',
-                    to: '/payments',
-                    icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />,
-                    chipBg: '#FCEBEB',
-                    badge: outstandingBadge ? (
-                      <span style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, fontVariantNumeric: 'tabular-nums' }}>{outstandingBadge}</span>
-                    ) : undefined,
-                  },
-                  {
-                    key: 'messages',
-                    label: 'Messages',
-                    to: '/messages',
-                    icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />,
-                    chipBg: '#EAF3DE',
-                    badge: unread > 0 ? (
-                      <span style={{ background: '#185FA5', color: '#FFFFFF', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>
-                    ) : undefined,
-                  },
-                  { key: 'more', label: 'More', to: '/tools', icon: <IconDots size={20} stroke={1.5} color="#6B7280" />, chipBg: '#F1F5F9', span: !showFillSlots },
+                const pillBadge = (bg: string, color: string, text: React.ReactNode) => (
+                  <span style={{ background: bg, color, fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20, fontVariantNumeric: 'tabular-nums' }}>{text}</span>
                 );
-                return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    {tiles.map((t) => (
-                      <button
-                        key={t.key}
-                        type="button"
-                        onClick={() => navigate({ to: t.to as never })}
-                        style={{
-                          gridColumn: t.span ? 'span 2' : undefined,
-                          background: '#FFFFFF',
-                          borderRadius: 20,
-                          padding: 18,
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontFamily: PF,
-                          textAlign: 'left',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          minHeight: 96,
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                          <span style={{ width: 42, height: 42, borderRadius: 14, background: t.chipBg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {t.icon}
-                          </span>
-                          {t.badge}
-                        </div>
-                        <div style={{ fontSize: 15, fontWeight: 500, color: NAVY, marginTop: 14 }}>{t.label}</div>
-                      </button>
-                    ))}
-                  </div>
+                const dot = (n: number) => (
+                  <span style={{ background: '#185FA5', color: '#fff', width: 16, height: 16, borderRadius: 999, fontSize: 9, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{n}</span>
                 );
+                const pages: QaTile[][] = [
+                  [
+                    {
+                      key: 'fill', label: 'Fill slots',
+                      onClick: () => navigate({ to: '/gaps' as never }),
+                      icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6',
+                      badge: freeSlotCount > 0 ? pillBadge('#FBEFE1', '#B5661E', `${freeSlotCount} free`) : undefined,
+                    },
+                    { key: 'schedule', label: 'Schedule', onClick: () => navigate({ to: '/schedule' as never }), icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'pupils', label: 'Pupils', onClick: () => navigate({ to: '/pupils' as never }), icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    {
+                      key: 'payments', label: 'Payments',
+                      onClick: () => navigate({ to: '/payments' as never }),
+                      icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />, chipBg: '#FCEBEB',
+                      badge: outstandingBadge ? pillBadge('#FCEBEB', '#A32D2D', outstandingBadge) : undefined,
+                    },
+                    {
+                      key: 'messages', label: 'Messages',
+                      onClick: () => navigate({ to: '/messages' as never }),
+                      icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE',
+                      badge: unread > 0 ? dot(unread) : undefined,
+                    },
+                    { key: 'waitlist', label: 'Waitlist', onClick: () => navigate({ to: '/waitlist' as never }), icon: <IconClockHour4 size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                  ],
+                  [
+                    { key: 'add-pupil', label: 'Add pupil', onClick: () => navigate({ to: '/pupils/new' as never }), icon: <IconUserPlus size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'add-lesson', label: 'Add lesson', onClick: () => navigate({ to: '/lessons/new' as never }), icon: <IconCalendarPlus size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'invoices', label: 'Invoices', onClick: () => navigate({ to: '/payments' as never }), icon: <IconReceipt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6' },
+                    { key: 'broadcast', label: 'Broadcast', onClick: () => navigate({ to: '/broadcast' as never }), icon: <IconSpeakerphone size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    { key: 'reports', label: 'Reports', onClick: () => navigate({ to: '/reports' as never }), icon: <IconChartBar size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'more', label: 'More', onClick: () => navigate({ to: '/tools' as never }), icon: <IconDots size={20} stroke={1.5} color="#8A94A6" />, chipBg: '#EEF2F7' },
+                  ],
+                ];
+                return <QuickActionsGrid pages={pages} />;
               })()}
             </div>
+
 
           </div>
         );
