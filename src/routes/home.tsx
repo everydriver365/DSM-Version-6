@@ -3364,18 +3364,6 @@ function HomePage() {
       cursor: "pointer", fontFamily: "Inter, sans-serif",
       fontSize: 12, fontWeight: 600, color: "#0F2044",
     };
-
-    // Needs Attention counts
-    const naJobs = 0; // TODO: wire enquiries/new course_bookings
-    const naTests = (upcomingTests ?? []).filter((p) => {
-      if (!p.test_date) return false;
-      const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
-      return days >= 0 && days <= 7;
-    }).length;
-    const naCalls = 0; // TODO: wire missed calls
-    const naEnquiries = pendingSwapCount || 0;
-    const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
-
     return (
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
         {notifBanner}
