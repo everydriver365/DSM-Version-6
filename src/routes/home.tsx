@@ -1104,6 +1104,8 @@ function HomePage() {
   const wsIsProgrammatic = useRef(false);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const isSwiping = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
   const scrollToWs = (i: number) => {
