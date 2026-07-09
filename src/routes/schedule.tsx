@@ -661,8 +661,14 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        padding: "16px 16px 0",
+        padding: "12px 14px 0",
         borderBottom: "0.5px solid #E5E7EB",
+        height: 220,
+        maxHeight: 220,
+        boxSizing: "border-box",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Top row: month + nav + actions */}
@@ -671,7 +677,7 @@ function MonthCalendar({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 16,
+          marginBottom: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -687,9 +693,10 @@ function MonthCalendar({
               gap: 4,
               background: "transparent",
               border: 0,
-              padding: "4px 4px",
-              fontSize: 18,
+              padding: 0,
+              fontSize: 15,
               fontWeight: 500,
+              lineHeight: 1,
               color: "#0B1F3A",
               ...POPPINS,
               cursor: "pointer",
@@ -717,7 +724,7 @@ function MonthCalendar({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 8,
+          marginBottom: 4,
         }}
       >
         {dow.map((d, i) => (
@@ -725,10 +732,11 @@ function MonthCalendar({
             key={i}
             style={{
               textAlign: "center",
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 500,
+              lineHeight: 1,
               color: "#94A3B8",
-              padding: "4px 0",
+              padding: "2px 0",
             }}
           >
             {d}
@@ -737,7 +745,7 @@ function MonthCalendar({
       </div>
 
       {/* Date grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", paddingBottom: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridTemplateRows: "repeat(6, minmax(0, 1fr))", flex: "1 1 0", minHeight: 0, paddingBottom: 0 }}>
         {cells.map((d) => {
           const key = ymdLocal(d);
           const inMonth = d.getMonth() === month.getMonth();
@@ -759,53 +767,58 @@ function MonthCalendar({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "flex-start",
-                gap: 2,
+                justifyContent: "center",
+                gap: 1,
                 background: "transparent",
                 border: 0,
-                padding: "6px 0",
+                padding: 0,
                 cursor: "pointer",
+                height: "100%",
+                minHeight: 0,
                 ...POPPINS,
               }}
             >
               <div
                 style={{
-                  width: 28,
-                  height: 28,
+                  position: "relative",
+                  width: 24,
+                  height: 24,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
                   color: numColour,
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 500,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
                 {d.getDate()}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 2,
-                  justifyContent: "center",
-                  height: 6,
-                  marginTop: 2,
-                }}
-              >
-                {dots.map((c, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: "50%",
-                      background: isToday ? "rgba(255,255,255,0.7)" : c,
-                      display: "inline-block",
-                    }}
-                  />
-                ))}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 2,
+                    left: 0,
+                    right: 0,
+                    display: "flex",
+                    gap: 2,
+                    justifyContent: "center",
+                  }}
+                >
+                  {dots.map((c, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 3,
+                        height: 3,
+                        borderRadius: "50%",
+                        background: isToday ? "rgba(255,255,255,0.7)" : c,
+                        display: "inline-block",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </button>
           );
