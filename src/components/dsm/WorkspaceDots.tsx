@@ -52,7 +52,7 @@ export default function WorkspaceDots({ activeIndex = 0, activeLabel }: Props) {
           minWidth: 80,
         }}
       >
-        {WORKSPACES[activeIndex] ?? WORKSPACES[0]}
+        {activeLabel ?? WORKSPACES[activeIndex] ?? WORKSPACES[0]}
       </span>
     </div>
   );
