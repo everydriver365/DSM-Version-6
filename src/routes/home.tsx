@@ -2015,11 +2015,31 @@ function HomePage() {
       setOutstanding(outstandingAmt + niOutstanding);
 
       // ============================================================
-      // WEEK EARNINGS + WEEK COUNT + WEEK MODAL ROWS — all derived
-      // from the single `allLessons` array above. No separate fetches.
+      // WEEK EARNINGS — committed revenue for the current week.
+      // Sum of `amount_due` for lessons in the Monday-start week
+      // whose status is 'completed' or 'confirmed' (and not soft-
+      // deleted). We deliberately do NOT filter by payment_status:
+      // a confirmed lesson is committed revenue whether or not
+      // cash has been received. `amount_due` is the single source
+      // of truth (paid_amount is unreliable in historic data).
       // ============================================================
       const nowMs = Date.now();
       const weekLessonRowsForEarnings = allLessons.filter(
+        (l: any) =>
+          l.lesson_date >= weekStartYmd &&
+          l.lesson_date < weekEndYmd &&
+          (l.status === "completed" || l.status === "confirmed"),
+      );
+
+      const wk = weekLessonRowsForEarnings.reduce(
+        (s: number, l: any) => s + Number(l.amount_due ?? 0),
+        0,
+      );
+
+      // Today earnings + breakdown modal rows keep their existing
+      // "delivered lessons" shape so the modal shows the same list
+      // it always has — only the headline weekEarnings changes.
+      const weekLessonRowsForList = allLessons.filter(
         (l: any) =>
           l.status !== "cancelled" &&
           l.lesson_date >= weekStartYmd &&
@@ -2035,18 +2055,14 @@ function HomePage() {
         .gte("booked_at", weekStart.toISOString())
         .lt("booked_at", weekEnd.toISOString());
 
-      // Combine all sources
-      let wk = 0;
       let td = 0;
       const earningsList: Array<{ id: string; date: string; pupilName: string; amount: number; method: string; source: "lesson" | "booking" | "lesson-earned" }> = [];
       const todayYmdStr = ymd(todayStart);
-      (weekLessonRowsForEarnings ?? []).forEach((l: any) => {
+      (weekLessonRowsForList ?? []).forEach((l: any) => {
         const dur = Number(l.duration_minutes) || 60;
-        // Only recognise revenue once lesson has actually taken place
         const endMs = new Date(`${l.lesson_date}T${(l.lesson_time || "00:00:00").slice(0, 8)}`).getTime() + dur * 60_000;
         const delivered = l.status === "completed" || endMs <= nowMs;
         if (!delivered) return;
-        // Prefer per-duration custom rate, then general custom rate, then amount_due
         const p = l.pupils ?? {};
         let amt = 0;
         if (dur === 90 && Number(p.custom_rate_90) > 0) amt = Number(p.custom_rate_90);
@@ -2054,7 +2070,6 @@ function HomePage() {
         else if (Number(p.custom_rate) > 0) amt = Math.round(Number(p.custom_rate) * (dur / 60) * 100) / 100;
         else amt = Number(l.amount_due ?? 0);
         if (amt <= 0) return;
-        wk += amt;
         if (l.lesson_date === todayYmdStr) td += amt;
         const iso = new Date(`${l.lesson_date}T${(l.lesson_time || "00:00:00").slice(0, 8)}`).toISOString();
         const method = l.payment_status === "paid" ? "Paid" : "Prepaid";
@@ -2069,7 +2084,6 @@ function HomePage() {
       });
       (bookingRows ?? []).forEach((p: any) => {
         const amt = Number(p.amount_paid ?? 0);
-        wk += amt;
         if (new Date(p.booked_at) >= todayStart) td += amt;
         earningsList.push({
           id: String(p.id),
@@ -2083,13 +2097,12 @@ function HomePage() {
       earningsList.sort((a, b) => (a.date < b.date ? 1 : -1));
       setEarningsRows(earningsList);
 
-      // Earnings reflect actual paid records only — no estimates from
-      // scheduled/completed lessons, which would inflate the total.
       setEarningsEstimated(false);
 
       setWeekEarnings(wk);
       setTodayEarnings(td);
       setWeekLessonCount(weekLessonRowsForEarnings.length);
+
 
       // Full week lesson list for the breakdown modal (all statuses,
       // derived from the single fetch above).

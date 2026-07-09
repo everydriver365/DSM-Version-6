@@ -136,14 +136,16 @@ function TakePaymentPage() {
       const pay = Math.min(due, remaining);
       if (pay > 0) {
         const full = pay >= due;
+        // NOTE: never write amount_due on payment — it's set at lesson creation
+        // and is the source of truth for lesson value. paid_amount reflects
+        // cash received; for full pay we always copy from amount_due.
         const { error: lessonErr } = await supabase
           .from("lessons")
           .update({
             payment_status: full ? "paid" : "partial",
             payment_method: methodNorm,
             paid_at: now,
-            paid_amount: pay,
-            amount_due: full ? 0 : due - pay,
+            paid_amount: full ? due : pay,
           })
           .eq("id", lessonId);
         if (lessonErr) console.error("[take-payment] lesson update", lessonErr);
@@ -155,6 +157,7 @@ function TakePaymentPage() {
           .update({ payment_status: "paid", payment_method: methodNorm, paid_at: now, paid_amount: 0 })
           .eq("id", lessonId);
       }
+
     }
 
     // 2) Apply leftover to oldest unpaid lessons for the pupil.
@@ -170,6 +173,7 @@ function TakePaymentPage() {
         if (remaining <= 0) break;
         const due = Number(l.amount_due ?? 0);
         if (due <= 0) continue;
+        // NOTE: never write amount_due on payment — see rationale above.
         if (due <= remaining) {
           await supabase
             .from("lessons")
@@ -178,7 +182,6 @@ function TakePaymentPage() {
               payment_method: methodNorm,
               paid_at: now,
               paid_amount: due,
-              amount_due: 0,
             })
             .eq("id", l.id);
           remaining -= due;
@@ -190,12 +193,12 @@ function TakePaymentPage() {
               payment_method: methodNorm,
               paid_at: now,
               paid_amount: remaining,
-              amount_due: due - remaining,
             })
             .eq("id", l.id);
           remaining = 0;
         }
       }
+
     }
 
     // 3) Any overpayment → pupil credit (account_balance).
