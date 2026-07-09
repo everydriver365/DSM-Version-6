@@ -16,6 +16,8 @@ import {
   IconPlus,
   IconClock,
   IconChevronRight,
+  IconBolt,
+  IconSpeakerphone,
 } from "@tabler/icons-react";
 import type React from "react";
 import { toast } from "sonner";
