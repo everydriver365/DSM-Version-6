@@ -237,17 +237,33 @@ function AttentionTile({
       tabIndex={0}
       style={{
         background: bg,
-        border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
-        borderRadius: 14,
-        padding: '12px 6px',
+        border: active ? `1.5px solid ${color}` : '1px solid rgba(229, 231, 235, 0.8)',
+        borderRadius: 16,
+        padding: '10px 4px',
         textAlign: 'center',
         cursor: 'pointer',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        boxShadow: active ? `0 2px 8px ${color}33` : '0 1px 3px rgba(0,0,0,0.06)',
         boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 6,
+        transition: 'all 150ms ease',
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
+      <div
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 999,
+          background: active ? color : 'rgba(156, 163, 175, 0.4)',
+          boxShadow: active ? `0 0 6px ${color}` : 'none',
+        }}
+      />
+      <div style={{ fontSize: 22, fontWeight: active ? 800 : 700, color: active ? color : '#374151', lineHeight: 1 }}>
+        {value}
+      </div>
+      <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.02em', color: '#6B7280' }}>{label}</div>
     </div>
   );
 }
