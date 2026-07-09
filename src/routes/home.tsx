@@ -225,48 +225,55 @@ function capitalize(s: string) {
 }
 
 function AttentionTile({
-  value, label, active, bg, color, onClick,
+  value, label, active, color, onClick,
 }: {
   value: number; label: string; active: boolean;
-  bg: string; color: string; onClick: () => void;
+  color: string; onClick: () => void;
 }) {
   return (
     <div
       onClick={onClick}
       role="button"
       tabIndex={0}
+      className="cf-tap"
       style={{
-        background: bg,
-        border: active ? `1.5px solid ${color}` : '1px solid rgba(229, 231, 235, 0.8)',
-        borderRadius: 16,
-        padding: '10px 4px',
-        textAlign: 'center',
+        background: '#FFFFFF',
+        border: active ? `1.5px solid ${color}` : '1px solid rgba(229, 231, 235, 0.9)',
+        borderRadius: 8,
+        padding: 10,
         cursor: 'pointer',
         boxShadow: active ? `0 2px 8px ${color}33` : '0 1px 3px rgba(0,0,0,0.06)',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 6,
         transition: 'all 150ms ease',
+        minHeight: 0,
       }}
     >
-      <div
-        style={{
-          width: 6,
-          height: 6,
-          borderRadius: 999,
-          background: active ? color : 'rgba(156, 163, 175, 0.4)',
-          boxShadow: active ? `0 0 6px ${color}` : 'none',
-        }}
-      />
-      <div style={{ fontSize: 22, fontWeight: active ? 800 : 700, color: active ? color : '#374151', lineHeight: 1 }}>
+      <div style={{ fontSize: 24, fontWeight: 900, color: '#0B1F3A', lineHeight: 1, fontFamily: 'Inter, sans-serif' }}>
         {value}
       </div>
-      <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.02em', color: '#6B7280' }}>{label}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: 999,
+            background: active ? color : 'rgba(156, 163, 175, 0.4)',
+            flexShrink: 0,
+          }}
+        />
+        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: '#6B7280', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+          {label}
+        </span>
+      </div>
     </div>
   );
 }
+
 
 function normalizePupilStatus(status: string | null | undefined) {
   const normalized = (status ?? "active").toLowerCase();
