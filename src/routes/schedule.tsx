@@ -134,14 +134,18 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
-  const [visibleMonth, setVisibleMonth] = useState<string>(() =>
-    today.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
-  );
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
+    const d = new Date(today);
+    d.setDate(1);
+    return d;
+  });
+  const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const todayRef = useRef<HTMLDivElement | null>(null);
   const dayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const didScrollToToday = useRef(false);
+  const suppressScrollUpdate = useRef(false);
 
   // Fetch lessons in the full ±window. Uses the same lessons/pupils select
   // pattern already used elsewhere in the app. Range is 210 days of the
