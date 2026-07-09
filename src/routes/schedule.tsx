@@ -763,25 +763,25 @@ function MonthCalendar({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                gap: 2,
+                gap: 1,
                 background: "transparent",
                 border: 0,
-                padding: "6px 0",
+                padding: "4px 0",
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
               <div
                 style={{
-                  width: 28,
-                  height: 28,
+                  width: 24,
+                  height: 24,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
                   color: numColour,
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 500,
                   fontVariantNumeric: "tabular-nums",
                 }}
@@ -793,16 +793,15 @@ function MonthCalendar({
                   display: "flex",
                   gap: 2,
                   justifyContent: "center",
-                  height: 6,
-                  marginTop: 2,
+                  marginTop: 1,
                 }}
               >
                 {dots.map((c, i) => (
                   <span
                     key={i}
                     style={{
-                      width: 4,
-                      height: 4,
+                      width: 3,
+                      height: 3,
                       borderRadius: "50%",
                       background: isToday ? "rgba(255,255,255,0.7)" : c,
                       display: "inline-block",
