@@ -4076,12 +4076,13 @@ function HomePage() {
             tabIndex={0}
             style={{
               background: bg,
-              border: active ? `1.5px solid ${color}` : '1.5px solid transparent',
+              border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
               borderRadius: 14,
               padding: '12px 6px',
               textAlign: 'center',
               cursor: 'pointer',
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              boxSizing: 'border-box',
             }}
           >
             <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
