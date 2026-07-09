@@ -7179,12 +7179,12 @@ function HomePage() {
       {(() => {
         const navItems: BottomNavItem[] = [
           { key: 'today', label: 'Today', Icon: HomeIcon, onClick: () => scrollToWs(0) },
-          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => scrollToWs(1) },
+          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => navigate({ to: '/schedule' as never }) },
           { key: 'pupils', label: 'Pupils', Icon: PupilsIcon, onClick: () => scrollToWs(2) },
           { key: 'messages', label: 'Messages', Icon: MessagesIcon, onClick: () => navigate({ to: '/messages' as never }) },
           { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(7) },
         ];
-        const activeIndex = activeWs === 0 ? 0 : activeWs === 1 ? 1 : activeWs === 2 ? 2 : activeWs === 7 ? 4 : -1;
+        const activeIndex = activeWs === 0 ? 0 : activeWs === 2 ? 2 : activeWs === 7 ? 4 : -1;
         return (
           <BottomNav
             items={navItems}
