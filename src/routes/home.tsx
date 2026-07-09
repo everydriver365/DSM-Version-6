@@ -3917,8 +3917,79 @@ function HomePage() {
           </div>
         );
 
+        // Needs Attention counts
+        const naJobs = 0; // TODO: wire enquiries/new course_bookings
+        const naTests = (upcomingTests ?? []).filter((p) => {
+          if (!p.test_date) return false;
+          const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
+          return days >= 0 && days <= 7;
+        }).length;
+        const naCalls = 0; // TODO: wire missed calls
+        const naEnquiries = pendingSwapCount || 0;
+        const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
+
+        const AttentionTile = ({
+          value, label, active, activeBg, activeColor, activeBorder, onClick,
+        }: {
+          value: number; label: string; active: boolean;
+          activeBg: string; activeColor: string; activeBorder: string; onClick: () => void;
+        }) => (
+          <div
+            onClick={onClick}
+            role="button"
+            tabIndex={0}
+            style={{
+              background: active ? activeBg : '#FFFFFF',
+              border: `0.5px solid ${active ? activeBorder : '#E2E6ED'}`,
+              borderRadius: 12,
+              padding: '12px 8px',
+              textAlign: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <div style={{ fontSize: 22, fontWeight: 900, color: active ? activeColor : '#D1D5DB', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginTop: 2, color: active ? activeColor : '#9CA3AF' }}>{label}</div>
+          </div>
+        );
+
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+            {/* 0. NEEDS ATTENTION STRIP */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>Needs attention</div>
+                {naUrgentCount > 0 ? (
+                  <div style={{ background: '#CC2229', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>
+                    {naUrgentCount} urgent
+                  </div>
+                ) : (
+                  <div style={{ color: '#16A34A', fontSize: 12, fontWeight: 600 }}>All clear ✓</div>
+                )}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+                <AttentionTile
+                  value={naJobs} label="Jobs" active={naJobs > 0}
+                  activeBg="#FEF2F2" activeColor="#CC2229" activeBorder="#FECACA"
+                  onClick={() => navigate({ to: '/bookings' as never })}
+                />
+                <AttentionTile
+                  value={naTests} label="Tests" active={naTests > 0}
+                  activeBg="#EFF6FF" activeColor="#1A52A0" activeBorder="#BFDBFE"
+                  onClick={() => setActiveWs(2)}
+                />
+                <AttentionTile
+                  value={naCalls} label="Calls" active={naCalls > 0}
+                  activeBg="#FFFBEB" activeColor="#D97706" activeBorder="#FDE68A"
+                  onClick={() => navigate({ to: '/messages' as never })}
+                />
+                <AttentionTile
+                  value={naEnquiries} label="Enq's" active={naEnquiries > 0}
+                  activeBg="#F5F3FF" activeColor="#7C3AED" activeBorder="#DDD6FE"
+                  onClick={() => navigate({ to: '/waitlist' as never })}
+                />
+              </div>
+            </div>
+
             {/* 1. TODAY'S LESSONS TILE */}
             <div style={{ marginBottom: 14 }}>
               <TodayLessonsTile
