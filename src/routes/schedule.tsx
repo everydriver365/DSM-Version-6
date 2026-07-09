@@ -733,6 +733,7 @@ function MonthCalendar({
               textAlign: "center",
               fontSize: 10,
               fontWeight: 500,
+              lineHeight: 1,
               color: "#94A3B8",
               padding: "2px 0",
             }}
