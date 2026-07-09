@@ -4238,6 +4238,39 @@ function HomePage() {
         </Dialog>
 
 
+        {/* Needs attention strip */}
+        <div style={{ margin: '16px 16px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF' }}>Needs attention</div>
+            {naUrgentCount > 0 && (
+              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>
+                {naUrgentCount} urgent
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+            <AttentionTile
+              value={naJobs} label="Jobs" active={naJobs > 0}
+              bg="#EDF4FF" color="#8AABCC"
+              onClick={() => navigate({ to: '/bookings' as never })}
+            />
+            <AttentionTile
+              value={naTests} label="Tests" active={naTests > 0}
+              bg="#E8F0FE" color="#185FA5"
+              onClick={() => setActiveWs(2)}
+            />
+            <AttentionTile
+              value={naCalls} label="Calls" active={naCalls > 0}
+              bg="#F0EEFF" color="#9B8EC4"
+              onClick={() => navigate({ to: '/messages' as never })}
+            />
+            <AttentionTile
+              value={naEnquiries} label="Enq's" active={naEnquiries > 0}
+              bg="#E8F5F0" color="#5D9E82"
+              onClick={() => navigate({ to: '/waitlist' as never })}
+            />
+          </div>
+        </div>
       </div>
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
