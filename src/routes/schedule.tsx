@@ -6,6 +6,7 @@ import {
   IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
+  IconArrowLeft,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
