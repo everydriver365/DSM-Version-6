@@ -4834,7 +4834,99 @@ function HomePage() {
               );
             })()}
 
-            {/* 5. AI INSIGHT */}
+            {/* 5. WAITLIST / GAPS */}
+            {(() => {
+              const freeSlotCount = upcomingLessons.filter(l => l.status === 'free_slot').length;
+              const matchedCount = (() => {
+                if (!waitlist || waitlist.length === 0 || freeSlotCount === 0) return 0;
+                const today = new Date();
+                const available = upcomingLessons.filter(l => l.status === 'free_slot').map(l => ymd(lessonDateTime(l)));
+                if (available.length === 0) return 0;
+                let count = 0;
+                for (const w of waitlist) {
+                  const preferred = (w.preferred_days ?? []).map((d: string) => d.toLowerCase());
+                  for (const d of available) {
+                    const date = new Date(d + 'T00:00:00');
+                    const day = date.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
+                    if (preferred.includes(day)) { count++; break; }
+                  }
+                }
+                return count;
+              })();
+              if (!waitlist || waitlist.length === 0) return null;
+              return (
+                <div
+                  onClick={() => navigate({ to: '/waitlist' as never })}
+                  style={{ ...cardBase, marginTop: 10, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: 11, background: '#E6F1FB', color: '#185FA5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <IconClockHour4 size={18} stroke={1.5} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>WAITLIST</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>
+                      {waitlist.length} pupil{waitlist.length === 1 ? '' : 's'} waiting
+                    </div>
+                  </div>
+                  {matchedCount > 0 && (
+                    <div style={{ background: '#EAF3DE', color: '#3B6D11', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 20 }}>
+                      {matchedCount} potential match
+                    </div>
+                  )}
+                  <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
+                </div>
+              );
+            })()}
+
+            {/* 6. QUICK ACTIONS */}
+            <div style={{ marginTop: 22, padding: 16, background: '#F3F8FF', borderRadius: 26 }}>
+              {(() => {
+                const unread = unreadMsgs.length;
+                const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
+                const pillBadge = (bg: string, color: string, text: React.ReactNode) => (
+                  <span style={{ background: bg, color, fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20, fontVariantNumeric: 'tabular-nums' }}>{text}</span>
+                );
+                const dot = (n: number) => (
+                  <span style={{ background: '#185FA5', color: '#fff', width: 16, height: 16, borderRadius: 999, fontSize: 9, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{n}</span>
+                );
+                const pages: QaTile[][] = [
+                  [
+                    {
+                      key: 'fill', label: 'Fill slots',
+                      onClick: () => navigate({ to: '/gaps' as never }),
+                      icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6',
+                      badge: freeSlotCount > 0 ? pillBadge('#FBEFE1', '#B5661E', `${freeSlotCount} free`) : undefined,
+                    },
+                    { key: 'schedule', label: 'Schedule', onClick: () => navigate({ to: '/schedule' as never }), icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'pupils', label: 'Pupils', onClick: () => navigate({ to: '/pupils' as never }), icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    {
+                      key: 'payments', label: 'Payments',
+                      onClick: () => navigate({ to: '/payments' as never }),
+                      icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />, chipBg: '#FCEBEB',
+                      badge: outstandingBadge ? pillBadge('#FCEBEB', '#A32D2D', outstandingBadge) : undefined,
+                    },
+                    {
+                      key: 'messages', label: 'Messages',
+                      onClick: () => navigate({ to: '/messages' as never }),
+                      icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE',
+                      badge: unread > 0 ? dot(unread) : undefined,
+                    },
+                    { key: 'waitlist', label: 'Waitlist', onClick: () => navigate({ to: '/waitlist' as never }), icon: <IconClockHour4 size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                  ],
+                  [
+                    { key: 'add-pupil', label: 'Add pupil', onClick: () => navigate({ to: '/pupils/new' as never }), icon: <IconUserPlus size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
+                    { key: 'add-lesson', label: 'Add lesson', onClick: () => navigate({ to: '/lessons/new' as never }), icon: <IconCalendarPlus size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'invoices', label: 'Invoices', onClick: () => navigate({ to: '/payments' as never }), icon: <IconReceipt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6' },
+                    { key: 'broadcast', label: 'Broadcast', onClick: () => navigate({ to: '/broadcast' as never }), icon: <IconSpeakerphone size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
+                    { key: 'reports', label: 'Reports', onClick: () => navigate({ to: '/reports' as never }), icon: <IconChartBar size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
+                    { key: 'more', label: 'More', onClick: () => navigate({ to: '/tools' as never }), icon: <IconDots size={20} stroke={1.5} color="#8A94A6" />, chipBg: '#EEF2F7' },
+                  ],
+                ];
+                return <QuickActionsGrid pages={pages} />;
+              })()}
+            </div>
+
+            {/* 7. AI INSIGHT */}
             {(() => {
               const insightAccent = '#6B4FD6';
               const insightBg = '#F3EEFD';
@@ -4875,7 +4967,7 @@ function HomePage() {
                   tabIndex={hasAction ? 0 : undefined}
                   style={{
                     ...cardBase,
-                    marginTop: 10,
+                    marginTop: 22,
                     padding: '14px 16px',
                     width: '100%',
                     cursor: hasAction ? 'pointer' : 'default',
@@ -4951,56 +5043,6 @@ function HomePage() {
                 </div>
               );
             })()}
-
-
-
-            {/* 6. QUICK ACTIONS */}
-            <div style={{ marginTop: 22, padding: 16, background: '#F3F8FF', borderRadius: 26 }}>
-              {(() => {
-                const unread = unreadMsgs.length;
-                const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
-                const pillBadge = (bg: string, color: string, text: React.ReactNode) => (
-                  <span style={{ background: bg, color, fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20, fontVariantNumeric: 'tabular-nums' }}>{text}</span>
-                );
-                const dot = (n: number) => (
-                  <span style={{ background: '#185FA5', color: '#fff', width: 16, height: 16, borderRadius: 999, fontSize: 9, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{n}</span>
-                );
-                const pages: QaTile[][] = [
-                  [
-                    {
-                      key: 'fill', label: 'Fill slots',
-                      onClick: () => navigate({ to: '/gaps' as never }),
-                      icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6',
-                      badge: freeSlotCount > 0 ? pillBadge('#FBEFE1', '#B5661E', `${freeSlotCount} free`) : undefined,
-                    },
-                    { key: 'schedule', label: 'Schedule', onClick: () => navigate({ to: '/schedule' as never }), icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                    { key: 'pupils', label: 'Pupils', onClick: () => navigate({ to: '/pupils' as never }), icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                    {
-                      key: 'payments', label: 'Payments',
-                      onClick: () => navigate({ to: '/payments' as never }),
-                      icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />, chipBg: '#FCEBEB',
-                      badge: outstandingBadge ? pillBadge('#FCEBEB', '#A32D2D', outstandingBadge) : undefined,
-                    },
-                    {
-                      key: 'messages', label: 'Messages',
-                      onClick: () => navigate({ to: '/messages' as never }),
-                      icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE',
-                      badge: unread > 0 ? dot(unread) : undefined,
-                    },
-                    { key: 'waitlist', label: 'Waitlist', onClick: () => navigate({ to: '/waitlist' as never }), icon: <IconClockHour4 size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                  ],
-                  [
-                    { key: 'add-pupil', label: 'Add pupil', onClick: () => navigate({ to: '/pupils/new' as never }), icon: <IconUserPlus size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                    { key: 'add-lesson', label: 'Add lesson', onClick: () => navigate({ to: '/lessons/new' as never }), icon: <IconCalendarPlus size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
-                    { key: 'invoices', label: 'Invoices', onClick: () => navigate({ to: '/payments' as never }), icon: <IconReceipt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6' },
-                    { key: 'broadcast', label: 'Broadcast', onClick: () => navigate({ to: '/broadcast' as never }), icon: <IconSpeakerphone size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                    { key: 'reports', label: 'Reports', onClick: () => navigate({ to: '/reports' as never }), icon: <IconChartBar size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
-                    { key: 'more', label: 'More', onClick: () => navigate({ to: '/tools' as never }), icon: <IconDots size={20} stroke={1.5} color="#8A94A6" />, chipBg: '#EEF2F7' },
-                  ],
-                ];
-                return <QuickActionsGrid pages={pages} />;
-              })()}
-            </div>
 
 
           </div>
