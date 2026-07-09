@@ -1555,7 +1555,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             No actions found
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
             {tiles.map(renderTile)}
           </div>
         )}
