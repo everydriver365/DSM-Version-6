@@ -1562,7 +1562,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       </div>
 
       {!showFiltered && pages.length > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 0 }}>
           {pages.map((_, i) => {
             const active = i === page;
             return (
@@ -4956,7 +4956,7 @@ function HomePage() {
             })()}
 
             {/* 5. QUICK ACTIONS */}
-            <div style={{ marginTop: 22, padding: 16, background: '#F3F8FF', borderRadius: 26 }}>
+            <div style={{ marginTop: 22 }}>
               {(() => {
                 const unread = unreadMsgs.length;
                 const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
