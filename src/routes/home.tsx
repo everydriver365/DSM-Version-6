@@ -226,56 +226,102 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function AttentionTile({
-  value, label, color, onClick,
-}: {
-  value: number; label: string;
-  color: string; onClick: () => void;
-}) {
-  const isUrgent = value > 0;
+type NAItem = {
+  key: 'tests' | 'jobs' | 'calls' | 'enq';
+  count: number;
+  primary: string;
+  subtitle: string;
+  onClick: () => void;
+};
+
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['tests', 'jobs', 'calls', 'enq'];
+
+const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
+  tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
+  jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
+  calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
+  enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
+};
+
+const NA_CARD_STYLE: React.CSSProperties = {
+  background: '#FFFFFF',
+  borderRadius: 14,
+  padding: '12px 16px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 12,
+  boxSizing: 'border-box',
+};
+
+function NeedsAttentionRow({ item }: { item: NAItem }) {
+  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
   return (
     <div
-      onClick={onClick}
+      onClick={item.onClick}
       role="button"
       tabIndex={0}
       className="cf-tap"
-      style={{
-        background: '#FFFFFF',
-        border: isUrgent ? `2px solid ${color}` : 'none',
-        borderRadius: 16,
-        padding: '14px 4px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        boxSizing: 'border-box',
-        transition: 'all 150ms ease',
-      }}
+      style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
     >
-      <div
-        style={{
-          fontSize: 22,
-          fontWeight: isUrgent ? 700 : 500,
-          color: isUrgent ? color : '#B0BAC9',
-          lineHeight: 1,
-          fontFamily: 'Inter, sans-serif',
-        }}
-      >
-        {value}
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={18} color={accent} />
       </div>
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 500,
-          marginTop: 5,
-          color: isUrgent ? color : '#B0BAC9',
-          fontFamily: 'Inter, sans-serif',
-        }}
-      >
-        {label}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {item.primary}
+        </div>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {item.subtitle}
+        </div>
+      </div>
+      <IconChevronRight size={15} color="#B0BAC9" />
+    </div>
+  );
+}
+
+function NeedsAttentionAllClear() {
+  return (
+    <div style={NA_CARD_STYLE}>
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <IconCircleCheck size={18} color="#2E9E5B" />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif' }}>All clear</div>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif' }}>Nothing needs your attention</div>
       </div>
     </div>
   );
 }
+
+function NeedsAttentionSection({ items }: { items: NAItem[] }) {
+  const active = items.filter((i) => i.count > 0);
+  if (active.length === 0) {
+    return (
+      <div style={{ margin: '16px 16px 0' }}>
+        <NeedsAttentionAllClear />
+      </div>
+    );
+  }
+  const sorted = [...active].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count;
+    return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
+  }).slice(0, 4);
+  return (
+    <div style={{ margin: '16px 16px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
+          {active.length} urgent
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {sorted.map((it) => <NeedsAttentionRow key={it.key} item={it} />)}
+      </div>
+    </div>
+  );
+}
+
 
 
 
