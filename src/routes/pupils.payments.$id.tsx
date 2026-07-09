@@ -174,6 +174,8 @@ function PupilPaymentsPage() {
         if (remaining <= 0) break;
         const due = Number(l.amount_due ?? 0);
         if (due <= 0) continue;
+        // NOTE: never write amount_due on payment — it's set at lesson
+        // creation and is the source of truth for lesson value.
         if (due <= remaining) {
           await supabase
             .from("lessons")
@@ -182,7 +184,6 @@ function PupilPaymentsPage() {
               payment_method: recMethod,
               paid_at: now,
               paid_amount: due,
-              amount_due: 0,
             })
             .eq("id", l.id);
           remaining -= due;
@@ -194,12 +195,12 @@ function PupilPaymentsPage() {
               payment_method: recMethod,
               paid_at: now,
               paid_amount: remaining,
-              amount_due: due - remaining,
             })
             .eq("id", l.id);
           remaining = 0;
         }
       }
+
 
       // Overpayment → account credit
       if (remaining > 0) {
