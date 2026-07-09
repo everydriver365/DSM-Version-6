@@ -927,6 +927,40 @@ function SchedulePage() {
 
     const pushGapNode = (g: typeof sortedGaps[number]) => {
       const openGap = () => navigate({ to: "/gaps" });
+
+      // Match pupils to this specific gap (reuses pupil availability data).
+      const DAYS_ABBR = ["sun","mon","tue","wed","thu","fri","sat"];
+      const gs = new Date(g.startMs);
+      const dayKey = DAYS_ABBR[gs.getDay()];
+      const startMins = gs.getHours() * 60 + gs.getMinutes();
+      const endMins = startMins + g.usableMins;
+      const hoursUntil = (g.startMs - Date.now()) / 3600000;
+      const parseHM = (t: string | null | undefined, fallback: number) => {
+        if (!t) return fallback;
+        const [h, m] = t.split(":").map(Number);
+        return (h || 0) * 60 + (m || 0);
+      };
+      type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
+      const matches: Matched[] = [];
+      Object.entries(pupilAvailMap).forEach(([pid, a]) => {
+        const info = pupilInfoMap[pid];
+        if (!info) return;
+        const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
+        if (days.length && !days.includes(dayKey)) return;
+        const fromMins = parseHM(a.available_from, 0);
+        const untilMins = parseHM(a.available_until, 24 * 60);
+        if (endMins <= fromMins || startMins >= untilMins) return;
+        const minNotice = a.min_notice_hours ?? 24;
+        if (hoursUntil < minNotice && !a.short_notice_opt_in) return;
+        const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
+        matches.push({ id: pid, first, avatar: (info as any).profile_image_url ?? null, colour: (info as any).calendar_colour ?? null });
+      });
+      const shown = matches.slice(0, 3);
+      const avatarInitial = (name: string) => name.slice(0, 1).toUpperCase();
+      const subtitle = matches.length > 0
+        ? `${matches.length} ${matches.length === 1 ? "pupil" : "pupils"} available`
+        : null;
+
       gapNodes.push(
         <div
           key={g.key}
@@ -936,21 +970,21 @@ function SchedulePage() {
           onKeyDown={(e) => { if (e.key === "Enter") openGap(); }}
           style={{
             margin: "10px 16px",
-            borderRadius: 16,
-            padding: "16px 18px",
+            borderRadius: 14,
+            padding: "12px 14px",
             display: "flex",
             alignItems: "center",
-            gap: 14,
+            gap: 12,
             cursor: "pointer",
             ...POPPINS,
-            background: "#EAF2FE",
+            background: "#FBEFE1",
           }}
         >
           <div
             style={{
-              width: 42,
-              height: 42,
-              borderRadius: 14,
+              width: 36,
+              height: 36,
+              borderRadius: 11,
               background: "#185FA5",
               display: "inline-flex",
               alignItems: "center",
@@ -958,36 +992,64 @@ function SchedulePage() {
               flexShrink: 0,
             }}
           >
-            <IconClock size={21} stroke={1.75} color="#FFFFFF" />
+            <IconBolt size={18} stroke={1.75} color="#FFFFFF" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 500, color: "#0C3E6E" }}>
-              {formatOpenMins(g.usableMins)} open
+            <div style={{ fontSize: 14, fontWeight: 500, color: "#7A4813" }}>
+              {formatOpenMins(g.usableMins)} free · {formatTimeFromDate(new Date(g.startMs))} – {formatTimeFromDate(new Date(g.endMs))}
             </div>
-            <div style={{ fontSize: 12, color: "#185FA5", marginTop: 2 }}>
-              {formatTimeFromDate(new Date(g.startMs))} – {formatTimeFromDate(new Date(g.endMs))}
-            </div>
+            {subtitle && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                <span style={{ fontSize: 12, color: "#B5661E" }}>{subtitle}</span>
+                {shown.length > 0 && (
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {shown.map((m, i) => (
+                      <div
+                        key={m.id}
+                        title={m.first}
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 999,
+                          background: m.colour || "#E2E8F0",
+                          color: "#FFFFFF",
+                          border: "2px solid #FBEFE1",
+                          marginLeft: i === 0 ? 0 : -6,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 9,
+                          fontWeight: 500,
+                          overflow: "hidden",
+                          ...POPPINS,
+                        }}
+                      >
+                        {m.avatar ? (
+                          <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : avatarInitial(m.first)}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); openGap(); }}
             style={{
-              background: "#185FA5",
+              background: "transparent",
               border: "none",
-              borderRadius: 10,
-              padding: "9px 16px",
-              fontSize: 13,
+              padding: 0,
+              fontSize: 12,
               fontWeight: 500,
-              color: "#FFFFFF",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
+              color: "#185FA5",
               cursor: "pointer",
               ...POPPINS,
               flexShrink: 0,
             }}
           >
-            Fill <IconChevronRight size={14} stroke={1.75} />
+            Fill →
           </button>
         </div>,
       );
