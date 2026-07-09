@@ -4848,7 +4848,7 @@ function HomePage() {
                 return rem === 0 ? `${h} hr${h === 1 ? '' : 's'} free` : `${h}h ${rem}m free`;
               };
               const titleText = `${formatGap(gapMins)} · ${gapTimeLabel}`;
-              void isWholeDay;
+              
               // Match pupils whose availability fits this gap
               const DAYS_ABBR = ['sun','mon','tue','wed','thu','fri','sat'];
               const dayKey = DAYS_ABBR[gapStart.getDay()];
