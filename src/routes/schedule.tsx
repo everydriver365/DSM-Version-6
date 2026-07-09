@@ -615,3 +615,214 @@ const rowSub: React.CSSProperties = {
   opacity: 0.85,
   fontVariantNumeric: "tabular-nums",
 };
+
+// ── Month calendar ────────────────────────────────────────────────────
+function MonthCalendar({
+  month,
+  today,
+  selectedDateKey,
+  dotsByDay,
+  onSelectDate,
+  onPrevMonth,
+  onNextMonth,
+  onOpenMonthPicker,
+  onSearch,
+  onAdd,
+}: {
+  month: Date;
+  today: Date;
+  selectedDateKey: string;
+  dotsByDay: Map<string, string[]>;
+  onSelectDate: (key: string) => void;
+  onPrevMonth: () => void;
+  onNextMonth: () => void;
+  onOpenMonthPicker: () => void;
+  onSearch: () => void;
+  onAdd: () => void;
+}) {
+  const monthLabel = month.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  const todayKey = ymdLocal(today);
+
+  // Build a 6-row (Mon-start) grid covering the full visible month.
+  const cells = useMemo(() => {
+    const first = new Date(month.getFullYear(), month.getMonth(), 1);
+    const gridStart = mondayOf(first);
+    const out: Date[] = [];
+    for (let i = 0; i < 42; i++) out.push(addDays(gridStart, i));
+    return out;
+  }, [month]);
+
+  const dow = ["M", "T", "W", "T", "F", "S", "S"];
+
+  return (
+    <div
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 5,
+        background: "#FFFFFF",
+        padding: "16px 16px 0",
+        borderBottom: "0.5px solid #E5E7EB",
+      }}
+    >
+      {/* Top row: month + nav + actions */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calIconBtn}>
+            <IconChevronLeft size={18} stroke={1.75} color="#0B1F3A" />
+          </button>
+          <button
+            type="button"
+            onClick={onOpenMonthPicker}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              background: "transparent",
+              border: 0,
+              padding: "4px 4px",
+              fontSize: 18,
+              fontWeight: 500,
+              color: "#0B1F3A",
+              ...POPPINS,
+              cursor: "pointer",
+            }}
+          >
+            <span>{monthLabel}</span>
+            <IconChevronDown size={16} stroke={1.75} color="#6B7280" />
+          </button>
+          <button type="button" aria-label="Next month" onClick={onNextMonth} style={calIconBtn}>
+            <IconChevronRight size={18} stroke={1.75} color="#0B1F3A" />
+          </button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button type="button" aria-label="Search" onClick={onSearch} style={calIconBtn}>
+            <IconSearch size={19} stroke={1.75} color="#0B1F3A" />
+          </button>
+          <button type="button" aria-label="Add lesson" onClick={onAdd} style={calIconBtn}>
+            <IconPlus size={19} stroke={1.75} color="#0B1F3A" />
+          </button>
+        </div>
+      </div>
+
+      {/* Day-of-week header */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(7, 1fr)",
+          marginBottom: 8,
+        }}
+      >
+        {dow.map((d, i) => (
+          <div
+            key={i}
+            style={{
+              textAlign: "center",
+              fontSize: 11,
+              fontWeight: 500,
+              color: "#94A3B8",
+              padding: "4px 0",
+            }}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
+
+      {/* Date grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", paddingBottom: 8 }}>
+        {cells.map((d) => {
+          const key = ymdLocal(d);
+          const inMonth = d.getMonth() === month.getMonth();
+          const isToday = key === todayKey;
+          const isPast = key < todayKey;
+          const isSelected = key === selectedDateKey && !isToday;
+          const dots = dotsByDay.get(key) ?? [];
+          const numColour = isToday
+            ? "#FFFFFF"
+            : !inMonth || isPast
+              ? "#94A3B8"
+              : "#0B1F3A";
+          return (
+            <button
+              type="button"
+              key={key}
+              onClick={() => onSelectDate(key)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 2,
+                background: "transparent",
+                border: 0,
+                padding: "6px 0",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
+                  color: numColour,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {d.getDate()}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 2,
+                  justifyContent: "center",
+                  height: 6,
+                  marginTop: 2,
+                }}
+              >
+                {dots.map((c, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: isToday ? "rgba(255,255,255,0.7)" : c,
+                      display: "inline-block",
+                    }}
+                  />
+                ))}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const calIconBtn: React.CSSProperties = {
+  width: 32,
+  height: 32,
+  borderRadius: 8,
+  border: 0,
+  background: "transparent",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+};
