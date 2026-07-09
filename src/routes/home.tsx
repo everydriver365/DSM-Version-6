@@ -4841,10 +4841,14 @@ function HomePage() {
               const period = gapH >= 12 ? 'PM' : 'AM';
               const h12 = gapH % 12 === 0 ? 12 : gapH % 12;
               const gapTimeLabel = `${h12}:${String(gapM).padStart(2, '0')} ${period}`;
-              const isWholeDay = !firstGap;
-              const titleText = isWholeDay
-                ? `${Math.floor(gapMins / 60)} hrs free · ${gapTimeLabel}`
-                : `${gapMins} mins free · ${gapTimeLabel}`;
+              const formatGap = (m: number) => {
+                if (m < 60) return `${m} mins free`;
+                const h = Math.floor(m / 60);
+                const rem = m % 60;
+                return rem === 0 ? `${h} hr${h === 1 ? '' : 's'} free` : `${h}h ${rem}m free`;
+              };
+              const titleText = `${formatGap(gapMins)} · ${gapTimeLabel}`;
+              void isWholeDay;
               // Match pupils whose availability fits this gap
               const DAYS_ABBR = ['sun','mon','tue','wed','thu','fri','sat'];
               const dayKey = DAYS_ABBR[gapStart.getDay()];
