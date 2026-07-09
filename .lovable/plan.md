@@ -1,31 +1,78 @@
-## Why Sabrina shows £80 owed
+# Fix AI Insight showing prepaid pupils as owing
 
-Her upcoming lesson is stored as `payment_status = "unpaid"` with `amount_due = 80`. The balance/pill logic on the pupils list and the home lesson tiles just sums `amount_due` on any `unpaid` lesson — it doesn't know she has prepaid hours in the bank.
+**File touched:** `src/routes/home.tsx` only.
 
-For comparison, `src/routes/end-of-day.tsx` (lines 149‑185) already excludes prepaid pupils from "unpaid" totals; the pupils list and home tiles never got that treatment.
+## The bug
 
-## Fix
+In `home.tsx` at lines 3836–3843, the AI Insight card computes `owedPupil` by scanning today/tomorrow lessons and flagging any lesson with `amount_due > 0` that isn't marked `paid`:
 
-Treat a lesson as covered when the pupil has enough prepaid hours to cover it, and reflect that everywhere the "£X owed / £X due" pill or total appears.
+```ts
+const owedPupil = (() => {
+  for (const l of sorted) {
+    const amt = Number(l.amount_due ?? 0);
+    const paid = (l.payment_status ?? '').toLowerCase() === 'paid';
+    if (amt > 0 && !paid) return { name: ..., amount: amt, phone: ... };
+  }
+  return null;
+})();
+```
 
-### 1. Pupils list balance (`src/routes/pupils.index.tsx`)
-Change the `balanceMap` build so unpaid lessons for pupils whose remaining prepaid hours ≥ lesson duration are treated as £0. Use `prepaid_hours - hoursUsed` (already computed as `hoursRemaining`) as the budget, decrement as we iterate that pupil's unpaid lessons in date order. Anything not covered stays in the owed total.
+That ignores:
+- `payment_status === 'prepaid'`
+- the pupil's `prepaid_hours` balance
+- any account credit
 
-### 2. Home lesson tile pill (`src/routes/home.tsx`)
-Two lesson-tile renderers (lines ~3959 and ~4820). Update the `dueUnpaid` / £-pill branch: if the pupil is prepaid AND remaining prepaid hours cover this lesson's duration, show the "Prepaid" pill instead of the £ pill. Same rule inside "Today's pupils" summaries where relevant.
+So a fully prepaid pupil (Sabrina) still gets a "£80 owed" insight.
 
-### 3. Schedule timeline pill (`src/routes/schedule.tsx` `renderLessonRow`)
-Apply the same rule to `isPaymentDue` / `overdue`: prepaid pupil with hours remaining → render the "Prepaid" pill, not "£80".
+## Note on "Smart Business Card"
 
-### 4. Lesson creation (follow-up, same change)
-When creating/updating a lesson for a prepaid pupil with remaining hours, set `payment_status = "prepaid"` and populate `prepaid_hours_used` so the data is correct at the source and older displays stay in sync. This removes the need for the display-side workaround over time. Search: `src/routes/lessons.new.tsx`, any `insert` into `lessons` that sets `payment_status`.
+There is no separate component named that in `home.tsx`. The AI Insight card built at lines 3844–3856 is the only outstanding-state surface in this file. Fixing `owedPupil` fixes both the text and the "Remind" action.
 
-### Notes
-- "Remaining prepaid hours" is `prepaid_hours - Σ(duration_minutes/60)` over that pupil's non-deleted lessons (already computed as `hoursMap` on the pupils list; will need the same map on home/schedule).
-- Partial coverage (e.g. 0.5h left, 1h lesson) counts as not covered — safer to keep showing the pill so nothing is silently under-billed.
+The good news: the pre-computed `outstandingBreakdown` state (lines 1950–2014) already filters out prepaid pupils via `prepaidPupilIds`. We can source the insight from it directly.
 
-### Files touched
-- `src/routes/pupils.index.tsx`
-- `src/routes/home.tsx`
-- `src/routes/schedule.tsx`
-- `src/routes/lessons.new.tsx` (and any other lesson insert site) — for the source-of-truth fix
+## Change
+
+Replace the `owedPupil` IIFE (lines 3836–3843) with one that:
+
+1. Prefers the first row of `outstandingBreakdown` (already excludes prepaid pupils and nets to a real amount).
+2. Falls back to scanning `sorted` lessons but skips any lesson whose pupil has `prepaid_hours > 0` or whose `payment_status` is `prepaid`.
+
+Shape:
+
+```ts
+const owedPupil = (() => {
+  // Prefer the already-filtered outstanding breakdown (prepaid pupils removed upstream)
+  const top = outstandingBreakdown[0];
+  if (top && top.amount > 0) {
+    return {
+      id: top.pupilId,
+      name: top.firstName || top.name.split(' ')[0],
+      amount: top.amount,
+      phone: top.phone ?? '',
+    };
+  }
+  // Fallback: scan today's lessons but skip prepaid pupils / prepaid lessons
+  for (const l of sorted) {
+    const amt = Number(l.amount_due ?? 0);
+    const status = (l.payment_status ?? '').toLowerCase();
+    const prepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
+    if (amt > 0 && status !== 'paid' && status !== 'prepaid' && !prepaidPupil) {
+      return {
+        id: l.pupil_id,
+        name: (l.pupils?.first_name ?? pupilName(l)).split(' ')[0],
+        amount: amt,
+        phone: l.pupils?.phone ?? '',
+      };
+    }
+  }
+  return null;
+})();
+```
+
+The downstream `else if (owedPupil)` block (lines 3847–3856) already reads `owedPupil.name`, `.amount`, `.phone` — no changes needed there. The insight simply won't render for prepaid pupils because `owedPupil` will be `null`.
+
+## Out of scope
+
+- No changes to `outstandingBreakdown` (already correct).
+- No changes outside `home.tsx`.
+- No changes to schedule tiles or the £-pill logic (already handled in the prior fix).
