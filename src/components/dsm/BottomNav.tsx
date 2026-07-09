@@ -69,8 +69,13 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6",
     >
       {useCustom
         ? items!.map((it, i) => {
-            const isActive = i === activeIndex;
+            const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
+            const isActive = wsMatch || (typeof it.ws !== 'number' && i === activeIndex);
             const color = isActive ? activeColor : inactiveColor;
+            const handleClick = () => {
+              if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
+              it.onClick?.();
+            };
             const inner: ReactNode = (
               <>
                 {isActive && (
@@ -85,7 +90,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6",
               </>
             );
             const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
-            if (it.to && !it.onClick) {
+            if (it.to && !it.onClick && typeof it.ws !== 'number') {
               return (
                 <Link key={it.key} to={it.to} className={cls} style={{ color }}>
                   {inner}
@@ -96,7 +101,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6",
               <button
                 key={it.key}
                 type="button"
-                onClick={it.onClick}
+                onClick={handleClick}
                 className={cls}
                 style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
               >
