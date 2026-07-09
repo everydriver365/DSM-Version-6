@@ -892,9 +892,11 @@ function MonthCalendar({
           const dots = dotsByDay.get(key) ?? [];
           const numColour = isToday
             ? "#FFFFFF"
-            : !inMonth || isPast
-              ? "#94A3B8"
-              : "#0B1F3A";
+            : !inMonth
+              ? "#D0D5DD"
+              : isPast
+                ? "#8A94A6"
+                : "#12142B";
           return (
             <button
               type="button"
@@ -908,7 +910,7 @@ function MonthCalendar({
                 gap: 1,
                 background: "transparent",
                 border: 0,
-                padding: 0,
+                padding: "4px 0",
                 cursor: "pointer",
                 height: "100%",
                 minHeight: 0,
@@ -918,20 +920,22 @@ function MonthCalendar({
               <div
                 style={{
                   position: "relative",
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  margin: "0 auto",
                   background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
                   color: numColour,
                   fontSize: 12,
-                  fontWeight: 500,
+                  fontWeight: isToday ? 600 : 500,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
                 {d.getDate()}
+
                 <div
                   style={{
                     position: "absolute",
