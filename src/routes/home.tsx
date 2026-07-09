@@ -7177,7 +7177,7 @@ function HomePage() {
         console.log("[home] carousel scrollLeft:", carouselRef.current?.scrollLeft);
         const navItems: BottomNavItem[] = [
           { key: 'today', label: 'Today', Icon: HomeIcon, onClick: () => scrollToWs(0) },
-          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => scrollToWs(1) },
+          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => navigate({ to: '/schedule' as never }) },
           { key: 'pupils', label: 'Pupils', Icon: PupilsIcon, onClick: () => scrollToWs(2) },
           { key: 'messages', label: 'Messages', Icon: MessagesIcon, onClick: () => navigate({ to: '/messages' as never }) },
           { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(7) },
