@@ -412,110 +412,277 @@ function PaymentsPage() {
       </div>
 
       {/* Summary stats */}
-      <div className="p-4 grid grid-cols-3 gap-3">
-        <StatCard label="This month" value={formatGBP(stats.monthReceived)} color={GREEN} bold />
-        <StatCard label="Outstanding" value={formatGBP(stats.outstanding)} color={stats.outstanding > 0 ? RED : NAVY} />
-        <StatCard label="Refunded" value={formatGBP(stats.monthRefunded)} color={stats.monthRefunded > 0 ? RED : NAVY} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0" }}>
+        <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#2E9E5B" />
+        <StatTile
+          label="OUTSTANDING"
+          value={formatGBP(stats.outstanding)}
+          color={stats.outstanding > 0 ? "#E24B4A" : "#8A94A6"}
+        />
+        <StatTile
+          label="REFUNDED"
+          value={formatGBP(stats.monthRefunded)}
+          color={stats.monthRefunded > 0 ? "#B5661E" : "#8A94A6"}
+        />
       </div>
 
-      {/* Filters */}
-      <div className="bg-white" style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}` }}>
-        <button
-          type="button"
-          onClick={() => setPupilPickerOpen(true)}
-          className="w-full h-10 rounded-lg px-3 flex items-center justify-between text-[14px]"
-          style={{ border: `0.5px solid ${BORDER}`, color: NAVY, ...POPPINS }}
+      {/* Search bar (opens existing pupil picker) */}
+      <div
+        onClick={() => setPupilPickerOpen(true)}
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 12,
+          padding: "9px 12px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          margin: "12px 16px 12px",
+          cursor: "pointer",
+        }}
+      >
+        <Search size={15} color="#B0BAC9" />
+        <div
+          style={{
+            fontSize: 13,
+            color: pupilFilter ? "#12142B" : "#B0BAC9",
+            flex: 1,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            ...POPPINS,
+          }}
         >
-          <span className="flex items-center gap-2 truncate">
-            <Search size={14} color={MUTED} />
-            {pupilFilter ? pupilName : "All pupils"}
-          </span>
-          {pupilFilter && (
-            <span onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }} className="text-[12px]" style={{ color: MUTED }}>Clear</span>
-          )}
-        </button>
-
-        <div className="flex gap-2 overflow-x-auto no-scrollbar mt-3">
-          {([["today","Today"],["week","This week"],["month","This month"],["year","This year"],["all","All time"]] as [DatePreset,string][]).map(([v,l]) => (
-            <Pill key={v} active={datePreset===v} onClick={() => setDatePreset(v)}>{l}</Pill>
-          ))}
+          {pupilFilter ? pupilName : "All pupils"}
         </div>
+        {pupilFilter && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }}
+            style={{ background: "none", border: 0, color: "#8A94A6", fontSize: 12, cursor: "pointer" }}
+          >
+            Clear
+          </button>
+        )}
+      </div>
 
-        <div className="flex gap-2 overflow-x-auto no-scrollbar mt-3">
-          {([
-            ["all","All"],["cash","Cash"],["card","Card"],["qr","QR"],["bank_transfer","Bank"],["klarna","Klarna"],["clearpay","Clearpay"],["refund","Refund"],
-          ] as [MethodFilter,string][]).map(([v,l]) => (
-            <Pill key={v} active={methodFilter===v} onClick={() => setMethodFilter(v)}>{l}</Pill>
-          ))}
-        </div>
+      {/* Period pills */}
+      <div
+        className="no-scrollbar"
+        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 10, overflowX: "auto" }}
+      >
+        {([["today","Today"],["week","This week"],["month","This month"],["year","This year"]] as [DatePreset,string][]).map(([v,l]) => {
+          const active = datePreset === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setDatePreset(v)}
+              style={{
+                padding: "7px 14px",
+                fontSize: 12,
+                fontWeight: 500,
+                borderRadius: 20,
+                border: 0,
+                background: active ? "#0F2044" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#8A94A6",
+                boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                flexShrink: 0,
+                ...POPPINS,
+              }}
+            >
+              {l}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Method pills */}
+      <div
+        className="no-scrollbar"
+        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 16, overflowX: "auto" }}
+      >
+        {([
+          ["all","All"],["cash","Cash"],["card","Card"],["qr","QR"],["bank_transfer","Bank"],["klarna","Klarna"],
+        ] as [MethodFilter,string][]).map(([v,l]) => {
+          const active = methodFilter === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setMethodFilter(v)}
+              style={{
+                padding: "7px 14px",
+                fontSize: 12,
+                fontWeight: 500,
+                borderRadius: 20,
+                border: 0,
+                background: active ? "#185FA5" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#8A94A6",
+                boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                flexShrink: 0,
+                ...POPPINS,
+              }}
+            >
+              {l}
+            </button>
+          );
+        })}
       </div>
 
       {/* History */}
-      <div className="px-4 pt-3">
+      <div>
         {loading ? (
-          <div className="text-[13px] text-center py-8" style={{ color: MUTED }}>Loading…</div>
+          <div style={{ fontSize: 13, textAlign: "center", padding: "32px 0", color: "#B0BAC9" }}>Loading…</div>
         ) : groups.length === 0 ? (
-          <div className="text-[14px] text-center py-10" style={{ color: MUTED }}>No payments match these filters</div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px", gap: 6 }}>
+            <Receipt size={40} color="#D0D5DD" />
+            <div style={{ fontSize: 14, color: "#B0BAC9" }}>No payments found</div>
+            <div style={{ fontSize: 12, color: "#D0D5DD" }}>Try adjusting your filters</div>
+          </div>
         ) : (
           groups.map((g) => (
-            <div key={g.label + g.rows[0].id} className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-[13px] font-bold" style={{ color: NAVY, ...POPPINS }}>{g.label}</div>
-                <div className="text-[12px]" style={{ color: MUTED }}>{formatGBP(g.total)}</div>
+            <div key={g.label + g.rows[0].id}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 500, color: "#12142B", ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 12, color: "#B0BAC9", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                {g.rows.map((row) => {
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  margin: "0 16px 16px",
+                }}
+              >
+                {g.rows.map((row, i) => {
                   const isRefund = row.payment_status === "refund";
                   const amt = Number(row.lesson_cost ?? 0);
                   const isOpen = expandedId === row.id;
+                  const avatarBg = pupilAvatarColor(row.pupil_id);
                   return (
-                    <div key={row.id} className="bg-white" style={{ border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "14px 16px" }}>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center rounded-full shrink-0" style={{ width: 36, height: 36, backgroundColor: methodBg(row.payment_method, isRefund) }}>
-                          <MethodIcon method={row.payment_method} refund={isRefund} />
+                    <div
+                      key={row.id}
+                      style={{
+                        borderBottom: i < g.rows.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px" }}>
+                        <div
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: "50%",
+                            background: avatarBg,
+                            color: "#FFFFFF",
+                            fontSize: 13,
+                            fontWeight: 600,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            ...POPPINS,
+                          }}
+                        >
+                          {pupilInitials(row.pupils?.name)}
                         </div>
-                        <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setExpandedId(isOpen ? null : row.id)}>
-                          <div className="text-[14px] font-semibold truncate" style={{ color: NAVY, ...POPPINS }}>{row.pupils?.name ?? "Unknown pupil"}</div>
-                          <div className="text-[12px]" style={{ color: MUTED, ...POPPINS }}>
+                        <button
+                          type="button"
+                          onClick={() => setExpandedId(isOpen ? null : row.id)}
+                          style={{ background: "none", border: 0, padding: 0, textAlign: "left", flex: 1, minWidth: 0, cursor: "pointer" }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 500,
+                              color: "#12142B",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              ...POPPINS,
+                            }}
+                          >
+                            {row.pupils?.name ?? "Unknown pupil"}
+                          </div>
+                          <div style={{ fontSize: 12, color: "#B0BAC9", marginTop: 1, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
-                        <div className="flex items-center gap-1 shrink-0">
-                          <div className="text-[14px] font-bold" style={{ color: isRefund ? RED : GREEN, ...POPPINS }}>{formatGBP(amt)}</div>
-                          <div className="relative">
-                            <button type="button" aria-label="More" onClick={() => setMenuId(menuId === row.id ? null : row.id)} className="w-8 h-8 flex items-center justify-center">
-                              <MoreVertical size={16} color={MUTED} />
-                            </button>
-                            {menuId === row.id && (
-                              <>
-                                <div className="fixed inset-0 z-30" onClick={() => setMenuId(null)} />
-                                <div className="absolute right-0 top-8 z-40 bg-white rounded-lg" style={{ border: `0.5px solid ${BORDER}`, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", minWidth: 140 }}>
-                                  {!isRefund && <MenuItem onClick={() => { setEditingId(row.id); setExpandedId(row.id); setMenuId(null); }}>Edit</MenuItem>}
-                                  {!isRefund && <MenuItem onClick={() => { setRefundRow(row); setMenuId(null); }}>Refund</MenuItem>}
-                                  <MenuItem danger onClick={async () => {
-                                    setMenuId(null);
-                                    if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
-                                    if (!userId) return;
-                                    const { data: { session } } = await supabase.auth.getSession();
-                                    const token = session?.access_token;
-                                    if (!token) return;
-                                    const ok = await deletePaymentRecord(row.id, token, userId);
-                                    if (ok) await refetch();
-                                  }}>Delete</MenuItem>
-                                </div>
-                              </>
-                            )}
-                          </div>
+                        <div
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 600,
+                            color: isRefund ? "#E24B4A" : "#2E9E5B",
+                            flexShrink: 0,
+                            ...POPPINS,
+                          }}
+                        >
+                          {formatGBP(amt)}
+                        </div>
+                        <div style={{ position: "relative", flexShrink: 0 }}>
+                          <button
+                            type="button"
+                            aria-label="More"
+                            onClick={() => setMenuId(menuId === row.id ? null : row.id)}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              background: "none",
+                              border: 0,
+                              cursor: "pointer",
+                            }}
+                          >
+                            <MoreVertical size={16} color="#B0BAC9" />
+                          </button>
+                          {menuId === row.id && (
+                            <>
+                              <div style={{ position: "fixed", inset: 0, zIndex: 30 }} onClick={() => setMenuId(null)} />
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  right: 0,
+                                  top: 32,
+                                  zIndex: 40,
+                                  background: "#FFFFFF",
+                                  borderRadius: 8,
+                                  border: `0.5px solid ${BORDER}`,
+                                  boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+                                  minWidth: 140,
+                                }}
+                              >
+                                {!isRefund && <MenuItem onClick={() => { setEditingId(row.id); setExpandedId(row.id); setMenuId(null); }}>Edit</MenuItem>}
+                                {!isRefund && <MenuItem onClick={() => { setRefundRow(row); setMenuId(null); }}>Refund</MenuItem>}
+                                <MenuItem danger onClick={async () => {
+                                  setMenuId(null);
+                                  if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
+                                  if (!userId) return;
+                                  const { data: { session } } = await supabase.auth.getSession();
+                                  const token = session?.access_token;
+                                  if (!token) return;
+                                  const ok = await deletePaymentRecord(row.id, token, userId);
+                                  if (ok) await refetch();
+                                }}>Delete</MenuItem>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
 
                       {isOpen && (
-                        <div className="mt-3 pt-3" style={{ borderTop: `0.5px solid ${BORDER}` }}>
+                        <div style={{ margin: "0 16px 12px", paddingTop: 10, borderTop: `0.5px solid #EEF2F7` }}>
                           {editingId === row.id ? (
                             <EditPaymentForm row={row} onCancel={() => setEditingId(null)} onSaved={async () => { setEditingId(null); await refetch(); }} />
                           ) : (
-                            <div className="flex flex-col gap-1 text-[13px]" style={{ color: NAVY }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13, color: NAVY }}>
                               {row.lesson_id && <div><span style={{ color: MUTED }}>Lesson:</span> {row.lesson_id.slice(0,8)}…</div>}
                               {row.notes ? <div><span style={{ color: MUTED }}>Notes:</span> {row.notes}</div> : <div style={{ color: MUTED }}>No notes</div>}
                             </div>
@@ -530,6 +697,7 @@ function PaymentsPage() {
           ))
         )}
       </div>
+
 
       {pupilPickerOpen && (
         <PupilPicker pupils={allPupils} selectedId={pupilFilter} onClose={() => setPupilPickerOpen(false)} onSelect={(id) => { setPupilFilter(id); setPupilPickerOpen(false); }} allowAll />
