@@ -1104,6 +1104,8 @@ function HomePage() {
   const wsIsProgrammatic = useRef(false);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const isSwiping = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
   const scrollToWs = (i: number) => {
@@ -1132,15 +1134,33 @@ function HomePage() {
   const handleCarouselTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    touchStartTime.current = Date.now();
+    isSwiping.current = false;
   };
   const handleCarouselTouchEnd = (e: React.TouchEvent) => {
     const dx = touchStartX.current - e.changedTouches[0].clientX;
     const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
-    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
+    const dt = Date.now() - touchStartTime.current;
+    const isHorizontalSwipe = Math.abs(dx) > dy && Math.abs(dx) > 40 && dt < 400;
+    if (isHorizontalSwipe) {
       if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
       else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
     }
   };
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const handleTouchMove = (e: TouchEvent) => {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+      if (dx > dy && dx > 10) {
+        isSwiping.current = true;
+        e.preventDefault();
+      }
+    };
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => el.removeEventListener('touchmove', handleTouchMove);
+  }, []);
   useEffect(() => {
     const log = () => {
       // eslint-disable-next-line no-console
@@ -3460,7 +3480,7 @@ function HomePage() {
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
-          touchAction:'pan-x',
+          touchAction:'pan-y pinch-zoom',
           background:'#F3F8FF',
         }}
         className="hide-scrollbar carousel-hide-scrollbar"
@@ -3477,7 +3497,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -4378,7 +4398,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5289,7 +5309,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5617,7 +5637,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5792,7 +5812,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5811,7 +5831,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
@@ -5830,7 +5850,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
           }}
         >
@@ -5970,7 +5990,7 @@ function HomePage() {
             overflowY:'auto',
             overflowX:'hidden',
             WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y',
+            touchAction:'pan-y', overscrollBehaviorX:'none',
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
             
           }}
