@@ -4310,39 +4310,58 @@ function HomePage() {
         </Dialog>
 
 
-        {/* Needs attention strip */}
-        <div style={{ margin: '16px 16px 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-            {naUrgentCount > 0 && (
-              <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
-                {naUrgentCount} urgent
-              </div>
-            )}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-            <AttentionTile
-              value={naJobs} label="Jobs"
-              color="#B5661E"
-              onClick={() => navigate({ to: '/bookings' as never })}
-            />
-            <AttentionTile
-              value={naTests} label="Tests"
-              color="#185FA5"
-              onClick={() => setActiveWs(2)}
-            />
-            <AttentionTile
-              value={naCalls} label="Calls"
-              color="#6B4FD6"
-              onClick={() => navigate({ to: '/messages' as never })}
-            />
-            <AttentionTile
-              value={naEnquiries} label="Enq's"
-              color="#2E9E5B"
-              onClick={() => navigate({ to: '/waitlist' as never })}
-            />
-          </div>
-        </div>
+        {/* Needs attention */}
+        {(() => {
+          const fmtShortDate = (iso: string) => {
+            const d = new Date(iso + 'T00:00:00');
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          };
+          const nowMs = Date.now();
+          const soonestTest = [...(upcomingTests ?? [])]
+            .filter((p) => {
+              if (!p.test_date) return false;
+              const days = Math.floor((new Date(p.test_date).getTime() - nowMs) / 86400000);
+              return days >= 0 && days <= 7;
+            })
+            .sort((a, b) => a.test_date.localeCompare(b.test_date))[0];
+          const latestEnq = [...(swapRequests ?? [])]
+            .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))[0];
+
+          const items: NAItem[] = [
+            {
+              key: 'tests',
+              count: naTests,
+              primary: `${naTests} driving test${naTests === 1 ? '' : 's'} upcoming`,
+              subtitle: soonestTest ? `${soonestTest.name} · ${fmtShortDate(soonestTest.test_date)}` : `${naTests} items need attention`,
+              onClick: () => setActiveWs(2),
+            },
+            {
+              key: 'jobs',
+              count: naJobs,
+              primary: `${naJobs} job${naJobs === 1 ? '' : 's'} pending`,
+              subtitle: `${naJobs} items need attention`,
+              onClick: () => navigate({ to: '/bookings' as never }),
+            },
+            {
+              key: 'calls',
+              count: naCalls,
+              primary: `${naCalls} call${naCalls === 1 ? '' : 's'} to return`,
+              subtitle: `${naCalls} items need attention`,
+              onClick: () => navigate({ to: '/messages' as never }),
+            },
+            {
+              key: 'enq',
+              count: naEnquiries,
+              primary: `${naEnquiries} new ${naEnquiries === 1 ? "enquiry" : "enquiries"}`,
+              subtitle: latestEnq ? latestEnq.name : `${naEnquiries} items need attention`,
+              onClick: () => navigate({ to: '/waitlist' as never }),
+            },
+          ];
+          return <NeedsAttentionSection items={items} />;
+        })()}
+
+
 
 
       </div>
