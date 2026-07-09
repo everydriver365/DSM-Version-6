@@ -3480,7 +3480,7 @@ function HomePage() {
           WebkitOverflowScrolling:'touch',
           scrollbarWidth:'none',
           msOverflowStyle:'none',
-          touchAction:'pan-x',
+          touchAction:'pan-y pinch-zoom',
           background:'#F3F8FF',
         }}
         className="hide-scrollbar carousel-hide-scrollbar"
