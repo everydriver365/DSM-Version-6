@@ -150,12 +150,18 @@ function SchedulePage() {
     let cancelled = false;
     setLessons(null);
     (async () => {
+      // `pupil:pupils!inner(...)` promotes the join to an INNER JOIN so the
+      // pupil-level filters below actually drop lessons whose pupil is
+      // inactive/archived/deleted. Without !inner, PostgREST returns the
+      // lesson with pupil=null instead of filtering the lesson out.
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, pupil:pupils(id, name, first_name, last_name, calendar_colour)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, status, deleted_at)",
         )
         .is("deleted_at", null)
+        .eq("pupil.status", "active")
+        .is("pupil.deleted_at", null)
         .gte("lesson_date", ymdLocal(rangeStart))
         .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
