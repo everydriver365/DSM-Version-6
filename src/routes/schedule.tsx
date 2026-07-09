@@ -744,7 +744,7 @@ function MonthCalendar({
       </div>
 
       {/* Date grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", paddingBottom: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridTemplateRows: "repeat(6, minmax(0, 1fr))", flex: "1 1 0", minHeight: 0, paddingBottom: 0 }}>
         {cells.map((d) => {
           const key = ymdLocal(d);
           const inMonth = d.getMonth() === month.getMonth();
