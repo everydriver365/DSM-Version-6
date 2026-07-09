@@ -4955,7 +4955,7 @@ function HomePage() {
 
 
             {/* 6. QUICK ACTIONS */}
-            <div style={{ marginTop: 22, padding: 16, background: '#EEF2F7', borderRadius: 26 }}>
+            <div style={{ marginTop: 22, padding: 16, background: '#F3F8FF', borderRadius: 26 }}>
               {(() => {
                 const unread = unreadMsgs.length;
                 const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
