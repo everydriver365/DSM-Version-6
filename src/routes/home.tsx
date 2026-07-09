@@ -4834,51 +4834,7 @@ function HomePage() {
               );
             })()}
 
-            {/* 5. WAITLIST / GAPS */}
-            {(() => {
-              const freeSlotCount = upcomingLessons.filter(l => l.status === 'free_slot').length;
-              const matchedCount = (() => {
-                if (!waitlist || waitlist.length === 0 || freeSlotCount === 0) return 0;
-                const today = new Date();
-                const available = upcomingLessons.filter(l => l.status === 'free_slot').map(l => ymd(lessonDateTime(l)));
-                if (available.length === 0) return 0;
-                let count = 0;
-                for (const w of waitlist) {
-                  const preferred = (w.preferred_days ?? []).map((d: string) => d.toLowerCase());
-                  for (const d of available) {
-                    const date = new Date(d + 'T00:00:00');
-                    const day = date.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
-                    if (preferred.includes(day)) { count++; break; }
-                  }
-                }
-                return count;
-              })();
-              if (!waitlist || waitlist.length === 0) return null;
-              return (
-                <div
-                  onClick={() => navigate({ to: '/waitlist' as never })}
-                  style={{ ...cardBase, marginTop: 10, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
-                >
-                  <div style={{ width: 36, height: 36, borderRadius: 11, background: '#E6F1FB', color: '#185FA5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <IconClockHour4 size={18} stroke={1.5} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>WAITLIST</div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>
-                      {waitlist.length} pupil{waitlist.length === 1 ? '' : 's'} waiting
-                    </div>
-                  </div>
-                  {matchedCount > 0 && (
-                    <div style={{ background: '#EAF3DE', color: '#3B6D11', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 20 }}>
-                      {matchedCount} potential match
-                    </div>
-                  )}
-                  <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
-                </div>
-              );
-            })()}
-
-            {/* 6. QUICK ACTIONS */}
+            {/* 5. QUICK ACTIONS */}
             <div style={{ marginTop: 22, padding: 16, background: '#F3F8FF', borderRadius: 26 }}>
               {(() => {
                 const unread = unreadMsgs.length;
