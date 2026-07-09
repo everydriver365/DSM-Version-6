@@ -4065,80 +4065,138 @@ function HomePage() {
         const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
 
         const AttentionTile = ({
-          value, label, active, activeBg, activeColor, activeBorder, onClick,
+          value, label, active, bg, color, onClick,
         }: {
           value: number; label: string; active: boolean;
-          activeBg: string; activeColor: string; activeBorder: string; onClick: () => void;
+          bg: string; color: string; onClick: () => void;
         }) => (
           <div
             onClick={onClick}
             role="button"
             tabIndex={0}
             style={{
-              background: active ? activeBg : '#FFFFFF',
-              border: `0.5px solid ${active ? activeBorder : '#E2E6ED'}`,
-              borderRadius: 12,
-              padding: '12px 8px',
+              background: bg,
+              border: active ? `1.5px solid ${color}` : '1.5px solid transparent',
+              borderRadius: 14,
+              padding: '12px 6px',
               textAlign: 'center',
               cursor: 'pointer',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             }}
           >
-            <div style={{ fontSize: 22, fontWeight: 900, color: active ? activeColor : '#D1D5DB', lineHeight: 1 }}>{value}</div>
-            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginTop: 2, color: active ? activeColor : '#9CA3AF' }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
           </div>
         );
+
+        // Month / YTD earnings from in-memory allLessons (60-day window;
+        // YTD is best-effort within that window — we don't have prior-period
+        // data here, so vs-comparisons render as "—").
+        const todayYmdStr = new Date().toISOString().slice(0, 10);
+        const yearStr = todayYmdStr.slice(0, 4);
+        const monthStr = todayYmdStr.slice(0, 7);
+        const monthEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+          if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) &&
+              (l.status === 'completed' || l.status === 'confirmed')) {
+            return s + Number(l.amount_due ?? 0);
+          }
+          return s;
+        }, 0);
+        const monthLessonsCompleted = (allLessons ?? []).filter(
+          (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) && l.status === 'completed',
+        ).length;
+        const ytdEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+          if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) &&
+              (l.status === 'completed' || l.status === 'confirmed')) {
+            return s + Number(l.amount_due ?? 0);
+          }
+          return s;
+        }, 0);
+        const ytdLessonsCompleted = (allLessons ?? []).filter(
+          (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) && l.status === 'completed',
+        ).length;
+        const todayUpcoming = todayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
+        const todayCompleted = todayLessons.filter((l: any) => l.status === 'completed').length;
+        const weekCompletedForAvg = (allLessons ?? []).filter(
+          (l: any) => l.status === 'completed' && l.lesson_date >= (typeof weekStartYmd === 'string' ? weekStartYmd : ''),
+        ).length;
+        const weekAvg = weekCompletedForAvg > 0 ? weekEarnings / weekCompletedForAvg : 0;
+
+        const statSlides: StatSlideData[] = [
+          {
+            key: 'today',
+            title: "Today's lessons",
+            subtitleTop: todayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
+            subtitleBottom: `£${Math.round(todayEarnings)} earned today`,
+            icon: <CalendarIcon size={20} strokeWidth={1.75} />,
+            right: { kind: 'circle', value: todayLessons.length, active: todayLessons.length > 0 },
+          },
+          {
+            key: 'week',
+            title: 'This week',
+            subtitleTop: `${weekLessonsTotal} lessons completed`,
+            subtitleBottom: weekAvg > 0 ? `avg £${weekAvg.toFixed(0)} per lesson` : 'avg —',
+            icon: <PoundSterling size={20} strokeWidth={1.75} />,
+            right: { kind: 'value', value: `£${Math.round(weekEarnings)}`, label: 'earned' },
+          },
+          {
+            key: 'month',
+            title: 'This month',
+            subtitleTop: `${monthLessonsCompleted} lessons completed`,
+            subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last month</span>,
+            icon: <PoundSterling size={20} strokeWidth={1.75} />,
+            right: { kind: 'value', value: `£${Math.round(monthEarnings)}`, label: 'earned' },
+          },
+          {
+            key: 'ytd',
+            title: 'Year to date',
+            subtitleTop: `${ytdLessonsCompleted} lessons completed`,
+            subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last year</span>,
+            icon: <BarChart3 size={20} strokeWidth={1.75} />,
+            right: { kind: 'value', value: `£${Math.round(ytdEarnings)}`, label: 'earned' },
+          },
+        ];
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
             {/* 0. NEEDS ATTENTION STRIP */}
             <div style={{ marginBottom: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>Needs attention</div>
-                {naUrgentCount > 0 ? (
-                  <div style={{ background: '#CC2229', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#12142B' }}>Needs attention</div>
+                {naUrgentCount > 0 && (
+                  <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>
                     {naUrgentCount} urgent
                   </div>
-                ) : (
-                  <div style={{ color: '#16A34A', fontSize: 12, fontWeight: 600 }}>All clear ✓</div>
                 )}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
                 <AttentionTile
                   value={naJobs} label="Jobs" active={naJobs > 0}
-                  activeBg="#FEF2F2" activeColor="#CC2229" activeBorder="#FECACA"
+                  bg="#EDF4FF" color="#8AABCC"
                   onClick={() => navigate({ to: '/bookings' as never })}
                 />
                 <AttentionTile
                   value={naTests} label="Tests" active={naTests > 0}
-                  activeBg="#EFF6FF" activeColor="#1A52A0" activeBorder="#BFDBFE"
+                  bg="#E8F0FE" color="#185FA5"
                   onClick={() => setActiveWs(2)}
                 />
                 <AttentionTile
                   value={naCalls} label="Calls" active={naCalls > 0}
-                  activeBg="#FFFBEB" activeColor="#D97706" activeBorder="#FDE68A"
+                  bg="#F0EEFF" color="#9B8EC4"
                   onClick={() => navigate({ to: '/messages' as never })}
                 />
                 <AttentionTile
                   value={naEnquiries} label="Enq's" active={naEnquiries > 0}
-                  activeBg="#F5F3FF" activeColor="#7C3AED" activeBorder="#DDD6FE"
+                  bg="#E8F5F0" color="#5D9E82"
                   onClick={() => navigate({ to: '/waitlist' as never })}
                 />
               </div>
             </div>
 
-            {/* 1. TODAY'S LESSONS TILE */}
-            <div style={{ marginBottom: 14 }}>
-              <TodayLessonsTile
-                todayLessons={todayLessons}
-                onNavigate={() => navigate({ to: '/schedule' })}
-              />
-            </div>
+            {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
+            <SwipeableStatsCard slides={statSlides} />
 
-            {/* 2. STATS 2×2 */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <StatCard label="Earnings this week" value={`£${weekEarnings.toFixed(0)}${earningsEstimated ? ' est' : ''}`} onClick={() => setEarningsOpen(true)} />
-              <StatCard label="Lessons this week" value={String(weekLessonsTotal)} />
-            </div>
+
 
 
             {/* 3. TIMELINE with TABS */}
