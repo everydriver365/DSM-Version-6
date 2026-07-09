@@ -9,6 +9,7 @@ import {
   IconArrowLeft,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
