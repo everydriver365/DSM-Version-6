@@ -738,6 +738,8 @@ function StatTile({ label, value, color }: { label: string; value: string; color
           color: "#8A94A6",
           letterSpacing: "0.03em",
           marginBottom: 6,
+          whiteSpace: "nowrap",
+          lineHeight: 1.2,
           ...POPPINS,
         }}
       >
