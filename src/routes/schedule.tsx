@@ -344,7 +344,40 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-
+      <div
+        style={{
+          display: "flex",
+          gap: 4,
+          padding: "8px 12px 4px",
+          background: "#FFFFFF",
+          borderBottom: "1px solid #F1F5F9",
+        }}
+      >
+        {(["calendar", "agenda"] as const).map((v) => {
+          const active = view === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setView(v)}
+              style={{
+                flex: 1,
+                padding: "8px 10px",
+                borderRadius: 8,
+                border: 0,
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+                background: active ? "#185FA5" : "transparent",
+                color: active ? "#FFFFFF" : "#6B7280",
+                ...POPPINS,
+              }}
+            >
+              {v === "calendar" ? "Calendar" : "Agenda"}
+            </button>
+          );
+        })}
+      </div>
 
       <div
         ref={scrollRef}
@@ -356,34 +389,33 @@ function SchedulePage() {
           padding: "0 0 calc(80px + env(safe-area-inset-bottom)) 0",
         }}
       >
-        <MonthCalendar
-          month={calendarMonth}
-          today={today}
-          selectedDateKey={selectedDateKey}
-          dotsByDay={dotsByDay}
-          onSelectDate={scrollToDate}
-          onPrevMonth={() => {
-            const d = new Date(calendarMonth);
-            d.setMonth(d.getMonth() - 1);
-            setCalendarMonth(d);
-          }}
-          onNextMonth={() => {
-            const d = new Date(calendarMonth);
-            d.setMonth(d.getMonth() + 1);
-            setCalendarMonth(d);
-          }}
-          onOpenMonthPicker={() => {
-            // No project-wide month picker exists yet — jump to today as a
-            // useful fallback so the chevron isn't inert. Replace with a real
-            // picker when one lands.
-            const d = new Date(today);
-            d.setDate(1);
-            setCalendarMonth(d);
-            scrollToDate(ymdLocal(today));
-          }}
-          onSearch={() => navigate({ to: "/search" as never })}
-          onAdd={() => navigate({ to: "/lessons/new" as never })}
-        />
+        {view === "calendar" && (
+          <MonthCalendar
+            month={calendarMonth}
+            today={today}
+            selectedDateKey={selectedDateKey}
+            dotsByDay={dotsByDay}
+            onSelectDate={scrollToDate}
+            onPrevMonth={() => {
+              const d = new Date(calendarMonth);
+              d.setMonth(d.getMonth() - 1);
+              setCalendarMonth(d);
+            }}
+            onNextMonth={() => {
+              const d = new Date(calendarMonth);
+              d.setMonth(d.getMonth() + 1);
+              setCalendarMonth(d);
+            }}
+            onOpenMonthPicker={() => {
+              const d = new Date(today);
+              d.setDate(1);
+              setCalendarMonth(d);
+              scrollToDate(ymdLocal(today));
+            }}
+            onSearch={() => navigate({ to: "/search" as never })}
+            onAdd={() => navigate({ to: "/lessons/new" as never })}
+          />
+        )}
         <div style={{ padding: "8px 12px 0" }}>
 
         {lessons === null ? (
