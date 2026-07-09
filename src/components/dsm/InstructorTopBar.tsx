@@ -1,6 +1,6 @@
 import React from "react";
-import { ChevronRight, ChevronLeft } from "lucide-react";
-import { PhoneIcon, CarIcon, BellIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
+import { ChevronRight, ChevronLeft, Bell } from "lucide-react";
+import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
 export type InstructorTopBarProps = {
@@ -146,45 +146,64 @@ export default function InstructorTopBar({
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
           <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
-        <button
-          type="button"
-          aria-label="Notifications"
-          onClick={onBell}
-          style={{
-            ...ICON_BTN,
-            animation: unreadCount > 0 ? "dsmBellPulse 1.8s ease-in-out infinite" : "none",
-          }}
-        >
-          <BellIcon size={17} strokeWidth={1.8} color="#ffffff" />
-          {unreadCount > 0 && (
+        {unreadCount > 0 ? (
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={onBell}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              background: "#CC2229",
+              borderRadius: 20,
+              padding: "4px 10px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
             <span
               style={{
-                position: "absolute",
-                top: -2,
-                right: -2,
-                minWidth: 14,
-                height: 14,
+                width: 6,
+                height: 6,
+                background: "white",
                 borderRadius: "50%",
-                background: "#1877D6",
-                color: "#ffffff",
-                fontSize: 7,
+                display: "inline-block",
+                animation: "urgentPulse 1.5s infinite",
+              }}
+            />
+            <span
+              style={{
+                color: "white",
+                fontSize: 11,
                 fontWeight: 700,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "0 3px",
-                border: "2px solid #0B1F3A",
-                lineHeight: 1,
+                fontFamily: "Poppins, sans-serif",
               }}
             >
-              {unreadCount}
+              {unreadCount} urgent
             </span>
-          )}
-        </button>
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={onBell}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Bell size={22} color="rgba(255,255,255,0.4)" />
+          </button>
+        )}
         <style>{`
-          @keyframes dsmBellPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
-            50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(204,34,41,0); }
+          @keyframes urgentPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
           }
         `}</style>
         <IconBtn ariaLabel="Menu" onClick={onMenu}>
