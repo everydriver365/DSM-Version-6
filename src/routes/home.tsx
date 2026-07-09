@@ -1247,12 +1247,12 @@ type QaTile = {
 function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   const PF = "'Poppins', system-ui, -apple-system, sans-serif";
   const NAVY = '#12142B';
-  const [page, setPage] = React.useState(0);
-  const [searchOpen, setSearchOpen] = React.useState(false);
-  const [query, setQuery] = React.useState('');
-  const dragRef = React.useRef<{ x: number; active: boolean } | null>(null);
+  const [page, setPage] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const dragRef = useRef<{ x: number; active: boolean } | null>(null);
 
-  const flat = React.useMemo(() => pages.flat(), [pages]);
+  const flat = useMemo(() => pages.flat(), [pages]);
   const q = query.trim().toLowerCase();
   const filtered = q ? flat.filter((t) => t.label.toLowerCase().includes(q)) : [];
   const showFiltered = searchOpen && q.length > 0;
