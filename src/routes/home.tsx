@@ -4981,26 +4981,29 @@ function HomePage() {
             {/* 6. AI INSIGHT */}
             {(() => {
               const insightAccent = '#6B4FD6';
-              const insightBg = '#F3EEFD';
               const hasAiSuggestions = aiSuggestions && aiSuggestions.length > 0;
               const suggestions = hasAiSuggestions ? aiSuggestions : [];
               const currentSuggestion = suggestions[aiInsightIndex] ?? null;
               const hasFallback = Boolean(aiInsight);
+
+              if (!hasAiSuggestions && !hasFallback) return null;
+
+              // Dismiss key — identifies the current insight so a new one re-shows the card.
+              const dismissKey = hasAiSuggestions
+                ? `ai:${aiInsightIndex}:${currentSuggestion?.title ?? ''}`
+                : `fb:${aiInsight?.text ?? ''}`;
+              if (aiInsightDismissedKey === dismissKey) return null;
+
+              const insightText = hasAiSuggestions
+                ? `${currentSuggestion!.title} — ${currentSuggestion!.body}`
+                : aiInsight!.text;
+              const actionLabel = hasAiSuggestions
+                ? (currentSuggestion?.cta ?? 'View suggestion')
+                : (aiInsight?.actionLabel ?? aiInsight?.cta ?? 'View suggestion');
               const hasAction = hasAiSuggestions
                 ? Boolean(currentSuggestion?.route)
                 : Boolean(aiInsight?.onAction || aiInsight?.to);
-
-              const handlePrev = (e?: React.MouseEvent) => {
-                e?.stopPropagation();
-                if (!suggestions.length) return;
-                setAiInsightIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
-              };
-              const handleNext = (e?: React.MouseEvent) => {
-                e?.stopPropagation();
-                if (!suggestions.length) return;
-                setAiInsightIndex((i) => (i + 1) % suggestions.length);
-              };
-              const handleCardClick = () => {
+              const runAction = () => {
                 if (hasAiSuggestions) {
                   if (currentSuggestion?.route) navigate({ to: currentSuggestion.route as never });
                 } else if (aiInsight?.onAction) {
@@ -5010,91 +5013,61 @@ function HomePage() {
                 }
               };
 
-              if (!hasAiSuggestions && !hasFallback) return null;
-
               return (
                 <div
-                  onClick={hasAction ? handleCardClick : undefined}
-                  role={hasAction ? "button" : undefined}
-                  tabIndex={hasAction ? 0 : undefined}
                   style={{
-                    ...cardBase,
                     marginTop: 22,
-                    padding: '14px 16px',
+                    background: '#FFFFFF',
+                    borderRadius: 14,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'row',
                     width: '100%',
-                    cursor: hasAction ? 'pointer' : 'default',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 11, background: insightBg, color: insightAccent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <IconSparkles size={18} stroke={1.5} />
+                  <div style={{ width: 4, background: insightAccent, flexShrink: 0 }} aria-hidden />
+                  <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: insightAccent, letterSpacing: '0.04em', marginBottom: 5 }}>
+                      AI INSIGHT
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.2 }}>AI INSIGHT</div>
-                      {hasAiSuggestions ? (
-                        <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>
-                          <span style={{ fontWeight: 700 }}>{currentSuggestion!.title}</span>
-                          <span style={{ color: MUTED }}> — </span>
-                          {currentSuggestion!.body}
-                          {currentSuggestion?.cta && (
-                            <span style={{ color: insightAccent, fontWeight: 600, marginLeft: 4 }}>{currentSuggestion.cta} →</span>
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, marginTop: 2, lineHeight: 1.35 }}>
-                          {aiInsight!.text}
-                        </div>
-                      )}
+                    <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', marginBottom: 8, lineHeight: 1.35 }}>
+                      {insightText}
                     </div>
-                    {hasAiSuggestions && suggestions.length > 1 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                      {hasAction ? (
                         <button
                           type="button"
-                          onClick={handlePrev}
-                          style={{ width: 26, height: 26, borderRadius: 6, border: 'none', background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                          aria-label="Previous insight"
+                          onClick={runAction}
+                          style={{
+                            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            fontSize: 12, fontWeight: 500, color: insightAccent,
+                          }}
                         >
-                          <ChevronLeft size={16} color={MUTED} />
+                          {actionLabel} →
                         </button>
-                        <button
-                          type="button"
-                          onClick={handleNext}
-                          style={{ width: 26, height: 26, borderRadius: 6, border: 'none', background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                          aria-label="Next insight"
-                        >
-                          <ChevronRight size={16} color={MUTED} />
-                        </button>
-                      </div>
+                      ) : <span />}
+                      <button
+                        type="button"
+                        onClick={() => setAiInsightDismissedKey(dismissKey)}
+                        style={{
+                          background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          fontSize: 11, color: '#B0BAC9',
+                        }}
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                    {aiInsightsLoading && !hasAiSuggestions && (
+                      <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
                     )}
                   </div>
-                  {hasAiSuggestions && suggestions.length > 1 && (
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 10 }}>
-                      {suggestions.map((_, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); setAiInsightIndex(i); }}
-                          aria-label={`Go to insight ${i + 1}`}
-                          style={{
-                            width: 7,
-                            height: 7,
-                            borderRadius: 999,
-                            border: 'none',
-                            padding: 0,
-                            cursor: 'pointer',
-                            background: i === aiInsightIndex ? insightAccent : '#E5E7EB',
-                            transition: 'background 150ms ease',
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {aiInsightsLoading && !hasAiSuggestions && (
-                    <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
-                  )}
                 </div>
               );
             })()}
+
 
 
           </div>
