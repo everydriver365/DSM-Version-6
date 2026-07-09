@@ -444,10 +444,23 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           clearInterval(t);
           const amt = Number(amount) || lessonCost;
           const newBalance = balance + (amt - lessonCost);
+          // NOTE: never write amount_due on payment — copy paid_amount from
+          // the row's existing amount_due.
+          const { data: lRowQr } = await supabase
+            .from("lessons")
+            .select("amount_due")
+            .eq("id", lessonId)
+            .maybeSingle();
+          const dueQr = Number((lRowQr as { amount_due?: number | null } | null)?.amount_due ?? lessonCost);
           await supabase
             .from("lessons")
-            .update({ payment_status: "paid", amount_due: lessonCost })
+            .update({
+              payment_status: "paid",
+              paid_amount: dueQr,
+              paid_at: new Date().toISOString(),
+            })
             .eq("id", lessonId);
+
           await supabase
             .from("pupils")
             .update({ balance_owed: -newBalance })
