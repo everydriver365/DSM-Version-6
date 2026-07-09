@@ -362,21 +362,41 @@ function PaymentsPage() {
   const pupilName = pupilFilter ? (allPupils.find((p) => p.id === pupilFilter)?.name ?? "") : "";
 
   return (
-    <div className="min-h-screen bg-white pb-24 pb-safe relative" style={POPPINS}>
+    <div
+      className="min-h-screen bg-white pb-24 pb-safe relative"
+      style={POPPINS}
+      onTouchStart={(e) => {
+        (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }}
+      onTouchEnd={(e) => {
+        const s = (window as any).__wsSwipe;
+        if (!s) return;
+        const dx = e.changedTouches[0].clientX - s.x;
+        const dy = e.changedTouches[0].clientY - s.y;
+        (window as any).__wsSwipe = null;
+        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+        // payments ≈ money = ws 3: left→market(4), right→pupils(2)
+        const target = dx < 0 ? 4 : 2;
+        navigate({ to: "/home" as never, search: { ws: target } as any });
+      }}
+    >
       {/* Top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between px-3" style={{ height: 52, backgroundColor: NAVY }}>
-        <button type="button" aria-label="Back" onClick={() => navigate({ to: "/home" })} className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
-          <ArrowLeft size={22} color="#fff" />
-        </button>
-        <div className="text-[16px] font-semibold text-white" style={POPPINS}>Payments</div>
-        <button
-          type="button"
-          onClick={() => setTakeOpen(true)}
-          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: TEAL }}
-        >
-          <Plus size={16} color="#fff" /> Take payment
-        </button>
+      <div className="sticky top-0 z-40" style={{ backgroundColor: NAVY }}>
+        <div className="flex items-center justify-between px-3" style={{ height: 52 }}>
+          <button type="button" aria-label="Back" onClick={() => navigate({ to: "/home" })} className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+            <ArrowLeft size={22} color="#fff" />
+          </button>
+          <div className="text-[16px] font-semibold text-white" style={POPPINS}>Payments</div>
+          <button
+            type="button"
+            onClick={() => setTakeOpen(true)}
+            className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
+            style={{ backgroundColor: TEAL }}
+          >
+            <Plus size={16} color="#fff" /> Take payment
+          </button>
+        </div>
+        <WorkspaceDots activeIndex={3} />
       </div>
 
       {/* Summary stats */}
