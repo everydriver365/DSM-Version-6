@@ -717,14 +717,33 @@ function PaymentsPage() {
 }
 
 // ---------- small components ----------
-function StatCard({ label, value, color, bold }: { label: string; value: string; color: string; bold?: boolean }) {
+function StatTile({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="p-3" style={{ border: `0.5px solid ${BORDER}`, borderRadius: 12, backgroundColor: "#fff" }}>
-      <div className="text-[10px] font-medium uppercase" style={{ color: MUTED, letterSpacing: "0.05em" }}>{label}</div>
-      <div className={bold ? "text-[18px] font-bold mt-1" : "text-[16px] font-semibold mt-1"} style={{ color, ...POPPINS }}>{value}</div>
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 14,
+        padding: "12px 14px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#8A94A6",
+          letterSpacing: "0.03em",
+          marginBottom: 6,
+          ...POPPINS,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ fontSize: 20, fontWeight: 600, color, ...POPPINS }}>{value}</div>
     </div>
   );
 }
+
 function Pill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button type="button" onClick={onClick} className="px-3 h-8 rounded-full text-[12px] font-medium whitespace-nowrap shrink-0"
