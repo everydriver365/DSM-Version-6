@@ -1134,15 +1134,33 @@ function HomePage() {
   const handleCarouselTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    touchStartTime.current = Date.now();
+    isSwiping.current = false;
   };
   const handleCarouselTouchEnd = (e: React.TouchEvent) => {
     const dx = touchStartX.current - e.changedTouches[0].clientX;
     const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
-    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
+    const dt = Date.now() - touchStartTime.current;
+    const isHorizontalSwipe = Math.abs(dx) > dy && Math.abs(dx) > 40 && dt < 400;
+    if (isHorizontalSwipe) {
       if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
       else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
     }
   };
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const handleTouchMove = (e: TouchEvent) => {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+      if (dx > dy && dx > 10) {
+        isSwiping.current = true;
+        e.preventDefault();
+      }
+    };
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => el.removeEventListener('touchmove', handleTouchMove);
+  }, []);
   useEffect(() => {
     const log = () => {
       // eslint-disable-next-line no-console
