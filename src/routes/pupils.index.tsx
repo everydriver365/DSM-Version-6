@@ -41,6 +41,13 @@ function initials(name: string) {
   return (a + b).toUpperCase() || "?";
 }
 
+const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+function avatarColor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+}
+
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
   if (status === "passed") return "#1877D6";
@@ -355,14 +362,14 @@ function PupilsIndexPage() {
       )}
 
       {/* Segmented control */}
-      <div className="px-4 pt-3">
+      <div style={{ margin: "16px 16px 16px" }}>
         <div
-          className="flex w-full rounded-lg p-0.5"
+          className="flex w-full"
           style={{
-            backgroundColor: "#F8F9FB",
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            backgroundColor: "#FFFFFF",
+            borderRadius: 12,
+            padding: 3,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
           {(
@@ -378,14 +385,16 @@ function PupilsIndexPage() {
                 key={s.k}
                 type="button"
                 onClick={() => setTab(s.k)}
-                className="flex-1 h-9 rounded-md text-[13px] font-medium transition-colors"
+                className="flex-1 text-[13px] transition-colors"
                 style={{
                   ...POPPINS,
-                  backgroundColor: active ? "#FFFFFF" : "transparent",
-                  color: active ? "#0B1F3A" : "#6B7280",
-                  borderWidth: active ? "0.5px" : 0,
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
+                  padding: "9px 4px",
+                  backgroundColor: active ? "#0F2044" : "transparent",
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  fontWeight: 500,
+                  border: "none",
+                  borderRadius: 9,
+                  cursor: "pointer",
                 }}
               >
                 {s.label}
@@ -396,31 +405,39 @@ function PupilsIndexPage() {
       </div>
 
       {/* List */}
-      <div className="pt-2">
+      <div>
         {filtered === null ? (
-          <div className="flex flex-col">
+          <div
+            style={{
+              margin: "0 16px",
+              background: "#FFFFFF",
+              borderRadius: 14,
+              overflow: "hidden",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
             {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="bg-white flex items-stretch"
-                style={{ gap: 12, padding: "12px 16px", minHeight: 64 }}
+                className="flex items-center"
+                style={{
+                  gap: 12,
+                  padding: "13px 16px",
+                  borderBottom: i < 5 ? "0.5px solid #EEF2F7" : "none",
+                }}
               >
                 <div
                   className="skeleton-pulse rounded-full shrink-0"
                   style={{ width: 40, height: 40, backgroundColor: "#EEF2F7" }}
                 />
-                <div
-                  className="shrink-0"
-                  style={{ width: 3, borderRadius: 2, backgroundColor: "#EEF2F7" }}
-                />
-                <div className="min-w-0 flex-1 flex flex-col justify-center gap-2">
+                <div className="min-w-0 flex-1 flex flex-col gap-2">
                   <div
                     className="skeleton-pulse"
                     style={{ height: 14, width: "60%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
                   />
                   <div
                     className="skeleton-pulse"
-                    style={{ height: 12, width: "40%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
+                    style={{ height: 11, width: "40%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
                   />
                 </div>
               </div>
@@ -444,165 +461,133 @@ function PupilsIndexPage() {
             }
           />
         ) : (
-          <div className="flex flex-col">
+          <div
+            style={{
+              margin: "0 16px",
+              background: "#FFFFFF",
+              borderRadius: 14,
+              overflow: "hidden",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
             {filtered.map((p, idx) => {
-              const status: StatusKey = tab === "archived" ? "archived" : ((p.status ?? "active").toLowerCase() as StatusKey);
               const b = balanceMap[p.id] || 0;
               const credit = Number(p.account_balance) || 0;
               const balanceOwed = b - credit;
-              console.log("[pupils] balance for", p.name, ":", {
-                pupilId: p.id,
-                balanceFromLessons: balanceMap[p.id],
-                creditFromAccountBalance: p.account_balance,
-                net: balanceOwed,
-              });
               const lessons = lessonCountMap[p.id] || 0;
-              const accent = accentColor(status);
               const prepaid = Number(p.prepaid_hours) || 0;
               const hoursUsed = hoursMap[p.id] || 0;
               const hoursRemaining = prepaid - hoursUsed;
-              const isPrepaidPupil =
-                prepaid > 0 ||
-                Number(p.ni_amount_total) > 0 ||
-                (p.lead_source ?? "").toLowerCase() === "national intensive";
+              const hasHoursLeft = prepaid > 0 && hoursRemaining > 0;
+              const hasBalance = balanceOwed > 0;
+              const avatarBg = avatarColor(p.id);
+              const lp = lastPaymentMap[p.id];
+              const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
               return (
-                <div key={p.id}>
-                  <Link
-                    to="/pupils/$id"
-                    params={{ id: p.id }}
-                    className="block bg-white"
+                <Link
+                  key={p.id}
+                  to="/pupils/$id"
+                  params={{ id: p.id }}
+                  className="block"
+                  style={{
+                    backgroundColor: hasBalance ? "#FFFBF8" : "#FFFFFF",
+                    borderBottom: idx < filtered.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                  }}
+                >
+                  <div
+                    className="flex items-center"
+                    style={{ gap: 12, padding: "13px 16px" }}
                   >
                     <div
-                      className="flex items-stretch"
-                      style={{ gap: 12, padding: "12px 16px", minHeight: 64 }}
+                      className="flex items-center justify-center shrink-0 overflow-hidden"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        backgroundColor: avatarBg,
+                        color: "#FFFFFF",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        ...POPPINS,
+                      }}
                     >
+                      {p.profile_image_url ? (
+                        <img
+                          src={p.profile_image_url}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        initials(p.name)
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1 flex flex-col">
                       <div
-                        className="flex items-center justify-center rounded-full shrink-0 text-[13px] font-semibold self-center overflow-hidden"
+                        className="truncate"
+                        style={{ fontSize: 15, fontWeight: 500, color: "#12142B", ...POPPINS }}
+                      >
+                        {p.name}
+                      </div>
+                      <div
+                        className="flex flex-wrap items-center"
+                        style={{ gap: 6, marginTop: 2 }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 500,
+                            color: hasHoursLeft ? "#2E9E5B" : "#B0BAC9",
+                            ...POPPINS,
+                          }}
+                        >
+                          {hasHoursLeft ? `${hoursRemaining.toFixed(1)}h left` : "No prepaid hours"}
+                        </span>
+                        {hasBalance && (
+                          <span
+                            style={{
+                              backgroundColor: "#FCEBEB",
+                              color: "#A32D2D",
+                              fontSize: 10,
+                              fontWeight: 500,
+                              padding: "2px 7px",
+                              borderRadius: 20,
+                              ...POPPINS,
+                            }}
+                          >
+                            £{balanceOwed.toFixed(2)} owed
+                          </span>
+                        )}
+                        {lp && lpDays !== null && (
+                          <span
+                            style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}
+                          >
+                            · paid £{lp.amount.toFixed(2)} {lpDays === 0 ? "today" : `${lpDays} day${lpDays === 1 ? "" : "s"} ago`}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center shrink-0" style={{ gap: 2 }}>
+                      <span
                         style={{
-                          width: 40,
-                          height: 40,
-                          backgroundColor: "#1877D6",
-                          color: "#FFFFFF",
+                          fontSize: 12,
+                          color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
                           ...POPPINS,
                         }}
                       >
-                        {p.profile_image_url ? (
-                          <img
-                            src={p.profile_image_url}
-                            alt=""
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
-                        ) : (
-                          initials(p.name)
-                        )}
-                      </div>
-
-                      <div
-                        className="shrink-0"
-                        style={{ width: 3, borderRadius: 2, backgroundColor: accent, alignSelf: "stretch" }}
-                      />
-                      <div className="min-w-0 flex-1 flex flex-col justify-center">
-                        <div
-                          className="text-[14px] font-semibold text-[#0B1F3A] truncate"
-                          style={POPPINS}
-                        >
-                          {p.name}
-                        </div>
-                        <div className="flex flex-col gap-0.5 mt-0.5">
-                        <div className="flex items-center gap-2">
-                          {isPrepaidPupil ? (
-                            prepaid > 0 ? (
-                              hoursRemaining <= 0 ? (
-                                <span
-                                  className="text-[12px] font-medium"
-                                  style={{ color: "#1877D6", ...POPPINS }}
-                                >
-                                  Hours done
-                                </span>
-                              ) : (
-                                <span
-                                  className="text-[12px] font-medium"
-                                  style={{
-                                    color: hoursRemaining > 5 ? "#1877D6" : "#1877D6",
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  {hoursRemaining.toFixed(1)}h left
-                                </span>
-                              )
-                            ) : (
-                              <span
-                                className="text-[12px] font-medium"
-                                style={{ color: "#1877D6", ...POPPINS }}
-                              >
-                                Prepaid ✓
-                              </span>
-                            )
-                          ) : balanceOwed > 0 ? (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#1877D6", ...POPPINS }}
-                            >
-                              £{balanceOwed.toFixed(2)} owed
-                            </span>
-                          ) : balanceOwed < 0 ? (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#16A34A", ...POPPINS }}
-                            >
-                              In credit £{Math.abs(balanceOwed).toFixed(2)}
-                            </span>
-                          ) : lessons > 0 ? (
-                            <span
-                              className="text-[12px] font-medium"
-                              style={{ color: "#1877D6", ...POPPINS }}
-                            >
-                              All paid ✓
-                            </span>
-                          ) : null}
-                        </div>
-                        {lastPaymentMap[p.id] && (
-                          <div className="flex items-center gap-1">
-                            <CreditCard size={10} color="#6B7280" />
-                            <span className="text-xs text-[#6B7280]" style={POPPINS}>
-                              Last payment: £{lastPaymentMap[p.id].amount.toFixed(2)} ({lastPaymentMap[p.id].method}) {formatRelativeDate(lastPaymentMap[p.id].date)}
-                            </span>
-                          </div>
-                        )}
-                        {prepaid > 0 && Number(p.ni_amount_total) > 0 && (() => {
-                          const niOwed = Number(p.ni_amount_total ?? 0) - Number(p.ni_amount_paid ?? 0);
-                          if (niOwed <= 0) return null;
-                          return (
-                            <span
-                              className="text-[11px] font-medium"
-                              style={{ color: "#1877D6", ...POPPINS }}
-                            >
-                              £{niOwed.toFixed(2)} NI owed
-                            </span>
-                          );
-                        })()}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span
-                          className="text-[12px] text-[#6B7280]"
-                          style={POPPINS}
-                        >
-                          {lessons} {lessons === 1 ? "lesson" : "lessons"}
-                        </span>
-                        <ChevronRight size={14} color="#9CA3AF" />
-                      </div>
+                        {lessons} {lessons === 1 ? "lesson" : "lessons"}
+                      </span>
+                      <ChevronRight size={15} color="#B0BAC9" />
                     </div>
-                  </Link>
-                  {idx < filtered.length - 1 && (
-                    <div style={{ height: 0.5, backgroundColor: "#F3F4F6", marginLeft: 68 }} />
-                  )}
-                </div>
+                  </div>
+                </Link>
               );
             })}
           </div>
         )}
       </div>
+
 
 
       <style>{`
