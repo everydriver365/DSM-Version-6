@@ -1228,6 +1228,232 @@ function SchedulePage() {
         </div>
       ) : (
         <div style={{ paddingTop: 16 }}>
+          {dayInfo.items.length === 0 ? (
+            (() => {
+              const dayLabel = dayTab === "today" ? "TODAY" : dayTab === "tomorrow" ? "TOMORROW" : "NEXT";
+              const DAY_ABBR = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+              const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+              const dateChip = `${DAY_ABBR[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTH_ABBR[selectedDate.getMonth()]}`;
+              const totalHours = dayInfo.totalMins / 60;
+              const hoursText = totalHours > 0
+                ? `${totalHours % 1 === 0 ? totalHours.toFixed(0) : totalHours.toFixed(1)} hours available`
+                : null;
+              const sortedGaps = [...dayInfo.gaps].sort((a, b) => a.startMs - b.startMs);
+              const windowLabel = sortedGaps.length > 0
+                ? `${formatTimeFromDate(new Date(sortedGaps[0].startMs))} – ${formatTimeFromDate(new Date(sortedGaps[sortedGaps.length - 1].endMs))}`
+                : null;
+              const DAYS_ABBR = ["sun","mon","tue","wed","thu","fri","sat"];
+              const dayKey = DAYS_ABBR[selectedDate.getDay()];
+              const parseHM = (t: string | null | undefined, fallback: number) => {
+                if (!t) return fallback;
+                const [h, m] = t.split(":").map(Number);
+                return (h || 0) * 60 + (m || 0);
+              };
+              type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
+              const matches: Matched[] = [];
+              const gapForMatch = sortedGaps[0];
+              if (gapForMatch) {
+                const gs = new Date(gapForMatch.startMs);
+                const startMins = gs.getHours() * 60 + gs.getMinutes();
+                const endMins = startMins + gapForMatch.usableMins;
+                const hoursUntil = (gapForMatch.startMs - Date.now()) / 3600000;
+                Object.entries(pupilAvailMap).forEach(([pid, a]) => {
+                  const info = pupilInfoMap[pid];
+                  if (!info) return;
+                  const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
+                  if (days.length && !days.includes(dayKey)) return;
+                  const fromMins = parseHM(a.available_from, 0);
+                  const untilMins = parseHM(a.available_until, 24 * 60);
+                  if (endMins <= fromMins || startMins >= untilMins) return;
+                  const minNotice = a.min_notice_hours ?? 24;
+                  if (hoursUntil < minNotice && !a.short_notice_opt_in) return;
+                  const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
+                  matches.push({ id: pid, first, avatar: (info as any).profile_image_url ?? null, colour: (info as any).calendar_colour ?? null });
+                });
+              }
+              const shown = matches.slice(0, 3);
+              const extra = Math.max(0, matches.length - shown.length);
+              const avatarInitial = (name: string) => name.slice(0, 1).toUpperCase();
+              const showStats = !!windowLabel || matches.length > 0;
+              return (
+                <>
+                  <div
+                    style={{
+                      margin: "0 16px 10px",
+                      background: "#FFFFFF",
+                      borderRadius: 20,
+                      overflow: "hidden",
+                      border: `0.5px solid ${BORDER}`,
+                      ...POPPINS,
+                    }}
+                  >
+                    <div style={{ background: "#FBEFE1", padding: "18px 18px 16px" }}>
+                      <div style={{ fontSize: 12, fontWeight: 500, color: "#B5661E", letterSpacing: "0.02em", marginBottom: 6 }}>
+                        {dayLabel} · {dateChip}
+                      </div>
+                      <div style={{ fontSize: 22, fontWeight: 500, color: "#7A4813", marginBottom: 2 }}>
+                        Nothing booked yet
+                      </div>
+                      {hoursText && (
+                        <div style={{ fontSize: 14, color: "#B5661E" }}>{hoursText}</div>
+                      )}
+                    </div>
+
+                    {showStats && (
+                      <div style={{ display: "flex", borderBottom: `0.5px solid ${BORDER}` }}>
+                        {windowLabel && (
+                          <div style={{ flex: 1, padding: "14px 16px", borderRight: matches.length > 0 ? `0.5px solid ${BORDER}` : "none" }}>
+                            <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Window</div>
+                            <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{windowLabel}</div>
+                          </div>
+                        )}
+                        {matches.length > 0 && (
+                          <div style={{ flex: 1, padding: "14px 16px" }}>
+                            <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Pupils</div>
+                            <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{matches.length} active</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {matches.length > 0 && (
+                      <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}`, display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {shown.map((m, i) => (
+                            <div
+                              key={m.id}
+                              title={m.first}
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 999,
+                                background: m.colour || "#E2E8F0",
+                                color: "#FFFFFF",
+                                border: "2px solid #FFFFFF",
+                                marginLeft: i === 0 ? 0 : -8,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 10,
+                                fontWeight: 500,
+                                overflow: "hidden",
+                                ...POPPINS,
+                              }}
+                            >
+                              {m.avatar ? (
+                                <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              ) : (
+                                avatarInitial(m.first)
+                              )}
+                            </div>
+                          ))}
+                          {extra > 0 && (
+                            <div
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 999,
+                                background: SURFACE_1,
+                                color: MUTED,
+                                border: "2px solid #FFFFFF",
+                                marginLeft: -8,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 10,
+                                fontWeight: 500,
+                                ...POPPINS,
+                              }}
+                            >
+                              +{extra}
+                            </div>
+                          )}
+                        </div>
+                        <span style={{ fontSize: 13, color: MUTED }}>
+                          {matches.length} {matches.length === 1 ? "pupil" : "pupils"} available to book
+                        </span>
+                      </div>
+                    )}
+
+                    <div style={{ padding: "14px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                      <button
+                        type="button"
+                        onClick={() => navigate({ to: "/gaps" })}
+                        style={{
+                          background: "#185FA5",
+                          color: "#FFFFFF",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: 13,
+                          fontSize: 14,
+                          fontWeight: 500,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          cursor: "pointer",
+                          ...POPPINS,
+                        }}
+                      >
+                        <IconBolt size={16} stroke={1.75} /> Fill slots
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate({ to: "/broadcast" as never })}
+                        style={{
+                          background: SURFACE_1,
+                          color: MUTED,
+                          border: `1px solid ${BORDER}`,
+                          borderRadius: 12,
+                          padding: 13,
+                          fontSize: 14,
+                          fontWeight: 500,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          cursor: "pointer",
+                          ...POPPINS,
+                        }}
+                      >
+                        <IconSpeakerphone size={16} stroke={1.75} /> Broadcast
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ margin: "0 16px" }}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate({
+                          to: `/lessons/new?date=${ymd(selectedDate)}` as unknown as "/lessons/new",
+                        })
+                      }
+                      style={{
+                        width: "100%",
+                        background: "#0F2044",
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: 12,
+                        padding: 14,
+                        fontSize: 14,
+                        fontWeight: 500,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 6,
+                        cursor: "pointer",
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconPlus size={17} stroke={1.75} /> Add lesson manually
+                    </button>
+                  </div>
+                </>
+              );
+            })()
+          ) : (
+            <>
           {/*
             Gap-filler summary card — amber "open slot" treatment.
             Matched pupil avatars use the same availability-matching logic
