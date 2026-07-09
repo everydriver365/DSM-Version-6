@@ -1,36 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
-  Plus,
-  Calendar as CalendarIcon,
-  MapPin,
-  ChevronRight,
-  PoundSterling,
-  CheckCircle,
-  X,
-} from "lucide-react";
-import { ArrowLeft, Sparkles } from "lucide-react";
-import {
-  IconPhone,
-  IconBell,
+  IconSearch,
   IconPlus,
-  IconClock,
-  IconChevronRight,
-  IconBolt,
-  IconSpeakerphone,
+  IconChevronDown,
 } from "@tabler/icons-react";
-import type React from "react";
-import { toast } from "sonner";
-import { ConfirmDialog } from "../components/ConfirmDialog";
-import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { supabase } from "../lib/supabaseClient";
-import { readMinGapMinutes, writeMinGapMinutes } from "../lib/gapPrefs";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
     meta: [
       { title: "Schedule — DSM by EveryDriver" },
-      { name: "description", content: "View and manage your lesson schedule." },
+      { name: "description", content: "Scrollable agenda view of your lessons." },
     ],
   }),
   component: SchedulePage,
@@ -38,80 +19,26 @@ export const Route = createFileRoute("/schedule")({
 
 const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
 
-const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-
-async function awardPoints(
-  instructorId: string,
-  event: string,
-  token: string,
-  metadata?: any,
-) {
-  try {
-    await fetch(`${SUPABASE_URL}/functions/v1/award-points`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        apikey: SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify({ instructorId, event, metadata }),
-    });
-  } catch (err) {
-    console.warn("[rewards] award-points failed:", err);
-  }
+// Deterministic pupil colour palette. Same pupil_id -> same colour everywhere.
+const PUPIL_PALETTE = [
+  "#185FA5",
+  "#6B4FD6",
+  "#3B6D11",
+  "#C4501E",
+  "#0C8577",
+  "#A32D2D",
+  "#854F0B",
+  "#185F8A",
+];
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
 }
-
-async function applyNoShowFee(
-  lesson: Lesson,
-  pupilName: string,
-  token: string,
-): Promise<number | null> {
-  if (!lesson.instructor_id || !lesson.pupil_id) return null;
-  try {
-    const prefsRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/instructor_reminder_preferences?instructor_id=eq.${lesson.instructor_id}&select=no_show_fee,auto_charge_no_show,late_cancel_hours&limit=1`,
-      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-    );
-    const prefs = (await prefsRes.json())?.[0];
-    if (!prefs || !prefs.auto_charge_no_show || !(prefs.no_show_fee > 0)) return null;
-    const fee = (lesson.amount_due ?? 0) * (prefs.no_show_fee / 100);
-    if (fee <= 0) return null;
-    const pupilRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/pupils?id=eq.${lesson.pupil_id}&select=account_balance`,
-      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-    );
-    const current = (await pupilRes.json())?.[0]?.account_balance ?? 0;
-    await fetch(`${SUPABASE_URL}/rest/v1/pupils?id=eq.${lesson.pupil_id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${token}`,
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({ account_balance: Number(current) + fee }),
-    });
-    toast.success(`No-show fee of £${fee.toFixed(2)} added to ${pupilName}'s balance`);
-    return fee;
-  } catch (err) {
-    console.warn("[schedule] no-show fee failed:", err);
-    return null;
-  }
-}
-
-async function getLateCancelHours(instructorId: string, token: string): Promise<number | null> {
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/instructor_reminder_preferences?instructor_id=eq.${instructorId}&select=late_cancel_hours&limit=1`,
-      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-    );
-    const row = (await res.json())?.[0];
-    return row?.late_cancel_hours ?? null;
-  } catch {
-    return null;
-  }
+function pupilColour(pupilId: string | null | undefined, fallback?: string | null): string {
+  if (fallback && /^#[0-9a-fA-F]{3,8}$/.test(fallback)) return fallback;
+  if (!pupilId) return PUPIL_PALETTE[0];
+  return PUPIL_PALETTE[hashString(pupilId) % PUPIL_PALETTE.length];
 }
 
 interface Pupil {
@@ -119,32 +46,31 @@ interface Pupil {
   name: string | null;
   first_name?: string | null;
   last_name?: string | null;
-  phone?: string | null;
-  profile_image_url?: string | null;
+  calendar_colour?: string | null;
 }
 
 interface Lesson {
   id: string;
-  instructor_id?: string | null;
   pupil_id?: string | null;
   lesson_date: string;
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
-  payment_status?: string | null;
-  amount_due?: number | null;
-  pickup_location?: string | null;
-  pickup_postcode?: string | null;
-  check_in_status?: string | null;
-  prepaid_hours_used?: number | null;
-  eol_completed?: boolean | null;
-  eol_completed_at?: string | null;
   lesson_type?: string | null;
-  notes?: string | null;
-  cancelled_at?: string | null;
-  cancellation_reason?: string | null;
   pupil: Pupil | null;
 }
+
+// NOTE: External calendar events, personal/block time, tasks, and public
+// holiday rows are not yet in the data model. Placeholder row renderers
+// below accept a common AgendaEntry shape so wiring those sources later
+// is a matter of pushing entries into the same list — no UI rewrite.
+type AgendaEntry =
+  | { kind: "lesson"; id: string; start: Date; end: Date; allDay: false; lesson: Lesson }
+  // Reserved for future wiring:
+  | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
+  | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string }
+  | { kind: "task"; id: string; start: Date; end: Date; allDay: boolean; title: string; completed?: boolean }
+  | { kind: "holiday"; id: string; start: Date; end: Date; allDay: true; title: string };
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -156,30 +82,11 @@ function addDays(d: Date, n: number) {
   x.setDate(x.getDate() + n);
   return x;
 }
-function ymd(d: Date) {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Europe/London",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(d);
-  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
-  return `${get("year")}-${get("month")}-${get("day")}`;
-}
-function lessonStart(l: Lesson) {
-  return new Date(`${l.lesson_date}T${(l.lesson_time ?? "00:00:00").slice(0, 8)}`);
-}
-function lessonEnd(l: Lesson) {
-  return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-}
-function formatTimeFromDate(d: Date) {
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mm}`;
-}
-function formatLessonTime(l: Lesson) {
-  const displayTime = !l.lesson_time || l.lesson_time === "00:00" ? "TBC" : l.lesson_time.substring(0, 5);
-  return displayTime;
+function ymdLocal(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 function pupilDisplayName(p: Pupil | null) {
   if (!p) return "Unknown pupil";
@@ -187,1654 +94,483 @@ function pupilDisplayName(p: Pupil | null) {
   const full = [p.first_name, p.last_name].filter(Boolean).join(" ").trim();
   return full || "Unknown pupil";
 }
-function formatDurationShort(mins: number | null) {
-  const m = mins ?? 60;
-  if (m % 60 === 0) return `${m / 60}h`;
-  if (m < 60) return `${m}m`;
-  return `${Math.floor(m / 60)}h ${m % 60}m`;
+function fmtTime(d: Date) {
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
 }
-function dayHeaderLabel(d: Date, today: Date) {
-  const main = d
-    .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-  const diff = Math.round((startOfDay(d).getTime() - today.getTime()) / 86400000);
-  let suffix = "";
-  if (diff === 0) suffix = "today";
-  else if (diff === 1) suffix = "tomorrow";
-  else if (diff === -1) suffix = "yesterday";
-  return { main, suffix };
+function lessonStart(l: Lesson) {
+  return new Date(`${l.lesson_date}T${(l.lesson_time ?? "00:00:00").slice(0, 8)}`);
 }
+function lessonEnd(l: Lesson) {
+  return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+}
+
+// Monday-start week key so "Week of..." labels group by ISO week.
+function mondayOf(d: Date) {
+  const x = startOfDay(d);
+  const day = x.getDay(); // 0=Sun
+  const diff = (day + 6) % 7;
+  return addDays(x, -diff);
+}
+function weekRangeLabel(d: Date) {
+  const start = mondayOf(d);
+  const end = addDays(start, 6);
+  const sameMonth = start.getMonth() === end.getMonth();
+  const s = start.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
+  const e = end.toLocaleDateString("en-GB", { month: sameMonth ? undefined : "short", day: "numeric" });
+  return `Week of ${s} – ${e}`;
+}
+
+const PAST_DAYS = 30;
+const FUTURE_DAYS = 180;
 
 function SchedulePage() {
   const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
-  const [daysAhead, setDaysAhead] = useState<number>(6); // today + 6 = 7 days (with today-1 = 8 total)
-  const rangeStart = useMemo(() => addDays(today, -1), [today]);
-  const rangeEnd = useMemo(() => addDays(today, daysAhead), [today, daysAhead]);
+  const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
+  const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
-  const [now, setNow] = useState<Date>(() => new Date());
-  const [openActionsId, setOpenActionsId] = useState<string | null>(null);
-  const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
-  const [cancelLesson, setCancelLesson] = useState<Lesson | null>(null);
-  const [minGapMinutes, setMinGapMinutes] = useState<number>(() => readMinGapMinutes());
-  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
-  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
-  const [pupilBufferMap, setPupilBufferMap] = useState<
-    Record<string, { before: number | null; after: number | null }>
-  >({});
-  // Pupil info + availability — reused from the same matching approach the
-  // home page uses to surface waitlist matches for open gaps.
-  const [pupilInfoMap, setPupilInfoMap] = useState<
-    Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null }>
-  >({});
-  const [pupilAvailMap, setPupilAvailMap] = useState<
-    Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>
-  >({});
+  const [visibleMonth, setVisibleMonth] = useState<string>(() =>
+    today.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
+  );
 
-  useEffect(() => {
-    const sync = () => setMinGapMinutes(readMinGapMinutes());
-    window.addEventListener("min-gap-minutes-changed", sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener("min-gap-minutes-changed", sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const todayRef = useRef<HTMLDivElement | null>(null);
+  const dayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const didScrollToToday = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data: authData } = await supabase.auth.getUser();
-      const uid = authData.user?.id;
-      if (!uid) return;
-      const { data, error } = await supabase
-        .from("instructors")
-        .select("min_gap_minutes, lesson_buffer_before, lesson_buffer_after")
-        .eq("id", uid)
-        .maybeSingle();
-      if (cancelled || error || !data) return;
-      const v = (data as unknown as { min_gap_minutes?: number }).min_gap_minutes;
-      if (typeof v === "number") {
-        setMinGapMinutes(v);
-        writeMinGapMinutes(v);
-      }
-      const bb = (data as unknown as { lesson_buffer_before?: number }).lesson_buffer_before;
-      const ba = (data as unknown as { lesson_buffer_after?: number }).lesson_buffer_after;
-      if (typeof bb === "number") setInstructorBufferBefore(bb);
-      if (typeof ba === "number") setInstructorBufferAfter(ba);
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(id);
-  }, []);
-
+  // Fetch lessons in the full ±window. Uses the same lessons/pupils select
+  // pattern already used elsewhere in the app. Range is 210 days of the
+  // instructor's own rows (RLS scoped) — a single windowed query is fine at
+  // this size; if the row count ever grows problematic, split into ±30 day
+  // pages keyed by scroll boundary.
   useEffect(() => {
     let cancelled = false;
     setLessons(null);
-    const windowStart = ymd(rangeStart);
-    const windowEnd = ymd(rangeEnd);
-    console.log("[schedule] date window:", windowStart, windowEnd);
-
     (async () => {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, instructor_id, pupil_id, lesson_date, lesson_time, duration_minutes, status, payment_status, amount_due, pickup_location, pickup_postcode, check_in_status, prepaid_hours_used, eol_completed, eol_completed_at, lesson_type, notes, cancelled_at, cancellation_reason, pupil:pupils(id, name, first_name, last_name, phone, profile_image_url, photo_url, prepaid_hours)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, pupil:pupils(id, name, first_name, last_name, calendar_colour)",
         )
         .is("deleted_at", null)
-        .gte("lesson_date", windowStart)
-        .lte("lesson_date", windowEnd)
+        .gte("lesson_date", ymdLocal(rangeStart))
+        .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
         .order("lesson_time", { ascending: true });
-
       if (cancelled) return;
-
-      const lessons = data as unknown as Lesson[] | null;
-      const rows = lessons ?? [];
-      console.log("[schedule] fetch result:", lessons?.length, "lessons", error);
-      console.log("[schedule] first lesson:", lessons?.[0]);
-      if (error) console.error("[schedule] fetch error", error);
-      setLessons(rows);
-
-      const pupilIds = [...new Set(rows.map((l) => l.pupil_id).filter(Boolean))];
-      if (pupilIds.length > 0) {
-        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-        const token = (await supabase.auth.getSession()).data.session?.access_token;
-        if (token) {
-          const pupilRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/pupils?id=in.(${pupilIds.join(",")})&select=id,buffer_before_minutes,buffer_after_minutes`,
-            {
-              headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
-            },
-          );
-          const pupilData = await pupilRes.json();
-          const bufMap: Record<string, { before: number | null; after: number | null }> = {};
-          (pupilData || []).forEach((p: any) => {
-            bufMap[p.id] = {
-              before: p.buffer_before_minutes ?? null,
-              after: p.buffer_after_minutes ?? null,
-            };
-          });
-          if (!cancelled) {
-            setPupilBufferMap(bufMap);
-          }
-
-          // Load instructor-wide pupil info + availability for gap matching.
-          const { data: authData2 } = await supabase.auth.getUser();
-          const uid = authData2.user?.id;
-          if (uid) {
-            const [{ data: allPupils }, { data: availRows }] = await Promise.all([
-              supabase
-                .from("pupils")
-                .select("id, name, first_name, profile_image_url, photo_url, calendar_colour")
-                .eq("instructor_id", uid)
-                .is("deleted_at", null)
-                .not("status", "in", "(inactive,archived,cancelled)"),
-              supabase
-                .from("pupil_ready_to_learn_settings")
-                .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in")
-                .eq("instructor_id", uid),
-            ]);
-            if (!cancelled) {
-              const info: typeof pupilInfoMap = {};
-              (allPupils || []).forEach((p: any) => {
-                info[p.id] = {
-                  first_name: p.first_name ?? null,
-                  name: p.name ?? null,
-                  profile_image_url: p.profile_image_url ?? p.photo_url ?? null,
-                  calendar_colour: p.calendar_colour ?? null,
-                };
-              });
-              setPupilInfoMap(info);
-              const avail: typeof pupilAvailMap = {};
-              (availRows || []).forEach((a: any) => {
-                if (a.pupil_id)
-                  avail[a.pupil_id] = {
-                    available_days: a.available_days ?? null,
-                    available_from: a.available_from ?? null,
-                    available_until: a.available_until ?? null,
-                    min_notice_hours: a.min_notice_hours ?? null,
-                    short_notice_opt_in: a.short_notice_opt_in ?? null,
-                  };
-              });
-              setPupilAvailMap(avail);
-            }
-          }
-        }
+      if (error) {
+        console.error("[schedule] fetch error", error);
+        setLessons([]);
+        return;
       }
+      setLessons((data as unknown as Lesson[]) ?? []);
     })();
-
     return () => {
       cancelled = true;
     };
   }, [rangeStart, rangeEnd]);
 
-
-  const lessonsByDate = useMemo(() => {
-    const map = new Map<string, Lesson[]>();
-    if (!lessons) return map;
-    for (const l of lessons) {
-      const dateKey = l.lesson_date.substring(0, 10); // Always YYYY-MM-DD
-      const arr = map.get(dateKey) ?? [];
-      arr.push(l);
-      map.set(dateKey, arr);
+  // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
+  const entriesByDay = useMemo(() => {
+    const map = new Map<string, AgendaEntry[]>();
+    for (const l of lessons ?? []) {
+      const key = l.lesson_date.substring(0, 10);
+      const arr = map.get(key) ?? [];
+      arr.push({
+        kind: "lesson",
+        id: l.id,
+        start: lessonStart(l),
+        end: lessonEnd(l),
+        allDay: false,
+        lesson: l,
+      });
+      map.set(key, arr);
     }
-    const grouped = Object.fromEntries(map);
-    console.log(
-      "[schedule] grouped days:",
-      Object.keys(grouped),
-      "total groups:",
-      Object.keys(grouped).length,
-    );
-    console.log("[schedule] grouped lessons for first day:", Object.values(grouped)?.[0]);
-    console.log(
-      "[schedule] day keys being rendered:",
-      Array.from({ length: 8 }).map((_, i) => ymd(addDays(rangeStart, i))),
-    );
+    // TODO: merge external calendar / personal / task / holiday entries here
+    // when their data sources land.
+    for (const [k, arr] of map) {
+      arr.sort((a, b) => {
+        if (a.allDay && !b.allDay) return -1;
+        if (!a.allDay && b.allDay) return 1;
+        return a.start.getTime() - b.start.getTime();
+      });
+      map.set(k, arr);
+    }
     return map;
-  }, [lessons, rangeStart]);
+  }, [lessons]);
 
-  const days = useMemo(() => {
-    const out: Date[] = [];
-    const total = Math.round((rangeEnd.getTime() - rangeStart.getTime()) / 86400000) + 1;
-    for (let i = 0; i < total; i++) out.push(addDays(rangeStart, i));
+  // Ordered list of day keys that actually have entries.
+  const orderedDayKeys = useMemo(() => {
+    return [...entriesByDay.keys()].sort();
+  }, [entriesByDay]);
+
+  const todayKey = ymdLocal(today);
+
+  // Insert "Week of ..." labels above the first day of each new week.
+  type Row =
+    | { type: "week"; key: string; label: string }
+    | { type: "day"; key: string; date: Date; entries: AgendaEntry[] };
+  const rows: Row[] = useMemo(() => {
+    const out: Row[] = [];
+    let lastWeekKey = "";
+    for (const key of orderedDayKeys) {
+      const [y, m, d] = key.split("-").map(Number);
+      const date = new Date(y, m - 1, d);
+      const wk = ymdLocal(mondayOf(date));
+      if (wk !== lastWeekKey) {
+        out.push({ type: "week", key: `w-${wk}`, label: weekRangeLabel(date) });
+        lastWeekKey = wk;
+      }
+      out.push({ type: "day", key, date, entries: entriesByDay.get(key)! });
+    }
     return out;
-  }, [rangeStart, rangeEnd]);
+  }, [orderedDayKeys, entriesByDay]);
 
-  const currentId = useMemo(() => {
-    if (!lessons) return null;
-    const t = now.getTime();
-    for (const l of lessons) {
-      const s = lessonStart(l).getTime();
-      const e = lessonEnd(l).getTime();
-      if (s <= t && t <= e && l.status !== "cancelled") return l.id;
+  // Auto-scroll to today on first paint after data loads.
+  useLayoutEffect(() => {
+    if (didScrollToToday.current) return;
+    if (lessons === null) return;
+    const el = todayRef.current;
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    if (el) {
+      // Scroll such that today sits near the top of the scroll container.
+      const top = el.offsetTop - scroller.offsetTop - 8;
+      scroller.scrollTop = top;
+    } else {
+      // No entries on today — find the nearest future day with entries.
+      const nextKey = orderedDayKeys.find((k) => k >= todayKey);
+      const target = nextKey ? dayRefs.current.get(nextKey) : undefined;
+      if (target) scroller.scrollTop = target.offsetTop - scroller.offsetTop - 8;
     }
-    return null;
-  }, [lessons, now]);
+    didScrollToToday.current = true;
+  }, [lessons, orderedDayKeys, todayKey]);
 
-  const markPaid = async (l: Lesson) => {
-    const prev = lessons;
-    setLessons((cur) =>
-      cur ? cur.map((x) => (x.id === l.id ? { ...x, payment_status: "paid" } : x)) : cur,
-    );
-    setOpenActionsId(null);
-    const { error } = await supabase
-      .from("lessons")
-      .update({ payment_status: "paid" })
-      .eq("id", l.id);
-    if (error) {
-      console.error("[schedule] mark paid error", error);
-      setLessons(prev);
-      toast.error("Couldn't mark as paid");
-      return;
-    }
-    toast.success(`Payment marked for ${pupilDisplayName(l.pupil)}`);
-  };
-
-  const onEolCompleted = () => {
-    if (!eolLesson) return;
-    const nowIso = new Date().toISOString();
-    setLessons((cur) =>
-      cur
-        ? cur.map((x) =>
-            x.id === eolLesson.id
-              ? { ...x, status: "completed", eol_completed: true, eol_completed_at: nowIso }
-              : x,
-          )
-        : cur,
-    );
-    toast.success(`EOL completed for ${pupilDisplayName(eolLesson.pupil)}`);
-  };
-
-  const cancelLessonNow = async () => {
-    if (!cancelLesson) return;
-    const id = cancelLesson.id;
-    const lessonSnapshot = cancelLesson;
-    const isPrepaid = (cancelLesson.payment_status ?? "").toLowerCase() === "prepaid";
-    const amountDue = Number(cancelLesson.amount_due ?? 0);
-    const pupilId = cancelLesson.pupil_id ?? null;
-    const prev = lessons;
-    setLessons((cur) =>
-      cur
-        ? cur.map((x) =>
-            x.id === id
-              ? {
-                  ...x,
-                  status: "cancelled",
-                  cancelled_at: new Date().toISOString(),
-                  payment_status: "cancelled",
-                  amount_due: 0,
-                }
-              : x,
-          )
-        : cur,
-    );
-    setCancelLesson(null);
-    setOpenActionsId(null);
-    const { error } = await supabase
-      .from("lessons")
-      .update({
-        status: "cancelled",
-        cancelled_at: new Date().toISOString(),
-        payment_status: "cancelled",
-        amount_due: 0,
-      })
-      .eq("id", id);
-    if (error) {
-      console.error("[schedule] cancel error", error);
-      setLessons(prev);
-      toast.error("Couldn't cancel lesson");
-      return;
-    }
-
-    // Refund prepaid amount back to pupil credit. Legacy pupils.balance_owed
-    // is intentionally NOT written — outstanding is derived from unpaid lessons.
-    if (isPrepaid && amountDue > 0 && pupilId) {
-      const { data: pupilRow, error: readErr } = await supabase
-        .from("pupils")
-        .select("account_balance")
-        .eq("id", pupilId)
-        .maybeSingle();
-      if (readErr) console.error("[schedule] cancel refund read error", readErr);
-      const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
-      const { error: refundErr } = await supabase
-        .from("pupils")
-        .update({ account_balance: current + amountDue })
-        .eq("id", pupilId);
-      if (refundErr) console.error("[schedule] cancel refund write error", refundErr);
-    }
-
-    toast.success("Lesson cancelled");
-    // Late cancellation → negative points
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      const instructorId = lessonSnapshot.instructor_id ?? undefined;
-      if (token && instructorId) {
-        const lateHours = await getLateCancelHours(instructorId, token);
-        if (lateHours != null) {
-          const hoursUntil =
-            (lessonStart(lessonSnapshot).getTime() - Date.now()) / 3600000;
-          if (hoursUntil <= lateHours) {
-            await awardPoints(instructorId, "LATE_CANCELLATION", token, {
-              referenceId: id,
-              referenceType: "lesson",
-            });
-          }
-        }
+  // Update visible-month header as the user scrolls.
+  const onScroll = useCallback(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    const scrollerTop = scroller.getBoundingClientRect().top;
+    let currentDate: Date | null = null;
+    for (const [key, el] of dayRefs.current) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top - scrollerTop <= 48) {
+        const [y, m, d] = key.split("-").map(Number);
+        currentDate = new Date(y, m - 1, d);
+      } else {
+        break;
       }
-    } catch (err) {
-      console.warn("[schedule] late-cancel points failed:", err);
     }
-  };
-
-  const markNoShow = async (l: Lesson) => {
-    const id = l.id;
-    const prev = lessons;
-    setLessons((cur) =>
-      cur ? cur.map((x) => (x.id === id ? { ...x, status: "no_show" } : x)) : cur,
-    );
-    setOpenActionsId(null);
-    const { error } = await supabase
-      .from("lessons")
-      .update({ status: "no_show" })
-      .eq("id", id);
-    if (error) {
-      console.error("[schedule] no-show error", error);
-      setLessons(prev);
-      toast.error("Couldn't mark no-show");
-      return;
+    if (currentDate) {
+      const label = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+      setVisibleMonth((prev) => (prev === label ? prev : label));
     }
-    toast.success(`Marked no-show for ${pupilDisplayName(l.pupil)}`);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      if (token && l.instructor_id) {
-        await awardPoints(l.instructor_id, "NO_SHOW", token, {
-          referenceId: id,
-          referenceType: "lesson",
-        });
-        await applyNoShowFee(l, pupilDisplayName(l.pupil), token);
-      }
-    } catch (err) {
-      console.warn("[schedule] no-show side effects failed:", err);
-    }
-  };
+  }, []);
 
   const goToLesson = (id: string) => {
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
 
-  // Long-press handling
-  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressed = useRef<boolean>(false);
-  const startPress = (lessonId: string) => {
-    longPressed.current = false;
-    pressTimer.current = setTimeout(() => {
-      longPressed.current = true;
-      setOpenActionsId((cur) => (cur === lessonId ? null : lessonId));
-    }, 450);
-  };
-  const cancelPress = () => {
-    if (pressTimer.current) {
-      clearTimeout(pressTimer.current);
-      pressTimer.current = null;
-    }
-  };
-
-  // NOTE: This screen currently only sources native `lessons` from Supabase.
-  // The spec references external calendar-event rows (Google Calendar sync)
-  // and multi-pupil / group-slot rows — no data source for those exists on
-  // this screen today, so those row variants are intentionally omitted
-  // rather than mocked. Wire them in when a sync/group data source lands.
-  // FLAG: If in future a lesson appears both as a native `lessons` row AND
-  // as an ingested external-calendar row for the same pupil/time, that is a
-  // data/sync issue — do not silently dedupe here; investigate the sync.
-
-  type DayTab = "today" | "tomorrow" | "next";
-  const [dayTab, setDayTab] = useState<DayTab>("today");
-  const selectedDate = useMemo(() => {
-    const offset = dayTab === "today" ? 0 : dayTab === "tomorrow" ? 1 : 2;
-    return addDays(today, offset);
-  }, [today, dayTab]);
-
-  const NAVY = "#0F2044";
-  const MUTED = "#6B7280";
-  const SUB = "#94A3B8";
-  const BORDER = "#E5E7EB";
-  const SURFACE_1 = "#F1F5F9";
-  const DANGER = "#DC2626";
-  const DANGER_BG = "#FEE2E2";
-  const ACCENT = "#1877D6";
-
-  // Initials from a pupil display name (reuses pupilDisplayName for source of truth).
-  const initialsOf = (name: string) => {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return "?";
-    if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  };
-
-  const renderLessonRow = (l: Lesson, opts: { isLast: boolean }) => {
-    void opts.isLast;
-    const name = pupilDisplayName(l.pupil);
-    const endD = lessonEnd(l);
-    const pastEnd = endD.getTime() < now.getTime();
-    const isCancelled = l.status === "cancelled";
-    const showActions = openActionsId === l.id;
-
-    const paymentStatus = (l.payment_status ?? "").toLowerCase();
-    const amountDue = l.amount_due ?? 0;
-    const isPrepaidPupil = Number((l.pupil as any)?.prepaid_hours ?? 0) > 0;
-    // Overdue keeps its danger tint; otherwise map to Prepaid / Payment due / Paid pills.
-    const overdue = !isPrepaidPupil && pastEnd && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
-    const isPrepaid = paymentStatus === "prepaid" || isPrepaidPupil;
-    const isPaymentDue = !overdue && !isPrepaid && paymentStatus === "unpaid" && amountDue > 0 && !isCancelled;
-    const isPaid = paymentStatus === "paid";
-
-    const avatarBg = NAVY;
-    const initials = initialsOf(name);
-    const timeText = formatLessonTime(l);
-    const durationText = formatDurationShort(l.duration_minutes);
-
-    // Payment pill — matches home "Today's timeline" tile treatment (rounded pills, muted palette).
-    const PILL_BASE: React.CSSProperties = {
-      fontSize: 12,
-      fontWeight: 600,
-      padding: "4px 10px",
-      borderRadius: 999,
-      ...POPPINS,
-    };
-    let pill: React.ReactNode = null;
-    if (overdue) {
-      pill = <span style={{ ...PILL_BASE, background: "#FDECC8", color: "#8A5A00" }}>£{Math.round(amountDue)}</span>;
-    } else if (isPaymentDue) {
-      pill = <span style={{ ...PILL_BASE, background: "#FDECC8", color: "#8A5A00" }}>£{Math.round(amountDue)}</span>;
-    } else if (isPrepaid) {
-      pill = <span style={{ ...PILL_BASE, background: "#E7F7EC", color: "#137333" }}>Prepaid</span>;
-    } else if (isPaid) {
-      pill = <span style={{ ...PILL_BASE, background: "#E7F7EC", color: "#137333" }}>Paid ✓</span>;
-    }
-
-    return (
-      <div key={l.id}>
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            if (longPressed.current) {
-              longPressed.current = false;
-              return;
-            }
-            goToLesson(l.id);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") goToLesson(l.id);
-          }}
-          onPointerDown={() => startPress(l.id)}
-          onPointerUp={cancelPress}
-          onPointerLeave={cancelPress}
-          onPointerCancel={cancelPress}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setOpenActionsId((cur) => (cur === l.id ? null : l.id));
-          }}
-          className="cursor-pointer select-none"
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            textAlign: "left",
-            minHeight: 56,
-            ...POPPINS,
-          }}
-        >
-          {/* Pupil avatar circle — pupil calendar_colour, matching home "Today's timeline" tile. */}
-          <div
-            aria-hidden
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: avatarBg,
-              color: "#FFFFFF",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 13,
-              fontWeight: 700,
-              letterSpacing: 0.2,
-              flexShrink: 0,
-              overflow: "hidden",
-              ...POPPINS,
-            }}
-          >
-            {(l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url) ? (
-              <img
-                src={l.pupil?.profile_image_url ?? (l.pupil as any)?.photo_url}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-
-            ) : (
-              initials
-            )}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: isCancelled ? "#64748B" : "#0F2044",
-                ...POPPINS,
-                textDecoration: isCancelled ? "line-through" : "none",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {name}
-            </div>
-            <div
-              style={{ fontSize: 12, color: "#64748B", ...POPPINS, marginTop: 2, fontVariantNumeric: "tabular-nums" }}
-            >
-              {timeText} · {l.duration_minutes ?? 60} mins
-            </div>
-          </div>
-          {pill}
-          <IconChevronRight size={18} stroke={1.75} color="#64748B" style={{ flexShrink: 0 }} />
-        </div>
-
-
-        {showActions && (
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: "8px 16px 12px 68px",
-              backgroundColor: "#F8FAFC",
-            }}
-          >
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); markPaid(l); }}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: ACCENT, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
-            >
-              <PoundSterling size={14} /> Paid
-            </button>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setEolLesson(l); setOpenActionsId(null); }}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: NAVY, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
-            >
-              <CheckCircle size={14} /> EOL
-            </button>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setCancelLesson(l); }}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: NAVY, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
-            >
-              <X size={14} /> Cancel
-            </button>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); markNoShow(l); }}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2"
-              style={{ ...POPPINS, fontSize: 12, fontWeight: 500, color: DANGER, backgroundColor: "#FFFFFF", border: `0.5px solid ${BORDER}` }}
-            >
-              <X size={14} /> No-show
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-
-
-  // Compute gaps for the selected day (reusing existing buffer logic).
-  const dayInfo = useMemo(() => {
-    const items = lessonsByDate.get(ymd(selectedDate)) ?? [];
-    const isPast = selectedDate.getTime() < today.getTime();
-    const isToday = selectedDate.getTime() === today.getTime();
-    const nowMs = Date.now();
-    const dayStart = new Date(selectedDate);
-    dayStart.setHours(9, 0, 0, 0);
-    const dayEnd = new Date(selectedDate);
-    dayEnd.setHours(18, 0, 0, 0);
-    const minUsable = 60;
-    const threshold = Math.max(minGapMinutes, minUsable);
-
-    const resolveBuf = (pupilId: string | null | undefined, type: "before" | "after") => {
-      if (pupilId && pupilBufferMap[pupilId]) {
-        const v = type === "before" ? pupilBufferMap[pupilId].before : pupilBufferMap[pupilId].after;
-        if (v != null) return v;
-      }
-      return type === "before" ? instructorBufferBefore : instructorBufferAfter;
-    };
-
-    type Gap = { key: string; startMs: number; endMs: number; usableMins: number };
-    const gaps: Gap[] = [];
-    const pushGap = (key: string, startMs: number, endMs: number) => {
-      if (isPast) return;
-      if (isToday && endMs <= nowMs) return;
-      const minStart = isToday ? Math.max(startMs, nowMs + 30 * 60000) : startMs;
-      const mins = Math.round((endMs - minStart) / 60000);
-      if (mins < threshold) return;
-      gaps.push({ key, startMs: minStart, endMs, usableMins: mins });
-    };
-
-    if (items.length > 0) {
-      const first = items[0];
-      pushGap(
-        `pre-${first.id}`,
-        dayStart.getTime(),
-        lessonStart(first).getTime() - (resolveBuf(first.pupil_id, "before") + instructorBufferAfter) * 60000,
-      );
-      items.forEach((l, i) => {
-        const next = items[i + 1];
-        if (!next) return;
-        const leftReserve = resolveBuf(l.pupil_id, "after") + instructorBufferBefore;
-        const rightReserve = resolveBuf(next.pupil_id, "before") + instructorBufferAfter;
-        pushGap(
-          `gap-${l.id}`,
-          lessonEnd(l).getTime() + leftReserve * 60000,
-          lessonStart(next).getTime() - rightReserve * 60000,
-        );
-      });
-      const last = items[items.length - 1];
-      pushGap(
-        `post-${last.id}`,
-        lessonEnd(last).getTime() + (resolveBuf(last.pupil_id, "after") + instructorBufferBefore) * 60000,
-        dayEnd.getTime(),
-      );
-    } else {
-      // Nothing scheduled: expose the entire working day as a single gap.
-      pushGap(`day-${ymd(selectedDate)}`, dayStart.getTime(), dayEnd.getTime());
-    }
-    const totalMins = gaps.reduce((sum, g) => sum + g.usableMins, 0);
-    return { items, gaps, totalMins, isPast, isToday };
-  }, [lessonsByDate, selectedDate, today, minGapMinutes, pupilBufferMap, instructorBufferBefore, instructorBufferAfter]);
-
-  const formatOpenMins = (mins: number) => {
-    if (mins <= 0) return "0m";
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    if (h && m) return `${h}h ${m}m`;
-    if (h) return `${h}h`;
-    return `${m}m`;
-  };
-
-  const renderTimeline = () => {
-    const { items, gaps, isToday } = dayInfo;
-    if (items.length === 0 && gaps.length === 0) {
-      return (
-        <div
-          style={{
-            margin: "0 16px",
-            border: `0.5px solid ${BORDER}`,
-            borderRadius: 12,
-            padding: "22px 16px",
-            textAlign: "center",
-            fontSize: 13,
-            color: MUTED,
-            ...POPPINS,
-            background: "#FFFFFF",
-          }}
-        >
-          Nothing scheduled
-        </div>
-      );
-    }
-
-    // Build a chronological sequence: lessons and now-strip in the solid
-    // bordered container; gaps rendered as separate dashed cards inserted
-    // between the container segments.
-    type SolidRow =
-      | { kind: "lesson"; lesson: Lesson; startMs: number }
-      | { kind: "now"; startMs: number };
-
-    const nowMs = Date.now();
-    const solid: SolidRow[] = items.map((l) => ({
-      kind: "lesson" as const,
-      lesson: l,
-      startMs: lessonStart(l).getTime(),
-    }));
-    if (isToday && items.length > 0) {
-      const firstMs = lessonStart(items[0]).getTime();
-      const lastMs = lessonEnd(items[items.length - 1]).getTime();
-      if (nowMs >= firstMs && nowMs <= lastMs) {
-        solid.push({ kind: "now", startMs: nowMs });
-        solid.sort((a, b) => a.startMs - b.startMs);
-      }
-    }
-
-    // Group solid rows separated by gaps into segments.
-    const sortedGaps = [...gaps].sort((a, b) => a.startMs - b.startMs);
-    const segments: SolidRow[][] = [];
-    let current: SolidRow[] = [];
-    let gapIdx = 0;
-    const gapNodes: React.ReactNode[] = [];
-
-    const pushGapNode = (g: typeof sortedGaps[number]) => {
-      const openGap = () => navigate({ to: "/gaps" });
-
-      // Match pupils to this specific gap (reuses pupil availability data).
-      const DAYS_ABBR = ["sun","mon","tue","wed","thu","fri","sat"];
-      const gs = new Date(g.startMs);
-      const dayKey = DAYS_ABBR[gs.getDay()];
-      const startMins = gs.getHours() * 60 + gs.getMinutes();
-      const endMins = startMins + g.usableMins;
-      const hoursUntil = (g.startMs - Date.now()) / 3600000;
-      const parseHM = (t: string | null | undefined, fallback: number) => {
-        if (!t) return fallback;
-        const [h, m] = t.split(":").map(Number);
-        return (h || 0) * 60 + (m || 0);
-      };
-      type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
-      const matches: Matched[] = [];
-      Object.entries(pupilAvailMap).forEach(([pid, a]) => {
-        const info = pupilInfoMap[pid];
-        if (!info) return;
-        const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
-        if (days.length && !days.includes(dayKey)) return;
-        const fromMins = parseHM(a.available_from, 0);
-        const untilMins = parseHM(a.available_until, 24 * 60);
-        if (endMins <= fromMins || startMins >= untilMins) return;
-        const minNotice = a.min_notice_hours ?? 24;
-        if (hoursUntil < minNotice && !a.short_notice_opt_in) return;
-        const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
-        matches.push({ id: pid, first, avatar: (info as any).profile_image_url ?? null, colour: (info as any).calendar_colour ?? null });
-      });
-      const shown = matches.slice(0, 3);
-      const avatarInitial = (name: string) => name.slice(0, 1).toUpperCase();
-      const subtitle = matches.length > 0
-        ? `${matches.length} ${matches.length === 1 ? "pupil" : "pupils"} available`
-        : null;
-
-      gapNodes.push(
-        <div
-          key={g.key}
-          role="button"
-          tabIndex={0}
-          onClick={openGap}
-          onKeyDown={(e) => { if (e.key === "Enter") openGap(); }}
-          style={{
-            margin: "10px 16px",
-            borderRadius: 14,
-            padding: "12px 14px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-            ...POPPINS,
-            background: "#FBEFE1",
-          }}
-        >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 11,
-              background: "#185FA5",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <IconBolt size={18} stroke={1.75} color="#FFFFFF" />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: "#7A4813" }}>
-              {formatOpenMins(g.usableMins)} free · {formatTimeFromDate(new Date(g.startMs))} – {formatTimeFromDate(new Date(g.endMs))}
-            </div>
-            {subtitle && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                <span style={{ fontSize: 12, color: "#B5661E" }}>{subtitle}</span>
-                {shown.length > 0 && (
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {shown.map((m, i) => (
-                      <div
-                        key={m.id}
-                        title={m.first}
-                        style={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 999,
-                          background: m.colour || "#E2E8F0",
-                          color: "#FFFFFF",
-                          border: "2px solid #FBEFE1",
-                          marginLeft: i === 0 ? 0 : -6,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 9,
-                          fontWeight: 500,
-                          overflow: "hidden",
-                          ...POPPINS,
-                        }}
-                      >
-                        {m.avatar ? (
-                          <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : avatarInitial(m.first)}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); openGap(); }}
-            style={{
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              fontSize: 12,
-              fontWeight: 500,
-              color: "#185FA5",
-              cursor: "pointer",
-              ...POPPINS,
-              flexShrink: 0,
-            }}
-          >
-            Fill →
-          </button>
-        </div>,
-      );
-    };
-
-    for (const row of solid) {
-      while (gapIdx < sortedGaps.length && sortedGaps[gapIdx].endMs <= row.startMs) {
-        if (current.length) segments.push(current);
-        current = [];
-        pushGapNode(sortedGaps[gapIdx]);
-        gapIdx++;
-      }
-      current.push(row);
-    }
-    if (current.length) segments.push(current);
-    while (gapIdx < sortedGaps.length) {
-      pushGapNode(sortedGaps[gapIdx]);
-      gapIdx++;
-    }
-
-    // Build interleaved output: alternating segments (solid cards) and gaps.
-    const output: React.ReactNode[] = [];
-    let g = 0;
-    // If a gap starts before any lesson, it comes first.
-    // We already pushed gaps into gapNodes in chronological order; interleave
-    // with segments by comparing timing.
-    const segmentStart = (seg: SolidRow[]) => seg[0].startMs;
-    const gapStart = (idx: number) => sortedGaps[idx]?.startMs ?? Infinity;
-
-    let segIdx = 0;
-    while (segIdx < segments.length || g < gapNodes.length) {
-      const nextSeg = segments[segIdx];
-      const useSeg = nextSeg && segmentStart(nextSeg) <= gapStart(g);
-      if (useSeg) {
-        nextSeg.forEach((row, i) => {
-          const isLast = i === nextSeg.length - 1;
-          if (row.kind === "now") {
-            output.push(
-              <div
-                key={`now-${row.startMs}`}
-                style={{
-                  margin: "0 16px 10px",
-                  border: `0.5px solid rgba(15,32,68,0.10)`,
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  background: "#FFFFFF",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "6px 14px",
-                    background: DANGER_BG,
-                    ...POPPINS,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: 999,
-                      background: DANGER,
-                      display: "inline-block",
-                    }}
-                  />
-                  <span style={{ fontSize: 11, fontWeight: 500, color: DANGER }}>
-                    NOW · {formatTimeFromDate(new Date(row.startMs))}
-                  </span>
-                </div>
-              </div>,
-            );
-          } else {
-            output.push(
-              <div
-                key={row.lesson.id}
-                style={{
-                  margin: "0 16px 10px",
-                  border: `0.5px solid rgba(15,32,68,0.10)`,
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  background: "#FFFFFF",
-                }}
-              >
-                {renderLessonRow(row.lesson, { isLast })}
-              </div>,
-            );
-          }
-        });
-        segIdx++;
-      } else {
-        output.push(gapNodes[g]);
-        g++;
-      }
-    }
-    return <>{output}</>;
-  };
-
-  const tabs: { key: DayTab; label: string }[] = [
-    { key: "today", label: "Today" },
-    { key: "tomorrow", label: "Tomorrow" },
-    { key: "next", label: "Next" },
-  ];
-
-  const showDateHeader = dayTab !== "today";
-  const dateHeaderLabel = selectedDate
-    .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
-    .toUpperCase();
-
+  // ── Chrome ────────────────────────────────────────────────────────────
   return (
     <div
-      className="min-h-screen pb-24 pb-safe relative"
-      style={{ ...POPPINS, backgroundColor: "#FFFFFF" }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        background: "#FFFFFF",
+        color: "#111827",
+        ...POPPINS,
+      }}
     >
-      {/* Header */}
-      <div
-        className="sticky top-0 z-40"
+      <header
         style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
+          borderBottom: "1px solid #EEF2F7",
           background: "#FFFFFF",
-          borderBottom: `0.5px solid ${BORDER}`,
-          padding: "14px 16px 12px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h1
-            style={{
-              ...POPPINS,
-              color: NAVY,
-              fontSize: 20,
-              fontWeight: 500,
-              margin: 0,
-              lineHeight: 1.1,
-            }}
-          >
-            Schedule
-          </h1>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <button
-              type="button"
-              aria-label="Call"
-              onClick={() => navigate({ to: "/messages" as never })}
-              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex" }}
-            >
-              <IconPhone size={19} stroke={1.75} />
-            </button>
-            <button
-              type="button"
-              aria-label="Notifications"
-              onClick={() => navigate({ to: "/notifications" as never })}
-              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex", position: "relative" }}
-            >
-              <IconBell size={19} stroke={1.75} />
-              {/* Notification unread-count data source not present on this screen; badge omitted until wired. */}
-            </button>
-            <button
-              type="button"
-              aria-label="Add lesson"
-              onClick={() => navigate({ to: "/lessons/new" })}
-              style={{ background: "transparent", border: "none", padding: 0, color: MUTED, cursor: "pointer", display: "inline-flex" }}
-            >
-              <IconPlus size={19} stroke={1.75} />
-            </button>
-          </div>
-        </div>
-
-        {/* Day tabs */}
-        <div
+        <button
+          type="button"
           style={{
-            marginTop: 12,
-            background: SURFACE_1,
-            padding: 3,
-            borderRadius: 10,
-            display: "flex",
-            gap: 2,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            background: "transparent",
+            border: 0,
+            padding: 0,
+            fontSize: 20,
+            fontWeight: 600,
+            color: "#0B1F3A",
+            ...POPPINS,
           }}
         >
-          {tabs.map((t) => {
-            const active = dayTab === t.key;
-            return (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() => setDayTab(t.key)}
-                style={{
-                  flex: 1,
-                  padding: "8px 0",
-                  borderRadius: 8,
-                  border: "none",
-                  background: active ? "#FFFFFF" : "transparent",
-                  boxShadow: active ? "inset 0 0 0 0.5px rgba(15,32,68,0.08), 0 1px 2px rgba(15,32,68,0.04)" : "none",
-                  color: active ? NAVY : MUTED,
-                  fontSize: 13,
-                  fontWeight: active ? 500 : 400,
-                  cursor: "pointer",
-                  ...POPPINS,
-                }}
-              >
-                {t.label}
-              </button>
-            );
-          })}
+          <span>{visibleMonth}</span>
+          <IconChevronDown size={20} stroke={1.75} />
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            type="button"
+            aria-label="Search"
+            onClick={() => navigate({ to: "/search" as never })}
+            style={iconBtn}
+          >
+            <IconSearch size={22} stroke={1.75} color="#0B1F3A" />
+          </button>
+          <button
+            type="button"
+            aria-label="Add lesson"
+            onClick={() => navigate({ to: "/lessons/new" as never })}
+            style={iconBtn}
+          >
+            <IconPlus size={22} stroke={1.75} color="#0B1F3A" />
+          </button>
         </div>
-      </div>
+      </header>
 
-      {lessons === null ? (
-        <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="skeleton-pulse"
-              style={{
-                height: 64,
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #F1F5F9",
-                borderRadius: 16,
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "12px 16px",
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  backgroundColor: "#E2E8F0",
-                  flexShrink: 0,
-                }}
-              />
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
-                <div style={{ height: 14, width: "55%", borderRadius: 6, backgroundColor: "#E2E8F0" }} />
-                <div style={{ height: 12, width: "35%", borderRadius: 6, backgroundColor: "#E2E8F0" }} />
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ paddingTop: 16 }}>
-          {dayInfo.items.length === 0 ? (
-            (() => {
-              const dayLabel = dayTab === "today" ? "TODAY" : dayTab === "tomorrow" ? "TOMORROW" : "NEXT";
-              const DAY_ABBR = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-              const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-              const dateChip = `${DAY_ABBR[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTH_ABBR[selectedDate.getMonth()]}`;
-              const totalHours = dayInfo.totalMins / 60;
-              const hoursText = totalHours > 0
-                ? `${totalHours % 1 === 0 ? totalHours.toFixed(0) : totalHours.toFixed(1)} hours available`
-                : null;
-              const sortedGaps = [...dayInfo.gaps].sort((a, b) => a.startMs - b.startMs);
-              const windowLabel = sortedGaps.length > 0
-                ? `${formatTimeFromDate(new Date(sortedGaps[0].startMs))} – ${formatTimeFromDate(new Date(sortedGaps[sortedGaps.length - 1].endMs))}`
-                : null;
-              const DAYS_ABBR = ["sun","mon","tue","wed","thu","fri","sat"];
-              const dayKey = DAYS_ABBR[selectedDate.getDay()];
-              const parseHM = (t: string | null | undefined, fallback: number) => {
-                if (!t) return fallback;
-                const [h, m] = t.split(":").map(Number);
-                return (h || 0) * 60 + (m || 0);
-              };
-              type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
-              const matches: Matched[] = [];
-              const gapForMatch = sortedGaps[0];
-              if (gapForMatch) {
-                const gs = new Date(gapForMatch.startMs);
-                const startMins = gs.getHours() * 60 + gs.getMinutes();
-                const endMins = startMins + gapForMatch.usableMins;
-                const hoursUntil = (gapForMatch.startMs - Date.now()) / 3600000;
-                Object.entries(pupilAvailMap).forEach(([pid, a]) => {
-                  const info = pupilInfoMap[pid];
-                  if (!info) return;
-                  const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
-                  if (days.length && !days.includes(dayKey)) return;
-                  const fromMins = parseHM(a.available_from, 0);
-                  const untilMins = parseHM(a.available_until, 24 * 60);
-                  if (endMins <= fromMins || startMins >= untilMins) return;
-                  const minNotice = a.min_notice_hours ?? 24;
-                  if (hoursUntil < minNotice && !a.short_notice_opt_in) return;
-                  const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
-                  matches.push({ id: pid, first, avatar: (info as any).profile_image_url ?? null, colour: (info as any).calendar_colour ?? null });
-                });
-              }
-              const shown = matches.slice(0, 3);
-              const extra = Math.max(0, matches.length - shown.length);
-              const avatarInitial = (name: string) => name.slice(0, 1).toUpperCase();
-              const showStats = !!windowLabel || matches.length > 0;
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          padding: "8px 12px calc(80px + env(safe-area-inset-bottom)) 12px",
+        }}
+      >
+        {lessons === null ? (
+          <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Loading…</div>
+        ) : rows.length === 0 ? (
+          <div style={{ padding: 24, color: "#6B7280", fontSize: 14 }}>Nothing scheduled.</div>
+        ) : (
+          rows.map((row) => {
+            if (row.type === "week") {
               return (
-                <>
-                  <div
-                    style={{
-                      margin: "0 16px 10px",
-                      background: "#FFFFFF",
-                      borderRadius: 20,
-                      overflow: "hidden",
-                      border: `0.5px solid ${BORDER}`,
-                      ...POPPINS,
-                    }}
-                  >
-                    <div style={{ background: "#FBEFE1", padding: "18px 18px 16px" }}>
-                      <div style={{ fontSize: 12, fontWeight: 500, color: "#B5661E", letterSpacing: "0.02em", marginBottom: 6 }}>
-                        {dayLabel} · {dateChip}
-                      </div>
-                      <div style={{ fontSize: 22, fontWeight: 500, color: "#7A4813", marginBottom: 2 }}>
-                        Nothing booked yet
-                      </div>
-                      {hoursText && (
-                        <div style={{ fontSize: 14, color: "#B5661E" }}>{hoursText}</div>
-                      )}
-                    </div>
-
-                    {showStats && (
-                      <div style={{ display: "flex", borderBottom: `0.5px solid ${BORDER}` }}>
-                        {windowLabel && (
-                          <div style={{ flex: 1, padding: "14px 16px", borderRight: matches.length > 0 ? `0.5px solid ${BORDER}` : "none" }}>
-                            <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Window</div>
-                            <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{windowLabel}</div>
-                          </div>
-                        )}
-                        {matches.length > 0 && (
-                          <div style={{ flex: 1, padding: "14px 16px" }}>
-                            <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Pupils</div>
-                            <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{matches.length} active</div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {matches.length > 0 && (
-                      <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}`, display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          {shown.map((m, i) => (
-                            <div
-                              key={m.id}
-                              title={m.first}
-                              style={{
-                                width: 24,
-                                height: 24,
-                                borderRadius: 999,
-                                background: m.colour || "#E2E8F0",
-                                color: "#FFFFFF",
-                                border: "2px solid #FFFFFF",
-                                marginLeft: i === 0 ? 0 : -8,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: 10,
-                                fontWeight: 500,
-                                overflow: "hidden",
-                                ...POPPINS,
-                              }}
-                            >
-                              {m.avatar ? (
-                                <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                              ) : (
-                                avatarInitial(m.first)
-                              )}
-                            </div>
-                          ))}
-                          {extra > 0 && (
-                            <div
-                              style={{
-                                width: 24,
-                                height: 24,
-                                borderRadius: 999,
-                                background: SURFACE_1,
-                                color: MUTED,
-                                border: "2px solid #FFFFFF",
-                                marginLeft: -8,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: 10,
-                                fontWeight: 500,
-                                ...POPPINS,
-                              }}
-                            >
-                              +{extra}
-                            </div>
-                          )}
-                        </div>
-                        <span style={{ fontSize: 13, color: MUTED }}>
-                          {matches.length} {matches.length === 1 ? "pupil" : "pupils"} available to book
-                        </span>
-                      </div>
-                    )}
-
-                    <div style={{ padding: "14px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                      <button
-                        type="button"
-                        onClick={() => navigate({ to: "/gaps" })}
-                        style={{
-                          background: "#185FA5",
-                          color: "#FFFFFF",
-                          border: "none",
-                          borderRadius: 12,
-                          padding: 13,
-                          fontSize: 14,
-                          fontWeight: 500,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 6,
-                          cursor: "pointer",
-                          ...POPPINS,
-                        }}
-                      >
-                        <IconBolt size={16} stroke={1.75} /> Fill slots
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => navigate({ to: "/broadcast" as never })}
-                        style={{
-                          background: SURFACE_1,
-                          color: MUTED,
-                          border: `1px solid ${BORDER}`,
-                          borderRadius: 12,
-                          padding: 13,
-                          fontSize: 14,
-                          fontWeight: 500,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 6,
-                          cursor: "pointer",
-                          ...POPPINS,
-                        }}
-                      >
-                        <IconSpeakerphone size={16} stroke={1.75} /> Broadcast
-                      </button>
-                    </div>
-                  </div>
-
-                  <div style={{ margin: "0 16px" }}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigate({
-                          to: `/lessons/new?date=${ymd(selectedDate)}` as unknown as "/lessons/new",
-                        })
-                      }
-                      style={{
-                        width: "100%",
-                        background: "#0F2044",
-                        color: "#FFFFFF",
-                        border: "none",
-                        borderRadius: 12,
-                        padding: 14,
-                        fontSize: 14,
-                        fontWeight: 500,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        cursor: "pointer",
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconPlus size={17} stroke={1.75} /> Add lesson manually
-                    </button>
-                  </div>
-                </>
-              );
-            })()
-          ) : (
-            <>
-          {/*
-            Gap-filler summary card — amber "open slot" treatment.
-            Matched pupil avatars use the same availability-matching logic
-            the home page uses (pupil_ready_to_learn_settings). Per-slot
-            potential earnings are still not fetched here, so that clause
-            is intentionally omitted rather than fabricated.
-          */}
-          {dayInfo.gaps.length > 0 && (() => {
-            const firstGap = [...dayInfo.gaps].sort((a, b) => a.startMs - b.startMs)[0];
-            const gapStart = new Date(firstGap.startMs);
-            const gapMins = firstGap.usableMins;
-            const DAYS_ABBR = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-            const dayKey = DAYS_ABBR[gapStart.getDay()];
-            const gapStartMins = gapStart.getHours() * 60 + gapStart.getMinutes();
-            const gapEndMins = gapStartMins + gapMins;
-            const hoursUntilGap = (gapStart.getTime() - Date.now()) / 3600000;
-            const parseHM = (t: string | null | undefined, fallback: number) => {
-              if (!t) return fallback;
-              const [h, m] = t.split(":").map(Number);
-              return (h || 0) * 60 + (m || 0);
-            };
-            type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
-            const matches: Matched[] = [];
-            Object.entries(pupilAvailMap).forEach(([pid, a]) => {
-              const info = pupilInfoMap[pid];
-              if (!info) return;
-              const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
-              if (days.length && !days.includes(dayKey)) return;
-              const fromMins = parseHM(a.available_from, 0);
-              const untilMins = parseHM(a.available_until, 24 * 60);
-              if (gapEndMins <= fromMins || gapStartMins >= untilMins) return;
-              const minNotice = a.min_notice_hours ?? 24;
-              if (hoursUntilGap < minNotice && !a.short_notice_opt_in) return;
-              const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
-              matches.push({ id: pid, first, avatar: info.profile_image_url, colour: info.calendar_colour });
-            });
-            const shown = matches.slice(0, 3);
-            const extra = Math.max(0, matches.length - shown.length);
-            const avatarInitials = (name: string) => name.slice(0, 1).toUpperCase();
-            return (
-              <div
-                style={{
-                  margin: "0 16px 12px",
-                  background: "#FBEFE1",
-                  borderRadius: 14,
-                  padding: "14px 16px",
-                  ...POPPINS,
-                }}
-              >
-                <div style={{ fontSize: 14, fontWeight: 500, color: "#7A4813" }}>
-                  You have an open slot today
-                </div>
-                <div style={{ fontSize: 12, color: "#B5661E", marginTop: 4 }}>
-                  {formatTimeFromDate(new Date(firstGap.startMs))} – {formatTimeFromDate(new Date(firstGap.endMs))}
-                  {" ("}{formatOpenMins(firstGap.usableMins)}{")"}
-                  {matches.length === 0 && " · no waitlist match"}
-                </div>
-                {shown.length > 0 && (
-                  <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
-                    {shown.map((m, i) => (
-                      <div
-                        key={m.id}
-                        title={m.first}
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: 999,
-                          background: m.colour || "#E2E8F0",
-                          color: "#FFFFFF",
-                          border: "2px solid #FBEFE1",
-                          marginLeft: i === 0 ? 0 : -8,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 11,
-                          fontWeight: 500,
-                          overflow: "hidden",
-                          ...POPPINS,
-                        }}
-                      >
-                        {m.avatar ? (
-                          <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          avatarInitials(m.first)
-                        )}
-                      </div>
-                    ))}
-                    {extra > 0 && (
-                      <div
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: 999,
-                          background: "#EFAF2C",
-                          color: "#3D2408",
-                          border: "2px solid #FBEFE1",
-                          marginLeft: -8,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 10,
-                          fontWeight: 500,
-                          ...POPPINS,
-                        }}
-                      >
-                        +{extra}
-                      </div>
-                    )}
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/gaps" })}
+                <div
+                  key={row.key}
                   style={{
-                    marginTop: 12,
-                    background: "#EFAF2C",
-                    color: "#3D2408",
-                    border: "none",
-                    borderRadius: 10,
-                    padding: "8px 14px",
-                    fontSize: 13,
+                    fontSize: 11,
                     fontWeight: 500,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    cursor: "pointer",
-                    ...POPPINS,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "#94A3B8",
+                    padding: "16px 4px 6px",
                   }}
                 >
-                  Fill slot <ChevronRight size={14} />
-                </button>
+                  {row.label}
+                </div>
+              );
+            }
+            const isToday = row.key === todayKey;
+            const isPast = row.key < todayKey;
+            return (
+              <div
+                key={row.key}
+                ref={(el) => {
+                  if (el) {
+                    dayRefs.current.set(row.key, el);
+                    if (isToday) todayRef.current = el;
+                  } else {
+                    dayRefs.current.delete(row.key);
+                  }
+                }}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "48px 1fr",
+                  gap: 8,
+                  padding: "6px 0",
+                  opacity: isPast ? 0.55 : 1,
+                }}
+              >
+                <DayHeader date={row.date} isToday={isToday} isPast={isPast} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {row.entries.map((e) => (
+                    <EntryRow key={e.id} entry={e} onLessonTap={goToLesson} />
+                  ))}
+                </div>
               </div>
             );
-          })()}
-
-
-          {/*
-            AI insight card — no insight-generation source exists on this
-            screen today; card intentionally omitted rather than shown as
-            a placeholder. Wire in when an insight source lands.
-          */}
-
-          {/* Section header — Today's timeline (only on today tab). */}
-          {dayTab === "today" && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                margin: "0 16px 8px",
-                ...POPPINS,
-              }}
-            >
-              <span style={{ fontSize: 18, fontWeight: 500, color: NAVY }}>
-                Today&apos;s timeline
-              </span>
-              {/*
-                FLAG: no separate "full schedule" route exists — this page
-                IS the schedule. Link points to /schedule (self) as the
-                closest existing route; revisit when a distinct full/week
-                schedule view is introduced.
-              */}
-              <button
-                type="button"
-                onClick={() => navigate({ to: "/schedule" })}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  color: ACCENT,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  ...POPPINS,
-                }}
-              >
-                View full schedule →
-              </button>
-            </div>
-          )}
-
-          {/* Date section header for Tomorrow / Next */}
-          {showDateHeader && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                margin: "0 16px 8px",
-                ...POPPINS,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: MUTED,
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {dateHeaderLabel}
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  navigate({
-                    to: `/lessons/new?date=${ymd(selectedDate)}` as unknown as "/lessons/new",
-                  })
-                }
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  color: ACCENT,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  ...POPPINS,
-                }}
-              >
-                + Add
-              </button>
-            </div>
-          )}
-
-          {/* Legend: solid white cards = scheduled lessons, blue cards = open slots. */}
-          <div
-            style={{
-              margin: "0 16px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              ...POPPINS,
-              fontSize: 12,
-              color: MUTED,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: 6,
-                  border: `0.5px solid rgba(15,32,68,0.10)`,
-                  background: "#FFFFFF",
-                }}
-              />
-              <span>Scheduled</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: 6,
-                  background: "#EAF2FE",
-                  border: `0.5px solid rgba(24,95,165,0.15)`,
-                }}
-              />
-              <span>Open slot</span>
-            </div>
-          </div>
-
-          {renderTimeline()}
-
-          {/*
-            Recent activity section — no unified activity feed data source
-            (payments received / lessons completed timeline) is fetched on
-            this screen today; section intentionally omitted rather than
-            shown as a placeholder. Wire in when an activity source lands.
-
-            Floating add button — a "+" add-lesson control already exists
-            in the sticky header (IconPlus); a duplicate FAB is intentionally
-            not added to avoid two entry points for the same action.
-          */}
-            </>
-          )}
-        </div>
-      )}
-
-
-      {eolLesson && (
-        <EndLessonWizard
-          open={!!eolLesson}
-          onClose={() => setEolLesson(null)}
-          lessonId={eolLesson.id}
-          pupilId={eolLesson.pupil_id ?? ""}
-          pupilName={pupilDisplayName(eolLesson.pupil)}
-          instructorId={eolLesson.instructor_id ?? ""}
-          durationMinutes={eolLesson.duration_minutes ?? 60}
-          lessonDate={eolLesson.lesson_date}
-          startTime={eolLesson.lesson_time}
-          onCompleted={onEolCompleted}
-        />
-      )}
-
-      <ConfirmDialog
-        open={!!cancelLesson}
-        title="Cancel this lesson?"
-        message={
-          cancelLesson
-            ? `${pupilDisplayName(cancelLesson.pupil)} · ${formatLessonTime(cancelLesson)}`
-            : undefined
-        }
-        confirmLabel="Cancel lesson"
-        cancelLabel="Keep"
-        onCancel={() => setCancelLesson(null)}
-        onConfirm={cancelLessonNow}
-      />
-
-      <style>{`
-        @keyframes skeleton-pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        .skeleton-pulse {
-          animation: skeleton-pulse 1.5s ease-in-out infinite;
-        }
-      `}</style>
+          })
+        )}
+      </div>
     </div>
   );
 }
+
+const iconBtn: React.CSSProperties = {
+  width: 40,
+  height: 40,
+  borderRadius: 10,
+  border: 0,
+  background: "transparent",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+};
+
+function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; isPast: boolean }) {
+  const weekday = date
+    .toLocaleDateString("en-GB", { weekday: "short" })
+    .slice(0, 3)
+    .toUpperCase();
+  const dayNum = date.getDate();
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: 6,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: "0.04em",
+          color: isPast ? "#94A3B8" : isToday ? "#185FA5" : "#6B7280",
+        }}
+      >
+        {weekday}
+      </div>
+      <div
+        style={{
+          marginTop: 2,
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: isToday ? "#185FA5" : "transparent",
+          color: isToday ? "#FFFFFF" : isPast ? "#94A3B8" : "#0B1F3A",
+          fontSize: 15,
+          fontWeight: 600,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {dayNum}
+      </div>
+    </div>
+  );
+}
+
+function EntryRow({
+  entry,
+  onLessonTap,
+}: {
+  entry: AgendaEntry;
+  onLessonTap: (id: string) => void;
+}) {
+  if (entry.kind === "lesson") {
+    const l = entry.lesson;
+    const name = pupilDisplayName(l.pupil);
+    const label = l.lesson_type ? `${name} · ${l.lesson_type}` : name;
+    const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+    const cancelled = l.status === "cancelled";
+    return (
+      <button
+        type="button"
+        onClick={() => onLessonTap(l.id)}
+        style={rowBase(bg, cancelled)}
+      >
+        <div style={rowTitle}>{label}</div>
+        <div style={rowSub}>
+          {fmtTime(entry.start)} – {fmtTime(entry.end)}
+        </div>
+      </button>
+    );
+  }
+  if (entry.kind === "external") {
+    const bg = entry.colour && /^#[0-9a-fA-F]{3,8}$/.test(entry.colour) ? entry.colour : "#4AABDB";
+    return (
+      <div style={rowBase(bg, false)}>
+        <div style={rowTitle}>{entry.title}</div>
+        {!entry.allDay ? (
+          <div style={rowSub}>
+            {fmtTime(entry.start)} – {fmtTime(entry.end)}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+  if (entry.kind === "personal") {
+    return (
+      <div style={rowBase("#E8B84B", false)}>
+        <div style={rowTitle}>{entry.title}</div>
+        {!entry.allDay ? (
+          <div style={rowSub}>
+            {fmtTime(entry.start)} – {fmtTime(entry.end)}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+  if (entry.kind === "task") {
+    const done = !!entry.completed;
+    return (
+      <div style={rowBase("#6B6BD6", false)}>
+        <div
+          style={{
+            ...rowTitle,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            opacity: done ? 0.6 : 1,
+            textDecoration: done ? "line-through" : "none",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+          <span>{entry.title}</span>
+        </div>
+      </div>
+    );
+  }
+  // holiday
+  return (
+    <div style={rowBase("#3D9E7A", false)}>
+      <div style={rowTitle}>{entry.title}</div>
+    </div>
+  );
+}
+
+function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
+  return {
+    width: "100%",
+    textAlign: "left",
+    border: 0,
+    borderRadius: 8,
+    padding: "8px 12px",
+    background: bg,
+    color: "#FFFFFF",
+    cursor: "pointer",
+    opacity: cancelled ? 0.5 : 1,
+    textDecoration: cancelled ? "line-through" : "none",
+    display: "block",
+    ...POPPINS,
+  };
+}
+const rowTitle: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#FFFFFF",
+  lineHeight: 1.3,
+};
+const rowSub: React.CSSProperties = {
+  marginTop: 2,
+  fontSize: 11,
+  color: "#FFFFFF",
+  opacity: 0.85,
+  fontVariantNumeric: "tabular-nums",
+};
