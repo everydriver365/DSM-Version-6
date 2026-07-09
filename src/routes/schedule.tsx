@@ -661,8 +661,11 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        padding: "16px 16px 0",
+        padding: "12px 14px 0",
         borderBottom: "0.5px solid #E5E7EB",
+        maxHeight: 220,
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       {/* Top row: month + nav + actions */}
@@ -671,7 +674,7 @@ function MonthCalendar({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 16,
+          marginBottom: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -688,7 +691,7 @@ function MonthCalendar({
               background: "transparent",
               border: 0,
               padding: "4px 4px",
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: 500,
               color: "#0B1F3A",
               ...POPPINS,
@@ -717,7 +720,7 @@ function MonthCalendar({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 8,
+          marginBottom: 4,
         }}
       >
         {dow.map((d, i) => (
@@ -725,10 +728,10 @@ function MonthCalendar({
             key={i}
             style={{
               textAlign: "center",
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 500,
               color: "#94A3B8",
-              padding: "4px 0",
+              padding: "2px 0",
             }}
           >
             {d}
