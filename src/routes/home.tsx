@@ -4355,43 +4355,6 @@ function HomePage() {
           </div>
         );
 
-        // Needs Attention counts
-        const naJobs = 0; // TODO: wire enquiries/new course_bookings
-        const naTests = (upcomingTests ?? []).filter((p) => {
-          if (!p.test_date) return false;
-          const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
-          return days >= 0 && days <= 7;
-        }).length;
-        const naCalls = 0; // TODO: wire missed calls
-        const naEnquiries = pendingSwapCount || 0;
-        const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
-
-        const AttentionTile = ({
-          value, label, active, bg, color, onClick,
-        }: {
-          value: number; label: string; active: boolean;
-          bg: string; color: string; onClick: () => void;
-        }) => (
-          <div
-            onClick={onClick}
-            role="button"
-            tabIndex={0}
-            style={{
-              background: bg,
-              border: active ? `1px solid ${color}` : '1px solid #E5E7EB',
-              borderRadius: 14,
-              padding: '12px 6px',
-              textAlign: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-              boxSizing: 'border-box',
-            }}
-          >
-            <div style={{ fontSize: 20, fontWeight: active ? 700 : 500, color, lineHeight: 1 }}>{value}</div>
-            <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.03em', marginTop: 4, color }}>{label}</div>
-          </div>
-        );
-
         // Month / YTD earnings from in-memory allLessons (60-day window;
         // YTD is best-effort within that window — we don't have prior-period
         // data here, so vs-comparisons render as "—").
