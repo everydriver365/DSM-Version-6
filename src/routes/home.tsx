@@ -1235,6 +1235,57 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   );
 }
 
+type AiSuggestion = { title: string; body: string; cta: string | null; route: string | null };
+
+function AiInsightsRunner({
+  payload,
+  fetcher,
+  suggestions,
+  setSuggestions,
+  setIndex,
+  setLoading,
+}: {
+  payload: InsightInput;
+  fetcher: (args: { data: InsightInput }) => Promise<{ suggestions?: AiSuggestion[] } | null | undefined>;
+  suggestions: AiSuggestion[] | null;
+  setSuggestions: (s: AiSuggestion[] | null) => void;
+  setIndex: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: (b: boolean) => void;
+}) {
+  const depKey = `${payload.todayLessons}|${payload.weekLessons}|${payload.monthLessons}|${payload.newPupils}|${payload.upcomingTests}|${payload.pendingSwaps}|${payload.freeSlots}|${payload.unreadMessages}`;
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetcher({ data: payload })
+      .then((result) => {
+        if (cancelled) return;
+        const list = result?.suggestions ?? [];
+        setSuggestions(list.length > 0 ? list : null);
+        setIndex(0);
+      })
+      .catch(() => {
+        if (!cancelled) setSuggestions(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depKey]);
+
+  useEffect(() => {
+    if (!suggestions || suggestions.length <= 1) return;
+    const len = suggestions.length;
+    const interval = window.setInterval(() => {
+      setIndex((i) => (i + 1) % len);
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [suggestions, setIndex]);
+
+  return null;
+}
+
+
 type QaTile = {
   key: string;
   label: string;
