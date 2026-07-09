@@ -427,7 +427,8 @@ function PaymentsPage() {
       </div>
 
       {/* Search bar (opens existing pupil picker) */}
-      <div
+      <button
+        type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
           background: "#FFFFFF",
@@ -439,6 +440,9 @@ function PaymentsPage() {
           gap: 8,
           margin: "12px 16px 12px",
           cursor: "pointer",
+          border: 0,
+          width: "calc(100% - 32px)",
+          textAlign: "left",
         }}
       >
         <Search size={15} color="#B0BAC9" />
@@ -464,12 +468,12 @@ function PaymentsPage() {
             Clear
           </button>
         )}
-      </div>
+      </button>
 
       {/* Period pills */}
       <div
         className="no-scrollbar"
-        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 10, overflowX: "auto" }}
+        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 10, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
       >
         {([["today","Today"],["week","This week"],["month","This month"],["year","This year"]] as [DatePreset,string][]).map(([v,l]) => {
           const active = datePreset === v;
@@ -502,7 +506,7 @@ function PaymentsPage() {
       {/* Method pills */}
       <div
         className="no-scrollbar"
-        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 16, overflowX: "auto" }}
+        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 16, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
       >
         {([
           ["all","All"],["cash","Cash"],["card","Card"],["qr","QR"],["bank_transfer","Bank"],["klarna","Klarna"],
@@ -573,7 +577,7 @@ function PaymentsPage() {
                         borderBottom: i < g.rows.length - 1 ? "0.5px solid #EEF2F7" : "none",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", minHeight: 66 }}>
                         <div
                           style={{
                             width: 40,
@@ -595,7 +599,7 @@ function PaymentsPage() {
                         <button
                           type="button"
                           onClick={() => setExpandedId(isOpen ? null : row.id)}
-                          style={{ background: "none", border: 0, padding: 0, textAlign: "left", flex: 1, minWidth: 0, cursor: "pointer" }}
+                          style={{ background: "none", border: 0, padding: 0, textAlign: "left", flex: 1, minWidth: 0, cursor: "pointer", alignSelf: "stretch", display: "flex", flexDirection: "column", justifyContent: "center" }}
                         >
                           <div
                             style={{
