@@ -1481,8 +1481,8 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             if (!next) setQuery('');
           }}
           style={{
-            width: 34,
-            height: 34,
+            width: 36,
+            height: 36,
             borderRadius: 10,
             background: '#fff',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
