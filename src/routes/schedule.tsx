@@ -1729,6 +1729,8 @@ function SchedulePage() {
             in the sticky header (IconPlus); a duplicate FAB is intentionally
             not added to avoid two entry points for the same action.
           */}
+            </>
+          )}
         </div>
       )}
 
