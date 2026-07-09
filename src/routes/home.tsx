@@ -5343,22 +5343,34 @@ function HomePage() {
       <EndOfDayBanner />
 
         {/* Schedule CTAs */}
-        <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/schedule' })}
-            style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
-          >
-            <Plus size={18} strokeWidth={2} /> Add lesson
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/gaps' })}
-            style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
-          >
-            <Clock size={18} strokeWidth={2} /> Fill slots
-          </button>
-        </div>
+        {tabLessons.length === 0 ? (
+          <div style={{ padding: '12px 16px 24px' }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/lessons/new' })}
+              style={{ width:'100%', height:'auto', borderRadius:12, border:'none', background:'#0F2044', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Plus size={17} strokeWidth={2} /> Add lesson manually
+            </button>
+          </div>
+        ) : (
+          <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/lessons/new' })}
+              style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Plus size={18} strokeWidth={2} /> Add lesson
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/gaps' })}
+              style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Clock size={18} strokeWidth={2} /> Fill slots
+            </button>
+          </div>
+        )}
 
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
