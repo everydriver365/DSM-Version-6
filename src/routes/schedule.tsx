@@ -780,6 +780,7 @@ function MonthCalendar({
             >
               <div
                 style={{
+                  position: "relative",
                   width: 24,
                   height: 24,
                   borderRadius: "50%",
@@ -794,27 +795,30 @@ function MonthCalendar({
                 }}
               >
                 {d.getDate()}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 2,
-                  justifyContent: "center",
-                  marginTop: 1,
-                }}
-              >
-                {dots.map((c, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      width: 3,
-                      height: 3,
-                      borderRadius: "50%",
-                      background: isToday ? "rgba(255,255,255,0.7)" : c,
-                      display: "inline-block",
-                    }}
-                  />
-                ))}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 2,
+                    left: 0,
+                    right: 0,
+                    display: "flex",
+                    gap: 2,
+                    justifyContent: "center",
+                  }}
+                >
+                  {dots.map((c, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 3,
+                        height: 3,
+                        borderRadius: "50%",
+                        background: isToday ? "rgba(255,255,255,0.7)" : c,
+                        display: "inline-block",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </button>
           );
