@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { ComponentType, ReactNode } from "react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import {
   HomeIcon,
   PupilsIcon,
@@ -17,6 +17,8 @@ export interface BottomNavItem {
   Icon: ComponentType<{ size?: number; color?: string }>;
   to?: string;
   onClick?: () => void;
+  /** Optional workspace index (0-7) this tab maps to. Enables event-driven active state. */
+  ws?: number;
 }
 
 interface Props {
@@ -25,6 +27,10 @@ interface Props {
   activeIndex?: number;
   activeColor?: string;
   inactiveColor?: string;
+  /** Current workspace index (0-7). Highlights the tab whose ws matches. */
+  activeWs?: number;
+  /** Called when a tab with a `ws` mapping is tapped. */
+  onSelectWs?: (index: number) => void;
 }
 
 const defaultItems: { key: NavKey; to: string; label: string; Icon: ComponentType<{ size?: number; color?: string }> }[] = [
@@ -36,8 +42,21 @@ const defaultItems: { key: NavKey; to: string; label: string; Icon: ComponentTyp
   { key: "settings", to: "/settings", label: "Settings", Icon: SettingsIcon },
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6", inactiveColor = "#6B7280" }: Props) {
+export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6", inactiveColor = "#6B7280", activeWs, onSelectWs }: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
+  // Track workspace changes broadcast by the home carousel so BottomNav stays
+  // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
+  const [listenerWs, setListenerWs] = useState<number | undefined>(activeWs);
+  useEffect(() => { if (typeof activeWs === 'number') setListenerWs(activeWs); }, [activeWs]);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ index: number }>).detail;
+      if (detail && typeof detail.index === 'number') setListenerWs(detail.index);
+    };
+    window.addEventListener('dsm-workspace-change', handler as EventListener);
+    return () => window.removeEventListener('dsm-workspace-change', handler as EventListener);
+  }, []);
+  const currentWs = listenerWs;
   return (
     <nav
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch z-50 pb-safe"
