@@ -395,38 +395,47 @@ function SchedulePage() {
 
       <div
         style={{
-          display: "flex",
-          gap: 4,
-          padding: "8px 12px 4px",
+          padding: "10px 12px 4px",
           background: "#FFFFFF",
-          borderBottom: "1px solid #F1F5F9",
         }}
       >
-        {(["calendar", "agenda"] as const).map((v) => {
-          const active = view === v;
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setView(v)}
-              style={{
-                flex: 1,
-                padding: "8px 10px",
-                borderRadius: 8,
-                border: 0,
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-                background: active ? "#185FA5" : "transparent",
-                color: active ? "#FFFFFF" : "#6B7280",
-                ...POPPINS,
-              }}
-            >
-              {v === "calendar" ? "Calendar" : "Agenda"}
-            </button>
-          );
-        })}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            background: "#EEF2F7",
+            borderRadius: 12,
+            padding: 3,
+            marginBottom: 14,
+          }}
+        >
+          {(["calendar", "agenda"] as const).map((v) => {
+            const active = view === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                style={{
+                  flex: 1,
+                  padding: "9px 4px",
+                  borderRadius: 9,
+                  border: 0,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  background: active ? "#0F2044" : "transparent",
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  ...POPPINS,
+                }}
+              >
+                {v === "calendar" ? "Calendar" : "Agenda"}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
 
       <div
         ref={scrollRef}
