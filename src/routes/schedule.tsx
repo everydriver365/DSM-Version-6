@@ -860,7 +860,7 @@ function MonthCalendar({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 4,
+          marginBottom: 6,
         }}
       >
         {dow.map((d, i) => (
@@ -871,7 +871,7 @@ function MonthCalendar({
               fontSize: 10,
               fontWeight: 500,
               lineHeight: 1,
-              color: "#94A3B8",
+              color: "#B0BAC9",
               padding: "2px 0",
             }}
           >
@@ -879,6 +879,7 @@ function MonthCalendar({
           </div>
         ))}
       </div>
+
 
       {/* Date grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridTemplateRows: "repeat(6, minmax(0, 1fr))", flex: "1 1 0", minHeight: 0, paddingBottom: 0 }}>
