@@ -666,6 +666,8 @@ function MonthCalendar({
         maxHeight: 220,
         boxSizing: "border-box",
         overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Top row: month + nav + actions */}
