@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
+import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/payments")({
