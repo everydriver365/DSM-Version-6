@@ -173,6 +173,7 @@ function TakePaymentPage() {
         if (remaining <= 0) break;
         const due = Number(l.amount_due ?? 0);
         if (due <= 0) continue;
+        // NOTE: never write amount_due on payment — see rationale above.
         if (due <= remaining) {
           await supabase
             .from("lessons")
@@ -181,7 +182,6 @@ function TakePaymentPage() {
               payment_method: methodNorm,
               paid_at: now,
               paid_amount: due,
-              amount_due: 0,
             })
             .eq("id", l.id);
           remaining -= due;
@@ -193,12 +193,12 @@ function TakePaymentPage() {
               payment_method: methodNorm,
               paid_at: now,
               paid_amount: remaining,
-              amount_due: due - remaining,
             })
             .eq("id", l.id);
           remaining = 0;
         }
       }
+
     }
 
     // 3) Any overpayment → pupil credit (account_balance).
