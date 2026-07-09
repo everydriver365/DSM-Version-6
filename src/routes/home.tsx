@@ -1235,6 +1235,204 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   );
 }
 
+type QaTile = {
+  key: string;
+  label: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  chipBg: string;
+  badge?: React.ReactNode;
+};
+
+function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
+  const PF = "'Poppins', system-ui, -apple-system, sans-serif";
+  const NAVY = '#12142B';
+  const [page, setPage] = React.useState(0);
+  const [searchOpen, setSearchOpen] = React.useState(false);
+  const [query, setQuery] = React.useState('');
+  const dragRef = React.useRef<{ x: number; active: boolean } | null>(null);
+
+  const flat = React.useMemo(() => pages.flat(), [pages]);
+  const q = query.trim().toLowerCase();
+  const filtered = q ? flat.filter((t) => t.label.toLowerCase().includes(q)) : [];
+  const showFiltered = searchOpen && q.length > 0;
+
+  const clamp = (n: number) => Math.max(0, Math.min(pages.length - 1, n));
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (showFiltered) return;
+    dragRef.current = { x: e.clientX, active: true };
+  };
+  const onPointerUp = (e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d || !d.active) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 40) {
+      setPage((p) => clamp(p + (dx < 0 ? 1 : -1)));
+    }
+    dragRef.current = null;
+  };
+
+  const tiles = showFiltered ? filtered : pages[page] ?? [];
+
+  const renderTile = (t: QaTile) => (
+    <button
+      key={t.key}
+      type="button"
+      onClick={t.onClick}
+      style={{
+        position: 'relative',
+        background: '#FFFFFF',
+        borderRadius: 16,
+        padding: '14px 8px',
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: PF,
+        textAlign: 'center',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {t.badge ? (
+        <span style={{ position: 'absolute', top: 8, right: 8 }}>{t.badge}</span>
+      ) : null}
+      <span
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 13,
+          background: t.chipBg,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 10px',
+        }}
+      >
+        {t.icon}
+      </span>
+      <div style={{ fontSize: 12, fontWeight: 500, color: NAVY }}>{t.label}</div>
+    </button>
+  );
+
+  return (
+    <div style={{ fontFamily: PF }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Quick actions</div>
+        <button
+          type="button"
+          aria-label="Search actions"
+          onClick={() => {
+            const next = !searchOpen;
+            setSearchOpen(next);
+            if (!next) setQuery('');
+          }}
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: '#fff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            border: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <IconSearch size={16} color="#185FA5" />
+        </button>
+      </div>
+
+      {searchOpen && (
+        <div
+          style={{
+            background: '#fff',
+            borderRadius: 12,
+            padding: '9px 12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginBottom: 14,
+          }}
+        >
+          <IconSearch size={15} color="#B0BAC9" />
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search actions..."
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontSize: 13,
+              fontFamily: PF,
+              color: NAVY,
+              minWidth: 0,
+            }}
+          />
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => {
+              setQuery('');
+              setSearchOpen(false);
+            }}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex' }}
+          >
+            <IconX size={14} color="#B0BAC9" />
+          </button>
+        </div>
+      )}
+
+      <div
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (dragRef.current = null)}
+        style={{ touchAction: 'pan-y' }}
+      >
+        {showFiltered && filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', fontSize: 14, color: '#B0BAC9', padding: '24px 0' }}>
+            No actions found
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            {tiles.map(renderTile)}
+          </div>
+        )}
+      </div>
+
+      {!showFiltered && pages.length > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 14 }}>
+          {pages.map((_, i) => {
+            const active = i === page;
+            return (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Page ${i + 1}`}
+                onClick={() => setPage(i)}
+                style={{
+                  width: active ? 16 : 6,
+                  height: 6,
+                  borderRadius: active ? 4 : 999,
+                  background: active ? '#185FA5' : '#D0D5DD',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 
