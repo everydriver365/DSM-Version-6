@@ -4882,7 +4882,7 @@ function HomePage() {
               })()}
             </div>
 
-            {/* 7. AI INSIGHT */}
+            {/* 6. AI INSIGHT */}
             {(() => {
               const insightAccent = '#6B4FD6';
               const insightBg = '#F3EEFD';
