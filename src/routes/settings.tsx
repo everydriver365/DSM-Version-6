@@ -533,6 +533,7 @@ function SettingsPage() {
           <span className="text-[15px] text-white" style={POPPINS}>Settings</span>
         </div>
       </div>
+      <WorkspaceDots activeLabel="Settings" />
 
 
       {/* Profile header */}
