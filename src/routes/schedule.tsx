@@ -4,6 +4,8 @@ import {
   IconSearch,
   IconPlus,
   IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
