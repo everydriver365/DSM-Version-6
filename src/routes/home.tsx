@@ -109,6 +109,8 @@ import {
   IconSteeringWheel,
   IconClipboardCheck,
   IconMicrophone,
+  IconBriefcase,
+  IconCircleCheck,
 } from "@tabler/icons-react";
 
 
