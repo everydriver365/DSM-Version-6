@@ -1435,8 +1435,8 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       style={{
         position: 'relative',
         background: '#FFFFFF',
-        borderRadius: 16,
-        padding: '14px 8px',
+        borderRadius: 14,
+        padding: '12px 6px 10px',
         border: 'none',
         cursor: 'pointer',
         fontFamily: PF,
@@ -1448,23 +1448,26 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       }}
     >
       {t.badge ? (
-        <span style={{ position: 'absolute', top: 8, right: 8 }}>{t.badge}</span>
+        <span style={{ position: 'absolute', top: 7, right: 7, fontSize: 9 }}>{t.badge}</span>
       ) : null}
       <span
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 13,
+          width: 42,
+          height: 42,
+          borderRadius: 12,
           background: t.chipBg,
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          margin: '0 auto 10px',
+          margin: '0 auto 8px',
+          flexShrink: 0,
         }}
       >
-        {t.icon}
+        {React.isValidElement(t.icon)
+          ? React.cloneElement(t.icon as React.ReactElement<{ size?: number }>, { size: 19 })
+          : t.icon}
       </span>
-      <div style={{ fontSize: 12, fontWeight: 500, color: NAVY }}>{t.label}</div>
+      <div style={{ fontSize: 12, fontWeight: 500, lineHeight: 1.2, marginTop: 0, color: NAVY }}>{t.label}</div>
     </button>
   );
 
