@@ -786,195 +786,223 @@ function GapsPage() {
       ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
       : "";
 
+  // NOTE: Potential earnings requires hourlyRate from profile — if 0/absent we render "—" per spec.
+  const totalFreeMinsAll = dayGroups.reduce((s, d) => s + d.totalFreeMinutes, 0);
+  const potentialValue =
+    hourlyRate > 0
+      ? `£${Math.round((totalFreeMinsAll / 60) * hourlyRate).toLocaleString()}`
+      : "—";
+  const daysWithGaps = dayGroups.filter((g) => g.slots.length > 0).length;
+
+  const HAIRLINE = "#EEF2F7";
+  const CHIP_BG = "#E6F1FB";
+  const ACCENT = "#185FA5";
+  const TEXT_PRIMARY = "#12142B";
+  const TEXT_MUTED = "#B0BAC9";
+  const TEXT_SUBTLE = "#8A94A6";
+
   return (
     <div
       className="min-h-screen"
-      style={{ ...FONT, backgroundColor: "#FFFFFF", margin: -8 }}
+      style={{ ...FONT, backgroundColor: "#F7F9FC", margin: -8 }}
     >
-      {/* Light header */}
+      {/* Header — dark navy */}
       <div
-        className="sticky top-0 z-40"
         style={{
-          background: "#FFFFFF",
-          borderBottom: `0.5px solid ${BORDER}`,
-          padding: "14px 20px 12px",
+          background: NAVY,
+          padding: "16px 18px 20px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 16,
+          }}
+        >
           <button
             onClick={() => navigate({ to: "/home" })}
             aria-label="Back"
             style={{
-              background: "#F1F5F9",
+              width: 34,
+              height: 34,
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.1)",
               border: "none",
-              width: 36,
-              height: 36,
-              borderRadius: 999,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: NAVY,
+              color: "#FFFFFF",
+              flexShrink: 0,
             }}
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={17} />
           </button>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h1
               style={{
                 ...FONT,
-                color: NAVY,
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
+                color: "#FFFFFF",
+                fontSize: 18,
+                fontWeight: 600,
                 margin: 0,
-                lineHeight: 1.1,
+                lineHeight: 1.2,
               }}
             >
               Fill My Slots
             </h1>
-            <div style={{ color: "#94A3B8", fontSize: 13, marginTop: 2 }}>
+            <div
+              style={{
+                color: "#9AA7C4",
+                fontSize: 12,
+                marginTop: 1,
+              }}
+            >
               Available gaps in the next 14 days
             </div>
           </div>
         </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 10,
+          }}
+        >
+          {[
+            { label: "SLOTS", value: String(freeSlots.length), color: "#FFFFFF" },
+            { label: "DAYS", value: String(daysWithGaps), color: "#FFFFFF" },
+            {
+              label: "POTENTIAL",
+              value: potentialValue,
+              color: hourlyRate > 0 ? "#2E9E5B" : "#9AA7C4",
+            },
+          ].map((s) => (
+            <div
+              key={s.label}
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                borderRadius: 14,
+                padding: "12px 14px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 500,
+                  color: "#9AA7C4",
+                  letterSpacing: "0.03em",
+                  marginBottom: 6,
+                }}
+              >
+                {s.label}
+              </div>
+              <div
+                style={{
+                  fontSize: 22,
+                  fontWeight: 600,
+                  color: s.color,
+                  lineHeight: 1.1,
+                }}
+              >
+                {s.value}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Stat cards */}
+      {/* Ranking info card */}
       <div
         style={{
-          padding: "16px 20px 8px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          background: "#FFFFFF",
+          borderRadius: 12,
+          padding: "10px 14px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          margin: "14px 16px 16px",
+          display: "flex",
+          alignItems: "flex-start",
           gap: 10,
         }}
       >
-        {[
-          { label: "Slots", value: String(freeSlots.length) },
-          {
-            label: "Days",
-            value: String(
-              dayGroups.filter((g) => g.slots.length > 0).length,
-            ),
-          },
-          {
-            label: "Potential",
-            value:
-              hourlyRate > 0
-                ? `£${Math.round(
-                    (dayGroups.reduce(
-                      (s, d) => s + d.totalFreeMinutes,
-                      0,
-                    ) /
-                      60) *
-                      hourlyRate,
-                  )}`
-                : "—",
-          },
-        ].map((s) => (
-          <div
-            key={s.label}
-            style={{
-              background: TINT,
-              padding: "12px 12px 10px",
-              borderRadius: 16,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: BLUE,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                marginBottom: 4,
-              }}
-            >
-              {s.label}
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: NAVY }}>
-              {s.value}
-            </div>
-          </div>
-        ))}
+        <Zap
+          size={16}
+          color={ACCENT}
+          style={{ flexShrink: 0, marginTop: 1 }}
+        />
+        <div style={{ fontSize: 12, color: TEXT_SUBTLE, lineHeight: 1.5 }}>
+          We rank pupils by availability, preferences and time since last lesson.
+        </div>
       </div>
 
-      {/* Reassurance strip */}
+      {/* Section header */}
       <div
         style={{
-          margin: "4px 20px 4px",
           display: "flex",
           alignItems: "center",
-          gap: 8,
-          color: MUTED,
-          fontSize: 12,
+          justifyContent: "space-between",
+          padding: "0 16px",
+          marginBottom: 4,
         }}
       >
-        <Zap size={13} color={BLUE_BRIGHT} />
-        <span>
-          We rank pupils by availability, preferences and time since last
-          lesson.
-        </span>
-      </div>
-
-      <div style={{ marginTop: 16 }}>
-        <div style={{ margin: "0 16px" }}>
-          <div
+        <div style={{ fontSize: 15, fontWeight: 600, color: TEXT_PRIMARY }}>
+          Your free slots
+        </div>
+        {freeSlots.length > 0 && (
+          <button
+            onClick={() => {
+              if (selectedSlots.length > 0) {
+                setSelectedSlots([]);
+              } else {
+                setSelectedSlots(
+                  freeSlots.map((s) => ({
+                    date: s.date,
+                    time: s.startTime,
+                    duration: 60,
+                  })),
+                );
+              }
+            }}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 8,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              fontSize: 13,
+              fontWeight: 500,
+              color: ACCENT,
+              cursor: "pointer",
             }}
           >
-            <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
-              Your free slots — next 14 days
-            </div>
-            {freeSlots.length > 0 && (
-              <button
-                onClick={() => {
-                  if (selectedSlots.length > 0) {
-                    setSelectedSlots([]);
-                  } else {
-                    setSelectedSlots(
-                      freeSlots.map((s) => ({
-                        date: s.date,
-                        time: s.startTime,
-                        duration: 60,
-                      })),
-                    );
-                  }
-                }}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: BLUE,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                {selectedSlots.length > 0 ? "Clear all" : "Select all"}
-              </button>
-            )}
-          </div>
-          <div style={{ color: MUTED, fontSize: 13, marginBottom: 12 }}>
-            {slotsLoading
-              ? "Scanning diary…"
-              : `${freeSlots.length} free slot${freeSlots.length === 1 ? "" : "s"} across ${dayGroups.filter((g) => g.slots.length > 0).length} day${dayGroups.filter((g) => g.slots.length > 0).length === 1 ? "" : "s"}`}
-          </div>
-        </div>
+            {selectedSlots.length > 0 ? "Clear all" : "Select all"}
+          </button>
+        )}
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          color: TEXT_MUTED,
+          padding: "0 16px",
+          marginBottom: 16,
+        }}
+      >
+        {slotsLoading
+          ? "Scanning diary…"
+          : `${freeSlots.length} free slot${freeSlots.length === 1 ? "" : "s"} across ${daysWithGaps} day${daysWithGaps === 1 ? "" : "s"}`}
+      </div>
 
+      <div>
         {!slotsLoading && freeSlots.length === 0 && (
           <div
             style={{
               background: "#FFFFFF",
-              border: `1px solid ${BORDER}`,
-              borderRadius: 20,
+              borderRadius: 14,
               padding: 24,
-              margin: "0 16px",
+              margin: "0 16px 14px",
               textAlign: "center",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
           >
             <div
@@ -982,19 +1010,19 @@ function GapsPage() {
                 width: 44,
                 height: 44,
                 borderRadius: 999,
-                background: TINT,
+                background: CHIP_BG,
                 margin: "0 auto 10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <CalendarIcon size={20} color={BLUE_BRIGHT} />
+              <CalendarIcon size={20} color={ACCENT} />
             </div>
-            <div style={{ color: NAVY, fontWeight: 700, fontSize: 15 }}>
+            <div style={{ color: TEXT_PRIMARY, fontWeight: 600, fontSize: 15 }}>
               No free slots in the next 14 days
             </div>
-            <div style={{ color: MUTED, fontSize: 13, marginTop: 6 }}>
+            <div style={{ color: TEXT_SUBTLE, fontSize: 13, marginTop: 6 }}>
               Your diary looks full — check your schedule
             </div>
             <button
@@ -1003,8 +1031,8 @@ function GapsPage() {
                 marginTop: 12,
                 background: "transparent",
                 border: "none",
-                color: BLUE_BRIGHT,
-                fontWeight: 700,
+                color: ACCENT,
+                fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
               }}
@@ -1019,31 +1047,20 @@ function GapsPage() {
             "en-GB",
             { weekday: "short", day: "numeric", month: "short" },
           );
-
-          // Build a merged, chronological list of entries: busy lessons + free-slot cards
-          type Entry =
-            | { kind: "busy"; start: number; end: number; title: string; color: string }
-            | { kind: "gap"; slot: FreeSlot };
-          const entries: Entry[] = [];
-          for (const b of g.busy) entries.push({ kind: "busy", ...b });
-          for (const s of g.slots) entries.push({ kind: "gap", slot: s });
-          entries.sort((a, b) => {
-            const as = a.kind === "busy" ? a.start : hmToMin(a.slot.startTime);
-            const bs = b.kind === "busy" ? b.start : hmToMin(b.slot.startTime);
-            return as - bs;
-          });
-
-          const hasNothing = entries.length === 0;
+          const hasGaps = g.slots.length > 0;
+          const dotColor = hasGaps ? ACCENT : TEXT_MUTED;
+          const dayLabelColor = hasGaps ? TEXT_PRIMARY : TEXT_SUBTLE;
 
           return (
-            <div key={g.iso} style={{ margin: "0 16px 14px" }}>
+            <div key={g.iso} style={{ marginBottom: 14 }}>
               {/* Day header row */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "4px 4px 10px",
+                  padding: "0 16px",
+                  marginBottom: 8,
                 }}
               >
                 <span
@@ -1051,23 +1068,30 @@ function GapsPage() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 8,
-                    color: "#94A3B8",
-                    fontSize: 13,
-                    fontWeight: 600,
                   }}
                 >
                   <span
                     style={{
-                      width: 6,
-                      height: 6,
+                      width: 8,
+                      height: 8,
                       borderRadius: 999,
-                      background: "#CBD5E1",
+                      background: dotColor,
                       display: "inline-block",
                     }}
                   />
-                  {shortLabel}
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: dayLabelColor,
+                    }}
+                  >
+                    {shortLabel}
+                  </span>
                   {!g.isWorkDay && (
-                    <span style={{ color: "#CBD5E1", fontSize: 12 }}>· day off</span>
+                    <span style={{ fontSize: 11, color: TEXT_MUTED }}>
+                      · day off
+                    </span>
                   )}
                 </span>
                 <button
@@ -1080,124 +1104,56 @@ function GapsPage() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 4,
-                    background: "#FFFFFF",
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: 999,
-                    padding: "5px 12px 5px 10px",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: NAVY,
+                    background: CHIP_BG,
+                    border: "none",
+                    borderRadius: 20,
+                    padding: "6px 12px",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: ACCENT,
                     cursor: "pointer",
                   }}
                 >
-                  <Plus size={14} /> Add
+                  <Plus size={12} /> Add
                 </button>
               </div>
 
-              {/* Timeline card */}
+              {/* Day content card */}
               <div
                 style={{
                   background: "#FFFFFF",
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 20,
-                  padding: "6px 0",
-                  boxShadow: "0 1px 2px rgba(15,32,68,0.03)",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  margin: "0 16px",
                 }}
               >
-                {hasNothing && (
+                {!hasGaps && (
                   <div
                     style={{
-                      padding: "20px 18px",
-                      color: "#94A3B8",
-                      fontSize: 13,
+                      padding: "14px 16px",
                       textAlign: "center",
+                      fontSize: 13,
+                      color: TEXT_MUTED,
                     }}
                   >
-                    {g.isWorkDay ? "Nothing scheduled" : "Day off — tap Add to open"}
+                    {g.isWorkDay
+                      ? "Nothing scheduled"
+                      : "Day off — tap Add to open"}
                   </div>
                 )}
 
-                {entries.map((entry, i) => {
-                  const isLast = i === entries.length - 1;
-                  if (entry.kind === "busy") {
-                    const dur = entry.end - entry.start;
-                    return (
-                      <div
-                        key={`busy-${i}`}
-                        style={{
-                          padding: "14px 16px",
-                          borderBottom: isLast
-                            ? "none"
-                            : `1px solid #F1F5F9`,
-                          display: "flex",
-                          alignItems: "stretch",
-                          gap: 14,
-                        }}
-                      >
-                        <div style={{ width: 62, flexShrink: 0 }}>
-                          <div
-                            style={{
-                              color: NAVY,
-                              fontWeight: 700,
-                              fontSize: 20,
-                              lineHeight: 1.1,
-                              letterSpacing: "-0.01em",
-                            }}
-                          >
-                            {minToHm(entry.start)}
-                          </div>
-                          <div
-                            style={{
-                              color: "#94A3B8",
-                              fontSize: 12,
-                              marginTop: 4,
-                            }}
-                          >
-                            {fmtGap(dur)}
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            width: 4,
-                            borderRadius: 3,
-                            background: entry.color,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                          <div
-                            style={{
-                              color: NAVY,
-                              fontWeight: 700,
-                              fontSize: 15,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {entry.title}
-                          </div>
-                          <div
-                            style={{
-                              color: "#94A3B8",
-                              fontSize: 13,
-                              marginTop: 4,
-                            }}
-                          >
-                            Lesson
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  // Gap-filler inline card
-                  const slot = entry.slot;
+                {g.slots.map((slot, i) => {
+                  const isLast = i === g.slots.length - 1;
                   const anySelected = slot.possibleDurations.some((d) =>
                     selectedSlots.some(
                       (s) =>
                         slotKey(s) ===
-                        slotKey({ date: slot.date, time: slot.startTime, duration: d }),
+                        slotKey({
+                          date: slot.date,
+                          time: slot.startTime,
+                          duration: d,
+                        }),
                     ),
                   );
                   const default60Key = slotKey({
@@ -1209,8 +1165,9 @@ function GapsPage() {
                     <div
                       key={`gap-${slot.startTime}`}
                       style={{
-                        padding: "10px 12px",
-                        borderBottom: isLast ? "none" : `1px solid #F1F5F9`,
+                        borderBottom: isLast
+                          ? "none"
+                          : `0.5px solid ${HAIRLINE}`,
                       }}
                     >
                       <button
@@ -1240,14 +1197,9 @@ function GapsPage() {
                         style={{
                           width: "100%",
                           textAlign: "left",
-                          background: anySelected
-                            ? "linear-gradient(180deg, #EAF3FF 0%, #E0F4FF 100%)"
-                            : "#F8FAFC",
-                          border: anySelected
-                            ? `1.5px solid ${BLUE_BRIGHT}`
-                            : `1px solid #EEF2F7`,
-                          borderRadius: 14,
-                          padding: "12px 12px",
+                          background: anySelected ? "#F3F8FF" : "#FFFFFF",
+                          border: "none",
+                          padding: "13px 16px",
                           display: "flex",
                           alignItems: "center",
                           gap: 12,
@@ -1258,55 +1210,49 @@ function GapsPage() {
                           style={{
                             width: 40,
                             height: 40,
-                            borderRadius: 999,
-                            background: anySelected ? BLUE_BRIGHT : "#FFFFFF",
-                            border: `1px solid ${anySelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                            borderRadius: 12,
+                            background: CHIP_BG,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             flexShrink: 0,
-                            color: anySelected ? "#FFFFFF" : BLUE_BRIGHT,
                           }}
                         >
-                          <Sparkles size={18} />
+                          <Zap size={20} color={ACCENT} />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
-                              color: NAVY,
-                              fontWeight: 700,
-                              fontSize: 15,
+                              color: TEXT_PRIMARY,
+                              fontWeight: 500,
+                              fontSize: 14,
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {slot.bufferMinutes && slot.bufferMinutes > 0
-                              ? `${fmtGap(slot.gapMinutes)} usable`
-                              : `${fmtGap(slot.gapMinutes)} free`}
-                            {hourlyRate > 0
-                              ? ` · £${Math.round((slot.gapMinutes / 60) * hourlyRate)}`
-                              : ""}
+                            {fmtGap(slot.gapMinutes)} free
                           </div>
                           <div
                             style={{
-                              color: "#94A3B8",
-                              fontSize: 13,
-                              marginTop: 3,
+                              color: TEXT_MUTED,
+                              fontSize: 12,
+                              marginTop: 1,
                             }}
                           >
                             {minToHm(hmToMin(slot.startTime))} –{" "}
                             {minToHm(hmToMin(slot.endTime))} · tap to fill
-                            {slot.bufferMinutes && slot.bufferMinutes > 0
-                              ? ` · ${fmtGap(slot.gapMinutes + slot.bufferMinutes)} gap − ${slot.bufferMinutes} min buffer`
-                              : ""}
                           </div>
                         </div>
-                        <RefreshCw size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
+                        <RefreshCw
+                          size={16}
+                          color={TEXT_MUTED}
+                          style={{ flexShrink: 0 }}
+                        />
                         <ChevronRight
-                          size={18}
-                          color="#94A3B8"
-                          style={{ flexShrink: 0, marginLeft: 2 }}
+                          size={16}
+                          color={TEXT_MUTED}
+                          style={{ flexShrink: 0 }}
                         />
                       </button>
 
@@ -1316,8 +1262,7 @@ function GapsPage() {
                             display: "flex",
                             flexWrap: "wrap",
                             gap: 6,
-                            marginTop: 8,
-                            paddingLeft: 4,
+                            padding: "0 16px 12px",
                           }}
                         >
                           {slot.possibleDurations.map((d) => {
@@ -1335,7 +1280,6 @@ function GapsPage() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedSlots((prev) => {
-                                    // remove any other duration for this slot start
                                     const filtered = prev.filter(
                                       (s) =>
                                         !(
@@ -1355,14 +1299,13 @@ function GapsPage() {
                                   });
                                 }}
                                 style={{
-                                  background: isSelected ? BLUE_BRIGHT : "#FFFFFF",
-                                  color: isSelected ? "#FFFFFF" : "#475569",
-                                  border: `1px solid ${isSelected ? BLUE_BRIGHT : "#E2E8F0"}`,
+                                  background: isSelected ? ACCENT : "#FFFFFF",
+                                  color: isSelected ? "#FFFFFF" : TEXT_SUBTLE,
+                                  border: `1px solid ${isSelected ? ACCENT : HAIRLINE}`,
                                   borderRadius: 999,
                                   padding: "4px 10px",
                                   fontSize: 11,
-                                  fontWeight: 700,
-                                  letterSpacing: "0.04em",
+                                  fontWeight: 500,
                                   cursor: "pointer",
                                 }}
                               >
@@ -1386,6 +1329,7 @@ function GapsPage() {
             hourlyRate={hourlyRate}
           />
         )}
+
 
         <div style={{ marginTop: 8, textAlign: "center" }}>
           <button
