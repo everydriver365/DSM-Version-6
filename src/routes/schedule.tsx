@@ -261,30 +261,74 @@ function SchedulePage() {
     didScrollToToday.current = true;
   }, [lessons, orderedDayKeys, todayKey]);
 
-  // Update visible-month header as the user scrolls.
+  // As the agenda scrolls, update the calendar month + selected-date
+  // highlight to follow the top-most visible day.
   const onScroll = useCallback(() => {
+    if (suppressScrollUpdate.current) return;
     const scroller = scrollRef.current;
     if (!scroller) return;
     const scrollerTop = scroller.getBoundingClientRect().top;
-    let currentDate: Date | null = null;
+    let currentKey: string | null = null;
     for (const [key, el] of dayRefs.current) {
       const rect = el.getBoundingClientRect();
-      if (rect.top - scrollerTop <= 48) {
-        const [y, m, d] = key.split("-").map(Number);
-        currentDate = new Date(y, m - 1, d);
+      if (rect.top - scrollerTop <= 120) {
+        currentKey = key;
       } else {
         break;
       }
     }
-    if (currentDate) {
-      const label = currentDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-      setVisibleMonth((prev) => (prev === label ? prev : label));
+    if (currentKey) {
+      const [y, m, d] = currentKey.split("-").map(Number);
+      const date = new Date(y, m - 1, d);
+      setSelectedDateKey((prev) => (prev === currentKey ? prev : currentKey!));
+      setCalendarMonth((prev) => {
+        if (prev.getFullYear() === date.getFullYear() && prev.getMonth() === date.getMonth()) return prev;
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+      });
     }
   }, []);
 
   const goToLesson = (id: string) => {
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
+
+  // Colour dots per date, one per unique pupil, capped at 3.
+  const dotsByDay = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const l of lessons ?? []) {
+      const key = l.lesson_date.substring(0, 10);
+      const arr = map.get(key) ?? [];
+      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+      if (!arr.includes(colour) && arr.length < 3) arr.push(colour);
+      map.set(key, arr);
+    }
+    return map;
+  }, [lessons]);
+
+  const scrollToDate = useCallback(
+    (key: string) => {
+      // If that date has no entries, jump to the nearest future day that does.
+      let targetKey = key;
+      if (!dayRefs.current.has(targetKey)) {
+        const found = orderedDayKeys.find((k) => k >= key);
+        if (!found) return;
+        targetKey = found;
+      }
+      const el = dayRefs.current.get(targetKey);
+      const scroller = scrollRef.current;
+      if (!el || !scroller) return;
+      setSelectedDateKey(key);
+      suppressScrollUpdate.current = true;
+      const top = el.offsetTop - scroller.offsetTop - 8;
+      scroller.scrollTo({ top, behavior: "smooth" });
+      // Release the scroll-driven month/selected updater after the smooth
+      // scroll settles, so the user's tap wins over the scroll observer.
+      window.setTimeout(() => {
+        suppressScrollUpdate.current = false;
+      }, 450);
+    },
+    [orderedDayKeys],
+  );
 
   // ── Chrome ────────────────────────────────────────────────────────────
   return (
@@ -299,53 +343,7 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "12px 16px",
-          borderBottom: "1px solid #EEF2F7",
-          background: "#FFFFFF",
-        }}
-      >
-        <button
-          type="button"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            background: "transparent",
-            border: 0,
-            padding: 0,
-            fontSize: 20,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            ...POPPINS,
-          }}
-        >
-          <span>{visibleMonth}</span>
-          <IconChevronDown size={20} stroke={1.75} />
-        </button>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            type="button"
-            aria-label="Search"
-            onClick={() => navigate({ to: "/search" as never })}
-            style={iconBtn}
-          >
-            <IconSearch size={22} stroke={1.75} color="#0B1F3A" />
-          </button>
-          <button
-            type="button"
-            aria-label="Add lesson"
-            onClick={() => navigate({ to: "/lessons/new" as never })}
-            style={iconBtn}
-          >
-            <IconPlus size={22} stroke={1.75} color="#0B1F3A" />
-          </button>
-        </div>
-      </header>
+
 
       <div
         ref={scrollRef}
