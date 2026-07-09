@@ -4561,120 +4561,174 @@ function HomePage() {
 
 
         {tabLessons.length === 0 ? (
-          tab !== "next" ? (
-            (() => {
-              const targetDate = tab === "today" ? todayStart : tomorrowStart;
-              const isToday = tab === "today";
-              const dayNoun = isToday ? "today" : "tomorrow";
-              const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-              const targetKey = dayKeys[targetDate.getDay()];
-              const todayWorks = workingHours ? (workingHours as Record<string, unknown>)[targetKey] : true;
-              const startStr = "09:00";
-              const endStr = workingHours?.end_time ? String(workingHours.end_time).slice(0, 5) : "18:00";
-              const [sh, sm] = startStr.split(":").map(Number);
-              const [eh, em] = endStr.split(":").map(Number);
-              const totalMinutes = Math.max(0, (eh * 60 + em) - (sh * 60 + sm));
-              const availableHours = Math.round((totalMinutes / 60) * 10) / 10;
-              const hourlyRate = 40;
-              const potential = Math.round(availableHours * hourlyRate);
-              const fmt24 = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-              const workingLabel = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : `Not working ${dayNoun}`;
-              const fmtWindow = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : "—";
-              return (
+          (() => {
+            const nextStart = new Date(tomorrowStart);
+            nextStart.setDate(nextStart.getDate() + 1);
+            const targetDate =
+              tab === "today" ? todayStart : tab === "tomorrow" ? tomorrowStart : nextStart;
+            const dayLabel = tab === "today" ? "TODAY" : tab === "tomorrow" ? "TOMORROW" : "NEXT";
+            const DAY_ABBR = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+            const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+            const dateChip = `${DAY_ABBR[targetDate.getDay()]} ${targetDate.getDate()} ${MONTH_ABBR[targetDate.getMonth()]}`;
+
+            const dayKeys = ["sun","mon","tue","wed","thu","fri","sat"] as const;
+            const targetKey = dayKeys[targetDate.getDay()];
+            const dayWorks = workingHours ? (workingHours as Record<string, unknown>)[targetKey] : true;
+            const startStr = workingHours?.start_time ? String(workingHours.start_time).slice(0, 5) : "09:00";
+            const endStr = workingHours?.end_time ? String(workingHours.end_time).slice(0, 5) : "18:00";
+            const [sh, sm] = startStr.split(":").map(Number);
+            const [eh, em] = endStr.split(":").map(Number);
+            const totalMinutes = dayWorks ? Math.max(0, (eh * 60 + em) - (sh * 60 + sm)) : 0;
+            const availableHours = Math.round((totalMinutes / 60) * 10) / 10;
+            const windowLabel = dayWorks ? `${startStr} – ${endStr}` : null;
+            const hoursText = dayWorks && availableHours > 0
+              ? `${availableHours % 1 === 0 ? availableHours.toFixed(0) : availableHours.toFixed(1)} hours available`
+              : null;
+
+            // Match pupils against target day's working window
+            const parseHM = (t: string | null | undefined, fallback: number) => {
+              if (!t) return fallback;
+              const [h, m] = t.split(":").map(Number);
+              return (h || 0) * 60 + (m || 0);
+            };
+            type Matched = { id: string; first: string; avatar: string | null; colour: string | null };
+            const matches: Matched[] = [];
+            if (dayWorks) {
+              const winStartMins = sh * 60 + sm;
+              const winEndMins = eh * 60 + em;
+              const hoursUntil = (targetDate.getTime() + winStartMins * 60000 - Date.now()) / 3600000;
+              Object.entries(pupilAvailMap).forEach(([pid, a]) => {
+                const info = pupilInfoMap[pid];
+                if (!info) return;
+                const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
+                if (days.length && !days.includes(targetKey)) return;
+                const fromMins = parseHM(a.available_from, 0);
+                const untilMins = parseHM(a.available_until, 24 * 60);
+                if (winEndMins <= fromMins || winStartMins >= untilMins) return;
+                const minNotice = a.min_notice_hours ?? 24;
+                if (hoursUntil < minNotice && !a.short_notice_opt_in) return;
+                const first = (info.first_name || info.name || "Pupil").split(/\s+/)[0];
+                matches.push({ id: pid, first, avatar: info.profile_image_url, colour: info.calendar_colour });
+              });
+            }
+            const shown = matches.slice(0, 3);
+            const extra = Math.max(0, matches.length - shown.length);
+            const avatarInitial = (name: string) => name.slice(0, 1).toUpperCase();
+            const BORDER_C = "#EEF2F7";
+            const MUTED = "#6B7280";
+            const NAVY = "#0F2044";
+            const SURFACE_1 = "#F1F5F9";
+            const showStats = !!windowLabel || matches.length > 0;
+
+            return (
+              <>
                 <div style={{
-                  margin: "4px 16px 12px",
-                  padding: 16,
+                  margin: "4px 16px 10px",
                   background: "#FFFFFF",
-                  border: "0.5px solid #EEF2F7",
-                  borderRadius: 16,
-                  fontFamily: "Inter, sans-serif",
-                  display: "flex", flexDirection: "column", gap: 16,
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  border: `0.5px solid ${BORDER_C}`,
+                  fontFamily: "Poppins, Inter, sans-serif",
                 }}>
-                  {/* Header */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>Free day {dayNoun}</div>
-                      <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                        {todayWorks ? `You have ${availableHours} hrs of open time` : `Not scheduled to work ${dayNoun}`}
-                      </div>
+                  <div style={{ background: "#FBEFE1", padding: "18px 18px 16px" }}>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#B5661E", letterSpacing: "0.02em", marginBottom: 6 }}>
+                      {dayLabel} · {dateChip}
                     </div>
-                    <div style={{ background: "rgba(0,181,165,0.10)", padding: 8, borderRadius: 10, display: "flex" }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B5A5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                      </svg>
+                    <div style={{ fontSize: 22, fontWeight: 500, color: "#7A4813", marginBottom: 2 }}>
+                      Nothing booked yet
                     </div>
+                    {hoursText && (
+                      <div style={{ fontSize: 14, color: "#B5661E" }}>{hoursText}</div>
+                    )}
+                    {!dayWorks && (
+                      <div style={{ fontSize: 14, color: "#B5661E" }}>Not scheduled to work</div>
+                    )}
                   </div>
 
-                  {/* Stats row */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: 16 }}>
-                    {[
-                      { label: "Window", value: fmtWindow, color: "#0F2044" },
-                      { label: "Potential", value: `£${potential}`, color: "#00B5A5" },
-                      { label: "Pupils", value: `${activePupilsCount} active`, color: "#0F2044" },
-                    ].map((s, i) => (
-                      <div key={s.label} style={{
-                        display: "flex", flexDirection: "column",
-                        borderLeft: i === 0 ? "none" : "1px solid #F1F3F7",
-                        paddingLeft: i === 0 ? 0 : 16,
-                        minWidth: 0,
-                      }}>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em", textTransform: "uppercase" }}>{s.label}</span>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: s.color, marginTop: 2, whiteSpace: "nowrap" }}>{s.value}</span>
-                      </div>
-                    ))}
-                  </div>
-
-
-                  {/* Actions */}
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={() => navigate({ to: "/gaps" })} style={{
-                      flex: 1, background: "#1877D6", color: "#FFFFFF",
-                      padding: "10px 0", borderRadius: 10, fontWeight: 600, fontSize: 13,
-                      border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                    }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                      </svg>
-                      Fill slots
-                    </button>
-                    <button onClick={() => {
-                      window.location.href = `sms:?body=${encodeURIComponent(`Hi everyone, I have lesson availability ${dayNoun}. Reply to book!`)}`;
-                    }} style={{
-                      flex: 1, background: "#FFFFFF", color: "#0F2044",
-                      padding: "10px 0", borderRadius: 10, fontWeight: 600, fontSize: 13,
-                      border: "1px solid #E5E7EB", cursor: "pointer", fontFamily: "Inter, sans-serif",
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                    }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 8a3 3 0 0 0-3-3H5a2 2 0 0 0-2 2v14l4-4h8a3 3 0 0 0 3-3V8z" />
-                      </svg>
-                      Broadcast
-                    </button>
-                  </div>
-                  {!todayWorks && (
-                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: -4 }}>Working hours: {workingLabel}</div>
+                  {showStats && (
+                    <div style={{ display: "flex", borderBottom: `0.5px solid ${BORDER_C}` }}>
+                      {windowLabel && (
+                        <div style={{ flex: 1, padding: "14px 16px", borderRight: matches.length > 0 ? `0.5px solid ${BORDER_C}` : "none" }}>
+                          <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Window</div>
+                          <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{windowLabel}</div>
+                        </div>
+                      )}
+                      {matches.length > 0 && (
+                        <div style={{ flex: 1, padding: "14px 16px" }}>
+                          <div style={{ fontSize: 11, color: MUTED, marginBottom: 3 }}>Pupils</div>
+                          <div style={{ fontSize: 15, fontWeight: 500, color: NAVY }}>{matches.length} active</div>
+                        </div>
+                      )}
+                    </div>
                   )}
+
+                  {matches.length > 0 && (
+                    <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER_C}`, display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {shown.map((m, i) => (
+                          <div key={m.id} title={m.first} style={{
+                            width: 24, height: 24, borderRadius: 999,
+                            background: m.colour || "#E2E8F0", color: "#FFFFFF",
+                            border: "2px solid #FFFFFF",
+                            marginLeft: i === 0 ? 0 : -8,
+                            display: "inline-flex", alignItems: "center", justifyContent: "center",
+                            fontSize: 10, fontWeight: 500, overflow: "hidden",
+                            fontFamily: "Poppins, Inter, sans-serif",
+                          }}>
+                            {m.avatar ? (
+                              <img src={m.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            ) : avatarInitial(m.first)}
+                          </div>
+                        ))}
+                        {extra > 0 && (
+                          <div style={{
+                            width: 24, height: 24, borderRadius: 999,
+                            background: SURFACE_1, color: MUTED,
+                            border: "2px solid #FFFFFF", marginLeft: -8,
+                            display: "inline-flex", alignItems: "center", justifyContent: "center",
+                            fontSize: 10, fontWeight: 500,
+                            fontFamily: "Poppins, Inter, sans-serif",
+                          }}>+{extra}</div>
+                        )}
+                      </div>
+                      <span style={{ fontSize: 13, color: MUTED }}>
+                        {matches.length} {matches.length === 1 ? "pupil" : "pupils"} available to book
+                      </span>
+                    </div>
+                  )}
+
+                  <div style={{ padding: "14px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: "/gaps" })}
+                      style={{
+                        background: "#185FA5", color: "#FFFFFF",
+                        border: "none", borderRadius: 12, padding: 13,
+                        fontSize: 14, fontWeight: 500,
+                        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                        cursor: "pointer", fontFamily: "Poppins, Inter, sans-serif",
+                      }}
+                    >
+                      <Zap size={16} strokeWidth={2} /> Fill slots
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: "/broadcast" as never })}
+                      style={{
+                        background: SURFACE_1, color: MUTED,
+                        border: `1px solid ${BORDER_C}`, borderRadius: 12, padding: 13,
+                        fontSize: 14, fontWeight: 500,
+                        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                        cursor: "pointer", fontFamily: "Poppins, Inter, sans-serif",
+                      }}
+                    >
+                      <Megaphone size={16} strokeWidth={2} /> Broadcast
+                    </button>
+                  </div>
                 </div>
-              );
-            })()
-          ) : (
-            <div
-              style={{
-                padding: "20px 16px",
-                fontSize: 13,
-                color: "#9CA3AF",
-                textAlign: "center",
-                fontFamily: "Inter, sans-serif",
-              }}
-            >
-              No upcoming lessons
-            </div>
-          )
+              </>
+            );
+          })()
         ) : (
           (() => {
             const shown = tabLessons.slice(0, 6);
@@ -5289,22 +5343,34 @@ function HomePage() {
       <EndOfDayBanner />
 
         {/* Schedule CTAs */}
-        <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/schedule' })}
-            style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
-          >
-            <Plus size={18} strokeWidth={2} /> Add lesson
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/gaps' })}
-            style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
-          >
-            <Clock size={18} strokeWidth={2} /> Fill slots
-          </button>
-        </div>
+        {tabLessons.length === 0 ? (
+          <div style={{ padding: '12px 16px 24px' }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/lessons/new' })}
+              style={{ width:'100%', height:'auto', borderRadius:12, border:'none', background:'#0F2044', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Plus size={17} strokeWidth={2} /> Add lesson manually
+            </button>
+          </div>
+        ) : (
+          <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:10, padding:'12px 16px 24px' }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/lessons/new' })}
+              style={{ height:'auto', borderRadius:12, border:'none', background:'#1877D6', color:'#fff', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Plus size={18} strokeWidth={2} /> Add lesson
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/gaps' })}
+              style={{ height:'auto', borderRadius:12, border:'1px solid #BFD7F0', background:'#FFFFFF', color:'#1877D6', fontSize:14, fontWeight:500, fontFamily:'Poppins, Inter, sans-serif', cursor:'pointer', boxShadow:'none', padding:'14px 4px', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}
+            >
+              <Clock size={18} strokeWidth={2} /> Fill slots
+            </button>
+          </div>
+        )}
 
 
         <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
