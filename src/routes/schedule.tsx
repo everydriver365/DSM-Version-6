@@ -726,8 +726,8 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     width: "100%",
     textAlign: "left",
     border: 0,
-    borderRadius: 8,
-    padding: "8px 12px",
+    borderRadius: 12,
+    padding: "10px 14px",
     background: bg,
     color: "#FFFFFF",
     cursor: "pointer",
@@ -746,10 +746,10 @@ const rowTitle: React.CSSProperties = {
 const rowSub: React.CSSProperties = {
   marginTop: 2,
   fontSize: 11,
-  color: "#FFFFFF",
-  opacity: 0.85,
+  color: "rgba(255,255,255,0.75)",
   fontVariantNumeric: "tabular-nums",
 };
+
 
 // ── Month calendar ────────────────────────────────────────────────────
 function MonthCalendar({
