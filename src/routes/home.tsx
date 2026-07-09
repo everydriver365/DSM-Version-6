@@ -225,11 +225,12 @@ function capitalize(s: string) {
 }
 
 function AttentionTile({
-  value, label, active, color, onClick,
+  value, label, color, onClick,
 }: {
-  value: number; label: string; active: boolean;
+  value: number; label: string;
   color: string; onClick: () => void;
 }) {
+  const isUrgent = value > 0;
   return (
     <div
       onClick={onClick}
@@ -238,41 +239,42 @@ function AttentionTile({
       className="cf-tap"
       style={{
         background: '#FFFFFF',
-        border: active ? `1.5px solid ${color}` : '1px solid rgba(229, 231, 235, 0.9)',
-        borderRadius: 8,
-        padding: 10,
+        border: isUrgent ? `2px solid ${color}` : 'none',
+        borderRadius: 16,
+        padding: '14px 4px',
+        textAlign: 'center',
         cursor: 'pointer',
-        boxShadow: active ? `0 2px 8px ${color}33` : '0 1px 3px rgba(0,0,0,0.06)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
         boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 6,
         transition: 'all 150ms ease',
-        minHeight: 0,
       }}
     >
-      <div style={{ fontSize: 24, fontWeight: 900, color: '#0B1F3A', lineHeight: 1, fontFamily: 'Inter, sans-serif' }}>
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: isUrgent ? 700 : 500,
+          color: isUrgent ? color : '#B0BAC9',
+          lineHeight: 1,
+          fontFamily: 'Inter, sans-serif',
+        }}
+      >
         {value}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-        <span
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: 999,
-            background: active ? color : 'rgba(156, 163, 175, 0.4)',
-            flexShrink: 0,
-          }}
-        />
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: '#6B7280', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-          {label}
-        </span>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 500,
+          marginTop: 5,
+          color: isUrgent ? color : '#B0BAC9',
+          fontFamily: 'Inter, sans-serif',
+        }}
+      >
+        {label}
       </div>
     </div>
   );
 }
+
 
 
 function normalizePupilStatus(status: string | null | undefined) {
