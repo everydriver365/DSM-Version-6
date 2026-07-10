@@ -378,7 +378,7 @@ function SchedulePage() {
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: "#FFFFFF",
+        background: "#EEF2F7",
         color: "#111827",
         ...POPPINS,
       }}
@@ -389,7 +389,7 @@ function SchedulePage() {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            padding: "10px 12px 6px",
+            padding: "10px 16px 6px",
             color: "#FFFFFF",
           }}
         >
@@ -419,7 +419,7 @@ function SchedulePage() {
 
       <div
         style={{
-          padding: "10px 12px 4px",
+          padding: "10px 16px 4px",
           background: "#FFFFFF",
         }}
       >
@@ -468,7 +468,7 @@ function SchedulePage() {
           flex: 1,
           overflowY: "auto",
           overflowX: "hidden",
-          padding: "0 0 calc(80px + env(safe-area-inset-bottom)) 0",
+          padding: "0 16px calc(80px + env(safe-area-inset-bottom))",
         }}
       >
         {view === "calendar" && (
@@ -501,7 +501,7 @@ function SchedulePage() {
         {view === "calendar" && (
           <div style={{ height: 0.5, background: "#EEF2F7" }} />
         )}
-        <div style={{ padding: "8px 16px 0" }}>
+        <div style={{ padding: "8px 0 0" }}>
 
         {lessons === null ? (
           <div style={{ padding: 24, color: "#B0BAC9", fontSize: 14 }}>Loading…</div>
@@ -862,7 +862,7 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        padding: "12px 14px 0",
+        padding: "12px 0 0",
         borderBottom: "0.5px solid #E5E7EB",
         height: 220,
         maxHeight: 220,
