@@ -13,6 +13,7 @@ import {
   Bell,
   Menu,
   MessageSquare,
+  CreditCard,
   Navigation,
   CalendarOff,
   Search,
