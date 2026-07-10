@@ -1155,7 +1155,7 @@ function GapsPage() {
       style={{
         ...FONT,
         backgroundColor: "#F7F9FC",
-        maxWidth: 480,
+        maxWidth: 430,
         margin: "0 auto",
         border: "1px solid #E2E6ED",
         borderRadius: 16,
