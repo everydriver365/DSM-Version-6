@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Plus } from "lucide-react";
 import {
   IconSearch,
   IconPlus,
@@ -688,6 +689,30 @@ function SchedulePage() {
         </div>
 
       </div>
+
+      <button
+        type="button"
+        onClick={() => navigate({ to: '/lessons/new' as never })}
+        style={{
+          position: 'fixed',
+          bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
+          right: 20,
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          background: '#0F2044',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 16px rgba(15,32,68,0.3)',
+          zIndex: 50,
+        }}
+        aria-label="Add lesson"
+      >
+        <Plus size={24} color="white" />
+      </button>
     </div>
   );
 }
