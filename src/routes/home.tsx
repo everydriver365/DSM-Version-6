@@ -4902,42 +4902,50 @@ function HomePage() {
                           role="button"
                           tabIndex={0}
                           style={{
-                            background: '#FFFBEB',
-                            borderLeft: '3px solid #D97706',
-                            borderRadius: 10,
-                            padding: '10px 14px',
+                            background: '#E6F1FB',
+                            borderLeft: '3px solid #185FA5',
+                            borderRadius: 14,
+                            padding: '14px 16px',
                             margin: '0 0 10px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 10,
+                            gap: 12,
                             cursor: 'pointer',
                           }}
                         >
-                          <IconBolt size={14} stroke={2} color="#D97706" />
-                          <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                            {fmtT(gs)} – {fmtT(ge)}
-                          </div>
-                          <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                            {r.mins} min free · £{potential} potential
+                          <IconBolt size={18} stroke={2} color="#185FA5" />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                              {fmtT(gs)} – {fmtT(ge)}
+                            </div>
+                            <div style={{ fontSize: 12, color: '#4A7BA6', marginTop: 2 }}>
+                              {r.mins} min free · £{potential} potential
+                            </div>
                           </div>
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                             style={{
-                              background: '#D97706',
+                              background: '#185FA5',
                               color: '#FFFFFF',
-                              fontSize: 12,
-                              fontWeight: 700,
-                              padding: '6px 12px',
-                              borderRadius: 8,
+                              fontSize: 13,
+                              fontWeight: 500,
+                              padding: '9px 16px',
+                              borderRadius: 10,
                               border: 'none',
                               cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              fontFamily: PF,
                             }}
                           >
-                            Fill →
+                            Fill
+                            <IconArrowRight size={13} stroke={2} />
                           </button>
                         </div>
                       );
+
                     }
                     const row = { kind: 'lesson' as const, l: r.l };
 
