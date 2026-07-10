@@ -43,6 +43,12 @@ function CalendarSyncPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [externalCalendarUrl, setExternalCalendarUrl] = useState("");
+  const [savedUrl, setSavedUrl] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [howToOpen, setHowToOpen] = useState(false);
+  const [removing, setRemoving] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -53,8 +59,123 @@ function CalendarSyncPage() {
         return;
       }
       setUserId(user.id);
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=external_calendar_url,external_calendar_last_synced_at`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          const row = Array.isArray(rows) ? rows[0] : null;
+          if (row?.external_calendar_url) {
+            setExternalCalendarUrl(row.external_calendar_url);
+            setSavedUrl(row.external_calendar_url);
+          }
+          if (row?.external_calendar_last_synced_at) {
+            setLastSynced(row.external_calendar_last_synced_at);
+          }
+        }
+      } catch {
+        // ignore — first-time or column may not exist
+      }
     })();
   }, [navigate]);
+
+  async function runSync(urlToUse: string) {
+    if (!userId) return;
+    if (!urlToUse.trim()) {
+      toast.error("Paste your Google Calendar ICS URL first");
+      return;
+    }
+    setSyncing(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+
+      if (urlToUse !== savedUrl) {
+        const patchRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ external_calendar_url: urlToUse }),
+          },
+        );
+        if (!patchRes.ok) {
+          throw new Error("Could not save URL");
+        }
+        setSavedUrl(urlToUse);
+      }
+
+      const syncRes = await fetch(
+        `${SUPABASE_URL}/functions/v1/sync-external-calendar`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ instructorId: userId }),
+        },
+      );
+      const syncData = await syncRes.json().catch(() => ({}));
+      if (syncRes.ok && syncData.success) {
+        toast.success(`Calendar synced — ${syncData.eventsImported ?? 0} events imported`);
+        setLastSynced(new Date().toISOString());
+      } else {
+        toast.error(syncData.message || "Sync failed — check your URL and try again");
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function removeCalendar() {
+    if (!userId) return;
+    setRemoving(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      await fetch(`${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}`, {
+        method: "PATCH",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ external_calendar_url: null, external_calendar_last_synced_at: null }),
+      });
+      await fetch(`${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}`, {
+        method: "DELETE",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setExternalCalendarUrl("");
+      setSavedUrl("");
+      setLastSynced(null);
+      toast.success("External calendar removed");
+    } catch {
+      toast.error("Could not remove calendar");
+    } finally {
+      setRemoving(false);
+    }
+  }
 
   const icsUrl = userId
     ? `https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/ics-feed?instructor_id=${userId}`
