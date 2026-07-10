@@ -1623,6 +1623,8 @@ function MenuRow({
   onClick,
   expanded,
   isFirst,
+  labelColor,
+  hideChevron,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -1631,32 +1633,98 @@ function MenuRow({
   onClick: () => void;
   expanded?: boolean;
   isFirst?: boolean;
+  labelColor?: string;
+  hideChevron?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3 text-left"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+      className="w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px]"
+      style={{
+        gap: 12,
+        padding: "13px 16px",
+        ...(isFirst
+          ? undefined
+          : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }),
+      }}
     >
       <div
-        className="flex items-center justify-center rounded-full shrink-0"
-        style={{ width: 36, height: 36, backgroundColor: iconBg }}
+        className="flex items-center justify-center shrink-0"
+        style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: iconBg }}
       >
         {icon}
       </div>
-      <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>
+      <span
+        className="flex-1 truncate"
+        style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
+      >
+        {label}
+      </span>
       {value ? (
-        <span className="text-[13px] text-[#6B7280]" style={POPPINS}>{value}</span>
+        <span
+          style={{
+            background: "#E6F1FB",
+            color: "#185FA5",
+            fontSize: 10,
+            fontWeight: 600,
+            padding: "3px 9px",
+            borderRadius: 20,
+            marginRight: 4,
+            ...POPPINS,
+          }}
+        >
+          {value}
+        </span>
       ) : null}
-      {expanded ? (
-        <ChevronDown size={18} color="#6B7280" />
+      {hideChevron ? null : expanded ? (
+        <ChevronDown size={15} color="#B0BAC9" />
       ) : (
-        <ChevronRight size={18} color="#6B7280" />
+        <ChevronRight size={15} color="#B0BAC9" />
       )}
     </button>
   );
 }
+
+// Section label — plain caption, no left accent bar.
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="mb-2"
+      style={{
+        marginTop: 20,
+        paddingLeft: 4,
+        fontSize: 11,
+        fontWeight: 500,
+        color: "#B0BAC9",
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        ...POPPINS,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// White section card wrapping menu rows.
+function SectionCard({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 14,
+        overflow: "hidden",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        marginBottom: 20,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 
 function PlaceholderBlock({ text }: { text: string }) {
   return (
