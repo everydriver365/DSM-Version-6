@@ -4807,13 +4807,20 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>
+              <div style={{ fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
               </div>
-              <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
+              <button
+                type="button"
+                onClick={() => setActiveWs(1)}
+                style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              >
+                Full schedule
+                <IconArrowRight size={13} stroke={2} />
+              </button>
             </div>
 
-            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', gap: 6, padding: 3, background: '#EEF3FA', borderRadius: 12, marginBottom: 10 }}>
+            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 4, background: '#E9EDF2', borderRadius: 12, marginBottom: 10 }}>
               {(['today', 'tomorrow', 'next'] as const).map((t) => {
                 const active = tab === t;
                 const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
@@ -4826,17 +4833,18 @@ function HomePage() {
                     onClick={() => setTab(t)}
                     style={{
                       flex: 1,
-                      height: 34,
+                      padding: '9px 0',
                       borderRadius: 9,
                       border: 'none',
                       background: active ? '#FFFFFF' : 'transparent',
-                      color: active ? NAVY : MUTED,
+                      color: active ? '#0F2044' : '#8A93A3',
                       fontFamily: PF,
-                      fontSize: 13,
-                      fontWeight: active ? 600 : 500,
+                      fontSize: 14,
+                      fontWeight: active ? 500 : 400,
                       cursor: 'pointer',
-                      boxShadow: active ? '0 1px 2px rgba(15,32,68,0.08)' : 'none',
+                      boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
                       transition: 'background 120ms ease',
+                      textAlign: 'center',
                     }}
                   >
                     {label}
@@ -4844,6 +4852,7 @@ function HomePage() {
                 );
               })}
             </div>
+
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
