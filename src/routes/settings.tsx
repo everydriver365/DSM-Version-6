@@ -1789,16 +1789,6 @@ function MenuRow({
             {subLabel}
           </span>
         ) : null}
-        </span>
-        {warning ? (
-          <span
-            className="truncate"
-            title={warning}
-            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
-          >
-            {warning}
-          </span>
-        ) : null}
       </div>
       {value ? (
         <span
