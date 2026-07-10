@@ -378,6 +378,61 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd]);
 
+  // Fetch instructor working hours + buffers + rate, plus recurring blocks and time off.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const userId = session?.user?.id;
+        if (!token || !userId) return;
+        const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
+        const startIso = ymdLocal(rangeStart);
+        const endIso = ymdLocal(rangeEnd);
+        const [instrRow, recRes, offRes] = await Promise.all([
+          supabase
+            .from("instructors")
+            .select("working_hours_start,working_hours_end,lesson_buffer_before,lesson_buffer_after,hourly_rate")
+            .eq("id", userId)
+            .maybeSingle(),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+        ]);
+        if (cancelled) return;
+        const i = (instrRow.data ?? {}) as {
+          working_hours_start?: string | null;
+          working_hours_end?: string | null;
+          lesson_buffer_before?: number | null;
+          lesson_buffer_after?: number | null;
+          hourly_rate?: number | null;
+        };
+        if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
+        if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
+        if (i.lesson_buffer_before != null) setBufferBefore(Number(i.lesson_buffer_before));
+        if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
+        if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
+        if (recRes.ok) {
+          const d = await recRes.json();
+          if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
+        }
+        if (offRes.ok) {
+          const d = await offRes.json();
+          if (!cancelled && Array.isArray(d)) setTimeOff(d);
+        }
+      } catch (err) {
+        console.warn("[schedule] availability fetch failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd]);
+
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
