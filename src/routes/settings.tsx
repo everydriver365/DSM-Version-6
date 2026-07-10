@@ -628,7 +628,7 @@ function SettingsPage() {
 
       <div className="px-4">
         <Label>ACCOUNT</Label>
-        <SectionCard>
+        <div style={{ background: '#fff', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
             icon={<User color="#185FA5" />}
             iconBg="#E6F1FB"
@@ -667,7 +667,7 @@ function SettingsPage() {
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
-        </SectionCard>
+        </div>
 
         <Label>PAYMENTS</Label>
         <SectionCard>
