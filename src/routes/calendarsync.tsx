@@ -348,6 +348,7 @@ function CalendarSyncPage() {
               Your Google Calendar ICS URL
             </label>
             <input
+              ref={inputRef}
               type="url"
               value={externalCalendarUrl}
               onChange={(e) => setExternalCalendarUrl(e.target.value)}
