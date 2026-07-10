@@ -177,6 +177,7 @@ interface Availability {
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
   preferred_duration_minutes: number | null;
+  max_lessons_per_week: number | null;
 }
 
 interface Ranked {
