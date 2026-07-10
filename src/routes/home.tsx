@@ -4,8 +4,6 @@ import { Fragment, useEffect, useMemo, useRef, useState, isValidElement, cloneEl
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { BottomNav, type BottomNavItem } from "@/components/dsm/BottomNav";
-import { HomeIcon, ScheduleIcon, PupilsIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { generateInsights, type InsightInput } from "@/lib/insights.functions";
 
@@ -7178,27 +7176,6 @@ function HomePage() {
       />
 
 
-      {/* HOME BOTTOM NAV — controls the workspace carousel */}
-      {(() => {
-        console.log("[home] activeWs:", activeWs);
-        console.log("[home] carousel scrollLeft:", carouselRef.current?.scrollLeft);
-        const navItems: BottomNavItem[] = [
-          { key: 'today', label: 'Today', Icon: HomeIcon, onClick: () => scrollToWs(0) },
-          { key: 'schedule', label: 'Schedule', Icon: ScheduleIcon, onClick: () => navigate({ to: '/schedule' as never }) },
-          { key: 'pupils', label: 'Pupils', Icon: PupilsIcon, onClick: () => scrollToWs(2) },
-          { key: 'messages', label: 'Messages', Icon: MessagesIcon, onClick: () => navigate({ to: '/messages' as never }) },
-          { key: 'more', label: 'More', Icon: LayoutGrid, onClick: () => scrollToWs(7) },
-        ];
-        const activeIndex = activeWs === 0 ? 0 : activeWs === 1 ? 1 : activeWs === 2 ? 2 : activeWs === 7 ? 4 : -1;
-        return (
-          <BottomNav
-            items={navItems}
-            activeIndex={activeIndex}
-            activeColor="#0F2044"
-            inactiveColor="#9CA3AF"
-          />
-        );
-      })()}
     </div>
 
   );
