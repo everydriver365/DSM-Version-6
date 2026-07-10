@@ -1,29 +1,25 @@
-# Unify swiped schedule with /schedule
+## What's actually in the code
 
-## Problem
+The DSM Live redesign from the previous turn is present in `src/routes/dsm-live.index.tsx`:
 
-The bottom-nav "Schedule" tab opens `src/routes/schedule.tsx` (calendar/agenda toggle, month grid, agenda list). Swiping right from the Today workspace on `/home` lands on workspace index 1, which is a separate ~1000-line inline schedule implementation inside `src/routes/home.tsx` (lines ~5082–6058). The two look and behave differently.
+- `view` state (`"upcoming" | "all"`) at line 56
+- Upcoming / All sessions segmented toggle at lines 227–263
+- Filter logic honoring `view` at line 111
+- 2-column compact card grid at lines 270–283
+- `CompactSessionCard` component at line 589
 
-## Approach
+So the file *has* changed. If your preview still looks like the old single-column layout, it is almost certainly one of:
 
-Make the swipe entry point delegate to the real `/schedule` page instead of maintaining a parallel implementation. `/schedule` already integrates with the workspace swipe model (swiping left/right there navigates back to `/home` with `ws=0` or `ws=2`), so the round-trip UX is preserved and both entry points show byte-identical UI.
+1. **Preview cache** — the mobile preview is showing a stale bundle.
+2. **Wrong screen** — you're viewing a different route (you're currently on `/home`, not `/dsm-live`).
+3. **A different screen you meant** — e.g. the swiped-schedule unification, or something else entirely.
 
-## Changes
+## Proposed next step
 
-1. **`src/routes/home.tsx` — swipe/activation handlers**
-   - In `scrollToWs(i)` and `handleCarouselScroll` (around lines 1590–1630), when the resolved workspace index is `1`, call `navigate({ to: "/schedule" })` and return early instead of scrolling the carousel to that panel.
-   - Same guard in the `dsm-workspace-request` event listener so BottomNav / other triggers requesting index 1 also route to `/schedule`.
-   - Keep `WS_COUNT` and all other indexes unchanged so pupils=2, money=3, etc. still align with WorkspaceDots and the existing swipe math in sibling pages.
+Before touching any code again, confirm which of these is happening:
 
-2. **`src/routes/home.tsx` — inline schedule section (lines ~5082–6058)**
-   - Replace the entire `data-workspace="schedule"` section body with an empty placeholder `<section data-workspace="schedule" data-ws-index={1} />` that preserves the carousel slot (so scroll-snap indexes for pupils/money/etc. stay correct) but renders nothing. Users never see it because activation redirects to `/schedule` first.
-   - Delete the now-unused helpers and state that were exclusive to the inline schedule (safe to remove only if not referenced by other workspaces; otherwise leave in place).
+1. Hard-refresh the preview and navigate to `/dsm-live`. If the toggle + 2-column grid appear, we're done.
+2. If it still looks unchanged there, screenshot what you see so I can compare against the code and find the actual gap.
+3. If you meant a *different* screen (not DSM Live), tell me which one and what should look different — I'll read that component and plan the visual fix.
 
-3. **No changes to `src/routes/schedule.tsx`** — it already handles swipe-back to `/home` with `ws=0`/`ws=2` and shows WorkspaceDots with `activeIndex={1}`.
-
-## Result
-
-- Bottom-nav "Schedule" → `/schedule` (unchanged).
-- Swipe right from Today workspace → triggers navigation to `/schedule` (same component, same layout, same data).
-- Swipe left/right from `/schedule` continues to move to Today (`ws=0`) or Pupils (`ws=2`) via the existing handler in `schedule.tsx`.
-- Single source of truth for the schedule UI; future changes only need to happen in one file.
+No files will be edited until we've identified what's actually wrong — re-applying identical changes won't help.
