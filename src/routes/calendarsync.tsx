@@ -256,6 +256,141 @@ function CalendarSyncPage() {
           </p>
         </div>
 
+        {/* Import external Google Calendar */}
+        <div
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: "#E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+            marginTop: 16,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Calendar size={18} color="#1A52A0" />
+            <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0F2044" }}>
+              Import your Google Calendar
+            </div>
+          </div>
+          <p className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 4, marginBottom: 16 }}>
+            See your personal events in DSM so gap filler knows when you're busy
+          </p>
+
+          <button
+            type="button"
+            onClick={() => setHowToOpen((v) => !v)}
+            className="flex items-center justify-between w-full"
+            style={POPPINS}
+          >
+            <span className="text-sm font-semibold" style={{ color: "#1A52A0" }}>
+              How to get your Google Calendar URL
+            </span>
+            <ChevronDown
+              size={16}
+              color="#1A52A0"
+              style={{ transform: howToOpen ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
+            />
+          </button>
+          {howToOpen && (
+            <div style={{ marginTop: 10 }}>
+              <ol className="list-decimal pl-5 text-[12px] leading-[1.5]" style={{ ...POPPINS, color: "#0F2044" }}>
+                <li>Open Google Calendar on desktop (calendar.google.com)</li>
+                <li>Click the three dots ⋮ next to your calendar name</li>
+                <li>Click 'Settings and sharing'</li>
+                <li>Scroll down to 'Secret address in iCal format'</li>
+                <li>Click the copy icon and paste the URL below</li>
+              </ol>
+              <p className="text-[11px] italic" style={{ ...POPPINS, color: "#6B7280", marginTop: 8 }}>
+                This URL is private — only you have it. No login required.
+              </p>
+            </div>
+          )}
+
+          <div style={{ marginTop: 12 }}>
+            <label
+              className="block text-xs font-semibold"
+              style={{ ...POPPINS, color: "#6B7280", marginBottom: 6 }}
+            >
+              Your Google Calendar ICS URL
+            </label>
+            <input
+              type="url"
+              value={externalCalendarUrl}
+              onChange={(e) => setExternalCalendarUrl(e.target.value)}
+              placeholder="https://calendar.google.com/calendar/ical/..."
+              className="w-full"
+              style={{
+                ...POPPINS,
+                backgroundColor: "#F7FAFC",
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#E2E6ED",
+                borderRadius: 10,
+                padding: "11px 14px",
+                fontSize: 12,
+                color: "#0F2044",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => runSync(externalCalendarUrl)}
+            disabled={syncing || !externalCalendarUrl.trim()}
+            className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+            style={{
+              ...POPPINS,
+              backgroundColor: "#1A52A0",
+              paddingTop: 12,
+              paddingBottom: 12,
+              marginTop: 12,
+              opacity: syncing || !externalCalendarUrl.trim() ? 0.6 : 1,
+            }}
+          >
+            {syncing ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> Syncing...
+              </>
+            ) : (
+              <>Save and sync calendar →</>
+            )}
+          </button>
+
+          {lastSynced && (
+            <div className="flex items-center justify-between" style={{ marginTop: 10 }}>
+              <span className="text-xs" style={{ ...POPPINS, color: "#9CA3AF" }}>
+                Last synced: {timeAgo(lastSynced)}
+              </span>
+              <button
+                type="button"
+                onClick={() => runSync(savedUrl || externalCalendarUrl)}
+                disabled={syncing}
+                className="text-xs font-semibold"
+                style={{ ...POPPINS, color: "#1A52A0" }}
+              >
+                Sync now
+              </button>
+            </div>
+          )}
+
+          {savedUrl && (
+            <div style={{ marginTop: 10 }}>
+              <button
+                type="button"
+                onClick={removeCalendar}
+                disabled={removing}
+                className="text-xs"
+                style={{ ...POPPINS, color: "#CC2229" }}
+              >
+                {removing ? "Removing..." : "Remove calendar"}
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* ICS Feed URL */}
         <SectionHeader>YOUR ICS FEED URL</SectionHeader>
         <Card className="flex flex-col gap-3">
