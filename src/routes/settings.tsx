@@ -628,37 +628,42 @@ function SettingsPage() {
 
       <div className="px-4">
         <Label>ACCOUNT</Label>
-        <div style={{ background: '#fff', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
             icon={<User color="#185FA5" />}
             iconBg="#E6F1FB"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
+            isLast={false}
           />
           <MenuRow
             icon={<PoundSterling color="#A32D2D" />}
             iconBg="#FCEBEB"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
+            isLast={false}
           />
           <MenuRow
             icon={<Clock color="#3B6D11" />}
             iconBg="#EAF3DE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
+            isLast={false}
           />
           <MenuRow
             icon={<Bell color="#B5661E" />}
             iconBg="#FBEFE1"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
+            isLast={false}
           />
           <MenuRow
             icon={<Calendar color="#6B4FD6" />}
             iconBg="#F0EBFF"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
+            isLast={false}
           />
           <MenuRow
             icon={<Crown color="#185FA5" />}
@@ -666,6 +671,7 @@ function SettingsPage() {
             label="My plan"
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
+            isLast
           />
         </div>
 
