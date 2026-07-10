@@ -460,6 +460,35 @@ function GapsPage() {
         } catch (err) {
           console.warn("[gaps] calendar_blocks fetch failed", err);
         }
+
+        // Fetch recurring blocks + time off in parallel.
+        let recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; label: string | null; is_active: boolean }> = [];
+        let timeOffRows: Array<{ start_date: string; end_date: string; reason: string | null; all_day: boolean; start_time?: string | null; end_time?: string | null }> = [];
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          if (token) {
+            const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+            const SUPABASE_ANON_KEY =
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+            const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
+            const [rRes, tRes] = await Promise.all([
+              fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
+              fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+            ]);
+            if (rRes.ok) {
+              const d = await rRes.json();
+              if (Array.isArray(d)) recurringBlocks = d;
+            }
+            if (tRes.ok) {
+              const d = await tRes.json();
+              if (Array.isArray(d)) timeOffRows = d;
+            }
+          }
+        } catch (err) {
+          console.warn("[gaps] recurring/time_off fetch failed", err);
+        }
+
         if (!cancelled) setCalendarBlocks(blocks);
         if (cancelled) return;
         console.log(
