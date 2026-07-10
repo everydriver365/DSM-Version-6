@@ -299,6 +299,7 @@ function RootComponent() {
           `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}&select=external_calendar_url`,
           { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
         );
+        const instData = await instRes.json();
         const url: string | undefined = instData?.[0]?.external_calendar_url;
         if (!url) return;
         // Guard against malformed values stored in the DB
