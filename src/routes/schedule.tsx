@@ -541,47 +541,85 @@ function SchedulePage() {
                   marginBottom: 8,
                 }}
               >
-                {row.entries.map((e, i) => (
-                  <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                    <div
-                      style={{
-                        width: 36,
-                        flexShrink: 0,
-                        textAlign: "right",
-                        paddingTop: 8,
-                      }}
-                    >
-                      {i === 0 ? (
-                        <>
-                          <div
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 500,
-                              color: "#B0BAC9",
-                              letterSpacing: "0.04em",
-                            }}
-                          >
-                            {weekday}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: 14,
-                              fontWeight: isToday ? 600 : 500,
-                              color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
-                              fontVariantNumeric: "tabular-nums",
-                            }}
-                          >
-                            {dayNum}
-                          </div>
-                        </>
-                      ) : null}
+                {row.entries.length === 0 && isToday ? (
+                  // Fix 4: today with no lessons — dashed placeholder row.
+                  <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                    <div style={{ width: 36, flexShrink: 0, textAlign: "right", paddingTop: 8 }}>
+                      <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", letterSpacing: "0.04em" }}>
+                        {weekday}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#185FA5",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        {dayNum}
+                      </div>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <EntryRow entry={e} onLessonTap={goToLesson} />
+                      <div
+                        style={{
+                          background: "#EEF2F7",
+                          border: "1.5px dashed #D0D5DD",
+                          borderRadius: 10,
+                          padding: "6px 12px",
+                          textAlign: "center",
+                          fontSize: 12,
+                          color: "#B0BAC9",
+                          ...POPPINS,
+                        }}
+                      >
+                        Today — no lessons
+                      </div>
                     </div>
                   </div>
-                ))}
+                ) : (
+                  row.entries.map((e, i) => (
+                    <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                      <div
+                        style={{
+                          width: 36,
+                          flexShrink: 0,
+                          textAlign: "right",
+                          paddingTop: 8,
+                        }}
+                      >
+                        {i === 0 ? (
+                          <>
+                            <div
+                              style={{
+                                fontSize: 10,
+                                fontWeight: 500,
+                                color: "#B0BAC9",
+                                letterSpacing: "0.04em",
+                              }}
+                            >
+                              {weekday}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 14,
+                                fontWeight: isToday ? 600 : 500,
+                                color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                                fontVariantNumeric: "tabular-nums",
+                              }}
+                            >
+                              {dayNum}
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <EntryRow entry={e} onLessonTap={goToLesson} />
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
+
             );
           })
         )}
