@@ -420,18 +420,17 @@ function SchedulePage() {
 
       <div
         style={{
-          padding: "10px 16px 4px",
-          background: "#FFFFFF",
+          padding: "10px 16px 8px",
+          background: "transparent",
         }}
       >
         <div
           style={{
             display: "flex",
             gap: 0,
-            background: "#EEF2F7",
+            background: "#E9EDF2",
             borderRadius: 12,
-            padding: 3,
-            marginBottom: 14,
+            padding: 4,
           }}
         >
           {(["calendar", "agenda"] as const).map((v) => {
@@ -443,14 +442,15 @@ function SchedulePage() {
                 onClick={() => setView(v)}
                 style={{
                   flex: 1,
-                  padding: "9px 4px",
+                  padding: "10px 0",
                   borderRadius: 9,
                   border: 0,
                   cursor: "pointer",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  fontSize: 14,
+                  fontWeight: active ? 500 : 400,
+                  textAlign: "center",
                   background: active ? "#0F2044" : "transparent",
-                  color: active ? "#FFFFFF" : "#8A94A6",
+                  color: active ? "#FFFFFF" : "#8A93A3",
                   ...POPPINS,
                 }}
               >
@@ -460,6 +460,7 @@ function SchedulePage() {
           })}
         </div>
       </div>
+
 
 
       <div
