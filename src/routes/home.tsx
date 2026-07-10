@@ -662,7 +662,7 @@ function SwipeableStatsCard({
         >
           {s.icon}
         </div>
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 40 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
           <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
           <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
