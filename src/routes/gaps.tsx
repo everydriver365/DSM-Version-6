@@ -190,6 +190,7 @@ interface Ranked {
   shortNoticeOk: boolean;
   minNoticeHours: number;
   matchedSlots: SlotMatch[];
+  warnings: string[];
 }
 
 interface SelectedSlot {
