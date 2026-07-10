@@ -369,6 +369,73 @@ function CalendarSyncPage() {
             />
           </div>
 
+          {syncError ? (
+            <div
+              style={{
+                marginTop: 8,
+                background: "#FEF2F2",
+                border: "0.5px solid #FECACA",
+                borderRadius: 10,
+                padding: "12px 14px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <AlertCircle size={14} color="#CC2229" />
+                <span className="text-xs" style={{ ...POPPINS, color: "#CC2229" }}>
+                  Sync error: {syncError}
+                </span>
+              </div>
+              <div className="text-xs" style={{ ...POPPINS, color: "#9CA3AF", marginTop: 4 }}>
+                This usually means your ICS URL has expired. Get a new one from Google Calendar.
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  inputRef.current?.focus();
+                }}
+                className="text-xs font-semibold"
+                style={{ ...POPPINS, color: "#1A52A0", marginTop: 6 }}
+              >
+                Update URL →
+              </button>
+            </div>
+          ) : lastSynced ? (
+            (() => {
+              const ageMs = Date.now() - new Date(lastSynced).getTime();
+              const overdue = ageMs > 6 * 60 * 60 * 1000;
+              return (
+                <div
+                  style={{
+                    marginTop: 8,
+                    background: "#E0FFF4",
+                    border: "0.5px solid #86EFAC",
+                    borderRadius: 10,
+                    padding: "12px 14px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <CheckCircle size={14} color="#16A34A" />
+                    <span
+                      className="text-xs font-semibold"
+                      style={{ ...POPPINS, color: "#16A34A" }}
+                    >
+                      Last synced: {timeAgo(lastSynced)}
+                    </span>
+                  </div>
+                  {overdue && (
+                    <div
+                      className="text-xs"
+                      style={{ ...POPPINS, color: "#D97706", marginTop: 4 }}
+                    >
+                      ⚠️ Sync is overdue — tap Sync now to refresh
+                    </div>
+                  )}
+                </div>
+              );
+            })()
+          ) : null}
+
           <button
             type="button"
             onClick={() => runSync(externalCalendarUrl)}
@@ -392,11 +459,8 @@ function CalendarSyncPage() {
             )}
           </button>
 
-          {lastSynced && (
-            <div className="flex items-center justify-between" style={{ marginTop: 10 }}>
-              <span className="text-xs" style={{ ...POPPINS, color: "#9CA3AF" }}>
-                Last synced: {timeAgo(lastSynced)}
-              </span>
+          {lastSynced && !syncError && (
+            <div className="flex items-center justify-end" style={{ marginTop: 10 }}>
               <button
                 type="button"
                 onClick={() => runSync(savedUrl || externalCalendarUrl)}
@@ -408,6 +472,8 @@ function CalendarSyncPage() {
               </button>
             </div>
           )}
+
+
 
           {savedUrl && (
             <div style={{ marginTop: 10 }}>
