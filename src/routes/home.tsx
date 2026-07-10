@@ -1589,6 +1589,10 @@ function HomePage() {
   };
   const scrollToWs = (i: number) => {
     const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+    if (clamped === 1) {
+      navigate({ to: "/schedule" as never });
+      return;
+    }
     setActiveWsState(clamped);
     dispatchWsChange(clamped);
     const el = carouselRef.current;
@@ -1597,6 +1601,7 @@ function HomePage() {
     el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
+
   const setActiveWs = (i: number) => scrollToWs(i);
   const search = Route.useSearch();
   useEffect(() => {
