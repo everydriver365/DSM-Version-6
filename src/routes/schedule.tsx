@@ -773,11 +773,11 @@ function SchedulePage() {
                   style={{
                     fontSize: 11,
                     fontWeight: 500,
-                    letterSpacing: "0.04em",
+                    letterSpacing: "0.4px",
                     textTransform: "uppercase",
-                    color: "#B0BAC9",
-                    marginTop: isFirstWeek ? 4 : 16,
-                    marginBottom: 10,
+                    color: "#8A93A3",
+                    marginTop: isFirstWeek ? 4 : 24,
+                    marginBottom: 16,
                   }}
                 >
                   {row.label.toUpperCase()}
