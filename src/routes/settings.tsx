@@ -1742,12 +1742,36 @@ function MenuRow({
       >
         {icon}
       </div>
-      <span
-        className="flex-1 truncate"
-        style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
-      >
-        {label}
-      </span>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <span
+          className="truncate flex items-center gap-2"
+          style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
+        >
+          {label}
+          {warning ? (
+            <span
+              aria-hidden
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#D97706",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+          ) : null}
+        </span>
+        {warning ? (
+          <span
+            className="truncate"
+            title={warning}
+            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+          >
+            {warning}
+          </span>
+        ) : null}
+      </div>
       {value ? (
         <span
           style={{
