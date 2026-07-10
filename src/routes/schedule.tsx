@@ -931,11 +931,10 @@ function SchedulePage() {
                               role="button"
                               tabIndex={0}
                               style={{
-                                background: '#FFFBEB',
-                                borderLeft: '3px solid #D97706',
-                                borderRadius: 10,
-                                padding: '10px 14px',
-                                margin: '2px 0',
+                                background: '#E6F1FB',
+                                borderLeft: '3px solid #185FA5',
+                                borderRadius: 12,
+                                padding: '12px 14px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 10,
@@ -943,32 +942,37 @@ function SchedulePage() {
                                 ...POPPINS,
                               }}
                             >
-                              <span style={{ fontSize: 14, color: '#D97706' }} aria-hidden>⚡</span>
-                              <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                                {e.startTime} – {e.endTime}
+                              <span style={{ fontSize: 16, color: '#185FA5', lineHeight: 1 }} aria-hidden>⚡</span>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                                  {e.startTime} – {e.endTime}
+                                </div>
+                                <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
+                                  {formatMins(e.mins)} free
+                                </div>
                               </div>
-                              <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {formatMins(e.mins)} free
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#3B6D11' }}>
+                                £{e.potential}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
-                                £{e.potential} potential
-                              </div>
-
                               <button
                                 type="button"
                                 onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
-                                  background: '#D97706',
+                                  background: '#185FA5',
                                   color: '#FFFFFF',
                                   fontSize: 12,
-                                  fontWeight: 700,
-                                  padding: '6px 12px',
-                                  borderRadius: 8,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 4,
                                 }}
                               >
-                                Fill →
+                                Fill
+                                <IconArrowRight size={12} stroke={2} />
                               </button>
                             </div>
                           ) : (
