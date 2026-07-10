@@ -163,13 +163,58 @@ function DsmLivePage() {
       </div>
 
       {/* Hero */}
-      <div style={{ background: "#0F2044", padding: "16px 20px 24px" }}>
-        <h1 style={{ margin: 0, fontFamily: poppins, fontSize: 24, fontWeight: 900, color: "#FFFFFF" }}>
-          DSM Live
-        </h1>
-        <p style={{ margin: "4px 0 0", fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
-          Live coaching, CPD webinars and standards check prep
-        </p>
+      <div style={{ padding: "16px 16px 18px" }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 14,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            padding: 18,
+            display: "flex",
+            flexDirection: "row",
+            gap: 14,
+            alignItems: "flex-start",
+          }}
+        >
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: "#E6F1FB",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconBroadcast size={22} color="#185FA5" stroke={1.5} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 500,
+                color: "#0F2044",
+                marginBottom: 6,
+                fontFamily: poppins,
+              }}
+            >
+              DSM Live
+            </div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 13,
+                color: "#5A6270",
+                lineHeight: 1.5,
+                fontFamily: poppins,
+              }}
+            >
+              Live coaching, CPD webinars and standards check prep
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Category pills (horizontal scroll) */}
