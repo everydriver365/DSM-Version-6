@@ -729,7 +729,7 @@ function SettingsPage() {
         </div>
 
         <Label>LESSON REMINDERS</Label>
-        <SectionCard>
+        <div style={{ background: '#fff', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
             icon={<Clock color="#B5661E" />}
             iconBg="#FBEFE1"
@@ -812,7 +812,7 @@ function SettingsPage() {
               )}
             </div>
           )}
-        </SectionCard>
+        </div>
 
         <Label>RATES & SCHEDULING</Label>
         <SectionCard>
