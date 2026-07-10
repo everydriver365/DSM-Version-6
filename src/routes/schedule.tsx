@@ -8,6 +8,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconArrowLeft,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
@@ -773,11 +774,11 @@ function SchedulePage() {
                   style={{
                     fontSize: 11,
                     fontWeight: 500,
-                    letterSpacing: "0.04em",
+                    letterSpacing: "0.4px",
                     textTransform: "uppercase",
-                    color: "#B0BAC9",
-                    marginTop: isFirstWeek ? 4 : 16,
-                    marginBottom: 10,
+                    color: "#8A93A3",
+                    marginTop: isFirstWeek ? 4 : 24,
+                    marginBottom: 16,
                   }}
                 >
                   {row.label.toUpperCase()}
@@ -806,21 +807,22 @@ function SchedulePage() {
                   display: "flex",
                   flexDirection: "column",
                   gap: 8,
-                  marginBottom: 8,
+                  marginBottom: 10,
                 }}
               >
                 {row.entries.length === 0 && isToday ? (
                   // Fix 4: today with no lessons — dashed placeholder row.
-                  <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                    <div style={{ width: 36, flexShrink: 0, textAlign: "right", paddingTop: 8 }}>
-                      <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", letterSpacing: "0.04em" }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
+                    <div style={{ width: 34, flexShrink: 0, textAlign: "left", paddingTop: 12 }}>
+                      <div style={{ fontSize: 10, fontWeight: 500, color: "#8A93A3", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                         {weekday}
                       </div>
                       <div
                         style={{
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: 600,
-                          color: "#185FA5",
+                          color: "#0F2044",
+                          marginTop: 2,
                           fontVariantNumeric: "tabular-nums",
                         }}
                       >
@@ -887,13 +889,13 @@ function SchedulePage() {
                     );
 
                     return items.map((e, i) => (
-                      <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                      <div key={e.id} style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
                         <div
                           style={{
-                            width: 36,
+                            width: 34,
                             flexShrink: 0,
-                            textAlign: "right",
-                            paddingTop: 8,
+                            textAlign: "left",
+                            paddingTop: 12,
                           }}
                         >
                           {i === 0 ? (
@@ -902,7 +904,8 @@ function SchedulePage() {
                                 style={{
                                   fontSize: 10,
                                   fontWeight: 500,
-                                  color: "#B0BAC9",
+                                  color: "#8A93A3",
+                                  textTransform: "uppercase",
                                   letterSpacing: "0.04em",
                                 }}
                               >
@@ -910,9 +913,10 @@ function SchedulePage() {
                               </div>
                               <div
                                 style={{
-                                  fontSize: 14,
-                                  fontWeight: isToday ? 600 : 500,
-                                  color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                                  fontSize: 16,
+                                  fontWeight: 600,
+                                  color: "#0F2044",
+                                  marginTop: 2,
                                   fontVariantNumeric: "tabular-nums",
                                 }}
                               >
@@ -928,11 +932,10 @@ function SchedulePage() {
                               role="button"
                               tabIndex={0}
                               style={{
-                                background: '#FFFBEB',
-                                borderLeft: '3px solid #D97706',
-                                borderRadius: 10,
-                                padding: '10px 14px',
-                                margin: '2px 0',
+                                background: '#E6F1FB',
+                                borderLeft: '3px solid #185FA5',
+                                borderRadius: 12,
+                                padding: '12px 14px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 10,
@@ -940,32 +943,37 @@ function SchedulePage() {
                                 ...POPPINS,
                               }}
                             >
-                              <span style={{ fontSize: 14, color: '#D97706' }} aria-hidden>⚡</span>
-                              <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                                {e.startTime} – {e.endTime}
+                              <span style={{ fontSize: 16, color: '#185FA5', lineHeight: 1 }} aria-hidden>⚡</span>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                                  {e.startTime} – {e.endTime}
+                                </div>
+                                <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
+                                  {formatMins(e.mins)} free
+                                </div>
                               </div>
-                              <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {formatMins(e.mins)} free
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#3B6D11' }}>
+                                £{e.potential}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
-                                £{e.potential} potential
-                              </div>
-
                               <button
                                 type="button"
                                 onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
-                                  background: '#D97706',
+                                  background: '#185FA5',
                                   color: '#FFFFFF',
                                   fontSize: 12,
-                                  fontWeight: 700,
-                                  padding: '6px 12px',
-                                  borderRadius: 8,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 4,
                                 }}
                               >
-                                Fill →
+                                Fill
+                                <IconArrowRight size={12} stroke={2} />
                               </button>
                             </div>
                           ) : (
@@ -993,8 +1001,8 @@ function SchedulePage() {
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           right: 20,
-          width: 56,
-          height: 56,
+          width: 50,
+          height: 50,
           borderRadius: '50%',
           background: '#0F2044',
           border: 'none',
@@ -1002,12 +1010,12 @@ function SchedulePage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(15,32,68,0.3)',
+          boxShadow: '0 4px 10px rgba(15,32,68,0.3)',
           zIndex: 50,
         }}
         aria-label="Add lesson"
       >
-        <Plus size={24} color="white" />
+        <Plus size={22} color="white" />
       </button>
     </div>
   );
@@ -1188,7 +1196,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     textAlign: "left",
     border: 0,
     borderRadius: 12,
-    padding: "10px 14px",
+    padding: "12px 14px",
     background: bg,
     color: "#FFFFFF",
     cursor: "pointer",
@@ -1199,15 +1207,15 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
   };
 }
 const rowTitle: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: 14,
   fontWeight: 500,
   color: "#FFFFFF",
   lineHeight: 1.3,
 };
 const rowSub: React.CSSProperties = {
   marginTop: 2,
-  fontSize: 11,
-  color: "rgba(255,255,255,0.75)",
+  fontSize: 12,
+  color: "rgba(255,255,255,0.8)",
   fontVariantNumeric: "tabular-nums",
 };
 
