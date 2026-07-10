@@ -807,11 +807,12 @@ function EntryRow({
     );
   }
   if (entry.kind === "block") {
+    const c = getBlockColour(entry.title);
     return (
       <div
         style={{
-          background: "#F5F3FF",
-          borderLeft: "3px solid #7C3AED",
+          background: c.bg,
+          borderLeft: `3px solid ${c.border}`,
           borderRadius: 8,
           padding: "10px 12px",
           margin: "2px 0",
@@ -821,11 +822,8 @@ function EntryRow({
           ...POPPINS,
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <rect x="3" y="4" width="18" height="18" rx="2" />
-          <path d="M16 2v4M8 2v4M3 10h18" />
-        </svg>
-        <div style={{ fontSize: 13, color: "#7C3AED", fontWeight: 500, flex: 1 }}>{entry.title}</div>
+        <span style={{ fontSize: 14 }} aria-hidden>{c.icon}</span>
+        <div style={{ fontSize: 13, color: c.text, fontWeight: 500, flex: 1 }}>{entry.title}</div>
         <div style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
