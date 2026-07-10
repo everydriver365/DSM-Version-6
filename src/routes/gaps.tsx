@@ -662,7 +662,7 @@ function GapsPage() {
             ...dayPartialOff,
             ...lunchBusy,
           ].slice().sort((a, b) => a.start - b.start);
-          void isWorkDay;
+          
           const busyMinutes = dayLessons.reduce(
             (sum, l) => sum + (l.end - l.start),
             0,
