@@ -539,7 +539,7 @@ function PupilsIndexPage() {
                         className="truncate"
                         style={{ fontSize: 15, fontWeight: 500, color: "#12142B", ...POPPINS }}
                       >
-                        {p.name}
+                        {displayName(p.name)}
                       </div>
                       <div
                         className="flex flex-wrap items-center"
