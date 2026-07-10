@@ -672,46 +672,106 @@ function SchedulePage() {
                     </div>
                   </div>
                 ) : (
-                  row.entries.map((e, i) => (
-                    <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                      <div
-                        style={{
-                          width: 36,
-                          flexShrink: 0,
-                          textAlign: "right",
-                          paddingTop: 8,
-                        }}
-                      >
-                        {i === 0 ? (
-                          <>
+                  (() => {
+                    type GapRow = { kind: 'gap-row'; id: string; start: Date; end: Date; mins: number };
+                    const items: Array<AgendaEntry | GapRow> = [];
+                    for (let i = 0; i < row.entries.length; i++) {
+                      const cur = row.entries[i];
+                      items.push(cur);
+                      const nxt = row.entries[i + 1];
+                      if (cur && nxt && cur.kind === 'lesson' && nxt.kind === 'lesson') {
+                        const mins = Math.round((nxt.start.getTime() - cur.end.getTime()) / 60000);
+                        if (mins >= 60) {
+                          items.push({ kind: 'gap-row', id: `gap-${row.key}-${i}`, start: cur.end, end: nxt.start, mins });
+                        }
+                      }
+                    }
+                    return items.map((e, i) => (
+                      <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                        <div
+                          style={{
+                            width: 36,
+                            flexShrink: 0,
+                            textAlign: "right",
+                            paddingTop: 8,
+                          }}
+                        >
+                          {i === 0 ? (
+                            <>
+                              <div
+                                style={{
+                                  fontSize: 10,
+                                  fontWeight: 500,
+                                  color: "#B0BAC9",
+                                  letterSpacing: "0.04em",
+                                }}
+                              >
+                                {weekday}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: isToday ? 600 : 500,
+                                  color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                                  fontVariantNumeric: "tabular-nums",
+                                }}
+                              >
+                                {dayNum}
+                              </div>
+                            </>
+                          ) : null}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {e.kind === 'gap-row' ? (
                             <div
+                              onClick={() => navigate({ to: '/gaps' as never })}
+                              role="button"
+                              tabIndex={0}
                               style={{
-                                fontSize: 10,
-                                fontWeight: 500,
-                                color: "#B0BAC9",
-                                letterSpacing: "0.04em",
+                                background: '#FFFBEB',
+                                borderLeft: '3px solid #D97706',
+                                borderRadius: 10,
+                                padding: '10px 14px',
+                                margin: '2px 0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                cursor: 'pointer',
+                                ...POPPINS,
                               }}
                             >
-                              {weekday}
+                              <span style={{ fontSize: 14, color: '#D97706' }} aria-hidden>⚡</span>
+                              <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
+                                {fmtTime(e.start)} – {fmtTime(e.end)}
+                              </div>
+                              <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
+                                {e.mins} min free · £{Math.round((e.mins / 60) * 40)} potential
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                                style={{
+                                  background: '#D97706',
+                                  color: '#FFFFFF',
+                                  fontSize: 12,
+                                  fontWeight: 700,
+                                  padding: '6px 12px',
+                                  borderRadius: 8,
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                Fill →
+                              </button>
                             </div>
-                            <div
-                              style={{
-                                fontSize: 14,
-                                fontWeight: isToday ? 600 : 500,
-                                color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
-                                fontVariantNumeric: "tabular-nums",
-                              }}
-                            >
-                              {dayNum}
-                            </div>
-                          </>
-                        ) : null}
+                          ) : (
+                            <EntryRow entry={e} onLessonTap={goToLesson} />
+                          )}
+                        </div>
                       </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <EntryRow entry={e} onLessonTap={goToLesson} />
-                      </div>
-                    </div>
-                  ))
+                    ));
+                  })()
+
                 )}
               </div>
 
