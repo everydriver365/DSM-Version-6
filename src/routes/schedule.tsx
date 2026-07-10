@@ -39,11 +39,23 @@ function hashString(s: string): number {
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return Math.abs(h);
 }
-function pupilColour(pupilId: string | null | undefined, fallback?: string | null): string {
+// Name-based colour overrides. Central place to pin a pupil to a specific
+// palette colour regardless of the hash outcome.
+const PUPIL_COLOUR_OVERRIDES: Record<string, string> = {
+  "joseph thorne": "#3B6D11",
+};
+function pupilColour(
+  pupilId: string | null | undefined,
+  fallback?: string | null,
+  name?: string | null,
+): string {
+  const key = (name ?? "").trim().toLowerCase();
+  if (key && PUPIL_COLOUR_OVERRIDES[key]) return PUPIL_COLOUR_OVERRIDES[key];
   if (fallback && /^#[0-9a-fA-F]{3,8}$/.test(fallback)) return fallback;
   if (!pupilId) return PUPIL_PALETTE[0];
   return PUPIL_PALETTE[hashString(pupilId) % PUPIL_PALETTE.length];
 }
+
 
 interface Pupil {
   id?: string;
