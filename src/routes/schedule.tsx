@@ -715,7 +715,7 @@ function EntryRow({
     const typeRaw = (l.lesson_type ?? "").trim();
     const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
     const label = showType ? `${name} · ${typeRaw}` : name;
-    const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+    const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, name);
     const cancelled = l.status === "cancelled";
 
     return (
