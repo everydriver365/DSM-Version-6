@@ -251,8 +251,23 @@ function SchedulePage() {
       });
       map.set(key, arr);
     }
-    // TODO: merge external calendar / personal / task / holiday entries here
-    // when their data sources land.
+    // Merge external calendar blocks into the same per-day map.
+    for (const b of calendarBlocks) {
+      if (!b.start_datetime || !b.end_datetime) continue;
+      const key = b.start_datetime.substring(0, 10);
+      const start = new Date(b.start_datetime);
+      const end = new Date(b.end_datetime);
+      const arr = map.get(key) ?? [];
+      arr.push({
+        kind: "block",
+        id: `block-${b.id}`,
+        start,
+        end,
+        allDay: false,
+        title: b.title || "Busy",
+      });
+      map.set(key, arr);
+    }
     for (const [k, arr] of map) {
       arr.sort((a, b) => {
         if (a.allDay && !b.allDay) return -1;
@@ -262,7 +277,7 @@ function SchedulePage() {
       map.set(k, arr);
     }
     return map;
-  }, [lessons]);
+  }, [lessons, calendarBlocks]);
 
   // Ordered list of day keys that actually have entries.
   const orderedDayKeys = useMemo(() => {
