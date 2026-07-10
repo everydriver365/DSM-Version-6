@@ -111,6 +111,7 @@ import {
   IconChartBar,
   IconSteeringWheel,
   IconClipboardCheck,
+  IconArmchair,
   IconMicrophone,
   IconBriefcase,
   IconCircleCheck,
