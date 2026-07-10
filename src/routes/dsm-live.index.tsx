@@ -1,16 +1,25 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar as CalendarIcon,
+  Video,
+  Play,
+  Users,
+  ClipboardCheck,
+  Car,
+  Armchair,
+  Mic,
+  Presentation,
+  MapPin,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
-  categoryColor,
-  formatSessionDate,
-  formatSessionTime,
-  daysUntil,
   type LiveSession,
 } from "./dsm-live";
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -44,7 +53,9 @@ function DsmLivePage() {
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [bookedIds, setBookedIds] = useState<Set<string>>(new Set());
   const [category, setCategory] = useState<string>("All");
+  const [view, setView] = useState<"upcoming" | "all">("upcoming");
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -95,9 +106,19 @@ function DsmLivePage() {
 
   const filtered = useMemo(() => {
     if (!sessions) return [];
-    if (category === "All") return sessions;
-    return sessions.filter((s) => s.category === category);
-  }, [sessions, category]);
+    let list = sessions;
+    if (category !== "All") list = list.filter((s) => s.category === category);
+    if (view === "upcoming") {
+      const now = Date.now();
+      list = list.filter((s) => {
+        const dt = new Date(`${s.session_date}T${s.session_time || "00:00"}:00`).getTime();
+        return Number.isFinite(dt) ? dt >= now : true;
+      });
+    }
+    return list;
+  }, [sessions, category, view]);
+
+
 
   const sora = "'Sora', system-ui, -apple-system, sans-serif";
   const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
@@ -200,35 +221,57 @@ function DsmLivePage() {
       {/* Sessions */}
       <div style={{ padding: "20px 20px 8px" }}>
         <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
-          Upcoming Sessions
+          Sessions
         </h2>
+
+        {/* Upcoming / All sessions toggle */}
+        <div
+          style={{
+            display: "flex",
+            background: "#FFFFFF",
+            borderRadius: 12,
+            padding: 3,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            marginBottom: 16,
+            width: "100%",
+          }}
+        >
+          {(["upcoming", "all"] as const).map((v) => {
+            const active = view === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                style={{
+                  flex: 1,
+                  padding: "9px 4px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  background: active ? "#0F2044" : "transparent",
+                  borderRadius: 9,
+                  border: 0,
+                  cursor: "pointer",
+                  fontFamily: manrope,
+                }}
+              >
+                {v === "upcoming" ? "Upcoming" : "All sessions"}
+              </button>
+            );
+          })}
+        </div>
+
         {sessions === null ? null : filtered.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "48px 16px",
-              color: "#6B7280",
-              background: "#fff",
-              border: "1px solid #E2E6ED",
-              borderRadius: 16,
-              boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-            }}
-          >
-            <Video size={48} style={{ margin: "0 auto", opacity: 0.4 }} />
-            <div style={{ fontWeight: 700, marginTop: 12, color: "#0F2044", fontFamily: sora }}>
-              No sessions scheduled yet
-            </div>
-            <div style={{ fontSize: 13, marginTop: 4 }}>
-              Check back soon — sessions are added regularly.
-            </div>
+          <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
+            {view === "upcoming" ? "No upcoming sessions" : "No sessions found"}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
             {filtered.map((s) => (
-              <SessionCard
+              <CompactSessionCard
                 key={s.id}
                 session={s}
-                booked={bookedIds.has(s.id)}
                 onOpen={() =>
                   navigate({
                     to: "/dsm-live/$sessionId",
@@ -240,6 +283,8 @@ function DsmLivePage() {
           </div>
         )}
       </div>
+
+
 
       <div id="podcasts" style={{ padding: "20px 20px 8px" }}>
         <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
@@ -538,196 +583,200 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
   );
 }
 
-function SessionCard({
+// NOTE: LiveSession has no `delivery_type` field in the data model.
+// Until the column is added, all delivery badges default to "Online" with a
+// video icon. Wire this up once the field exists on dsm_live_sessions.
+function CompactSessionCard({
   session,
-  booked,
   onOpen,
 }: {
   session: LiveSession;
-  booked: boolean;
   onOpen: () => void;
 }) {
-  const remaining = Math.max(0, session.max_spaces - session.spaces_taken);
-  const spaceText = `${remaining} spaces left`;
-  const spaceIsLow = remaining > 0 && remaining < 5;
-  const isFree =
-    !session.price_amount ||
-    (session.price_display ?? "").toLowerCase().includes("free");
-
-  const categoryGradient = (c: string | null): string => {
-    if (!c) return "linear-gradient(135deg, #CC2229, #7A1419)";
-    if (c.startsWith("Standards Check")) return "linear-gradient(135deg, #1877D6, #0F2044)";
-    if (c.startsWith("Business Coaching")) return "linear-gradient(135deg, #16A34A, #14532D)";
-    if (c.startsWith("CPD Webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
-    if (c.startsWith("New ADI")) return "linear-gradient(135deg, #D97706, #92400E)";
-    if (c.startsWith("Q&A")) return "linear-gradient(135deg, #0891B2, #164E63)";
-    return "linear-gradient(135deg, #CC2229, #7A1419)";
-  };
-
-  const hasImage = !!session.image_url;
-  const topBackground = hasImage
-    ? `url(${session.image_url})`
-    : categoryGradient(session.category);
-  const imagePosition = (session as any).image_position || "center center";
-
-  const sora = "'Sora', system-ui, -apple-system, sans-serif";
   const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+
+  // Session type → thumbnail bg + icon (best-effort mapping to existing categories).
+  const typeStyle = (() => {
+    const c = (session.category ?? "").toLowerCase();
+    if (c.includes("standards")) return { bg: "#0F2044", Icon: ClipboardCheck, iconColor: "#3D7BE0" };
+    if (c.includes("meet")) return { bg: "#185FA5", Icon: Car, iconColor: "#FFFFFF" };
+    if (c.includes("waiting")) return { bg: "#6B4FD6", Icon: Armchair, iconColor: "#FFFFFF" };
+    if (c.includes("podcast")) return { bg: "#6B4FD6", Icon: Mic, iconColor: "#FFFFFF" };
+    return { bg: "#0F2044", Icon: CalendarIcon, iconColor: "#FFFFFF" };
+  })();
+  const ThumbIcon = typeStyle.Icon;
+
+  // Delivery badge — defaults to "Online" until delivery_type is added.
+  const delivery = (() => {
+    const raw = ((session as unknown as { delivery_type?: string | null }).delivery_type ?? "")
+      .toString()
+      .toLowerCase();
+    if (raw.includes("zoom")) return { Icon: Video, label: "Zoom" };
+    if (raw.includes("team")) return { Icon: Video, label: "Teams" };
+    if (raw.includes("webinar")) return { Icon: Presentation, label: "Webinar" };
+    if (raw.includes("podcast")) return { Icon: Mic, label: "Podcast" };
+    if (raw.includes("person") || raw.includes("in-person") || raw.includes("in_person"))
+      return { Icon: MapPin, label: "In person" };
+    return { Icon: Video, label: "Online" };
+  })();
+  const DeliveryIcon = delivery.Icon;
+
+  const isPodcast = (session.category ?? "").toLowerCase().includes("podcast");
+
+  // Date "Mon 21 Jul 2026"
+  const dateLabel = (() => {
+    if (!session.session_date) return "";
+    try {
+      const d = new Date(session.session_date + "T00:00:00");
+      return d.toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return session.session_date;
+    }
+  })();
+
+  // Time "10:10am – 11:30am"
+  const timeLabel = (() => {
+    if (!session.session_time) return "";
+    const fmt = (h: number, m: number) => {
+      const d = new Date();
+      d.setHours(h, m, 0, 0);
+      return d
+        .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
+        .replace(/\s/g, "")
+        .toLowerCase();
+    };
+    try {
+      const [hStr, mStr] = session.session_time.split(":");
+      const h = Number(hStr);
+      const m = Number(mStr);
+      const start = fmt(h, m);
+      if (session.duration_minutes && session.duration_minutes > 0) {
+        const total = h * 60 + m + session.duration_minutes;
+        const eh = Math.floor(total / 60) % 24;
+        const em = total % 60;
+        return `${start} – ${fmt(eh, em)}`;
+      }
+      return start;
+    } catch {
+      return session.session_time;
+    }
+  })();
 
   return (
     <div
       onClick={onOpen}
       style={{
-        background: "#fff",
-        border: "1px solid #E2E6ED",
+        background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
-        boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         cursor: "pointer",
         fontFamily: manrope,
       }}
     >
+      {/* Thumbnail */}
       <div
         style={{
-          height: 160,
+          height: 80,
           position: "relative",
-          background: topBackground,
-          backgroundSize: "cover",
-          backgroundPosition: imagePosition,
-          backgroundRepeat: "no-repeat",
+          background: typeStyle.bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {hasImage && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%)",
-            }}
-          />
-        )}
-        <span
-          style={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            background: "rgba(255,255,255,0.95)",
-            color: "#0F2044",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            padding: "5px 10px",
-            borderRadius: 999,
-            fontFamily: sora,
-          }}
-        >
-          {session.category ?? "Session"}
-        </span>
-
-        <span
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            background: "rgba(0,0,0,0.45)",
-            color: spaceIsLow ? "#FCD34D" : "#fff",
-            fontSize: 11,
-            fontWeight: 600,
-            padding: "5px 10px",
-            borderRadius: 999,
-          }}
-        >
-          {spaceText}
-        </span>
-
-        {session.host_name && (
-          <span
-            style={{
-              position: "absolute",
-              bottom: 12,
-              left: 12,
-              color: "rgba(255,255,255,0.92)",
-              fontSize: 13,
-              fontWeight: 500,
-            }}
-          >
-            with {session.host_name}
-          </span>
-        )}
+        <ThumbIcon size={32} color={typeStyle.iconColor} />
 
         {session.is_live && (
           <span
             style={{
               position: "absolute",
-              bottom: 12,
-              right: 12,
-              background: "#CC2229",
-              color: "#fff",
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "4px 10px",
-              borderRadius: 999,
+              top: 8,
+              left: 8,
+              background: "#E24B4A",
+              borderRadius: 20,
+              padding: "2px 8px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 3,
+              fontSize: 9,
+              fontWeight: 600,
+              color: "#FFFFFF",
             }}
           >
-            🔴 LIVE NOW
+            <span
+              style={{
+                width: 4,
+                height: 4,
+                borderRadius: "50%",
+                background: "#FFFFFF",
+                display: "inline-block",
+              }}
+            />
+            Live now
           </span>
         )}
+
+        <span
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            background: "rgba(255,255,255,0.15)",
+            borderRadius: 20,
+            padding: "2px 8px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 3,
+            fontSize: 9,
+            fontWeight: 500,
+            color: "#FFFFFF",
+          }}
+        >
+          <DeliveryIcon size={10} color="#FFFFFF" />
+          {delivery.label}
+        </span>
       </div>
 
-      <div style={{ padding: 16 }}>
-        <div style={{ fontFamily: sora, fontWeight: 700, fontSize: 16, color: "#0F2044", marginBottom: 10, lineHeight: 1.3 }}>
+      {/* Body */}
+      <div style={{ padding: "10px 12px 12px" }}>
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#12142B",
+            marginBottom: 3,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
+        >
           {session.title}
         </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
-          <CalendarIcon size={14} />
-          {formatSessionDate(session.session_date)}
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)", marginBottom: 6 }}>
-          <Clock size={14} />
-          {formatSessionTime(session.session_time)}
-          {session.duration_minutes ? ` · ${session.duration_minutes} minutes` : ""}
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(15,32,68,0.6)" }}>
-          <Video size={14} />
-          Zoom
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, paddingTop: 14, borderTop: "1px solid #E2E6ED" }}>
-          <div
-            style={{
-              fontFamily: sora,
-              fontWeight: 800,
-              fontSize: 18,
-              color: isFree ? "#16A34A" : "#CC2229",
-            }}
-          >
-            {session.price_display ?? (isFree ? "Free" : `£${session.price_amount}`)}
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen();
-            }}
-            style={{
-              background: "#1877D6",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 13,
-              padding: "10px 18px",
-              borderRadius: 12,
-              border: 0,
-              cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(24,119,214,0.25)",
-              fontFamily: manrope,
-            }}
-          >
-            {booked ? "Booked ✓" : "Book now →"}
-          </button>
-        </div>
+        {isPodcast && !session.session_date ? (
+          <>
+            <div style={{ fontSize: 11, fontWeight: 500, color: "#185FA5", marginBottom: 1 }}>
+              Available now
+            </div>
+            <div style={{ fontSize: 11, color: "#B0BAC9" }}>
+              {session.duration_minutes ? `${session.duration_minutes} mins` : ""}
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: 11, fontWeight: 500, color: "#185FA5", marginBottom: 1 }}>
+              {dateLabel}
+            </div>
+            <div style={{ fontSize: 11, color: "#B0BAC9" }}>{timeLabel}</div>
+          </>
+        )}
       </div>
     </div>
   );
