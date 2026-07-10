@@ -351,6 +351,7 @@ function GapsPage() {
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
 
   useEffect(() => {
     console.log("[gaps] slot-detection effect fired; userId =", userId);
