@@ -559,7 +559,7 @@ function PaymentsPage() {
                   borderRadius: 14,
                   overflow: "hidden",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  margin: "0 16px 16px",
+                  margin: "0 16px 14px",
                 }}
               >
                 {g.rows.map((row, i) => {
