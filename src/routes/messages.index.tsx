@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, MessageCircle, Search, Edit3 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 
 
 export const Route = createFileRoute("/messages/")({
@@ -133,7 +134,7 @@ function MessagesIndexPage() {
   }, [convos, query]);
 
   return (
-    <div style={{ ...FONT, minHeight: "100vh", background: "#EEF2F7", paddingBottom: 80 }}>
+    <PageLayout style={{ ...FONT, paddingBottom: 80 }}>
       {/* Header */}
       <div
         style={{
@@ -381,6 +382,6 @@ function MessagesIndexPage() {
 
 
       <BottomNav active="messages" />
-    </div>
+    </PageLayout>
   );
 }
