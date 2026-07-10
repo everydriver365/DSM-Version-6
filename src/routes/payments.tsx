@@ -55,8 +55,11 @@ function startOfYear(d: Date) { return new Date(d.getFullYear(), 0, 1); }
 function sameDay(a: Date, b: Date) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 function dateGroupLabel(iso: string) {
   const d = new Date(iso);
-  // Format: "Wed 8 Jul 2026" (abbreviated weekday, no leading zero on day)
-  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  // Format: "Wed 8 Jul 2026" (abbreviated weekday, no leading zero on day, no comma)
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).replace(/,/g, "");
+}
+function displayPupilName(name: string | null | undefined) {
+  return (name ?? "").replace(/[.\s]+$/g, "").trim();
 }
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
