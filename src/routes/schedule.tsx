@@ -888,13 +888,13 @@ function SchedulePage() {
                     );
 
                     return items.map((e, i) => (
-                      <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                      <div key={e.id} style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
                         <div
                           style={{
-                            width: 36,
+                            width: 34,
                             flexShrink: 0,
-                            textAlign: "right",
-                            paddingTop: 8,
+                            textAlign: "left",
+                            paddingTop: 12,
                           }}
                         >
                           {i === 0 ? (
@@ -903,7 +903,8 @@ function SchedulePage() {
                                 style={{
                                   fontSize: 10,
                                   fontWeight: 500,
-                                  color: "#B0BAC9",
+                                  color: "#8A93A3",
+                                  textTransform: "uppercase",
                                   letterSpacing: "0.04em",
                                 }}
                               >
@@ -911,9 +912,10 @@ function SchedulePage() {
                               </div>
                               <div
                                 style={{
-                                  fontSize: 14,
-                                  fontWeight: isToday ? 600 : 500,
-                                  color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                                  fontSize: 16,
+                                  fontWeight: 600,
+                                  color: "#0F2044",
+                                  marginTop: 2,
                                   fontVariantNumeric: "tabular-nums",
                                 }}
                               >
