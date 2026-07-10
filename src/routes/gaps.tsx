@@ -446,20 +446,20 @@ function GapsPage() {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
-          lesson_buffer_minutes?: number | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
+          lunch_break_start?: string | null;
+          lunch_break_end?: string | null;
         };
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
-        const buffer = instr.lesson_buffer_minutes ?? 15;
         const instrBufBefore = instr.lesson_buffer_before ?? 0;
         const instrBufAfter = instr.lesson_buffer_after ?? 15;
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd, "buffer:", buffer);
+        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
