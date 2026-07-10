@@ -676,7 +676,7 @@ function SettingsPage() {
         </div>
 
         <Label>PAYMENTS</Label>
-        <div style={{ background: '#fff', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
             icon={<PoundSterling color="#A32D2D" />}
             iconBg="#FCEBEB"
@@ -684,6 +684,7 @@ function SettingsPage() {
             expanded={expanded === "payments"}
             onClick={() => setExpanded(expanded === "payments" ? null : "payments")}
             isFirst
+            isLast
           />
 
           {expanded === "payments" && (
