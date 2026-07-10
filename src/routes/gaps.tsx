@@ -1302,10 +1302,10 @@ function GapsPage() {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 16px",
-          marginBottom: 4,
+          marginBottom: 2,
         }}
       >
-        <div style={{ fontSize: 15, fontWeight: 600, color: TEXT_PRIMARY }}>
+        <div style={{ fontSize: 19, fontWeight: 600, color: "#0F2044" }}>
           Your free slots
         </div>
         {freeSlots.length > 0 && (
@@ -1329,7 +1329,7 @@ function GapsPage() {
               padding: 0,
               fontSize: 13,
               fontWeight: 500,
-              color: ACCENT,
+              color: "#185FA5",
               cursor: "pointer",
             }}
           >
@@ -1340,9 +1340,9 @@ function GapsPage() {
       <div
         style={{
           fontSize: 12,
-          color: TEXT_MUTED,
+          color: "#8A93A3",
           padding: "0 16px",
-          marginBottom: 16,
+          marginBottom: 18,
         }}
       >
         {slotsLoading
