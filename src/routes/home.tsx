@@ -4966,25 +4966,25 @@ function HomePage() {
                     let pill: React.ReactNode = null;
                     if (isLive) {
                       pill = (
-                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Live
                         </span>
                       );
                     } else if (isPrepaidPupil) {
                       pill = (
-                        <span style={{ background: '#EEF4FB', color: '#1877D6', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Prepaid
                         </span>
                       );
                     } else if (isPaid) {
                       pill = (
-                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Paid ✓
                         </span>
                       );
                     } else if (dueUnpaid) {
                       pill = (
-                        <span style={{ background: '#FDECC8', color: '#8A5A00', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           £{amt.toFixed(0)}
                         </span>
                       );
@@ -4999,14 +4999,15 @@ function HomePage() {
                         style={{
                           minHeight: 64,
                           margin: '0 0 10px',
-                          padding: '12px 16px',
+                          padding: '14px 16px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 12,
                           cursor: 'pointer',
                           background: '#FFFFFF',
-                          border: `0.5px solid ${BORDER}`,
-                          borderRadius: 16,
+                          border: 'none',
+                          borderRadius: 14,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                           boxSizing: 'border-box',
                         }}
                       >
@@ -5015,9 +5016,9 @@ function HomePage() {
                           style={{
                             position: 'relative',
                             width: 40, height: 40, borderRadius: 999,
-                            background: NAVY, color: '#FFFFFF',
+                            background: '#0F2044', color: '#FFFFFF',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
+                            fontSize: 13, fontWeight: 500, letterSpacing: 0.2,
                             flexShrink: 0,
                             overflow: 'hidden',
                           }}
@@ -5051,21 +5052,22 @@ function HomePage() {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
-                            <div style={{ fontSize: 11, fontWeight: 600, color: ACCENT, marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                            <div style={{ fontSize: 11, fontWeight: 500, color: '#185FA5', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
                               {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                             </div>
                           )}
-                          <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: 15, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {name}
                           </div>
-                          <div style={{ fontSize: 12, color: MUTED, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                          <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                             {timeLabel} · {dur} mins
                           </div>
                         </div>
                         {pill}
-                        <IconChevronRight size={18} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
+                        <IconChevronRight size={16} stroke={1.75} color="#C7CCD4" style={{ flexShrink: 0 }} />
                       </div>
                     );
+
                   })}
                 </div>
               );
