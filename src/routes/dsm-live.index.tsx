@@ -221,35 +221,57 @@ function DsmLivePage() {
       {/* Sessions */}
       <div style={{ padding: "20px 20px 8px" }}>
         <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
-          Upcoming Sessions
+          Sessions
         </h2>
+
+        {/* Upcoming / All sessions toggle */}
+        <div
+          style={{
+            display: "flex",
+            background: "#FFFFFF",
+            borderRadius: 12,
+            padding: 3,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            marginBottom: 16,
+            width: "100%",
+          }}
+        >
+          {(["upcoming", "all"] as const).map((v) => {
+            const active = view === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                style={{
+                  flex: 1,
+                  padding: "9px 4px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  background: active ? "#0F2044" : "transparent",
+                  borderRadius: 9,
+                  border: 0,
+                  cursor: "pointer",
+                  fontFamily: manrope,
+                }}
+              >
+                {v === "upcoming" ? "Upcoming" : "All sessions"}
+              </button>
+            );
+          })}
+        </div>
+
         {sessions === null ? null : filtered.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "48px 16px",
-              color: "#6B7280",
-              background: "#fff",
-              border: "1px solid #E2E6ED",
-              borderRadius: 16,
-              boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-            }}
-          >
-            <Video size={48} style={{ margin: "0 auto", opacity: 0.4 }} />
-            <div style={{ fontWeight: 700, marginTop: 12, color: "#0F2044", fontFamily: sora }}>
-              No sessions scheduled yet
-            </div>
-            <div style={{ fontSize: 13, marginTop: 4 }}>
-              Check back soon — sessions are added regularly.
-            </div>
+          <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
+            {view === "upcoming" ? "No upcoming sessions" : "No sessions found"}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
             {filtered.map((s) => (
-              <SessionCard
+              <CompactSessionCard
                 key={s.id}
                 session={s}
-                booked={bookedIds.has(s.id)}
                 onOpen={() =>
                   navigate({
                     to: "/dsm-live/$sessionId",
@@ -261,6 +283,8 @@ function DsmLivePage() {
           </div>
         )}
       </div>
+
+
 
       <div id="podcasts" style={{ padding: "20px 20px 8px" }}>
         <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
