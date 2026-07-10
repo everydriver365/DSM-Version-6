@@ -660,8 +660,8 @@ function SwipeableStatsCard({
           }}
           style={{
             position: "absolute",
-            top: 12,
-            right: 12,
+            bottom: 12,
+            left: 12,
             zIndex: 2,
             width: 28,
             height: 28,
