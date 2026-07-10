@@ -4037,8 +4037,8 @@ function HomePage() {
           data-workspace="today"
           data-ws-index={0}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -5108,8 +5108,8 @@ function HomePage() {
           data-workspace="schedule"
           data-ws-index={1}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6085,8 +6085,8 @@ function HomePage() {
           data-workspace="pupils"
           data-ws-index={2}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6413,8 +6413,8 @@ function HomePage() {
           data-workspace="money"
           data-ws-index={3}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6588,8 +6588,8 @@ function HomePage() {
           data-workspace="marketplace"
           data-ws-index={4}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6607,8 +6607,8 @@ function HomePage() {
           data-workspace="dsm"
           data-ws-index={5}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6626,8 +6626,8 @@ function HomePage() {
           data-workspace="community"
           data-ws-index={6}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
@@ -6766,8 +6766,8 @@ function HomePage() {
           data-workspace="tools"
           data-ws-index={7}
           style={{
-            flex:'0 0 100vw',
-            width:'100vw',
+            flex:'0 0 100%',
+            width:'100%',
             height:'100%',
             scrollSnapAlign:'start',
             overflowY:'auto',
