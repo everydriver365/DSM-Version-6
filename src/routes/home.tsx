@@ -707,8 +707,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   type CategoryRow = { id: string; name: string };
 
   const [listings, setListings] = useState<ListingTile[]>([]);
-  const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [_categories, setCategories] = useState<CategoryRow[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     let cancelled = false;
@@ -773,135 +774,153 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     return arr[0] ?? null;
   };
 
-  const staticCategories = ["All", "ADI Training", "Vehicles", "Equipment", "Technology", "Insurance", "Business", "For Sale"];
-  const categoryNames = categories.length > 0 ? ["All", ...categories.map((c) => c.name)] : staticCategories;
+  // Category definitions per spec — display label, icon, accent colour, and data-model synonyms.
+  const CATEGORY_DEFS: {
+    label: string;
+    Icon: React.ComponentType<{ size?: number; color?: string }>;
+    color: string;
+    matches: string[]; // category names in data that map to this tile
+  }[] = [
+    { label: "All",        Icon: LayoutGrid,   color: "#185FA5", matches: [] },
+    { label: "ADI",        Icon: Award,        color: "#6B4FD6", matches: ["ADI", "ADI Training"] },
+    { label: "Business",   Icon: Briefcase,    color: "#185FA5", matches: ["Business", "Business Services"] },
+    { label: "Equipment",  Icon: Wrench,       color: "#854F0B", matches: ["Equipment"] },
+    { label: "For Sale",   Icon: Tag,          color: "#C4501E", matches: ["For Sale"] },
+    { label: "Insurance",  Icon: ShieldCheck,  color: "#3B6D11", matches: ["Insurance"] },
+    { label: "Technology", Icon: Laptop,       color: "#0C8577", matches: ["Technology"] },
+    { label: "Vehicles",   Icon: Car,          color: "#A32D2D", matches: ["Vehicles"] },
+  ];
+
+  const catDefFor = (name: string | null | undefined) => {
+    if (!name) return CATEGORY_DEFS[0];
+    const hit = CATEGORY_DEFS.find((d) => d.matches.includes(name));
+    return hit ?? CATEGORY_DEFS[0];
+  };
 
   const filteredListings = useMemo(() => {
-    if (activeCategory === "All") return listings;
-    return listings.filter((l) => l.marketplace_categories?.name === activeCategory);
-  }, [listings, activeCategory]);
+    const activeDef = CATEGORY_DEFS.find((d) => d.label === activeCategory);
+    const q = searchQuery.trim().toLowerCase();
+    return listings.filter((l) => {
+      const catName = l.marketplace_categories?.name ?? "";
+      if (activeCategory !== "All" && activeDef && !activeDef.matches.includes(catName)) return false;
+      if (q && !l.title.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [listings, activeCategory, searchQuery]);
 
   const openListing = (listingId: string) => {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const sora = "'Sora', system-ui, -apple-system, sans-serif";
-  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
-
   return (
     <div
       style={{
-        padding: "24px 20px 96px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
+        padding: "16px 16px 96px",
         background: "#F3F8FF",
         minHeight: "100%",
-        fontFamily: manrope,
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      {/* Search */}
-      <div style={{ position: "relative" }}>
-        <Search
-          size={16}
-          color="rgba(15,32,68,0.4)"
-          style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+      {/* SEARCH BAR */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 12,
+          padding: "9px 12px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 14,
+        }}
+      >
+        <Search size={16} color="#B0BAC9" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search products..."
+          style={{
+            flex: 1,
+            minWidth: 0,
+            border: 0,
+            outline: "none",
+            background: "transparent",
+            fontSize: 13,
+            color: "#12142B",
+            fontFamily: "Inter, sans-serif",
+          }}
         />
+      </div>
+
+      {/* CATEGORY GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: 8,
+          marginBottom: 20,
+        }}
+      >
+        {CATEGORY_DEFS.map((c) => {
+          const active = activeCategory === c.label;
+          const accent = active ? c.color : "#8A94A6";
+          return (
+            <button
+              key={c.label}
+              type="button"
+              onClick={() => setActiveCategory(c.label)}
+              style={{
+                background: "#FFFFFF",
+                border: active ? "2px solid #185FA5" : "2px solid transparent",
+                borderRadius: 14,
+                padding: "10px 4px",
+                textAlign: "center",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 5,
+                fontFamily: "Inter, sans-serif",
+              }}
+            >
+              <c.Icon size={20} color={accent} />
+              <div style={{ fontSize: 10, fontWeight: 500, color: accent, lineHeight: 1.1 }}>
+                {c.label}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* SECTION HEADER */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: "#12142B" }}>Top marketplace</div>
         <button
           type="button"
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{
-            width: "100%",
-            background: "#FFFFFF",
-            border: "1px solid #E2E6ED",
-            borderRadius: 12,
-            padding: "14px 16px 14px 44px",
-            fontSize: 14,
-            color: "rgba(15,32,68,0.4)",
-            textAlign: "left",
-            cursor: "pointer",
-            boxShadow: "0 1px 2px rgba(15,32,68,0.04)",
-            fontFamily: manrope,
-          }}
+          style={{ background: "none", border: 0, cursor: "pointer", fontSize: 13, fontWeight: 500, color: "#185FA5", padding: 0, fontFamily: "Inter, sans-serif" }}
         >
-          Search products...
+          View all →
         </button>
       </div>
 
-      {/* Categories */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <h2
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.15em",
-            color: "rgba(15,32,68,0.6)",
-            fontFamily: sora,
-            margin: 0,
-          }}
-        >
-          Categories
-        </h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, paddingBottom: 4 }}>
-          {categoryNames.map((cat) => {
-            const active = activeCategory === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveCategory(cat)}
-                style={{
-                  background: active ? "#1877D6" : "#FFFFFF",
-                  color: active ? "#FFFFFF" : "#0F2044",
-                  border: active ? "1px solid #1877D6" : "1px solid #E2E6ED",
-                  borderRadius: 999,
-                  padding: "10px 20px",
-                  fontSize: 12,
-                  fontWeight: active ? 600 : 500,
-                  fontFamily: manrope,
-                  cursor: "pointer",
-                  boxShadow: active ? "0 4px 12px rgba(24,119,214,0.2)" : "none",
-                }}
-              >
-                {cat}
-              </button>
-            );
-          })}
+      {/* PRODUCT GRID */}
+      {filteredListings.length === 0 ? (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 0", gap: 8 }}>
+          <Package size={36} color="#D0D5DD" />
+          <div style={{ fontSize: 14, color: "#B0BAC9" }}>No products found</div>
         </div>
-      </div>
-
-      {/* Grid header */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora, margin: 0 }}>
-            Top Marketplace
-          </h2>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/marketplace" as never })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 700,
-              fontFamily: manrope,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            View All
-          </button>
-        </div>
-
-        {/* Listings 2-col grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {filteredListings.map((tile) => {
+            const catName = tile.marketplace_categories?.name ?? "";
+            const def = catDefFor(catName);
             const img = firstImageUrl(tile.image_urls);
-            const category = tile.marketplace_categories?.name ?? "";
-            const badgeText = (category || "LISTING").toUpperCase();
-            const badgeIsBlue = tile.is_featured;
+            const featured = !!tile.is_featured;
+            const thumbBg = def.color;
+            const iconColor = thumbBg === "#0F2044" ? "#3D7BE0" : "#FFFFFF";
             return (
               <button
                 key={tile.id}
@@ -909,62 +928,63 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 onClick={() => openListing(tile.id)}
                 style={{
                   background: "#FFFFFF",
-                  border: "1px solid #E2E6ED",
                   borderRadius: 16,
                   overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: "0 1px 3px rgba(15,32,68,0.05)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   cursor: "pointer",
+                  border: 0,
                   padding: 0,
                   textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
-                <div style={{ height: 128, background: "#F1F5F9", position: "relative" }}>
+                {/* Thumbnail */}
+                <div
+                  style={{
+                    position: "relative",
+                    height: 96,
+                    background: thumbBg,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   {img ? (
                     <img src={img} alt={tile.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        background: "linear-gradient(135deg,#E0F0FF,#F3F8FF)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Tag size={24} color="#1877D6" />
-                    </div>
+                    <def.Icon size={38} color={iconColor} />
                   )}
                   <span
                     style={{
                       position: "absolute",
                       top: 8,
                       left: 8,
-                      background: badgeIsBlue ? "#1877D6" : "rgba(255,255,255,0.92)",
-                      color: badgeIsBlue ? "#FFFFFF" : "#0F2044",
-                      padding: "4px 8px",
-                      borderRadius: 6,
+                      background: featured ? "#E24B4A" : "rgba(255,255,255,0.2)",
+                      color: "#FFFFFF",
+                      padding: "2px 8px",
+                      borderRadius: 20,
                       fontSize: 9,
-                      fontWeight: 700,
-                      fontFamily: manrope,
-                      letterSpacing: "0.02em",
-                      boxShadow: "0 1px 2px rgba(15,32,68,0.08)",
-                      backdropFilter: badgeIsBlue ? undefined : "blur(4px)",
+                      fontWeight: 600,
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    {tile.is_featured ? "FEATURED" : badgeText}
+                    {featured ? "Featured" : (catName || def.label)}
                   </span>
                 </div>
-                <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
+
+                {/* Body */}
+                <div style={{ padding: "10px 12px 12px" }}>
+                  <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", marginBottom: 3, textTransform: "none" }}>
+                    {catName || def.label}
+                  </div>
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "#0F2044",
-                      fontFamily: manrope,
-                      lineHeight: 1.3,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: "#12142B",
+                      marginBottom: 4,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -972,81 +992,17 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   >
                     {tile.title}
                   </div>
-                  {tile.marketplace_suppliers?.name && (
-                    <div
-                      style={{
-                        marginTop: 4,
-                        fontSize: 10,
-                        color: "rgba(15,32,68,0.6)",
-                        fontWeight: 500,
-                        textTransform: "uppercase",
-                        letterSpacing: "-0.01em",
-                        fontFamily: manrope,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {tile.marketplace_suppliers.name}
-                    </div>
-                  )}
-                  <div style={{ marginTop: "auto", paddingTop: 8 }}>
-                    <span style={{ color: "#CC2229", fontWeight: 700, fontSize: 14, fontFamily: sora }}>
-                      {tile.price_display || "Enquire"}
-                    </span>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#A32D2D" }}>
+                    {tile.price_display || "Enquire"}
                   </div>
                 </div>
               </button>
             );
           })}
         </div>
-      </div>
-
-      {/* Footer CTAs */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 8 }}>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/marketplace/list" as never })}
-          style={{
-            width: "100%",
-            background: "#1877D6",
-            color: "#FFFFFF",
-            fontWeight: 700,
-            padding: "16px 0",
-            borderRadius: 12,
-            border: "none",
-            fontFamily: sora,
-            fontSize: 15,
-            cursor: "pointer",
-            boxShadow: "0 8px 20px rgba(24,119,214,0.25)",
-          }}
-        >
-          List Your Product
-        </button>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-          <p
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "rgba(15,32,68,0.4)",
-              fontFamily: manrope,
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              margin: 0,
-            }}
-          >
-            Verified marketplace
-          </p>
-          <div style={{ height: 2, width: 32, background: "#E2E6ED", borderRadius: 999 }} />
-        </div>
-      </div>
+      )}
     </div>
   );
-}
-
-
-function _RemovedMarketplaceLegacy() {
-  return null;
 }
 
 
