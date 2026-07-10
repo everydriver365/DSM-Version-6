@@ -25,6 +25,109 @@ export const Route = createFileRoute("/schedule")({
 
 const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
 
+// ── Gap detection shared by calendar + agenda views ────────────────────
+function timeToMins(t: string): number {
+  if (!t) return 0;
+  const parts = t.split(":").map(Number);
+  return (parts[0] || 0) * 60 + (parts[1] || 0);
+}
+function minsToTime(m: number): string {
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  const period = h >= 12 ? "pm" : "am";
+  const dh = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return dh + ":" + String(min).padStart(2, "0") + period;
+}
+type GapInfo = {
+  startMins: number;
+  endMins: number;
+  gapMins: number;
+  startTime: string;
+  endTime: string;
+  potential: number;
+};
+function detectGaps(
+  lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_before_minutes?: number | null; buffer_after_minutes?: number | null } | null }>,
+  workStart: string,
+  workEnd: string,
+  bufferBefore: number,
+  bufferAfter: number,
+  calendarBlocks: Array<{ start_datetime: string; end_datetime: string; is_all_day?: boolean | null }>,
+  recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; is_active?: boolean }>,
+  timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null }>,
+  dateStr: string,
+  hourlyRate: number,
+): GapInfo[] {
+  const wsMin = timeToMins(workStart || "09:00");
+  const weMin = timeToMins(workEnd || "18:00");
+  const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+  const isToday = dateStr === new Date().toISOString().split("T")[0];
+  const minStart = isToday ? Math.max(wsMin, nowMins + 30) : wsMin;
+
+  const dayTimeOff = (timeOff || []).filter((t) => t.start_date <= dateStr && t.end_date >= dateStr);
+  if (dayTimeOff.some((t) => t.all_day)) return [];
+
+  const busy: { start: number; end: number }[] = [];
+  for (const l of (lessons || []).filter((l) => !["cancelled"].includes(String(l.status || "")))) {
+    const lStart = timeToMins(l.lesson_time);
+    const pupilBufBefore = l.pupils?.buffer_before_minutes ?? bufferBefore;
+    const pupilBufAfter = l.pupils?.buffer_after_minutes ?? bufferAfter;
+    busy.push({ start: lStart - pupilBufBefore, end: lStart + (l.duration_minutes || 60) + pupilBufAfter });
+  }
+  const dayBlocks = (calendarBlocks || []).filter((b) => {
+    const s = b.start_datetime?.substring(0, 10);
+    const e = b.end_datetime?.substring(0, 10);
+    return s === dateStr || (s <= dateStr && e >= dateStr);
+  });
+  for (const b of dayBlocks) {
+    const isAllDay = b.is_all_day || false;
+    busy.push({
+      start: isAllDay ? 0 : timeToMins(b.start_datetime?.substring(11, 16) || "00:00"),
+      end: isAllDay ? 1439 : timeToMins(b.end_datetime?.substring(11, 16) || "23:59"),
+    });
+  }
+  const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][
+    new Date(dateStr + "T12:00:00").getDay()
+  ];
+  const dayRecurring = (recurringBlocks || []).filter((b) => b.day_of_week === dayName && b.is_active !== false);
+  for (const b of dayRecurring) {
+    busy.push({ start: timeToMins(b.start_time), end: timeToMins(b.end_time) });
+  }
+
+  busy.sort((a, b) => a.start - b.start);
+  const merged: { start: number; end: number }[] = [];
+  for (const b of busy) {
+    if (merged.length && b.start <= merged[merged.length - 1].end) {
+      merged[merged.length - 1].end = Math.max(merged[merged.length - 1].end, b.end);
+    } else {
+      merged.push({ ...b });
+    }
+  }
+
+  const checkPoints = [
+    { start: minStart, end: merged[0]?.start ?? weMin },
+    ...merged.map((b, i) => ({ start: b.end, end: merged[i + 1]?.start ?? weMin })),
+  ];
+  const gaps: GapInfo[] = [];
+  for (const cp of checkPoints) {
+    const gapStart = Math.max(cp.start, minStart);
+    const gapEnd = Math.min(cp.end, weMin);
+    const gapMins = gapEnd - gapStart;
+    if (gapMins >= 60) {
+      gaps.push({
+        startMins: gapStart,
+        endMins: gapEnd,
+        gapMins,
+        startTime: minsToTime(gapStart),
+        endTime: minsToTime(gapEnd),
+        potential: Math.round((gapMins / 60) * (hourlyRate || 40)),
+      });
+    }
+  }
+  return gaps;
+}
+
+
 // Deterministic pupil colour palette. Same pupil_id -> same colour everywhere.
 const PUPIL_PALETTE = [
   "#185FA5",
@@ -184,7 +287,14 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
-  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null }>>([]);
+  const [recurringBlocks, setRecurringBlocks] = useState<Array<{ day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
+  const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
+  const [workStart, setWorkStart] = useState<string>("09:00");
+  const [workEnd, setWorkEnd] = useState<string>("18:00");
+  const [bufferBefore, setBufferBefore] = useState<number>(0);
+  const [bufferAfter, setBufferAfter] = useState<number>(15);
+  const [hourlyRate, setHourlyRate] = useState<number>(40);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
     const d = new Date(today);
     d.setDate(1);
@@ -267,6 +377,61 @@ function SchedulePage() {
       cancelled = true;
     };
   }, [rangeStart, rangeEnd]);
+
+  // Fetch instructor working hours + buffers + rate, plus recurring blocks and time off.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const userId = session?.user?.id;
+        if (!token || !userId) return;
+        const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
+        const startIso = ymdLocal(rangeStart);
+        const endIso = ymdLocal(rangeEnd);
+        const [instrRow, recRes, offRes] = await Promise.all([
+          supabase
+            .from("instructors")
+            .select("working_hours_start,working_hours_end,lesson_buffer_before,lesson_buffer_after,hourly_rate")
+            .eq("id", userId)
+            .maybeSingle(),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+        ]);
+        if (cancelled) return;
+        const i = (instrRow.data ?? {}) as {
+          working_hours_start?: string | null;
+          working_hours_end?: string | null;
+          lesson_buffer_before?: number | null;
+          lesson_buffer_after?: number | null;
+          hourly_rate?: number | null;
+        };
+        if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
+        if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
+        if (i.lesson_buffer_before != null) setBufferBefore(Number(i.lesson_buffer_before));
+        if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
+        if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
+        if (recRes.ok) {
+          const d = await recRes.json();
+          if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
+        }
+        if (offRes.ok) {
+          const d = await offRes.json();
+          if (!cancelled && Array.isArray(d)) setTimeOff(d);
+        }
+      } catch (err) {
+        console.warn("[schedule] availability fetch failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd]);
+
 
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
@@ -673,19 +838,46 @@ function SchedulePage() {
                   </div>
                 ) : (
                   (() => {
-                    type GapRow = { kind: 'gap-row'; id: string; start: Date; end: Date; mins: number };
-                    const items: Array<AgendaEntry | GapRow> = [];
-                    for (let i = 0; i < row.entries.length; i++) {
-                      const cur = row.entries[i];
-                      items.push(cur);
-                      const nxt = row.entries[i + 1];
-                      if (cur && nxt && cur.kind === 'lesson' && nxt.kind === 'lesson') {
-                        const mins = Math.round((nxt.start.getTime() - cur.end.getTime()) / 60000);
-                        if (mins >= 60) {
-                          items.push({ kind: 'gap-row', id: `gap-${row.key}-${i}`, start: cur.end, end: nxt.start, mins });
-                        }
-                      }
-                    }
+                    type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
+                    const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
+                    const gaps = detectGaps(
+                      dayLessons.map((l) => ({
+                        status: l.status,
+                        lesson_time: l.lesson_time,
+                        duration_minutes: l.duration_minutes,
+                        pupils: null,
+                      })),
+                      workStart,
+                      workEnd,
+                      bufferBefore,
+                      bufferAfter,
+                      calendarBlocks,
+                      recurringBlocks,
+                      timeOff,
+                      row.key,
+                      hourlyRate,
+                    );
+                    const gapRows: GapRow[] = gaps.map((g, i) => ({
+                      kind: 'gap-row',
+                      id: `gap-${row.key}-${i}`,
+                      startMins: g.startMins,
+                      startTime: g.startTime,
+                      endTime: g.endTime,
+                      mins: g.gapMins,
+                      potential: g.potential,
+                    }));
+                    const entryWithMins = row.entries.map((e) => ({
+                      entry: e,
+                      mins: e.start.getHours() * 60 + e.start.getMinutes(),
+                    }));
+                    const combined: Array<{ kind: 'entry'; startMins: number; entry: AgendaEntry } | { kind: 'gap'; startMins: number; gap: GapRow }> = [
+                      ...entryWithMins.map((x) => ({ kind: 'entry' as const, startMins: x.mins, entry: x.entry })),
+                      ...gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g })),
+                    ].sort((a, b) => a.startMins - b.startMins);
+                    const items: Array<AgendaEntry | GapRow> = combined.map((c) =>
+                      c.kind === 'entry' ? c.entry : c.gap,
+                    );
+
                     return items.map((e, i) => (
                       <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
                         <div
@@ -742,11 +934,15 @@ function SchedulePage() {
                             >
                               <span style={{ fontSize: 14, color: '#D97706' }} aria-hidden>⚡</span>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                                {fmtTime(e.start)} – {fmtTime(e.end)}
+                                {e.startTime} – {e.endTime}
                               </div>
                               <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {e.mins} min free · £{Math.round((e.mins / 60) * 40)} potential
+                                {e.mins} min free
                               </div>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
+                                £{e.potential} potential
+                              </div>
+
                               <button
                                 type="button"
                                 onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
