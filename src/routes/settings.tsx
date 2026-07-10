@@ -619,7 +619,7 @@ function SettingsPage() {
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
-        </Card>
+        </SectionCard>
 
         <Label>PAYMENTS</Label>
         <SectionCard>
@@ -677,7 +677,7 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
         <Label>LESSON REMINDERS</Label>
         <SectionCard>
@@ -762,7 +762,7 @@ function SettingsPage() {
               )}
             </div>
           )}
-        </Card>
+        </SectionCard>
 
         <Label>RATES & SCHEDULING</Label>
         <SectionCard>
@@ -993,7 +993,7 @@ function SettingsPage() {
               </button>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
         <Label>COVERAGE AREA</Label>
         <SectionCard>
@@ -1087,7 +1087,7 @@ function SettingsPage() {
               </button>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
         <Label>PRICING RULES</Label>
         <SectionCard>
@@ -1383,7 +1383,7 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
         <Label>PUPILS</Label>
         <SectionCard>
@@ -1400,7 +1400,7 @@ function SettingsPage() {
             label="No-show policy"
             onClick={() => navigate({ to: "/no-show-policy" })}
           />
-        </Card>
+        </SectionCard>
 
         <Label>MARKETING</Label>
         <SectionCard>
@@ -1417,7 +1417,7 @@ function SettingsPage() {
             label="Edit marketplace tiles"
             onClick={() => navigate({ to: "/marketplace/edit" })}
           />
-        </Card>
+        </SectionCard>
 
         <Label>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
@@ -1571,7 +1571,7 @@ function SettingsPage() {
             </span>
             <ChevronRight size={18} color="#6B7280" />
           </button>
-        </Card>
+        </SectionCard>
 
         <Label>SUPPORT</Label>
         <SectionCard>
@@ -1596,7 +1596,7 @@ function SettingsPage() {
             label="Admin"
             onClick={() => navigate({ to: "/admin" })}
           />
-        </Card>
+        </SectionCard>
 
         <Label>DANGER ZONE</Label>
         <Button variant="destructive" onClick={() => setSignOutOpen(true)}>
