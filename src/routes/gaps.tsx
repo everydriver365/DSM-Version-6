@@ -724,10 +724,10 @@ function GapsPage() {
           .eq("instructor_id", userId),
         supabase
           .from("lessons")
-          .select("pupil_id,lesson_date,lesson_time")
+          .select("pupil_id,lesson_date,lesson_time,status")
           .eq("instructor_id", userId)
           .is("deleted_at", null)
-          .in("status", ["completed", "confirmed"])
+          .in("status", ["completed", "confirmed", "pending", "in_progress"])
           .order("lesson_date", { ascending: false }),
       ]);
 
@@ -736,14 +736,34 @@ function GapsPage() {
       for (const a of (availRes.data ?? []) as Availability[]) {
         if (a.pupil_id) availMap.set(a.pupil_id, a);
       }
-      const lastLessonMap = new Map<string, string>();
-      for (const l of (lessonsRes.data ?? []) as {
+      const allLessons = (lessonsRes.data ?? []) as {
         pupil_id: string | null;
         lesson_date: string | null;
-      }[]) {
+        lesson_time: string | null;
+        status: string | null;
+      }[];
+      const lastLessonMap = new Map<string, string>();
+      for (const l of allLessons) {
         if (!l.pupil_id || !l.lesson_date) continue;
+        if (l.status !== "completed" && l.status !== "confirmed") continue;
         if (!lastLessonMap.has(l.pupil_id))
           lastLessonMap.set(l.pupil_id, l.lesson_date);
+      }
+
+      // Week window for max-lessons-per-week check, based on the first slot's date.
+      const firstSlotDate = slotsToScore[0]?.date;
+      let weekStart: Date | null = null;
+      let weekEnd: Date | null = null;
+      if (firstSlotDate) {
+        const d = new Date(firstSlotDate + "T00:00:00");
+        const dow = d.getDay(); // 0 = Sun
+        const mondayOffset = (dow + 6) % 7;
+        weekStart = new Date(d);
+        weekStart.setDate(d.getDate() - mondayOffset);
+        weekStart.setHours(0, 0, 0, 0);
+        weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
       }
 
       const nowMs = Date.now();
