@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   X,
   Shield,
@@ -16,6 +15,7 @@ import { PageLayout } from "@/components/PageLayout";
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/vehicle")({
   head: () => ({ meta: [{ title: "My vehicle — DSM by EveryDriver" }] }),

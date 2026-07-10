@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Plus,
   Tag,
@@ -16,6 +15,7 @@ import { toast } from "sonner";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 // -- SQL to run manually --
 // create table if not exists public.discount_codes (

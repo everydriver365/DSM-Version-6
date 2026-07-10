@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Bell,
   Calendar as CalendarIcon,
@@ -14,6 +13,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({

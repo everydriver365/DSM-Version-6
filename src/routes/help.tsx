@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Mail,
   MessageSquare,
@@ -10,6 +9,7 @@ import { PageLayout } from "@/components/PageLayout";
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/help")({
   head: () => ({

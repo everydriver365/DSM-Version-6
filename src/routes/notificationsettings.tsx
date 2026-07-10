@@ -6,7 +6,6 @@ import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import {
-import { PageLayout } from "@/components/PageLayout";
   getPermission,
   requestPermission,
   isSupported as notificationsSupported,
@@ -17,6 +16,7 @@ import {
   getCurrentPushStatus,
   pushSupported,
 } from "../lib/pushSubscription";
+import { PageLayout } from "@/components/PageLayout";
 
 
 export const Route = createFileRoute("/notificationsettings")({

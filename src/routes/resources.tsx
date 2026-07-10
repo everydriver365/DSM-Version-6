@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   ExternalLink,
   BookOpen,
@@ -13,6 +12,7 @@ import { PageLayout } from "@/components/PageLayout";
   Cloud,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({

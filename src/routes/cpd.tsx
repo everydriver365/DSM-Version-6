@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Plus,
   Mic,
@@ -18,6 +17,7 @@ import { toast } from "sonner";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 async function awardPoints(instructorId: string, event: string, token: string, metadata?: any) {
   try {

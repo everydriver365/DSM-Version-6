@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 
 import {
-import { PageLayout } from "@/components/PageLayout";
   User,
   Clock,
   Bell,
@@ -37,6 +36,7 @@ import {
 } from "../lib/gapPrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({

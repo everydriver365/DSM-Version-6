@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Droplets,
   Smile,
@@ -17,6 +16,7 @@ import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import healthCoverAsset from "../assets/health-cover.png.asset.json";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/health")({
   head: () => ({

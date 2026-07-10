@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Mail,
   Smartphone,
@@ -21,6 +20,7 @@ import { PageLayout } from "@/components/PageLayout";
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "My profile — DSM by EveryDriver" }] }),
