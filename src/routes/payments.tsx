@@ -560,7 +560,7 @@ function PaymentsPage() {
                             ...POPPINS,
                           }}
                         >
-                          {pupilInitials(row.pupils?.name)}
+                          {pupilInitials(displayPupilName(row.pupils?.name))}
                         </div>
                         <button
                           type="button"
