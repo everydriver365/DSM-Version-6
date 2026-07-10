@@ -736,7 +736,7 @@ function SettingsPage() {
         </div>
 
         <Label>LESSON REMINDERS</Label>
-        <div style={{ background: '#fff', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
             icon={<Clock color="#B5661E" />}
             iconBg="#FBEFE1"
@@ -745,6 +745,7 @@ function SettingsPage() {
             expanded={expanded === "lessons"}
             onClick={() => setExpanded(expanded === "lessons" ? null : "lessons")}
             isFirst
+            isLast
           />
           {expanded === "lessons" && (
             <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
