@@ -571,8 +571,8 @@ function SettingsPage() {
       </div>
 
       <div className="px-4">
-        <SectionHeader>ACCOUNT</SectionHeader>
-        <Card className="!p-0">
+        <Label>ACCOUNT</Label>
+        <SectionCard>
           <MenuRow
             icon={<User size={18} color="#1E40AF" />}
             iconBg="#DBEAFE"
@@ -621,8 +621,8 @@ function SettingsPage() {
           />
         </Card>
 
-        <SectionHeader>PAYMENTS</SectionHeader>
-        <Card className="!p-0">
+        <Label>PAYMENTS</Label>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling size={18} color="#5B21B6" />}
             iconBg="#EDE9FE"
@@ -679,8 +679,8 @@ function SettingsPage() {
           )}
         </Card>
 
-        <SectionHeader>LESSON REMINDERS</SectionHeader>
-        <Card className="!p-0">
+        <Label>LESSON REMINDERS</Label>
+        <SectionCard>
           <MenuRow
             icon={<Bell size={18} color="#0B1F3A" />}
             iconBg="#EEF2F7"
@@ -764,8 +764,8 @@ function SettingsPage() {
           )}
         </Card>
 
-        <SectionHeader>RATES & SCHEDULING</SectionHeader>
-        <Card className="!p-0">
+        <Label>RATES & SCHEDULING</Label>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -995,8 +995,8 @@ function SettingsPage() {
           )}
         </Card>
 
-        <SectionHeader>COVERAGE AREA</SectionHeader>
-        <Card className="!p-0">
+        <Label>COVERAGE AREA</Label>
+        <SectionCard>
           <MenuRow
             icon={<MapPin size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -1089,8 +1089,8 @@ function SettingsPage() {
           )}
         </Card>
 
-        <SectionHeader>PRICING RULES</SectionHeader>
-        <Card className="!p-0">
+        <Label>PRICING RULES</Label>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -1385,8 +1385,8 @@ function SettingsPage() {
           )}
         </Card>
 
-        <SectionHeader>PUPILS</SectionHeader>
-        <Card className="!p-0">
+        <Label>PUPILS</Label>
+        <SectionCard>
           <MenuRow
             icon={<ClipboardList size={18} color="#1877D6" />}
             iconBg="#E0F2FE"
@@ -1402,8 +1402,8 @@ function SettingsPage() {
           />
         </Card>
 
-        <SectionHeader>MARKETING</SectionHeader>
-        <Card className="!p-0">
+        <Label>MARKETING</Label>
+        <SectionCard>
           <MenuRow
             icon={<Tag size={18} />}
             iconBg="#EEF2F7"
@@ -1419,12 +1419,12 @@ function SettingsPage() {
           />
         </Card>
 
-        <SectionHeader>
+        <Label>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <Globe size={14} color="#6B7280" /> EVERYDRIVER
           </span>
-        </SectionHeader>
-        <Card className="!p-0">
+        </Label>
+        <SectionCard>
           {/* Row 1: List on marketplace toggle */}
           <div
             className="px-4 py-3 flex items-start gap-3"
@@ -1573,8 +1573,8 @@ function SettingsPage() {
           </button>
         </Card>
 
-        <SectionHeader>SUPPORT</SectionHeader>
-        <Card className="!p-0">
+        <Label>SUPPORT</Label>
+        <SectionCard>
           <MenuRow
             icon={<HelpCircle size={18} color="#52525B" />}
             iconBg="#F4F4F5"
@@ -1598,7 +1598,7 @@ function SettingsPage() {
           />
         </Card>
 
-        <SectionHeader>DANGER ZONE</SectionHeader>
+        <Label>DANGER ZONE</Label>
         <Button variant="destructive" onClick={() => setSignOutOpen(true)}>
           Sign out
         </Button>
