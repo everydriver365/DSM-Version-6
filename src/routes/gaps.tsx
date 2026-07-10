@@ -486,7 +486,16 @@ function GapsPage() {
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
           const isWorkDay = workDays.includes(dayName);
-          const dayLessons = (byDay.get(iso) ?? []).slice().sort(
+          // Merge external calendar blocks as pseudo-lessons for gap detection.
+          const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => ({
+            start: b.startMins,
+            end: b.endMins,
+            title: `🗓 ${b.title}`,
+            color: "#7C3AED" as string | null,
+            bufBefore: 0,
+            bufAfter: 0,
+          }));
+          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks].slice().sort(
             (a, b) => a.start - b.start,
           );
           const busyMinutes = dayLessons.reduce(
