@@ -2878,6 +2878,18 @@ function HomePage() {
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
+  // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
+  const blocksForDate = (dateStr: string) =>
+    (calendarBlocks || [])
+      .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
+      .map((b) => ({
+        start: timeToMins((b.start_datetime ?? "").substring(11, 16) || "00:00"),
+        end: timeToMins((b.end_datetime ?? "").substring(11, 16) || "23:59"),
+      }))
+      .sort((a, b) => a.start - b.start);
+  const todayBlocks = blocksForDate(todayISO);
+  const tomorrowBlocks = blocksForDate(tomorrowISO);
+
   const nextFreeSlot = (() => {
     const isBeforeEnd = (d: Date, endTimeStr: string | null) => {
       if (!endTimeStr) return true;
@@ -2902,6 +2914,30 @@ function HomePage() {
       clamped.setHours(Math.floor(nowMinPlusLead / 60), nowMinPlusLead % 60, 0, 0);
       return clamped;
     };
+    // Return the earliest minute ≥ candidate that isn't inside a calendar block.
+    // Bumps past any block whose interval contains the candidate; repeats until clear.
+    const bumpPastBlocks = (candidate: number, blocks: { start: number; end: number }[]) => {
+      let m = candidate;
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (const b of blocks) {
+          if (m >= b.start && m < b.end) {
+            m = b.end;
+            changed = true;
+          }
+        }
+      }
+      return m;
+    };
+    // True if a 60-min window starting at `mins` fits within `dayEndMins` without hitting a block.
+    const fitsHour = (mins: number, dayEndMins: number, blocks: { start: number; end: number }[]) => {
+      if (dayEndMins - mins < 60) return false;
+      for (const b of blocks) {
+        if (mins < b.end && mins + 60 > b.start) return false;
+      }
+      return true;
+    };
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
     const workStartMins = timeToMins(
       workingHours?.start_time ? String(workingHours.start_time) : "09:00"
@@ -2913,40 +2949,51 @@ function HomePage() {
       ? String(workingHours.end_time)
       : null;
 
-    // Today: free slot after last lesson
+    // Today: free slot after last lesson (or start of workday if none) — bumped past blocks.
+    const todayEndMins = timeToMins(todayEndTime ?? "23:59");
+    let todayCandidate: number | null = null;
     if (todayLessons.length > 0) {
       const last = todayLessons[todayLessons.length - 1];
       const afterBuf = resolveAfter(last.pupil_id);
       const end = clampToday(new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000));
       if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
-        // Only surface today if at least an hour still fits before the working day ends.
-        const endMins = end.getHours() * 60 + end.getMinutes();
-        if (timeToMins(todayEndTime ?? "23:59") - endMins >= 60) {
-          return minsToTime(endMins);
-        }
+        todayCandidate = end.getHours() * 60 + end.getMinutes();
       }
     } else if (todayEndTime) {
-      // No lessons today but working — surface the earliest still-future slot time.
-      const startMins = Math.max(workStartMins, nowMinPlusLead);
-      if (timeToMins(todayEndTime) - startMins >= 60) {
-        return minsToTime(startMins);
+      todayCandidate = Math.max(workStartMins, nowMinPlusLead);
+    }
+    if (todayCandidate != null) {
+      let m = bumpPastBlocks(todayCandidate, todayBlocks);
+      // If bumped past nowMinPlusLead already accounted for; ensure we still respect it
+      if (m < nowMinPlusLead) m = nowMinPlusLead;
+      if (fitsHour(m, todayEndMins, todayBlocks)) {
+        return minsToTime(m);
       }
     }
 
     // No free slot today — check tomorrow
+    const tomorrowEndMins = timeToMins(tomorrowEndTime ?? "23:59");
+    let tomorrowCandidate: number | null = null;
     if (tomorrowLessons.length > 0) {
       const last = tomorrowLessons[tomorrowLessons.length - 1];
       const afterBuf = resolveAfter(last.pupil_id);
       const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
       if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
-        return minsToTime(end.getHours() * 60 + end.getMinutes());
+        tomorrowCandidate = end.getHours() * 60 + end.getMinutes();
       }
     } else if (tomorrowEndTime) {
-      return minsToTime(workStartMins);
+      tomorrowCandidate = workStartMins;
+    }
+    if (tomorrowCandidate != null) {
+      const m = bumpPastBlocks(tomorrowCandidate, tomorrowBlocks);
+      if (fitsHour(m, tomorrowEndMins, tomorrowBlocks)) {
+        return minsToTime(m);
+      }
     }
 
     return null;
   })();
+
 
   const freeSlotCount = (() => {
     const sorted = [...todayLessons].sort((a, b) => (a.lesson_time ?? '').localeCompare(b.lesson_time ?? ''));
