@@ -865,7 +865,7 @@ function MonthCalendar({
         background: "#FFFFFF",
         borderRadius: 14,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        padding: 16,
+        padding: 12,
         boxSizing: "border-box",
       }}
     >
@@ -875,12 +875,12 @@ function MonthCalendar({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 12,
+          marginBottom: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calChevronBtn}>
-            <IconChevronLeft size={18} stroke={1.75} color="#8A93A3" />
+            <IconChevronLeft size={16} stroke={1.75} color="#8A93A3" />
           </button>
           <button
             type="button"
@@ -892,7 +892,7 @@ function MonthCalendar({
               background: "transparent",
               border: 0,
               padding: "0 4px",
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 500,
               lineHeight: 1,
               color: "#0F2044",
@@ -901,20 +901,20 @@ function MonthCalendar({
             }}
           >
             <span>{monthLabel}</span>
-            <IconChevronDown size={14} stroke={1.75} color="#8A93A3" />
+            <IconChevronDown size={13} stroke={1.75} color="#8A93A3" />
           </button>
           <button type="button" aria-label="Next month" onClick={onNextMonth} style={calChevronBtn}>
-            <IconChevronRight size={18} stroke={1.75} color="#8A93A3" />
+            <IconChevronRight size={16} stroke={1.75} color="#8A93A3" />
           </button>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
             type="button"
             aria-label="Search"
             onClick={onSearch}
             style={{ ...calChip, background: "#E6F1FB" }}
           >
-            <IconSearch size={15} stroke={1.75} color="#185FA5" />
+            <IconSearch size={14} stroke={1.75} color="#185FA5" />
           </button>
           <button
             type="button"
@@ -922,7 +922,7 @@ function MonthCalendar({
             onClick={onAdd}
             style={{ ...calChip, background: "#185FA5" }}
           >
-            <IconPlus size={15} stroke={1.75} color="#FFFFFF" />
+            <IconPlus size={14} stroke={1.75} color="#FFFFFF" />
           </button>
         </div>
       </div>
@@ -932,7 +932,7 @@ function MonthCalendar({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          paddingBottom: 8,
+          paddingBottom: 6,
         }}
       >
         {dow.map((d, i) => (
@@ -940,7 +940,7 @@ function MonthCalendar({
             key={i}
             style={{
               textAlign: "center",
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 500,
               lineHeight: 1,
               color: "#8A93A3",
@@ -953,7 +953,7 @@ function MonthCalendar({
       </div>
 
       {/* Date grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 0 }}>
         {cells.map((d) => {
           const key = ymdLocal(d);
           const inMonth = d.getMonth() === month.getMonth();
@@ -980,15 +980,15 @@ function MonthCalendar({
                 justifyContent: "flex-start",
                 background: "transparent",
                 border: 0,
-                padding: "6px 0",
+                padding: "4px 0",
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
               <div
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 26,
+                  height: 26,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
@@ -996,7 +996,7 @@ function MonthCalendar({
                   background: isToday ? "#185FA5" : "transparent",
                   border: isSelected ? "1.5px solid #185FA5" : "none",
                   color: numColour,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: isToday || isSelected ? 500 : 400,
                   fontVariantNumeric: "tabular-nums",
                   boxSizing: "border-box",
@@ -1006,9 +1006,9 @@ function MonthCalendar({
               </div>
               <div
                 style={{
-                  margin: "3px auto 0",
-                  width: 4,
-                  height: 4,
+                  margin: "2px auto 0",
+                  width: 3,
+                  height: 3,
                   borderRadius: "50%",
                   background: dotColour ?? "transparent",
                 }}
@@ -1018,6 +1018,7 @@ function MonthCalendar({
         })}
       </div>
     </div>
+
   );
 }
 
