@@ -53,7 +53,9 @@ function DsmLivePage() {
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [bookedIds, setBookedIds] = useState<Set<string>>(new Set());
   const [category, setCategory] = useState<string>("All");
+  const [view, setView] = useState<"upcoming" | "all">("upcoming");
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
 
   useEffect(() => {
     let cancelled = false;
