@@ -503,40 +503,6 @@ function PaymentsPage() {
         })}
       </div>
 
-      {/* Method pills */}
-      <div
-        className="no-scrollbar"
-        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 16, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
-      >
-        {([
-          ["all","All"],["cash","Cash"],["card","Card"],["qr","QR"],["bank_transfer","Bank"],["klarna","Klarna"],
-        ] as [MethodFilter,string][]).map(([v,l]) => {
-          const active = methodFilter === v;
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setMethodFilter(v)}
-              style={{
-                padding: "7px 14px",
-                fontSize: 12,
-                fontWeight: 500,
-                borderRadius: 20,
-                border: 0,
-                background: active ? "#185FA5" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#8A94A6",
-                boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                flexShrink: 0,
-                ...POPPINS,
-              }}
-            >
-              {l}
-            </button>
-          );
-        })}
-      </div>
 
       {/* History */}
       <div>
