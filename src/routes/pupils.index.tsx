@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "../components/dsm/EmptyState";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -306,7 +307,7 @@ function PupilsIndexPage() {
   }, [pupils, query]);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24 pb-safe relative" style={POPPINS}>
+    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
@@ -628,6 +629,6 @@ function PupilsIndexPage() {
       >
         <Plus size={24} color="#FFFFFF" />
       </Link>
-    </div>
+    </PageLayout>
   );
 }

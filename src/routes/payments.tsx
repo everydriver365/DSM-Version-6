@@ -7,6 +7,7 @@ import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -374,9 +375,9 @@ function PaymentsPage() {
   const pupilName = pupilFilter ? (allPupils.find((p) => p.id === pupilFilter)?.name ?? "") : "";
 
   return (
-    <div
-      className="min-h-screen pb-24 pb-safe relative"
-      style={{ ...POPPINS, background: "#EEF2F7" }}
+    <PageLayout
+      className="pb-24 pb-safe relative"
+      style={POPPINS}
       onTouchStart={(e) => {
         (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }}
@@ -682,7 +683,7 @@ function PaymentsPage() {
       )}
 
       <style>{`.no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{scrollbar-width:none}`}</style>
-    </div>
+    </PageLayout>
   );
 }
 

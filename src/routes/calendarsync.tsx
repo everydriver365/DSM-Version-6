@@ -6,6 +6,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
@@ -76,7 +77,7 @@ function CalendarSyncPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
@@ -392,6 +393,6 @@ function CalendarSyncPage() {
           </AccordionItem>
         </Accordion>
       </div>
-    </div>
+    </PageLayout>
   );
 }

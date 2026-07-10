@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, Plus, FileText } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/notes/")({
   head: () => ({
@@ -72,7 +73,7 @@ function NotesListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -140,6 +141,6 @@ function NotesListPage() {
           ))
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }

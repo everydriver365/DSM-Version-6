@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/vehicle")({
   head: () => ({ meta: [{ title: "My vehicle — DSM by EveryDriver" }] }),
@@ -206,7 +207,7 @@ function VehiclePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24" style={POPPINS}>
+    <PageLayout className="pb-24" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -445,7 +446,7 @@ function VehiclePage() {
           }}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }
 

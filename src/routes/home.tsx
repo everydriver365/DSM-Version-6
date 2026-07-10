@@ -136,6 +136,7 @@ import {
 } from "../lib/pushNotifications";
 import carAsset from "../assets/next-lesson-car.png.asset.json";
 import dsmLogo from "../assets/dsm-logo.png.asset.json";
+import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 
 export const Route = createFileRoute("/home")({
@@ -912,7 +913,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     <div
       style={{
         padding: "16px 16px 96px",
-        background: "#EEF2F7",
+        background: PAGE_BACKGROUND,
         minHeight: "100%",
         fontFamily: "Inter, sans-serif",
       }}
@@ -3451,7 +3452,7 @@ function HomePage() {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
-        style={{ ...POPPINS, backgroundColor: '#EEF2F7' }}
+        style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND }}
       >
         <div className="flex flex-col items-center gap-3">
           <div
@@ -3551,7 +3552,7 @@ function HomePage() {
       fontSize: 12, fontWeight: 600, color: "#0F2044",
     };
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#EEF2F7", paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
         {notifBanner}
         <InstructorTopBar
           firstName={firstName}
@@ -4107,7 +4108,7 @@ function HomePage() {
           scrollbarWidth:'none',
           msOverflowStyle:'none',
           touchAction:'pan-y pinch-zoom',
-          background:'#EEF2F7',
+          background: PAGE_BACKGROUND,
         }}
         className="hide-scrollbar carousel-hide-scrollbar"
       >

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "My profile — DSM by EveryDriver" }] }),
@@ -666,7 +667,7 @@ function ProfilePage() {
 
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
@@ -1231,6 +1232,6 @@ function ProfilePage() {
           </div>
         </AccordionCard>
       </div>
-    </div>
+    </PageLayout>
   );
 }

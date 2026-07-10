@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 type NewPupilSearch = { name?: string; phone?: string };
 
@@ -204,10 +205,7 @@ function NewPupilPage() {
   }
 
   return (
-    <div
-      className="min-h-screen bg-[#EEF2F7]"
-      style={{ fontFamily: "Inter, sans-serif" }}
-    >
+    <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -455,6 +453,6 @@ function NewPupilPage() {
           </div>
         </form>
       </div>
-    </div>
+    </PageLayout>
   );
 }

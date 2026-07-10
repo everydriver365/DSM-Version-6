@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, MapPin, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/postcode-rates")({
   head: () => ({ meta: [{ title: "Postcode rates — DSM by EveryDriver" }] }),
@@ -105,7 +106,7 @@ function PostcodeRatesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       <div className="sticky top-0 z-40 flex items-center px-2" style={{ height: 52, background: "#0F2044" }}>
         <button type="button" aria-label="Back" onClick={() => navigate({ to: "/settings" })} className="flex items-center justify-center" style={{ width: 40, height: 40 }}>
           <ArrowLeft size={22} color="#fff" />
@@ -164,6 +165,6 @@ function PostcodeRatesPage() {
           </p>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

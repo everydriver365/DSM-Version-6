@@ -12,6 +12,7 @@ import {
   Cloud,
 } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
@@ -103,7 +104,7 @@ function ResourcesPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -143,7 +144,7 @@ function ResourcesPage() {
           ))}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

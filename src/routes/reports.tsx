@@ -5,6 +5,7 @@ import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
@@ -144,7 +145,7 @@ function ReportsPage() {
   }, [lessons]);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
@@ -223,7 +224,7 @@ function ReportsPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

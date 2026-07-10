@@ -6,6 +6,7 @@ import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/bulkmessage")({
   head: () => ({
@@ -205,7 +206,7 @@ function BulkMessagePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-32" style={POPPINS}>
+    <PageLayout className="pb-32" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center px-4"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -375,6 +376,6 @@ function BulkMessagePage() {
           {toast}
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 }

@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/tax")({
   head: () => ({
@@ -96,7 +97,7 @@ function TaxPage() {
   const progressPct = Math.min(100, (elapsed / totalMs) * 100);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -207,7 +208,7 @@ function TaxPage() {
           This is an estimate only. Consult a qualified accountant.
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

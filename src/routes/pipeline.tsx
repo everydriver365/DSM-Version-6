@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
@@ -89,7 +90,7 @@ function PipelinePage() {
   }, [userId]);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -244,7 +245,7 @@ function PipelinePage() {
       <style>{`
         .pipeline-scroll::-webkit-scrollbar { display: none; }
       `}</style>
-    </div>
+    </PageLayout>
   );
 }
 

@@ -12,6 +12,7 @@ import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/manifest")({
   head: () => ({
@@ -155,7 +156,7 @@ function ManifestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0B1F3A" }}
@@ -332,7 +333,7 @@ function ManifestPage() {
           )}
         </Card>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

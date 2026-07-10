@@ -16,6 +16,7 @@ import {
   getCurrentPushStatus,
   pushSupported,
 } from "../lib/pushSubscription";
+import { PageLayout } from "@/components/PageLayout";
 
 
 export const Route = createFileRoute("/notificationsettings")({
@@ -143,7 +144,7 @@ function NotificationSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24" style={POPPINS}>
+    <PageLayout className="pb-24" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center px-4"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -320,7 +321,7 @@ function NotificationSettingsPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

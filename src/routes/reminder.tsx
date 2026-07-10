@@ -4,6 +4,7 @@ import { ArrowLeft, Search } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/reminder")({
   head: () => ({
@@ -106,7 +107,7 @@ function ReminderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0B1F3A" }}
@@ -288,6 +289,6 @@ function ReminderPage() {
           SMS sending requires Twilio integration. Messages will be queued.
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

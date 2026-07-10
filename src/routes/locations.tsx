@@ -6,6 +6,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/locations")({
   head: () => ({
@@ -143,7 +144,7 @@ function LocationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
@@ -346,6 +347,6 @@ function LocationsPage() {
           to { transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </PageLayout>
   );
 }

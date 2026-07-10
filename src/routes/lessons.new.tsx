@@ -6,6 +6,7 @@ import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
+import { PageLayout } from "@/components/PageLayout";
 
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
 function extractPostcode(addr: string | null | undefined): string | undefined {
@@ -227,7 +228,7 @@ function NewLessonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={{ fontFamily: "Inter, sans-serif" }}>
+    <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -384,6 +385,6 @@ function NewLessonPage() {
           </div>
         </form>
       </div>
-    </div>
+    </PageLayout>
   );
 }

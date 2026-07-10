@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 async function awardPoints(instructorId: string, event: string, token: string, metadata?: any) {
   try {
@@ -239,7 +240,7 @@ function CpdPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24" style={POPPINS}>
+    <PageLayout className="pb-24" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -426,7 +427,7 @@ function CpdPage() {
           />
         )}
       </BottomSheet>
-    </div>
+    </PageLayout>
   );
 }
 
