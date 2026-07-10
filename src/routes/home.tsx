@@ -699,12 +699,19 @@ function SwipeableStatsCard({
             <button
               type="button"
               aria-label="Add lesson"
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                // Prevent the swipe container from starting a drag on this tap,
+                // but do NOT swallow touchend/mouseup — the container needs them
+                // to reset its own gesture state before we navigate away.
+                e.stopPropagation();
+              }}
               onClick={(e) => {
                 e.stopPropagation();
+                // Reset the swipe container's gesture state defensively in case
+                // any pointer capture is still outstanding on the parent.
+                startX.current = null;
+                deltaRef.current = 0;
+                draggingMouse.current = false;
                 onAddLesson();
               }}
               style={{
@@ -724,6 +731,7 @@ function SwipeableStatsCard({
               <Plus size={16} strokeWidth={2.5} />
             </button>
           )}
+
         </div>
         <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 5 }}>
           {slides.map((sl, i) => {
