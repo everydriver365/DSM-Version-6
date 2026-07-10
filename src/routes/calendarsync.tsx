@@ -64,24 +64,40 @@ function CalendarSyncPage() {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=external_calendar_url,external_calendar_last_synced_at`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${token}`,
-            },
-          },
+        const headers = {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+        };
+        const baseSel = "external_calendar_url,external_calendar_last_synced_at";
+        const fullSel = `${baseSel},external_calendar_sync_error`;
+        let rows: unknown = null;
+        let res = await fetch(
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${fullSel}`,
+          { headers },
         );
+        if (!res.ok) {
+          // Column may not exist yet — retry without sync_error.
+          res = await fetch(
+            `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${baseSel}`,
+            { headers },
+          );
+        }
         if (res.ok) {
-          const rows = await res.json();
-          const row = Array.isArray(rows) ? rows[0] : null;
+          rows = await res.json();
+          const row = Array.isArray(rows) ? rows[0] as {
+            external_calendar_url?: string | null;
+            external_calendar_last_synced_at?: string | null;
+            external_calendar_sync_error?: string | null;
+          } : null;
           if (row?.external_calendar_url) {
             setExternalCalendarUrl(row.external_calendar_url);
             setSavedUrl(row.external_calendar_url);
           }
           if (row?.external_calendar_last_synced_at) {
             setLastSynced(row.external_calendar_last_synced_at);
+          }
+          if (row?.external_calendar_sync_error) {
+            setSyncError(row.external_calendar_sync_error);
           }
         }
       } catch {
