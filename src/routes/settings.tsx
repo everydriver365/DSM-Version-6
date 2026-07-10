@@ -668,6 +668,12 @@ function SettingsPage() {
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
             isLast={false}
+            warning={
+              calendarLastSynced &&
+              Date.now() - new Date(calendarLastSynced).getTime() > 6 * 60 * 60 * 1000
+                ? "Sync overdue"
+                : undefined
+            }
           />
           <MenuRow
             icon={<Crown color="#185FA5" />}
