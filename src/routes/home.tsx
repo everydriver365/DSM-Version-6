@@ -428,9 +428,11 @@ function statusColor(status: string) {
 function TodayLessonsTile({
   todayLessons,
   onNavigate,
+  onAddLesson,
 }: {
   todayLessons: LessonRow[];
   onNavigate: () => void;
+  onAddLesson?: () => void;
 }) {
   const total = todayLessons.length;
   const upcoming = todayLessons.filter((l) =>
@@ -450,9 +452,16 @@ function TodayLessonsTile({
   const offset = circumference * (1 - progress);
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onNavigate}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onNavigate();
+        }
+      }}
       style={{
         width: "100%",
         background: "#FFFFFF",
@@ -539,7 +548,33 @@ function TodayLessonsTile({
           {total}
         </div>
       </div>
-    </button>
+      {onAddLesson && (
+        <button
+          type="button"
+          aria-label="Add lesson"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddLesson();
+          }}
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 8,
+            background: "#185FA5",
+            color: "#FFFFFF",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <Plus size={18} strokeWidth={2.5} />
+        </button>
+      )}
+    </div>
   );
 }
 
