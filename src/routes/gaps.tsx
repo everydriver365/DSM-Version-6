@@ -109,14 +109,34 @@ function minToHm(m: number) {
 function getCalendarBlocksForDate(
   calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
   dateStr: string,
-): { startMins: number; endMins: number; title: string }[] {
+): { startMins: number; endMins: number; title: string; isAllDay: boolean }[] {
   return (calendarBlocks || [])
-    .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
-    .map((b) => ({
-      startMins: hmToMin((b.start_datetime ?? "").substring(11, 16) || "00:00"),
-      endMins: hmToMin((b.end_datetime ?? "").substring(11, 16) || "23:59"),
-      title: b.title || "Busy",
-    }));
+    .filter((b) => {
+      const startDate = (b.start_datetime ?? "").substring(0, 10);
+      const endDate = (b.end_datetime ?? "").substring(0, 10);
+      return (
+        startDate === dateStr ||
+        (startDate < dateStr && endDate > dateStr) ||
+        (startDate < dateStr && endDate === dateStr)
+      );
+    })
+    .map((b) => {
+      const startDate = (b.start_datetime ?? "").substring(0, 10);
+      const endDate = (b.end_datetime ?? "").substring(0, 10);
+      const startTime = (b.start_datetime ?? "").substring(11, 16) || "00:00";
+      const endTime = (b.end_datetime ?? "").substring(11, 16) || "23:59";
+      const isAllDay =
+        startTime === "00:00" && (endTime === "00:00" || endTime === "23:59");
+      // For multi-day spans, clamp to full-day on interior/end dates.
+      const spansIntoDay = startDate < dateStr;
+      const spansOutOfDay = endDate > dateStr;
+      return {
+        startMins: isAllDay || spansIntoDay ? 0 : hmToMin(startTime),
+        endMins: isAllDay || spansOutOfDay ? 1439 : hmToMin(endTime),
+        title: b.title || "Busy",
+        isAllDay,
+      };
+    });
 }
 
 function fmtSlotDateLong(iso: string) {
