@@ -90,10 +90,18 @@ function CalendarSyncPage() {
 
   async function runSync(urlToUse: string) {
     if (!userId) return;
-    if (!urlToUse.trim()) {
+    const trimmed = urlToUse.trim();
+    if (!trimmed) {
       toast.error("Paste your Google Calendar ICS URL first");
       return;
     }
+    let parsed: URL | null = null;
+    try { parsed = new URL(trimmed); } catch { /* noop */ }
+    if (!parsed || (parsed.protocol !== "https:" && parsed.protocol !== "http:" && parsed.protocol !== "webcal:")) {
+      toast.error("That doesn't look like a valid ICS URL (must start with https://)");
+      return;
+    }
+    urlToUse = trimmed;
     setSyncing(true);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
