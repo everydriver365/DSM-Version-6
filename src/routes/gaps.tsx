@@ -1267,21 +1267,30 @@ function GapsPage() {
       <div
         style={{
           background: "#FFFFFF",
-          borderRadius: 12,
-          padding: "10px 14px",
+          borderRadius: 14,
+          padding: "14px 16px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          margin: "14px 16px 16px",
+          margin: "14px 16px 20px",
           display: "flex",
-          alignItems: "flex-start",
-          gap: 10,
+          alignItems: "center",
+          gap: 12,
         }}
       >
-        <Zap
-          size={16}
-          color={ACCENT}
-          style={{ flexShrink: 0, marginTop: 1 }}
-        />
-        <div style={{ fontSize: 12, color: TEXT_SUBTLE, lineHeight: 1.5 }}>
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            background: "#E6F1FB",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Zap size={18} color="#185FA5" />
+        </div>
+        <div style={{ fontSize: 13, color: "#5A6270", lineHeight: 1.5 }}>
           We rank pupils by availability, preferences and time since last lesson.
         </div>
       </div>
