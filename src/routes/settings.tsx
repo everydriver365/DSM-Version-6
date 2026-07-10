@@ -656,6 +656,14 @@ function SettingsPage() {
             isLast={false}
           />
           <MenuRow
+            icon={<Clock color="#1A52A0" />}
+            iconBg="#F0F4FF"
+            label="Availability & blocks"
+            subLabel="Working hours, buffers, recurring blocks, time off"
+            onClick={() => navigate({ to: "/availability-settings" as never })}
+            isLast={false}
+          />
+          <MenuRow
             icon={<Bell color="#B5661E" />}
             iconBg="#FBEFE1"
             label="Notifications"
@@ -1695,6 +1703,7 @@ function MenuRow({
   icon,
   iconBg,
   label,
+  subLabel,
   value,
   onClick,
   expanded,
@@ -1707,6 +1716,7 @@ function MenuRow({
   icon: React.ReactNode;
   iconBg: string;
   label: string;
+  subLabel?: string;
   value?: string;
   onClick: () => void;
   expanded?: boolean;
@@ -1769,6 +1779,14 @@ function MenuRow({
             style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
           >
             {warning}
+          </span>
+        ) : subLabel ? (
+          <span
+            className="truncate"
+            title={subLabel}
+            style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}
+          >
+            {subLabel}
           </span>
         ) : null}
       </div>

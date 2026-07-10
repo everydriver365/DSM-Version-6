@@ -101,6 +101,41 @@ function hmToMin(t: string) {
   return (h || 0) * 60 + (m || 0);
 }
 
+// Rough UK-postcode → travel-time estimator using outcode centroids and the
+// Haversine formula. Good enough for schedule-buffering; not turn-by-turn.
+const OUTCODE_COORDS: Record<string, [number, number]> = {
+  SO: [50.9097, -1.4044], PO: [50.8198, -1.0873], GU: [51.2362, -0.5704],
+  RG: [51.4543, -0.9781], SP: [51.0648, -1.7923], BH: [50.7192, -1.8808],
+  DT: [50.7155, -2.4413], BA: [51.3781, -2.3597], BS: [51.4545, -2.5879],
+  SN: [51.5558, -1.7797], OX: [51.7520, -1.2577], RH: [51.2362, -0.1837],
+  KT: [51.3748, -0.3474], SW: [51.4700, -0.1800], SE: [51.5000, -0.0500],
+  W:  [51.5100, -0.2000], E:  [51.5200, -0.0400], N:  [51.5500, -0.1200],
+  NW: [51.5400, -0.1700], EC: [51.5200, -0.1000], WC: [51.5200, -0.1200],
+};
+function estimateTravelMins(
+  fromPostcode: string | null,
+  toPostcode: string | null,
+  speedMph: number,
+  extraBuffer: number,
+): number {
+  if (!fromPostcode || !toPostcode) return extraBuffer;
+  const fromOutcode = fromPostcode.trim().toUpperCase().split(" ")[0].replace(/[0-9]/g, "");
+  const toOutcode = toPostcode.trim().toUpperCase().split(" ")[0].replace(/[0-9]/g, "");
+  const fromCoords = OUTCODE_COORDS[fromOutcode];
+  const toCoords = OUTCODE_COORDS[toOutcode];
+  if (!fromCoords || !toCoords) return extraBuffer + 10;
+  const R = 3958.8;
+  const dLat = (toCoords[0] - fromCoords[0]) * Math.PI / 180;
+  const dLon = (toCoords[1] - fromCoords[1]) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(fromCoords[0] * Math.PI / 180) * Math.cos(toCoords[0] * Math.PI / 180) *
+    Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distanceMiles = R * c;
+  const travelMins = Math.round((distanceMiles / (speedMph || 25)) * 60);
+  return travelMins + extraBuffer;
+}
+
 function minToHm(m: number) {
   const h = Math.floor(m / 60);
   const mm = m % 60;
@@ -422,7 +457,7 @@ function GapsPage() {
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes)")
+            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes,postcode)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
             .in("status", ["confirmed", "pending", "in_progress"])
@@ -433,7 +468,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end",
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -460,6 +495,35 @@ function GapsPage() {
         } catch (err) {
           console.warn("[gaps] calendar_blocks fetch failed", err);
         }
+
+        // Fetch recurring blocks + time off in parallel.
+        let recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; label: string | null; is_active: boolean }> = [];
+        let timeOffRows: Array<{ start_date: string; end_date: string; reason: string | null; all_day: boolean; start_time?: string | null; end_time?: string | null }> = [];
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          if (token) {
+            const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+            const SUPABASE_ANON_KEY =
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+            const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
+            const [rRes, tRes] = await Promise.all([
+              fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
+              fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+            ]);
+            if (rRes.ok) {
+              const d = await rRes.json();
+              if (Array.isArray(d)) recurringBlocks = d;
+            }
+            if (tRes.ok) {
+              const d = await tRes.json();
+              if (Array.isArray(d)) timeOffRows = d;
+            }
+          }
+        } catch (err) {
+          console.warn("[gaps] recurring/time_off fetch failed", err);
+        }
+
         if (!cancelled) setCalendarBlocks(blocks);
         if (cancelled) return;
         console.log(
@@ -483,7 +547,13 @@ function GapsPage() {
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
           lunch_break_end?: string | null;
+          use_travel_time?: boolean | null;
+          avg_travel_speed_mph?: number | null;
+          travel_buffer_mins?: number | null;
         };
+        const useTravel = !!instr.use_travel_time;
+        const travelSpeed = Number(instr.avg_travel_speed_mph ?? 25) || 25;
+        const travelExtra = Number(instr.travel_buffer_mins ?? 10) || 0;
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const instrBufBefore = instr.lesson_buffer_before ?? 0;
@@ -500,7 +570,7 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number }[]
+          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number; postcode: string | null }[]
         >();
         let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
@@ -509,7 +579,7 @@ function GapsPage() {
           duration_minutes: number | null;
           notes: string | null;
           pupil_id?: string | null;
-          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null } | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null; postcode?: string | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
@@ -526,11 +596,23 @@ function GapsPage() {
             ? Number(l.pupils.buffer_after_minutes)
             : instrBufAfter;
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter, postcode: l.pupils?.postcode ?? null });
           byDay.set(l.lesson_date, arr);
           busyIdx++;
         }
         void busyIdx;
+
+        // If travel time is enabled, augment each lesson's bufAfter with the
+        // estimated travel time to the NEXT lesson on the same day.
+        if (useTravel) {
+          for (const [, list] of byDay) {
+            list.sort((a, b) => a.start - b.start);
+            for (let i = 0; i < list.length - 1; i++) {
+              const travelMins = estimateTravelMins(list[i].postcode, list[i + 1].postcode, travelSpeed, travelExtra);
+              list[i].bufAfter = Math.max(list[i].bufAfter, travelMins);
+            }
+          }
+        }
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
@@ -542,6 +624,23 @@ function GapsPage() {
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
           const isWorkDay = workDays.includes(dayName);
+
+          // Time off — if any covers this date and is all-day, skip the day entirely.
+          const dayTimeOff = timeOffRows.filter(t => t.start_date <= iso && t.end_date >= iso);
+          const fullDayOff = dayTimeOff.find(t => t.all_day);
+          if (fullDayOff) {
+            groups.push({
+              iso,
+              dayName: `${dayName} · Time off${fullDayOff.reason ? `: ${fullDayOff.reason}` : ""}`,
+              isWorkDay: false,
+              slots: [],
+              totalFreeMinutes: 0,
+              busyMinutes: weMin - wsMin,
+              busy: [],
+            });
+            continue;
+          }
+
           // Merge external calendar blocks as pseudo-lessons for gap detection.
           const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => {
             const c = getBlockColour(b.title);
@@ -554,6 +653,28 @@ function GapsPage() {
               bufAfter: 0,
             };
           });
+          // Recurring blocks for this weekday.
+          const dayRecurring = recurringBlocks
+            .filter(b => b.day_of_week === dayName)
+            .map(b => ({
+              start: hmToMin(b.start_time),
+              end: hmToMin(b.end_time),
+              title: `🔄 ${b.label ?? "Recurring"}`,
+              color: "#7C3AED" as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            }));
+          // Partial time off for this day.
+          const dayPartialOff = dayTimeOff
+            .filter(t => !t.all_day && t.start_time && t.end_time)
+            .map(t => ({
+              start: hmToMin(t.start_time!),
+              end: hmToMin(t.end_time!),
+              title: `🌴 ${t.reason ?? "Time off"}`,
+              color: "#0EA5E9" as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            }));
           // Lunch break — block gap detection during it.
           const lunchInfo =
             isWorkDay && instr.lunch_break_start && instr.lunch_break_end
@@ -569,9 +690,14 @@ function GapsPage() {
                 bufAfter: 0,
               }]
             : [];
-          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks, ...lunchBusy].slice().sort(
-            (a, b) => a.start - b.start,
-          );
+          const dayLessons = [
+            ...(byDay.get(iso) ?? []),
+            ...dayBlocks,
+            ...dayRecurring,
+            ...dayPartialOff,
+            ...lunchBusy,
+          ].slice().sort((a, b) => a.start - b.start);
+          
           const busyMinutes = dayLessons.reduce(
             (sum, l) => sum + (l.end - l.start),
             0,
