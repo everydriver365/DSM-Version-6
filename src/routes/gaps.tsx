@@ -105,6 +105,19 @@ function minToHm(m: number) {
   return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
+function getCalendarBlocksForDate(
+  calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
+  dateStr: string,
+): { startMins: number; endMins: number; title: string }[] {
+  return (calendarBlocks || [])
+    .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
+    .map((b) => ({
+      startMins: hmToMin((b.start_datetime ?? "").substring(11, 16) || "00:00"),
+      endMins: hmToMin((b.end_datetime ?? "").substring(11, 16) || "23:59"),
+      title: b.title || "Busy",
+    }));
+}
+
 function fmtSlotDateLong(iso: string) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-GB", {
