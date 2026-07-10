@@ -1,16 +1,25 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Video, Play, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar as CalendarIcon,
+  Video,
+  Play,
+  Users,
+  ClipboardCheck,
+  Car,
+  Armchair,
+  Mic,
+  Presentation,
+  MapPin,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
-  categoryColor,
-  formatSessionDate,
-  formatSessionTime,
-  daysUntil,
   type LiveSession,
 } from "./dsm-live";
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
