@@ -116,6 +116,7 @@ import {
   IconMicrophone,
   IconBriefcase,
   IconCircleCheck,
+  IconArrowRight,
 } from "@tabler/icons-react";
 
 
