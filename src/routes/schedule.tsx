@@ -119,6 +119,38 @@ function fmtTime(d: Date) {
   const mm = String(d.getMinutes()).padStart(2, "0");
   return `${hh}:${mm}`;
 }
+
+function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
+  const t = (title || "").toLowerCase();
+  if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
+    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
+  if (
+    t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
+    t.includes("appointment") || t.includes("medical") || t.includes("physio")
+  )
+    return { bg: "#FEF2F2", border: "#CC2229", icon: "🏥", text: "#CC2229" };
+  if (
+    t.includes("school") || t.includes("pickup") || t.includes("drop") ||
+    t.includes("kids") || t.includes("child") || t.includes("nursery")
+  )
+    return { bg: "#FFFBEB", border: "#D97706", icon: "🎒", text: "#D97706" };
+  if (
+    t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
+    t.includes("birthday") || t.includes("party") || t.includes("wedding")
+  )
+    return { bg: "#E0FFF4", border: "#16A34A", icon: "🎉", text: "#16A34A" };
+  if (
+    t.includes("travel") || t.includes("flight") || t.includes("train") ||
+    t.includes("holiday") || t.includes("vacation") || t.includes("away")
+  )
+    return { bg: "#F5F3FF", border: "#7C3AED", icon: "✈️", text: "#7C3AED" };
+  if (
+    t.includes("gym") || t.includes("sport") || t.includes("football") ||
+    t.includes("tennis") || t.includes("run") || t.includes("swim")
+  )
+    return { bg: "#E0FFF4", border: "#00B5A5", icon: "🏃", text: "#00B5A5" };
+  return { bg: "#F3F4F6", border: "#9CA3AF", icon: "📅", text: "#6B7280" };
+}
 function lessonStart(l: Lesson) {
   return new Date(`${l.lesson_date}T${(l.lesson_time ?? "00:00:00").slice(0, 8)}`);
 }
@@ -807,11 +839,12 @@ function EntryRow({
     );
   }
   if (entry.kind === "block") {
+    const c = getBlockColour(entry.title);
     return (
       <div
         style={{
-          background: "#F5F3FF",
-          borderLeft: "3px solid #7C3AED",
+          background: c.bg,
+          borderLeft: `3px solid ${c.border}`,
           borderRadius: 8,
           padding: "10px 12px",
           margin: "2px 0",
@@ -821,11 +854,8 @@ function EntryRow({
           ...POPPINS,
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <rect x="3" y="4" width="18" height="18" rx="2" />
-          <path d="M16 2v4M8 2v4M3 10h18" />
-        </svg>
-        <div style={{ fontSize: 13, color: "#7C3AED", fontWeight: 500, flex: 1 }}>{entry.title}</div>
+        <span style={{ fontSize: 14 }} aria-hidden>{c.icon}</span>
+        <div style={{ fontSize: 13, color: c.text, fontWeight: 500, flex: 1 }}>{entry.title}</div>
         <div style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>

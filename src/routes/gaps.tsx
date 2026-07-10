@@ -107,6 +107,38 @@ function minToHm(m: number) {
   return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
+function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
+  const t = (title || "").toLowerCase();
+  if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
+    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
+  if (
+    t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
+    t.includes("appointment") || t.includes("medical") || t.includes("physio")
+  )
+    return { bg: "#FEF2F2", border: "#CC2229", icon: "🏥", text: "#CC2229" };
+  if (
+    t.includes("school") || t.includes("pickup") || t.includes("drop") ||
+    t.includes("kids") || t.includes("child") || t.includes("nursery")
+  )
+    return { bg: "#FFFBEB", border: "#D97706", icon: "🎒", text: "#D97706" };
+  if (
+    t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
+    t.includes("birthday") || t.includes("party") || t.includes("wedding")
+  )
+    return { bg: "#E0FFF4", border: "#16A34A", icon: "🎉", text: "#16A34A" };
+  if (
+    t.includes("travel") || t.includes("flight") || t.includes("train") ||
+    t.includes("holiday") || t.includes("vacation") || t.includes("away")
+  )
+    return { bg: "#F5F3FF", border: "#7C3AED", icon: "✈️", text: "#7C3AED" };
+  if (
+    t.includes("gym") || t.includes("sport") || t.includes("football") ||
+    t.includes("tennis") || t.includes("run") || t.includes("swim")
+  )
+    return { bg: "#E0FFF4", border: "#00B5A5", icon: "🏃", text: "#00B5A5" };
+  return { bg: "#F3F4F6", border: "#9CA3AF", icon: "📅", text: "#6B7280" };
+}
+
 function getCalendarBlocksForDate(
   calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
   dateStr: string,
@@ -511,14 +543,17 @@ function GapsPage() {
           const iso = addDaysIso(today, i);
           const isWorkDay = workDays.includes(dayName);
           // Merge external calendar blocks as pseudo-lessons for gap detection.
-          const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => ({
-            start: b.startMins,
-            end: b.endMins,
-            title: `🗓 ${b.title}`,
-            color: "#7C3AED" as string | null,
-            bufBefore: 0,
-            bufAfter: 0,
-          }));
+          const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => {
+            const c = getBlockColour(b.title);
+            return {
+              start: b.startMins,
+              end: b.endMins,
+              title: `${c.icon} ${b.title}`,
+              color: c.border as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            };
+          });
           // Lunch break — block gap detection during it.
           const lunchInfo =
             isWorkDay && instr.lunch_break_start && instr.lunch_break_end
