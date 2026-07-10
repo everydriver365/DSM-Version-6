@@ -13,6 +13,7 @@ import {
   Bell,
   Menu,
   MessageSquare,
+  CreditCard,
   Navigation,
   CalendarOff,
   Search,
@@ -6400,7 +6401,8 @@ function HomePage() {
         >
 
         {(() => {
-          const pct = Math.min(100, Math.round((weekEarnings / (weeklyEarningsGoal || 1)) * 100));
+          const goal = weeklyEarningsGoal || 0;
+          const pct = goal > 0 ? Math.min(100, Math.round((weekEarnings / goal) * 100)) : 0;
           const recentPayments = [...earningsRows]
             .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
             .slice(0, 5);
@@ -6410,6 +6412,16 @@ function HomePage() {
               return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
             } catch { return d; }
           };
+          const PUPIL_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+          const colorFor = (key: string) => {
+            let h = 0;
+            for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+            return PUPIL_PALETTE[h % PUPIL_PALETTE.length];
+          };
+          const initialsOf = (name: string) =>
+            (name || '?').trim().split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase() || '?';
+          const owedSorted = [...outstandingBreakdown].sort((a, b) => b.amount - a.amount);
+          const todayLessonsCount = (todayLessons ?? []).length;
           const links: Array<{ icon: React.ReactNode; bg: string; label: string; to: string }> = [
             { icon: <BarChart3 size={16} color="#1A52A0" />, bg: '#EFF6FF', label: 'MTD', to: '/mtd' },
             { icon: <Calculator size={16} color="#16A34A" />, bg: '#DCFCE7', label: 'Tax report', to: '/tax-report' },
@@ -6418,99 +6430,134 @@ function HomePage() {
             { icon: <Moon size={16} color="#D97706" />, bg: '#FEF3C7', label: 'End of day', to: '/end-of-day' },
             { icon: <FileText size={16} color="#6B7280" />, bg: '#F3F4F6', label: 'Invoices', to: '/invoices' },
           ];
+          const tileStyle: React.CSSProperties = {
+            background: '#FFFFFF',
+            borderRadius: 14,
+            padding: '14px 16px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          };
+          const tileLabel: React.CSSProperties = {
+            fontSize: 10, fontWeight: 500, color: '#8A94A6', letterSpacing: '0.03em', marginBottom: 5, textTransform: 'uppercase',
+          };
+          const tileValue: React.CSSProperties = { fontSize: 24, fontWeight: 600, color: '#12142B', lineHeight: 1.1 };
+          const tileSub: React.CSSProperties = { fontSize: 11, color: '#B0BAC9', marginTop: 4 };
           return (
-            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
-              {/* 1. EARNINGS HERO */}
-              <div style={{ background: '#0F2044', borderRadius: 20, padding: 20, marginBottom: 4, position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
-                <div style={{ position: 'relative' }}>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 600 }}>This week</div>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: '#FFFFFF', marginTop: 4, lineHeight: 1 }}>£{Math.round(weekEarnings)}</div>
-                  <div style={{ marginTop: 12, height: 4, background: 'rgba(255,255,255,0.10)', borderRadius: 2, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${pct}%`, background: '#FFFFFF', borderRadius: 2 }} />
-                  </div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{pct}% of £{weeklyEarningsGoal} goal</div>
+            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
+              {/* 1. STATS ROW: THIS WEEK + TODAY */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+                <div style={tileStyle}>
+                  <div style={tileLabel}>THIS WEEK</div>
+                  <div style={tileValue}>£{Math.round(weekEarnings)}</div>
+                  {goal > 0 && (
+                    <>
+                      <div style={tileSub}>{pct}% of £{goal} goal</div>
+                      <div style={{ marginTop: 6, height: 3, background: '#EEF2F7', borderRadius: 2, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${pct}%`, background: '#185FA5', borderRadius: 2 }} />
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div style={{ position: 'absolute', right: 20, top: 20, textAlign: 'right' }}>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Today</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF', marginTop: 2 }}>£{Math.round(todayEarnings)}</div>
+                <div style={tileStyle}>
+                  <div style={tileLabel}>TODAY</div>
+                  <div style={tileValue}>£{Math.round(todayEarnings)}</div>
+                  <div style={tileSub}>
+                    {todayLessonsCount === 0 ? 'No lessons today' : `${todayLessonsCount} lesson${todayLessonsCount === 1 ? '' : 's'} today`}
+                  </div>
                 </div>
               </div>
 
-              {/* 2. OUTSTANDING */}
-              {outstanding > 0 && (
-                <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, overflow: 'hidden' }}>
-                  <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <AlertCircle size={16} color="#CC2229" />
-                      <span style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginLeft: 6 }}>Outstanding</span>
+              {/* 2. OUTSTANDING (or All paid up) */}
+              {outstanding > 0 ? (
+                <div style={{ background: '#FFFFFF', borderRadius: 14, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 16px', borderBottom: '0.5px solid #EEF2F7' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <AlertCircle size={16} color="#E24B4A" />
+                      <span style={{ fontSize: 15, fontWeight: 600, color: '#12142B' }}>Outstanding</span>
                     </div>
-                    <div style={{ fontSize: 18, fontWeight: 900, color: '#CC2229' }}>£{Math.round(outstanding)}</div>
+                    <div style={{ fontSize: 17, fontWeight: 600, color: '#E24B4A' }}>£{outstanding.toFixed(2)}</div>
                   </div>
-                  {outstandingBreakdown.map((p) => {
-                    const initials = p.name.split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
-                    return (
-                      <div key={p.pupilId} style={{ padding: '12px 16px', borderTop: '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#1A52A0', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{initials}</div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>{p.name}</div>
-                          <div style={{ fontSize: 12, color: '#CC2229' }}>Owes £{p.amount.toFixed(0)}</div>
-                        </div>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (p.phone) {
-                                window.location.href = `sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder you have an outstanding lesson payment of £${p.amount.toFixed(0)} due. Could you arrange payment when you get a chance? Thanks!`)}`;
-                              } else {
-                                toast.error('No phone number on file');
-                              }
-                            }}
-                            style={{ background: '#FEF3C7', color: '#92400E', fontSize: 10, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
-                          >
-                            💬 Chase
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => navigate({ to: '/payments' as never })}
-                            style={{ background: '#0F2044', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
-                          >
-                            💳 Pay
-                          </button>
-                        </div>
+                  {owedSorted.map((p) => (
+                    <div
+                      key={p.pupilId}
+                      onClick={() => navigate({ to: '/pupils/$id', params: { id: p.pupilId } } as never)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '0.5px solid #EEF2F7', cursor: 'pointer' }}
+                    >
+                      <div style={{ width: 38, height: 38, borderRadius: '50%', background: colorFor(p.pupilId), color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{initialsOf(p.name)}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                        <div style={{ fontSize: 12, color: '#E24B4A', marginTop: 1 }}>Owes £{p.amount.toFixed(2)}</div>
                       </div>
-                    );
-                  })}
-                  <div style={{ padding: '12px 16px', borderTop: '0.5px solid #F3F4F6', background: '#FEF2F2', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: 12, color: '#CC2229', fontWeight: 600 }}>{outstandingBreakdown.length} pupils · Total £{Math.round(outstanding)}</div>
-                    <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#1A52A0', fontWeight: 600, cursor: 'pointer' }}>Record payment →</button>
+                      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (p.phone) {
+                              window.location.href = `sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder you have an outstanding lesson payment of £${p.amount.toFixed(0)} due. Could you arrange payment when you get a chance? Thanks!`)}`;
+                            } else {
+                              toast.error('No phone number on file');
+                            }
+                          }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#EEF2F7', color: '#12142B', fontSize: 12, fontWeight: 500, padding: '7px 12px', borderRadius: 20, border: 'none', cursor: 'pointer' }}
+                        >
+                          <MessageSquare size={12} color="#12142B" /> Chase
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); navigate({ to: '/payments' as never }); }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#185FA5', color: '#FFFFFF', fontSize: 12, fontWeight: 500, padding: '7px 12px', borderRadius: 20, border: 'none', cursor: 'pointer' }}
+                        >
+                          <CreditCard size={12} color="#FFFFFF" /> Pay
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ background: '#FFF5F5', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: '#E24B4A' }}>
+                      {owedSorted.length} pupil{owedSorted.length === 1 ? '' : 's'} · Total £{outstanding.toFixed(2)}
+                    </div>
+                    <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 12, fontWeight: 500, color: '#185FA5', cursor: 'pointer' }}>
+                      Record payment →
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ background: '#FFFFFF', borderRadius: 14, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#E7F7EE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <CheckCircle2 size={20} color="#2E9E5B" />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: '#12142B' }}>All paid up</div>
+                    <div style={{ fontSize: 12, color: '#B0BAC9', marginTop: 1 }}>No outstanding balances</div>
                   </div>
                 </div>
               )}
 
               {/* 3. RECENT PAYMENTS */}
-              <div style={{ background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 16, overflow: 'hidden' }}>
-                <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Recent payments</div>
-                  <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#1A52A0', fontWeight: 600, cursor: 'pointer' }}>View all →</button>
+              <div style={{ background: '#FFFFFF', borderRadius: 14, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: 12 }}>
+                <div style={{ padding: '13px 16px', borderBottom: '0.5px solid #EEF2F7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#12142B' }}>Recent payments</div>
+                  <button type="button" onClick={() => navigate({ to: '/payments' as never })} style={{ background: 'none', border: 'none', fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer' }}>View all →</button>
                 </div>
                 {recentPayments.length === 0 ? (
-                  <div style={{ padding: 16, textAlign: 'center', color: '#9CA3AF', fontSize: 13 }}>No payments recorded yet</div>
+                  <div style={{ padding: '13px 16px', textAlign: 'center', color: '#B0BAC9', fontSize: 13 }}>No recent payments</div>
                 ) : (
-                  recentPayments.map((r, idx) => (
-                    <div key={r.id} style={{ padding: '12px 16px', borderTop: idx === 0 ? 'none' : '0.5px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <PoundSterling size={16} color="#16A34A" />
+                  recentPayments.map((r, idx) => {
+                    const name = (r.pupilName || 'Payment received').replace(/[.\s]+$/g, '').trim();
+                    return (
+                      <div key={r.id} style={{ padding: '13px 16px', borderBottom: idx === recentPayments.length - 1 ? 'none' : '0.5px solid #EEF2F7', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 38, height: 38, borderRadius: '50%', background: colorFor(name), color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{initialsOf(name)}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
+                          <div style={{ fontSize: 12, color: '#B0BAC9', marginTop: 1 }}>{r.method ? `${r.method} · ` : ''}{fmtDate(r.date)}</div>
+                        </div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#2E9E5B', flexShrink: 0 }}>£{r.amount.toFixed(2)}</div>
                       </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>{r.pupilName || 'Payment received'}</div>
-                        <div style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtDate(r.date)}{r.method ? ` · ${r.method}` : ''}</div>
-                      </div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#16A34A' }}>£{r.amount.toFixed(0)}</div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
+
 
               {/* 4. SEND REMINDERS */}
               {outstanding > 0 && outstandingBreakdown.length > 0 && (
