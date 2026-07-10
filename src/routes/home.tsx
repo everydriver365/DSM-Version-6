@@ -693,27 +693,61 @@ function SwipeableStatsCard({
           )}
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 14 }}>
-        {slides.map((sl, i) => {
-          const active = i === idx;
-          return (
+      <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
+        <div style={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
+          {onAddLesson && s.key === "today" && (
             <button
-              key={sl.key}
               type="button"
-              aria-label={`Show ${sl.title}`}
-              onClick={() => setIdx(i)}
-              style={{
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                height: 6,
-                width: active ? 16 : 6,
-                borderRadius: active ? 4 : "50%",
-                background: active ? "#185FA5" : "#D0D5DD",
+              aria-label="Add lesson"
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddLesson();
               }}
-            />
-          );
-        })}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                background: "#185FA5",
+                color: "#FFFFFF",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+            </button>
+          )}
+        </div>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 5 }}>
+          {slides.map((sl, i) => {
+            const active = i === idx;
+            return (
+              <button
+                key={sl.key}
+                type="button"
+                aria-label={`Show ${sl.title}`}
+                onClick={() => setIdx(i)}
+                style={{
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  height: 6,
+                  width: active ? 16 : 6,
+                  borderRadius: active ? 4 : "50%",
+                  background: active ? "#185FA5" : "#D0D5DD",
+                }}
+              />
+            );
+          })}
+        </div>
+        <div style={{ flex: 1 }} />
       </div>
     </div>
   );
