@@ -83,11 +83,13 @@ interface Lesson {
 // is a matter of pushing entries into the same list — no UI rewrite.
 type AgendaEntry =
   | { kind: "lesson"; id: string; start: Date; end: Date; allDay: false; lesson: Lesson }
+  | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string }
   | { kind: "task"; id: string; start: Date; end: Date; allDay: boolean; title: string; completed?: boolean }
   | { kind: "holiday"; id: string; start: Date; end: Date; allDay: true; title: string };
+
 
 function startOfDay(d: Date) {
   const x = new Date(d);
