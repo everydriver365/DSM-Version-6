@@ -1405,341 +1405,369 @@ function GapsPage() {
             { weekday: "short", day: "numeric", month: "short" },
           );
           const hasGaps = g.slots.length > 0;
-          const dotColor = hasGaps ? ACCENT : TEXT_MUTED;
-          const dayLabelColor = hasGaps ? TEXT_PRIMARY : TEXT_SUBTLE;
 
           return (
             <div key={g.iso} style={{ marginBottom: 14 }}>
-              {/* Day header row */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "0 16px",
-                  marginBottom: 8,
-                }}
-              >
-                <span
+              {hasGaps ? (
+                <div
                   style={{
-                    display: "inline-flex",
+                    display: "flex",
                     alignItems: "center",
-                    gap: 8,
+                    justifyContent: "space-between",
+                    padding: "0 16px",
+                    marginBottom: 8,
                   }}
                 >
                   <span
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: 999,
-                      background: dotColor,
-                      display: "inline-block",
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: dayLabelColor,
-                    }}
-                  >
-                    {shortLabel}
-                  </span>
-                  {!g.isWorkDay && (
-                    <span style={{ fontSize: 11, color: TEXT_MUTED }}>
-                      · day off
-                    </span>
-                  )}
-                </span>
-                <button
-                  onClick={() => {
-                    setManualMode(true);
-                    setSlotDate(g.iso);
-                    setSelectedSlots([]);
-                  }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    background: CHIP_BG,
-                    border: "none",
-                    borderRadius: 20,
-                    padding: "6px 12px",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: ACCENT,
-                    cursor: "pointer",
-                  }}
-                >
-                  <Plus size={12} /> Add
-                </button>
-              </div>
-
-              {/* Day content card */}
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 14,
-                  overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  margin: "0 16px",
-                }}
-              >
-                {!hasGaps && (
-                  <div
-                    style={{
-                      padding: "14px 16px",
-                      textAlign: "center",
-                      fontSize: 13,
-                      color: TEXT_MUTED,
-                    }}
-                  >
-                    {g.isWorkDay
-                      ? "Nothing scheduled"
-                      : "Day off — tap Add to open"}
-                  </div>
-                )}
-
-                {g.lunch && (
-                  <div
-                    style={{
-                      background: "#F9FAFB",
-                      borderLeft: "3px solid #9CA3AF",
-                      borderRadius: 8,
-                      padding: "10px 12px",
-                      margin: "2px 12px",
-                      display: "flex",
+                      display: "inline-flex",
                       alignItems: "center",
                       gap: 8,
                     }}
                   >
-                    <Coffee size={14} color="#9CA3AF" />
-                    <span style={{ fontSize: 13, color: "#6B7280" }}>
-                      Lunch break
-                    </span>
-                    <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto" }}>
-                      {g.lunch.start} – {g.lunch.end}
-                    </span>
-                  </div>
-                )}
-
-                {g.slots.map((slot, i) => {
-                  const isLast = i === g.slots.length - 1;
-                  const anySelected = slot.possibleDurations.some((d) =>
-                    selectedSlots.some(
-                      (s) =>
-                        slotKey(s) ===
-                        slotKey({
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: d,
-                        }),
-                    ),
-                  );
-                  const default60Key = slotKey({
-                    date: slot.date,
-                    time: slot.startTime,
-                    duration: 60,
-                  });
-                  return (
-                    <div
-                      key={`gap-${slot.startTime}`}
+                    <span
                       style={{
-                        borderBottom: isLast
-                          ? "none"
-                          : `0.5px solid ${HAIRLINE}`,
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: "#185FA5",
+                        display: "inline-block",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0F2044",
                       }}
                     >
-                      <button
-                        onClick={() => {
-                          setSelectedSlots((prev) => {
-                            const exists = prev.some(
-                              (s) => slotKey(s) === default60Key,
+                      {shortLabel}
+                    </span>
+                  </span>
+                  <button
+                    onClick={() => {
+                      setManualMode(true);
+                      setSlotDate(g.iso);
+                      setSelectedSlots([]);
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      background: "#E6F1FB",
+                      border: "none",
+                      borderRadius: 999,
+                      padding: "6px 12px",
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "#185FA5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Plus size={12} /> Add
+                  </button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "4px 4px 4px 0",
+                    margin: "0 16px 8px",
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 7,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 7,
+                        height: 7,
+                        borderRadius: 999,
+                        background: "#C7CCD4",
+                        display: "inline-block",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#8A93A3",
+                      }}
+                    >
+                      {shortLabel}
+                    </span>
+                    <span style={{ fontSize: 12, color: "#C7CCD4" }}>
+                      · {g.isWorkDay ? "no free slots" : "day off"}
+                    </span>
+                  </span>
+                  <button
+                    onClick={() => {
+                      setManualMode(true);
+                      setSlotDate(g.iso);
+                      setSelectedSlots([]);
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "#185FA5",
+                      cursor: "pointer",
+                    }}
+                  >
+                    + Add
+                  </button>
+                </div>
+              )}
+
+              {g.lunch && (
+                <div
+                  style={{
+                    background: "#F9FAFB",
+                    borderRadius: 10,
+                    padding: "8px 12px",
+                    margin: "0 16px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Coffee size={14} color="#9CA3AF" />
+                  <span style={{ fontSize: 13, color: "#6B7280" }}>
+                    Lunch break
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#9CA3AF",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {g.lunch.start} – {g.lunch.end}
+                  </span>
+                </div>
+              )}
+
+              {g.slots.map((slot) => {
+                const anySelected = slot.possibleDurations.some((d) =>
+                  selectedSlots.some(
+                    (s) =>
+                      slotKey(s) ===
+                      slotKey({
+                        date: slot.date,
+                        time: slot.startTime,
+                        duration: d,
+                      }),
+                  ),
+                );
+                const default60Key = slotKey({
+                  date: slot.date,
+                  time: slot.startTime,
+                  duration: 60,
+                });
+                return (
+                  <div
+                    key={`gap-${slot.startTime}`}
+                    style={{
+                      background: "#FFFFFF",
+                      borderRadius: 16,
+                      border: "1px solid #DCEAF7",
+                      boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
+                      margin: "0 16px 18px",
+                      padding: "12px 14px",
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        setSelectedSlots((prev) => {
+                          const exists = prev.some(
+                            (s) => slotKey(s) === default60Key,
+                          );
+                          if (exists)
+                            return prev.filter(
+                              (s) =>
+                                !(
+                                  s.date === slot.date &&
+                                  s.time === slot.startTime
+                                ),
                             );
-                            if (exists)
-                              return prev.filter(
-                                (s) =>
-                                  !(
-                                    s.date === slot.date &&
-                                    s.time === slot.startTime
-                                  ),
-                              );
-                            return [
-                              ...prev,
-                              {
-                                date: slot.date,
-                                time: slot.startTime,
-                                duration: 60,
-                              },
-                            ];
-                          });
-                        }}
+                          return [
+                            ...prev,
+                            {
+                              date: slot.date,
+                              time: slot.startTime,
+                              duration: 60,
+                            },
+                          ];
+                        });
+                      }}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                        background: "transparent",
+                        border: "none",
+                        padding: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div
                         style={{
-                          width: "100%",
-                          textAlign: "left",
-                          background: anySelected ? "#F3F8FF" : "#FFFFFF",
-                          border: "none",
-                          padding: "13px 16px",
+                          width: 42,
+                          height: 42,
+                          borderRadius: 12,
+                          background: "linear-gradient(135deg, #185FA5, #0F2044)",
                           display: "flex",
                           alignItems: "center",
-                          gap: 12,
-                          cursor: "pointer",
+                          justifyContent: "center",
+                          flexShrink: 0,
                         }}
                       >
+                        <Zap size={20} color="#FFFFFF" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 12,
-                            background: CHIP_BG,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
+                            color: "#0F2044",
+                            fontWeight: 600,
+                            fontSize: 15,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
-                          <Zap size={20} color={ACCENT} />
+                          {fmtGap(slot.gapMinutes)} free
                         </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              color: TEXT_PRIMARY,
-                              fontWeight: 500,
-                              fontSize: 14,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {fmtGap(slot.gapMinutes)} free
-                          </div>
-                          <div
-                            style={{
-                              color: TEXT_MUTED,
-                              fontSize: 12,
-                              marginTop: 1,
-                            }}
-                          >
-                            {minToHm(hmToMin(slot.startTime))} –{" "}
-                            {minToHm(hmToMin(slot.endTime))} · tap to fill
-                          </div>
+                        <div
+                          style={{
+                            color: "#8A93A3",
+                            fontSize: 12,
+                            marginTop: 1,
+                          }}
+                        >
+                          {minToHm(hmToMin(slot.startTime))} –{" "}
+                          {minToHm(hmToMin(slot.endTime))} · tap to fill
                         </div>
-                        <RefreshCw
-                          size={16}
-                          color={TEXT_MUTED}
-                          style={{ flexShrink: 0 }}
-                        />
-                        <ChevronRight
-                          size={16}
-                          color={TEXT_MUTED}
-                          style={{ flexShrink: 0 }}
-                        />
-                      </button>
+                      </div>
+                      <RefreshCw
+                        size={16}
+                        color="#C7CCD4"
+                        style={{ flexShrink: 0 }}
+                      />
+                      <ChevronRight
+                        size={16}
+                        color="#C7CCD4"
+                        style={{ flexShrink: 0 }}
+                      />
+                    </button>
 
-                      {slot.gapReason && (
-                        <div
+                    {slot.gapReason && (
+                      <div
+                        style={{
+                          background: "#E6F1FB",
+                          borderRadius: 10,
+                          padding: "10px 14px",
+                          marginTop: 10,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <Clock size={14} color="#185FA5" />
+                        <span
                           style={{
-                            background: "#F0F4FF",
-                            borderLeft: "3px solid #1A52A0",
-                            borderRadius: 8,
-                            padding: "8px 12px",
-                            margin: "2px 16px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
+                            fontSize: 13,
+                            color: "#185FA5",
+                            fontWeight: 500,
                           }}
                         >
-                          {slot.gapReason.includes("drive") ? (
-                            <Car size={13} color="#1A52A0" />
-                          ) : (
-                            <Clock size={13} color="#1A52A0" />
-                          )}
+                          {slot.gapReason}
+                        </span>
+                        {slot.fromPostcode && slot.toPostcode && (
                           <span
                             style={{
                               fontSize: 12,
-                              color: "#1A52A0",
-                              fontWeight: 500,
+                              color: "#8A93A3",
+                              marginLeft: "auto",
                             }}
                           >
-                            {slot.gapReason}
+                            {slot.fromPostcode} → {slot.toPostcode}
                           </span>
-                          {slot.fromPostcode && slot.toPostcode && (
-                            <span
+                        )}
+                      </div>
+                    )}
+
+                    {anySelected && slot.possibleDurations.length > 1 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 6,
+                          paddingTop: 10,
+                        }}
+                      >
+                        {slot.possibleDurations.map((d) => {
+                          const key = slotKey({
+                            date: slot.date,
+                            time: slot.startTime,
+                            duration: d,
+                          });
+                          const isSelected = selectedSlots.some(
+                            (s) => slotKey(s) === key,
+                          );
+                          return (
+                            <button
+                              key={d}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedSlots((prev) => {
+                                  const filtered = prev.filter(
+                                    (s) =>
+                                      !(
+                                        s.date === slot.date &&
+                                        s.time === slot.startTime
+                                      ),
+                                  );
+                                  if (isSelected) return filtered;
+                                  return [
+                                    ...filtered,
+                                    {
+                                      date: slot.date,
+                                      time: slot.startTime,
+                                      duration: d,
+                                    },
+                                  ];
+                                });
+                              }}
                               style={{
-                                fontSize: 12,
-                                color: "#9CA3AF",
-                                marginLeft: "auto",
+                                background: isSelected ? "#185FA5" : "#FFFFFF",
+                                color: isSelected ? "#FFFFFF" : "#8A94A6",
+                                border: `1px solid ${isSelected ? "#185FA5" : "#EEF2F7"}`,
+                                borderRadius: 999,
+                                padding: "4px 10px",
+                                fontSize: 11,
+                                fontWeight: 500,
+                                cursor: "pointer",
                               }}
                             >
-                              {slot.fromPostcode} → {slot.toPostcode}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {anySelected && slot.possibleDurations.length > 1 && (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 6,
-                            padding: "0 16px 12px",
-                          }}
-                        >
-                          {slot.possibleDurations.map((d) => {
-                            const key = slotKey({
-                              date: slot.date,
-                              time: slot.startTime,
-                              duration: d,
-                            });
-                            const isSelected = selectedSlots.some(
-                              (s) => slotKey(s) === key,
-                            );
-                            return (
-                              <button
-                                key={d}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedSlots((prev) => {
-                                    const filtered = prev.filter(
-                                      (s) =>
-                                        !(
-                                          s.date === slot.date &&
-                                          s.time === slot.startTime
-                                        ),
-                                    );
-                                    if (isSelected) return filtered;
-                                    return [
-                                      ...filtered,
-                                      {
-                                        date: slot.date,
-                                        time: slot.startTime,
-                                        duration: d,
-                                      },
-                                    ];
-                                  });
-                                }}
-                                style={{
-                                  background: isSelected ? ACCENT : "#FFFFFF",
-                                  color: isSelected ? "#FFFFFF" : TEXT_SUBTLE,
-                                  border: `1px solid ${isSelected ? ACCENT : HAIRLINE}`,
-                                  borderRadius: 999,
-                                  padding: "4px 10px",
-                                  fontSize: 11,
-                                  fontWeight: 500,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                {d} MIN
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                              {d} MIN
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           );
         })}
