@@ -530,7 +530,7 @@ function PupilsIndexPage() {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        initials(p.name)
+                        initials(displayName(p.name))
                       )}
                     </div>
 
