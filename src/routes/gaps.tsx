@@ -1158,7 +1158,7 @@ function GapsPage() {
       <div
         style={{
           background: NAVY,
-          padding: "16px 18px 20px",
+          padding: "16px 16px 20px",
         }}
       >
         <div
@@ -1215,9 +1215,8 @@ function GapsPage() {
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 10,
+            display: "flex",
+            gap: 8,
           }}
         >
           {[
@@ -1232,6 +1231,7 @@ function GapsPage() {
             <div
               key={s.label}
               style={{
+                flex: 1,
                 background: "rgba(255,255,255,0.08)",
                 borderRadius: 14,
                 padding: "12px 14px",
