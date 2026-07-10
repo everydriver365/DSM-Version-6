@@ -375,8 +375,8 @@ function PaymentsPage() {
 
   return (
     <div
-      className="min-h-screen bg-white pb-24 pb-safe relative"
-      style={POPPINS}
+      className="min-h-screen pb-24 pb-safe relative"
+      style={{ ...POPPINS, background: "#EEF2F7" }}
       onTouchStart={(e) => {
         (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }}
