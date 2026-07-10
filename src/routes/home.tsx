@@ -4881,11 +4881,12 @@ function HomePage() {
                 <div style={{ fontFamily: PF }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
+                    <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
                     </div>
                   </div>
+
 
                   {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
