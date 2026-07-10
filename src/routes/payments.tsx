@@ -55,11 +55,8 @@ function startOfYear(d: Date) { return new Date(d.getFullYear(), 0, 1); }
 function sameDay(a: Date, b: Date) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 function dateGroupLabel(iso: string) {
   const d = new Date(iso);
-  const today = new Date();
-  const yest = new Date(); yest.setDate(today.getDate()-1);
-  if (sameDay(d, today)) return "Today";
-  if (sameDay(d, yest)) return "Yesterday";
-  return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
+  // Format: "Wed 8 Jul 2026" (abbreviated weekday, no leading zero on day)
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 }
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -412,17 +409,17 @@ function PaymentsPage() {
       </div>
 
       {/* Summary stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
         <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#2E9E5B" />
         <StatTile
           label="OUTSTANDING"
           value={formatGBP(stats.outstanding)}
-          color={stats.outstanding > 0 ? "#E24B4A" : "#8A94A6"}
+          color={stats.outstanding > 0 ? "#E24B4A" : "#B0BAC9"}
         />
         <StatTile
           label="REFUNDED"
           value={formatGBP(stats.monthRefunded)}
-          color={stats.monthRefunded > 0 ? "#B5661E" : "#8A94A6"}
+          color={stats.monthRefunded > 0 ? "#B5661E" : "#B0BAC9"}
         />
       </div>
 
@@ -438,7 +435,7 @@ function PaymentsPage() {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          margin: "12px 16px 12px",
+          margin: "0 16px 12px",
           cursor: "pointer",
           border: 0,
           width: "calc(100% - 32px)",
@@ -562,7 +559,7 @@ function PaymentsPage() {
                   borderRadius: 14,
                   overflow: "hidden",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  margin: "0 16px 16px",
+                  margin: "0 16px 14px",
                 }}
               >
                 {g.rows.map((row, i) => {
@@ -585,7 +582,7 @@ function PaymentsPage() {
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: 600,
                             display: "flex",
                             alignItems: "center",
@@ -737,7 +734,7 @@ function StatTile({ label, value, color }: { label: string; value: string; color
           fontWeight: 500,
           color: "#8A94A6",
           letterSpacing: "0.03em",
-          marginBottom: 6,
+          marginBottom: 5,
           whiteSpace: "nowrap",
           lineHeight: 1.2,
           ...POPPINS,
@@ -745,7 +742,7 @@ function StatTile({ label, value, color }: { label: string; value: string; color
       >
         {label}
       </div>
-      <div style={{ fontSize: 20, fontWeight: 600, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: 18, fontWeight: 600, color, ...POPPINS }}>{value}</div>
     </div>
   );
 }
