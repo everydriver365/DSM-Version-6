@@ -42,11 +42,21 @@ function initials(name: string) {
 }
 
 const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
-function avatarColor(id: string) {
+// Explicit per-pupil colour overrides (takes precedence over hash).
+const PUPIL_COLOR_OVERRIDES: Record<string, string> = {};
+// Match Joseph Thorne by name-normalised key (id-agnostic override handled in avatarColor via name)
+function avatarColor(id: string, name?: string) {
+  if (name && /joseph/i.test(name) && /thorne/i.test(name)) return "#3B6D11";
+  if (PUPIL_COLOR_OVERRIDES[id]) return PUPIL_COLOR_OVERRIDES[id];
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
   return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
 }
+function displayName(n: string | null | undefined) {
+  return (n ?? "").replace(/\s*\.\s*$/, "").trim();
+}
+// NOTE: DB cleanup SQL (run manually — Lovable Cloud DB tools not available in this session):
+//   update pupils set name = trim(trailing '.' from trim(name)) where name like '%.';
 
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
@@ -366,10 +376,9 @@ function PupilsIndexPage() {
         <div
           className="flex w-full"
           style={{
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "#EEF2F7",
             borderRadius: 12,
             padding: 3,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
           {(
@@ -389,11 +398,13 @@ function PupilsIndexPage() {
                 style={{
                   ...POPPINS,
                   padding: "9px 4px",
+                  fontSize: 13,
                   backgroundColor: active ? "#0F2044" : "transparent",
                   color: active ? "#FFFFFF" : "#8A94A6",
                   fontWeight: 500,
                   border: "none",
                   borderRadius: 9,
+                  boxShadow: "none",
                   cursor: "pointer",
                 }}
               >
@@ -403,6 +414,7 @@ function PupilsIndexPage() {
           })}
         </div>
       </div>
+
 
       {/* List */}
       <div>
@@ -480,7 +492,7 @@ function PupilsIndexPage() {
               const hoursRemaining = prepaid - hoursUsed;
               const hasHoursLeft = prepaid > 0 && hoursRemaining > 0;
               const hasBalance = balanceOwed > 0;
-              const avatarBg = avatarColor(p.id);
+              const avatarBg = avatarColor(p.id, p.name);
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
               return (
@@ -490,7 +502,7 @@ function PupilsIndexPage() {
                   params={{ id: p.id }}
                   className="block"
                   style={{
-                    backgroundColor: hasBalance ? "#FFFBF8" : "#FFFFFF",
+                    backgroundColor: hasBalance ? "#FFF5F5" : "#FFFFFF",
                     borderBottom: idx < filtered.length - 1 ? "0.5px solid #EEF2F7" : "none",
                   }}
                 >
@@ -518,7 +530,7 @@ function PupilsIndexPage() {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        initials(p.name)
+                        initials(displayName(p.name))
                       )}
                     </div>
 
@@ -527,7 +539,7 @@ function PupilsIndexPage() {
                         className="truncate"
                         style={{ fontSize: 15, fontWeight: 500, color: "#12142B", ...POPPINS }}
                       >
-                        {p.name}
+                        {displayName(p.name)}
                       </div>
                       <div
                         className="flex flex-wrap items-center"
