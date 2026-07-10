@@ -1592,10 +1592,18 @@ function SettingsPage() {
           />
         </SectionCard>
 
-        <Label>DANGER ZONE</Label>
-        <Button variant="destructive" onClick={() => setSignOutOpen(true)}>
-          Sign out
-        </Button>
+        <SectionCard>
+          <MenuRow
+            icon={<LogOut color="#A32D2D" />}
+            iconBg="#FCEBEB"
+            label="Sign out"
+            labelColor="#A32D2D"
+            hideChevron
+            isFirst
+            onClick={() => setSignOutOpen(true)}
+          />
+        </SectionCard>
+
       </div>
 
       <ConfirmDialog
