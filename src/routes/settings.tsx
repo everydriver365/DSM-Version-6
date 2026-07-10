@@ -1480,8 +1480,8 @@ function SettingsPage() {
             className="px-4 py-3 flex items-start gap-3"
           >
             <div
-              className="flex items-center justify-center rounded-full shrink-0"
-              style={{ width: 36, height: 36, backgroundColor: "#DBEAFE" }}
+              className="flex items-center justify-center"
+              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
               <Globe size={18} color="#1877D6" />
             </div>
