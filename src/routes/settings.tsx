@@ -1702,6 +1702,7 @@ function MenuRow({
   isLast,
   labelColor,
   hideChevron,
+  warning,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -1713,6 +1714,7 @@ function MenuRow({
   isLast?: boolean;
   labelColor?: string;
   hideChevron?: boolean;
+  warning?: string;
 }) {
   const dividerStyle: React.CSSProperties | undefined =
     isLast === undefined
