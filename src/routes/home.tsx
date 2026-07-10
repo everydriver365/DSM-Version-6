@@ -4897,7 +4897,20 @@ function HomePage() {
                   </div>
 
 
-                  {rows.map((r, idx) => {
+                  {/* Timeline container with vertical connector */}
+                  <div style={{ position: 'relative', paddingLeft: 22 }}>
+                    <div
+                      aria-hidden
+                      style={{
+                        position: 'absolute',
+                        left: 6,
+                        top: 6,
+                        bottom: 6,
+                        width: 2,
+                        background: '#DDE4ED',
+                      }}
+                    />
+                    {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
                       const ge = new Date(gs.getTime() + r.mins * 60000);
@@ -4905,53 +4918,62 @@ function HomePage() {
                       const hourlyRate = 40;
                       const potential = Math.round((r.mins / 60) * hourlyRate);
                       return (
-                        <div
-                          key={`gap-${idx}`}
-                          onClick={() => navigate({ to: '/gaps' as never })}
-                          role="button"
-                          tabIndex={0}
-                          style={{
-                            background: '#E6F1FB',
-                            borderLeft: '3px solid #185FA5',
-                            borderRadius: 14,
-                            padding: '14px 16px',
-                            margin: '0 0 10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          <IconBolt size={18} stroke={2} color="#185FA5" />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
-                              {fmtT(gs)} – {fmtT(ge)}
-                            </div>
-                            <div style={{ fontSize: 12, color: '#4A7BA6', marginTop: 2 }}>
-                              {formatMins(r.mins)} free · £{potential} potential
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                          <span
+                            aria-hidden
                             style={{
-                              background: '#185FA5',
-                              color: '#FFFFFF',
-                              fontSize: 13,
-                              fontWeight: 500,
-                              padding: '9px 16px',
-                              borderRadius: 10,
-                              border: 'none',
-                              cursor: 'pointer',
-                              display: 'inline-flex',
+                              position: 'absolute',
+                              left: -22,
+                              top: 4,
+                              width: 12,
+                              height: 12,
+                              borderRadius: '50%',
+                              background: '#E6F1FB',
+                              border: '2px solid #185FA5',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                          <div
+                            onClick={() => navigate({ to: '/gaps' as never })}
+                            role="button"
+                            tabIndex={0}
+                            style={{
+                              background: '#FFFFFF',
+                              borderRadius: 12,
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              padding: '12px 14px',
+                              display: 'flex',
                               alignItems: 'center',
-                              gap: 4,
-                              fontFamily: PF,
+                              gap: 10,
+                              cursor: 'pointer',
                             }}
                           >
-                            Fill
-                            <IconArrowRight size={13} stroke={2} />
-                          </button>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                                {fmtT(gs)} – {fmtT(ge)}
+                              </div>
+                              <div style={{ fontSize: 11, color: '#185FA5', marginTop: 2 }}>
+                                {formatMins(r.mins)} free · £{potential} potential
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                              style={{
+                                background: '#185FA5',
+                                color: '#FFFFFF',
+                                fontSize: 12,
+                                fontWeight: 500,
+                                padding: '8px 12px',
+                                borderRadius: 9,
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontFamily: PF,
+                              }}
+                            >
+                              Fill
+                            </button>
+                          </div>
                         </div>
                       );
 
@@ -4972,112 +4994,116 @@ function HomePage() {
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
                     const initials = initialsOf(name);
 
-                    let pill: React.ReactNode = null;
+                    let priceNode: React.ReactNode = null;
                     if (isLive) {
-                      pill = (
-                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
-                          Live
-                        </span>
+                      priceNode = (
+                        <span style={{ fontSize: 13, fontWeight: 500, color: ACCENT }}>Live</span>
                       );
                     } else if (isPrepaidPupil) {
-                      pill = (
-                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
-                          Prepaid
-                        </span>
+                      priceNode = (
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#185FA5' }}>Prepaid</span>
                       );
                     } else if (isPaid) {
-                      pill = (
-                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
-                          Paid ✓
-                        </span>
+                      priceNode = (
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#137333' }}>Paid</span>
                       );
-                    } else if (dueUnpaid) {
-                      pill = (
-                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
+                    } else if (amt > 0) {
+                      priceNode = (
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
                           £{amt.toFixed(0)}
                         </span>
                       );
                     }
 
                     return (
-                      <div
-                        key={l.id}
-                        onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
-                        role="button"
-                        tabIndex={0}
-                        style={{
-                          minHeight: 64,
-                          margin: '0 0 10px',
-                          padding: '14px 16px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 12,
-                          cursor: 'pointer',
-                          background: '#FFFFFF',
-                          border: 'none',
-                          borderRadius: 14,
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                          boxSizing: 'border-box',
-                        }}
-                      >
-                        <div
+                      <div key={l.id} style={{ position: 'relative', marginBottom: 16 }}>
+                        <span
                           aria-hidden
                           style={{
-                            position: 'relative',
-                            width: 40, height: 40, borderRadius: 999,
-                            background: '#0F2044', color: '#FFFFFF',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 13, fontWeight: 500, letterSpacing: 0.2,
-                            flexShrink: 0,
-                            overflow: 'hidden',
+                            position: 'absolute',
+                            left: -22,
+                            top: 4,
+                            width: 12,
+                            height: 12,
+                            borderRadius: '50%',
+                            background: '#0F2044',
+                          }}
+                        />
+                        <div
+                          onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
+                          role="button"
+                          tabIndex={0}
+                          style={{
+                            padding: '12px 14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            cursor: 'pointer',
+                            background: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: 12,
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                            boxSizing: 'border-box',
                           }}
                         >
-                          {isLive && (
-                            <span
-                              aria-label="Live"
-                              style={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                width: 8,
-                                height: 8,
-                                borderRadius: 999,
-                                backgroundColor: '#DC2626',
-                                boxShadow: '0 0 0 2px #FFFFFF',
-                                zIndex: 1,
-                              }}
-                            />
-                          )}
-                          {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
-                            <img
-                              src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
-
-                              alt=""
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                          ) : (
-                            initials
-                          )}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          {tab === 'next' && (
-                            <div style={{ fontSize: 11, fontWeight: 500, color: '#185FA5', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
-                              {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
+                          <div
+                            aria-hidden
+                            style={{
+                              position: 'relative',
+                              width: 36, height: 36, borderRadius: 999,
+                              background: '#0F2044', color: '#FFFFFF',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
+                              flexShrink: 0,
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {isLive && (
+                              <span
+                                aria-label="Live"
+                                style={{
+                                  position: 'absolute',
+                                  top: 0,
+                                  right: 0,
+                                  width: 8,
+                                  height: 8,
+                                  borderRadius: 999,
+                                  backgroundColor: '#DC2626',
+                                  boxShadow: '0 0 0 2px #FFFFFF',
+                                  zIndex: 1,
+                                }}
+                              />
+                            )}
+                            {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
+                              <img
+                                src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
+                                alt=""
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              initials
+                            )}
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            {tab === 'next' && (
+                              <div style={{ fontSize: 11, fontWeight: 500, color: '#185FA5', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                                {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
+                              </div>
+                            )}
+                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {name}
                             </div>
-                          )}
-                          <div style={{ fontSize: 15, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {name}
+                            <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                              {timeLabel} · {dur} mins
+                            </div>
                           </div>
-                          <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                            {timeLabel} · {dur} mins
-                          </div>
+                          {priceNode}
                         </div>
-                        {pill}
-                        <IconChevronRight size={16} stroke={1.75} color="#C7CCD4" style={{ flexShrink: 0 }} />
                       </div>
                     );
 
                   })}
+                  </div>
                 </div>
               );
             })()}
