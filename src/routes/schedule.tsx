@@ -934,11 +934,15 @@ function SchedulePage() {
                             >
                               <span style={{ fontSize: 14, color: '#D97706' }} aria-hidden>⚡</span>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                                {fmtTime(e.start)} – {fmtTime(e.end)}
+                                {e.startTime} – {e.endTime}
                               </div>
                               <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {e.mins} min free · £{Math.round((e.mins / 60) * 40)} potential
+                                {e.mins} min free
                               </div>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
+                                £{e.potential} potential
+                              </div>
+
                               <button
                                 type="button"
                                 onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
