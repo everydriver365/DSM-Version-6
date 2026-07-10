@@ -511,14 +511,17 @@ function GapsPage() {
           const iso = addDaysIso(today, i);
           const isWorkDay = workDays.includes(dayName);
           // Merge external calendar blocks as pseudo-lessons for gap detection.
-          const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => ({
-            start: b.startMins,
-            end: b.endMins,
-            title: `🗓 ${b.title}`,
-            color: "#7C3AED" as string | null,
-            bufBefore: 0,
-            bufAfter: 0,
-          }));
+          const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => {
+            const c = getBlockColour(b.title);
+            return {
+              start: b.startMins,
+              end: b.endMins,
+              title: `${c.icon} ${b.title}`,
+              color: c.border as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            };
+          });
           // Lunch break — block gap detection during it.
           const lunchInfo =
             isWorkDay && instr.lunch_break_start && instr.lunch_break_end
