@@ -628,6 +628,7 @@ function GapsPage() {
               title: l.title,
               color: pickBusyColor(l.color, i),
             })),
+            lunch: lunchInfo,
           });
         }
         if (!cancelled) {
