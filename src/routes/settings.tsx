@@ -22,11 +22,11 @@ import {
   ClipboardList,
   AlertTriangle,
   Globe,
+  LogOut,
+
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
 
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import {
@@ -537,100 +537,149 @@ function SettingsPage() {
 
 
       {/* Profile header */}
-      <div className="mx-4 mt-3">
-        <Card>
-          <div className="flex items-center gap-3">
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt="Profile"
-                className="rounded-full shrink-0"
-                style={{ width: 56, height: 56, objectFit: "cover" }}
-              />
-            ) : (
-              <div
-                className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-                style={{ width: 56, height: 56, backgroundColor: "#1877D6", color: "#FFFFFF", ...POPPINS }}
-              >
-                {initials(displayedName)}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="text-[18px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
-                {displayedName}
-              </div>
-              <div className="text-[13px] text-[#6B7280] truncate" style={POPPINS}>
-                {email || "—"}
-              </div>
+      <div className="mx-4 mt-3" style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 16,
+            padding: 16,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt="Profile"
+              style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: "50%",
+                background: "#185FA5",
+                color: "#FFFFFF",
+                fontSize: 20,
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                ...POPPINS,
+              }}
+            >
+              {initials(displayedName)}
             </div>
-            <Button variant="ghost" inline onClick={() => navigate({ to: "/profile" })}>
-              Edit profile
-            </Button>
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: "#12142B",
+                textTransform: "capitalize",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {displayedName}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#8A94A6",
+                marginTop: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {email || "—"}
+            </div>
           </div>
-        </Card>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/profile" })}
+            style={{
+              background: "#EEF2F7",
+              border: "none",
+              borderRadius: 10,
+              padding: "8px 14px",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#12142B",
+              cursor: "pointer",
+              flexShrink: 0,
+              ...POPPINS,
+            }}
+          >
+            Edit profile
+          </button>
+        </div>
       </div>
 
+
       <div className="px-4">
-        <SectionHeader>ACCOUNT</SectionHeader>
-        <Card className="!p-0">
+        <Label>ACCOUNT</Label>
+        <SectionCard>
           <MenuRow
-            icon={<User size={18} color="#1E40AF" />}
-            iconBg="#DBEAFE"
+            icon={<User color="#185FA5" />}
+            iconBg="#E6F1FB"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
           />
-
-
           <MenuRow
-            icon={<PoundSterling size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<PoundSterling color="#A32D2D" />}
+            iconBg="#FCEBEB"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
           />
-
           <MenuRow
-            icon={<Clock size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
+            icon={<Clock color="#3B6D11" />}
+            iconBg="#EAF3DE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
           />
-
-
-
           <MenuRow
-            icon={<Bell size={18} color="#0B1F3A" />}
-            iconBg="#EEF2F7"
+            icon={<Bell color="#B5661E" />}
+            iconBg="#FBEFE1"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
           />
-
           <MenuRow
-            icon={<Calendar size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
+            icon={<Calendar color="#6B4FD6" />}
+            iconBg="#F0EBFF"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
           />
-
           <MenuRow
-            icon={<Crown size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<Crown color="#185FA5" />}
+            iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>PAYMENTS</SectionHeader>
-        <Card className="!p-0">
+        <Label>PAYMENTS</Label>
+        <SectionCard>
           <MenuRow
-            icon={<PoundSterling size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<PoundSterling color="#A32D2D" />}
+            iconBg="#FCEBEB"
             label="Pass booking fee to pupil"
             expanded={expanded === "payments"}
             onClick={() => setExpanded(expanded === "payments" ? null : "payments")}
             isFirst
           />
+
           {expanded === "payments" && (
             <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
               <div className="flex items-start gap-3 pt-3">
@@ -677,13 +726,14 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>LESSON REMINDERS</SectionHeader>
-        <Card className="!p-0">
+        <Label>LESSON REMINDERS</Label>
+        <SectionCard>
           <MenuRow
-            icon={<Bell size={18} color="#0B1F3A" />}
-            iconBg="#EEF2F7"
+            icon={<Clock color="#B5661E" />}
+            iconBg="#FBEFE1"
+
             label="Lesson reminders"
             expanded={expanded === "lessons"}
             onClick={() => setExpanded(expanded === "lessons" ? null : "lessons")}
@@ -762,10 +812,10 @@ function SettingsPage() {
               )}
             </div>
           )}
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>RATES & SCHEDULING</SectionHeader>
-        <Card className="!p-0">
+        <Label>RATES & SCHEDULING</Label>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -993,10 +1043,10 @@ function SettingsPage() {
               </button>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>COVERAGE AREA</SectionHeader>
-        <Card className="!p-0">
+        <Label>COVERAGE AREA</Label>
+        <SectionCard>
           <MenuRow
             icon={<MapPin size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -1087,10 +1137,10 @@ function SettingsPage() {
               </button>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>PRICING RULES</SectionHeader>
-        <Card className="!p-0">
+        <Label>PRICING RULES</Label>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
@@ -1383,10 +1433,10 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>PUPILS</SectionHeader>
-        <Card className="!p-0">
+        <Label>PUPILS</Label>
+        <SectionCard>
           <MenuRow
             icon={<ClipboardList size={18} color="#1877D6" />}
             iconBg="#E0F2FE"
@@ -1400,10 +1450,10 @@ function SettingsPage() {
             label="No-show policy"
             onClick={() => navigate({ to: "/no-show-policy" })}
           />
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>MARKETING</SectionHeader>
-        <Card className="!p-0">
+        <Label>MARKETING</Label>
+        <SectionCard>
           <MenuRow
             icon={<Tag size={18} />}
             iconBg="#EEF2F7"
@@ -1417,14 +1467,14 @@ function SettingsPage() {
             label="Edit marketplace tiles"
             onClick={() => navigate({ to: "/marketplace/edit" })}
           />
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>
+        <Label>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <Globe size={14} color="#6B7280" /> EVERYDRIVER
           </span>
-        </SectionHeader>
-        <Card className="!p-0">
+        </Label>
+        <SectionCard>
           {/* Row 1: List on marketplace toggle */}
           <div
             className="px-4 py-3 flex items-start gap-3"
@@ -1571,10 +1621,10 @@ function SettingsPage() {
             </span>
             <ChevronRight size={18} color="#6B7280" />
           </button>
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>SUPPORT</SectionHeader>
-        <Card className="!p-0">
+        <Label>SUPPORT</Label>
+        <SectionCard>
           <MenuRow
             icon={<HelpCircle size={18} color="#52525B" />}
             iconBg="#F4F4F5"
@@ -1596,12 +1646,20 @@ function SettingsPage() {
             label="Admin"
             onClick={() => navigate({ to: "/admin" })}
           />
-        </Card>
+        </SectionCard>
 
-        <SectionHeader>DANGER ZONE</SectionHeader>
-        <Button variant="destructive" onClick={() => setSignOutOpen(true)}>
-          Sign out
-        </Button>
+        <SectionCard>
+          <MenuRow
+            icon={<LogOut color="#A32D2D" />}
+            iconBg="#FCEBEB"
+            label="Sign out"
+            labelColor="#A32D2D"
+            hideChevron
+            isFirst
+            onClick={() => setSignOutOpen(true)}
+          />
+        </SectionCard>
+
       </div>
 
       <ConfirmDialog
@@ -1623,6 +1681,8 @@ function MenuRow({
   onClick,
   expanded,
   isFirst,
+  labelColor,
+  hideChevron,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -1631,32 +1691,98 @@ function MenuRow({
   onClick: () => void;
   expanded?: boolean;
   isFirst?: boolean;
+  labelColor?: string;
+  hideChevron?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3 text-left"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+      className="w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px]"
+      style={{
+        gap: 12,
+        padding: "13px 16px",
+        ...(isFirst
+          ? undefined
+          : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }),
+      }}
     >
       <div
-        className="flex items-center justify-center rounded-full shrink-0"
-        style={{ width: 36, height: 36, backgroundColor: iconBg }}
+        className="flex items-center justify-center shrink-0"
+        style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: iconBg }}
       >
         {icon}
       </div>
-      <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>
+      <span
+        className="flex-1 truncate"
+        style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
+      >
+        {label}
+      </span>
       {value ? (
-        <span className="text-[13px] text-[#6B7280]" style={POPPINS}>{value}</span>
+        <span
+          style={{
+            background: "#E6F1FB",
+            color: "#185FA5",
+            fontSize: 10,
+            fontWeight: 600,
+            padding: "3px 9px",
+            borderRadius: 20,
+            marginRight: 4,
+            ...POPPINS,
+          }}
+        >
+          {value}
+        </span>
       ) : null}
-      {expanded ? (
-        <ChevronDown size={18} color="#6B7280" />
+      {hideChevron ? null : expanded ? (
+        <ChevronDown size={15} color="#B0BAC9" />
       ) : (
-        <ChevronRight size={18} color="#6B7280" />
+        <ChevronRight size={15} color="#B0BAC9" />
       )}
     </button>
   );
 }
+
+// Section label — plain caption, no left accent bar.
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="mb-2"
+      style={{
+        marginTop: 20,
+        paddingLeft: 4,
+        fontSize: 11,
+        fontWeight: 500,
+        color: "#B0BAC9",
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        ...POPPINS,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// White section card wrapping menu rows.
+function SectionCard({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 14,
+        overflow: "hidden",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        marginBottom: 20,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 
 function PlaceholderBlock({ text }: { text: string }) {
   return (
