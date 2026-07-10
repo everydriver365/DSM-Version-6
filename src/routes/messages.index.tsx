@@ -207,49 +207,56 @@ function MessagesIndexPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: 12,
-            padding: "9px 12px",
+            padding: "12px 16px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             display: "flex",
             alignItems: "center",
-            gap: 8,
+            gap: 10,
             marginBottom: 16,
           }}
         >
-          <Search size={15} color="#B0BAC9" />
+          <Search size={18} color="#8A93A3" />
           <input
             id="messages-search-input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search messages..."
+            placeholder="Search messages"
             style={{
-              fontSize: 13,
+              fontSize: 14,
               border: 0,
               background: "transparent",
               outline: "none",
               flex: 1,
               width: "100%",
               ...FONT,
-              color: "#12142B",
+              color: "#0F2044",
             }}
           />
         </div>
       </div>
 
       {/* Conversation list */}
-      <div
-        style={{
-          margin: "0 16px",
-          background: "#FFFFFF",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        }}
-      >
+      <div style={{ padding: "0 16px" }}>
         {loading ? (
-          <div style={{ padding: 24, textAlign: "center", color: "#B0BAC9", fontSize: 13 }}>Loading…</div>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 14,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              padding: 24,
+              textAlign: "center",
+              color: "#8A93A3",
+              fontSize: 13,
+            }}
+          >
+            Loading…
+          </div>
         ) : filtered.length === 0 ? (
           <div
             style={{
+              background: "#FFFFFF",
+              borderRadius: 14,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -259,13 +266,13 @@ function MessagesIndexPage() {
             }}
           >
             <MessageCircle size={40} color="#D0D5DD" />
-            <div style={{ fontSize: 14, color: "#B0BAC9" }}>No messages yet</div>
-            <div style={{ fontSize: 12, color: "#D0D5DD", textAlign: "center" }}>
+            <div style={{ fontSize: 14, color: "#8A93A3" }}>No messages yet</div>
+            <div style={{ fontSize: 12, color: "#B0BAC9", textAlign: "center" }}>
               Start a conversation from a pupil's profile
             </div>
           </div>
         ) : (
-          filtered.map((c, idx) => {
+          filtered.map((c) => {
             const unread = c.sender_type === "pupil" && !c.read_at;
             const name = c.pupil?.name || c.pupil?.first_name || "Pupil";
             const bg = avatarColor(c.pupil_id);
@@ -278,9 +285,11 @@ function MessagesIndexPage() {
                   alignItems: "center",
                   gap: 12,
                   padding: "14px 16px",
-                  borderBottom: idx < filtered.length - 1 ? "0.5px solid #EEF2F7" : "none",
                   cursor: "pointer",
                   background: "#FFFFFF",
+                  borderRadius: 14,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  marginBottom: 10,
                 }}
               >
                 <div style={{ position: "relative", flexShrink: 0 }}>
@@ -301,8 +310,8 @@ function MessagesIndexPage() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: 15,
-                        fontWeight: 600,
+                        fontSize: 16,
+                        fontWeight: 500,
                       }}
                     >
                       {initials(c.pupil)}
@@ -322,8 +331,8 @@ function MessagesIndexPage() {
                     <div
                       style={{
                         fontSize: 15,
-                        fontWeight: unread ? 600 : 500,
-                        color: "#12142B",
+                        fontWeight: 500,
+                        color: "#0F2044",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -333,14 +342,28 @@ function MessagesIndexPage() {
                     >
                       {name}
                     </div>
-                    <span style={{ fontSize: 11, color: "#B0BAC9", flexShrink: 0 }}>
-                      {timeAgo(c.created_at)}
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      <span style={{ fontSize: 12, color: "#8A93A3" }}>
+                        {timeAgo(c.created_at)}
+                      </span>
+                      {unread && (
+                        <span
+                          aria-label="unread"
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "#185FA5",
+                          }}
+                        />
+                      )}
+                    </div>
                   </div>
                   <div
                     style={{
                       fontSize: 13,
-                      color: unread ? "#8A94A6" : "#B0BAC9",
+                      color: unread ? "#0F2044" : "#5A6270",
+                      fontWeight: unread ? 500 : 400,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -350,23 +373,12 @@ function MessagesIndexPage() {
                     {c.body}
                   </div>
                 </div>
-                {unread && (
-                  <span
-                    aria-label="unread"
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "#185FA5",
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
               </div>
             );
           })
         )}
       </div>
+
 
       <BottomNav active="messages" />
     </div>
