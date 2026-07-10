@@ -72,7 +72,7 @@ function NotesListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"

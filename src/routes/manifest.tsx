@@ -155,7 +155,7 @@ function ManifestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-12" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#0B1F3A" }}

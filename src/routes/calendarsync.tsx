@@ -76,7 +76,7 @@ function CalendarSyncPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"

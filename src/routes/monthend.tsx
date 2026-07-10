@@ -266,7 +266,7 @@ function MonthEndPage() {
   const monthLabelUpper = monthLabel.toUpperCase();
 
   return (
-    <div className="min-h-screen bg-white pb-12" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"

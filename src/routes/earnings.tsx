@@ -95,7 +95,7 @@ function EarningsPage() {
   }, [payments]);
 
   return (
-    <div className="min-h-screen bg-white pb-8 pb-safe" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-8 pb-safe" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-2"

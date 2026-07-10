@@ -367,7 +367,7 @@ function PupilPaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center px-2"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}

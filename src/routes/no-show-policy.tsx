@@ -125,7 +125,7 @@ function NoShowPolicyPage() {
         }`.trim();
 
   return (
-    <div className="min-h-screen bg-white pb-24 pb-safe" style={FONT}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-24 pb-safe" style={FONT}>
       <div
         className="sticky top-0 z-40 flex items-center gap-3 px-4"
         style={{ height: 52, backgroundColor: "#0F2044" }}

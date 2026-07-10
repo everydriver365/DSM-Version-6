@@ -165,7 +165,7 @@ function DiscountCodesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-16" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-16" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"

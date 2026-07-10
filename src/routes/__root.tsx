@@ -203,7 +203,7 @@ function RootComponent() {
 
   const wrapperStyle: Record<string, string | number> = {};
   if (!hideNav) wrapperStyle.paddingBottom = 80;
-  if (!useWhiteBg) wrapperStyle.backgroundColor = "#F3F8FF";
+  if (!useWhiteBg) wrapperStyle.backgroundColor = "#EEF2F7";
 
   // Track recent screens for the search screen's "Recent" list.
   useEffect(() => {

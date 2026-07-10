@@ -257,7 +257,7 @@ function BroadcastPage() {
   const canSend = selCount > 0 && message.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-white pb-32" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-32" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-4"

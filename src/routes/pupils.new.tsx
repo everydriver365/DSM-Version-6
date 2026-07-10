@@ -205,7 +205,7 @@ function NewPupilPage() {
 
   return (
     <div
-      className="min-h-screen bg-white"
+      className="min-h-screen bg-[#EEF2F7]"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div className="px-4 pt-6">

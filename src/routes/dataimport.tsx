@@ -144,7 +144,7 @@ function DataImportPage() {
   const preview = rows.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-white pb-8" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
