@@ -106,9 +106,19 @@ function DsmLivePage() {
 
   const filtered = useMemo(() => {
     if (!sessions) return [];
-    if (category === "All") return sessions;
-    return sessions.filter((s) => s.category === category);
-  }, [sessions, category]);
+    let list = sessions;
+    if (category !== "All") list = list.filter((s) => s.category === category);
+    if (view === "upcoming") {
+      const now = Date.now();
+      list = list.filter((s) => {
+        const dt = new Date(`${s.session_date}T${s.session_time || "00:00"}:00`).getTime();
+        return Number.isFinite(dt) ? dt >= now : true;
+      });
+    }
+    return list;
+  }, [sessions, category, view]);
+
+
 
   const sora = "'Sora', system-ui, -apple-system, sans-serif";
   const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
