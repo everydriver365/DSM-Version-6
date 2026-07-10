@@ -224,6 +224,13 @@ function SchedulePage() {
 
   const todayKey = ymdLocal(today);
 
+  // Fix 4: ensure today always appears in the agenda, even with no lessons.
+  const orderedDayKeysWithToday = useMemo(() => {
+    if (orderedDayKeys.includes(todayKey)) return orderedDayKeys;
+    const merged = [...orderedDayKeys, todayKey].sort();
+    return merged;
+  }, [orderedDayKeys, todayKey]);
+
   // Insert "Week of ..." labels above the first day of each new week.
   type Row =
     | { type: "week"; key: string; label: string }
@@ -231,7 +238,7 @@ function SchedulePage() {
   const rows: Row[] = useMemo(() => {
     const out: Row[] = [];
     let lastWeekKey = "";
-    for (const key of orderedDayKeys) {
+    for (const key of orderedDayKeysWithToday) {
       const [y, m, d] = key.split("-").map(Number);
       const date = new Date(y, m - 1, d);
       const wk = ymdLocal(mondayOf(date));
@@ -239,30 +246,35 @@ function SchedulePage() {
         out.push({ type: "week", key: `w-${wk}`, label: weekRangeLabel(date) });
         lastWeekKey = wk;
       }
-      out.push({ type: "day", key, date, entries: entriesByDay.get(key)! });
+      out.push({ type: "day", key, date, entries: entriesByDay.get(key) ?? [] });
     }
     return out;
-  }, [orderedDayKeys, entriesByDay]);
+  }, [orderedDayKeysWithToday, entriesByDay]);
 
-  // Auto-scroll to today on first paint after data loads.
+  // Fix 1: auto-scroll to today on first paint after data loads.
+  // Suppress the scroll observer during the programmatic scroll so it doesn't
+  // rewrite calendarMonth to a past month during the initial jump.
   useLayoutEffect(() => {
     if (didScrollToToday.current) return;
     if (lessons === null) return;
     const el = todayRef.current;
     const scroller = scrollRef.current;
     if (!scroller) return;
+    suppressScrollUpdate.current = true;
     if (el) {
-      // Scroll such that today sits near the top of the scroll container.
       const top = el.offsetTop - scroller.offsetTop - 8;
       scroller.scrollTop = top;
     } else {
-      // No entries on today — find the nearest future day with entries.
-      const nextKey = orderedDayKeys.find((k) => k >= todayKey);
+      const nextKey = orderedDayKeysWithToday.find((k) => k >= todayKey);
       const target = nextKey ? dayRefs.current.get(nextKey) : undefined;
       if (target) scroller.scrollTop = target.offsetTop - scroller.offsetTop - 8;
     }
     didScrollToToday.current = true;
-  }, [lessons, orderedDayKeys, todayKey]);
+    window.setTimeout(() => {
+      suppressScrollUpdate.current = false;
+    }, 250);
+  }, [lessons, orderedDayKeysWithToday, todayKey]);
+
 
   // As the agenda scrolls, update the calendar month + selected-date
   // highlight to follow the top-most visible day.
@@ -529,47 +541,85 @@ function SchedulePage() {
                   marginBottom: 8,
                 }}
               >
-                {row.entries.map((e, i) => (
-                  <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                    <div
-                      style={{
-                        width: 36,
-                        flexShrink: 0,
-                        textAlign: "right",
-                        paddingTop: 8,
-                      }}
-                    >
-                      {i === 0 ? (
-                        <>
-                          <div
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 500,
-                              color: "#B0BAC9",
-                              letterSpacing: "0.04em",
-                            }}
-                          >
-                            {weekday}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: 14,
-                              fontWeight: isToday ? 600 : 500,
-                              color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
-                              fontVariantNumeric: "tabular-nums",
-                            }}
-                          >
-                            {dayNum}
-                          </div>
-                        </>
-                      ) : null}
+                {row.entries.length === 0 && isToday ? (
+                  // Fix 4: today with no lessons — dashed placeholder row.
+                  <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                    <div style={{ width: 36, flexShrink: 0, textAlign: "right", paddingTop: 8 }}>
+                      <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", letterSpacing: "0.04em" }}>
+                        {weekday}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#185FA5",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        {dayNum}
+                      </div>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <EntryRow entry={e} onLessonTap={goToLesson} />
+                      <div
+                        style={{
+                          background: "#EEF2F7",
+                          border: "1.5px dashed #D0D5DD",
+                          borderRadius: 10,
+                          padding: "6px 12px",
+                          textAlign: "center",
+                          fontSize: 12,
+                          color: "#B0BAC9",
+                          ...POPPINS,
+                        }}
+                      >
+                        Today — no lessons
+                      </div>
                     </div>
                   </div>
-                ))}
+                ) : (
+                  row.entries.map((e, i) => (
+                    <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                      <div
+                        style={{
+                          width: 36,
+                          flexShrink: 0,
+                          textAlign: "right",
+                          paddingTop: 8,
+                        }}
+                      >
+                        {i === 0 ? (
+                          <>
+                            <div
+                              style={{
+                                fontSize: 10,
+                                fontWeight: 500,
+                                color: "#B0BAC9",
+                                letterSpacing: "0.04em",
+                              }}
+                            >
+                              {weekday}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 14,
+                                fontWeight: isToday ? 600 : 500,
+                                color: isToday ? "#185FA5" : isPast ? "#8A94A6" : "#12142B",
+                                fontVariantNumeric: "tabular-nums",
+                              }}
+                            >
+                              {dayNum}
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <EntryRow entry={e} onLessonTap={goToLesson} />
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
+
             );
           })
         )}
@@ -649,9 +699,13 @@ function EntryRow({
   if (entry.kind === "lesson") {
     const l = entry.lesson;
     const name = pupilDisplayName(l.pupil);
-    const label = l.lesson_type ? `${name} · ${l.lesson_type}` : name;
+    // Fix 3: hide the default "standard" lesson type suffix.
+    const typeRaw = (l.lesson_type ?? "").trim();
+    const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
+    const label = showType ? `${name} · ${typeRaw}` : name;
     const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
     const cancelled = l.status === "cancelled";
+
     return (
       <button
         type="button"
@@ -935,31 +989,31 @@ function MonthCalendar({
                 }}
               >
                 {d.getDate()}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 2,
-                    left: 0,
-                    right: 0,
-                    display: "flex",
-                    gap: 2,
-                    justifyContent: "center",
-                  }}
-                >
-                  {dots.map((c, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        width: 3,
-                        height: 3,
-                        borderRadius: "50%",
-                        background: isToday ? "rgba(255,255,255,0.6)" : c,
-                        display: "inline-block",
-                      }}
-                    />
-                  ))}
-                </div>
               </div>
+              {/* Fix 2: pupil dots below the date number — 4px, full-strength colour. */}
+              <div
+                style={{
+                  marginTop: 2,
+                  display: "flex",
+                  gap: 2,
+                  justifyContent: "center",
+                  minHeight: 4,
+                }}
+              >
+                {dots.map((c, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: c,
+                      display: "inline-block",
+                    }}
+                  />
+                ))}
+              </div>
+
 
 
             </button>
