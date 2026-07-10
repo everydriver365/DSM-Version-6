@@ -3520,6 +3520,7 @@ function HomePage() {
             <TodayLessonsTile
               todayLessons={todayLessons}
               onNavigate={() => navigate({ to: "/schedule" })}
+              onAddLesson={() => navigate({ to: "/lessons/new" })}
             />
           </div>
 
