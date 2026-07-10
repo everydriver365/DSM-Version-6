@@ -78,6 +78,11 @@ import {
   Activity,
   CheckCircle2,
   Sparkles,
+  Briefcase,
+  Wrench,
+  ShieldCheck,
+  Laptop,
+  Package,
 } from "lucide-react";
 import {
   IconCurrencyPound,
