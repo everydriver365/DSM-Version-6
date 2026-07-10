@@ -646,39 +646,6 @@ function SwipeableStatsCard({
         if (draggingMouse.current) commit();
       }}
     >
-      {onAddLesson && s.key === "today" && (
-        <button
-          type="button"
-          aria-label="Add lesson"
-          onMouseDown={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            onAddLesson();
-          }}
-          style={{
-            position: "absolute",
-            bottom: 12,
-            left: 12,
-            zIndex: 2,
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: "#185FA5",
-            color: "#FFFFFF",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <Plus size={16} strokeWidth={2.5} />
-        </button>
-      )}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <div
           style={{
