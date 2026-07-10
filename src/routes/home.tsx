@@ -4877,7 +4877,59 @@ function HomePage() {
                     </div>
                   </div>
 
-                  {lessonRows.map((row, idx) => {
+                  {rows.map((r, idx) => {
+                    if (r.kind === 'gap') {
+                      const gs = r.start;
+                      const ge = new Date(gs.getTime() + r.mins * 60000);
+                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                      const hourlyRate = 40;
+                      const potential = Math.round((r.mins / 60) * hourlyRate);
+                      return (
+                        <div
+                          key={`gap-${idx}`}
+                          onClick={() => navigate({ to: '/gaps' as never })}
+                          role="button"
+                          tabIndex={0}
+                          style={{
+                            background: '#FFFBEB',
+                            borderLeft: '3px solid #D97706',
+                            borderRadius: 10,
+                            padding: '10px 14px',
+                            margin: '0 0 10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <IconBolt size={14} stroke={2} color="#D97706" />
+                          <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
+                            {fmtT(gs)} – {fmtT(ge)}
+                          </div>
+                          <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
+                            {r.mins} min free · £{potential} potential
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                            style={{
+                              background: '#D97706',
+                              color: '#FFFFFF',
+                              fontSize: 12,
+                              fontWeight: 700,
+                              padding: '6px 12px',
+                              borderRadius: 8,
+                              border: 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Fill →
+                          </button>
+                        </div>
+                      );
+                    }
+                    const row = { kind: 'lesson' as const, l: r.l };
+
                     const l = row.l;
                     const start = lessonDateTime(l);
                     const dur = l.duration_minutes ?? 60;
