@@ -578,7 +578,7 @@ function PaymentsPage() {
                               ...POPPINS,
                             }}
                           >
-                            {row.pupils?.name ?? "Unknown pupil"}
+                            {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
                           <div style={{ fontSize: 12, color: "#B0BAC9", marginTop: 1, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
