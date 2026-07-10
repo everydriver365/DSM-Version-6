@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, AlertTriangle, ChevronDown, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Info, Copy, Check, Calendar, AlertTriangle, ChevronDown, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
