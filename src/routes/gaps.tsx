@@ -12,6 +12,7 @@ import {
   ChevronUp,
   AlertTriangle,
   Coffee,
+  Car,
 } from "lucide-react";
 import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -55,6 +56,9 @@ interface FreeSlot {
   gapMinutes: number;
   possibleDurations: number[];
   bufferMinutes?: number;
+  gapReason?: string;
+  toPostcode?: string | null;
+  fromPostcode?: string | null;
 }
 
 interface DayGroup {
@@ -602,17 +606,6 @@ function GapsPage() {
         }
         void busyIdx;
 
-        // If travel time is enabled, augment each lesson's bufAfter with the
-        // estimated travel time to the NEXT lesson on the same day.
-        if (useTravel) {
-          for (const [, list] of byDay) {
-            list.sort((a, b) => a.start - b.start);
-            for (let i = 0; i < list.length - 1; i++) {
-              const travelMins = estimateTravelMins(list[i].postcode, list[i + 1].postcode, travelSpeed, travelExtra);
-              list[i].bufAfter = Math.max(list[i].bufAfter, travelMins);
-            }
-          }
-        }
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
@@ -690,7 +683,15 @@ function GapsPage() {
                 bufAfter: 0,
               }]
             : [];
-          const dayLessons = [
+          const dayLessons: {
+            start: number;
+            end: number;
+            title: string;
+            color: string | null;
+            bufBefore: number;
+            bufAfter: number;
+            postcode?: string | null;
+          }[] = [
             ...(byDay.get(iso) ?? []),
             ...dayBlocks,
             ...dayRecurring,
@@ -719,19 +720,52 @@ function GapsPage() {
             });
             continue;
           }
-          // Build gap boundaries. Reserve buffer for BOTH sides:
-          //   • the existing adjacent lesson's own buffer (pupil override or instructor default), and
-          //   • the NEW lesson we'd slot in, which needs the instructor default buffer around itself.
-          // start/end are the USABLE window (buffer-adjusted); bufferTotal is the total minutes
-          // reserved on both sides so the display can show "usable (raw − buffer)".
-          const gaps: { start: number; end: number; bufferTotal: number }[] = [];
-          let rawCursor = wsMin;               // real end of the previous block (lesson end or workday start)
-          let prevBufAfter = 0;                 // existing lesson's after-buffer (0 at workday start)
-          let hasPrevLesson = false;            // false only for the very first gap of the day
+          // Build gap boundaries. For each consecutive pair A → B, the required
+          // minimum time between A.end and B.start is whichever is larger:
+          //   • the combined A.after + B.before buffers, or
+          //   • the estimated travel time between A and B.
+          // Travel time is never added on top of buffers.
+          const gaps: {
+            start: number;
+            end: number;
+            bufferTotal: number;
+            gapReason?: string;
+            fromPostcode?: string | null;
+            toPostcode?: string | null;
+          }[] = [];
+          let rawCursor = wsMin; // real end of the previous block (lesson end or workday start)
+          let previousLesson: (typeof dayLessons)[0] | null = null;
+          let hasPrevLesson = false; // false only for the very first gap of the day
           for (const l of dayLessons) {
             const rawEnd = l.start;
-            const leftReserve = hasPrevLesson ? prevBufAfter + instrBufBefore : 0;
-            const rightReserve = l.bufBefore + instrBufAfter;
+            const current = l;
+            let leftReserve = 0;
+            let rightReserve = current.bufBefore;
+            let gapReason = "";
+            if (hasPrevLesson && previousLesson) {
+              const bufferAfterA = previousLesson.bufAfter;
+              const bufferBeforeB = current.bufBefore;
+              const combinedBuffers = bufferAfterA + bufferBeforeB;
+              let travelMins = 0;
+              let extra = 0;
+              if (useTravel) {
+                travelMins = estimateTravelMins(
+                  previousLesson.postcode ?? null,
+                  current.postcode ?? null,
+                  travelSpeed,
+                  travelExtra,
+                );
+              }
+              if (useTravel && travelMins > combinedBuffers) {
+                extra = travelMins - combinedBuffers;
+                gapReason = `~${travelMins} min drive`;
+              } else {
+                gapReason =
+                  combinedBuffers > 0 ? `${combinedBuffers} min buffer` : "";
+              }
+              leftReserve = bufferAfterA + extra;
+              rightReserve = bufferBeforeB;
+            }
             const effStart = rawCursor + leftReserve;
             const effEnd = rawEnd - rightReserve;
             if (effEnd - effStart >= 60) {
@@ -739,17 +773,26 @@ function GapsPage() {
                 start: effStart,
                 end: effEnd,
                 bufferTotal: leftReserve + rightReserve,
+                gapReason,
+                fromPostcode: previousLesson?.postcode,
+                toPostcode: current.postcode,
               });
             }
             rawCursor = Math.max(rawCursor, l.end);
-            prevBufAfter = l.bufAfter;
+            previousLesson = l;
             hasPrevLesson = true;
           }
-          // Tail gap to end of workday (no next lesson → no right-side reserve)
-          const leftReserve = hasPrevLesson ? prevBufAfter + instrBufBefore : 0;
-          const tailStart = rawCursor + leftReserve;
+          // Tail gap to end of workday (no next lesson → only reserve A's after buffer)
+          const tailLeftReserve = hasPrevLesson ? previousLesson!.bufAfter : 0;
+          const tailStart = rawCursor + tailLeftReserve;
           if (weMin - tailStart >= 60) {
-            gaps.push({ start: tailStart, end: weMin, bufferTotal: leftReserve });
+            gaps.push({
+              start: tailStart,
+              end: weMin,
+              bufferTotal: tailLeftReserve,
+              gapReason:
+                tailLeftReserve > 0 ? `${tailLeftReserve} min buffer` : "",
+            });
           }
           const daySlots: FreeSlot[] = [];
           let dayFree = 0;
@@ -772,6 +815,9 @@ function GapsPage() {
               gapMinutes,
               possibleDurations: possible,
               bufferMinutes: g.bufferTotal,
+              gapReason: g.gapReason,
+              fromPostcode: g.fromPostcode,
+              toPostcode: g.toPostcode,
             };
             slots.push(slot);
             daySlots.push(slot);
@@ -1580,6 +1626,47 @@ function GapsPage() {
                           style={{ flexShrink: 0 }}
                         />
                       </button>
+
+                      {slot.gapReason && (
+                        <div
+                          style={{
+                            background: "#F0F4FF",
+                            borderLeft: "3px solid #1A52A0",
+                            borderRadius: 8,
+                            padding: "8px 12px",
+                            margin: "2px 16px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          {slot.gapReason.includes("drive") ? (
+                            <Car size={13} color="#1A52A0" />
+                          ) : (
+                            <Clock size={13} color="#1A52A0" />
+                          )}
+                          <span
+                            style={{
+                              fontSize: 12,
+                              color: "#1A52A0",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {slot.gapReason}
+                          </span>
+                          {slot.fromPostcode && slot.toPostcode && (
+                            <span
+                              style={{
+                                fontSize: 12,
+                                color: "#9CA3AF",
+                                marginLeft: "auto",
+                              }}
+                            >
+                              {slot.fromPostcode} → {slot.toPostcode}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
                       {anySelected && slot.possibleDurations.length > 1 && (
                         <div
