@@ -280,6 +280,53 @@ function RootComponent() {
     };
   }, [userId]);
 
+  // Silent background sync of external calendar on app load.
+  useEffect(() => {
+    if (!userId) return;
+
+    const syncCalendar = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) return;
+
+        const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+        // Check if instructor has an external calendar URL before syncing
+        const instRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}&select=external_calendar_url`,
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+        );
+        const instData = await instRes.json();
+        if (!instData?.[0]?.external_calendar_url) return; // No URL set — skip
+
+        // Silent background sync
+        await fetch(`${SUPABASE_URL}/functions/v1/sync-external-calendar`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ instructorId: userId }),
+        });
+
+        console.log('[calendar] External calendar synced on app open');
+      } catch (err) {
+        // Silent fail — never block app load
+        console.warn('[calendar] External calendar sync failed:', err);
+      }
+    };
+
+    // Delay by 3 seconds so it doesn't compete with critical app startup
+    const timer = setTimeout(syncCalendar, 3000);
+    return () => clearTimeout(timer);
+  }, [userId]);
+
+
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
