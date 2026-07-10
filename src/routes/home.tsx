@@ -116,6 +116,7 @@ import {
   IconMicrophone,
   IconBriefcase,
   IconCircleCheck,
+  IconArrowRight,
 } from "@tabler/icons-react";
 
 
@@ -4806,13 +4807,20 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>
+              <div style={{ fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
               </div>
-              <button type="button" onClick={() => setActiveWs(1)} style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: ACCENT, cursor: 'pointer' }}>Full schedule →</button>
+              <button
+                type="button"
+                onClick={() => setActiveWs(1)}
+                style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              >
+                Full schedule
+                <IconArrowRight size={13} stroke={2} />
+              </button>
             </div>
 
-            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', gap: 6, padding: 3, background: '#EEF3FA', borderRadius: 12, marginBottom: 10 }}>
+            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 4, background: '#E9EDF2', borderRadius: 12, marginBottom: 10 }}>
               {(['today', 'tomorrow', 'next'] as const).map((t) => {
                 const active = tab === t;
                 const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
@@ -4825,17 +4833,18 @@ function HomePage() {
                     onClick={() => setTab(t)}
                     style={{
                       flex: 1,
-                      height: 34,
+                      padding: '9px 0',
                       borderRadius: 9,
                       border: 'none',
                       background: active ? '#FFFFFF' : 'transparent',
-                      color: active ? NAVY : MUTED,
+                      color: active ? '#0F2044' : '#8A93A3',
                       fontFamily: PF,
-                      fontSize: 13,
-                      fontWeight: active ? 600 : 500,
+                      fontSize: 14,
+                      fontWeight: active ? 500 : 400,
                       cursor: 'pointer',
-                      boxShadow: active ? '0 1px 2px rgba(15,32,68,0.08)' : 'none',
+                      boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
                       transition: 'background 120ms ease',
+                      textAlign: 'center',
                     }}
                   >
                     {label}
@@ -4843,6 +4852,7 @@ function HomePage() {
                 );
               })}
             </div>
+
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
@@ -4871,11 +4881,12 @@ function HomePage() {
                 <div style={{ fontFamily: PF }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
+                    <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
                     </div>
                   </div>
+
 
                   {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
@@ -4891,42 +4902,50 @@ function HomePage() {
                           role="button"
                           tabIndex={0}
                           style={{
-                            background: '#FFFBEB',
-                            borderLeft: '3px solid #D97706',
-                            borderRadius: 10,
-                            padding: '10px 14px',
+                            background: '#E6F1FB',
+                            borderLeft: '3px solid #185FA5',
+                            borderRadius: 14,
+                            padding: '14px 16px',
                             margin: '0 0 10px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 10,
+                            gap: 12,
                             cursor: 'pointer',
                           }}
                         >
-                          <IconBolt size={14} stroke={2} color="#D97706" />
-                          <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
-                            {fmtT(gs)} – {fmtT(ge)}
-                          </div>
-                          <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                            {r.mins} min free · £{potential} potential
+                          <IconBolt size={18} stroke={2} color="#185FA5" />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                              {fmtT(gs)} – {fmtT(ge)}
+                            </div>
+                            <div style={{ fontSize: 12, color: '#4A7BA6', marginTop: 2 }}>
+                              {r.mins} min free · £{potential} potential
+                            </div>
                           </div>
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                             style={{
-                              background: '#D97706',
+                              background: '#185FA5',
                               color: '#FFFFFF',
-                              fontSize: 12,
-                              fontWeight: 700,
-                              padding: '6px 12px',
-                              borderRadius: 8,
+                              fontSize: 13,
+                              fontWeight: 500,
+                              padding: '9px 16px',
+                              borderRadius: 10,
                               border: 'none',
                               cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              fontFamily: PF,
                             }}
                           >
-                            Fill →
+                            Fill
+                            <IconArrowRight size={13} stroke={2} />
                           </button>
                         </div>
                       );
+
                     }
                     const row = { kind: 'lesson' as const, l: r.l };
 
@@ -4947,25 +4966,25 @@ function HomePage() {
                     let pill: React.ReactNode = null;
                     if (isLive) {
                       pill = (
-                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#DBEAFE', color: ACCENT, fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Live
                         </span>
                       );
                     } else if (isPrepaidPupil) {
                       pill = (
-                        <span style={{ background: '#EEF4FB', color: '#1877D6', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Prepaid
                         </span>
                       );
                     } else if (isPaid) {
                       pill = (
-                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E7F7EC', color: '#137333', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           Paid ✓
                         </span>
                       );
                     } else if (dueUnpaid) {
                       pill = (
-                        <span style={{ background: '#FDECC8', color: '#8A5A00', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 999 }}>
+                        <span style={{ background: '#E6F1FB', color: '#185FA5', fontSize: 13, fontWeight: 500, padding: '6px 12px', borderRadius: 999 }}>
                           £{amt.toFixed(0)}
                         </span>
                       );
@@ -4980,14 +4999,15 @@ function HomePage() {
                         style={{
                           minHeight: 64,
                           margin: '0 0 10px',
-                          padding: '12px 16px',
+                          padding: '14px 16px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 12,
                           cursor: 'pointer',
                           background: '#FFFFFF',
-                          border: `0.5px solid ${BORDER}`,
-                          borderRadius: 16,
+                          border: 'none',
+                          borderRadius: 14,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                           boxSizing: 'border-box',
                         }}
                       >
@@ -4996,9 +5016,9 @@ function HomePage() {
                           style={{
                             position: 'relative',
                             width: 40, height: 40, borderRadius: 999,
-                            background: NAVY, color: '#FFFFFF',
+                            background: '#0F2044', color: '#FFFFFF',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 13, fontWeight: 700, letterSpacing: 0.2,
+                            fontSize: 13, fontWeight: 500, letterSpacing: 0.2,
                             flexShrink: 0,
                             overflow: 'hidden',
                           }}
@@ -5032,170 +5052,29 @@ function HomePage() {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {tab === 'next' && (
-                            <div style={{ fontSize: 11, fontWeight: 600, color: ACCENT, marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                            <div style={{ fontSize: 11, fontWeight: 500, color: '#185FA5', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
                               {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                             </div>
                           )}
-                          <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: 15, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {name}
                           </div>
-                          <div style={{ fontSize: 12, color: MUTED, marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                          <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                             {timeLabel} · {dur} mins
                           </div>
                         </div>
                         {pill}
-                        <IconChevronRight size={18} stroke={1.75} color={MUTED} style={{ flexShrink: 0 }} />
+                        <IconChevronRight size={16} stroke={1.75} color="#C7CCD4" style={{ flexShrink: 0 }} />
                       </div>
                     );
+
                   })}
                 </div>
               );
             })()}
 
-            {/* 4. GAP WITH MATCHED PUPILS */}
-            {(() => {
-              const firstGap = rows.find((r): r is { kind: 'gap'; start: Date; mins: number } => r.kind === 'gap');
-              let gapStart: Date | null = null;
-              let gapMins = 0;
-              if (firstGap) {
-                gapStart = firstGap.start;
-                gapMins = firstGap.mins;
-              } else if (sorted.length === 0 && tab !== 'next') {
-                // Whole working day is free — use working-hours window, fallback 9am–6pm.
-                const startStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
-                const endStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
-                const [sh, sm] = startStr.split(':').map(Number);
-                const [eh, em] = endStr.split(':').map(Number);
-                const base = tab === 'today' ? new Date() : (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })();
-                base.setHours(sh || 9, sm || 0, 0, 0);
-                gapStart = base;
-                gapMins = ((eh || 18) * 60 + (em || 0)) - ((sh || 9) * 60 + (sm || 0));
-                if (gapMins < 60) return null;
-              } else {
-                return null;
-              }
-              const gapH = gapStart.getHours();
-              const gapM = gapStart.getMinutes();
-              const period = gapH >= 12 ? 'PM' : 'AM';
-              const h12 = gapH % 12 === 0 ? 12 : gapH % 12;
-              const gapTimeLabel = `${h12}:${String(gapM).padStart(2, '0')} ${period}`;
-              const formatGap = (m: number) => {
-                if (m < 60) return `${m} mins free`;
-                const h = Math.floor(m / 60);
-                const rem = m % 60;
-                return rem === 0 ? `${h} hr${h === 1 ? '' : 's'} free` : `${h}h ${rem}m free`;
-              };
-              const titleText = `${formatGap(gapMins)} · ${gapTimeLabel}`;
-              
-              // Match pupils whose availability fits this gap
-              const DAYS_ABBR = ['sun','mon','tue','wed','thu','fri','sat'];
-              const dayKey = DAYS_ABBR[gapStart.getDay()];
-              const gapStartMins = gapStart.getHours() * 60 + gapStart.getMinutes();
-              const gapEndMins = gapStartMins + gapMins;
-              const hoursUntilGap = (gapStart.getTime() - Date.now()) / 3600000;
-              const parseHM = (t: string | null | undefined, fallback: number) => {
-                if (!t) return fallback;
-                const [h, m] = t.split(':').map(Number);
-                return (h || 0) * 60 + (m || 0);
-              };
-              type Matched = { id: string; first: string; avatar: string | null; colour: string | null; daysSince: number };
-              const matches: Matched[] = [];
-              Object.entries(pupilAvailMap).forEach(([pid, a]) => {
-                const info = pupilInfoMap[pid];
-                if (!info) return;
-                const days = (a.available_days || []).map((d) => String(d).toLowerCase().slice(0, 3));
-                if (days.length && !days.includes(dayKey)) return;
-                const fromMins = parseHM(a.available_from, 0);
-                const untilMins = parseHM(a.available_until, 24 * 60);
-                // Gap must overlap the pupil's available window and be long enough
-                if (gapEndMins <= fromMins || gapStartMins >= untilMins) return;
-                const minNotice = a.min_notice_hours ?? 24;
-                if (hoursUntilGap < minNotice && !a.short_notice_opt_in) return;
-                const first = (info.first_name || info.name || 'Pupil').split(/\s+/)[0];
-                const last = info.last_lesson_date;
-                const daysSince = last
-                  ? Math.floor((gapStart.getTime() - new Date(last + 'T00:00:00').getTime()) / 86400000)
-                  : 999;
-                matches.push({ id: pid, first, avatar: info.profile_image_url, colour: info.calendar_colour, daysSince });
-              });
-              matches.sort((a, b) => b.daysSince - a.daysSince);
-              const matchedCount = matches.length;
-              const AVATAR_PALETTE = ['#1A52A0', '#00B5A5', '#7C3AED', '#DC2626', '#F59E0B', '#0EA5E9'];
-              const shown = matches.slice(0, 4);
-              const extra = Math.max(0, matchedCount - shown.length);
-              return (
-                <div
-                  onClick={() => navigate({ to: '/gaps' })}
-                  role="button"
-                  tabIndex={0}
-                  style={{
-                    ...cardBase,
-                    marginTop: 14,
-                    padding: '14px 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    cursor: 'pointer',
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ width: 36, height: 36, borderRadius: 11, background: '#FBEFE1', color: '#B5661E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <IconBolt size={18} stroke={1.5} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.3 }}>
-                      {titleText}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 5 }}>
-                      {shown.length > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          {shown.map((m, i) => {
-                            const bg = m.colour || AVATAR_PALETTE[i % AVATAR_PALETTE.length];
-                            const initial = (m.first[0] || '?').toUpperCase();
-                            return (
-                              <div
-                                key={m.id}
-                                title={m.first}
-                                style={{
-                                  width: 22, height: 22, borderRadius: 999,
-                                  background: bg, color: '#FFFFFF',
-                                  fontSize: 10, fontWeight: 700,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  border: '1.5px solid #FFFFFF',
-                                  marginLeft: i === 0 ? 0 : -6,
-                                  overflow: 'hidden',
-                                  backgroundImage: m.avatar ? `url(${m.avatar})` : undefined,
-                                  backgroundSize: 'cover',
-                                  backgroundPosition: 'center',
-                                  flexShrink: 0,
-                                }}
-                              >
-                                {m.avatar ? '' : initial}
-                              </div>
-                            );
-                          })}
-                          {extra > 0 && (
-                            <div style={{
-                              width: 22, height: 22, borderRadius: 999,
-                              background: '#E5E7EB', color: '#374151',
-                              fontSize: 10, fontWeight: 600,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              border: '1.5px solid #FFFFFF',
-                              marginLeft: -6,
-                              flexShrink: 0,
-                            }}>+{extra}</div>
-                          )}
-                        </div>
-                      )}
-                      <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.3 }}>
-                        {matchedCount > 0 ? `${matchedCount} pupil${matchedCount === 1 ? '' : 's'} may fit` : 'No waitlist match'}
-                      </div>
-                    </div>
-                  </div>
-                  <IconChevronRight size={18} stroke={1.5} color={MUTED} style={{ flexShrink: 0 }} />
-                </div>
-              );
-            })()}
+
+
 
             {/* 5. QUICK ACTIONS */}
             <div style={{ marginTop: 22 }}>
