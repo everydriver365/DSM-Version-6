@@ -804,47 +804,49 @@ function SchedulePage() {
                   }
                 }}
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  marginBottom: 10,
+                  marginBottom: 18,
                 }}
               >
+                {/* Day heading */}
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 500,
+                      color: "#8A93A3",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {weekday}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: "#0F2044",
+                      fontVariantNumeric: "tabular-nums",
+                      ...POPPINS,
+                    }}
+                  >
+                    {dayNum}
+                  </span>
+                </div>
+
                 {row.entries.length === 0 && isToday ? (
-                  // Fix 4: today with no lessons — dashed placeholder row.
-                  <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
-                    <div style={{ width: 34, flexShrink: 0, textAlign: "left", paddingTop: 12 }}>
-                      <div style={{ fontSize: 10, fontWeight: 500, color: "#8A93A3", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                        {weekday}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 600,
-                          color: "#0F2044",
-                          marginTop: 2,
-                          fontVariantNumeric: "tabular-nums",
-                        }}
-                      >
-                        {dayNum}
-                      </div>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          background: "#EEF2F7",
-                          border: "1.5px dashed #D0D5DD",
-                          borderRadius: 10,
-                          padding: "6px 12px",
-                          textAlign: "center",
-                          fontSize: 12,
-                          color: "#B0BAC9",
-                          ...POPPINS,
-                        }}
-                      >
-                        Today — no lessons
-                      </div>
-                    </div>
+                  <div
+                    style={{
+                      background: "#EEF2F7",
+                      border: "1.5px dashed #D0D5DD",
+                      borderRadius: 12,
+                      padding: "10px 14px",
+                      textAlign: "center",
+                      fontSize: 12,
+                      color: "#B0BAC9",
+                      ...POPPINS,
+                    }}
+                  >
+                    Today — no lessons
                   </div>
                 ) : (
                   (() => {
@@ -888,100 +890,185 @@ function SchedulePage() {
                       c.kind === 'entry' ? c.entry : c.gap,
                     );
 
-                    return items.map((e, i) => (
-                      <div key={e.id} style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
+                    return (
+                      <div style={{ position: "relative", paddingLeft: 22 }}>
                         <div
+                          aria-hidden
                           style={{
-                            width: 34,
-                            flexShrink: 0,
-                            textAlign: "left",
-                            paddingTop: 12,
+                            position: "absolute",
+                            left: 6,
+                            top: 6,
+                            bottom: 6,
+                            width: 2,
+                            background: "#DDE4ED",
                           }}
-                        >
-                          {i === 0 ? (
-                            <>
-                              <div
-                                style={{
-                                  fontSize: 10,
-                                  fontWeight: 500,
-                                  color: "#8A93A3",
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.04em",
-                                }}
-                              >
-                                {weekday}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 16,
-                                  fontWeight: 600,
-                                  color: "#0F2044",
-                                  marginTop: 2,
-                                  fontVariantNumeric: "tabular-nums",
-                                }}
-                              >
-                                {dayNum}
-                              </div>
-                            </>
-                          ) : null}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          {e.kind === 'gap-row' ? (
-                            <div
-                              onClick={() => navigate({ to: '/gaps' as never })}
-                              role="button"
-                              tabIndex={0}
-                              style={{
-                                background: '#E6F1FB',
-                                borderLeft: '3px solid #185FA5',
-                                borderRadius: 12,
-                                padding: '12px 14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 10,
-                                cursor: 'pointer',
-                                ...POPPINS,
-                              }}
-                            >
-                              <span style={{ fontSize: 16, color: '#185FA5', lineHeight: 1 }} aria-hidden>⚡</span>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
-                                  {e.startTime} – {e.endTime}
+                        />
+                        {items.map((e) => {
+                          if (e.kind === 'gap-row') {
+                            return (
+                              <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
+                                <span
+                                  aria-hidden
+                                  style={{
+                                    position: "absolute",
+                                    left: -22,
+                                    top: 4,
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: "50%",
+                                    background: "#E6F1FB",
+                                    border: "2px solid #185FA5",
+                                    boxSizing: "border-box",
+                                  }}
+                                />
+                                <div
+                                  onClick={() => navigate({ to: '/gaps' as never })}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: "#FFFFFF",
+                                    borderRadius: 12,
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    padding: "12px 14px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    cursor: "pointer",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044", fontVariantNumeric: "tabular-nums" }}>
+                                      {e.startTime} – {e.endTime}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: "#4A7BA6", marginTop: 2 }}>
+                                      {formatMins(e.mins)} free
+                                    </div>
+                                  </div>
+                                  <div style={{ fontSize: 12, fontWeight: 600, color: "#3B6D11" }}>
+                                    £{e.potential}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                                    style={{
+                                      background: "#185FA5",
+                                      color: "#FFFFFF",
+                                      fontSize: 12,
+                                      fontWeight: 500,
+                                      padding: "8px 12px",
+                                      borderRadius: 9,
+                                      border: "none",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    Fill
+                                  </button>
                                 </div>
-                                <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
-                                  {formatMins(e.mins)} free
-                                </div>
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 600, color: '#3B6D11' }}>
-                                £{e.potential}
-                              </div>
-                              <button
-                                type="button"
-                                onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                            );
+                          }
+
+                          // Resolve entry marker/tag color
+                          let markerColor = "#8A93A3";
+                          let title = "";
+                          let timeText = `${fmtTime(e.start)} – ${fmtTime(e.end)}`;
+                          if (e.kind === "lesson") {
+                            const name = pupilDisplayName(e.lesson.pupil);
+                            markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
+                            const typeRaw = (e.lesson.lesson_type ?? "").trim();
+                            const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
+                            title = showType ? `${name} · ${typeRaw}` : name;
+                          } else if (e.kind === "block") {
+                            markerColor = getBlockColour(e.title).border;
+                            title = e.title;
+                          } else if (e.kind === "external") {
+                            markerColor = e.colour && /^#[0-9a-fA-F]{3,8}$/.test(e.colour) ? e.colour : "#4AABDB";
+                            title = e.title;
+                            if (e.allDay) timeText = "All day";
+                          } else if (e.kind === "personal") {
+                            markerColor = "#E8B84B";
+                            title = e.title;
+                            if (e.allDay) timeText = "All day";
+                          } else if (e.kind === "task") {
+                            markerColor = "#6B6BD6";
+                            title = e.title;
+                            timeText = "";
+                          } else if (e.kind === "holiday") {
+                            markerColor = "#3D9E7A";
+                            title = e.title;
+                            timeText = "All day";
+                          }
+                          const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
+                          const clickable = e.kind === "lesson";
+
+                          return (
+                            <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
+                              <span
+                                aria-hidden
                                 style={{
-                                  background: '#185FA5',
-                                  color: '#FFFFFF',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  padding: '8px 12px',
-                                  borderRadius: 9,
-                                  border: 'none',
-                                  cursor: 'pointer',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: 4,
+                                  position: "absolute",
+                                  left: -22,
+                                  top: 4,
+                                  width: 12,
+                                  height: 12,
+                                  borderRadius: "50%",
+                                  background: markerColor,
+                                }}
+                              />
+                              <div
+                                onClick={clickable ? () => goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id) : undefined}
+                                role={clickable ? "button" : undefined}
+                                tabIndex={clickable ? 0 : undefined}
+                                style={{
+                                  background: "#FFFFFF",
+                                  borderRadius: 12,
+                                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                  padding: "12px 14px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 10,
+                                  cursor: clickable ? "pointer" : "default",
+                                  opacity: cancelled ? 0.55 : 1,
+                                  ...POPPINS,
                                 }}
                               >
-                                Fill
-                                <IconArrowRight size={12} stroke={2} />
-                              </button>
+                                <span
+                                  aria-hidden
+                                  style={{
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: "50%",
+                                    background: markerColor,
+                                    flexShrink: 0,
+                                  }}
+                                />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div
+                                    style={{
+                                      fontSize: 14,
+                                      fontWeight: 500,
+                                      color: "#0F2044",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      textDecoration: cancelled ? "line-through" : "none",
+                                    }}
+                                  >
+                                    {title}
+                                  </div>
+                                  {timeText ? (
+                                    <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                      {timeText}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
                             </div>
-                          ) : (
-                            <EntryRow entry={e} onLessonTap={goToLesson} />
-                          )}
-                        </div>
+                          );
+                        })}
                       </div>
-                    ));
+                    );
                   })()
 
                 )}
@@ -993,6 +1080,7 @@ function SchedulePage() {
         </div>
 
       </div>
+
 
       <button
         type="button"
