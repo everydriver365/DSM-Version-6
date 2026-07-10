@@ -539,38 +539,94 @@ function SettingsPage() {
 
 
       {/* Profile header */}
-      <div className="mx-4 mt-3">
-        <Card>
-          <div className="flex items-center gap-3">
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt="Profile"
-                className="rounded-full shrink-0"
-                style={{ width: 56, height: 56, objectFit: "cover" }}
-              />
-            ) : (
-              <div
-                className="flex items-center justify-center rounded-full shrink-0 text-[16px] font-semibold"
-                style={{ width: 56, height: 56, backgroundColor: "#1877D6", color: "#FFFFFF", ...POPPINS }}
-              >
-                {initials(displayedName)}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="text-[18px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
-                {displayedName}
-              </div>
-              <div className="text-[13px] text-[#6B7280] truncate" style={POPPINS}>
-                {email || "—"}
-              </div>
+      <div className="mx-4 mt-3" style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 16,
+            padding: 16,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt="Profile"
+              style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: "50%",
+                background: "#185FA5",
+                color: "#FFFFFF",
+                fontSize: 20,
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                ...POPPINS,
+              }}
+            >
+              {initials(displayedName)}
             </div>
-            <Button variant="ghost" inline onClick={() => navigate({ to: "/profile" })}>
-              Edit profile
-            </Button>
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: "#12142B",
+                textTransform: "capitalize",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {displayedName}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#8A94A6",
+                marginTop: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {email || "—"}
+            </div>
           </div>
-        </Card>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/profile" })}
+            style={{
+              background: "#EEF2F7",
+              border: "none",
+              borderRadius: 10,
+              padding: "8px 14px",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#12142B",
+              cursor: "pointer",
+              flexShrink: 0,
+              ...POPPINS,
+            }}
+          >
+            Edit profile
+          </button>
+        </div>
       </div>
+
 
       <div className="px-4">
         <Label>ACCOUNT</Label>
