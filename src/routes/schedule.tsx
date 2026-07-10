@@ -945,7 +945,7 @@ function SchedulePage() {
                                 {e.startTime} – {e.endTime}
                               </div>
                               <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {e.mins} min free
+                                {formatMins(e.mins)} free
                               </div>
                               <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
                                 £{e.potential} potential
