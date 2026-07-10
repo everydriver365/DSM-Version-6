@@ -1708,8 +1708,8 @@ function MenuRow({
       }}
     >
       <div
-        className="flex items-center justify-center shrink-0"
-        style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: iconBg }}
+        className="flex items-center justify-center"
+        style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
