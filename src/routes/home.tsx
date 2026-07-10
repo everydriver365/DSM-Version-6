@@ -233,6 +233,15 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function formatMins(mins: number) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+
+
 type NAItem = {
   key: 'tests' | 'jobs' | 'calls' | 'enq';
   count: number;
@@ -4919,7 +4928,7 @@ function HomePage() {
                               {fmtT(gs)} – {fmtT(ge)}
                             </div>
                             <div style={{ fontSize: 12, color: '#4A7BA6', marginTop: 2 }}>
-                              {r.mins} min free · £{potential} potential
+                              {formatMins(r.mins)} free · £{potential} potential
                             </div>
                           </div>
                           <button
@@ -6116,7 +6125,7 @@ function HomePage() {
                         <Plus size={16} strokeWidth={1.75} />
                       </div>
                       <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
-                        {gapMins} mins free
+                        {formatMins(gapMins)} free
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 500, color: "#1877D6", fontFamily: "Poppins, Inter, sans-serif" }}>
                         Fill →

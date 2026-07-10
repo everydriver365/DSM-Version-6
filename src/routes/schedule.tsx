@@ -38,6 +38,14 @@ function minsToTime(m: number): string {
   const dh = h > 12 ? h - 12 : h === 0 ? 12 : h;
   return dh + ":" + String(min).padStart(2, "0") + period;
 }
+function formatMins(mins: number) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+
 type GapInfo = {
   startMins: number;
   endMins: number;
@@ -937,7 +945,7 @@ function SchedulePage() {
                                 {e.startTime} – {e.endTime}
                               </div>
                               <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
-                                {e.mins} min free
+                                {formatMins(e.mins)} free
                               </div>
                               <div style={{ fontSize: 12, fontWeight: 600, color: '#16A34A' }}>
                                 £{e.potential} potential
