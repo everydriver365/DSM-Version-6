@@ -1628,11 +1628,16 @@ function HomePage() {
     if (!el) return;
     const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
     const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+    if (clamped === 1) {
+      navigate({ to: "/schedule" as never });
+      return;
+    }
     if (clamped !== activeWs) {
       setActiveWsState(clamped);
       dispatchWsChange(clamped);
     }
   };
+
   const handleCarouselTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
