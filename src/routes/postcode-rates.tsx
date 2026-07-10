@@ -105,7 +105,7 @@ function PostcodeRatesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F8FF] pb-12" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
       <div className="sticky top-0 z-40 flex items-center px-2" style={{ height: 52, background: "#0F2044" }}>
         <button type="button" aria-label="Back" onClick={() => navigate({ to: "/settings" })} className="flex items-center justify-center" style={{ width: 40, height: 40 }}>
           <ArrowLeft size={22} color="#fff" />
