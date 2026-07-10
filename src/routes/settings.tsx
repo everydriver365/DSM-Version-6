@@ -101,6 +101,7 @@ function SettingsPage() {
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
   const [savingCoverage, setSavingCoverage] = useState(false);
   const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
   const [reminderTiming, setReminderTiming] = useState<"evening" | "morning" | "both">("evening");
