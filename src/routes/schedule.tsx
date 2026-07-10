@@ -838,19 +838,46 @@ function SchedulePage() {
                   </div>
                 ) : (
                   (() => {
-                    type GapRow = { kind: 'gap-row'; id: string; start: Date; end: Date; mins: number };
-                    const items: Array<AgendaEntry | GapRow> = [];
-                    for (let i = 0; i < row.entries.length; i++) {
-                      const cur = row.entries[i];
-                      items.push(cur);
-                      const nxt = row.entries[i + 1];
-                      if (cur && nxt && cur.kind === 'lesson' && nxt.kind === 'lesson') {
-                        const mins = Math.round((nxt.start.getTime() - cur.end.getTime()) / 60000);
-                        if (mins >= 60) {
-                          items.push({ kind: 'gap-row', id: `gap-${row.key}-${i}`, start: cur.end, end: nxt.start, mins });
-                        }
-                      }
-                    }
+                    type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
+                    const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
+                    const gaps = detectGaps(
+                      dayLessons.map((l) => ({
+                        status: l.status,
+                        lesson_time: l.lesson_time,
+                        duration_minutes: l.duration_minutes,
+                        pupils: null,
+                      })),
+                      workStart,
+                      workEnd,
+                      bufferBefore,
+                      bufferAfter,
+                      calendarBlocks,
+                      recurringBlocks,
+                      timeOff,
+                      row.key,
+                      hourlyRate,
+                    );
+                    const gapRows: GapRow[] = gaps.map((g, i) => ({
+                      kind: 'gap-row',
+                      id: `gap-${row.key}-${i}`,
+                      startMins: g.startMins,
+                      startTime: g.startTime,
+                      endTime: g.endTime,
+                      mins: g.gapMins,
+                      potential: g.potential,
+                    }));
+                    const entryWithMins = row.entries.map((e) => ({
+                      entry: e,
+                      mins: e.start.getHours() * 60 + e.start.getMinutes(),
+                    }));
+                    const combined: Array<{ kind: 'entry'; startMins: number; entry: AgendaEntry } | { kind: 'gap'; startMins: number; gap: GapRow }> = [
+                      ...entryWithMins.map((x) => ({ kind: 'entry' as const, startMins: x.mins, entry: x.entry })),
+                      ...gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g })),
+                    ].sort((a, b) => a.startMins - b.startMins);
+                    const items: Array<AgendaEntry | GapRow> = combined.map((c) =>
+                      c.kind === 'entry' ? c.entry : c.gap,
+                    );
+
                     return items.map((e, i) => (
                       <div key={e.id} style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
                         <div
