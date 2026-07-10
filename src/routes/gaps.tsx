@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
+  Coffee,
 } from "lucide-react";
 import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -64,6 +65,7 @@ interface DayGroup {
   totalFreeMinutes: number;
   busyMinutes: number;
   busy: BusyEntry[];
+  lunch?: { start: string; end: string } | null;
 }
 
 interface BusyEntry {
@@ -108,14 +110,34 @@ function minToHm(m: number) {
 function getCalendarBlocksForDate(
   calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
   dateStr: string,
-): { startMins: number; endMins: number; title: string }[] {
+): { startMins: number; endMins: number; title: string; isAllDay: boolean }[] {
   return (calendarBlocks || [])
-    .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
-    .map((b) => ({
-      startMins: hmToMin((b.start_datetime ?? "").substring(11, 16) || "00:00"),
-      endMins: hmToMin((b.end_datetime ?? "").substring(11, 16) || "23:59"),
-      title: b.title || "Busy",
-    }));
+    .filter((b) => {
+      const startDate = (b.start_datetime ?? "").substring(0, 10);
+      const endDate = (b.end_datetime ?? "").substring(0, 10);
+      return (
+        startDate === dateStr ||
+        (startDate < dateStr && endDate > dateStr) ||
+        (startDate < dateStr && endDate === dateStr)
+      );
+    })
+    .map((b) => {
+      const startDate = (b.start_datetime ?? "").substring(0, 10);
+      const endDate = (b.end_datetime ?? "").substring(0, 10);
+      const startTime = (b.start_datetime ?? "").substring(11, 16) || "00:00";
+      const endTime = (b.end_datetime ?? "").substring(11, 16) || "23:59";
+      const isAllDay =
+        startTime === "00:00" && (endTime === "00:00" || endTime === "23:59");
+      // For multi-day spans, clamp to full-day on interior/end dates.
+      const spansIntoDay = startDate < dateStr;
+      const spansOutOfDay = endDate > dateStr;
+      return {
+        startMins: isAllDay || spansIntoDay ? 0 : hmToMin(startTime),
+        endMins: isAllDay || spansOutOfDay ? 1439 : hmToMin(endTime),
+        title: b.title || "Busy",
+        isAllDay,
+      };
+    });
 }
 
 function fmtSlotDateLong(iso: string) {
@@ -156,6 +178,7 @@ interface Availability {
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
   preferred_duration_minutes: number | null;
+  max_lessons_per_week: number | null;
 }
 
 interface Ranked {
@@ -169,6 +192,7 @@ interface Ranked {
   shortNoticeOk: boolean;
   minNoticeHours: number;
   matchedSlots: SlotMatch[];
+  warnings: string[];
 }
 
 interface SelectedSlot {
@@ -369,7 +393,7 @@ function GapsPage() {
             .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
-            .in("status", ["confirmed", "pending"])
+            .in("status", ["confirmed", "pending", "in_progress"])
             .gte("lesson_date", startIso)
             .lte("lesson_date", endIso)
             .order("lesson_date", { ascending: true })
@@ -377,7 +401,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,lesson_buffer_before,lesson_buffer_after,hourly_rate",
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -423,20 +447,20 @@ function GapsPage() {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
-          lesson_buffer_minutes?: number | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
+          lunch_break_start?: string | null;
+          lunch_break_end?: string | null;
         };
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
-        const buffer = instr.lesson_buffer_minutes ?? 15;
         const instrBufBefore = instr.lesson_buffer_before ?? 0;
         const instrBufAfter = instr.lesson_buffer_after ?? 15;
         const workDays =
           instr.working_days && instr.working_days.length
             ? instr.working_days
             : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd, "buffer:", buffer);
+        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd);
         const rate = Number(
           (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
         );
@@ -495,7 +519,22 @@ function GapsPage() {
             bufBefore: 0,
             bufAfter: 0,
           }));
-          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks].slice().sort(
+          // Lunch break — block gap detection during it.
+          const lunchInfo =
+            isWorkDay && instr.lunch_break_start && instr.lunch_break_end
+              ? { start: instr.lunch_break_start, end: instr.lunch_break_end }
+              : null;
+          const lunchBusy = lunchInfo
+            ? [{
+                start: hmToMin(lunchInfo.start),
+                end: hmToMin(lunchInfo.end),
+                title: "🍽 Lunch break",
+                color: "#9CA3AF" as string | null,
+                bufBefore: 0,
+                bufAfter: 0,
+              }]
+            : [];
+          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks, ...lunchBusy].slice().sort(
             (a, b) => a.start - b.start,
           );
           const busyMinutes = dayLessons.reduce(
@@ -590,6 +629,7 @@ function GapsPage() {
               title: l.title,
               color: pickBusyColor(l.color, i),
             })),
+            lunch: lunchInfo,
           });
         }
         if (!cancelled) {
@@ -685,10 +725,10 @@ function GapsPage() {
           .eq("instructor_id", userId),
         supabase
           .from("lessons")
-          .select("pupil_id,lesson_date,lesson_time")
+          .select("pupil_id,lesson_date,lesson_time,status")
           .eq("instructor_id", userId)
           .is("deleted_at", null)
-          .in("status", ["completed", "confirmed"])
+          .in("status", ["completed", "confirmed", "pending", "in_progress"])
           .order("lesson_date", { ascending: false }),
       ]);
 
@@ -697,14 +737,34 @@ function GapsPage() {
       for (const a of (availRes.data ?? []) as Availability[]) {
         if (a.pupil_id) availMap.set(a.pupil_id, a);
       }
-      const lastLessonMap = new Map<string, string>();
-      for (const l of (lessonsRes.data ?? []) as {
+      const allLessons = (lessonsRes.data ?? []) as {
         pupil_id: string | null;
         lesson_date: string | null;
-      }[]) {
+        lesson_time: string | null;
+        status: string | null;
+      }[];
+      const lastLessonMap = new Map<string, string>();
+      for (const l of allLessons) {
         if (!l.pupil_id || !l.lesson_date) continue;
+        if (l.status !== "completed" && l.status !== "confirmed") continue;
         if (!lastLessonMap.has(l.pupil_id))
           lastLessonMap.set(l.pupil_id, l.lesson_date);
+      }
+
+      // Week window for max-lessons-per-week check, based on the first slot's date.
+      const firstSlotDate = slotsToScore[0]?.date;
+      let weekStart: Date | null = null;
+      let weekEnd: Date | null = null;
+      if (firstSlotDate) {
+        const d = new Date(firstSlotDate + "T00:00:00");
+        const dow = d.getDay(); // 0 = Sun
+        const mondayOffset = (dow + 6) % 7;
+        weekStart = new Date(d);
+        weekStart.setDate(d.getDate() - mondayOffset);
+        weekStart.setHours(0, 0, 0, 0);
+        weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
       }
 
       const nowMs = Date.now();
@@ -720,13 +780,47 @@ function GapsPage() {
         const avg =
           matched.reduce((sum, m) => sum + m.subScore, 0) /
           Math.max(1, matched.length);
-        const score = Math.max(
+        let score = Math.max(
           0,
           Math.min(
             100,
             Math.round((matchCount / matched.length) * 60 + avg * 0.4),
           ),
         );
+        const warnings: string[] = [];
+
+        // Hard cutoff — if pupil already has max lessons this week, penalise heavily.
+        if (s?.max_lessons_per_week && weekStart && weekEnd) {
+          const lessonsThisWeek = allLessons.filter((l) => {
+            if (l.pupil_id !== p.id || !l.lesson_date) return false;
+            const ld = new Date(l.lesson_date + "T00:00:00");
+            return (
+              ld >= weekStart! &&
+              ld <= weekEnd! &&
+              l.status !== "cancelled"
+            );
+          }).length;
+          if (lessonsThisWeek >= s.max_lessons_per_week) {
+            score = Math.max(0, score - 40);
+            warnings.push(
+              `Already has ${lessonsThisWeek} lesson${lessonsThisWeek !== 1 ? "s" : ""} this week (max ${s.max_lessons_per_week})`,
+            );
+          }
+        }
+
+        // Minimum gap between last lesson and new offer — no same-day offers.
+        if (last && slotsToScore[0]) {
+          const slotDateTime = new Date(
+            slotsToScore[0].date + "T" + slotsToScore[0].time + ":00",
+          ).getTime();
+          const lastMs = new Date(last + "T00:00:00").getTime();
+          const hoursSince = (slotDateTime - lastMs) / 3600000;
+          if (hoursSince < 20 && hoursSince > -24) {
+            score = Math.max(0, score - 50);
+            warnings.push("Had a lesson very recently");
+          }
+        }
+
         // Best slot for "summary" fields
         const best = matched.reduce((a, b) =>
           b.subScore > a.subScore ? b : a,
@@ -743,6 +837,7 @@ function GapsPage() {
           shortNoticeOk: bestInfo.shortNoticeOk,
           minNoticeHours: bestInfo.minNoticeHours,
           matchedSlots: matched,
+          warnings,
         };
       });
 
@@ -1186,6 +1281,29 @@ function GapsPage() {
                     {g.isWorkDay
                       ? "Nothing scheduled"
                       : "Day off — tap Add to open"}
+                  </div>
+                )}
+
+                {g.lunch && (
+                  <div
+                    style={{
+                      background: "#F9FAFB",
+                      borderLeft: "3px solid #9CA3AF",
+                      borderRadius: 8,
+                      padding: "10px 12px",
+                      margin: "2px 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <Coffee size={14} color="#9CA3AF" />
+                    <span style={{ fontSize: 13, color: "#6B7280" }}>
+                      Lunch break
+                    </span>
+                    <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto" }}>
+                      {g.lunch.start} – {g.lunch.end}
+                    </span>
                   </div>
                 )}
 
@@ -1976,6 +2094,16 @@ function PupilCard({
               ⚠ Prefers {r.minNoticeHours}hrs notice
             </span>
           )}
+        </div>
+      )}
+
+      {r.warnings.length > 0 && (
+        <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+          {r.warnings.map((w, i) => (
+            <span key={i} style={{ color: "#B45309", fontSize: 12 }}>
+              ⚠️ {w}
+            </span>
+          ))}
         </div>
       )}
 
