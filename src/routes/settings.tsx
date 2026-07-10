@@ -101,6 +101,7 @@ function SettingsPage() {
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
   const [savingCoverage, setSavingCoverage] = useState(false);
   const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
   const [reminderTiming, setReminderTiming] = useState<"evening" | "morning" | "both">("evening");
@@ -267,12 +268,14 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
       if (instructor?.name) setInstructorName(instructor.name);
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
+      const lastSync = (instructor as unknown as { external_calendar_last_synced_at?: string | null } | null)?.external_calendar_last_synced_at;
+      if (lastSync) setCalendarLastSynced(lastSync);
       if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
         setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
       }
@@ -665,6 +668,12 @@ function SettingsPage() {
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
             isLast={false}
+            warning={
+              calendarLastSynced &&
+              Date.now() - new Date(calendarLastSynced).getTime() > 6 * 60 * 60 * 1000
+                ? "Sync overdue"
+                : undefined
+            }
           />
           <MenuRow
             icon={<Crown color="#185FA5" />}
@@ -1693,6 +1702,7 @@ function MenuRow({
   isLast,
   labelColor,
   hideChevron,
+  warning,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -1704,6 +1714,7 @@ function MenuRow({
   isLast?: boolean;
   labelColor?: string;
   hideChevron?: boolean;
+  warning?: string;
 }) {
   const dividerStyle: React.CSSProperties | undefined =
     isLast === undefined
@@ -1731,12 +1742,36 @@ function MenuRow({
       >
         {icon}
       </div>
-      <span
-        className="flex-1 truncate"
-        style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
-      >
-        {label}
-      </span>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <span
+          className="truncate flex items-center gap-2"
+          style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
+        >
+          {label}
+          {warning ? (
+            <span
+              aria-hidden
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#D97706",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+          ) : null}
+        </span>
+        {warning ? (
+          <span
+            className="truncate"
+            title={warning}
+            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+          >
+            {warning}
+          </span>
+        ) : null}
+      </div>
       {value ? (
         <span
           style={{
