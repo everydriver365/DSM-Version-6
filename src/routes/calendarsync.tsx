@@ -47,8 +47,10 @@ function CalendarSyncPage() {
   const [savedUrl, setSavedUrl] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [howToOpen, setHowToOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     (async () => {
