@@ -274,6 +274,8 @@ function SettingsPage() {
       if (instErr) console.error("[settings] instructor fetch error", instErr);
       if (instructor?.name) setInstructorName(instructor.name);
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
+      const lastSync = (instructor as unknown as { external_calendar_last_synced_at?: string | null } | null)?.external_calendar_last_synced_at;
+      if (lastSync) setCalendarLastSynced(lastSync);
       if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
         setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
       }
