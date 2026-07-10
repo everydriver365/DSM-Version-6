@@ -6637,35 +6637,46 @@ function HomePage() {
             paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
           }}
         >
-          <div style={{ padding:16, display:'flex', flexDirection:'column', gap:12, paddingBottom:80 }}>
-            {/* 1. HERO */}
-            <div style={{ background:'linear-gradient(135deg, #0F2044, #1A52A0)', borderRadius:20, padding:20, marginBottom:4 }}>
-              <Users color="#fff" size={28} style={{ marginBottom:8 }} />
-              <div style={{ color:'#fff', fontWeight:900, fontSize:20 }}>DSM Community</div>
-              <div style={{ color:'rgba(255,255,255,0.7)', fontSize:14, marginTop:4 }}>Connect with ADIs across the UK</div>
-              <div style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginTop:6, lineHeight:1.5 }}>
-                Forum for driving instructors — share tips, get advice, discuss standards checks.
-              </div>
-              <div style={{ marginTop:12 }}>
-                <span style={{ background:'#D97706', color:'#fff', fontSize:12, fontWeight:700, padding:'4px 12px', borderRadius:999 }}>
+          <div style={{ padding:16, display:'flex', flexDirection:'column', paddingBottom:80, fontFamily:'Inter, sans-serif' }}>
+            {/* 1. HERO CARD */}
+            <div style={{ background:'#FFFFFF', borderRadius:20, padding:20, boxShadow:'0 1px 3px rgba(0,0,0,0.06)', marginBottom:14 }}>
+              {/* Top row */}
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
+                <div style={{ width:44, height:44, borderRadius:13, background:'#E6F1FB', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <Users size={22} color="#185FA5" />
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:17, fontWeight:600, color:'#12142B', lineHeight:1.2 }}>DSM Community</div>
+                  <div style={{ fontSize:12, color:'#8A94A6', marginTop:1 }}>Connect with ADIs across the UK</div>
+                </div>
+                <span style={{ background:'#FBEFE1', color:'#B5661E', fontSize:10, fontWeight:600, padding:'3px 10px', borderRadius:20, flexShrink:0, whiteSpace:'nowrap' }}>
                   Coming soon
                 </span>
               </div>
-              <input
-                type="email"
-                value={communityEmail}
-                onChange={(e) => setCommunityEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="community-hero-email"
-                style={{
-                  width:'100%', boxSizing:'border-box',
-                  background:'rgba(255,255,255,0.1)',
-                  border:'1px solid rgba(255,255,255,0.2)',
-                  color:'#fff', padding:'10px 14px', borderRadius:10,
-                  marginTop:12, fontSize:14, outline:'none',
-                }}
-              />
-              <style>{`.community-hero-email::placeholder{color:rgba(255,255,255,0.4);}`}</style>
+
+              {/* Description */}
+              <div style={{ fontSize:13, color:'#8A94A6', lineHeight:1.6, marginBottom:16 }}>
+                Forum for driving instructors — share tips, get advice, discuss standards checks.
+              </div>
+
+              {/* Email input */}
+              <div style={{ background:'#EEF2F7', borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
+                <Mail size={16} color="#B0BAC9" style={{ flexShrink:0 }} />
+                <input
+                  type="email"
+                  value={communityEmail}
+                  onChange={(e) => setCommunityEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="community-hero-email"
+                  style={{
+                    flex:1, minWidth:0, background:'transparent', border:0, outline:'none',
+                    fontSize:13, color:'#12142B', fontFamily:'Inter, sans-serif',
+                  }}
+                />
+              </div>
+              <style>{`.community-hero-email::placeholder{color:#B0BAC9;}`}</style>
+
+              {/* Notify button */}
               <button
                 type="button"
                 onClick={() => {
@@ -6673,92 +6684,101 @@ function HomePage() {
                   setCommunityEmail('');
                 }}
                 style={{
-                  background:'#fff', color:'#0F2044', fontWeight:600,
-                  width:'100%', borderRadius:12, padding:'10px 0',
-                  fontSize:14, marginTop:8, border:0, cursor:'pointer',
+                  width:'100%', padding:'13px 0', fontSize:14, fontWeight:500,
+                  background:'#185FA5', color:'#fff', border:0, borderRadius:12, cursor:'pointer',
+                  fontFamily:'Inter, sans-serif',
                 }}
               >
                 Notify me when it launches →
               </button>
             </div>
 
-            {/* 2. PLACEHOLDER TOPICS */}
-            <div style={{ background:'#fff', border:'0.5px solid #E2E6ED', borderRadius:16, overflow:'hidden' }}>
-              <div style={{ padding:'14px 16px', borderBottom:'0.5px solid #F3F4F6', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <div style={{ fontWeight:600, fontSize:14, color:'#0F2044' }}>Hot topics</div>
-                <span style={{ background:'#F3F4F6', color:'#6B7280', fontSize:12, padding:'2px 8px', borderRadius:999 }}>Preview</span>
-              </div>
-              {[
-                { title:'Standards check — Grade 6 tips?', meta:'23 replies · ADI Training', hot:true },
-                { title:'Best dashcam for instructor cars 2026?', meta:'18 replies · Equipment', hot:false },
-                { title:'How do you handle nervous pupils?', meta:'31 replies · Teaching', hot:false },
-              ].map((t, i) => (
-                <div key={i} style={{ padding:'12px 16px', borderTop: i === 0 ? '0' : '0.5px solid #F3F4F6', display:'flex', justifyContent:'space-between', alignItems:'center', gap:10 }}>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontWeight:600, fontSize:13, color:'#0F2044' }}>{t.title}</div>
-                    <div style={{ fontSize:12, color:'#9CA3AF', marginTop:2 }}>{t.meta}</div>
+            {/* 2. HOT TOPICS CARD */}
+            {(() => {
+              // Existing topic data (hardcoded placeholder — no topics data model yet).
+              const topics = [
+                { title:'Standards check — Grade 6 tips?', replies:23, category:'ADI Training' },
+                { title:'Best dashcam for instructor cars 2026?', replies:18, category:'Equipment' },
+                { title:'How do you handle nervous pupils?', replies:31, category:'Teaching' },
+              ];
+              const hotIdx = topics.reduce((best, t, i, arr) => (t.replies > arr[best].replies ? i : best), 0);
+              return (
+                <div style={{ background:'#FFFFFF', borderRadius:16, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', marginBottom:14 }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'13px 16px', borderBottom:'0.5px solid #EEF2F7' }}>
+                    <div style={{ fontSize:15, fontWeight:600, color:'#12142B' }}>Hot topics</div>
+                    <span style={{ background:'#E6F1FB', color:'#185FA5', fontSize:11, fontWeight:500, padding:'3px 10px', borderRadius:20 }}>Preview</span>
                   </div>
-                  {t.hot && (
-                    <span style={{ background:'#FEF2F2', color:'#CC2229', fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:999, flexShrink:0 }}>
-                      🔥 Hot
-                    </span>
-                  )}
+                  {topics.map((t, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        toast("You're on the list! We'll notify you when DSM Community launches.");
+                      }}
+                      style={{
+                        width:'100%', textAlign:'left', background:'#fff', border:0,
+                        padding:'13px 16px', borderBottom:'0.5px solid #EEF2F7',
+                        display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:10,
+                        cursor:'pointer', fontFamily:'Inter, sans-serif',
+                      }}
+                    >
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontSize:14, fontWeight:500, color:'#12142B', marginBottom:3 }}>{t.title}</div>
+                        <div style={{ fontSize:11, color:'#B0BAC9' }}>{t.replies} replies · {t.category}</div>
+                      </div>
+                      {i === hotIdx && (
+                        <span style={{ background:'#FCEBEB', color:'#E24B4A', fontSize:10, fontWeight:600, padding:'3px 8px', borderRadius:20, flexShrink:0, whiteSpace:'nowrap' }}>
+                          🔥 Hot
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toast("You're on the list! We'll notify you when DSM Community launches.");
+                      setCommunityEmail('');
+                    }}
+                    style={{
+                      width:'100%', textAlign:'center', background:'#fff', border:0,
+                      padding:'13px 16px', cursor:'pointer',
+                      fontSize:13, fontWeight:500, color:'#185FA5', fontFamily:'Inter, sans-serif',
+                    }}
+                  >
+                    Join the waitlist to access the community →
+                  </button>
                 </div>
-              ))}
-              <div style={{ padding:'12px 16px', borderTop:'0.5px solid #F3F4F6', textAlign:'center' }}>
-                <span style={{ fontSize:12, color:'#1A52A0', fontWeight:600 }}>Join the waitlist to access the community →</span>
-              </div>
-            </div>
+              );
+            })()}
 
-            {/* 3. CPD & DEVELOPMENT */}
-            <div style={{ background:'#fff', border:'0.5px solid #E2E6ED', borderRadius:16, overflow:'hidden' }}>
-              <div style={{ padding:'14px 16px', borderBottom:'0.5px solid #F3F4F6', fontWeight:600, fontSize:14, color:'#0F2044' }}>
-                CPD & development
+            {/* 3. CPD & DEVELOPMENT CARD */}
+            <div style={{ background:'#FFFFFF', borderRadius:16, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'13px 16px', borderBottom:'0.5px solid #EEF2F7' }}>
+                <div style={{ fontSize:15, fontWeight:600, color:'#12142B' }}>CPD &amp; development</div>
+                <span style={{ background:'#E6F1FB', color:'#185FA5', fontSize:11, fontWeight:500, padding:'3px 10px', borderRadius:20 }}>Preview</span>
               </div>
               {[
-                { Icon: GraduationCap, color:'#16A34A', label:'CPD log', to:'/cpd' },
-                { Icon: ClipboardCheck, color:'#1A52A0', label:'Standards check tracker', to:'/standards' },
-                { Icon: Award, color:'#D97706', label:'Certifications', to:'/certifications' },
-                { Icon: BookOpen, color:'#7C3AED', label:'Training resources', to:'/resources' },
-              ].map((r, i) => (
+                { label:'CPD log', to:'/cpd' },
+                { label:'Standards check tracker', to:'/standards' },
+                { label:'Certifications', to:'/certifications' },
+                { label:'Training resources', to:'/resources' },
+              ].map((r, i, arr) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => navigate({ to: r.to as never })}
                   style={{
-                    width:'100%', background:'#fff', border:0,
-                    padding:'12px 16px', borderTop: i === 0 ? '0' : '0.5px solid #F3F4F6',
-                    display:'flex', justifyContent:'space-between', alignItems:'center',
-                    cursor:'pointer', textAlign:'left',
+                    width:'100%', background:'#fff', border:0, textAlign:'left',
+                    padding:'13px 16px',
+                    borderBottom: i === arr.length - 1 ? 'none' : '0.5px solid #EEF2F7',
+                    cursor:'pointer', fontFamily:'Inter, sans-serif',
                   }}
                 >
-                  <span style={{ display:'flex', alignItems:'center', gap:12 }}>
-                    <r.Icon size={18} color={r.color} />
-                    <span style={{ fontSize:13, fontWeight:500, color:'#0F2044' }}>{r.label}</span>
-                  </span>
-                  <ChevronRight size={16} color="#D1D5DB" />
+                  <div style={{ fontSize:14, fontWeight:500, color:'#12142B', marginBottom:3 }}>{r.label}</div>
+                  {/* Type/Category not in data model yet — see spec fallback */}
+                  <div style={{ fontSize:11, color:'#B0BAC9' }}>Coming soon</div>
                 </button>
               ))}
-            </div>
-
-            {/* 4. STANDARDS CHECK CARD */}
-            <div style={{ background:'#F0F4FF', border:'0.5px solid #BFDBFE', borderRadius:16, padding:16 }}>
-              <ClipboardCheck size={20} color="#1A52A0" style={{ marginBottom:6 }} />
-              <div style={{ fontWeight:600, fontSize:14, color:'#0F2044' }}>Standards check prep</div>
-              <div style={{ fontSize:12, color:'#6B7280', marginTop:4, lineHeight:1.5 }}>
-                Access guides, mock check resources and expert tips to nail your next standards check.
-              </div>
-              <button
-                type="button"
-                onClick={() => navigate({ to: '/standards' as never })}
-                style={{
-                  background:'#1A52A0', color:'#fff', fontSize:14, fontWeight:600,
-                  width:'100%', borderRadius:12, padding:'10px 0',
-                  border:0, cursor:'pointer', marginTop:12,
-                }}
-              >
-                View resources →
-              </button>
             </div>
           </div>
         </section>
