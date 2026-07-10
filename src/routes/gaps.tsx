@@ -518,7 +518,22 @@ function GapsPage() {
             bufBefore: 0,
             bufAfter: 0,
           }));
-          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks].slice().sort(
+          // Lunch break — block gap detection during it.
+          const lunchInfo =
+            isWorkDay && instr.lunch_break_start && instr.lunch_break_end
+              ? { start: instr.lunch_break_start, end: instr.lunch_break_end }
+              : null;
+          const lunchBusy = lunchInfo
+            ? [{
+                start: hmToMin(lunchInfo.start),
+                end: hmToMin(lunchInfo.end),
+                title: "🍽 Lunch break",
+                color: "#9CA3AF" as string | null,
+                bufBefore: 0,
+                bufAfter: 0,
+              }]
+            : [];
+          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks, ...lunchBusy].slice().sort(
             (a, b) => a.start - b.start,
           );
           const busyMinutes = dayLessons.reduce(
