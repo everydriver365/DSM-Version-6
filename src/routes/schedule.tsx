@@ -8,6 +8,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconArrowLeft,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
