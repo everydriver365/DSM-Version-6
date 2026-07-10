@@ -133,7 +133,7 @@ function MessagesIndexPage() {
   }, [convos, query]);
 
   return (
-    <div style={{ ...FONT, minHeight: "100vh", background: "#F5F7FA", paddingBottom: 80 }}>
+    <div style={{ ...FONT, minHeight: "100vh", background: "#EEF2F7", paddingBottom: 80 }}>
       {/* Header */}
       <div
         style={{
