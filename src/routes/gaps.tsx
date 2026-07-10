@@ -64,6 +64,7 @@ interface DayGroup {
   totalFreeMinutes: number;
   busyMinutes: number;
   busy: BusyEntry[];
+  lunch?: { start: string; end: string } | null;
 }
 
 interface BusyEntry {
