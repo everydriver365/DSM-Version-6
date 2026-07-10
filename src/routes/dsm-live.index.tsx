@@ -680,29 +680,29 @@ function SessionCard({
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 16,
+        borderRadius: 14,
         overflow: "hidden",
         marginBottom: 12,
         cursor: "pointer",
         fontFamily: poppins,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}
     >
       {/* Hero */}
       <div style={heroStyle}>
-        {/* Top-left category */}
+        {/* Top-left category — dark scrim pill */}
         {s.category && (
           <span
             style={{
               position: "absolute",
               top: 10,
               left: 10,
-              background: "rgba(255,255,255,0.2)",
+              background: "rgba(15,32,68,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
-              fontWeight: 600,
-              padding: "3px 10px",
-              borderRadius: 999,
+              fontWeight: 500,
+              padding: "4px 10px",
+              borderRadius: 6,
               fontFamily: poppins,
             }}
           >
@@ -716,11 +716,11 @@ function SessionCard({
               position: "absolute",
               top: 10,
               right: 10,
-              background: "rgba(0,0,0,0.3)",
+              background: "rgba(15,32,68,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
-              padding: "3px 10px",
-              borderRadius: 999,
+              padding: "4px 10px",
+              borderRadius: 6,
               fontFamily: poppins,
             }}
           >
@@ -749,30 +749,30 @@ function SessionCard({
       </div>
 
       {/* Body */}
-      <div style={{ padding: "14px 16px" }}>
+      <div style={{ padding: 16 }}>
         <div
           style={{
-            fontSize: 15,
-            fontWeight: 700,
+            fontSize: 16,
+            fontWeight: 500,
             color: "#0F2044",
-            marginBottom: 6,
+            marginBottom: 10,
             fontFamily: poppins,
           }}
         >
           {s.title}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-          <CalendarIcon size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{dateLabel}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <CalendarIcon size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{dateLabel}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-          <Clock size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{timeLabel}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <Clock size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{timeLabel}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <DeliveryIcon size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{delivery.label}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <DeliveryIcon size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{delivery.label}</span>
         </div>
 
         <div
@@ -780,15 +780,15 @@ function SessionCard({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 10,
+            marginTop: 14,
           }}
         >
           {priceLabel ? (
             <span
               style={{
                 fontSize: 15,
-                fontWeight: 700,
-                color: isFree ? "#16A34A" : "#0F2044",
+                fontWeight: 500,
+                color: isFree ? "#3B6D11" : "#0F2044",
                 fontFamily: poppins,
               }}
             >
@@ -804,21 +804,26 @@ function SessionCard({
               onOpen();
             }}
             style={{
-              background: booked ? "#16A34A" : "#CC2229",
+              background: booked ? "#3B6D11" : "#185FA5",
               color: "#FFFFFF",
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "8px 16px",
-              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: 500,
+              padding: "10px 18px",
+              borderRadius: 10,
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
-            {booked ? "Booked ✓" : "Book now →"}
+            {booked ? "Booked" : "Book now"}
+            <ArrowRight size={15} strokeWidth={2} />
           </button>
         </div>
       </div>
     </div>
   );
 }
+
