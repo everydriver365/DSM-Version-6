@@ -2073,6 +2073,16 @@ function PupilCard({
         </div>
       )}
 
+      {r.warnings.length > 0 && (
+        <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+          {r.warnings.map((w, i) => (
+            <span key={i} style={{ color: "#B45309", fontSize: 12 }}>
+              ⚠️ {w}
+            </span>
+          ))}
+        </div>
+      )}
+
       {multi && r.matchedSlots.length > 0 && (
         <div
           style={{
