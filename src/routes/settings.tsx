@@ -27,8 +27,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
 
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import {
