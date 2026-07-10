@@ -1152,7 +1152,15 @@ function GapsPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ ...FONT, backgroundColor: "#F7F9FC", margin: -8 }}
+      style={{
+        ...FONT,
+        backgroundColor: "#F7F9FC",
+        maxWidth: 430,
+        margin: "0 auto",
+        border: "1px solid #E2E6ED",
+        borderRadius: 16,
+        overflow: "hidden",
+      }}
     >
       {/* Header — dark navy */}
       <div
