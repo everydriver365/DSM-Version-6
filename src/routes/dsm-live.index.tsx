@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
+  ArrowRight,
   Calendar as CalendarIcon,
   Clock,
   Video,
