@@ -178,6 +178,7 @@ function DsmLivePage() {
           gap: 8,
           padding: "12px 16px",
           overflowX: "auto",
+          flexWrap: "nowrap",
           scrollbarWidth: "none",
         }}
         className="dsm-hide-scrollbar"
@@ -185,6 +186,8 @@ function DsmLivePage() {
         <style>{`.dsm-hide-scrollbar::-webkit-scrollbar{display:none;}`}</style>
         {CATEGORIES.map((c) => {
           const active = category === c;
+          const label =
+            c === "All" ? "All" : c.charAt(0).toUpperCase() + c.slice(1).toLowerCase();
           return (
             <button
               key={c}
@@ -192,19 +195,19 @@ function DsmLivePage() {
               onClick={() => setCategory(c)}
               style={{
                 flexShrink: 0,
-                background: active ? "#1A52A0" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#0F2044",
-                border: active ? "0.5px solid #1A52A0" : "0.5px solid #E2E6ED",
-                borderRadius: 20,
+                background: active ? "#185FA5" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#333333",
+                border: active ? "0.5px solid #185FA5" : "0.5px solid rgba(0,0,0,0.08)",
+                borderRadius: 999,
                 padding: "8px 16px",
-                fontSize: 12,
-                fontWeight: 600,
+                fontSize: 13,
+                fontWeight: active ? 500 : 400,
                 fontFamily: poppins,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
               }}
             >
-              {c}
+              {label}
             </button>
           );
         })}
@@ -215,8 +218,8 @@ function DsmLivePage() {
         <h2
           style={{
             margin: "0 0 12px",
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: 15,
+            fontWeight: 500,
             color: "#0F2044",
             fontFamily: poppins,
           }}
@@ -229,7 +232,7 @@ function DsmLivePage() {
           style={{
             display: "flex",
             background: "#FFFFFF",
-            borderRadius: 12,
+            borderRadius: 10,
             padding: 3,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             marginBottom: 16,
@@ -247,10 +250,10 @@ function DsmLivePage() {
                   flex: 1,
                   padding: "9px 4px",
                   fontSize: 13,
-                  fontWeight: 600,
-                  color: active ? "#FFFFFF" : "#8A94A6",
-                  background: active ? "#1A52A0" : "transparent",
-                  borderRadius: 9,
+                  fontWeight: active ? 500 : 400,
+                  color: active ? "#FFFFFF" : "#8A93A3",
+                  background: active ? "#185FA5" : "transparent",
+                  borderRadius: 8,
                   border: 0,
                   cursor: "pointer",
                   fontFamily: poppins,
@@ -261,6 +264,7 @@ function DsmLivePage() {
             );
           })}
         </div>
+
 
         {sessions === null ? null : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
