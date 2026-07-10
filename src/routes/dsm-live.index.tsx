@@ -120,11 +120,11 @@ function DsmLivePage() {
 
 
 
-  const sora = "'Sora', system-ui, -apple-system, sans-serif";
-  const manrope = "'Manrope', system-ui, -apple-system, sans-serif";
+  const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
 
   return (
-    <div style={{ background: "#F3F8FF", minHeight: "calc(100vh - 80px)", fontFamily: manrope }}>
+    <div style={{ background: "#F3F8FF", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
+      {/* Top bar */}
       <div
         style={{
           background: "#0F2044",
@@ -143,88 +143,86 @@ function DsmLivePage() {
         >
           <ArrowLeft size={22} />
         </button>
-        <div style={{ fontWeight: 700, fontSize: 16, flex: 1, fontFamily: sora }}>DSM Live</div>
+        <div style={{ fontWeight: 600, fontSize: 16, flex: 1, fontFamily: poppins }}>DSM Live</div>
         <span
           style={{
             background: "#CC2229",
             color: "#fff",
             fontSize: 11,
             fontWeight: 700,
-            padding: "4px 8px",
+            padding: "4px 12px",
             borderRadius: 999,
-            fontFamily: manrope,
+            fontFamily: poppins,
           }}
         >
           🔴 LIVE
         </span>
       </div>
 
-      <div
-        style={{
-          padding: "24px 20px 8px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        <h1 style={{ margin: 0, fontFamily: sora, fontSize: 24, fontWeight: 800, color: "#0F2044" }}>
+      {/* Hero */}
+      <div style={{ background: "#0F2044", padding: "16px 20px 24px" }}>
+        <h1 style={{ margin: 0, fontFamily: poppins, fontSize: 24, fontWeight: 900, color: "#FFFFFF" }}>
           DSM Live
         </h1>
-        <p style={{ margin: 0, fontSize: 13, color: "rgba(15,32,68,0.6)", lineHeight: 1.5 }}>
-          Live coaching sessions, CPD webinars and standards check prep — join from anywhere.
+        <p style={{ margin: "4px 0 0", fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
+          Live coaching, CPD webinars and standards check prep
         </p>
       </div>
 
-      {/* Categories */}
-      <div style={{ padding: "16px 20px 4px", display: "flex", flexDirection: "column", gap: 12 }}>
-        <h2
-          style={{
-            margin: 0,
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.15em",
-            color: "rgba(15,32,68,0.6)",
-            fontFamily: sora,
-          }}
-        >
-          Categories
-        </h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {CATEGORIES.map((c) => {
-            const active = category === c;
-            return (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setCategory(c)}
-                style={{
-                  background: active ? "#1877D6" : "#FFFFFF",
-                  color: active ? "#FFFFFF" : "#0F2044",
-                  border: active ? "1px solid #1877D6" : "1px solid #E2E6ED",
-                  borderRadius: 999,
-                  padding: "10px 20px",
-                  fontSize: 12,
-                  fontWeight: active ? 600 : 500,
-                  fontFamily: manrope,
-                  cursor: "pointer",
-                  boxShadow: active ? "0 4px 12px rgba(24,119,214,0.2)" : "none",
-                }}
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
+      {/* Category pills (horizontal scroll) */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          padding: "12px 16px",
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+        className="dsm-hide-scrollbar"
+      >
+        <style>{`.dsm-hide-scrollbar::-webkit-scrollbar{display:none;}`}</style>
+        {CATEGORIES.map((c) => {
+          const active = category === c;
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              style={{
+                flexShrink: 0,
+                background: active ? "#1A52A0" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#0F2044",
+                border: active ? "0.5px solid #1A52A0" : "0.5px solid #E2E6ED",
+                borderRadius: 20,
+                padding: "8px 16px",
+                fontSize: 12,
+                fontWeight: 600,
+                fontFamily: poppins,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {c}
+            </button>
+          );
+        })}
       </div>
 
       {/* Sessions */}
-      <div style={{ padding: "20px 20px 8px" }}>
-        <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
+      <div style={{ padding: 16 }}>
+        <h2
+          style={{
+            margin: "0 0 12px",
+            fontSize: 16,
+            fontWeight: 700,
+            color: "#0F2044",
+            fontFamily: poppins,
+          }}
+        >
           Sessions
         </h2>
 
-        {/* Upcoming / All sessions toggle */}
+        {/* Upcoming / All toggle */}
         <div
           style={{
             display: "flex",
@@ -247,13 +245,13 @@ function DsmLivePage() {
                   flex: 1,
                   padding: "9px 4px",
                   fontSize: 13,
-                  fontWeight: 500,
+                  fontWeight: 600,
                   color: active ? "#FFFFFF" : "#8A94A6",
-                  background: active ? "#0F2044" : "transparent",
+                  background: active ? "#1A52A0" : "transparent",
                   borderRadius: 9,
                   border: 0,
                   cursor: "pointer",
-                  fontFamily: manrope,
+                  fontFamily: poppins,
                 }}
               >
                 {v === "upcoming" ? "Upcoming" : "All sessions"}
@@ -267,11 +265,12 @@ function DsmLivePage() {
             {view === "upcoming" ? "No upcoming sessions" : "No sessions found"}
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {filtered.map((s) => (
-              <CompactSessionCard
+              <SessionCard
                 key={s.id}
                 session={s}
+                booked={bookedIds.has(s.id)}
                 onOpen={() =>
                   navigate({
                     to: "/dsm-live/$sessionId",
@@ -284,14 +283,13 @@ function DsmLivePage() {
         )}
       </div>
 
-
-
-      <div id="podcasts" style={{ padding: "20px 20px 8px" }}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: "#0F2044", fontFamily: sora }}>
+      {/* Podcasts */}
+      <div id="podcasts" style={{ padding: 16 }}>
+        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0F2044", fontFamily: poppins }}>
           🎙️ DSM Podcast
         </h2>
-        <div style={{ fontSize: 12, color: "rgba(15,32,68,0.5)", marginBottom: 16 }}>
-          Listen to our latest episodes
+        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, marginBottom: 16 }}>
+          Latest episodes
         </div>
         {podcasts.length === 0 ? (
           <div style={{ color: "#9CA3AF", fontSize: 13, padding: "12px 0" }}>
