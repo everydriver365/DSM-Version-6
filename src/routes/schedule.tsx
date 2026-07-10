@@ -151,6 +151,7 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
     const d = new Date(today);
     d.setDate(1);
