@@ -42,11 +42,21 @@ function initials(name: string) {
 }
 
 const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
-function avatarColor(id: string) {
+// Explicit per-pupil colour overrides (takes precedence over hash).
+const PUPIL_COLOR_OVERRIDES: Record<string, string> = {};
+// Match Joseph Thorne by name-normalised key (id-agnostic override handled in avatarColor via name)
+function avatarColor(id: string, name?: string) {
+  if (name && /joseph/i.test(name) && /thorne/i.test(name)) return "#3B6D11";
+  if (PUPIL_COLOR_OVERRIDES[id]) return PUPIL_COLOR_OVERRIDES[id];
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
   return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
 }
+function displayName(n: string | null | undefined) {
+  return (n ?? "").replace(/\s*\.\s*$/, "").trim();
+}
+// NOTE: DB cleanup SQL (run manually — Lovable Cloud DB tools not available in this session):
+//   update pupils set name = trim(trailing '.' from trim(name)) where name like '%.';
 
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
