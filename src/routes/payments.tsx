@@ -582,7 +582,7 @@ function PaymentsPage() {
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: 600,
                             display: "flex",
                             alignItems: "center",
