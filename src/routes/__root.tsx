@@ -299,8 +299,15 @@ function RootComponent() {
           `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}&select=external_calendar_url`,
           { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
         );
-        const instData = await instRes.json();
-        if (!instData?.[0]?.external_calendar_url) return; // No URL set — skip
+        const url: string | undefined = instData?.[0]?.external_calendar_url;
+        if (!url) return;
+        // Guard against malformed values stored in the DB
+        try {
+          const u = new URL(url);
+          if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "webcal:") return;
+        } catch {
+          return;
+        }
 
         // Silent background sync
         await fetch(`${SUPABASE_URL}/functions/v1/sync-external-calendar`, {
