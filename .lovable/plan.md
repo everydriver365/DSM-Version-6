@@ -1,38 +1,29 @@
+# Unify swiped schedule with /schedule
+
 ## Problem
 
-On a real mobile device the published `/home` renders zoomed-out: the "Go" button, notification badge, "Full schedule" link and the Today/Tomorrow/Next tabs are all clipped on the right. The viewport meta tag (`width=device-width, initial-scale=1`) is set correctly in `src/routes/__root.tsx`, so this is not a meta-tag issue.
+The bottom-nav "Schedule" tab opens `src/routes/schedule.tsx` (calendar/agenda toggle, month grid, agenda list). Swiping right from the Today workspace on `/home` lands on workspace index 1, which is a separate ~1000-line inline schedule implementation inside `src/routes/home.tsx` (lines ~5082–6058). The two look and behave differently.
 
-The cause is horizontal overflow inside the page. When any descendant is wider than the device width, mobile Safari/Chrome expand the layout viewport to fit it, then shrink the whole page to display it — which is exactly what the screenshot shows. The home carousel panels are `width: 100vw`, so as soon as one child overflows, every panel visually overflows too.
+## Approach
 
-## Investigation
+Make the swipe entry point delegate to the real `/schedule` page instead of maintaining a parallel implementation. `/schedule` already integrates with the workspace swipe model (swiping left/right there navigates back to `/home` with `ws=0` or `ws=2`), so the round-trip UX is preserved and both entry points show byte-identical UI.
 
-Use Playwright against `http://localhost:8080/home` at a 390 px mobile viewport (with the Supabase session restored) to:
+## Changes
 
-1. Take a screenshot at 390×844 to reproduce the clipping.
-2. Query the DOM for elements whose `scrollWidth` / `getBoundingClientRect().right` exceeds `window.innerWidth`, walking down from `<body>`. This pinpoints the exact offending node(s) — likely candidates based on the screenshot:
-   - The "Today's timeline" tab row (Today / Tomorrow / Next) — a flex row with no `overflow-x` wrapper.
-   - The "Today's lessons" horizontal card carousel (partial next card is visible in the screenshot).
-   - Any inline SVG / image / button with a fixed `width` larger than expected.
-3. Confirm the outer `position: fixed; inset: 0` container in `src/routes/home.tsx` (line 3834) is actually rendering at 390 px and that its children are what's overflowing.
+1. **`src/routes/home.tsx` — swipe/activation handlers**
+   - In `scrollToWs(i)` and `handleCarouselScroll` (around lines 1590–1630), when the resolved workspace index is `1`, call `navigate({ to: "/schedule" })` and return early instead of scrolling the carousel to that panel.
+   - Same guard in the `dsm-workspace-request` event listener so BottomNav / other triggers requesting index 1 also route to `/schedule`.
+   - Keep `WS_COUNT` and all other indexes unchanged so pupils=2, money=3, etc. still align with WorkspaceDots and the existing swipe math in sibling pages.
 
-## Fix (scope: `src/routes/home.tsx` only, unless investigation shows otherwise)
+2. **`src/routes/home.tsx` — inline schedule section (lines ~5082–6058)**
+   - Replace the entire `data-workspace="schedule"` section body with an empty placeholder `<section data-workspace="schedule" data-ws-index={1} />` that preserves the carousel slot (so scroll-snap indexes for pupils/money/etc. stay correct) but renders nothing. Users never see it because activation redirects to `/schedule` first.
+   - Delete the now-unused helpers and state that were exclusive to the inline schedule (safe to remove only if not referenced by other workspaces; otherwise leave in place).
 
-Once the offender is identified, apply the minimum fix at that node:
+3. **No changes to `src/routes/schedule.tsx`** — it already handles swipe-back to `/home` with `ws=0`/`ws=2` and shows WorkspaceDots with `activeIndex={1}`.
 
-- If it's a scroll row (tabs / card carousel): wrap in a container with `overflow-x: auto; scrollbar-width: none` and `max-width: 100%`, so the row scrolls inside its panel instead of pushing the document wider.
-- If it's a flex row without `min-width: 0` on the text child: add `min-width: 0` and `truncate` so it can shrink.
-- If it's a fixed-pixel element (button/badge) that exceeds 390 px on some layout: convert to `flex: 1 1 auto` with `min-width: 0`.
+## Result
 
-As a belt-and-braces safeguard on the home route only, add `overflow-x: hidden` to the outer `position: fixed` container's inner flex column so that even if a future child overflows, it clips instead of expanding the layout viewport.
-
-## Verification
-
-- Re-run Playwright at 390×844 and confirm no descendant has `right > 390`.
-- Screenshot the Today panel and confirm the header icons, notification badge, and hero "Go" button all sit fully inside the viewport.
-- Swipe through the other workspace panels (via the dot indicator) and re-check overflow on each.
-- Confirm the bottom nav (restored in the previous turn) still shows.
-
-## Out of scope
-
-- No changes to navigation, data, badges, handlers, or the shared BottomNav.
-- No changes to any file other than `src/routes/home.tsx`, unless investigation proves the overflow originates in shared CSS (`src/styles.css`); in that case I'll flag it before editing.
+- Bottom-nav "Schedule" → `/schedule` (unchanged).
+- Swipe right from Today workspace → triggers navigation to `/schedule` (same component, same layout, same data).
+- Swipe left/right from `/schedule` continues to move to Today (`ws=0`) or Pupils (`ws=2`) via the existing handler in `schedule.tsx`.
+- Single source of truth for the schedule UI; future changes only need to happen in one file.
