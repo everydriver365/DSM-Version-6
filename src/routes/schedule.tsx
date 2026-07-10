@@ -204,6 +204,37 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd]);
 
+  // Fetch external calendar blocks in the same window.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const userId = session?.user?.id;
+        if (!token || !userId) return;
+        const startIso = ymdLocal(rangeStart);
+        const endIso = ymdLocal(rangeEnd);
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        setCalendarBlocks(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.warn("[schedule] calendar_blocks fetch failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd]);
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
