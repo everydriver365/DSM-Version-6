@@ -779,13 +779,47 @@ function GapsPage() {
         const avg =
           matched.reduce((sum, m) => sum + m.subScore, 0) /
           Math.max(1, matched.length);
-        const score = Math.max(
+        let score = Math.max(
           0,
           Math.min(
             100,
             Math.round((matchCount / matched.length) * 60 + avg * 0.4),
           ),
         );
+        const warnings: string[] = [];
+
+        // Hard cutoff — if pupil already has max lessons this week, penalise heavily.
+        if (s?.max_lessons_per_week && weekStart && weekEnd) {
+          const lessonsThisWeek = allLessons.filter((l) => {
+            if (l.pupil_id !== p.id || !l.lesson_date) return false;
+            const ld = new Date(l.lesson_date + "T00:00:00");
+            return (
+              ld >= weekStart! &&
+              ld <= weekEnd! &&
+              l.status !== "cancelled"
+            );
+          }).length;
+          if (lessonsThisWeek >= s.max_lessons_per_week) {
+            score = Math.max(0, score - 40);
+            warnings.push(
+              `Already has ${lessonsThisWeek} lesson${lessonsThisWeek !== 1 ? "s" : ""} this week (max ${s.max_lessons_per_week})`,
+            );
+          }
+        }
+
+        // Minimum gap between last lesson and new offer — no same-day offers.
+        if (last && slotsToScore[0]) {
+          const slotDateTime = new Date(
+            slotsToScore[0].date + "T" + slotsToScore[0].time + ":00",
+          ).getTime();
+          const lastMs = new Date(last + "T00:00:00").getTime();
+          const hoursSince = (slotDateTime - lastMs) / 3600000;
+          if (hoursSince < 20 && hoursSince > -24) {
+            score = Math.max(0, score - 50);
+            warnings.push("Had a lesson very recently");
+          }
+        }
+
         // Best slot for "summary" fields
         const best = matched.reduce((a, b) =>
           b.subScore > a.subScore ? b : a,
@@ -802,6 +836,7 @@ function GapsPage() {
           shortNoticeOk: bestInfo.shortNoticeOk,
           minNoticeHours: bestInfo.minNoticeHours,
           matchedSlots: matched,
+          warnings,
         };
       });
 
