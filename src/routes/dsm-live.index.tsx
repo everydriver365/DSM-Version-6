@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
+  ArrowRight,
   Calendar as CalendarIcon,
   Clock,
   Video,
@@ -177,6 +178,7 @@ function DsmLivePage() {
           gap: 8,
           padding: "12px 16px",
           overflowX: "auto",
+          flexWrap: "nowrap",
           scrollbarWidth: "none",
         }}
         className="dsm-hide-scrollbar"
@@ -184,6 +186,8 @@ function DsmLivePage() {
         <style>{`.dsm-hide-scrollbar::-webkit-scrollbar{display:none;}`}</style>
         {CATEGORIES.map((c) => {
           const active = category === c;
+          const label =
+            c === "All" ? "All" : c.charAt(0).toUpperCase() + c.slice(1).toLowerCase();
           return (
             <button
               key={c}
@@ -191,19 +195,19 @@ function DsmLivePage() {
               onClick={() => setCategory(c)}
               style={{
                 flexShrink: 0,
-                background: active ? "#1A52A0" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#0F2044",
-                border: active ? "0.5px solid #1A52A0" : "0.5px solid #E2E6ED",
-                borderRadius: 20,
+                background: active ? "#185FA5" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#333333",
+                border: active ? "0.5px solid #185FA5" : "0.5px solid rgba(0,0,0,0.08)",
+                borderRadius: 999,
                 padding: "8px 16px",
-                fontSize: 12,
-                fontWeight: 600,
+                fontSize: 13,
+                fontWeight: active ? 500 : 400,
                 fontFamily: poppins,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
               }}
             >
-              {c}
+              {label}
             </button>
           );
         })}
@@ -214,8 +218,8 @@ function DsmLivePage() {
         <h2
           style={{
             margin: "0 0 12px",
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: 15,
+            fontWeight: 500,
             color: "#0F2044",
             fontFamily: poppins,
           }}
@@ -228,7 +232,7 @@ function DsmLivePage() {
           style={{
             display: "flex",
             background: "#FFFFFF",
-            borderRadius: 12,
+            borderRadius: 10,
             padding: 3,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             marginBottom: 16,
@@ -246,10 +250,10 @@ function DsmLivePage() {
                   flex: 1,
                   padding: "9px 4px",
                   fontSize: 13,
-                  fontWeight: 600,
-                  color: active ? "#FFFFFF" : "#8A94A6",
-                  background: active ? "#1A52A0" : "transparent",
-                  borderRadius: 9,
+                  fontWeight: active ? 500 : 400,
+                  color: active ? "#FFFFFF" : "#8A93A3",
+                  background: active ? "#185FA5" : "transparent",
+                  borderRadius: 8,
                   border: 0,
                   cursor: "pointer",
                   fontFamily: poppins,
@@ -260,6 +264,7 @@ function DsmLivePage() {
             );
           })}
         </div>
+
 
         {sessions === null ? null : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
@@ -675,29 +680,29 @@ function SessionCard({
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 16,
+        borderRadius: 14,
         overflow: "hidden",
         marginBottom: 12,
         cursor: "pointer",
         fontFamily: poppins,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}
     >
       {/* Hero */}
       <div style={heroStyle}>
-        {/* Top-left category */}
+        {/* Top-left category — dark scrim pill */}
         {s.category && (
           <span
             style={{
               position: "absolute",
               top: 10,
               left: 10,
-              background: "rgba(255,255,255,0.2)",
+              background: "rgba(15,32,68,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
-              fontWeight: 600,
-              padding: "3px 10px",
-              borderRadius: 999,
+              fontWeight: 500,
+              padding: "4px 10px",
+              borderRadius: 6,
               fontFamily: poppins,
             }}
           >
@@ -711,11 +716,11 @@ function SessionCard({
               position: "absolute",
               top: 10,
               right: 10,
-              background: "rgba(0,0,0,0.3)",
+              background: "rgba(15,32,68,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
-              padding: "3px 10px",
-              borderRadius: 999,
+              padding: "4px 10px",
+              borderRadius: 6,
               fontFamily: poppins,
             }}
           >
@@ -744,30 +749,30 @@ function SessionCard({
       </div>
 
       {/* Body */}
-      <div style={{ padding: "14px 16px" }}>
+      <div style={{ padding: 16 }}>
         <div
           style={{
-            fontSize: 15,
-            fontWeight: 700,
+            fontSize: 16,
+            fontWeight: 500,
             color: "#0F2044",
-            marginBottom: 6,
+            marginBottom: 10,
             fontFamily: poppins,
           }}
         >
           {s.title}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-          <CalendarIcon size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{dateLabel}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <CalendarIcon size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{dateLabel}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-          <Clock size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{timeLabel}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <Clock size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{timeLabel}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <DeliveryIcon size={14} color="#9CA3AF" />
-          <span style={{ fontSize: 13, color: "#6B7280" }}>{delivery.label}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <DeliveryIcon size={15} color="#8A93A3" strokeWidth={1.75} />
+          <span style={{ fontSize: 13, color: "#5A6270" }}>{delivery.label}</span>
         </div>
 
         <div
@@ -775,15 +780,15 @@ function SessionCard({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 10,
+            marginTop: 14,
           }}
         >
           {priceLabel ? (
             <span
               style={{
                 fontSize: 15,
-                fontWeight: 700,
-                color: isFree ? "#16A34A" : "#0F2044",
+                fontWeight: 500,
+                color: isFree ? "#3B6D11" : "#0F2044",
                 fontFamily: poppins,
               }}
             >
@@ -799,21 +804,26 @@ function SessionCard({
               onOpen();
             }}
             style={{
-              background: booked ? "#16A34A" : "#CC2229",
+              background: booked ? "#3B6D11" : "#185FA5",
               color: "#FFFFFF",
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "8px 16px",
-              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: 500,
+              padding: "10px 18px",
+              borderRadius: 10,
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
-            {booked ? "Booked ✓" : "Book now →"}
+            {booked ? "Booked" : "Book now"}
+            <ArrowRight size={15} strokeWidth={2} />
           </button>
         </div>
       </div>
     </div>
   );
 }
+
