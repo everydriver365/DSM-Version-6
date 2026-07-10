@@ -1283,6 +1283,29 @@ function GapsPage() {
                   </div>
                 )}
 
+                {g.lunch && (
+                  <div
+                    style={{
+                      background: "#F9FAFB",
+                      borderLeft: "3px solid #9CA3AF",
+                      borderRadius: 8,
+                      padding: "10px 12px",
+                      margin: "2px 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <Coffee size={14} color="#9CA3AF" />
+                    <span style={{ fontSize: 13, color: "#6B7280" }}>
+                      Lunch break
+                    </span>
+                    <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto" }}>
+                      {g.lunch.start} – {g.lunch.end}
+                    </span>
+                  </div>
+                )}
+
                 {g.slots.map((slot, i) => {
                   const isLast = i === g.slots.length - 1;
                   const anySelected = slot.possibleDurations.some((d) =>
