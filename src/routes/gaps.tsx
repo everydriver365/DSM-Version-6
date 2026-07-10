@@ -588,7 +588,24 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const isWorkDay = workDays.includes(dayName);
+          let isWorkDay = workDays.includes(dayName);
+
+          // Time off — if any covers this date and is all-day, skip the day entirely.
+          const dayTimeOff = timeOffRows.filter(t => t.start_date <= iso && t.end_date >= iso);
+          const fullDayOff = dayTimeOff.find(t => t.all_day);
+          if (fullDayOff) {
+            groups.push({
+              iso,
+              dayName: `${dayName} · Time off${fullDayOff.reason ? `: ${fullDayOff.reason}` : ""}`,
+              isWorkDay: false,
+              slots: [],
+              totalFreeMinutes: 0,
+              busyMinutes: weMin - wsMin,
+              busy: [],
+            });
+            continue;
+          }
+
           // Merge external calendar blocks as pseudo-lessons for gap detection.
           const dayBlocks = getCalendarBlocksForDate(blocks, iso).map((b) => {
             const c = getBlockColour(b.title);
@@ -601,6 +618,28 @@ function GapsPage() {
               bufAfter: 0,
             };
           });
+          // Recurring blocks for this weekday.
+          const dayRecurring = recurringBlocks
+            .filter(b => b.day_of_week === dayName)
+            .map(b => ({
+              start: hmToMin(b.start_time),
+              end: hmToMin(b.end_time),
+              title: `🔄 ${b.label ?? "Recurring"}`,
+              color: "#7C3AED" as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            }));
+          // Partial time off for this day.
+          const dayPartialOff = dayTimeOff
+            .filter(t => !t.all_day && t.start_time && t.end_time)
+            .map(t => ({
+              start: hmToMin(t.start_time!),
+              end: hmToMin(t.end_time!),
+              title: `🌴 ${t.reason ?? "Time off"}`,
+              color: "#0EA5E9" as string | null,
+              bufBefore: 0,
+              bufAfter: 0,
+            }));
           // Lunch break — block gap detection during it.
           const lunchInfo =
             isWorkDay && instr.lunch_break_start && instr.lunch_break_end
@@ -616,9 +655,14 @@ function GapsPage() {
                 bufAfter: 0,
               }]
             : [];
-          const dayLessons = [...(byDay.get(iso) ?? []), ...dayBlocks, ...lunchBusy].slice().sort(
-            (a, b) => a.start - b.start,
-          );
+          const dayLessons = [
+            ...(byDay.get(iso) ?? []),
+            ...dayBlocks,
+            ...dayRecurring,
+            ...dayPartialOff,
+            ...lunchBusy,
+          ].slice().sort((a, b) => a.start - b.start);
+          void isWorkDay;
           const busyMinutes = dayLessons.reduce(
             (sum, l) => sum + (l.end - l.start),
             0,
