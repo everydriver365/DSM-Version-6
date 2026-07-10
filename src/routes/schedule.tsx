@@ -325,7 +325,7 @@ function SchedulePage() {
     for (const l of lessons ?? []) {
       const key = l.lesson_date.substring(0, 10);
       const arr = map.get(key) ?? [];
-      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, pupilDisplayName(l.pupil));
       if (!arr.includes(colour) && arr.length < 3) arr.push(colour);
       map.set(key, arr);
     }
