@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
+import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -378,7 +379,7 @@ function SchedulePage() {
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: "#EEF2F7",
+        background: PAGE_BACKGROUND,
         color: "#111827",
         ...POPPINS,
       }}
