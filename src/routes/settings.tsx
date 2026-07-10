@@ -675,8 +675,9 @@ function SettingsPage() {
         <Label>LESSON REMINDERS</Label>
         <SectionCard>
           <MenuRow
-            icon={<Bell size={18} color="#0B1F3A" />}
-            iconBg="#EEF2F7"
+            icon={<Clock color="#B5661E" />}
+            iconBg="#FBEFE1"
+
             label="Lesson reminders"
             expanded={expanded === "lessons"}
             onClick={() => setExpanded(expanded === "lessons" ? null : "lessons")}
