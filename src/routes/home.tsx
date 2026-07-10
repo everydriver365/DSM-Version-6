@@ -4588,6 +4588,29 @@ function HomePage() {
           const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
           if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
         }
+        // Before-first and after-last gaps against the working day (today only).
+        if (tab === 'today' && sorted.length > 0) {
+          const dayKeysArr = ['sun','mon','tue','wed','thu','fri','sat'] as const;
+          const todayDayKey = dayKeysArr[new Date().getDay()];
+          const worksToday = workingHours ? Boolean((workingHours as any)[todayDayKey]) : true;
+          if (worksToday) {
+            const startStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
+            const endStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
+            const [sh, sm] = startStr.split(':').map(Number);
+            const [eh, em] = endStr.split(':').map(Number);
+            const workStart = new Date(); workStart.setHours(sh || 9, sm || 0, 0, 0);
+            const workEnd = new Date(); workEnd.setHours(eh || 18, em || 0, 0, 0);
+            const firstL = sorted[0];
+            const firstStart = lessonDateTime(firstL);
+            const beforeMins = Math.round((firstStart.getTime() - workStart.getTime()) / 60000);
+            if (beforeMins >= 60) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
+            const lastL = sorted[sorted.length - 1];
+            const lastEnd = new Date(lessonDateTime(lastL).getTime() + (lastL.duration_minutes ?? 60) * 60000);
+            const afterMins = Math.round((workEnd.getTime() - lastEnd.getTime()) / 60000);
+            if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
+          }
+        }
+
         const todayGapCount = rows.filter((r) => r.kind === 'gap').length;
 
         const currentLesson = sorted.find((l) => {
