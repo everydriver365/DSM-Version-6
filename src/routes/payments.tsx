@@ -409,17 +409,17 @@ function PaymentsPage() {
       </div>
 
       {/* Summary stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
         <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#2E9E5B" />
         <StatTile
           label="OUTSTANDING"
           value={formatGBP(stats.outstanding)}
-          color={stats.outstanding > 0 ? "#E24B4A" : "#8A94A6"}
+          color={stats.outstanding > 0 ? "#E24B4A" : "#B0BAC9"}
         />
         <StatTile
           label="REFUNDED"
           value={formatGBP(stats.monthRefunded)}
-          color={stats.monthRefunded > 0 ? "#B5661E" : "#8A94A6"}
+          color={stats.monthRefunded > 0 ? "#B5661E" : "#B0BAC9"}
         />
       </div>
 
