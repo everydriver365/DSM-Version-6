@@ -1681,6 +1681,7 @@ function MenuRow({
   onClick,
   expanded,
   isFirst,
+  isLast,
   labelColor,
   hideChevron,
 }: {
@@ -1691,9 +1692,19 @@ function MenuRow({
   onClick: () => void;
   expanded?: boolean;
   isFirst?: boolean;
+  isLast?: boolean;
   labelColor?: string;
   hideChevron?: boolean;
 }) {
+  const dividerStyle =
+    isLast === undefined
+      ? isFirst
+        ? undefined
+        : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }
+      : isLast
+        ? undefined
+        : { borderBottomWidth: "0.5px", borderBottomStyle: "solid", borderBottomColor: "#EEF2F7" };
+
   return (
     <button
       type="button"
@@ -1702,9 +1713,7 @@ function MenuRow({
       style={{
         gap: 12,
         padding: "13px 16px",
-        ...(isFirst
-          ? undefined
-          : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }),
+        ...dividerStyle,
       }}
     >
       <div
