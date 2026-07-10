@@ -715,20 +715,30 @@ function SwipeableStatsCard({
                 onAddLesson();
               }}
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                background: "#185FA5",
-                color: "#FFFFFF",
-                border: "none",
+                width: 24,
+                height: 24,
+                borderRadius: 6,
+                background: "transparent",
+                color: "#185FA5",
+                opacity: 0.6,
+                border: "1px solid rgba(24, 95, 165, 0.25)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
                 padding: 0,
+                transition: "opacity 0.15s ease, background 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.background = "rgba(24, 95, 165, 0.08)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0.6";
+                e.currentTarget.style.background = "transparent";
               }}
             >
-              <Plus size={16} strokeWidth={2.5} />
+              <Plus size={14} strokeWidth={2} />
             </button>
           )}
 
