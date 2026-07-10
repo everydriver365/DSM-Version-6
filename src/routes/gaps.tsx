@@ -392,7 +392,7 @@ function GapsPage() {
             .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
-            .in("status", ["confirmed", "pending"])
+            .in("status", ["confirmed", "pending", "in_progress"])
             .gte("lesson_date", startIso)
             .lte("lesson_date", endIso)
             .order("lesson_date", { ascending: true })
@@ -400,7 +400,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_minutes,lesson_buffer_before,lesson_buffer_after,hourly_rate",
+              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end",
             )
             .eq("id", userId)
             .maybeSingle(),
