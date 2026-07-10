@@ -139,11 +139,17 @@ function CalendarSyncPage() {
         },
       );
       const syncData = await syncRes.json().catch(() => ({}));
-      if (syncRes.ok && syncData.success) {
-        toast.success(`Calendar synced — ${syncData.eventsImported ?? 0} events imported`);
+      console.log("[calendar-sync] sync response:", syncData);
+      if (syncData.success) {
+        const count = syncData.eventsImported || 0;
+        toast.success(
+          count > 0
+            ? `Calendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
+            : "Calendar synced — no upcoming events found",
+        );
         setLastSynced(new Date().toISOString());
       } else {
-        toast.error(syncData.message || "Sync failed — check your URL and try again");
+        toast.error(syncData.message || syncData.error || "Sync failed — check your URL and try again");
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Sync failed");
