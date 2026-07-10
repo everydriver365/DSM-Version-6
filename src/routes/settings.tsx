@@ -1703,6 +1703,7 @@ function MenuRow({
   icon,
   iconBg,
   label,
+  subLabel,
   value,
   onClick,
   expanded,
@@ -1715,6 +1716,7 @@ function MenuRow({
   icon: React.ReactNode;
   iconBg: string;
   label: string;
+  subLabel?: string;
   value?: string;
   onClick: () => void;
   expanded?: boolean;
@@ -1769,6 +1771,24 @@ function MenuRow({
               }}
             />
           ) : null}
+        </span>
+        {warning ? (
+          <span
+            className="truncate"
+            title={warning}
+            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+          >
+            {warning}
+          </span>
+        ) : subLabel ? (
+          <span
+            className="truncate"
+            title={subLabel}
+            style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}
+          >
+            {subLabel}
+          </span>
+        ) : null}
         </span>
         {warning ? (
           <span
