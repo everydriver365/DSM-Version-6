@@ -186,7 +186,6 @@ function RootComponent() {
   ]);
   const hideNav =
     hideNavExact.has(pathname) ||
-    pathname === "/home" ||
     pathname === "/courses" ||
     pathname.startsWith("/courses/");
 
