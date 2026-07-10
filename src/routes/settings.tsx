@@ -268,7 +268,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
