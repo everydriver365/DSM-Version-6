@@ -589,7 +589,13 @@ type StatSlideData = {
     | { kind: "value"; value: string; label?: string };
 };
 
-function SwipeableStatsCard({ slides }: { slides: StatSlideData[] }) {
+function SwipeableStatsCard({
+  slides,
+  onAddLesson,
+}: {
+  slides: StatSlideData[];
+  onAddLesson?: () => void;
+}) {
   const [idx, setIdx] = useState(0);
   const startX = useRef<number | null>(null);
   const deltaRef = useRef(0);
@@ -610,6 +616,7 @@ function SwipeableStatsCard({ slides }: { slides: StatSlideData[] }) {
   return (
     <div
       style={{
+        position: "relative",
         background: "#FFFFFF",
         borderRadius: 16,
         padding: 16,
@@ -639,6 +646,39 @@ function SwipeableStatsCard({ slides }: { slides: StatSlideData[] }) {
         if (draggingMouse.current) commit();
       }}
     >
+      {onAddLesson && s.key === "today" && (
+        <button
+          type="button"
+          aria-label="Add lesson"
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddLesson();
+          }}
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 2,
+            width: 28,
+            height: 28,
+            borderRadius: 8,
+            background: "#185FA5",
+            color: "#FFFFFF",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <Plus size={16} strokeWidth={2.5} />
+        </button>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <div
           style={{
@@ -655,7 +695,7 @@ function SwipeableStatsCard({ slides }: { slides: StatSlideData[] }) {
         >
           {s.icon}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingRight: 40 }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
           <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
           <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
@@ -4631,7 +4671,10 @@ function HomePage() {
             />
 
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
-            <SwipeableStatsCard slides={statSlides} />
+            <SwipeableStatsCard
+              slides={statSlides}
+              onAddLesson={() => navigate({ to: "/lessons/new" })}
+            />
 
 
 
