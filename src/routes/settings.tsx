@@ -574,47 +574,39 @@ function SettingsPage() {
         <Label>ACCOUNT</Label>
         <SectionCard>
           <MenuRow
-            icon={<User size={18} color="#1E40AF" />}
-            iconBg="#DBEAFE"
+            icon={<User color="#185FA5" />}
+            iconBg="#E6F1FB"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
           />
-
-
           <MenuRow
-            icon={<PoundSterling size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<PoundSterling color="#A32D2D" />}
+            iconBg="#FCEBEB"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
           />
-
           <MenuRow
-            icon={<Clock size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
+            icon={<Clock color="#3B6D11" />}
+            iconBg="#EAF3DE"
             label="Working hours"
             onClick={() => navigate({ to: "/availability" })}
           />
-
-
-
           <MenuRow
-            icon={<Bell size={18} color="#0B1F3A" />}
-            iconBg="#EEF2F7"
+            icon={<Bell color="#B5661E" />}
+            iconBg="#FBEFE1"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
           />
-
           <MenuRow
-            icon={<Calendar size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
+            icon={<Calendar color="#6B4FD6" />}
+            iconBg="#F0EBFF"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
           />
-
           <MenuRow
-            icon={<Crown size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<Crown color="#185FA5" />}
+            iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
@@ -624,13 +616,14 @@ function SettingsPage() {
         <Label>PAYMENTS</Label>
         <SectionCard>
           <MenuRow
-            icon={<PoundSterling size={18} color="#5B21B6" />}
-            iconBg="#EDE9FE"
+            icon={<PoundSterling color="#A32D2D" />}
+            iconBg="#FCEBEB"
             label="Pass booking fee to pupil"
             expanded={expanded === "payments"}
             onClick={() => setExpanded(expanded === "payments" ? null : "payments")}
             isFirst
           />
+
           {expanded === "payments" && (
             <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
               <div className="flex items-start gap-3 pt-3">
