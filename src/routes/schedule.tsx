@@ -781,6 +781,32 @@ function EntryRow({
       </button>
     );
   }
+  if (entry.kind === "block") {
+    return (
+      <div
+        style={{
+          background: "#F5F3FF",
+          borderLeft: "3px solid #7C3AED",
+          borderRadius: 8,
+          padding: "10px 12px",
+          margin: "2px 0",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          ...POPPINS,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        <div style={{ fontSize: 13, color: "#7C3AED", fontWeight: 500, flex: 1 }}>{entry.title}</div>
+        <div style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+          {fmtTime(entry.start)} – {fmtTime(entry.end)}
+        </div>
+      </div>
+    );
+  }
   if (entry.kind === "external") {
     const bg = entry.colour && /^#[0-9a-fA-F]{3,8}$/.test(entry.colour) ? entry.colour : "#4AABDB";
     return (
