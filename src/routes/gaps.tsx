@@ -535,7 +535,7 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number }[]
+          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number; postcode: string | null }[]
         >();
         let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
@@ -544,7 +544,7 @@ function GapsPage() {
           duration_minutes: number | null;
           notes: string | null;
           pupil_id?: string | null;
-          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null } | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null; postcode?: string | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
@@ -561,11 +561,23 @@ function GapsPage() {
             ? Number(l.pupils.buffer_after_minutes)
             : instrBufAfter;
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter, postcode: l.pupils?.postcode ?? null });
           byDay.set(l.lesson_date, arr);
           busyIdx++;
         }
         void busyIdx;
+
+        // If travel time is enabled, augment each lesson's bufAfter with the
+        // estimated travel time to the NEXT lesson on the same day.
+        if (useTravel) {
+          for (const [, list] of byDay) {
+            list.sort((a, b) => a.start - b.start);
+            for (let i = 0; i < list.length - 1; i++) {
+              const travelMins = estimateTravelMins(list[i].postcode, list[i + 1].postcode, travelSpeed, travelExtra);
+              list[i].bufAfter = Math.max(list[i].bufAfter, travelMins);
+            }
+          }
+        }
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
