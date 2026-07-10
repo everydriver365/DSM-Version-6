@@ -1023,8 +1023,8 @@ function MonthCalendar({
 }
 
 const calChevronBtn: React.CSSProperties = {
-  width: 24,
-  height: 24,
+  width: 22,
+  height: 22,
   borderRadius: 8,
   border: 0,
   background: "transparent",
@@ -1036,8 +1036,8 @@ const calChevronBtn: React.CSSProperties = {
 };
 
 const calChip: React.CSSProperties = {
-  width: 30,
-  height: 30,
+  width: 26,
+  height: 26,
   borderRadius: 8,
   border: 0,
   display: "inline-flex",
@@ -1046,4 +1046,5 @@ const calChip: React.CSSProperties = {
   cursor: "pointer",
   padding: 0,
 };
+
 
