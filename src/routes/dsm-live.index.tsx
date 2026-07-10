@@ -16,6 +16,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
+import { IconBroadcast } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
