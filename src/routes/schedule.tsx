@@ -661,8 +661,11 @@ function EntryRow({
   if (entry.kind === "lesson") {
     const l = entry.lesson;
     const name = pupilDisplayName(l.pupil);
-    const label = l.lesson_type ? `${name} · ${l.lesson_type}` : name;
-    const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null);
+    // Fix 3: hide the default "standard" lesson type suffix.
+    const typeRaw = (l.lesson_type ?? "").trim();
+    const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
+    const label = showType ? `${name} · ${typeRaw}` : name;
+
     const cancelled = l.status === "cancelled";
     return (
       <button
