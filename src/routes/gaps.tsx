@@ -382,6 +382,29 @@ function GapsPage() {
             .eq("id", userId)
             .maybeSingle(),
         ]);
+
+        // Fetch external calendar blocks in the same window.
+        let blocks: Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }> = [];
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          if (token) {
+            const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+            const SUPABASE_ANON_KEY =
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+            const blocksRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+              { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+            );
+            if (blocksRes.ok) {
+              const data = await blocksRes.json();
+              if (Array.isArray(data)) blocks = data;
+            }
+          }
+        } catch (err) {
+          console.warn("[gaps] calendar_blocks fetch failed", err);
+        }
+        if (!cancelled) setCalendarBlocks(blocks);
         if (cancelled) return;
         console.log(
           "[gaps] lessons fetched:",
