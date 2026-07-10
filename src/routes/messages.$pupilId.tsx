@@ -217,7 +217,7 @@ function PupilThreadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col" style={POPPINS}>
+    <div className="min-h-screen bg-[#EEF2F7] flex flex-col" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"

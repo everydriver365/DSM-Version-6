@@ -227,7 +227,7 @@ function NewLessonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className="min-h-screen bg-[#EEF2F7]" style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
