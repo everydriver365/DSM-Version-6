@@ -111,6 +111,7 @@ import {
   IconChartBar,
   IconSteeringWheel,
   IconClipboardCheck,
+  IconArmchair,
   IconMicrophone,
   IconBriefcase,
   IconCircleCheck,
@@ -1083,13 +1084,21 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     }
   };
 
-  // Session-type → chip / decorative icon mapping.
-  // Reuses categoryColor semantics from the previous implementation.
-  const sessionType = (category: string | null): "standards" | "meet" | "other" => {
+  // Session-type → colour + icon mapping.
+  const sessionType = (category: string | null): "standards" | "meet" | "waiting" | "other" => {
     const c = (category ?? "").toLowerCase();
     if (c.includes("standards")) return "standards";
     if (c.includes("meet") || c.includes("dsm")) return "meet";
+    if (c.includes("waiting")) return "waiting";
     return "other";
+  };
+  const typeColor = (t: ReturnType<typeof sessionType>) =>
+    t === "meet" ? "#185FA5" : t === "waiting" ? "#6B4FD6" : "#0F2044";
+  const typeIcon = (t: ReturnType<typeof sessionType>) => {
+    if (t === "standards") return { Icon: IconClipboardCheck, color: "#3D7BE0" };
+    if (t === "meet") return { Icon: IconSteeringWheel, color: "#FFFFFF" };
+    if (t === "waiting") return { Icon: IconArmchair, color: "#FFFFFF" };
+    return { Icon: IconCalendar, color: "#FFFFFF" };
   };
   const open = (id: string) =>
     navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
@@ -1106,40 +1115,28 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   // Empty state: no upcoming sessions AND no podcast → render nothing.
   if (sortedSessions.length === 0 && !latestPodcast) return null;
 
-  // If any session has is_live true, use those; otherwise mark the 2 soonest.
-  const anyLive = sortedSessions.some((s) => s.is_live);
-  const liveIds = new Set<string>(
-    anyLive
-      ? sortedSessions.filter((s) => s.is_live).map((s) => s.id)
-      : sortedSessions.slice(0, 2).map((s) => s.id),
-  );
-
-  const Thumbnail = ({ category }: { category: string | null }) => {
+  const Thumbnail = ({ category, imageUrl }: { category: string | null; imageUrl: string | null }) => {
     const t = sessionType(category);
-    if (t === "meet") {
-      return (
-        <div
-          style={{
-            height: 90, background: "#185FA5",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#FFFFFF", fontSize: 28, fontWeight: 500, letterSpacing: "-0.02em",
-            fontFamily: POPPINS,
-          }}
-        >
-          DSM
-        </div>
-      );
-    }
-    const Icon = t === "standards" ? IconClipboardCheck : IconSteeringWheel;
-    const bg = t === "standards" ? "#0F2044" : "#0F2044";
+    const { Icon, color } = typeIcon(t);
+    const bg = typeColor(t);
     return (
       <div
         style={{
-          height: 90, background: bg,
+          height: 80, background: bg, position: "relative",
           display: "flex", alignItems: "center", justifyContent: "center",
+          overflow: "hidden",
         }}
       >
-        <Icon size={36} stroke={1.5} color="#3D7BE0" />
+        {/* Placeholder: replace with session hero image when available */}
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <Icon size={32} stroke={1.5} color={color} />
+        )}
       </div>
     );
   };
@@ -1187,7 +1184,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           }}
         >
           {sortedSessions.map((s) => {
-            const isLive = liveIds.has(s.id);
+            const isLive = s.is_live === true;
             return (
               <div
                 key={s.id}
@@ -1199,43 +1196,43 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 }}
                 style={{
                   background: "#FFFFFF",
-                  border: "1px solid rgba(15,32,68,0.10)",
-                  borderRadius: 18,
+                  borderRadius: 16,
                   overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   cursor: "pointer",
                   userSelect: "none",
                   fontFamily: POPPINS,
                   position: "relative",
                 }}
               >
-                <Thumbnail category={s.category} />
+                <Thumbnail category={s.category} imageUrl={s.image_url} />
                 {isLive && (
                   <div
                     style={{
                       position: "absolute", top: 8, left: 8,
                       display: "inline-flex", alignItems: "center", gap: 3,
                       background: "#E24B4A", borderRadius: 20,
-                      padding: "2px 7px",
+                      padding: "2px 8px",
                     }}
                   >
                     <span
                       aria-hidden
                       style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }}
                     />
-                    <span style={{ fontSize: 8, fontWeight: 500, color: "#FFFFFF" }}>Live</span>
+                    <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF" }}>Live now</span>
                   </div>
                 )}
-                <div style={{ padding: "8px 10px 10px" }}>
+                <div style={{ padding: "10px 12px 12px" }}>
                   <div
                     style={{
-                      fontSize: 12, fontWeight: 500, color: "#0F2044",
+                      fontSize: 13, fontWeight: 500, color: "#12142B",
                       marginBottom: 2,
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     }}
                   >
                     {s.title}
                   </div>
-                  <div style={{ fontSize: 10, color: "#64748B" }}>
+                  <div style={{ fontSize: 11, color: "#B0BAC9" }}>
                     {fmtDateTime(s.session_date, s.session_time)}
                   </div>
                 </div>
@@ -1243,7 +1240,22 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             );
           })}
         </div>
-      ) : null}
+      ) : (
+        <div
+          style={{
+            margin: "0 20px 10px",
+            padding: "24px 12px",
+            textAlign: "center",
+            color: "#B0BAC9",
+            fontSize: 13,
+            fontFamily: POPPINS,
+          }}
+        >
+          No upcoming sessions
+        </div>
+      )}
+
+
 
 
       {latestPodcast && (
