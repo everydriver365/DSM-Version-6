@@ -492,7 +492,7 @@ function PupilsIndexPage() {
               const hoursRemaining = prepaid - hoursUsed;
               const hasHoursLeft = prepaid > 0 && hoursRemaining > 0;
               const hasBalance = balanceOwed > 0;
-              const avatarBg = avatarColor(p.id);
+              const avatarBg = avatarColor(p.id, p.name);
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
               return (
