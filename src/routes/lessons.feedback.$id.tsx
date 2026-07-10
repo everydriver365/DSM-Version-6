@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/lessons/feedback/$id")({
   head: () => ({
@@ -131,7 +132,7 @@ function LessonFeedbackPage() {
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -280,6 +281,6 @@ function LessonFeedbackPage() {
           )}
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 }

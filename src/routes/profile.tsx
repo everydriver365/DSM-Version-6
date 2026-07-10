@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Mail,
   Smartphone,
@@ -666,7 +667,7 @@ function ProfilePage() {
 
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
@@ -1231,6 +1232,6 @@ function ProfilePage() {
           </div>
         </AccordionCard>
       </div>
-    </div>
+    </PageLayout>
   );
 }

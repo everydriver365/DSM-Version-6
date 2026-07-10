@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/syllabus/$id")({
   head: () => ({ meta: [{ title: "Syllabus — DSM by EveryDriver" }] }),
@@ -233,7 +234,7 @@ function PupilSyllabusPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-28" style={POPPINS}>
+    <PageLayout className="pb-28" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-2"
@@ -477,6 +478,6 @@ function PupilSyllabusPage() {
         </button>
         <style>{`@keyframes syllabus-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
-    </div>
+    </PageLayout>
   );
 }

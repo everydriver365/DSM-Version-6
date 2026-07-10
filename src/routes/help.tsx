@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Mail,
   MessageSquare,
@@ -84,7 +85,7 @@ function HelpPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -197,7 +198,7 @@ function HelpPage() {
           <div className="text-[13px] text-[#6B7280] mt-1">© 2026 EveryDriver Ltd</div>
         </Card>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/progress/$id")({
   head: () => ({ meta: [{ title: "Progress — DSM by EveryDriver" }] }),
@@ -222,7 +223,7 @@ function PupilProgressPage() {
   const offset = c - (pct / 100) * c;
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-32" style={POPPINS}>
+    <PageLayout className="pb-32" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center px-2"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -445,7 +446,7 @@ function PupilProgressPage() {
           {saving ? "Saving…" : "Save progress"}
         </Button>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

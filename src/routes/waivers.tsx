@@ -7,6 +7,7 @@ import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/waivers")({
   head: () => ({ meta: [{ title: "Waivers — DSM by EveryDriver" }] }),
@@ -128,7 +129,7 @@ function WaiversPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7]" style={POPPINS}>
+    <PageLayout style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -290,7 +291,7 @@ function WaiversPage() {
       {detail && (
         <TemplateDetailSheet template={detail} onClose={() => setDetail(null)} />
       )}
-    </div>
+    </PageLayout>
   );
 }
 

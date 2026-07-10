@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Plus,
   Mic,
@@ -239,7 +240,7 @@ function CpdPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24" style={POPPINS}>
+    <PageLayout className="pb-24" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -426,7 +427,7 @@ function CpdPage() {
           />
         )}
       </BottomSheet>
-    </div>
+    </PageLayout>
   );
 }
 

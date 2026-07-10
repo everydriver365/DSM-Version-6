@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/notes/$id")({
   head: () => ({
@@ -74,7 +75,7 @@ function NoteEditPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] flex flex-col" style={POPPINS}>
+    <PageLayout className="flex flex-col" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -133,6 +134,6 @@ function NoteEditPage() {
         onConfirm={deleteNote}
         onCancel={() => setConfirmOpen(false)}
       />
-    </div>
+    </PageLayout>
   );
 }

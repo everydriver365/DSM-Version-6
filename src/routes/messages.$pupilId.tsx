@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Phone, Send, AlertTriangle } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/messages/$pupilId")({
   head: () => ({
@@ -217,7 +218,7 @@ function PupilThreadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] flex flex-col" style={POPPINS}>
+    <PageLayout className="flex flex-col" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -377,6 +378,6 @@ function PupilThreadPage() {
     <Send size={16} color="white" />
   </button>
 </div>
-    </div>
+    </PageLayout>
   );
 }

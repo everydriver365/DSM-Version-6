@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   X,
   Shield,
@@ -206,7 +207,7 @@ function VehiclePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24" style={POPPINS}>
+    <PageLayout className="pb-24" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -445,7 +446,7 @@ function VehiclePage() {
           }}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }
 

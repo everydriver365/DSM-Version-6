@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Users, MessageSquare, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/broadcast")({
   head: () => ({
@@ -257,7 +258,7 @@ function BroadcastPage() {
   const canSend = selCount > 0 && message.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-32" style={POPPINS}>
+    <PageLayout className="pb-32" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-4"
@@ -536,6 +537,6 @@ function BroadcastPage() {
           Send to {selCount} pupil{selCount === 1 ? "" : "s"} →
         </button>
       </div>
-    </div>
+    </PageLayout>
   );
 }

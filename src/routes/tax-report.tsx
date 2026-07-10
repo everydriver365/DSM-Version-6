@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   PoundSterling,
   Receipt,
@@ -272,7 +273,7 @@ function TaxReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-12" style={POPPINS}>
+    <PageLayout className="pb-12" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -441,7 +442,7 @@ function TaxReportPage() {
       {loading && (
         <div className="mt-3 text-center text-[12px] text-[#6B7280]">Loading…</div>
       )}
-    </div>
+    </PageLayout>
   );
 }
 

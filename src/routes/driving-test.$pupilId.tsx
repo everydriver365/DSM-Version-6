@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Calendar as CalendarIcon,
   ChevronDown,
@@ -480,7 +481,7 @@ function DrivingTestPage() {
     r === "pass" ? "#059669" : r === "fail" ? "#DC2626" : "#6B7280";
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-32" style={INTER}>
+    <PageLayout className="pb-32" style={INTER}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-20 flex items-center gap-3 px-4 py-3"
@@ -626,7 +627,7 @@ function DrivingTestPage() {
           </button>
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 }
 

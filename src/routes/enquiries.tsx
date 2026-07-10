@@ -4,6 +4,7 @@ import { ArrowLeft, Inbox, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, CheckCi
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/enquiries")({
   head: () => ({
@@ -256,7 +257,7 @@ function EnquiriesPage() {
   const declinedItems = items.filter((n) => statusOf(n) === "declined");
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
         style={{ height: 52, backgroundColor: "#0B1F3A" }}
@@ -406,7 +407,7 @@ function EnquiriesPage() {
           </>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/earnings")({
   head: () => ({
@@ -95,7 +96,7 @@ function EarningsPage() {
   }, [payments]);
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8 pb-safe" style={POPPINS}>
+    <PageLayout className="pb-8 pb-safe" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center px-2"
@@ -173,7 +174,7 @@ function EarningsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

@@ -6,6 +6,7 @@ import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/referrals")({
   head: () => ({
@@ -99,7 +100,7 @@ function ReferralsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -225,6 +226,6 @@ function ReferralsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }

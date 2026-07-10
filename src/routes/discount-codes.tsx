@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
+import { PageLayout } from "@/components/PageLayout";
   ArrowLeft,
   Plus,
   Tag,
@@ -165,7 +166,7 @@ function DiscountCodesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-16" style={POPPINS}>
+    <PageLayout className="pb-16" style={POPPINS}>
       {/* TOP BAR */}
       <div
         className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
@@ -255,7 +256,7 @@ function DiscountCodesPage() {
           />
         )}
       </BottomSheet>
-    </div>
+    </PageLayout>
   );
 }
 

@@ -8,6 +8,7 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/waitinglist")({
   head: () => ({
@@ -92,7 +93,7 @@ function WaitingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-8" style={POPPINS}>
+    <PageLayout className="pb-8" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-2"
@@ -233,7 +234,7 @@ function WaitingListPage() {
           }}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }
 

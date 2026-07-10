@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 
 import {
+import { PageLayout } from "@/components/PageLayout";
   User,
   Clock,
   Bell,
@@ -522,7 +523,7 @@ function SettingsPage() {
   const displayedName = displayName || instructorName || email.split("@")[0] || "Instructor";
 
   return (
-    <div className="min-h-screen bg-[#EEF2F7] pb-24 pb-safe" style={POPPINS}>
+    <PageLayout className="pb-24 pb-safe" style={POPPINS}>
       {/* Top bar */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-4"
@@ -1677,7 +1678,7 @@ function SettingsPage() {
         onConfirm={signOut}
         onCancel={() => setSignOutOpen(false)}
       />
-    </div>
+    </PageLayout>
   );
 }
 
