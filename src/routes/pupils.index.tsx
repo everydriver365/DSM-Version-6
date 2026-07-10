@@ -502,7 +502,7 @@ function PupilsIndexPage() {
                   params={{ id: p.id }}
                   className="block"
                   style={{
-                    backgroundColor: hasBalance ? "#FFFBF8" : "#FFFFFF",
+                    backgroundColor: hasBalance ? "#FFF5F5" : "#FFFFFF",
                     borderBottom: idx < filtered.length - 1 ? "0.5px solid #EEF2F7" : "none",
                   }}
                 >
