@@ -233,6 +233,15 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function formatMins(mins: number) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+
+
 type NAItem = {
   key: 'tests' | 'jobs' | 'calls' | 'enq';
   count: number;
