@@ -83,11 +83,13 @@ interface Lesson {
 // is a matter of pushing entries into the same list — no UI rewrite.
 type AgendaEntry =
   | { kind: "lesson"; id: string; start: Date; end: Date; allDay: false; lesson: Lesson }
+  | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string }
   | { kind: "task"; id: string; start: Date; end: Date; allDay: boolean; title: string; completed?: boolean }
   | { kind: "holiday"; id: string; start: Date; end: Date; allDay: true; title: string };
+
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -149,6 +151,7 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
     const d = new Date(today);
     d.setDate(1);
@@ -201,6 +204,37 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd]);
 
+  // Fetch external calendar blocks in the same window.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const userId = session?.user?.id;
+        if (!token || !userId) return;
+        const startIso = ymdLocal(rangeStart);
+        const endIso = ymdLocal(rangeEnd);
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        setCalendarBlocks(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.warn("[schedule] calendar_blocks fetch failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd]);
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
@@ -217,8 +251,23 @@ function SchedulePage() {
       });
       map.set(key, arr);
     }
-    // TODO: merge external calendar / personal / task / holiday entries here
-    // when their data sources land.
+    // Merge external calendar blocks into the same per-day map.
+    for (const b of calendarBlocks) {
+      if (!b.start_datetime || !b.end_datetime) continue;
+      const key = b.start_datetime.substring(0, 10);
+      const start = new Date(b.start_datetime);
+      const end = new Date(b.end_datetime);
+      const arr = map.get(key) ?? [];
+      arr.push({
+        kind: "block",
+        id: `block-${b.id}`,
+        start,
+        end,
+        allDay: false,
+        title: b.title || "Busy",
+      });
+      map.set(key, arr);
+    }
     for (const [k, arr] of map) {
       arr.sort((a, b) => {
         if (a.allDay && !b.allDay) return -1;
@@ -228,7 +277,7 @@ function SchedulePage() {
       map.set(k, arr);
     }
     return map;
-  }, [lessons]);
+  }, [lessons, calendarBlocks]);
 
   // Ordered list of day keys that actually have entries.
   const orderedDayKeys = useMemo(() => {
@@ -730,6 +779,32 @@ function EntryRow({
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
       </button>
+    );
+  }
+  if (entry.kind === "block") {
+    return (
+      <div
+        style={{
+          background: "#F5F3FF",
+          borderLeft: "3px solid #7C3AED",
+          borderRadius: 8,
+          padding: "10px 12px",
+          margin: "2px 0",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          ...POPPINS,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        <div style={{ fontSize: 13, color: "#7C3AED", fontWeight: 500, flex: 1 }}>{entry.title}</div>
+        <div style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+          {fmtTime(entry.start)} – {fmtTime(entry.end)}
+        </div>
+      </div>
     );
   }
   if (entry.kind === "external") {
