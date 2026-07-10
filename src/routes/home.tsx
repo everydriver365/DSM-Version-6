@@ -4588,6 +4588,29 @@ function HomePage() {
           const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
           if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
         }
+        // Before-first and after-last gaps against the working day (today only).
+        if (tab === 'today' && sorted.length > 0) {
+          const dayKeysArr = ['sun','mon','tue','wed','thu','fri','sat'] as const;
+          const todayDayKey = dayKeysArr[new Date().getDay()];
+          const worksToday = workingHours ? Boolean((workingHours as any)[todayDayKey]) : true;
+          if (worksToday) {
+            const startStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
+            const endStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
+            const [sh, sm] = startStr.split(':').map(Number);
+            const [eh, em] = endStr.split(':').map(Number);
+            const workStart = new Date(); workStart.setHours(sh || 9, sm || 0, 0, 0);
+            const workEnd = new Date(); workEnd.setHours(eh || 18, em || 0, 0, 0);
+            const firstL = sorted[0];
+            const firstStart = lessonDateTime(firstL);
+            const beforeMins = Math.round((firstStart.getTime() - workStart.getTime()) / 60000);
+            if (beforeMins >= 60) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
+            const lastL = sorted[sorted.length - 1];
+            const lastEnd = new Date(lessonDateTime(lastL).getTime() + (lastL.duration_minutes ?? 60) * 60000);
+            const afterMins = Math.round((workEnd.getTime() - lastEnd.getTime()) / 60000);
+            if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
+          }
+        }
+
         const todayGapCount = rows.filter((r) => r.kind === 'gap').length;
 
         const currentLesson = sorted.find((l) => {
@@ -4854,7 +4877,59 @@ function HomePage() {
                     </div>
                   </div>
 
-                  {lessonRows.map((row, idx) => {
+                  {rows.map((r, idx) => {
+                    if (r.kind === 'gap') {
+                      const gs = r.start;
+                      const ge = new Date(gs.getTime() + r.mins * 60000);
+                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                      const hourlyRate = 40;
+                      const potential = Math.round((r.mins / 60) * hourlyRate);
+                      return (
+                        <div
+                          key={`gap-${idx}`}
+                          onClick={() => navigate({ to: '/gaps' as never })}
+                          role="button"
+                          tabIndex={0}
+                          style={{
+                            background: '#FFFBEB',
+                            borderLeft: '3px solid #D97706',
+                            borderRadius: 10,
+                            padding: '10px 14px',
+                            margin: '0 0 10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <IconBolt size={14} stroke={2} color="#D97706" />
+                          <div style={{ fontSize: 13, fontWeight: 500, color: '#78350F', fontVariantNumeric: 'tabular-nums' }}>
+                            {fmtT(gs)} – {fmtT(ge)}
+                          </div>
+                          <div style={{ flex: 1, fontSize: 12, color: '#92400E' }}>
+                            {r.mins} min free · £{potential} potential
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                            style={{
+                              background: '#D97706',
+                              color: '#FFFFFF',
+                              fontSize: 12,
+                              fontWeight: 700,
+                              padding: '6px 12px',
+                              borderRadius: 8,
+                              border: 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Fill →
+                          </button>
+                        </div>
+                      );
+                    }
+                    const row = { kind: 'lesson' as const, l: r.l };
+
                     const l = row.l;
                     const start = lessonDateTime(l);
                     const dur = l.duration_minutes ?? 60;
