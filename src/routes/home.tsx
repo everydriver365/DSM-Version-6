@@ -4671,7 +4671,10 @@ function HomePage() {
             />
 
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
-            <SwipeableStatsCard slides={statSlides} />
+            <SwipeableStatsCard
+              slides={statSlides}
+              onAddLesson={() => navigate({ to: "/lessons/new" })}
+            />
 
 
 
