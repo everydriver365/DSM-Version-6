@@ -85,6 +85,7 @@ import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
 import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as BroadcastRouteImport } from './routes/broadcast'
 import { Route as BriefingRouteImport } from './routes/briefing'
+import { Route as AvailabilitySettingsRouteImport } from './routes/availability-settings'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -518,6 +519,11 @@ const BriefingRoute = BriefingRouteImport.update({
   path: '/briefing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AvailabilitySettingsRoute = AvailabilitySettingsRouteImport.update({
+  id: '/availability-settings',
+  path: '/availability-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilityRoute = AvailabilityRouteImport.update({
   id: '/availability',
   path: '/availability',
@@ -783,6 +789,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/availability-settings': typeof AvailabilitySettingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -912,6 +919,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/availability-settings': typeof AvailabilitySettingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1040,6 +1048,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
+  '/availability-settings': typeof AvailabilitySettingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1171,6 +1180,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/automations'
     | '/availability'
+    | '/availability-settings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1300,6 +1310,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/automations'
     | '/availability'
+    | '/availability-settings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1427,6 +1438,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/automations'
     | '/availability'
+    | '/availability-settings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1558,6 +1570,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
+  AvailabilitySettingsRoute: typeof AvailabilitySettingsRoute
   BriefingRoute: typeof BriefingRoute
   BroadcastRoute: typeof BroadcastRoute
   BulkmessageRoute: typeof BulkmessageRoute
@@ -2200,6 +2213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BriefingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/availability-settings': {
+      id: '/availability-settings'
+      path: '/availability-settings'
+      fullPath: '/availability-settings'
+      preLoaderRoute: typeof AvailabilitySettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability': {
       id: '/availability'
       path: '/availability'
@@ -2653,6 +2673,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
+  AvailabilitySettingsRoute: AvailabilitySettingsRoute,
   BriefingRoute: BriefingRoute,
   BroadcastRoute: BroadcastRoute,
   BulkmessageRoute: BulkmessageRoute,

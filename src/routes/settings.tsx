@@ -656,6 +656,14 @@ function SettingsPage() {
             isLast={false}
           />
           <MenuRow
+            icon={<Clock color="#1A52A0" />}
+            iconBg="#F0F4FF"
+            label="Availability & blocks"
+            subLabel="Working hours, buffers, recurring blocks, time off"
+            onClick={() => navigate({ to: "/availability-settings" as never })}
+            isLast={false}
+          />
+          <MenuRow
             icon={<Bell color="#B5661E" />}
             iconBg="#FBEFE1"
             label="Notifications"
