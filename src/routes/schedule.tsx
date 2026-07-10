@@ -420,18 +420,17 @@ function SchedulePage() {
 
       <div
         style={{
-          padding: "10px 16px 4px",
-          background: "#FFFFFF",
+          padding: "10px 16px 8px",
+          background: "transparent",
         }}
       >
         <div
           style={{
             display: "flex",
             gap: 0,
-            background: "#EEF2F7",
+            background: "#E9EDF2",
             borderRadius: 12,
-            padding: 3,
-            marginBottom: 14,
+            padding: 4,
           }}
         >
           {(["calendar", "agenda"] as const).map((v) => {
@@ -443,14 +442,15 @@ function SchedulePage() {
                 onClick={() => setView(v)}
                 style={{
                   flex: 1,
-                  padding: "9px 4px",
+                  padding: "10px 0",
                   borderRadius: 9,
                   border: 0,
                   cursor: "pointer",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  fontSize: 14,
+                  fontWeight: active ? 500 : 400,
+                  textAlign: "center",
                   background: active ? "#0F2044" : "transparent",
-                  color: active ? "#FFFFFF" : "#8A94A6",
+                  color: active ? "#FFFFFF" : "#8A93A3",
                   ...POPPINS,
                 }}
               >
@@ -460,6 +460,7 @@ function SchedulePage() {
           })}
         </div>
       </div>
+
 
 
       <div
@@ -499,9 +500,8 @@ function SchedulePage() {
             onAdd={() => navigate({ to: "/lessons/new" as never })}
           />
         )}
-        {view === "calendar" && (
-          <div style={{ height: 0.5, background: "#EEF2F7" }} />
-        )}
+        {view === "calendar" && <div style={{ height: 8 }} />}
+
         <div style={{ padding: "8px 0 0" }}>
 
         {lessons === null ? (
@@ -863,14 +863,10 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        padding: "12px 0 0",
-        borderBottom: "0.5px solid #E5E7EB",
-        height: 220,
-        maxHeight: 220,
+        borderRadius: 14,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        padding: 16,
         boxSizing: "border-box",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
       }}
     >
       {/* Top row: month + nav + actions */}
@@ -879,12 +875,12 @@ function MonthCalendar({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 8,
+          marginBottom: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calIconBtn}>
-            <IconChevronLeft size={18} stroke={1.75} color="#8A94A6" />
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button type="button" aria-label="Previous month" onClick={onPrevMonth} style={calChevronBtn}>
+            <IconChevronLeft size={18} stroke={1.75} color="#8A93A3" />
           </button>
           <button
             type="button"
@@ -897,37 +893,46 @@ function MonthCalendar({
               border: 0,
               padding: "0 4px",
               fontSize: 16,
-              fontWeight: 600,
+              fontWeight: 500,
               lineHeight: 1,
-              color: "#12142B",
+              color: "#0F2044",
               ...POPPINS,
               cursor: "pointer",
             }}
           >
             <span>{monthLabel}</span>
-            <IconChevronDown size={14} stroke={1.75} color="#8A94A6" />
+            <IconChevronDown size={14} stroke={1.75} color="#8A93A3" />
           </button>
-          <button type="button" aria-label="Next month" onClick={onNextMonth} style={calIconBtn}>
-            <IconChevronRight size={18} stroke={1.75} color="#8A94A6" />
+          <button type="button" aria-label="Next month" onClick={onNextMonth} style={calChevronBtn}>
+            <IconChevronRight size={18} stroke={1.75} color="#8A93A3" />
           </button>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <button type="button" aria-label="Search" onClick={onSearch} style={calIconBtn}>
-            <IconSearch size={18} stroke={1.75} color="#8A94A6" />
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <button
+            type="button"
+            aria-label="Search"
+            onClick={onSearch}
+            style={{ ...calChip, background: "#E6F1FB" }}
+          >
+            <IconSearch size={15} stroke={1.75} color="#185FA5" />
           </button>
-          <button type="button" aria-label="Add lesson" onClick={onAdd} style={calIconBtn}>
-            <IconPlus size={18} stroke={1.75} color="#185FA5" />
+          <button
+            type="button"
+            aria-label="Add lesson"
+            onClick={onAdd}
+            style={{ ...calChip, background: "#185FA5" }}
+          >
+            <IconPlus size={15} stroke={1.75} color="#FFFFFF" />
           </button>
         </div>
       </div>
-
 
       {/* Day-of-week header */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 6,
+          paddingBottom: 8,
         }}
       >
         {dow.map((d, i) => (
@@ -935,11 +940,11 @@ function MonthCalendar({
             key={i}
             style={{
               textAlign: "center",
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: 500,
               lineHeight: 1,
-              color: "#B0BAC9",
-              padding: "2px 0",
+              color: "#8A93A3",
+              ...POPPINS,
             }}
           >
             {d}
@@ -947,23 +952,22 @@ function MonthCalendar({
         ))}
       </div>
 
-
       {/* Date grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridTemplateRows: "repeat(6, minmax(0, 1fr))", flex: "1 1 0", minHeight: 0, paddingBottom: 0 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
         {cells.map((d) => {
           const key = ymdLocal(d);
           const inMonth = d.getMonth() === month.getMonth();
           const isToday = key === todayKey;
-          const isPast = key < todayKey;
           const isSelected = key === selectedDateKey && !isToday;
           const dots = dotsByDay.get(key) ?? [];
+          const dotColour = dots[0];
           const numColour = isToday
             ? "#FFFFFF"
-            : !inMonth
-              ? "#D0D5DD"
-              : isPast
-                ? "#8A94A6"
-                : "#12142B";
+            : isSelected
+              ? "#185FA5"
+              : !inMonth
+                ? "#C7CCD4"
+                : "#0F2044";
           return (
             <button
               type="button"
@@ -973,62 +977,42 @@ function MonthCalendar({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: 1,
+                justifyContent: "flex-start",
                 background: "transparent",
                 border: 0,
-                padding: "4px 0",
+                padding: "6px 0",
                 cursor: "pointer",
-                height: "100%",
-                minHeight: 0,
                 ...POPPINS,
               }}
             >
               <div
                 style={{
-                  position: "relative",
-                  width: 26,
-                  height: 26,
+                  width: 30,
+                  height: 30,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  margin: "0 auto",
-                  background: isToday ? "#185FA5" : isSelected ? "#E6F1FB" : "transparent",
+                  background: isToday ? "#185FA5" : "transparent",
+                  border: isSelected ? "1.5px solid #185FA5" : "none",
                   color: numColour,
-                  fontSize: 12,
-                  fontWeight: isToday ? 600 : 500,
+                  fontSize: 14,
+                  fontWeight: isToday || isSelected ? 500 : 400,
                   fontVariantNumeric: "tabular-nums",
+                  boxSizing: "border-box",
                 }}
               >
                 {d.getDate()}
               </div>
-              {/* Fix 2: pupil dots below the date number — 4px, full-strength colour. */}
               <div
                 style={{
-                  marginTop: 2,
-                  display: "flex",
-                  gap: 2,
-                  justifyContent: "center",
-                  minHeight: 4,
+                  margin: "3px auto 0",
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: dotColour ?? "transparent",
                 }}
-              >
-                {dots.map((c, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: "50%",
-                      background: c,
-                      display: "inline-block",
-                    }}
-                  />
-                ))}
-              </div>
-
-
-
+              />
             </button>
           );
         })}
@@ -1037,9 +1021,9 @@ function MonthCalendar({
   );
 }
 
-const calIconBtn: React.CSSProperties = {
-  width: 32,
-  height: 32,
+const calChevronBtn: React.CSSProperties = {
+  width: 24,
+  height: 24,
   borderRadius: 8,
   border: 0,
   background: "transparent",
@@ -1047,4 +1031,18 @@ const calIconBtn: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
+  padding: 0,
 };
+
+const calChip: React.CSSProperties = {
+  width: 30,
+  height: 30,
+  borderRadius: 8,
+  border: 0,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  padding: 0,
+};
+
