@@ -734,7 +734,7 @@ function StatTile({ label, value, color }: { label: string; value: string; color
           fontWeight: 500,
           color: "#8A94A6",
           letterSpacing: "0.03em",
-          marginBottom: 6,
+          marginBottom: 5,
           whiteSpace: "nowrap",
           lineHeight: 1.2,
           ...POPPINS,
@@ -742,7 +742,7 @@ function StatTile({ label, value, color }: { label: string; value: string; color
       >
         {label}
       </div>
-      <div style={{ fontSize: 20, fontWeight: 600, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: 18, fontWeight: 600, color, ...POPPINS }}>{value}</div>
     </div>
   );
 }
