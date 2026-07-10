@@ -224,6 +224,13 @@ function SchedulePage() {
 
   const todayKey = ymdLocal(today);
 
+  // Fix 4: ensure today always appears in the agenda, even with no lessons.
+  const orderedDayKeysWithToday = useMemo(() => {
+    if (orderedDayKeys.includes(todayKey)) return orderedDayKeys;
+    const merged = [...orderedDayKeys, todayKey].sort();
+    return merged;
+  }, [orderedDayKeys, todayKey]);
+
   // Insert "Week of ..." labels above the first day of each new week.
   type Row =
     | { type: "week"; key: string; label: string }
@@ -231,7 +238,7 @@ function SchedulePage() {
   const rows: Row[] = useMemo(() => {
     const out: Row[] = [];
     let lastWeekKey = "";
-    for (const key of orderedDayKeys) {
+    for (const key of orderedDayKeysWithToday) {
       const [y, m, d] = key.split("-").map(Number);
       const date = new Date(y, m - 1, d);
       const wk = ymdLocal(mondayOf(date));
@@ -239,30 +246,35 @@ function SchedulePage() {
         out.push({ type: "week", key: `w-${wk}`, label: weekRangeLabel(date) });
         lastWeekKey = wk;
       }
-      out.push({ type: "day", key, date, entries: entriesByDay.get(key)! });
+      out.push({ type: "day", key, date, entries: entriesByDay.get(key) ?? [] });
     }
     return out;
-  }, [orderedDayKeys, entriesByDay]);
+  }, [orderedDayKeysWithToday, entriesByDay]);
 
-  // Auto-scroll to today on first paint after data loads.
+  // Fix 1: auto-scroll to today on first paint after data loads.
+  // Suppress the scroll observer during the programmatic scroll so it doesn't
+  // rewrite calendarMonth to a past month during the initial jump.
   useLayoutEffect(() => {
     if (didScrollToToday.current) return;
     if (lessons === null) return;
     const el = todayRef.current;
     const scroller = scrollRef.current;
     if (!scroller) return;
+    suppressScrollUpdate.current = true;
     if (el) {
-      // Scroll such that today sits near the top of the scroll container.
       const top = el.offsetTop - scroller.offsetTop - 8;
       scroller.scrollTop = top;
     } else {
-      // No entries on today — find the nearest future day with entries.
-      const nextKey = orderedDayKeys.find((k) => k >= todayKey);
+      const nextKey = orderedDayKeysWithToday.find((k) => k >= todayKey);
       const target = nextKey ? dayRefs.current.get(nextKey) : undefined;
       if (target) scroller.scrollTop = target.offsetTop - scroller.offsetTop - 8;
     }
     didScrollToToday.current = true;
-  }, [lessons, orderedDayKeys, todayKey]);
+    window.setTimeout(() => {
+      suppressScrollUpdate.current = false;
+    }, 250);
+  }, [lessons, orderedDayKeysWithToday, todayKey]);
+
 
   // As the agenda scrolls, update the calendar month + selected-date
   // highlight to follow the top-most visible day.
