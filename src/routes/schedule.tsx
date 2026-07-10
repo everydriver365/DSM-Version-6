@@ -500,9 +500,8 @@ function SchedulePage() {
             onAdd={() => navigate({ to: "/lessons/new" as never })}
           />
         )}
-        {view === "calendar" && (
-          <div style={{ height: 0.5, background: "#EEF2F7" }} />
-        )}
+        {view === "calendar" && <div style={{ height: 8 }} />}
+
         <div style={{ padding: "8px 0 0" }}>
 
         {lessons === null ? (
