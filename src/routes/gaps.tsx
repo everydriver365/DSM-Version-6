@@ -512,7 +512,13 @@ function GapsPage() {
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
           lunch_break_end?: string | null;
+          use_travel_time?: boolean | null;
+          avg_travel_speed_mph?: number | null;
+          travel_buffer_mins?: number | null;
         };
+        const useTravel = !!instr.use_travel_time;
+        const travelSpeed = Number(instr.avg_travel_speed_mph ?? 25) || 25;
+        const travelExtra = Number(instr.travel_buffer_mins ?? 10) || 0;
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const instrBufBefore = instr.lesson_buffer_before ?? 0;
