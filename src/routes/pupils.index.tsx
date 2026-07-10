@@ -376,10 +376,9 @@ function PupilsIndexPage() {
         <div
           className="flex w-full"
           style={{
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "#EEF2F7",
             borderRadius: 12,
             padding: 3,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
           {(
@@ -399,11 +398,13 @@ function PupilsIndexPage() {
                 style={{
                   ...POPPINS,
                   padding: "9px 4px",
+                  fontSize: 13,
                   backgroundColor: active ? "#0F2044" : "transparent",
                   color: active ? "#FFFFFF" : "#8A94A6",
                   fontWeight: 500,
                   border: "none",
                   borderRadius: 9,
+                  boxShadow: "none",
                   cursor: "pointer",
                 }}
               >
@@ -413,6 +414,7 @@ function PupilsIndexPage() {
           })}
         </div>
       </div>
+
 
       {/* List */}
       <div>
