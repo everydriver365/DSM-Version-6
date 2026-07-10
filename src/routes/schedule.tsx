@@ -1001,8 +1001,8 @@ function SchedulePage() {
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           right: 20,
-          width: 56,
-          height: 56,
+          width: 50,
+          height: 50,
           borderRadius: '50%',
           background: '#0F2044',
           border: 'none',
@@ -1010,12 +1010,12 @@ function SchedulePage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(15,32,68,0.3)',
+          boxShadow: '0 4px 10px rgba(15,32,68,0.3)',
           zIndex: 50,
         }}
         aria-label="Add lesson"
       >
-        <Plus size={24} color="white" />
+        <Plus size={22} color="white" />
       </button>
     </div>
   );
