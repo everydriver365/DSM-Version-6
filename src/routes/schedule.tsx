@@ -811,16 +811,17 @@ function SchedulePage() {
               >
                 {row.entries.length === 0 && isToday ? (
                   // Fix 4: today with no lessons — dashed placeholder row.
-                  <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                    <div style={{ width: 36, flexShrink: 0, textAlign: "right", paddingTop: 8 }}>
-                      <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", letterSpacing: "0.04em" }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
+                    <div style={{ width: 34, flexShrink: 0, textAlign: "left", paddingTop: 12 }}>
+                      <div style={{ fontSize: 10, fontWeight: 500, color: "#8A93A3", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                         {weekday}
                       </div>
                       <div
                         style={{
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: 600,
-                          color: "#185FA5",
+                          color: "#0F2044",
+                          marginTop: 2,
                           fontVariantNumeric: "tabular-nums",
                         }}
                       >
