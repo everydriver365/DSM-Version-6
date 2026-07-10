@@ -1196,7 +1196,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     textAlign: "left",
     border: 0,
     borderRadius: 12,
-    padding: "10px 14px",
+    padding: "12px 14px",
     background: bg,
     color: "#FFFFFF",
     cursor: "pointer",
@@ -1207,15 +1207,15 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
   };
 }
 const rowTitle: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: 14,
   fontWeight: 500,
   color: "#FFFFFF",
   lineHeight: 1.3,
 };
 const rowSub: React.CSSProperties = {
   marginTop: 2,
-  fontSize: 11,
-  color: "rgba(255,255,255,0.75)",
+  fontSize: 12,
+  color: "rgba(255,255,255,0.8)",
   fontVariantNumeric: "tabular-nums",
 };
 
