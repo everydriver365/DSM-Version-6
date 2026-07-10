@@ -588,7 +588,7 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          let isWorkDay = workDays.includes(dayName);
+          const isWorkDay = workDays.includes(dayName);
 
           // Time off — if any covers this date and is all-day, skip the day entirely.
           const dayTimeOff = timeOffRows.filter(t => t.start_date <= iso && t.end_date >= iso);
