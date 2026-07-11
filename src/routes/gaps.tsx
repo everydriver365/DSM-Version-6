@@ -12,7 +12,7 @@ import {
   ChevronUp,
   AlertTriangle,
   Coffee,
-  Car,
+  
 } from "lucide-react";
 import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -105,40 +105,6 @@ function hmToMin(t: string) {
   return (h || 0) * 60 + (m || 0);
 }
 
-// Rough UK-postcode → travel-time estimator using outcode centroids and the
-// Haversine formula. Good enough for schedule-buffering; not turn-by-turn.
-const OUTCODE_COORDS: Record<string, [number, number]> = {
-  SO: [50.9097, -1.4044], PO: [50.8198, -1.0873], GU: [51.2362, -0.5704],
-  RG: [51.4543, -0.9781], SP: [51.0648, -1.7923], BH: [50.7192, -1.8808],
-  DT: [50.7155, -2.4413], BA: [51.3781, -2.3597], BS: [51.4545, -2.5879],
-  SN: [51.5558, -1.7797], OX: [51.7520, -1.2577], RH: [51.2362, -0.1837],
-  KT: [51.3748, -0.3474], SW: [51.4700, -0.1800], SE: [51.5000, -0.0500],
-  W:  [51.5100, -0.2000], E:  [51.5200, -0.0400], N:  [51.5500, -0.1200],
-  NW: [51.5400, -0.1700], EC: [51.5200, -0.1000], WC: [51.5200, -0.1200],
-};
-function estimateTravelMins(
-  fromPostcode: string | null,
-  toPostcode: string | null,
-  speedMph: number,
-  extraBuffer: number,
-): number {
-  if (!fromPostcode || !toPostcode) return extraBuffer;
-  const fromOutcode = fromPostcode.trim().toUpperCase().split(" ")[0].replace(/[0-9]/g, "");
-  const toOutcode = toPostcode.trim().toUpperCase().split(" ")[0].replace(/[0-9]/g, "");
-  const fromCoords = OUTCODE_COORDS[fromOutcode];
-  const toCoords = OUTCODE_COORDS[toOutcode];
-  if (!fromCoords || !toCoords) return extraBuffer + 10;
-  const R = 3958.8;
-  const dLat = (toCoords[0] - fromCoords[0]) * Math.PI / 180;
-  const dLon = (toCoords[1] - fromCoords[1]) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 +
-    Math.cos(fromCoords[0] * Math.PI / 180) * Math.cos(toCoords[0] * Math.PI / 180) *
-    Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distanceMiles = R * c;
-  const travelMins = Math.round((distanceMiles / (speedMph || 25)) * 60);
-  return travelMins + extraBuffer;
-}
 
 function minToHm(m: number) {
   const h = Math.floor(m / 60);
@@ -472,7 +438,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
+              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -551,13 +517,7 @@ function GapsPage() {
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
           lunch_break_end?: string | null;
-          use_travel_time?: boolean | null;
-          avg_travel_speed_mph?: number | null;
-          travel_buffer_mins?: number | null;
         };
-        const useTravel = !!instr.use_travel_time;
-        const travelSpeed = Number(instr.avg_travel_speed_mph ?? 25) || 25;
-        const travelExtra = Number(instr.travel_buffer_mins ?? 10) || 0;
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
         const instrBufAfter = instr.lesson_buffer_after ?? 15;
@@ -720,8 +680,8 @@ function GapsPage() {
             continue;
           }
           // Build gap boundaries. For each consecutive pair A → B, the required
-          // minimum gap between A.end and B.start is:
-          //   MAX(A.bufAfter, travel time between A and B)
+          // minimum gap between A.end and B.start is A.bufAfter (pupil override
+          // via buffer_after_minutes, else instructor default).
           // Buffer before B is NEVER added on top — a single "buffer after" is
           // the only reservation between lessons.
           const gaps: {
@@ -742,21 +702,8 @@ function GapsPage() {
             let gapReason = "";
             if (hasPrevLesson && previousLesson) {
               const bufferAfterA = previousLesson.bufAfter;
-              let travelMins = 0;
-              if (useTravel) {
-                travelMins = estimateTravelMins(
-                  previousLesson.postcode ?? null,
-                  current.postcode ?? null,
-                  travelSpeed,
-                  travelExtra,
-                );
-              }
-              leftReserve = Math.max(bufferAfterA, travelMins);
-              if (useTravel && travelMins > bufferAfterA) {
-                gapReason = `~${travelMins} min drive`;
-              } else {
-                gapReason = bufferAfterA > 0 ? `${bufferAfterA} min buffer` : "";
-              }
+              leftReserve = bufferAfterA;
+              gapReason = bufferAfterA > 0 ? `${bufferAfterA} min buffer` : "";
             }
             const effStart = rawCursor + leftReserve;
             const effEnd = rawEnd;

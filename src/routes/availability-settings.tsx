@@ -6,7 +6,7 @@ import {
   Shield,
   Repeat,
   Calendar as CalendarIcon,
-  Car,
+  
   X,
   Plus,
   ChevronDown,
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/availability-settings")({
   head: () => ({
     meta: [
       { title: "My Availability — DSM" },
-      { name: "description", content: "Set your working hours, buffers, recurring blocks, time off and travel time." },
+      { name: "description", content: "Set your working hours, buffers, recurring blocks and time off." },
     ],
   }),
   component: AvailabilitySettingsPage,
@@ -256,10 +256,6 @@ function AvailabilitySettingsPage() {
   const [toStartTime, setToStartTime] = useState("09:00");
   const [toEndTime, setToEndTime] = useState("17:00");
 
-  // Travel
-  const [useTravel, setUseTravel] = useState(false);
-  const [travelSpeed, setTravelSpeed] = useState(25);
-  const [travelBuffer, setTravelBuffer] = useState(10);
 
   const [savedFlash, setSavedFlash] = useState<string | null>(null);
   const flash = (msg: string) => { setSavedFlash(msg); setTimeout(() => setSavedFlash(null), 1800); };
@@ -273,7 +269,7 @@ function AvailabilitySettingsPage() {
     (async () => {
       const { data: instr } = await supabase
         .from("instructors")
-        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
+        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after")
         .eq("id", userId).maybeSingle();
       if (instr) {
         const i = instr as Record<string, unknown>;
@@ -306,10 +302,6 @@ function AvailabilitySettingsPage() {
         if (i.lesson_buffer_after != null) setBufAfter(Number(i.lesson_buffer_after));
         // NOTE: lunch_break_start / lunch_break_end columns do not exist on instructors table.
         // Lunch break UI state is local-only until a migration adds those columns.
-
-        if (i.use_travel_time) setUseTravel(!!i.use_travel_time);
-        if (i.avg_travel_speed_mph) setTravelSpeed(Number(i.avg_travel_speed_mph));
-        if (i.travel_buffer_mins != null) setTravelBuffer(Number(i.travel_buffer_mins));
       }
 
       const { data: rb } = await supabase
@@ -353,7 +345,7 @@ function AvailabilitySettingsPage() {
 
   const workingHoursSave = useSaveState();
   const buffersSave = useSaveState();
-  const travelSave = useSaveState();
+  
 
   async function saveWorkingHours() {
     if (!userId) throw new Error("Not signed in");
@@ -381,13 +373,6 @@ function AvailabilitySettingsPage() {
     if (error) throw error;
   }
 
-  async function saveTravel() {
-    if (!userId) throw new Error("Not signed in");
-    const { error } = await supabase.from("instructors")
-      .update({ use_travel_time: useTravel, avg_travel_speed_mph: travelSpeed, travel_buffer_mins: travelBuffer })
-      .eq("id", userId);
-    if (error) throw error;
-  }
 
   async function addRecurring() {
     if (!userId) return;
@@ -707,50 +692,6 @@ function AvailabilitySettingsPage() {
         )}
       </Card>
 
-      {/* SECTION 5 — TRAVEL TIME */}
-      <Card>
-        <SectionHead icon={<Car size={16} color={BLUE} />} title="Travel time between lessons" tight />
-        <Description>Automatically add travel time between lessons based on pupil postcodes</Description>
-
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
-          <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>Calculate travel time</div>
-          <Toggle on={useTravel} onChange={() => setUseTravel((v) => !v)} />
-        </div>
-
-        {useTravel && (
-          <>
-            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-              <SelectField
-                value={travelSpeed} onChange={setTravelSpeed}
-                label="Average driving speed"
-                options={[
-                  { v: 20, label: "Urban (20mph)" },
-                  { v: 25, label: "Mixed (25mph)" },
-                  { v: 30, label: "Suburban (30mph)" },
-                  { v: 40, label: "Rural (40mph)" },
-                ]}
-              />
-              <SelectField
-                value={travelBuffer} onChange={setTravelBuffer}
-                label="Extra buffer"
-                options={[0,5,10,15].map(v => ({ v, label: `${v} mins` }))}
-              />
-            </div>
-            <div style={{ marginTop: 10, background: CHIP_BG, borderRadius: 10, padding: 12, fontSize: 12, color: BLUE, lineHeight: 1.5 }}>
-              • DSM calculates straight-line distance between lesson postcodes<br />
-              • Travel time = distance ÷ speed + extra buffer<br />
-              • This is an estimate — actual drive times may vary<br />
-              • Accuracy improves when pupils have postcodes set
-            </div>
-          </>
-        )}
-
-        <SaveButton
-          state={travelSave.state}
-          onClick={() => travelSave.runSave(saveTravel)}
-          label="Save travel settings"
-        />
-      </Card>
     </div>
   );
 }
