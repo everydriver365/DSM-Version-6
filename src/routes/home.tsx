@@ -84,6 +84,7 @@ import {
   ShieldCheck,
   Laptop,
   Package,
+  XCircle,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -243,20 +244,22 @@ function formatMins(mins: number) {
 
 
 type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq';
+  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules';
   count: number;
   primary: string;
   subtitle: string;
   onClick: () => void;
 };
 
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['tests', 'jobs', 'calls', 'enq'];
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['cancellations', 'reschedules', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
   tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
   jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
   calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
+  cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: XCircle },
+  reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
 };
 
 const NA_CARD_STYLE: React.CSSProperties = {
@@ -322,7 +325,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   const sorted = [...active].sort((a, b) => {
     if (b.count !== a.count) return b.count - a.count;
     return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
-  }).slice(0, 4);
+  }).slice(0, 6);
   return (
     <div style={{ margin: '16px 16px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
@@ -1852,6 +1855,8 @@ function HomePage() {
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
+  const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
+  const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
 
   // ----- Desktop layout (>=768px) — mobile untouched -----
   const [isDesktop, setIsDesktop] = useState<boolean>(() =>
@@ -1910,6 +1915,39 @@ function HomePage() {
         const data = await res.json();
         if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
       } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  // Pupil cancellations (last 24h) + unread reschedule requests
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const since = new Date(Date.now() - 86400000).toISOString();
+      const { data: canc } = await supabase
+        .from("lessons")
+        .select("id, pupils(first_name, name)")
+        .eq("instructor_id", userId)
+        .eq("status", "cancelled")
+        .eq("cancelled_by", "pupil")
+        .gte("cancelled_at", since)
+        .order("cancelled_at", { ascending: false });
+      if (!cancelled) {
+        const rows = (canc ?? []).map((r: any) => ({
+          id: r.id as string,
+          pupil_first_name: (r.pupils?.first_name as string | null) ?? (r.pupils?.name ? String(r.pupils.name).split(/\s+/)[0] : null),
+        }));
+        setRecentCancellations(rows);
+      }
+
+      const { count: reschedCount } = await supabase
+        .from("instructor_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", userId)
+        .eq("type", "reschedule_request")
+        .eq("read", false);
+      if (!cancelled) setRescheduleRequestsCount(reschedCount ?? 0);
     })();
     return () => { cancelled = true; };
   }, [userId]);
@@ -4545,7 +4583,25 @@ function HomePage() {
           const latestEnq = [...(swapRequests ?? [])]
             .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))[0];
 
+          const cancCount = recentCancellations.length;
+          const cancFirst = recentCancellations[0]?.pupil_first_name || 'A pupil';
           const items: NAItem[] = [
+            {
+              key: 'cancellations',
+              count: cancCount,
+              primary: cancCount === 1
+                ? `${cancFirst} cancelled their lesson`
+                : `${cancCount} lessons cancelled by pupils today`,
+              subtitle: 'Tap to review and fill the slot',
+              onClick: () => navigate({ to: '/notifications' as never }),
+            },
+            {
+              key: 'reschedules',
+              count: rescheduleRequestsCount,
+              primary: `${rescheduleRequestsCount} reschedule request${rescheduleRequestsCount === 1 ? '' : 's'}`,
+              subtitle: 'Pupils waiting for a reply',
+              onClick: () => navigate({ to: '/messages' as never }),
+            },
             {
               key: 'tests',
               count: naTests,
