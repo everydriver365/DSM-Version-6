@@ -37,6 +37,7 @@ import {
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -93,6 +94,10 @@ function SettingsPage() {
   }, []);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
+  const [homeAddress, setHomeAddress] = useState<string>("");
+  const [homeCity, setHomeCity] = useState<string>("");
+  const [homeLat, setHomeLat] = useState<number | null>(null);
+  const [homeLng, setHomeLng] = useState<number | null>(null);
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
   const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
@@ -262,7 +267,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -293,6 +298,20 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
         setHomePostcode((instructor as { home_postcode: string }).home_postcode);
+      }
+      if (instructor && typeof (instructor as { address?: string }).address === "string") {
+        setHomeAddress((instructor as { address: string }).address);
+      }
+      if (instructor && typeof (instructor as { city?: string }).city === "string") {
+        setHomeCity((instructor as { city: string }).city);
+      }
+      {
+        const la = (instructor as { lat?: number | null } | null)?.lat;
+        if (typeof la === "number") setHomeLat(la);
+      }
+      {
+        const ln = (instructor as { lng?: number | null } | null)?.lng;
+        if (typeof ln === "number") setHomeLng(ln);
       }
       if (instructor && typeof (instructor as { radius_miles?: number }).radius_miles === "number") {
         setCoverageRadius((instructor as { radius_miles: number }).radius_miles);
