@@ -23,7 +23,10 @@ import {
   AlertTriangle,
   Globe,
   LogOut,
-
+  CreditCard,
+  Calculator,
+  Gift,
+  Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -62,7 +65,7 @@ const DAYS = [
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
 
-type ExpandKey = "payments" | "lessons" | "rates" | "coverage" | "pricing" | null;
+type ExpandKey = string | null;
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -146,6 +149,43 @@ function SettingsPage() {
   const [ruleHours, setRuleHours] = useState<number>(24);
   const [ruleAdjType, setRuleAdjType] = useState<AdjType>("flat");
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
+
+  // === Section: No-show & cancellation policy + Lesson reminders (instructor_reminder_preferences) ===
+  const [noShowFee, setNoShowFee] = useState<number>(0);
+  const [lateCancelFee, setLateCancelFee] = useState<number>(0);
+  const [lateCancelHours, setLateCancelHours] = useState<number>(24);
+  const [autoChargeNoShow, setAutoChargeNoShow] = useState<boolean>(false);
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
+  const [reminderHoursBefore, setReminderHoursBefore] = useState<number>(24);
+  const [paymentReminderEnabled, setPaymentReminderEnabled] = useState<boolean>(true);
+  const [paymentChaseMax, setPaymentChaseMax] = useState<number>(3); // 0 = unlimited
+  const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
+
+  // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
+  const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
+  const [depositAmount, setDepositAmount] = useState<number>(50);
+  const [depositDeadlineDays, setDepositDeadlineDays] = useState<number>(7);
+  const PAYMENT_METHODS = ["Cash", "Bank transfer (BACS)", "PayPal", "Card (via DSM)", "Klarna", "Clearpay", "Cheque"] as const;
+  const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<string[]>([]);
+  const [paymentTerms, setPaymentTerms] = useState<string>("Before lesson");
+  const [taxCode, setTaxCode] = useState<string>("1257L");
+  const [isElectric, setIsElectric] = useState<boolean>(false);
+  const [vehicleMpg, setVehicleMpg] = useState<number>(45);
+  const [fuelCostPerLitre, setFuelCostPerLitre] = useState<number>(1.45);
+  const [batteryKwh, setBatteryKwh] = useState<number>(60);
+  const [electricityCostPerKwh, setElectricityCostPerKwh] = useState<number>(0.28);
+  const DEDUCTIONS = [
+    "Vehicle running costs", "Vehicle lease/finance", "Business insurance",
+    "Phone & communications", "Use of home as office", "Internet/broadband",
+    "Training & CPD", "ADI licence & badges", "Uniform/clothing",
+    "Teaching equipment", "Franchise fees", "Accountancy fees",
+  ] as const;
+  const [claimedDeductions, setClaimedDeductions] = useState<string[]>([]);
+  const [referralEnabled, setReferralEnabled] = useState<boolean>(false);
+  const [referralDiscountAmount, setReferralDiscountAmount] = useState<number>(10);
+  const [referralDiscountType, setReferralDiscountType] = useState<"fixed" | "percent">("fixed");
+  const [referralCode, setReferralCode] = useState<string>("");
+
   const [savingRule, setSavingRule] = useState(false);
 
   const POSTCODE_ENTRY_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
@@ -362,8 +402,85 @@ function SettingsPage() {
 
 
       await loadPricingRules(user.id);
+
+      // Load reminder preferences
+      const { data: prefs } = await supabase
+        .from("instructor_reminder_preferences")
+        .select("no_show_fee, late_cancel_fee, late_cancel_hours, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .eq("instructor_id", user.id)
+        .maybeSingle();
+      if (prefs) {
+        const p = prefs as Record<string, unknown>;
+        if (typeof p.no_show_fee === "number") setNoShowFee(p.no_show_fee);
+        if (typeof p.late_cancel_fee === "number") setLateCancelFee(p.late_cancel_fee);
+        if (typeof p.late_cancel_hours === "number") setLateCancelHours(p.late_cancel_hours);
+        if (typeof p.auto_charge_no_show === "boolean") setAutoChargeNoShow(p.auto_charge_no_show);
+        if (typeof p.reminder_enabled === "boolean") setReminderEnabled(p.reminder_enabled);
+        if (typeof p.reminder_hours_before === "number") setReminderHoursBefore(p.reminder_hours_before);
+        if (typeof p.payment_reminder_enabled === "boolean") setPaymentReminderEnabled(p.payment_reminder_enabled);
+        if (typeof p.payment_chase_max_reminders === "number") setPaymentChaseMax(p.payment_chase_max_reminders);
+        if (typeof p.morning_briefing === "boolean") setMorningBriefing(p.morning_briefing);
+      }
+
+      // Load extended instructor fields (deposit/payment/tax/referral)
+      const { data: extra } = await supabase
+        .from("instructors")
+        .select("deposit_enabled, deposit_amount, deposit_deadline_days, accepted_payment_methods, payment_terms, tax_code, vehicle_mpg, fuel_cost_per_litre, is_electric, electricity_cost_per_kwh, battery_kwh, claimed_deductions, referral_enabled, referral_discount_amount, referral_discount_type, referral_code")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (extra) {
+        const e = extra as Record<string, unknown>;
+        if (typeof e.deposit_enabled === "boolean") setDepositEnabled(e.deposit_enabled);
+        if (typeof e.deposit_amount === "number") setDepositAmount(e.deposit_amount);
+        if (typeof e.deposit_deadline_days === "number") setDepositDeadlineDays(e.deposit_deadline_days);
+        if (Array.isArray(e.accepted_payment_methods)) setAcceptedPaymentMethods(e.accepted_payment_methods as string[]);
+        if (typeof e.payment_terms === "string" && e.payment_terms) setPaymentTerms(e.payment_terms);
+        if (typeof e.tax_code === "string" && e.tax_code) setTaxCode(e.tax_code);
+        if (typeof e.vehicle_mpg === "number") setVehicleMpg(e.vehicle_mpg);
+        if (typeof e.fuel_cost_per_litre === "number") setFuelCostPerLitre(e.fuel_cost_per_litre);
+        if (typeof e.is_electric === "boolean") setIsElectric(e.is_electric);
+        if (typeof e.electricity_cost_per_kwh === "number") setElectricityCostPerKwh(e.electricity_cost_per_kwh);
+        if (typeof e.battery_kwh === "number") setBatteryKwh(e.battery_kwh);
+        if (Array.isArray(e.claimed_deductions)) setClaimedDeductions(e.claimed_deductions as string[]);
+        if (typeof e.referral_enabled === "boolean") setReferralEnabled(e.referral_enabled);
+        if (typeof e.referral_discount_amount === "number") setReferralDiscountAmount(e.referral_discount_amount);
+        if (e.referral_discount_type === "fixed" || e.referral_discount_type === "percent") setReferralDiscountType(e.referral_discount_type);
+        if (typeof e.referral_code === "string") setReferralCode(e.referral_code);
+      }
     })();
   }, []);
+
+  async function saveReminderPrefs(patch: Record<string, unknown>) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructor_reminder_preferences")
+      .upsert({ instructor_id: userId, ...patch }, { onConflict: "instructor_id" });
+    if (error) {
+      console.error("[settings] save reminder prefs error", error);
+      toast.error("Could not save");
+    } else {
+      toast.success("Saved ✓");
+    }
+  }
+
+  async function saveInstructorPatch(patch: Record<string, unknown>) {
+    if (!userId) return;
+    const { error } = await supabase.from("instructors").update(patch).eq("id", userId);
+    if (error) {
+      console.error("[settings] save instructor patch error", error);
+      toast.error("Could not save");
+    } else {
+      toast.success("Saved ✓");
+    }
+  }
+
+  function generateReferralCode() {
+    const base = (displayName || instructorName || email.split("@")[0] || "REF").split(/\s+/)[0].toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8) || "REF";
+    const rand = Math.random().toString(36).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4).padEnd(4, "X");
+    return `${base}${rand}`;
+  }
+
+
 
 
 
@@ -1630,6 +1747,370 @@ function SettingsPage() {
           </button>
         </SectionCard>
 
+        {/* ============ NEW SECTIONS ============ */}
+        <Label>POLICY & AUTOMATION</Label>
+
+        {/* Section 1 — No-show & cancellation policy */}
+        <SectionCard>
+          <MenuRow
+            icon={<AlertTriangle color="#CC2229" />}
+            iconBg="#FCEBEB"
+            label="No-show & cancellation policy"
+            subLabel="Set fees for late cancellations and no-shows"
+            expanded={expanded === "noshow"}
+            onClick={() => setExpanded(expanded === "noshow" ? null : "noshow")}
+            isFirst
+            isLast
+          />
+          {expanded === "noshow" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <FieldLabel>No-show fee</FieldLabel>
+              <PoundInput value={noShowFee} onChange={setNoShowFee} />
+              <FieldLabel>Late cancellation fee</FieldLabel>
+              <PoundInput value={lateCancelFee} onChange={setLateCancelFee} />
+              <FieldLabel>Cancellation window</FieldLabel>
+              <SelectBox value={String(lateCancelHours)} onChange={(v) => setLateCancelHours(Number(v))}
+                options={[2,4,8,12,24,48,72].map((h) => ({ value: String(h), label: `${h} hrs before lesson` }))} />
+              <div className="flex items-start gap-3 pt-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Auto-charge no-show fee</div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Automatically add fee to pupil outstanding balance</div>
+                </div>
+                <ToggleSwitch checked={autoChargeNoShow} onChange={setAutoChargeNoShow} />
+              </div>
+              <SaveRow onClick={() => saveReminderPrefs({ no_show_fee: noShowFee, late_cancel_fee: lateCancelFee, late_cancel_hours: lateCancelHours, auto_charge_no_show: autoChargeNoShow })} />
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Section 2 — Lesson reminders (automation) */}
+        <SectionCard>
+          <MenuRow
+            icon={<Bell color="#1A52A0" />}
+            iconBg="#E0F4FF"
+            label="Lesson reminders"
+            subLabel="Automated reminders for lessons and payments"
+            expanded={expanded === "reminders2"}
+            onClick={() => setExpanded(expanded === "reminders2" ? null : "reminders2")}
+            isFirst
+            isLast
+          />
+          {expanded === "reminders2" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Send lesson reminders to pupils</div>
+                </div>
+                <ToggleSwitch checked={reminderEnabled} onChange={setReminderEnabled} />
+              </div>
+              {reminderEnabled && (
+                <div>
+                  <FieldLabel>Send</FieldLabel>
+                  <div className="flex items-center gap-2">
+                    <SelectBox value={String(reminderHoursBefore)} onChange={(v) => setReminderHoursBefore(Number(v))}
+                      options={[1,2,4,8,12,24,48].map((h) => ({ value: String(h), label: `${h} hrs` }))} />
+                    <span className="text-[13px] text-[#6B7280]" style={POPPINS}>before lesson</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-start gap-3 pt-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Chase outstanding payments</div>
+                </div>
+                <ToggleSwitch checked={paymentReminderEnabled} onChange={setPaymentReminderEnabled} />
+              </div>
+              {paymentReminderEnabled && (
+                <div>
+                  <FieldLabel>Maximum reminders</FieldLabel>
+                  <SelectBox value={String(paymentChaseMax)} onChange={(v) => setPaymentChaseMax(Number(v))}
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "5", label: "5" },
+                      { value: "0", label: "Unlimited" },
+                    ]} />
+                </div>
+              )}
+              <div className="flex items-start gap-3 pt-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Daily morning briefing</div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Receive today's lesson summary at 7am</div>
+                </div>
+                <ToggleSwitch checked={morningBriefing} onChange={setMorningBriefing} />
+              </div>
+              <SaveRow onClick={() => saveReminderPrefs({ reminder_enabled: reminderEnabled, reminder_hours_before: reminderHoursBefore, payment_reminder_enabled: paymentReminderEnabled, payment_chase_max_reminders: paymentChaseMax, morning_briefing: morningBriefing })} />
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Section 3 — Deposit settings */}
+        <SectionCard>
+          <MenuRow
+            icon={<PoundSterling color="#16A34A" />}
+            iconBg="#DCFCE7"
+            label="Deposit settings"
+            subLabel="Require deposits when pupils book courses"
+            expanded={expanded === "deposit"}
+            onClick={() => setExpanded(expanded === "deposit" ? null : "deposit")}
+            isFirst
+            isLast
+          />
+          {expanded === "deposit" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Require a deposit to book</div>
+                </div>
+                <ToggleSwitch checked={depositEnabled} onChange={setDepositEnabled} />
+              </div>
+              {depositEnabled && (
+                <>
+                  <FieldLabel>Deposit amount</FieldLabel>
+                  <PoundInput value={depositAmount} onChange={setDepositAmount} />
+                  <FieldLabel>Payment deadline</FieldLabel>
+                  <SelectBox value={String(depositDeadlineDays)} onChange={(v) => setDepositDeadlineDays(Number(v))}
+                    options={[
+                      { value: "1", label: "24 hours" },
+                      { value: "2", label: "48 hours" },
+                      { value: "3", label: "72 hours" },
+                      { value: "7", label: "1 week" },
+                      { value: "14", label: "2 weeks" },
+                      { value: "30", label: "1 month" },
+                    ]} />
+                </>
+              )}
+              <SaveRow onClick={() => saveInstructorPatch({ deposit_enabled: depositEnabled, deposit_amount: depositAmount, deposit_deadline_days: depositDeadlineDays })} />
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Section 4 — Payment options */}
+        <SectionCard>
+          <MenuRow
+            icon={<CreditCard color="#7C3AED" />}
+            iconBg="#EDE9FE"
+            label="Payment options"
+            subLabel="Which payment methods you accept"
+            expanded={expanded === "paymethods"}
+            onClick={() => setExpanded(expanded === "paymethods" ? null : "paymethods")}
+            isFirst
+            isLast
+          />
+          {expanded === "paymethods" && (
+            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <FieldLabel>Accepted payment methods</FieldLabel>
+              <div className="flex flex-col gap-2">
+                {PAYMENT_METHODS.map((m) => {
+                  const checked = acceptedPaymentMethods.includes(m);
+                  return (
+                    <label key={m} className="flex items-center gap-3 cursor-pointer" style={POPPINS}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          setAcceptedPaymentMethods((prev) =>
+                            prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
+                          );
+                        }}
+                        style={{ width: 18, height: 18 }}
+                      />
+                      <span className="text-[14px] text-[#0B1F3A]">{m}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <FieldLabel>Payment due</FieldLabel>
+              <SelectBox value={paymentTerms} onChange={setPaymentTerms}
+                options={["Before lesson", "Same day", "Within 24hrs", "Within 7 days", "Monthly"].map((v) => ({ value: v, label: v }))} />
+              <SaveRow onClick={() => saveInstructorPatch({ accepted_payment_methods: acceptedPaymentMethods, payment_terms: paymentTerms })} />
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Section 5 — Tax & expenses */}
+        <SectionCard>
+          <MenuRow
+            icon={<Calculator color="#D97706" />}
+            iconBg="#FEF3C7"
+            label="Tax & expenses"
+            subLabel="Tax code, vehicle costs and allowable deductions"
+            expanded={expanded === "tax"}
+            onClick={() => setExpanded(expanded === "tax" ? null : "tax")}
+            isFirst
+            isLast
+          />
+          {expanded === "tax" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <FieldLabel>Tax code</FieldLabel>
+              <input
+                type="text"
+                value={taxCode}
+                onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
+                className="w-full text-[14px] text-[#0B1F3A]"
+                style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+              />
+              <FieldLabel>Vehicle type</FieldLabel>
+              <div className="flex gap-2">
+                {[
+                  { key: false, label: "Petrol/Diesel" },
+                  { key: true, label: "Electric" },
+                ].map((opt) => (
+                  <button
+                    key={String(opt.key)}
+                    type="button"
+                    onClick={() => setIsElectric(opt.key)}
+                    className="flex-1 text-[13px]"
+                    style={{
+                      padding: "9px 10px",
+                      borderRadius: 8,
+                      border: "0.5px solid #EEF2F7",
+                      background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
+                      color: isElectric === opt.key ? "#FFFFFF" : "#0B1F3A",
+                      fontWeight: 500,
+                      ...POPPINS,
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {!isElectric ? (
+                <>
+                  <FieldLabel>Vehicle MPG</FieldLabel>
+                  <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
+                    className="w-full text-[14px] text-[#0B1F3A]"
+                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                  <FieldLabel>Fuel cost per litre (£)</FieldLabel>
+                  <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
+                    className="w-full text-[14px] text-[#0B1F3A]"
+                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                </>
+              ) : (
+                <>
+                  <FieldLabel>Battery capacity (kWh)</FieldLabel>
+                  <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
+                    className="w-full text-[14px] text-[#0B1F3A]"
+                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                  <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
+                  <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
+                    className="w-full text-[14px] text-[#0B1F3A]"
+                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                </>
+              )}
+              <FieldLabel>Allowable deductions</FieldLabel>
+              <div className="flex flex-col gap-2">
+                {DEDUCTIONS.map((d) => {
+                  const checked = claimedDeductions.includes(d);
+                  return (
+                    <label key={d} className="flex items-center gap-3 cursor-pointer" style={POPPINS}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          setClaimedDeductions((prev) =>
+                            prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
+                          );
+                        }}
+                        style={{ width: 18, height: 18 }}
+                      />
+                      <span className="text-[14px] text-[#0B1F3A]">{d}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <SaveRow onClick={() => saveInstructorPatch({ tax_code: taxCode, vehicle_mpg: vehicleMpg, fuel_cost_per_litre: fuelCostPerLitre, is_electric: isElectric, electricity_cost_per_kwh: electricityCostPerKwh, battery_kwh: batteryKwh, claimed_deductions: claimedDeductions })} />
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Section 6 — Referral programme */}
+        <SectionCard>
+          <MenuRow
+            icon={<Gift color="#00B5A5" />}
+            iconBg="#CCFBF1"
+            label="Referral programme"
+            subLabel="Reward pupils who refer their friends"
+            expanded={expanded === "referral"}
+            onClick={() => setExpanded(expanded === "referral" ? null : "referral")}
+            isFirst
+            isLast
+          />
+          {expanded === "referral" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Enable referral programme</div>
+                </div>
+                <ToggleSwitch
+                  checked={referralEnabled}
+                  onChange={(next) => {
+                    setReferralEnabled(next);
+                    if (next && !referralCode) setReferralCode(generateReferralCode());
+                  }}
+                />
+              </div>
+              {referralEnabled && (
+                <>
+                  <FieldLabel>Your referral code</FieldLabel>
+                  <div className="flex gap-2">
+                    <input
+                      readOnly
+                      value={referralCode}
+                      className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
+                      style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#F7FAFC", ...POPPINS }}
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(referralCode);
+                          toast.success("Referral code copied");
+                        } catch { toast.error("Copy failed"); }
+                      }}
+                      className="flex items-center gap-1 text-[13px]"
+                      style={{ padding: "10px 14px", borderRadius: 8, background: "#EEF2F7", color: "#0B1F3A", border: "none", cursor: "pointer", ...POPPINS }}
+                    >
+                      <Copy size={14} /> Copy
+                    </button>
+                  </div>
+                  <FieldLabel>Discount amount</FieldLabel>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      value={referralDiscountAmount}
+                      onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
+                      className="flex-1 text-[14px] text-[#0B1F3A]"
+                      style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+                    />
+                    <div className="flex" style={{ border: "0.5px solid #EEF2F7", borderRadius: 8, overflow: "hidden" }}>
+                      {(["fixed", "percent"] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setReferralDiscountType(t)}
+                          style={{
+                            padding: "10px 14px",
+                            background: referralDiscountType === t ? "#1877D6" : "#FFFFFF",
+                            color: referralDiscountType === t ? "#FFFFFF" : "#0B1F3A",
+                            border: "none",
+                            cursor: "pointer",
+                            fontWeight: 500,
+                            ...POPPINS,
+                          }}
+                        >
+                          {t === "fixed" ? "£ fixed" : "% off"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+              <SaveRow onClick={() => saveInstructorPatch({ referral_enabled: referralEnabled, referral_discount_amount: referralDiscountAmount, referral_discount_type: referralDiscountType, referral_code: referralCode || null })} />
+            </div>
+          )}
+        </SectionCard>
+
         <Label>SUPPORT</Label>
         <SectionCard>
           <MenuRow
@@ -1844,5 +2325,128 @@ function PlaceholderBlock({ text }: { text: string }) {
     >
       {text}
     </div>
+  );
+}
+
+// ============ Shared helpers for new settings sections ============
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="text-[12px] font-medium text-[#6B7280]"
+      style={{ ...POPPINS, marginBottom: -6 }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function PoundInput({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[15px] text-[#6B7280]" style={POPPINS}>£</span>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value) || 0)}
+        className="flex-1 text-[14px] text-[#0B1F3A]"
+        style={{
+          padding: "10px 12px",
+          border: "0.5px solid #EEF2F7",
+          borderRadius: 8,
+          background: "#FFFFFF",
+          ...POPPINS,
+        }}
+      />
+    </div>
+  );
+}
+
+function SelectBox({
+  value,
+  onChange,
+  options,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full text-[14px] text-[#0B1F3A]"
+      style={{
+        padding: "10px 12px",
+        border: "0.5px solid #EEF2F7",
+        borderRadius: 8,
+        background: "#FFFFFF",
+        ...POPPINS,
+      }}
+    >
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>{o.label}</option>
+      ))}
+    </select>
+  );
+}
+
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={(e) => { e.stopPropagation(); onChange(!checked); }}
+      style={{
+        width: 44,
+        height: 26,
+        borderRadius: 13,
+        background: checked ? "#1877D6" : "#D1D5DB",
+        border: "none",
+        position: "relative",
+        cursor: "pointer",
+        flexShrink: 0,
+        transition: "background 0.2s",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 21 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "#fff",
+          transition: "left 0.2s",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+        }}
+      />
+    </button>
+  );
+}
+
+function SaveRow({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full"
+      style={{
+        marginTop: 4,
+        padding: "12px 16px",
+        borderRadius: 10,
+        background: "#0F2044",
+        color: "#FFFFFF",
+        border: "none",
+        fontSize: 14,
+        fontWeight: 600,
+        cursor: "pointer",
+        ...POPPINS,
+      }}
+    >
+      Save
+    </button>
   );
 }
