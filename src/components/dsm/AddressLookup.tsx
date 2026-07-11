@@ -43,46 +43,56 @@ export function AddressLookup({
 
   async function lookup() {
     const pc = postcode.trim().toUpperCase();
+    console.log("[address-lookup] postcode entered:", pc);
     if (!UK_POSTCODE_RE.test(pc)) {
+      console.warn("[address-lookup] failed local UK postcode regex:", pc);
       setError("Enter a valid UK postcode");
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`,
-      );
-      if (!res.ok) {
-        setError("Postcode not found");
-        setFound(false);
-        return;
-      }
-      const json = await res.json();
-      const r = json?.result ?? {};
-      const derivedCity: string =
-        r.admin_district || r.parish || r.admin_county || r.region || "";
-      const parts = [r.admin_ward, r.admin_district, r.region].filter(
-        (x: unknown): x is string => typeof x === "string" && x.length > 0,
-      );
-      const derivedAddress: string = parts.length ? parts.join(", ") : pc;
-      const lat: number | null =
-        typeof r.latitude === "number" ? r.latitude : null;
-      const lng: number | null =
-        typeof r.longitude === "number" ? r.longitude : null;
+      const url = `https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`;
+      const res = await fetch(url);
+      const data = await res.json().catch(() => null);
+      console.log("[address-lookup] raw response:", data);
 
-      setAddress(derivedAddress);
-      setCity(derivedCity);
-      setFound(true);
-      onAddressFound({
-        postcode: pc,
-        address: derivedAddress,
-        city: derivedCity,
-        lat,
-        lng,
-      });
+      if (data && data.status === 200 && data.result) {
+        const r = data.result;
+        const parts = [r.ward, r.admin_district, r.admin_county].filter(
+          (x: unknown): x is string => typeof x === "string" && x.length > 0,
+        );
+        const derivedAddress: string = parts.length ? parts.join(", ") : pc;
+        const derivedCity: string = r.admin_district || r.parish || "";
+        const lat: number | null =
+          typeof r.latitude === "number" ? r.latitude : null;
+        const lng: number | null =
+          typeof r.longitude === "number" ? r.longitude : null;
+
+        console.log("[address-lookup] api response:", {
+          address: derivedAddress,
+          city: derivedCity,
+          lat,
+          lng,
+        });
+
+        setAddress(derivedAddress);
+        setCity(derivedCity);
+        setFound(true);
+        onAddressFound({
+          postcode: pc,
+          address: derivedAddress,
+          city: derivedCity,
+          lat,
+          lng,
+        });
+      } else {
+        console.error("[address-lookup] postcode not found:", data);
+        setError("Postcode not found — please check and try again");
+        setFound(false);
+      }
     } catch (e) {
-      console.error("[AddressLookup] error", e);
+      console.error("[address-lookup] error:", e);
       setError("Could not look up postcode");
       setFound(false);
     } finally {
@@ -118,6 +128,13 @@ export function AddressLookup({
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
+                lookup();
+              }
+            }}
+            onBlur={() => {
+              // Auto-lookup when user tabs / clicks away, if the postcode
+              // looks valid and we haven't already resolved it.
+              if (!found && !loading && valid) {
                 lookup();
               }
             }}
@@ -177,7 +194,7 @@ export function AddressLookup({
           ) : (
             <Search size={14} />
           )}
-          {loading ? "Looking up" : "Lookup"}
+          {loading ? "Looking up" : "Find address"}
         </button>
       </div>
       {error && (
