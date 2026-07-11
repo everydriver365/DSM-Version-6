@@ -339,26 +339,6 @@ function SettingsPage() {
         setPhone(profile.phone ?? "");
       }
 
-      const { data: instrHours } = await supabase
-        .from("instructors")
-        .select("working_days")
-        .eq("id", user.id)
-        .maybeSingle();
-      const wd = (instrHours?.working_days as string[] | null) ?? null;
-      const nameToKey: Record<string, DayKey> = {
-        Monday: "mon", Tuesday: "tue", Wednesday: "wed", Thursday: "thu",
-        Friday: "fri", Saturday: "sat", Sunday: "sun",
-      };
-      const next: WorkingHours = { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false };
-      if (wd && wd.length > 0) {
-        for (const name of wd) {
-          const k = nameToKey[name];
-          if (k) next[k] = true;
-        }
-      } else {
-        next.mon = true; next.tue = true; next.wed = true; next.thu = true; next.fri = true;
-      }
-      setWorkingDays(next);
 
       await loadPricingRules(user.id);
     })();
