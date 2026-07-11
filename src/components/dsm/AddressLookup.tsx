@@ -131,6 +131,13 @@ export function AddressLookup({
                 lookup();
               }
             }}
+            onBlur={() => {
+              // Auto-lookup when user tabs / clicks away, if the postcode
+              // looks valid and we haven't already resolved it.
+              if (!found && !loading && valid) {
+                lookup();
+              }
+            }}
             placeholder="e.g. SO23 9AX"
             autoCapitalize="characters"
             maxLength={10}
