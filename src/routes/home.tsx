@@ -1832,7 +1832,6 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
-  const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
   const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [pupilAvailMap, setPupilAvailMap] = useState<Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>>({});
@@ -2734,7 +2733,7 @@ function HomePage() {
 
       const { data: instrData } = await supabase
         .from("instructors")
-        .select("working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_before, lesson_buffer_after, lunch_break_start, lunch_break_end, hourly_rate")
+        .select("working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after, lunch_break_start, lunch_break_end, hourly_rate")
         .eq("id", userId)
         .maybeSingle();
       if (instrData) {
@@ -3032,13 +3031,12 @@ function HomePage() {
     const startMins = timeToMins(workingHours?.start_time ? String(workingHours.start_time) : "09:00");
     const endMins = timeToMins(todayEndTime ?? "18:00");
     const resolveAfter = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.after != null ? pupilBufferMap[pid].after as number : instructorBufferAfter);
-    const resolveBefore = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.before != null ? pupilBufferMap[pid].before as number : 0);
-    // Merge lessons (with buffers) and calendar blocks (no buffer) into sorted busy intervals.
+    // Merge lessons (with buffer only after) and calendar blocks (no buffer) into sorted busy intervals.
     type Busy = { start: number; end: number };
     const busy: Busy[] = [];
     for (const l of todayLessons) {
       const s = lessonDateTime(l);
-      const startM = s.getHours() * 60 + s.getMinutes() - resolveBefore(l.pupil_id);
+      const startM = s.getHours() * 60 + s.getMinutes();
       const endM = s.getHours() * 60 + s.getMinutes() + (l.duration_minutes ?? 60) + resolveAfter(l.pupil_id);
       busy.push({ start: startM, end: endM });
     }
@@ -4615,9 +4613,8 @@ function HomePage() {
           if (!next) continue;
           const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
           const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
-          const beforeBuf = (next.pupil_id && pupilBufferMap[next.pupil_id]?.before) || 0;
           const gapStart = new Date(endThis.getTime() + afterBuf * 60000);
-          const nextStart = new Date(lessonDateTime(next).getTime() - beforeBuf * 60000);
+          const nextStart = lessonDateTime(next);
           const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
           if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
         }
