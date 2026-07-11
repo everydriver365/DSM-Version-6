@@ -339,21 +339,26 @@ function SettingsPage() {
         setPhone(profile.phone ?? "");
       }
 
-      const { data: hours } = await supabase
-        .from("working_hours")
-        .select("mon, tue, wed, thu, fri, sat, sun")
-        .eq("instructor_id", user.id)
+      const { data: instrHours } = await supabase
+        .from("instructors")
+        .select("working_days")
+        .eq("id", user.id)
         .maybeSingle();
-      if (hours) {
-        setWorkingDays({
-          mon: hours.mon, tue: hours.tue, wed: hours.wed, thu: hours.thu,
-          fri: hours.fri, sat: hours.sat, sun: hours.sun,
-        });
+      const wd = (instrHours?.working_days as string[] | null) ?? null;
+      const nameToKey: Record<string, DayKey> = {
+        Monday: "mon", Tuesday: "tue", Wednesday: "wed", Thursday: "thu",
+        Friday: "fri", Saturday: "sat", Sunday: "sun",
+      };
+      const next: WorkingHours = { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false };
+      if (wd && wd.length > 0) {
+        for (const name of wd) {
+          const k = nameToKey[name];
+          if (k) next[k] = true;
+        }
       } else {
-        await supabase
-          .from("working_hours")
-          .insert({ instructor_id: user.id, ...DEFAULT_HOURS });
+        next.mon = true; next.tue = true; next.wed = true; next.thu = true; next.fri = true;
       }
+      setWorkingDays(next);
 
       await loadPricingRules(user.id);
     })();
@@ -364,10 +369,11 @@ function SettingsPage() {
     const next = { ...workingDays, [d]: !workingDays[d] };
     setWorkingDays(next);
     if (!userId) return;
-    const { error } = await supabase.from("working_hours").upsert(
-      { instructor_id: userId, ...next, updated_at: new Date().toISOString() },
-      { onConflict: "instructor_id" },
-    );
+    const working_days = DAYS.filter((x) => next[x.key]).map((x) => x.label);
+    const { error } = await supabase
+      .from("instructors")
+      .update({ working_days })
+      .eq("id", userId);
     if (error) console.error("[settings] toggle day error", error);
   }
 
