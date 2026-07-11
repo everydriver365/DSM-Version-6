@@ -414,6 +414,75 @@ function GapsPage() {
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
 
+  // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
+  const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
+  const [prefilterFound, setPrefilterFound] = useState<boolean | null>(null);
+  const prefilterHandledRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search);
+    const d = sp.get("date");
+    const t = sp.get("time");
+    const dur = sp.get("duration");
+    if (d && t) {
+      setPrefilter({
+        date: d,
+        time: t,
+        duration: dur ? parseInt(dur, 10) || 60 : 60,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!prefilter || prefilterHandledRef.current) return;
+    if (slotsLoading) return;
+    if (freeSlots.length === 0) {
+      // Wait for slots to load; if still empty after load, mark not found.
+      setPrefilterFound(false);
+      return;
+    }
+    const match = freeSlots.find(
+      (s) => s.date === prefilter.date && s.startTime === prefilter.time,
+    );
+    if (match) {
+      prefilterHandledRef.current = true;
+      setPrefilterFound(true);
+      const dur = match.possibleDurations.includes(prefilter.duration)
+        ? prefilter.duration
+        : match.possibleDurations[0] || 60;
+      const slot = { date: match.date, time: match.startTime, duration: dur };
+      setSelectedSlots([slot]);
+      // Auto-expand ranked pupils for the freed slot
+      findPupils([slot]);
+      setTimeout(() => {
+        const el = document.querySelector(
+          `[data-slot-key="${match.date}-${match.startTime}"]`,
+        );
+        if (el && "scrollIntoView" in el) {
+          (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 350);
+    } else {
+      prefilterHandledRef.current = true;
+      setPrefilterFound(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefilter, freeSlots, slotsLoading]);
+
+  const prefilterDateLabel = useMemo(() => {
+    if (!prefilter) return "";
+    try {
+      return new Date(prefilter.date + "T00:00:00").toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+    } catch {
+      return prefilter.date;
+    }
+  }, [prefilter]);
+
   useEffect(() => {
     console.log("[gaps] slot-detection effect fired; userId =", userId);
     if (!userId) return;
