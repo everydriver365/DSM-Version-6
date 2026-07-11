@@ -266,6 +266,19 @@ function SettingsPage() {
       setUserId(user.id);
       setEmail(user.email ?? "");
 
+      // Coverage areas count for the settings row
+      supabase
+        .from("instructor_coverage_areas")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .then(({ count, error: covErr }) => {
+          if (covErr) {
+            console.error("[settings] coverage count error", covErr);
+            return;
+          }
+          if (typeof count === "number") setCoverageAreaCount(count);
+        });
+
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
         .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
