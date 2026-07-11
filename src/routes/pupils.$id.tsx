@@ -313,6 +313,7 @@ function PupilDetailPage() {
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
   const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
   const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
