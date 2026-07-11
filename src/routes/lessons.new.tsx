@@ -76,6 +76,13 @@ function NewLessonPage() {
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFreq, setRecurringFreq] = useState<"weekly" | "fortnightly">("weekly");
+  const [recurringUntil, setRecurringUntil] = useState<string>(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 3);
+    return d.toISOString().split("T")[0];
+  });
 
   useEffect(() => {
     (async () => {
