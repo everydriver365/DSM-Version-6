@@ -58,20 +58,22 @@ function AvailabilityPage() {
       setUserId(uid);
       if (!uid) return;
       const { data: row, error: fetchErr } = await supabase
-        .from("working_hours")
-        .select("mon, tue, wed, thu, fri, sat, sun, start_time, end_time, lesson_duration_minutes, break_minutes")
-        .eq("instructor_id", uid)
+        .from("instructors")
+        .select("working_hours_start, working_hours_end, working_days, default_lesson_duration_minutes, lesson_buffer_after")
+        .eq("id", uid)
         .maybeSingle();
       if (fetchErr) console.error("[availability] fetch error", fetchErr);
       if (row) {
-        setDays({
-          mon: !!row.mon, tue: !!row.tue, wed: !!row.wed, thu: !!row.thu,
-          fri: !!row.fri, sat: !!row.sat, sun: !!row.sun,
-        });
-        if (row.start_time) setStartTime(String(row.start_time).slice(0, 5));
-        if (row.end_time) setEndTime(String(row.end_time).slice(0, 5));
-        if (row.lesson_duration_minutes) setDuration(Number(row.lesson_duration_minutes));
-        if (row.break_minutes != null) setBreakMins(Number(row.break_minutes));
+        const wd = (row.working_days as string[] | null) ?? null;
+        if (wd) {
+          const next: Days = { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false };
+          for (const d of DAYS) if (wd.includes(d.label)) next[d.key] = true;
+          setDays(next);
+        }
+        if (row.working_hours_start) setStartTime(String(row.working_hours_start).slice(0, 5));
+        if (row.working_hours_end) setEndTime(String(row.working_hours_end).slice(0, 5));
+        if (row.default_lesson_duration_minutes) setDuration(Number(row.default_lesson_duration_minutes));
+        if (row.lesson_buffer_after != null) setBreakMins(Number(row.lesson_buffer_after));
       }
     })();
   }, []);
@@ -83,18 +85,17 @@ function AvailabilityPage() {
     setError(null);
     setSavedMsg(null);
     setSaving(true);
-    const { error: upErr } = await supabase.from("working_hours").upsert(
-      {
-        instructor_id: userId,
-        ...days,
-        start_time: startTime,
-        end_time: endTime,
-        lesson_duration_minutes: duration,
-        break_minutes: breakMins,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "instructor_id" },
-    );
+    const working_days = DAYS.filter((d) => days[d.key]).map((d) => d.label);
+    const { error: upErr } = await supabase
+      .from("instructors")
+      .update({
+        working_hours_start: startTime,
+        working_hours_end: endTime,
+        working_days,
+        default_lesson_duration_minutes: duration,
+        lesson_buffer_after: breakMins,
+      })
+      .eq("id", userId);
     setSaving(false);
     if (upErr) {
       console.error("[availability] save error", upErr);
