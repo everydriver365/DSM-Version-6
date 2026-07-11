@@ -1955,6 +1955,29 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Certification expiry surfacing
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const cutoff = new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0];
+      const { data } = await supabase
+        .from('instructor_certifications')
+        .select('id, title, expiry_date, reminder_days_before')
+        .eq('instructor_id', userId)
+        .eq('is_active', true)
+        .not('expiry_date', 'is', null)
+        .lte('expiry_date', cutoff)
+        .order('expiry_date', { ascending: true });
+      if (cancelled) return;
+      const now = Date.now();
+      const rows = (data ?? []) as Array<{ id: string; title: string; expiry_date: string }>;
+      setExpiredCerts(rows.filter((c) => new Date(c.expiry_date).getTime() < now));
+      setExpiringCerts(rows.filter((c) => new Date(c.expiry_date).getTime() >= now));
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
