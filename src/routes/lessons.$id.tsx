@@ -634,6 +634,8 @@ function LessonDetailPage() {
           pupilName={pupilName}
           pupilId={lesson.pupil_id}
           lessonId={lesson.id}
+          lessonDate={lesson.lesson_date}
+          lessonTime={lesson.lesson_time}
           paymentStatus={lesson.payment_status}
           amountDue={Number(lesson.amount_due ?? 0)}
           when={`${formatDateLong(dateObj)} · ${formatTime(lesson.lesson_time)}`}
@@ -647,12 +649,16 @@ function LessonDetailPage() {
   );
 }
 
+type CancellationTier = { hours: number; charge_percent: number };
+
 function CancelLessonSheet({
   open,
   onClose,
   pupilName,
   pupilId,
   lessonId,
+  lessonDate,
+  lessonTime,
   paymentStatus,
   amountDue,
   when,
@@ -663,6 +669,8 @@ function CancelLessonSheet({
   pupilName: string;
   pupilId: string;
   lessonId: string;
+  lessonDate: string;
+  lessonTime: string;
   paymentStatus: string | null;
   amountDue: number;
   when: string;
@@ -670,44 +678,81 @@ function CancelLessonSheet({
 }) {
   const [reason, setReason] = useState<string>("");
   const [notes, setNotes] = useState("");
-  const [charge, setCharge] = useState(false);
-  const [fee, setFee] = useState("0.00");
   const [submitting, setSubmitting] = useState(false);
+  const [tiers, setTiers] = useState<CancellationTier[]>([
+    { hours: 24, charge_percent: 100 },
+    { hours: 48, charge_percent: 50 },
+  ]);
+  const [noShowPercent, setNoShowPercent] = useState<number>(100);
 
   useEffect(() => {
     if (open) {
       setReason("");
       setNotes("");
-      setCharge(false);
-      setFee("0.00");
       setSubmitting(false);
     }
   }, [open]);
 
-  async function submit() {
-    if (!reason || submitting) return;
+  // Fetch instructor policy on open
+  useEffect(() => {
+    if (!open) return;
+    (async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      const uid = userRes.user?.id;
+      if (!uid) return;
+      const { data } = await supabase
+        .from("instructor_reminder_preferences")
+        .select("cancellation_tiers, no_show_charge_percent")
+        .eq("instructor_id", uid)
+        .maybeSingle();
+      if (!data) return;
+      const p = data as Record<string, unknown>;
+      if (typeof p.no_show_charge_percent === "number") setNoShowPercent(p.no_show_charge_percent);
+      const raw = p.cancellation_tiers;
+      if (typeof raw === "string") {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) setTiers(parsed as CancellationTier[]);
+        } catch { /* keep defaults */ }
+      } else if (Array.isArray(raw) && raw.length > 0) {
+        setTiers(raw as CancellationTier[]);
+      }
+    })();
+  }, [open]);
+
+  const isNoShow =
+    reason === "Pupil no-show" || reason.toLowerCase().includes("no-show") || reason.toLowerCase().includes("no_show");
+
+  // Charge calculation
+  const lessonStart = new Date(`${lessonDate}T${lessonTime}`);
+  const hoursUntilLesson = (lessonStart.getTime() - Date.now()) / 3600000;
+  const lessonValue = amountDue || 0;
+
+  const sortedTiers = [...tiers].sort((a, b) => a.hours - b.hours);
+  const applicableTier = isNoShow
+    ? null
+    : sortedTiers.find((t) => hoursUntilLesson < t.hours) ?? null;
+
+  const chargePercent = isNoShow ? noShowPercent : (applicableTier ? applicableTier.charge_percent : 0);
+  const noticePeriod = applicableTier ? applicableTier.hours : null;
+  const chargeAmount = Math.round(lessonValue * chargePercent / 100 * 100) / 100;
+
+  async function performCancel(feeAmount: number, waived: boolean) {
+    if (submitting) return;
     setSubmitting(true);
 
     const isPrepaid = (paymentStatus ?? "").toLowerCase() === "prepaid";
-    const isNoShow =
-      reason === "Pupil no-show" || reason.toLowerCase().includes("no-show") || reason.toLowerCase().includes("no_show");
-    const feeNum = charge && isNoShow ? parseFloat(fee) || 0 : 0;
-
-    // Step 2: cancel the lesson and clear the billing state.
-    // If a no-show fee is being applied, keep the lesson billable so it flows
-    // into the derived outstanding total (SUM amount_due WHERE payment_status='unpaid').
     const lessonPatch: Record<string, unknown> = {
       status: "cancelled",
       cancellation_reason: reason,
-      cancellation_notes: notes || null,
+      cancellation_notes: feeAmount > 0
+        ? `Cancellation fee applied: ${chargePercent}% of lesson value${notes ? ` — ${notes}` : ""}`
+        : (notes || null),
       cancelled_at: new Date().toISOString(),
-      payment_status: feeNum > 0 ? "unpaid" : "cancelled",
-      amount_due: feeNum > 0 ? feeNum : 0,
+      payment_status: feeAmount > 0 ? "unpaid" : "cancelled",
+      amount_due: feeAmount > 0 ? feeAmount : 0,
     };
-    const { error } = await supabase
-      .from("lessons")
-      .update(lessonPatch)
-      .eq("id", lessonId);
+    const { error } = await supabase.from("lessons").update(lessonPatch).eq("id", lessonId);
     if (error) {
       console.error("[cancel] update lesson error", error);
       toast.error("Couldn't cancel lesson");
@@ -715,7 +760,7 @@ function CancelLessonSheet({
       return;
     }
 
-    // Step 3: refund prepaid amount back to pupil credit.
+    // Refund prepaid balance back to pupil credit if lesson was prepaid.
     if (isPrepaid && amountDue > 0) {
       const { data: pupilRow, error: readErr } = await supabase
         .from("pupils")
@@ -731,17 +776,16 @@ function CancelLessonSheet({
       if (refundErr) console.error("[cancel] account_balance refund error", refundErr);
     }
 
-    // Step 4: no-show fee is captured on the lesson itself (see lessonPatch
-    // above). We deliberately do NOT touch the legacy pupils.balance_owed
-    // column — outstanding is derived from unpaid lesson amount_due.
-
     const { data: userRes } = await supabase.auth.getUser();
     const instructorId = userRes.user?.id ?? null;
     if (instructorId) {
+      const body = feeAmount > 0
+        ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
+        : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`;
       const { error: notifErr } = await supabase.from("instructor_notifications").insert({
         instructor_id: instructorId,
-        title: "Lesson cancelled",
-        body: `${pupilName}'s lesson on ${when} was cancelled`,
+        title: feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
+        body,
         type: "lesson",
         read: false,
       });
@@ -788,17 +832,13 @@ function CancelLessonSheet({
         </div>
 
         <div className="px-4 mt-2">
-          <div
-            className="rounded-[12px] p-3"
-            style={{ backgroundColor: "#F3F4F6" }}
-          >
-            <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
-              {pupilName}
-            </div>
+          <div className="rounded-[12px] p-3" style={{ backgroundColor: "#F3F4F6" }}>
+            <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>{pupilName}</div>
             <div className="text-[12px]" style={{ color: "#6B7280" }}>{when}</div>
           </div>
         </div>
 
+        {/* Step 1 — reason */}
         <div className="px-4 mt-4">
           <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
             Cancellation reason *
@@ -807,14 +847,7 @@ function CancelLessonSheet({
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             className="w-full mt-1 px-3 bg-white"
-            style={{
-              height: 44,
-              borderRadius: 8,
-              border: "1px solid #EEF2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
-              ...POPPINS,
-            }}
+            style={{ height: 44, borderRadius: 8, border: "1px solid #EEF2F7", color: "#0B1F3A", fontSize: 14, ...POPPINS }}
           >
             <option value="" disabled>Select a reason</option>
             {CANCEL_REASONS.map((r) => (
@@ -823,60 +856,7 @@ function CancelLessonSheet({
           </select>
         </div>
 
-        <div className="px-4 mt-4">
-          <div className="flex items-center justify-between">
-            <span className="text-[14px] font-medium" style={{ color: "#0B1F3A" }}>
-              Charge cancellation fee?
-            </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={charge}
-              onClick={() => setCharge((v) => !v)}
-              className="relative"
-              style={{
-                width: 44,
-                height: 26,
-                borderRadius: 999,
-                backgroundColor: charge ? "#1877D6" : "#EEF2F7",
-                transition: "background-color 0.15s",
-              }}
-            >
-              <span
-                className="absolute top-[3px] bg-white"
-                style={{
-                  left: charge ? 21 : 3,
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  transition: "left 0.15s",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                }}
-              />
-            </button>
-          </div>
-          {charge && (
-            <div className="mt-2">
-              <div className="flex items-center" style={{ borderRadius: 8, border: "1px solid #EEF2F7", height: 44, paddingLeft: 12 }}>
-                <span style={{ color: "#6B7280", fontSize: 14 }}>£</span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  min="0"
-                  value={fee}
-                  onChange={(e) => setFee(e.target.value)}
-                  className="flex-1 px-2 bg-transparent outline-none"
-                  style={{ color: "#0B1F3A", fontSize: 14, ...POPPINS, height: 42 }}
-                />
-              </div>
-              <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
-                This will be added to the pupil's outstanding balance
-              </div>
-            </div>
-          )}
-        </div>
-
+        {/* Optional notes */}
         <div className="px-4 mt-4">
           <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
             Additional notes
@@ -886,48 +866,91 @@ function CancelLessonSheet({
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             className="w-full mt-1 px-3 py-2 bg-white"
-            style={{
-              borderRadius: 8,
-              border: "1px solid #EEF2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
-              resize: "none",
-              ...POPPINS,
-            }}
+            style={{ borderRadius: 8, border: "1px solid #EEF2F7", color: "#0B1F3A", fontSize: 14, resize: "none", ...POPPINS }}
           />
         </div>
 
-        <div className="px-4 mt-5 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex items-center justify-center text-[14px] font-medium"
-            style={{
-              height: 44,
-              borderRadius: 8,
-              backgroundColor: "transparent",
-              border: "1px solid #EEF2F7",
-              color: "#0B1F3A",
-              ...POPPINS,
-            }}
-          >
-            Keep lesson
-          </button>
-          <button
-            type="button"
-            onClick={submit}
-            disabled={!reason || submitting}
-            className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{
-              height: 44,
-              borderRadius: 8,
-              backgroundColor: "#1877D6",
-              ...POPPINS,
-            }}
-          >
-            {submitting ? "Cancelling…" : "Cancel lesson"}
-          </button>
-        </div>
+        {/* Step 2 — charge calculation (shown once reason is selected) */}
+        {reason && (
+          <>
+            <div
+              className="mx-4"
+              style={{
+                marginTop: 12,
+                background: "#FEF2F2",
+                border: "0.5px solid #FECACA",
+                borderRadius: 12,
+                padding: 16,
+              }}
+            >
+              <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
+                Notice given: {Math.max(0, Math.round(hoursUntilLesson))} hours
+              </div>
+              {chargePercent > 0 ? (
+                <>
+                  <div className="mt-2" style={{ fontWeight: 700, fontSize: 15, color: "#CC2229", ...POPPINS }}>
+                    Cancellation charge applies: {chargePercent}% = £{chargeAmount.toFixed(2)}
+                  </div>
+                  <div className="text-[12px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    {isNoShow
+                      ? "Based on your no-show policy"
+                      : `Based on your policy: less than ${noticePeriod} hours notice`}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mt-2 text-[14px]" style={{ fontWeight: 600, color: "#16A34A", ...POPPINS }}>
+                    No charge applies
+                  </div>
+                  <div className="text-[12px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    Sufficient notice given
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="px-4 mt-4 flex flex-col gap-2">
+              {chargeAmount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => performCancel(chargeAmount, false)}
+                  disabled={submitting}
+                  className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
+                  style={{ height: 44, borderRadius: 8, backgroundColor: "#CC2229", ...POPPINS }}
+                >
+                  {submitting ? "Applying…" : `Apply £${chargeAmount.toFixed(2)} charge`}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => performCancel(0, true)}
+                disabled={submitting}
+                className="inline-flex items-center justify-center text-[14px] font-semibold disabled:opacity-50"
+                style={{ height: 44, borderRadius: 8, backgroundColor: "#F3F4F6", color: "#6B7280", ...POPPINS }}
+              >
+                Waive charge
+              </button>
+              <button
+                type="button"
+                onClick={() => performCancel(0, false)}
+                disabled={submitting}
+                className="inline-flex items-center justify-center text-[14px] font-medium disabled:opacity-50"
+                style={{ height: 44, borderRadius: 8, backgroundColor: "#FFFFFF", border: "0.5px solid #E2E6ED", color: "#9CA3AF", ...POPPINS }}
+              >
+                Cancel without charge
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={submitting}
+                className="inline-flex items-center justify-center text-[13px] font-medium disabled:opacity-50"
+                style={{ height: 40, borderRadius: 8, backgroundColor: "transparent", color: "#0B1F3A", ...POPPINS }}
+              >
+                Keep lesson
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

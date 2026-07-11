@@ -151,9 +151,11 @@ function SettingsPage() {
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
 
   // === Section: No-show & cancellation policy + Lesson reminders (instructor_reminder_preferences) ===
-  const [noShowFee, setNoShowFee] = useState<number>(0);
-  const [lateCancelFee, setLateCancelFee] = useState<number>(0);
-  const [lateCancelHours, setLateCancelHours] = useState<number>(24);
+  const [noShowPercent, setNoShowPercent] = useState<number>(100);
+  const [cancellationTiers, setCancellationTiers] = useState<Array<{ hours: number; charge_percent: number }>>([
+    { hours: 24, charge_percent: 100 },
+    { hours: 48, charge_percent: 50 },
+  ]);
   const [autoChargeNoShow, setAutoChargeNoShow] = useState<boolean>(false);
   const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
   const [reminderHoursBefore, setReminderHoursBefore] = useState<number>(24);
@@ -406,14 +408,20 @@ function SettingsPage() {
       // Load reminder preferences
       const { data: prefs } = await supabase
         .from("instructor_reminder_preferences")
-        .select("no_show_fee, late_cancel_fee, late_cancel_hours, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
         .eq("instructor_id", user.id)
         .maybeSingle();
       if (prefs) {
         const p = prefs as Record<string, unknown>;
-        if (typeof p.no_show_fee === "number") setNoShowFee(p.no_show_fee);
-        if (typeof p.late_cancel_fee === "number") setLateCancelFee(p.late_cancel_fee);
-        if (typeof p.late_cancel_hours === "number") setLateCancelHours(p.late_cancel_hours);
+        if (typeof p.no_show_charge_percent === "number") setNoShowPercent(p.no_show_charge_percent);
+        if (typeof p.cancellation_tiers === "string") {
+          try {
+            const parsed = JSON.parse(p.cancellation_tiers);
+            if (Array.isArray(parsed) && parsed.length > 0) setCancellationTiers(parsed);
+          } catch { /* keep defaults */ }
+        } else if (Array.isArray(p.cancellation_tiers) && p.cancellation_tiers.length > 0) {
+          setCancellationTiers(p.cancellation_tiers as Array<{ hours: number; charge_percent: number }>);
+        }
         if (typeof p.auto_charge_no_show === "boolean") setAutoChargeNoShow(p.auto_charge_no_show);
         if (typeof p.reminder_enabled === "boolean") setReminderEnabled(p.reminder_enabled);
         if (typeof p.reminder_hours_before === "number") setReminderHoursBefore(p.reminder_hours_before);
@@ -1763,22 +1771,82 @@ function SettingsPage() {
             isLast
           />
           {expanded === "noshow" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
-              <FieldLabel>No-show fee</FieldLabel>
-              <PoundInput value={noShowFee} onChange={setNoShowFee} />
-              <FieldLabel>Late cancellation fee</FieldLabel>
-              <PoundInput value={lateCancelFee} onChange={setLateCancelFee} />
-              <FieldLabel>Cancellation window</FieldLabel>
-              <SelectBox value={String(lateCancelHours)} onChange={(v) => setLateCancelHours(Number(v))}
-                options={[2,4,8,12,24,48,72].map((h) => ({ value: String(h), label: `${h} hrs before lesson` }))} />
-              <div className="flex items-start gap-3 pt-2">
+            <div className="px-4 pb-4 flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+              {/* No-show charge */}
+              <div className="text-[14px] text-[#0F2044]" style={POPPINS}>No-show charge</div>
+              <div className="mt-2">
+                <SelectBox
+                  value={String(noShowPercent)}
+                  onChange={(v) => setNoShowPercent(Number(v))}
+                  options={[0, 25, 50, 75, 100].map((p) => ({ value: String(p), label: `${p}% of lesson value` }))}
+                />
+              </div>
+              <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Charged when pupil does not attend without notice</div>
+
+              {/* Cancellation tiers */}
+              <div className="text-[13px] font-semibold text-[#0F2044]" style={{ ...POPPINS, marginTop: 16, marginBottom: 8 }}>Cancellation policy</div>
+              <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
+
+              {cancellationTiers.map((tier, i) => (
+                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, marginBottom: 6 }}>
+                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Less than</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={tier.hours}
+                    onChange={(e) => {
+                      const v = Math.max(1, Number(e.target.value) || 1);
+                      setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
+                    }}
+                    className="bg-white"
+                    style={{ width: 60, textAlign: "center", border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0F2044", ...POPPINS }}
+                  />
+                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
+                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>→</span>
+                  <select
+                    value={String(tier.charge_percent)}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
+                    }}
+                    className="bg-white"
+                    style={{ border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0F2044", ...POPPINS }}
+                  >
+                    {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>% charge</span>
+                  <div style={{ flex: 1 }} />
+                  <button
+                    type="button"
+                    aria-label="Remove tier"
+                    onClick={() => setCancellationTiers((prev) => prev.filter((_, idx) => idx !== i))}
+                    style={{ background: "none", border: "none", color: "#CC2229", fontSize: 16, cursor: "pointer", padding: 0, lineHeight: 1 }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setCancellationTiers((prev) => [...prev, { hours: 72, charge_percent: 25 }])}
+                className="text-[12px] font-semibold"
+                style={{ color: "#1A52A0", background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
+              >
+                + Add tier
+              </button>
+
+              {/* Auto-charge toggle */}
+              <div className="flex items-start gap-3" style={{ marginTop: 16 }}>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Auto-charge no-show fee</div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Automatically add fee to pupil outstanding balance</div>
+                  <div className="text-[14px] text-[#0F2044]" style={POPPINS}>Auto-apply charges on cancellation</div>
+                  <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Automatically calculate and add the charge when cancelling</div>
                 </div>
                 <ToggleSwitch checked={autoChargeNoShow} onChange={setAutoChargeNoShow} />
               </div>
-              <SaveRow onClick={() => saveReminderPrefs({ no_show_fee: noShowFee, late_cancel_fee: lateCancelFee, late_cancel_hours: lateCancelHours, auto_charge_no_show: autoChargeNoShow })} />
+
+              <div style={{ marginTop: 12 }}>
+                <SaveRow onClick={() => saveReminderPrefs({ cancellation_tiers: JSON.stringify(cancellationTiers), no_show_charge_percent: noShowPercent, auto_charge_no_show: autoChargeNoShow })} />
+              </div>
             </div>
           )}
         </SectionCard>
