@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, AlertCircle, Award, Calendar, Clock, MoreHorizontal } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, AlertCircle, Award, Calendar, CheckCircle, Clock, MoreHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -87,6 +87,8 @@ function CertificationsPage() {
   const [fReminder, setFReminder] = useState(30);
   const [fNotes, setFNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -139,6 +141,7 @@ function CertificationsPage() {
     setFNoExpiry(false);
     setFReminder(preset?.reminder_days ?? 30);
     setFNotes("");
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
@@ -152,6 +155,7 @@ function CertificationsPage() {
     setFNoExpiry(!c.expiry_date);
     setFReminder(c.reminder_days_before ?? 30);
     setFNotes(c.notes || "");
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
@@ -167,6 +171,7 @@ function CertificationsPage() {
     setFNotes(c.notes || "");
     // Store old cert id so save can archive it after insert
     (window as any).__renewingCertId = c.id;
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
@@ -184,6 +189,33 @@ function CertificationsPage() {
     toast.success("Archived");
     setMenuFor(null);
     load(userId);
+  };
+
+  const refreshList = () => {
+    if (userId) load(userId);
+  };
+
+  const closeSheet = () => {
+    if (successTimerRef.current) {
+      clearTimeout(successTimerRef.current);
+      successTimerRef.current = null;
+    }
+    setSaveSuccess(false);
+    setSheetOpen(false);
+    setEditing(null);
+    setFTitle("");
+    setFType("Other");
+    setFIssued("");
+    setFExpiry("");
+    setFNoExpiry(false);
+    setFReminder(30);
+    setFNotes("");
+    setSaving(false);
+  };
+
+  const finishAndRefresh = () => {
+    closeSheet();
+    refreshList();
   };
 
   const save = async () => {
@@ -225,8 +257,10 @@ function CertificationsPage() {
       return;
     }
     toast.success(editing ? "Updated" : "Saved");
-    setSheetOpen(false);
-    load(userId);
+    setSaveSuccess(true);
+    successTimerRef.current = setTimeout(() => {
+      finishAndRefresh();
+    }, 2000);
   };
 
   const groupHeader = (label: string, colour: string, count: number) => (
@@ -313,15 +347,24 @@ function CertificationsPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 100 }}>
       {/* Top bar */}
-      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", gap: 12, color: "#FFFFFF" }}>
+      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#FFFFFF" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={() => navigate({ to: "/home" as never })}
+            style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
+            aria-label="Back"
+          >
+            <ArrowLeft size={22} />
+          </button>
+          <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
+        </div>
         <button
           onClick={() => navigate({ to: "/home" as never })}
           style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
-          aria-label="Back"
+          aria-label="Close"
         >
-          <ArrowLeft size={22} />
+          <X size={22} />
         </button>
-        <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
       </div>
 
       {/* Summary strip */}
@@ -405,73 +448,101 @@ function CertificationsPage() {
             style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, Inter, sans-serif" }}
           >
             <div style={{ width: 40, height: 4, background: "#E5E7EB", borderRadius: 2, margin: "0 auto 16px" }} />
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#0F2044", marginBottom: 16 }}>
-              {editing ? "Edit certification" : "Add certification"}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+                {editing ? "Edit certification" : "Add certification"}
+              </div>
+              <button
+                onClick={closeSheet}
+                style={{ background: "#F3F4F6", border: "none", width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+                aria-label="Close sheet"
+              >
+                <X size={16} color="#6B7280" />
+              </button>
             </div>
 
-            {!editing && (
+            {saveSuccess ? (
+              <div style={{ background: "#E0FFF4", borderRadius: 12, padding: 24, textAlign: "center" }}>
+                <CheckCircle size={48} color="#16A34A" style={{ margin: "0 auto 12px" }} />
+                <div style={{ fontSize: 20, fontWeight: 900, color: "#0F2044" }}>Saved!</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#16A34A", marginTop: 4 }}>{fTitle}</div>
+                {fExpiry && !fNoExpiry ? (
+                  <div style={{ fontSize: 14, color: "#9CA3AF", marginTop: 4 }}>Expires {fmtDate(fExpiry)}</div>
+                ) : null}
+                <button
+                  onClick={finishAndRefresh}
+                  style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 12, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 16 }}
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
               <>
-                <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 8 }}>Quick add</div>
-                <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginBottom: 12 }}>
-                  {CERT_PRESETS.map((p) => (
-                    <button
-                      key={p.type}
-                      onClick={() => { setFTitle(p.title); setFType(p.type); setFReminder(p.reminder_days); }}
-                      style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
-                    >
-                      {p.title}
-                    </button>
-                  ))}
-                </div>
+                {!editing && (
+                  <>
+                    <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 8 }}>Quick add</div>
+                    <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginBottom: 12 }}>
+                      {CERT_PRESETS.map((p) => (
+                        <button
+                          key={p.type}
+                          onClick={() => { setFTitle(p.title); setFType(p.type); setFReminder(p.reminder_days); }}
+                          style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
+                        >
+                          {p.title}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <Field label="Title">
+                  <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="e.g. ADI Licence" style={inputStyle} />
+                </Field>
+
+                <Field label="Certification type">
+                  <select value={fType} onChange={(e) => setFType(e.target.value)} style={inputStyle}>
+                    {CERT_PRESETS.map((p) => (
+                      <option key={p.type} value={p.type}>{p.type}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <Field label="Issued date">
+                  <input type="date" value={fIssued} onChange={(e) => setFIssued(e.target.value)} style={inputStyle} />
+                </Field>
+
+                <Field label="Expiry date">
+                  <input type="date" value={fExpiry} disabled={fNoExpiry} onChange={(e) => setFExpiry(e.target.value)} style={{ ...inputStyle, opacity: fNoExpiry ? 0.5 : 1 }} />
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B7280", marginTop: 6, cursor: "pointer" }}>
+                    <input type="checkbox" checked={fNoExpiry} onChange={(e) => setFNoExpiry(e.target.checked)} />
+                    No expiry date
+                  </label>
+                </Field>
+
+                <Field label="Remind me">
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <select value={fReminder} onChange={(e) => setFReminder(Number(e.target.value))} style={{ ...inputStyle, flex: "0 0 auto", width: 100 }}>
+                      {[7, 14, 30, 60, 90, 180].map((d) => (
+                        <option key={d} value={d}>{d} days</option>
+                      ))}
+                    </select>
+                    <span style={{ fontSize: 12, color: "#6B7280" }}>before expiry</span>
+                  </div>
+                </Field>
+
+                <Field label="Notes">
+                  <textarea value={fNotes} onChange={(e) => setFNotes(e.target.value)} placeholder="Reference number, provider, etc." rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+                </Field>
+
+                <button
+                  onClick={save}
+                  disabled={saving}
+                  style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 12, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 8, opacity: saving ? 0.7 : 1 }}
+                >
+                  {saving ? "Saving…" : "Save"}
+                </button>
               </>
             )}
-
-            <Field label="Title">
-              <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="e.g. ADI Licence" style={inputStyle} />
-            </Field>
-
-            <Field label="Certification type">
-              <select value={fType} onChange={(e) => setFType(e.target.value)} style={inputStyle}>
-                {CERT_PRESETS.map((p) => (
-                  <option key={p.type} value={p.type}>{p.type}</option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Issued date">
-              <input type="date" value={fIssued} onChange={(e) => setFIssued(e.target.value)} style={inputStyle} />
-            </Field>
-
-            <Field label="Expiry date">
-              <input type="date" value={fExpiry} disabled={fNoExpiry} onChange={(e) => setFExpiry(e.target.value)} style={{ ...inputStyle, opacity: fNoExpiry ? 0.5 : 1 }} />
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B7280", marginTop: 6, cursor: "pointer" }}>
-                <input type="checkbox" checked={fNoExpiry} onChange={(e) => setFNoExpiry(e.target.checked)} />
-                No expiry date
-              </label>
-            </Field>
-
-            <Field label="Remind me">
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <select value={fReminder} onChange={(e) => setFReminder(Number(e.target.value))} style={{ ...inputStyle, flex: "0 0 auto", width: 100 }}>
-                  {[7, 14, 30, 60, 90, 180].map((d) => (
-                    <option key={d} value={d}>{d} days</option>
-                  ))}
-                </select>
-                <span style={{ fontSize: 12, color: "#6B7280" }}>before expiry</span>
-              </div>
-            </Field>
-
-            <Field label="Notes">
-              <textarea value={fNotes} onChange={(e) => setFNotes(e.target.value)} placeholder="Reference number, provider, etc." rows={3} style={{ ...inputStyle, resize: "vertical" }} />
-            </Field>
-
-            <button
-              onClick={save}
-              disabled={saving}
-              style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 12, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 8, opacity: saving ? 0.7 : 1 }}
-            >
-              {saving ? "Saving…" : "Save"}
-            </button>
           </div>
         </div>
       )}
