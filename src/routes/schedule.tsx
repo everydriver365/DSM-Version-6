@@ -301,6 +301,8 @@ function SchedulePage() {
   const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
   const [workStart, setWorkStart] = useState<string>("09:00");
   const [workEnd, setWorkEnd] = useState<string>("18:00");
+  const [perDayHours, setPerDayHours] = useState<Record<string, { start: string; end: string; active: boolean }> | null>(null);
+  const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
   const [bufferBefore, setBufferBefore] = useState<number>(0);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
