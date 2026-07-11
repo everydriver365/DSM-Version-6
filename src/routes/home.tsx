@@ -85,7 +85,6 @@ import {
   Laptop,
   Package,
   XCircle,
-  RefreshCw,
 } from "lucide-react";
 import {
   IconCurrencyPound,
