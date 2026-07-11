@@ -43,6 +43,9 @@ const CERT_PRESETS = [
   { type: "Insurance", title: "Business Insurance", reminder_days: 30 },
   { type: "MOT", title: "Vehicle MOT", reminder_days: 30 },
   { type: "Road Tax", title: "Vehicle Road Tax", reminder_days: 14 },
+  { type: "Car Insurance", title: "Car Insurance", reminder_days: 14 },
+  { type: "MSA Membership", title: "MSA Membership", reminder_days: 30 },
+  { type: "DIA Membership", title: "DIA Membership", reminder_days: 30 },
   { type: "Other", title: "Other", reminder_days: 30 },
 ];
 
