@@ -60,11 +60,6 @@ const DAYS = [
   { key: "sun", label: "Sunday" },
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
-type WorkingHours = Record<DayKey, boolean>;
-
-const DEFAULT_HOURS: WorkingHours = {
-  mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
-};
 
 type ExpandKey = "payments" | "lessons" | "rates" | "coverage" | "pricing" | null;
 
@@ -83,7 +78,7 @@ function SettingsPage() {
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
+  
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
@@ -339,43 +334,12 @@ function SettingsPage() {
         setPhone(profile.phone ?? "");
       }
 
-      const { data: instrHours } = await supabase
-        .from("instructors")
-        .select("working_days")
-        .eq("id", user.id)
-        .maybeSingle();
-      const wd = (instrHours?.working_days as string[] | null) ?? null;
-      const nameToKey: Record<string, DayKey> = {
-        Monday: "mon", Tuesday: "tue", Wednesday: "wed", Thursday: "thu",
-        Friday: "fri", Saturday: "sat", Sunday: "sun",
-      };
-      const next: WorkingHours = { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false };
-      if (wd && wd.length > 0) {
-        for (const name of wd) {
-          const k = nameToKey[name];
-          if (k) next[k] = true;
-        }
-      } else {
-        next.mon = true; next.tue = true; next.wed = true; next.thu = true; next.fri = true;
-      }
-      setWorkingDays(next);
 
       await loadPricingRules(user.id);
     })();
   }, []);
 
 
-  async function toggleDay(d: DayKey) {
-    const next = { ...workingDays, [d]: !workingDays[d] };
-    setWorkingDays(next);
-    if (!userId) return;
-    const working_days = DAYS.filter((x) => next[x.key]).map((x) => x.label);
-    const { error } = await supabase
-      .from("instructors")
-      .update({ working_days })
-      .eq("id", userId);
-    if (error) console.error("[settings] toggle day error", error);
-  }
 
   async function togglePassBookingFee() {
     const next = !passBookingFee;
@@ -635,6 +599,39 @@ function SettingsPage() {
         </div>
       </div>
 
+      <div
+        className="mx-4 mt-3 flex items-center cursor-pointer"
+        onClick={() => navigate({ to: "/availability-settings" as never })}
+        style={{
+          background: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 12,
+          padding: 16,
+          gap: 12,
+        }}
+      >
+        <div
+          className="flex items-center justify-center rounded-xl"
+          style={{ width: 44, height: 44, background: "#E0F4FF", flexShrink: 0 }}
+        >
+          <Clock color="#1A52A0" size={22} />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <span
+            className="font-semibold"
+            style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}
+          >
+            Availability & working hours
+          </span>
+          <span
+            style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}
+          >
+            Working days, hours, buffers, lunch break, time off, travel time
+          </span>
+        </div>
+        <ChevronRight color="#D1D5DB" size={18} />
+      </div>
+
 
       <div className="px-4">
         <Label>ACCOUNT</Label>
@@ -652,21 +649,6 @@ function SettingsPage() {
             iconBg="#FCEBEB"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
-            isLast={false}
-          />
-          <MenuRow
-            icon={<Clock color="#3B6D11" />}
-            iconBg="#EAF3DE"
-            label="Working hours"
-            onClick={() => navigate({ to: "/availability" })}
-            isLast={false}
-          />
-          <MenuRow
-            icon={<Clock color="#1A52A0" />}
-            iconBg="#F0F4FF"
-            label="Availability & blocks"
-            subLabel="Working hours, buffers, recurring blocks, time off"
-            onClick={() => navigate({ to: "/availability-settings" as never })}
             isLast={false}
           />
           <MenuRow
