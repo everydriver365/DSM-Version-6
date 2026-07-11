@@ -761,11 +761,12 @@ function PupilDetailPage() {
       if (!uid) return;
       supabase
         .from("instructors")
-        .select("hourly_rate, first_name, last_name, business_name")
+        .select("hourly_rate, lesson_buffer_after, first_name, last_name, business_name")
         .eq("id", uid)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+          if (data?.lesson_buffer_after != null) setInstructorBufferAfter(Number(data.lesson_buffer_after));
           const d = data as { first_name?: string | null; last_name?: string | null; business_name?: string | null } | null;
           const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
           setInstructorName(nm);
