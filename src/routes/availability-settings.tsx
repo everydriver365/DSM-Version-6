@@ -236,7 +236,6 @@ function AvailabilitySettingsPage() {
   const [lunchEnd, setLunchEnd] = useState("13:30");
 
   // Buffers
-  const [bufBefore, setBufBefore] = useState(0);
   const [bufAfter, setBufAfter] = useState(15);
 
   // Recurring blocks
@@ -274,7 +273,7 @@ function AvailabilitySettingsPage() {
     (async () => {
       const { data: instr } = await supabase
         .from("instructors")
-        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
+        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
         .eq("id", userId).maybeSingle();
       if (instr) {
         const i = instr as Record<string, unknown>;
@@ -550,17 +549,15 @@ function AvailabilitySettingsPage() {
         />
       </Card>
 
-      {/* SECTION 2 — LESSON BUFFERS */}
+      {/* SECTION 2 — LESSON BUFFER */}
       <Card>
-        <SectionHead icon={<Shield size={16} color={BLUE} />} title="Lesson buffers" />
-        <div style={{ display: "flex", gap: 10 }}>
-          <SelectField value={bufBefore} onChange={setBufBefore} options={bufferOptions} label="Buffer before lesson" />
-          <SelectField value={bufAfter} onChange={setBufAfter} options={bufferOptions} label="Buffer after lesson" />
-        </div>
+        <SectionHead icon={<Shield size={16} color={BLUE} />} title="Lesson buffer" tight />
+        <Description>Time between lessons for notes, travel and preparation</Description>
+        <SelectField value={bufAfter} onChange={setBufAfter} options={bufferOptions} label="Gap after each lesson" />
         <SaveButton
           state={buffersSave.state}
           onClick={() => buffersSave.runSave(saveBuffers)}
-          label="Save buffers"
+          label="Save buffer"
         />
       </Card>
 
