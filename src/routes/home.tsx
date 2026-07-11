@@ -325,7 +325,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   const sorted = [...active].sort((a, b) => {
     if (b.count !== a.count) return b.count - a.count;
     return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
-  }).slice(0, 4);
+  }).slice(0, 6);
   return (
     <div style={{ margin: '16px 16px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
