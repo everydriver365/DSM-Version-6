@@ -304,11 +304,9 @@ function AvailabilitySettingsPage() {
           setDayHours(next);
         }
         if (i.lesson_buffer_after != null) setBufAfter(Number(i.lesson_buffer_after));
-        if (i.lunch_break_start && i.lunch_break_end) {
-          setLunchOn(true);
-          setLunchStart(String(i.lunch_break_start).slice(0, 5));
-          setLunchEnd(String(i.lunch_break_end).slice(0, 5));
-        }
+        // NOTE: lunch_break_start / lunch_break_end columns do not exist on instructors table.
+        // Lunch break UI state is local-only until a migration adds those columns.
+
         if (i.use_travel_time) setUseTravel(!!i.use_travel_time);
         if (i.avg_travel_speed_mph) setTravelSpeed(Number(i.avg_travel_speed_mph));
         if (i.travel_buffer_mins != null) setTravelBuffer(Number(i.travel_buffer_mins));
