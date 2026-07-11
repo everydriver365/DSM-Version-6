@@ -191,6 +191,33 @@ function CertificationsPage() {
     load(userId);
   };
 
+  const refreshList = () => {
+    if (userId) load(userId);
+  };
+
+  const closeSheet = () => {
+    if (successTimerRef.current) {
+      clearTimeout(successTimerRef.current);
+      successTimerRef.current = null;
+    }
+    setSaveSuccess(false);
+    setSheetOpen(false);
+    setEditing(null);
+    setFTitle("");
+    setFType("Other");
+    setFIssued("");
+    setFExpiry("");
+    setFNoExpiry(false);
+    setFReminder(30);
+    setFNotes("");
+    setSaving(false);
+  };
+
+  const finishAndRefresh = () => {
+    closeSheet();
+    refreshList();
+  };
+
   const save = async () => {
     if (!userId) return;
     if (!fTitle.trim()) {
@@ -230,8 +257,10 @@ function CertificationsPage() {
       return;
     }
     toast.success(editing ? "Updated" : "Saved");
-    setSheetOpen(false);
-    load(userId);
+    setSaveSuccess(true);
+    successTimerRef.current = setTimeout(() => {
+      finishAndRefresh();
+    }, 2000);
   };
 
   const groupHeader = (label: string, colour: string, count: number) => (
