@@ -83,7 +83,7 @@ function SettingsPage() {
   const [displayName, setDisplayName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [workingDays, setWorkingDays] = useState<WorkingHours>(DEFAULT_HOURS);
+  
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
