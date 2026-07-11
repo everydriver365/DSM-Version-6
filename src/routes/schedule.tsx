@@ -858,23 +858,34 @@ function SchedulePage() {
                   (() => {
                     type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
                     const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
-                    const gaps = detectGaps(
-                      dayLessons.map((l) => ({
-                        status: l.status,
-                        lesson_time: l.lesson_time,
-                        duration_minutes: l.duration_minutes,
-                        pupils: null,
-                      })),
-                      workStart,
-                      workEnd,
-                      bufferBefore,
-                      bufferAfter,
-                      calendarBlocks,
-                      recurringBlocks,
-                      timeOff,
-                      row.key,
-                      hourlyRate,
-                    );
+                    const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+                      new Date(row.key + "T12:00:00").getDay()
+                    ];
+                    const dayConfig = perDayHours?.[dayName];
+                    const dayStart = dayConfig?.start || workStart || "09:00";
+                    const dayEnd = dayConfig?.end || workEnd || "18:00";
+                    const isDayActive = dayConfig
+                      ? dayConfig.active === true
+                      : workingDaysList.includes(dayName);
+                    const gaps = isDayActive
+                      ? detectGaps(
+                          dayLessons.map((l) => ({
+                            status: l.status,
+                            lesson_time: l.lesson_time,
+                            duration_minutes: l.duration_minutes,
+                            pupils: null,
+                          })),
+                          dayStart,
+                          dayEnd,
+                          bufferBefore,
+                          bufferAfter,
+                          calendarBlocks,
+                          recurringBlocks,
+                          timeOff,
+                          row.key,
+                          hourlyRate,
+                        )
+                      : [];
                     const gapRows: GapRow[] = gaps.map((g, i) => ({
                       kind: 'gap-row',
                       id: `gap-${row.key}-${i}`,
