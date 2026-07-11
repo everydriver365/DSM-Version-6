@@ -813,26 +813,17 @@ function ProfilePage() {
               rightSlot={phoneVerified ? <VerifiedPill /> : null}
             />
             <div className="sm:col-span-2">
-              <TextField
-                label="Address"
-                value={address}
-                onChange={setAddress}
-                placeholder="Street, city, postcode"
-              />
-            </div>
-            <div className="sm:col-span-2">
               <AddressLookup
                 initialPostcode={homePostcode}
                 initialAddress={address}
                 initialCity={homeCity}
                 onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                  setAddress(addr);
                   setHomePostcode(postcode);
                   setHomeCity(city);
                   setHomeLat(lat);
                   setHomeLng(lng);
-                  // Only overwrite the free-text address if the user hasn't
-                  // typed one themselves.
-                  if (!address.trim()) setAddress(addr);
+                  setAddressSaved(false);
                 }}
               />
             </div>
