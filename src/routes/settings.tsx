@@ -86,7 +86,6 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
-  const [bufferBefore, setBufferBefore] = useState<number>(0);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
 
   useEffect(() => {
@@ -263,7 +262,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_before, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -282,9 +281,6 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { lesson_buffer_minutes?: number }).lesson_buffer_minutes === "number") {
         setBufferMinutes((instructor as { lesson_buffer_minutes: number }).lesson_buffer_minutes);
-      }
-      if (instructor && typeof (instructor as { lesson_buffer_before?: number }).lesson_buffer_before === "number") {
-        setBufferBefore((instructor as { lesson_buffer_before: number }).lesson_buffer_before);
       }
       if (instructor && typeof (instructor as { lesson_buffer_after?: number }).lesson_buffer_after === "number") {
         setBufferAfter((instructor as { lesson_buffer_after: number }).lesson_buffer_after);
@@ -435,11 +431,11 @@ function SettingsPage() {
     }
   }
 
-  async function saveBuffers(nextBefore: number, nextAfter: number) {
+  async function saveBuffers(nextAfter: number) {
     if (!userId) return;
     const { error } = await supabase
       .from("instructors")
-      .update({ lesson_buffer_before: nextBefore, lesson_buffer_after: nextAfter })
+      .update({ lesson_buffer_after: nextAfter })
       .eq("id", userId);
     if (error) {
       console.error("[settings] save buffers error", error);
@@ -954,43 +950,23 @@ function SettingsPage() {
                 <div className="flex items-center gap-2 mb-1">
                   <Clock size={14} color="#0F2044" />
                   <div className="text-[14px] font-bold" style={{ color: "#0F2044", ...POPPINS }}>
-                    Lesson buffers
+                    Lesson buffer
                   </div>
                 </div>
                 <div className="text-[12px] mb-4" style={{ color: "#9CA3AF", ...POPPINS }}>
-                  Buffer time is added before and after each lesson to allow for travel and preparation.
-                </div>
-                <div
-                  className="flex items-center justify-between"
-                  style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: "0.5px", borderBottomStyle: "solid", borderBottomColor: "#F3F4F6" }}
-                >
-                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>Before each lesson</div>
-                  <select
-                    value={bufferBefore}
-                    onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      setBufferBefore(v);
-                      void saveBuffers(v, bufferAfter);
-                    }}
-                    className="text-[13px]"
-                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
-                  >
-                    {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-                      <option key={m} value={m}>{m} min</option>
-                    ))}
-                  </select>
+                  Time between lessons for notes, travel and preparation.
                 </div>
                 <div
                   className="flex items-center justify-between"
                   style={{ paddingTop: 10, paddingBottom: 10 }}
                 >
-                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>After each lesson</div>
+                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>Gap after each lesson</div>
                   <select
                     value={bufferAfter}
                     onChange={(e) => {
                       const v = parseInt(e.target.value, 10);
                       setBufferAfter(v);
-                      void saveBuffers(bufferBefore, v);
+                      void saveBuffers(v);
                     }}
                     className="text-[13px]"
                     style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
