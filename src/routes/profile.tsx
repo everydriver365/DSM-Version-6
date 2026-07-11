@@ -308,6 +308,7 @@ function ProfilePage() {
   const [homeCity, setHomeCity] = useState("");
   const [homeLat, setHomeLat] = useState<number | null>(null);
   const [homeLng, setHomeLng] = useState<number | null>(null);
+  const [addressSaved, setAddressSaved] = useState(false);
   const [timezone, setTimezone] = useState("Europe/London");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [avatarColor, setAvatarColor] = useState<string>("blue");
@@ -480,6 +481,7 @@ function ProfilePage() {
       toast.error("Couldn't save profile");
       return;
     }
+    setAddressSaved(true);
     if (!emailChanged) toast.success("Saved");
   }
 
@@ -812,26 +814,17 @@ function ProfilePage() {
               rightSlot={phoneVerified ? <VerifiedPill /> : null}
             />
             <div className="sm:col-span-2">
-              <TextField
-                label="Address"
-                value={address}
-                onChange={setAddress}
-                placeholder="Street, city, postcode"
-              />
-            </div>
-            <div className="sm:col-span-2">
               <AddressLookup
                 initialPostcode={homePostcode}
                 initialAddress={address}
                 initialCity={homeCity}
                 onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                  setAddress(addr);
                   setHomePostcode(postcode);
                   setHomeCity(city);
                   setHomeLat(lat);
                   setHomeLng(lng);
-                  // Only overwrite the free-text address if the user hasn't
-                  // typed one themselves.
-                  if (!address.trim()) setAddress(addr);
+                  setAddressSaved(false);
                 }}
               />
             </div>
