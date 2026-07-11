@@ -429,6 +429,10 @@ function ProfilePage() {
       bio: bio.trim() || null,
       profile_image_url: imageUrl,
       address: address.trim() || null,
+      home_postcode: homePostcode.trim() || null,
+      city: homeCity.trim() || null,
+      lat: homeLat,
+      lng: homeLng,
       email_verified: emailVerified,
       phone_verified: phoneVerified,
       timezone,
@@ -813,6 +817,22 @@ function ProfilePage() {
                 value={address}
                 onChange={setAddress}
                 placeholder="Street, city, postcode"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <AddressLookup
+                initialPostcode={homePostcode}
+                initialAddress={address}
+                initialCity={homeCity}
+                onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                  setHomePostcode(postcode);
+                  setHomeCity(city);
+                  setHomeLat(lat);
+                  setHomeLng(lng);
+                  // Only overwrite the free-text address if the user hasn't
+                  // typed one themselves.
+                  if (!address.trim()) setAddress(addr);
+                }}
               />
             </div>
             <div className="sm:col-span-2">
