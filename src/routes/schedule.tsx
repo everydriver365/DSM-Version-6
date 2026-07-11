@@ -56,10 +56,9 @@ type GapInfo = {
   potential: number;
 };
 function detectGaps(
-  lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_before_minutes?: number | null; buffer_after_minutes?: number | null } | null }>,
+  lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_after_minutes?: number | null } | null }>,
   workStart: string,
   workEnd: string,
-  bufferBefore: number,
   bufferAfter: number,
   calendarBlocks: Array<{ start_datetime: string; end_datetime: string; is_all_day?: boolean | null }>,
   recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; is_active?: boolean }>,
@@ -79,9 +78,9 @@ function detectGaps(
   const busy: { start: number; end: number }[] = [];
   for (const l of (lessons || []).filter((l) => !["cancelled"].includes(String(l.status || "")))) {
     const lStart = timeToMins(l.lesson_time);
-    const pupilBufBefore = l.pupils?.buffer_before_minutes ?? bufferBefore;
     const pupilBufAfter = l.pupils?.buffer_after_minutes ?? bufferAfter;
-    busy.push({ start: lStart - pupilBufBefore, end: lStart + (l.duration_minutes || 60) + pupilBufAfter });
+    // Buffer applies only AFTER each lesson; no buffer before the next.
+    busy.push({ start: lStart, end: lStart + (l.duration_minutes || 60) + pupilBufAfter });
   }
   const dayBlocks = (calendarBlocks || []).filter((b) => {
     const s = b.start_datetime?.substring(0, 10);
@@ -303,7 +302,6 @@ function SchedulePage() {
   const [workEnd, setWorkEnd] = useState<string>("18:00");
   const [perDayHours, setPerDayHours] = useState<Record<string, { start: string; end: string; active: boolean }> | null>(null);
   const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
-  const [bufferBefore, setBufferBefore] = useState<number>(0);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
@@ -407,7 +405,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate")
+            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate")
             .eq("id", userId)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
@@ -419,7 +417,6 @@ function SchedulePage() {
           working_hours_end?: string | null;
           working_days?: string[] | null;
           per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
-          lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
         };
@@ -427,7 +424,6 @@ function SchedulePage() {
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
         if (Array.isArray(i.working_days) && i.working_days.length) setWorkingDaysList(i.working_days);
         setPerDayHours(i.per_day_hours ?? null);
-        if (i.lesson_buffer_before != null) setBufferBefore(Number(i.lesson_buffer_before));
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
         if (recRes.ok) {
@@ -877,7 +873,6 @@ function SchedulePage() {
                           })),
                           dayStart,
                           dayEnd,
-                          bufferBefore,
                           bufferAfter,
                           calendarBlocks,
                           recurringBlocks,
