@@ -461,7 +461,7 @@ function GapsPage() {
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_before_minutes,buffer_after_minutes,postcode)")
+            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_after_minutes,postcode)")
             .eq("instructor_id", userId)
             .is("deleted_at", null)
             .in("status", ["confirmed", "pending", "in_progress"])
@@ -472,7 +472,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
+              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -548,7 +548,6 @@ function GapsPage() {
           working_hours_end?: string | null;
           working_days?: string[] | null;
           per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
-          lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
           lunch_break_end?: string | null;
@@ -561,7 +560,6 @@ function GapsPage() {
         const travelExtra = Number(instr.travel_buffer_mins ?? 10) || 0;
         const workStart = instr.working_hours_start || "09:00";
         const workEnd = instr.working_hours_end || "18:00";
-        const instrBufBefore = instr.lesson_buffer_before ?? 0;
         const instrBufAfter = instr.lesson_buffer_after ?? 15;
         const workDays =
           instr.working_days && instr.working_days.length
@@ -575,7 +573,7 @@ function GapsPage() {
 
         const byDay = new Map<
           string,
-          { start: number; end: number; title: string; color: string | null; bufBefore: number; bufAfter: number; postcode: string | null }[]
+          { start: number; end: number; title: string; color: string | null; bufAfter: number; postcode: string | null }[]
         >();
         let busyIdx = 0;
         for (const l of (lessonsRes.data ?? []) as {
@@ -584,7 +582,7 @@ function GapsPage() {
           duration_minutes: number | null;
           notes: string | null;
           pupil_id?: string | null;
-          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_before_minutes?: number | null; buffer_after_minutes?: number | null; postcode?: string | null } | null;
+          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_after_minutes?: number | null; postcode?: string | null } | null;
         }[]) {
           if (!l.lesson_date || !l.lesson_time) continue;
           const s = hmToMin(l.lesson_time);
@@ -594,14 +592,11 @@ function GapsPage() {
             l.pupils?.first_name ||
             (l.notes ? l.notes.split("\n")[0].slice(0, 40) : null) ||
             "Lesson";
-          const bufBefore = l.pupils?.buffer_before_minutes != null
-            ? Number(l.pupils.buffer_before_minutes)
-            : instrBufBefore;
           const bufAfter = l.pupils?.buffer_after_minutes != null
             ? Number(l.pupils.buffer_after_minutes)
             : instrBufAfter;
           const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufBefore, bufAfter, postcode: l.pupils?.postcode ?? null });
+          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufAfter, postcode: l.pupils?.postcode ?? null });
           byDay.set(l.lesson_date, arr);
           busyIdx++;
         }
@@ -651,7 +646,6 @@ function GapsPage() {
               end: b.endMins,
               title: `${c.icon} ${b.title}`,
               color: c.border as string | null,
-              bufBefore: 0,
               bufAfter: 0,
             };
           });
@@ -663,7 +657,6 @@ function GapsPage() {
               end: hmToMin(b.end_time),
               title: `🔄 ${b.label ?? "Recurring"}`,
               color: "#7C3AED" as string | null,
-              bufBefore: 0,
               bufAfter: 0,
             }));
           // Partial time off for this day.
@@ -674,7 +667,6 @@ function GapsPage() {
               end: hmToMin(t.end_time!),
               title: `🌴 ${t.reason ?? "Time off"}`,
               color: "#0EA5E9" as string | null,
-              bufBefore: 0,
               bufAfter: 0,
             }));
           // Lunch break — block gap detection during it.
@@ -688,7 +680,6 @@ function GapsPage() {
                 end: hmToMin(lunchInfo.end),
                 title: "🍽 Lunch break",
                 color: "#9CA3AF" as string | null,
-                bufBefore: 0,
                 bufAfter: 0,
               }]
             : [];
@@ -697,7 +688,6 @@ function GapsPage() {
             end: number;
             title: string;
             color: string | null;
-            bufBefore: number;
             bufAfter: number;
             postcode?: string | null;
           }[] = [
@@ -730,10 +720,10 @@ function GapsPage() {
             continue;
           }
           // Build gap boundaries. For each consecutive pair A → B, the required
-          // minimum time between A.end and B.start is whichever is larger:
-          //   • the combined A.after + B.before buffers, or
-          //   • the estimated travel time between A and B.
-          // Travel time is never added on top of buffers.
+          // minimum gap between A.end and B.start is:
+          //   MAX(A.bufAfter, travel time between A and B)
+          // Buffer before B is NEVER added on top — a single "buffer after" is
+          // the only reservation between lessons.
           const gaps: {
             start: number;
             end: number;
@@ -749,14 +739,10 @@ function GapsPage() {
             const rawEnd = l.start;
             const current = l;
             let leftReserve = 0;
-            let rightReserve = current.bufBefore;
             let gapReason = "";
             if (hasPrevLesson && previousLesson) {
               const bufferAfterA = previousLesson.bufAfter;
-              const bufferBeforeB = current.bufBefore;
-              const combinedBuffers = bufferAfterA + bufferBeforeB;
               let travelMins = 0;
-              let extra = 0;
               if (useTravel) {
                 travelMins = estimateTravelMins(
                   previousLesson.postcode ?? null,
@@ -765,23 +751,20 @@ function GapsPage() {
                   travelExtra,
                 );
               }
-              if (useTravel && travelMins > combinedBuffers) {
-                extra = travelMins - combinedBuffers;
+              leftReserve = Math.max(bufferAfterA, travelMins);
+              if (useTravel && travelMins > bufferAfterA) {
                 gapReason = `~${travelMins} min drive`;
               } else {
-                gapReason =
-                  combinedBuffers > 0 ? `${combinedBuffers} min buffer` : "";
+                gapReason = bufferAfterA > 0 ? `${bufferAfterA} min buffer` : "";
               }
-              leftReserve = bufferAfterA + extra;
-              rightReserve = bufferBeforeB;
             }
             const effStart = rawCursor + leftReserve;
-            const effEnd = rawEnd - rightReserve;
+            const effEnd = rawEnd;
             if (effEnd - effStart >= 60) {
               gaps.push({
                 start: effStart,
                 end: effEnd,
-                bufferTotal: leftReserve + rightReserve,
+                bufferTotal: leftReserve,
                 gapReason,
                 fromPostcode: previousLesson?.postcode,
                 toPostcode: current.postcode,
