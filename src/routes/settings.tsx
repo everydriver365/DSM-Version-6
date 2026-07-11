@@ -402,8 +402,85 @@ function SettingsPage() {
 
 
       await loadPricingRules(user.id);
+
+      // Load reminder preferences
+      const { data: prefs } = await supabase
+        .from("instructor_reminder_preferences")
+        .select("no_show_fee, late_cancel_fee, late_cancel_hours, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .eq("instructor_id", user.id)
+        .maybeSingle();
+      if (prefs) {
+        const p = prefs as Record<string, unknown>;
+        if (typeof p.no_show_fee === "number") setNoShowFee(p.no_show_fee);
+        if (typeof p.late_cancel_fee === "number") setLateCancelFee(p.late_cancel_fee);
+        if (typeof p.late_cancel_hours === "number") setLateCancelHours(p.late_cancel_hours);
+        if (typeof p.auto_charge_no_show === "boolean") setAutoChargeNoShow(p.auto_charge_no_show);
+        if (typeof p.reminder_enabled === "boolean") setReminderEnabled(p.reminder_enabled);
+        if (typeof p.reminder_hours_before === "number") setReminderHoursBefore(p.reminder_hours_before);
+        if (typeof p.payment_reminder_enabled === "boolean") setPaymentReminderEnabled(p.payment_reminder_enabled);
+        if (typeof p.payment_chase_max_reminders === "number") setPaymentChaseMax(p.payment_chase_max_reminders);
+        if (typeof p.morning_briefing === "boolean") setMorningBriefing(p.morning_briefing);
+      }
+
+      // Load extended instructor fields (deposit/payment/tax/referral)
+      const { data: extra } = await supabase
+        .from("instructors")
+        .select("deposit_enabled, deposit_amount, deposit_deadline_days, accepted_payment_methods, payment_terms, tax_code, vehicle_mpg, fuel_cost_per_litre, is_electric, electricity_cost_per_kwh, battery_kwh, claimed_deductions, referral_enabled, referral_discount_amount, referral_discount_type, referral_code")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (extra) {
+        const e = extra as Record<string, unknown>;
+        if (typeof e.deposit_enabled === "boolean") setDepositEnabled(e.deposit_enabled);
+        if (typeof e.deposit_amount === "number") setDepositAmount(e.deposit_amount);
+        if (typeof e.deposit_deadline_days === "number") setDepositDeadlineDays(e.deposit_deadline_days);
+        if (Array.isArray(e.accepted_payment_methods)) setAcceptedPaymentMethods(e.accepted_payment_methods as string[]);
+        if (typeof e.payment_terms === "string" && e.payment_terms) setPaymentTerms(e.payment_terms);
+        if (typeof e.tax_code === "string" && e.tax_code) setTaxCode(e.tax_code);
+        if (typeof e.vehicle_mpg === "number") setVehicleMpg(e.vehicle_mpg);
+        if (typeof e.fuel_cost_per_litre === "number") setFuelCostPerLitre(e.fuel_cost_per_litre);
+        if (typeof e.is_electric === "boolean") setIsElectric(e.is_electric);
+        if (typeof e.electricity_cost_per_kwh === "number") setElectricityCostPerKwh(e.electricity_cost_per_kwh);
+        if (typeof e.battery_kwh === "number") setBatteryKwh(e.battery_kwh);
+        if (Array.isArray(e.claimed_deductions)) setClaimedDeductions(e.claimed_deductions as string[]);
+        if (typeof e.referral_enabled === "boolean") setReferralEnabled(e.referral_enabled);
+        if (typeof e.referral_discount_amount === "number") setReferralDiscountAmount(e.referral_discount_amount);
+        if (e.referral_discount_type === "fixed" || e.referral_discount_type === "percent") setReferralDiscountType(e.referral_discount_type);
+        if (typeof e.referral_code === "string") setReferralCode(e.referral_code);
+      }
     })();
   }, []);
+
+  async function saveReminderPrefs(patch: Record<string, unknown>) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructor_reminder_preferences")
+      .upsert({ instructor_id: userId, ...patch }, { onConflict: "instructor_id" });
+    if (error) {
+      console.error("[settings] save reminder prefs error", error);
+      toast.error("Could not save");
+    } else {
+      toast.success("Saved ✓");
+    }
+  }
+
+  async function saveInstructorPatch(patch: Record<string, unknown>) {
+    if (!userId) return;
+    const { error } = await supabase.from("instructors").update(patch).eq("id", userId);
+    if (error) {
+      console.error("[settings] save instructor patch error", error);
+      toast.error("Could not save");
+    } else {
+      toast.success("Saved ✓");
+    }
+  }
+
+  function generateReferralCode() {
+    const base = (displayName || instructorName || email.split("@")[0] || "REF").split(/\s+/)[0].toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8) || "REF";
+    const rand = Math.random().toString(36).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4).padEnd(4, "X");
+    return `${base}${rand}`;
+  }
+
+
 
 
 
