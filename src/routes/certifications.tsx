@@ -87,6 +87,8 @@ function CertificationsPage() {
   const [fReminder, setFReminder] = useState(30);
   const [fNotes, setFNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     (async () => {
