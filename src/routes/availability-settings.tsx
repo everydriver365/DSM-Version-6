@@ -122,10 +122,18 @@ function AvailabilitySettingsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Working hours
-  const [workingDays, setWorkingDays] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
-  const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("18:00");
+  // Working hours (per-day)
+  type DayHours = { start: string; end: string; active: boolean };
+  const DEFAULT_DAY_HOURS: Record<string, DayHours> = {
+    Monday:    { start: "09:00", end: "18:00", active: true },
+    Tuesday:   { start: "09:00", end: "18:00", active: true },
+    Wednesday: { start: "09:00", end: "18:00", active: true },
+    Thursday:  { start: "09:00", end: "18:00", active: true },
+    Friday:    { start: "09:00", end: "18:00", active: true },
+    Saturday:  { start: "09:00", end: "18:00", active: false },
+    Sunday:    { start: "09:00", end: "18:00", active: false },
+  };
+  const [dayHours, setDayHours] = useState<Record<string, DayHours>>(DEFAULT_DAY_HOURS);
   const [lunchOn, setLunchOn] = useState(false);
   const [lunchStart, setLunchStart] = useState("12:30");
   const [lunchEnd, setLunchEnd] = useState("13:30");
