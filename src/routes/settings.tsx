@@ -149,6 +149,43 @@ function SettingsPage() {
   const [ruleHours, setRuleHours] = useState<number>(24);
   const [ruleAdjType, setRuleAdjType] = useState<AdjType>("flat");
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
+
+  // === Section: No-show & cancellation policy + Lesson reminders (instructor_reminder_preferences) ===
+  const [noShowFee, setNoShowFee] = useState<number>(0);
+  const [lateCancelFee, setLateCancelFee] = useState<number>(0);
+  const [lateCancelHours, setLateCancelHours] = useState<number>(24);
+  const [autoChargeNoShow, setAutoChargeNoShow] = useState<boolean>(false);
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
+  const [reminderHoursBefore, setReminderHoursBefore] = useState<number>(24);
+  const [paymentReminderEnabled, setPaymentReminderEnabled] = useState<boolean>(true);
+  const [paymentChaseMax, setPaymentChaseMax] = useState<number>(3); // 0 = unlimited
+  const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
+
+  // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
+  const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
+  const [depositAmount, setDepositAmount] = useState<number>(50);
+  const [depositDeadlineDays, setDepositDeadlineDays] = useState<number>(7);
+  const PAYMENT_METHODS = ["Cash", "Bank transfer (BACS)", "PayPal", "Card (via DSM)", "Klarna", "Clearpay", "Cheque"] as const;
+  const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<string[]>([]);
+  const [paymentTerms, setPaymentTerms] = useState<string>("Before lesson");
+  const [taxCode, setTaxCode] = useState<string>("1257L");
+  const [isElectric, setIsElectric] = useState<boolean>(false);
+  const [vehicleMpg, setVehicleMpg] = useState<number>(45);
+  const [fuelCostPerLitre, setFuelCostPerLitre] = useState<number>(1.45);
+  const [batteryKwh, setBatteryKwh] = useState<number>(60);
+  const [electricityCostPerKwh, setElectricityCostPerKwh] = useState<number>(0.28);
+  const DEDUCTIONS = [
+    "Vehicle running costs", "Vehicle lease/finance", "Business insurance",
+    "Phone & communications", "Use of home as office", "Internet/broadband",
+    "Training & CPD", "ADI licence & badges", "Uniform/clothing",
+    "Teaching equipment", "Franchise fees", "Accountancy fees",
+  ] as const;
+  const [claimedDeductions, setClaimedDeductions] = useState<string[]>([]);
+  const [referralEnabled, setReferralEnabled] = useState<boolean>(false);
+  const [referralDiscountAmount, setReferralDiscountAmount] = useState<number>(10);
+  const [referralDiscountType, setReferralDiscountType] = useState<"fixed" | "percent">("fixed");
+  const [referralCode, setReferralCode] = useState<string>("");
+
   const [savingRule, setSavingRule] = useState(false);
 
   const POSTCODE_ENTRY_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
