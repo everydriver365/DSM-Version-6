@@ -1279,6 +1279,67 @@ function GapsPage() {
         </div>
       </div>
 
+      {/* Pulse animation for the freed-slot highlight */}
+      <style>{`
+        @keyframes gapsPrefilterPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.55), 0 4px 14px rgba(24,95,165,0.12); }
+          50%      { box-shadow: 0 0 0 6px rgba(245,158,11,0), 0 4px 14px rgba(24,95,165,0.12); }
+        }
+        .gaps-prefilter-match {
+          border-color: #F59E0B !important;
+          animation: gapsPrefilterPulse 1.6s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Pre-filter banner (from cancellation) */}
+      {prefilter && (
+        <div
+          style={{
+            background: "#FEF2F2",
+            border: "0.5px solid #FECACA",
+            borderRadius: 12,
+            padding: "14px 16px",
+            margin: "12px 16px 0",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <XCircle size={16} color="#CC2229" style={{ flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "#0F2044" }}>
+              Lesson cancelled — fill this slot?
+            </div>
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+              {prefilterDateLabel} at {prefilter.time} · {prefilter.duration} mins
+            </div>
+            {prefilterFound === false && (
+              <div style={{ fontSize: 12, color: "#B45309", marginTop: 4 }}>
+                This slot is outside your working hours — showing all available slots instead
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => {
+              setPrefilter(null);
+              setPrefilterFound(null);
+              prefilterHandledRef.current = true;
+            }}
+            aria-label="Dismiss"
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 4,
+              cursor: "pointer",
+              color: "#9CA3AF",
+              flexShrink: 0,
+            }}
+          >
+            <XIcon size={16} />
+          </button>
+        </div>
+      )}
+
       {/* Ranking info card */}
       <div
         style={{
