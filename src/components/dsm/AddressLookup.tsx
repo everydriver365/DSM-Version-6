@@ -194,7 +194,7 @@ export function AddressLookup({
           ) : (
             <Search size={14} />
           )}
-          {loading ? "Looking up" : "Lookup"}
+          {loading ? "Looking up" : "Find address"}
         </button>
       </div>
       {error && (
