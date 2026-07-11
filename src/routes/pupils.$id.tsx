@@ -3187,24 +3187,30 @@ function PupilRatesAndColour({
             </button>
           </div>
         )}
-        {/* Gap after lesson */}
-        <div className="flex justify-between items-center" style={{ marginTop: 12, paddingTop: 10, borderTop: "0.5px solid #F3F4F6" }}>
-          <div className="flex items-center">
-            <Clock size={14} color="#9CA3AF" />
-            <span className="text-sm ml-[6px] text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
+      </div>
+
+      {/* Gap after lesson */}
+      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
+        <div className="flex items-center gap-2">
+          <Clock size={16} color="#9CA3AF" />
+          <div className="flex flex-col">
+            <span className="text-[13px] font-semibold text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
+            <span className="text-xs text-[#9CA3AF]" style={POPPINS}>
+              Override the default {instructorBufferAfter != null ? `${instructorBufferAfter} min ` : ""}buffer for this pupil
+            </span>
           </div>
-          <select
-            value={pupil.buffer_after_minutes ?? ""}
-            onChange={(e) => void saveBuffer(e.target.value)}
-            className="text-[13px]"
-            style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
-          >
-            <option value="">Use default</option>
-            {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-              <option key={m} value={m}>{m} min</option>
-            ))}
-          </select>
         </div>
+        <select
+          value={pupil.buffer_after_minutes ?? ""}
+          onChange={(e) => void saveBuffer(e.target.value)}
+          className="text-[13px]"
+          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+        >
+          <option value="">Use default</option>
+          {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+            <option key={m} value={m}>{m} min</option>
+          ))}
+        </select>
       </div>
 
       {/* Calendar colour */}
