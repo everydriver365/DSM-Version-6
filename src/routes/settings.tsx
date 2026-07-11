@@ -365,17 +365,6 @@ function SettingsPage() {
   }, []);
 
 
-  async function toggleDay(d: DayKey) {
-    const next = { ...workingDays, [d]: !workingDays[d] };
-    setWorkingDays(next);
-    if (!userId) return;
-    const working_days = DAYS.filter((x) => next[x.key]).map((x) => x.label);
-    const { error } = await supabase
-      .from("instructors")
-      .update({ working_days })
-      .eq("id", userId);
-    if (error) console.error("[settings] toggle day error", error);
-  }
 
   async function togglePassBookingFee() {
     const next = !passBookingFee;
