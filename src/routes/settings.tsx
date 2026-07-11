@@ -37,6 +37,7 @@ import {
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -93,6 +94,10 @@ function SettingsPage() {
   }, []);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
+  const [homeAddress, setHomeAddress] = useState<string>("");
+  const [homeCity, setHomeCity] = useState<string>("");
+  const [homeLat, setHomeLat] = useState<number | null>(null);
+  const [homeLng, setHomeLng] = useState<number | null>(null);
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
   const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
@@ -108,7 +113,7 @@ function SettingsPage() {
 
   const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
-  const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
+  
 
   // Pricing rules
   type RuleType = "time_of_day" | "day_of_week" | "postcode_zone" | "advance_notice";
@@ -262,7 +267,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -293,6 +298,20 @@ function SettingsPage() {
       }
       if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
         setHomePostcode((instructor as { home_postcode: string }).home_postcode);
+      }
+      if (instructor && typeof (instructor as { address?: string }).address === "string") {
+        setHomeAddress((instructor as { address: string }).address);
+      }
+      if (instructor && typeof (instructor as { city?: string }).city === "string") {
+        setHomeCity((instructor as { city: string }).city);
+      }
+      {
+        const la = (instructor as { lat?: number | null } | null)?.lat;
+        if (typeof la === "number") setHomeLat(la);
+      }
+      {
+        const ln = (instructor as { lng?: number | null } | null)?.lng;
+        if (typeof ln === "number") setHomeLng(ln);
       }
       if (instructor && typeof (instructor as { radius_miles?: number }).radius_miles === "number") {
         setCoverageRadius((instructor as { radius_miles: number }).radius_miles);
@@ -455,24 +474,55 @@ function SettingsPage() {
     }
     setSavingCoverage(true);
     try {
-      const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
-      if (!res.ok) {
-        toast.error("Postcode not found");
-        setSavingCoverage(false);
-        return;
+      // If we don't yet have lat/lng (user typed but never hit Lookup),
+      // resolve via postcodes.io before saving.
+      let lat = homeLat;
+      let lng = homeLng;
+      let address = homeAddress;
+      let city = homeCity;
+      if (lat == null || lng == null) {
+        const res = await fetch(
+          `https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`,
+        );
+        if (!res.ok) {
+          toast.error("Postcode not found");
+          setSavingCoverage(false);
+          return;
+        }
+        const json = await res.json();
+        const r = json?.result ?? {};
+        lat = typeof r.latitude === "number" ? r.latitude : null;
+        lng = typeof r.longitude === "number" ? r.longitude : null;
+        if (!address) {
+          const parts = [r.admin_ward, r.admin_district, r.region].filter(
+            (x: unknown): x is string => typeof x === "string" && x.length > 0,
+          );
+          address = parts.length ? parts.join(", ") : pc;
+        }
+        if (!city) {
+          city = r.admin_district || r.parish || r.admin_county || r.region || "";
+        }
       }
-      const json = await res.json();
-      const lat = json?.result?.latitude ?? null;
-      const lng = json?.result?.longitude ?? null;
       const { error } = await supabase
         .from("instructors")
-        .update({ home_postcode: pc, lat, lng, radius_miles: coverageRadius })
+        .update({
+          home_postcode: pc,
+          address,
+          city,
+          lat,
+          lng,
+          radius_miles: coverageRadius,
+        })
         .eq("id", userId);
       if (error) {
         console.error("[settings] save coverage error", error);
         toast.error("Failed to save coverage");
       } else {
         setHomePostcode(pc);
+        setHomeAddress(address);
+        setHomeCity(city);
+        setHomeLat(lat);
+        setHomeLng(lng);
         toast.success("Coverage saved ✓");
       }
     } catch (e) {
@@ -1047,42 +1097,22 @@ function SettingsPage() {
           />
           {expanded === "coverage" && (
             <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-              <label className="block pt-4" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Home postcode</label>
-              <div style={{ position: "relative", marginTop: 6, marginBottom: postcodeShowError ? 4 : 14 }}>
-                <input
-                  type="text"
-                  value={homePostcode}
-                  onChange={(e) => setHomePostcode(e.target.value.toUpperCase())}
-                  onBlur={() => setPostcodeBlurred(true)}
-                  placeholder="e.g. SO23 9AX"
-                  autoCapitalize="characters"
-                  maxLength={10}
-                  style={{
-                    width: "100%",
-                    height: 44,
-                    padding: "0 36px 0 12px",
-                    border: `0.5px solid ${postcodeShowError ? "#1877D6" : "#EEF2F7"}`,
-                    borderRadius: 10,
-                    fontSize: 14,
-                    background: "#fff",
-                    color: "#0B1F3A",
-                    textTransform: "uppercase",
-                    ...POPPINS,
+              <div className="pt-4">
+                <AddressLookup
+                  initialPostcode={homePostcode}
+                  initialAddress={homeAddress}
+                  initialCity={homeCity}
+                  onAddressFound={({ postcode, address, city, lat, lng }) => {
+                    setHomePostcode(postcode);
+                    setHomeAddress(address);
+                    setHomeCity(city);
+                    setHomeLat(lat);
+                    setHomeLng(lng);
+                    setPostcodeBlurred(true);
                   }}
                 />
-                {postcodeValid && (
-                  <Check
-                    size={18}
-                    color="#1877D6"
-                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}
-                  />
-                )}
               </div>
-              {postcodeShowError && (
-                <div style={{ fontSize: 12, color: "#1877D6", marginBottom: 14, ...POPPINS }}>
-                  Please enter a valid UK postcode
-                </div>
-              )}
+              <div style={{ height: 14 }} />
 
               <label className="block" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
               <select
