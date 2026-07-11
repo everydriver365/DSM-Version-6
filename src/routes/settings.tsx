@@ -100,6 +100,7 @@ function SettingsPage() {
   const [homeLng, setHomeLng] = useState<number | null>(null);
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [coverageAreaCount, setCoverageAreaCount] = useState<number>(0);
   const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
   const [savingCoverage, setSavingCoverage] = useState(false);
   const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
@@ -264,6 +265,19 @@ function SettingsPage() {
       if (!user) return;
       setUserId(user.id);
       setEmail(user.email ?? "");
+
+      // Coverage areas count for the settings row
+      supabase
+        .from("instructor_coverage_areas")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", user.id)
+        .then(({ count, error: covErr }) => {
+          if (covErr) {
+            console.error("[settings] coverage count error", covErr);
+            return;
+          }
+          if (typeof count === "number") setCoverageAreaCount(count);
+        });
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
@@ -1083,78 +1097,54 @@ function SettingsPage() {
         </SectionCard>
 
         <Label>COVERAGE AREA</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<MapPin size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
-            label="Coverage area"
-            expanded={expanded === "coverage"}
-            onClick={() => setExpanded(expanded === "coverage" ? null : "coverage")}
-            isFirst
-          />
-          {expanded === "coverage" && (
-            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-              <div className="pt-4">
-                <AddressLookup
-                  initialPostcode={homePostcode}
-                  initialAddress={homeAddress}
-                  initialCity={homeCity}
-                  onAddressFound={({ postcode, address, city, lat, lng }) => {
-                    setHomePostcode(postcode);
-                    setHomeAddress(address);
-                    setHomeCity(city);
-                    setHomeLat(lat);
-                    setHomeLng(lng);
-                    setPostcodeBlurred(true);
-                  }}
-                />
-              </div>
-              <div style={{ height: 14 }} />
-
-              <label className="block" style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Coverage radius</label>
-              <select
-                value={coverageRadius}
-                onChange={(e) => setCoverageRadius(Number(e.target.value))}
-                style={{
-                  width: "100%",
-                  height: 44,
-                  padding: "0 12px",
-                  border: "0.5px solid #EEF2F7",
-                  borderRadius: 10,
-                  fontSize: 14,
-                  marginTop: 6,
-                  background: "#fff",
-                  color: "#0B1F3A",
-                  ...POPPINS,
-                }}
-              >
-                {[5, 10, 15, 20, 25, 30].map((m) => (
-                  <option key={m} value={m}>
-                    {m} miles
-                  </option>
-                ))}
-              </select>
-
-              <button
-                type="button"
-                onClick={saveCoverage}
-                disabled={savingCoverage || !postcodeValid}
-                className="w-full text-[14px] font-semibold text-white mt-5"
-                style={{
-                  height: 48,
-                  borderRadius: 10,
-                  backgroundColor: "#0B1F3A",
-                  border: "none",
-                  opacity: savingCoverage || !postcodeValid ? 0.5 : 1,
-                  cursor: savingCoverage || !postcodeValid ? "not-allowed" : "pointer",
-                  ...POPPINS,
-                }}
-              >
-                {savingCoverage ? "Saving…" : "Save coverage"}
-              </button>
+        <div
+          onClick={() => navigate({ to: "/coverage-areas" as never })}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/coverage-areas" as never });
+            }
+          }}
+          style={{
+            margin: "0 0 0 0",
+            backgroundColor: "#fff",
+            border: "0.5px solid #E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            cursor: "pointer",
+            ...POPPINS,
+          }}
+        >
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              backgroundColor: "#E0F4FF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <MapPin size={22} color="#1A52A0" />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Coverage areas</div>
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+              {coverageAreaCount > 0
+                ? `${coverageAreaCount} ${coverageAreaCount === 1 ? "area" : "areas"} defined`
+                : "No areas set"}
             </div>
-          )}
-        </SectionCard>
+          </div>
+          <ChevronRight size={18} color="#D1D5DB" />
+        </div>
+
 
         <Label>PRICING RULES</Label>
         <SectionCard>
