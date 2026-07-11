@@ -1655,6 +1655,51 @@ function PupilDetailPage() {
         )}
 
 
+        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
+          <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="flex items-center gap-2">
+              <RefreshCw size={14} color="#1A52A0" />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", ...POPPINS }}>Recurring lessons</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/lesson-series" as never, search: { pupilId: id } as never })}
+              style={{ fontSize: 12, color: "#1A52A0", fontWeight: 600, ...POPPINS }}
+            >
+              + Add series
+            </button>
+          </div>
+          {pupilSeries === null ? null : pupilSeries.length === 0 ? (
+            <div style={{ padding: "14px 16px", fontSize: 12, color: "#9CA3AF", ...POPPINS }}>No recurring lessons set up</div>
+          ) : (
+            pupilSeries.map((s, idx) => (
+              <div
+                key={s.id}
+                onClick={() => navigate({ to: "/lesson-series" as never })}
+                style={{
+                  padding: "12px 16px",
+                  borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044" }}>
+                    {s.day_of_week} at {(s.lesson_time || "").slice(0, 5)}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, textTransform: "capitalize" }}>
+                    {s.frequency} · {s.duration_minutes} mins
+                  </div>
+                </div>
+                <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>Active</span>
+              </div>
+            ))
+          )}
+        </div>
+
         <SectionHeader>LAST LESSONS</SectionHeader>
         {pastLessons === null ? null : pastLessons.length === 0 ? (
           <div className="flex items-center justify-center py-8">
