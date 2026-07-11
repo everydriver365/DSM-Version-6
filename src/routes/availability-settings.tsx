@@ -365,10 +365,11 @@ function AvailabilitySettingsPage() {
       working_hours_end: mostCommonEnd,
       working_days: activeEntries,
       per_day_hours: dayHours,
-      lunch_break_start: lunchOn ? lunchStart : null,
-      lunch_break_end: lunchOn ? lunchEnd : null,
+      // lunch_break_start / lunch_break_end intentionally omitted — columns don't exist in DB yet.
     };
-    const { error } = await supabase.from("instructors").update(patch).eq("id", userId);
+    console.log("[availability] saving working hours:", { userId, patch });
+    const { error, status } = await supabase.from("instructors").update(patch).eq("id", userId);
+    console.log("[availability] save result:", status, error);
     if (error) throw error;
   }
 
