@@ -79,6 +79,7 @@ import { Route as DiscountCodesRouteImport } from './routes/discount-codes'
 import { Route as DiaryRouteImport } from './routes/diary'
 import { Route as DataimportRouteImport } from './routes/dataimport'
 import { Route as CpdRouteImport } from './routes/cpd'
+import { Route as CoverageAreasRouteImport } from './routes/coverage-areas'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
@@ -489,6 +490,11 @@ const CpdRoute = CpdRouteImport.update({
   path: '/cpd',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoverageAreasRoute = CoverageAreasRouteImport.update({
+  id: '/coverage-areas',
+  path: '/coverage-areas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChecklistRoute = ChecklistRouteImport.update({
   id: '/checklist',
   path: '/checklist',
@@ -796,6 +802,7 @@ export interface FileRoutesByFullPath {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/coverage-areas': typeof CoverageAreasRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -926,6 +933,7 @@ export interface FileRoutesByTo {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/coverage-areas': typeof CoverageAreasRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -1055,6 +1063,7 @@ export interface FileRoutesById {
   '/calendarsync': typeof CalendarsyncRoute
   '/certifications': typeof CertificationsRoute
   '/checklist': typeof ChecklistRoute
+  '/coverage-areas': typeof CoverageAreasRoute
   '/cpd': typeof CpdRoute
   '/dataimport': typeof DataimportRoute
   '/diary': typeof DiaryRoute
@@ -1187,6 +1196,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/coverage-areas'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -1317,6 +1327,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/coverage-areas'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -1445,6 +1456,7 @@ export interface FileRouteTypes {
     | '/calendarsync'
     | '/certifications'
     | '/checklist'
+    | '/coverage-areas'
     | '/cpd'
     | '/dataimport'
     | '/diary'
@@ -1577,6 +1589,7 @@ export interface RootRouteChildren {
   CalendarsyncRoute: typeof CalendarsyncRoute
   CertificationsRoute: typeof CertificationsRoute
   ChecklistRoute: typeof ChecklistRoute
+  CoverageAreasRoute: typeof CoverageAreasRoute
   CpdRoute: typeof CpdRoute
   DataimportRoute: typeof DataimportRoute
   DiaryRoute: typeof DiaryRoute
@@ -2171,6 +2184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CpdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coverage-areas': {
+      id: '/coverage-areas'
+      path: '/coverage-areas'
+      fullPath: '/coverage-areas'
+      preLoaderRoute: typeof CoverageAreasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checklist': {
       id: '/checklist'
       path: '/checklist'
@@ -2680,6 +2700,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarsyncRoute: CalendarsyncRoute,
   CertificationsRoute: CertificationsRoute,
   ChecklistRoute: ChecklistRoute,
+  CoverageAreasRoute: CoverageAreasRoute,
   CpdRoute: CpdRoute,
   DataimportRoute: DataimportRoute,
   DiaryRoute: DiaryRoute,
