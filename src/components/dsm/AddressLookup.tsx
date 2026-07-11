@@ -1,8 +1,11 @@
-import { useState } from "react";
-import { Check, Loader2, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check, X } from "lucide-react";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
-const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+
+// Same key + script id as used elsewhere in the app (see src/routes/pupils.new.tsx)
+const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+const SCRIPT_ID = "google-maps-places-script";
 
 export interface AddressLookupResult {
   postcode: string;
@@ -20,11 +23,54 @@ interface Props {
   disabled?: boolean;
 }
 
-/**
- * UK postcode → address/city/lat/lng lookup using api.postcodes.io.
- * postcodes.io does not return a street address, so `address` is derived from
- * the postcode's admin_ward + admin_district (best-effort locality string).
- */
+// Minimal typing for the google.maps.places surface we use
+type GAutocomplete = {
+  addListener: (evt: string, cb: () => void) => void;
+  getPlace: () => {
+    formatted_address?: string;
+    address_components?: Array<{ long_name: string; short_name: string; types: string[] }>;
+    geometry?: { location?: { lat: () => number; lng: () => number } };
+  };
+};
+type GWindow = Window & {
+  google?: {
+    maps?: {
+      places?: {
+        Autocomplete: new (
+          input: HTMLInputElement,
+          opts: Record<string, unknown>,
+        ) => GAutocomplete;
+      };
+    };
+  };
+};
+
+function loadPlacesScript(): Promise<void> {
+  const w = window as GWindow;
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      const iv = setInterval(() => {
+        if ((window as GWindow).google?.maps?.places) {
+          clearInterval(iv);
+          resolve();
+        }
+      }, 150);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.id = SCRIPT_ID;
+    s.async = true;
+    s.defer = true;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps script"));
+    document.head.appendChild(s);
+  });
+}
+
 export function AddressLookup({
   initialPostcode = "",
   initialAddress = "",
@@ -32,75 +78,116 @@ export function AddressLookup({
   onAddressFound,
   disabled = false,
 }: Props) {
-  const [postcode, setPostcode] = useState(initialPostcode.toUpperCase());
-  const [address, setAddress] = useState(initialAddress);
-  const [city, setCity] = useState(initialCity);
-  const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [placesLoaded, setPlacesLoaded] = useState<boolean>(
+    typeof window !== "undefined" && !!(window as GWindow).google?.maps?.places,
+  );
+  const [selectedAddress, setSelectedAddress] = useState<string>(initialAddress);
+  const [postcode, setPostcode] = useState<string>(initialPostcode);
+  const [city, setCity] = useState<string>(initialCity);
+  const [confirmed, setConfirmed] = useState<boolean>(!!initialAddress);
   const [error, setError] = useState<string | null>(null);
-  const [found, setFound] = useState<boolean>(!!initialAddress);
 
-  const valid = UK_POSTCODE_RE.test(postcode.trim());
+  console.log("[address-lookup] component rendered, initial:", {
+    initialPostcode,
+    initialAddress,
+    initialCity,
+  });
 
-  console.log("[address-lookup] component rendered, postcode:", postcode);
+  // Load the Google Maps Places script (idempotent — reuses existing tag)
+  useEffect(() => {
+    let cancelled = false;
+    loadPlacesScript()
+      .then(() => {
+        if (!cancelled) {
+          console.log("[address-lookup] google places ready");
+          setPlacesLoaded(true);
+        }
+      })
+      .catch((e) => {
+        console.error("[address-lookup] script load error:", e);
+        if (!cancelled) setError("Could not load address lookup");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  async function lookup() {
-    const pc = postcode.trim().toUpperCase();
-    console.log("[address-lookup] lookup called, pc:", pc);
-    console.log("[address-lookup] postcode entered:", pc);
-    if (!UK_POSTCODE_RE.test(pc)) {
-      console.warn("[address-lookup] failed local UK postcode regex:", pc);
-      setError("Enter a valid UK postcode");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const url = `https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`;
-      const res = await fetch(url);
-      const data = await res.json().catch(() => null);
-      console.log("[address-lookup] raw response:", data);
+  // Bind autocomplete once the script + input are ready
+  useEffect(() => {
+    if (!placesLoaded || !inputRef.current || confirmed) return;
+    const g = (window as GWindow).google;
+    if (!g?.maps?.places) return;
 
-      if (data && data.status === 200 && data.result) {
-        const r = data.result;
-        const parts = [r.ward, r.admin_district, r.admin_county].filter(
-          (x: unknown): x is string => typeof x === "string" && x.length > 0,
-        );
-        const derivedAddress: string = parts.length ? parts.join(", ") : pc;
-        const derivedCity: string = r.admin_district || r.parish || "";
-        const lat: number | null =
-          typeof r.latitude === "number" ? r.latitude : null;
-        const lng: number | null =
-          typeof r.longitude === "number" ? r.longitude : null;
+    const autocomplete = new g.maps.places.Autocomplete(inputRef.current, {
+      componentRestrictions: { country: "gb" },
+      fields: ["formatted_address", "address_components", "geometry"],
+      types: ["address"],
+    });
 
-        console.log("[address-lookup] api response:", {
-          address: derivedAddress,
-          city: derivedCity,
-          lat,
-          lng,
-        });
-
-        setAddress(derivedAddress);
-        setCity(derivedCity);
-        setFound(true);
-        onAddressFound({
-          postcode: pc,
-          address: derivedAddress,
-          city: derivedCity,
-          lat,
-          lng,
-        });
-      } else {
-        console.error("[address-lookup] postcode not found:", data);
-        setError("Postcode not found — please check and try again");
-        setFound(false);
+    const listener = () => {
+      const place = autocomplete.getPlace();
+      console.log("[address-lookup] place_changed:", place);
+      if (!place.address_components) {
+        setError("Please pick a suggestion from the list");
+        return;
       }
-    } catch (e) {
-      console.error("[address-lookup] error:", e);
-      setError("Could not look up postcode");
-      setFound(false);
-    } finally {
-      setLoading(false);
-    }
+
+      let streetNumber = "";
+      let streetName = "";
+      let town = "";
+      let county = "";
+      let pc = "";
+
+      for (const comp of place.address_components) {
+        const type = comp.types[0];
+        if (type === "street_number") streetNumber = comp.long_name;
+        else if (type === "route") streetName = comp.long_name;
+        else if (type === "postal_town" || type === "locality") town = comp.long_name;
+        else if (type === "administrative_area_level_2") county = comp.long_name;
+        else if (type === "postal_code") pc = comp.long_name;
+      }
+
+      const line1 = [streetNumber, streetName].filter(Boolean).join(" ");
+      const formatted = place.formatted_address || line1 || "";
+      const lat = place.geometry?.location?.lat() ?? null;
+      const lng = place.geometry?.location?.lng() ?? null;
+      const derivedCity = town || county || "";
+
+      setSelectedAddress(formatted);
+      setPostcode(pc);
+      setCity(derivedCity);
+      setConfirmed(true);
+      setError(null);
+
+      // Preserve the existing consumer API (settings.tsx / profile.tsx)
+      onAddressFound({
+        postcode: pc,
+        address: formatted,
+        city: derivedCity,
+        lat,
+        lng,
+      });
+    };
+
+    autocomplete.addListener("place_changed", listener);
+
+    // Prevent the browser's autofill from covering suggestions
+    inputRef.current.setAttribute("autocomplete", "new-password");
+
+    return () => {
+      // Autocomplete has no public teardown; leave the instance to be GC'd
+      // when the input unmounts.
+    };
+  }, [placesLoaded, confirmed, onAddressFound]);
+
+  function reset() {
+    setConfirmed(false);
+    setSelectedAddress("");
+    setPostcode("");
+    setCity("");
+    setError(null);
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   return (
@@ -109,98 +196,34 @@ export function AddressLookup({
         className="block"
         style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}
       >
-        Postcode
+        Address
       </label>
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginTop: 6,
-          alignItems: "stretch",
-        }}
-      >
-        <div style={{ position: "relative", flex: 1 }}>
-          <input
-            type="text"
-            value={postcode}
-            onChange={(e) => {
-              setPostcode(e.target.value.toUpperCase());
-              setFound(false);
-              setError(null);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                lookup();
-              }
-            }}
-            onBlur={() => {
-              // Auto-lookup when user tabs / clicks away, if the postcode
-              // looks valid and we haven't already resolved it.
-              if (!found && !loading && valid) {
-                lookup();
-              }
-            }}
-            placeholder="e.g. SO23 9AX"
-            autoCapitalize="characters"
-            maxLength={10}
-            disabled={disabled || loading}
-            style={{
-              width: "100%",
-              height: 44,
-              padding: "0 36px 0 12px",
-              border: `0.5px solid ${error ? "#1877D6" : "#EEF2F7"}`,
-              borderRadius: 10,
-              fontSize: 14,
-              background: "#fff",
-              color: "#0B1F3A",
-              textTransform: "uppercase",
-              ...POPPINS,
-            }}
-          />
-          {found && !loading && (
-            <Check
-              size={18}
-              color="#1877D6"
-              style={{
-                position: "absolute",
-                right: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            />
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={lookup}
-          disabled={disabled || loading || !valid}
+
+      {!confirmed && (
+        <input
+          ref={inputRef}
+          type="text"
+          defaultValue={initialAddress}
+          placeholder={
+            placesLoaded ? "Start typing your address…" : "Loading address lookup…"
+          }
+          disabled={disabled || !placesLoaded}
           style={{
+            width: "100%",
             height: 44,
-            padding: "0 14px",
+            padding: "0 12px",
+            marginTop: 6,
+            border: `0.5px solid ${error ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 10,
-            border: "none",
-            background: "#0B1F3A",
-            color: "#fff",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: loading || !valid ? "not-allowed" : "pointer",
-            opacity: loading || !valid ? 0.5 : 1,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
+            fontSize: 14,
+            background: "#fff",
+            color: "#0B1F3A",
             ...POPPINS,
           }}
-        >
-          {loading ? (
-            <Loader2 size={14} className="animate-spin" />
-          ) : (
-            <Search size={14} />
-          )}
-          {loading ? "Looking up" : "Find address"}
-        </button>
-      </div>
-      {error && (
+        />
+      )}
+
+      {error && !confirmed && (
         <div
           style={{
             fontSize: 12,
@@ -212,53 +235,65 @@ export function AddressLookup({
           {error}
         </div>
       )}
-      {found && address && (
+
+      {confirmed && selectedAddress && (
         <div
           style={{
-            marginTop: 10,
+            marginTop: 6,
             padding: "10px 12px",
             background: "#F8FAFC",
             border: "0.5px solid #EEF2F7",
             borderRadius: 10,
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
           }}
         >
-          <div style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-            Address
-          </div>
-          <div
-            style={{
-              fontSize: 14,
-              color: "#0B1F3A",
-              marginTop: 2,
-              ...POPPINS,
-            }}
-          >
-            {address}
-          </div>
-          {city && (
-            <>
+          <Check size={18} color="#1877D6" style={{ marginTop: 2, flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 14,
+                color: "#0B1F3A",
+                ...POPPINS,
+                lineHeight: 1.35,
+              }}
+            >
+              {selectedAddress}
+            </div>
+            {postcode && (
               <div
                 style={{
                   fontSize: 12,
                   color: "#6B7280",
-                  marginTop: 8,
+                  marginTop: 4,
                   ...POPPINS,
                 }}
               >
-                City
+                Postcode: {postcode}
+                {city ? ` · ${city}` : ""}
               </div>
-              <div
-                style={{
-                  fontSize: 14,
-                  color: "#0B1F3A",
-                  marginTop: 2,
-                  ...POPPINS,
-                }}
-              >
-                {city}
-              </div>
-            </>
-          )}
+            )}
+            <button
+              type="button"
+              onClick={reset}
+              style={{
+                marginTop: 6,
+                background: "none",
+                border: "none",
+                color: "#1877D6",
+                cursor: "pointer",
+                fontSize: 12,
+                padding: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                ...POPPINS,
+              }}
+            >
+              <X size={12} /> Change
+            </button>
+          </div>
         </div>
       )}
     </div>
