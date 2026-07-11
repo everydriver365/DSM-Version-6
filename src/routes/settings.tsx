@@ -60,11 +60,6 @@ const DAYS = [
   { key: "sun", label: "Sunday" },
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
-type WorkingHours = Record<DayKey, boolean>;
-
-const DEFAULT_HOURS: WorkingHours = {
-  mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: true,
-};
 
 type ExpandKey = "payments" | "lessons" | "rates" | "coverage" | "pricing" | null;
 
