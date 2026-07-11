@@ -313,6 +313,7 @@ function PupilDetailPage() {
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
+  const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
   const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
   const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
@@ -760,11 +761,12 @@ function PupilDetailPage() {
       if (!uid) return;
       supabase
         .from("instructors")
-        .select("hourly_rate, first_name, last_name, business_name")
+        .select("hourly_rate, lesson_buffer_after, first_name, last_name, business_name")
         .eq("id", uid)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.hourly_rate != null) setInstructorRate(Number(data.hourly_rate));
+          if (data?.lesson_buffer_after != null) setInstructorBufferAfter(Number(data.lesson_buffer_after));
           const d = data as { first_name?: string | null; last_name?: string | null; business_name?: string | null } | null;
           const nm = [d?.first_name, d?.last_name].filter(Boolean).join(" ").trim() || d?.business_name || "";
           setInstructorName(nm);
@@ -2353,9 +2355,10 @@ function PupilDetailPage() {
       {/* Custom lesson rates + calendar colour */}
       {pupil && (
         <PupilRatesAndColour
-        pupil={pupil}
-        instructorRate={instructorRate}
-        onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
+          pupil={pupil}
+          instructorRate={instructorRate}
+          instructorBufferAfter={instructorBufferAfter}
+          onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
       <ConfirmDialog
@@ -3039,10 +3042,12 @@ function PupilExtras({
 function PupilRatesAndColour({
   pupil,
   instructorRate,
+  instructorBufferAfter,
   onUpdated,
 }: {
   pupil: Pupil;
   instructorRate: number | null;
+  instructorBufferAfter: number | null;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
   const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
@@ -3182,24 +3187,30 @@ function PupilRatesAndColour({
             </button>
           </div>
         )}
-        {/* Gap after lesson */}
-        <div className="flex justify-between items-center" style={{ marginTop: 12, paddingTop: 10, borderTop: "0.5px solid #F3F4F6" }}>
-          <div className="flex items-center">
-            <Clock size={14} color="#9CA3AF" />
-            <span className="text-sm ml-[6px] text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
+      </div>
+
+      {/* Gap after lesson */}
+      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
+        <div className="flex items-center gap-2">
+          <Clock size={16} color="#9CA3AF" />
+          <div className="flex flex-col">
+            <span className="text-[13px] font-semibold text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
+            <span className="text-xs text-[#9CA3AF]" style={POPPINS}>
+              Override the default {instructorBufferAfter != null ? `${instructorBufferAfter} min ` : ""}buffer for this pupil
+            </span>
           </div>
-          <select
-            value={pupil.buffer_after_minutes ?? ""}
-            onChange={(e) => void saveBuffer(e.target.value)}
-            className="text-[13px]"
-            style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
-          >
-            <option value="">Use default</option>
-            {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-              <option key={m} value={m}>{m} min</option>
-            ))}
-          </select>
         </div>
+        <select
+          value={pupil.buffer_after_minutes ?? ""}
+          onChange={(e) => void saveBuffer(e.target.value)}
+          className="text-[13px]"
+          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+        >
+          <option value="">Use default</option>
+          {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+            <option key={m} value={m}>{m} min</option>
+          ))}
+        </select>
       </div>
 
       {/* Calendar colour */}
