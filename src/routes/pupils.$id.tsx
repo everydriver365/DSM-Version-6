@@ -2355,9 +2355,10 @@ function PupilDetailPage() {
       {/* Custom lesson rates + calendar colour */}
       {pupil && (
         <PupilRatesAndColour
-        pupil={pupil}
-        instructorRate={instructorRate}
-        onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
+          pupil={pupil}
+          instructorRate={instructorRate}
+          instructorBufferAfter={instructorBufferAfter}
+          onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
       <ConfirmDialog
