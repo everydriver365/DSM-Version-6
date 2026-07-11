@@ -281,7 +281,7 @@ function NotificationsPage() {
                             className="text-[14px] font-semibold text-[#0B1F3A] truncate"
                             style={POPPINS}
                           >
-                            {n.title}
+                            {typeTitle(n.type, n.title)}
                           </div>
                           {n.body && (
                             <div
@@ -289,6 +289,66 @@ function NotificationsPage() {
                               style={POPPINS}
                             >
                               {n.body}
+                            </div>
+                          )}
+                          {n.type === "lesson_cancelled_by_pupil" && (
+                            <div className="flex items-center gap-2 mt-2">
+                              {n.reference_id && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    markRead(n.id);
+                                    navigate({ to: "/lessons/$id", params: { id: n.reference_id! } });
+                                  }}
+                                  className="text-[12px] font-semibold"
+                                  style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
+                                >
+                                  View lesson →
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markRead(n.id);
+                                  navigate({ to: "/gaps" });
+                                }}
+                                className="text-[12px] font-semibold text-white"
+                                style={{ background: "#D97706", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                              >
+                                Fill slot →
+                              </button>
+                            </div>
+                          )}
+                          {n.type === "reschedule_request" && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markRead(n.id);
+                                  navigate({ to: "/messages" });
+                                }}
+                                className="text-[12px] font-semibold"
+                                style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
+                              >
+                                View message →
+                              </button>
+                              {n.reference_id && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    markRead(n.id);
+                                    navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
+                                  }}
+                                  className="text-[12px] font-semibold text-white"
+                                  style={{ background: "#1877D6", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                >
+                                  Reschedule →
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>
