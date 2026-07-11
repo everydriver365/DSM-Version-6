@@ -472,7 +472,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
+              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
             )
             .eq("id", userId)
             .maybeSingle(),
