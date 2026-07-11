@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -76,6 +76,13 @@ function NewLessonPage() {
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFreq, setRecurringFreq] = useState<"weekly" | "fortnightly">("weekly");
+  const [recurringUntil, setRecurringUntil] = useState<string>(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 3);
+    return d.toISOString().split("T")[0];
+  });
 
   useEffect(() => {
     (async () => {
@@ -207,6 +214,36 @@ function NewLessonPage() {
       }
     }
 
+    // If recurring, create a lesson_series first so the initial lesson can link to it
+    let seriesId: string | null = null;
+    if (isRecurring) {
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const dayOfWeek = days[new Date(`${date}T00:00:00`).getDay()];
+      const { data: seriesRow, error: seriesErr } = await supabase
+        .from("lesson_series")
+        .insert({
+          instructor_id: user.id,
+          pupil_id: pupilId,
+          day_of_week: dayOfWeek,
+          lesson_time: `${time}:00`,
+          duration_minutes: duration,
+          frequency: recurringFreq,
+          start_date: date,
+          end_date: recurringUntil || null,
+          price_per_lesson: amountDue,
+          notes: baseNotes,
+          is_active: true,
+        })
+        .select("id")
+        .single();
+      if (seriesErr) {
+        setErrors({ form: seriesErr.message });
+        setSaving(false);
+        return;
+      }
+      seriesId = (seriesRow as any).id;
+    }
+
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -218,12 +255,64 @@ function NewLessonPage() {
       amount_due: amountDue,
       payment_status: paymentStatus,
       prepaid_hours_used: prepaidHoursUsed,
+      series_id: seriesId,
     });
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
       return;
     }
+
+    if (isRecurring && seriesId) {
+      // Generate remaining occurrences after the initial one
+      const step = recurringFreq === "fortnightly" ? 14 : 7;
+      const startD = new Date(`${date}T00:00:00`);
+      const endD = recurringUntil ? new Date(`${recurringUntil}T00:00:00`) : null;
+      const dates: string[] = [];
+      let cur = new Date(startD);
+      cur.setDate(cur.getDate() + step);
+      while (dates.length < 200) {
+        if (endD && cur > endD) break;
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, "0");
+        const dd = String(cur.getDate()).padStart(2, "0");
+        dates.push(`${y}-${m}-${dd}`);
+        cur = new Date(cur);
+        cur.setDate(cur.getDate() + step);
+      }
+      const lessonsPayload = dates.map((d) => ({
+        instructor_id: user.id,
+        pupil_id: pupilId,
+        lesson_date: d,
+        lesson_time: `${time}:00`,
+        duration_minutes: duration,
+        status: "confirmed",
+        payment_status: "unpaid",
+        amount_due: amountDue,
+        series_id: seriesId,
+      }));
+      try {
+        const SUPABASE_URL_LOCAL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY_LOCAL =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        for (let i = 0; i < lessonsPayload.length; i += 50) {
+          const batch = lessonsPayload.slice(i, i + 50);
+          await fetch(`${SUPABASE_URL_LOCAL}/rest/v1/lessons`, {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_ANON_KEY_LOCAL,
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(batch),
+          });
+        }
+      } catch (e) {
+        console.warn("[lessons.new] recurring batch insert failed", e);
+      }
+    }
+
     navigate({ to: "/schedule" });
   }
 
@@ -371,6 +460,96 @@ function NewLessonPage() {
               style={fieldBorder}
             />
           </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 12,
+              padding: "14px 16px",
+              background: "#F7FAFC",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+            }}
+          >
+            <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
+              <RefreshCw size={14} color="#9CA3AF" />
+              <span style={{ fontSize: 14, color: "#0B1F3A" }}>Make this a recurring lesson</span>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isRecurring}
+              onClick={() => setIsRecurring((v) => !v)}
+              style={{
+                width: 42,
+                height: 24,
+                borderRadius: 999,
+                background: isRecurring ? "#0F2044" : "#D1D5DB",
+                position: "relative",
+                transition: "background 0.15s",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  left: isRecurring ? 20 : 2,
+                  width: 20,
+                  height: 20,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  transition: "left 0.15s",
+                }}
+              />
+            </button>
+          </div>
+
+          {isRecurring && (
+            <div style={{ marginTop: 8, padding: "12px 16px", background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Repeat</label>
+              <div className="grid grid-cols-2 gap-2">
+                {(["weekly", "fortnightly"] as const).map((f) => {
+                  const active = recurringFreq === f;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setRecurringFreq(f)}
+                      style={{
+                        padding: "10px 0",
+                        borderRadius: 10,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        background: active ? "#0F2044" : "#F7FAFC",
+                        color: active ? "#FFFFFF" : "#0F2044",
+                        border: active ? "none" : "0.5px solid #E2E6ED",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {f}
+                    </button>
+                  );
+                })}
+              </div>
+              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Until</label>
+              <input
+                type="date"
+                value={recurringUntil}
+                onChange={(e) => setRecurringUntil(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  borderRadius: 10,
+                  border: "0.5px solid #E2E6ED",
+                  padding: "0 12px",
+                  fontSize: 14,
+                  color: "#0B1F3A",
+                }}
+              />
+            </div>
+          )}
 
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#1877D6" }}>
