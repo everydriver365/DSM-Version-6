@@ -4583,7 +4583,25 @@ function HomePage() {
           const latestEnq = [...(swapRequests ?? [])]
             .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))[0];
 
+          const cancCount = recentCancellations.length;
+          const cancFirst = recentCancellations[0]?.pupil_first_name || 'A pupil';
           const items: NAItem[] = [
+            {
+              key: 'cancellations',
+              count: cancCount,
+              primary: cancCount === 1
+                ? `${cancFirst} cancelled their lesson`
+                : `${cancCount} lessons cancelled by pupils today`,
+              subtitle: 'Tap to review and fill the slot',
+              onClick: () => navigate({ to: '/notifications' as never }),
+            },
+            {
+              key: 'reschedules',
+              count: rescheduleRequestsCount,
+              primary: `${rescheduleRequestsCount} reschedule request${rescheduleRequestsCount === 1 ? '' : 's'}`,
+              subtitle: 'Pupils waiting for a reply',
+              onClick: () => navigate({ to: '/messages' as never }),
+            },
             {
               key: 'tests',
               count: naTests,
