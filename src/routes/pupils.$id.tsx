@@ -416,6 +416,23 @@ function PupilDetailPage() {
   }, []);
 
   useEffect(() => {
+    if (!userId || !id) return;
+    let cancelled = false;
+    supabase
+      .from("lesson_series")
+      .select("id, day_of_week, lesson_time, duration_minutes, frequency")
+      .eq("instructor_id", userId)
+      .eq("pupil_id", id)
+      .eq("is_active", true)
+      .then(({ data }) => {
+        if (!cancelled) setPupilSeries((data as any) ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, id]);
+
+  useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     const channelName = `payment-updates-pupil-${userId}`;
