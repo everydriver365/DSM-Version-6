@@ -214,6 +214,36 @@ function NewLessonPage() {
       }
     }
 
+    // If recurring, create a lesson_series first so the initial lesson can link to it
+    let seriesId: string | null = null;
+    if (isRecurring) {
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const dayOfWeek = days[new Date(`${date}T00:00:00`).getDay()];
+      const { data: seriesRow, error: seriesErr } = await supabase
+        .from("lesson_series")
+        .insert({
+          instructor_id: user.id,
+          pupil_id: pupilId,
+          day_of_week: dayOfWeek,
+          lesson_time: `${time}:00`,
+          duration_minutes: duration,
+          frequency: recurringFreq,
+          start_date: date,
+          end_date: recurringUntil || null,
+          price_per_lesson: amountDue,
+          notes: baseNotes,
+          is_active: true,
+        })
+        .select("id")
+        .single();
+      if (seriesErr) {
+        setErrors({ form: seriesErr.message });
+        setSaving(false);
+        return;
+      }
+      seriesId = (seriesRow as any).id;
+    }
+
     const { error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
@@ -225,12 +255,64 @@ function NewLessonPage() {
       amount_due: amountDue,
       payment_status: paymentStatus,
       prepaid_hours_used: prepaidHoursUsed,
+      series_id: seriesId,
     });
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
       return;
     }
+
+    if (isRecurring && seriesId) {
+      // Generate remaining occurrences after the initial one
+      const step = recurringFreq === "fortnightly" ? 14 : 7;
+      const startD = new Date(`${date}T00:00:00`);
+      const endD = recurringUntil ? new Date(`${recurringUntil}T00:00:00`) : null;
+      const dates: string[] = [];
+      let cur = new Date(startD);
+      cur.setDate(cur.getDate() + step);
+      while (dates.length < 200) {
+        if (endD && cur > endD) break;
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, "0");
+        const dd = String(cur.getDate()).padStart(2, "0");
+        dates.push(`${y}-${m}-${dd}`);
+        cur = new Date(cur);
+        cur.setDate(cur.getDate() + step);
+      }
+      const lessonsPayload = dates.map((d) => ({
+        instructor_id: user.id,
+        pupil_id: pupilId,
+        lesson_date: d,
+        lesson_time: `${time}:00`,
+        duration_minutes: duration,
+        status: "confirmed",
+        payment_status: "unpaid",
+        amount_due: amountDue,
+        series_id: seriesId,
+      }));
+      try {
+        const SUPABASE_URL_LOCAL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+        const SUPABASE_ANON_KEY_LOCAL =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+        for (let i = 0; i < lessonsPayload.length; i += 50) {
+          const batch = lessonsPayload.slice(i, i + 50);
+          await fetch(`${SUPABASE_URL_LOCAL}/rest/v1/lessons`, {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_ANON_KEY_LOCAL,
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(batch),
+          });
+        }
+      } catch (e) {
+        console.warn("[lessons.new] recurring batch insert failed", e);
+      }
+    }
+
     navigate({ to: "/schedule" });
   }
 
