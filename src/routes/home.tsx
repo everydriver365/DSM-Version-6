@@ -1918,6 +1918,39 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Pupil cancellations (last 24h) + unread reschedule requests
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const since = new Date(Date.now() - 86400000).toISOString();
+      const { data: canc } = await supabase
+        .from("lessons")
+        .select("id, pupils(first_name, name)")
+        .eq("instructor_id", userId)
+        .eq("status", "cancelled")
+        .eq("cancelled_by", "pupil")
+        .gte("cancelled_at", since)
+        .order("cancelled_at", { ascending: false });
+      if (!cancelled) {
+        const rows = (canc ?? []).map((r: any) => ({
+          id: r.id as string,
+          pupil_first_name: (r.pupils?.first_name as string | null) ?? (r.pupils?.name ? String(r.pupils.name).split(/\s+/)[0] : null),
+        }));
+        setRecentCancellations(rows);
+      }
+
+      const { count: reschedCount } = await supabase
+        .from("instructor_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", userId)
+        .eq("type", "reschedule_request")
+        .eq("read", false);
+      if (!cancelled) setRescheduleRequestsCount(reschedCount ?? 0);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
