@@ -4612,7 +4612,30 @@ function HomePage() {
 
           const cancCount = recentCancellations.length;
           const cancFirst = recentCancellations[0]?.pupil_first_name || 'A pupil';
+          const nextCertDays = expiringCerts[0]
+            ? Math.floor((new Date(expiringCerts[0].expiry_date).getTime() - Date.now()) / 86400000)
+            : 0;
           const items: NAItem[] = [
+            {
+              key: 'certs_expired',
+              count: expiredCerts.length,
+              primary: expiredCerts.length === 1
+                ? `${expiredCerts[0].title} has expired`
+                : `${expiredCerts.length} certifications have expired`,
+              subtitle: 'Renew before your next standards check',
+              onClick: () => navigate({ to: '/certifications' as never }),
+            },
+            {
+              key: 'certs_expiring',
+              count: expiredCerts.length === 0 ? expiringCerts.length : 0,
+              primary: expiringCerts[0]
+                ? `${expiringCerts[0].title} expires in ${nextCertDays} days`
+                : 'Certifications expiring soon',
+              subtitle: expiringCerts.length > 1
+                ? `${expiringCerts.length} certifications expiring soon`
+                : 'Tap to review and renew',
+              onClick: () => navigate({ to: '/certifications' as never }),
+            },
             {
               key: 'cancellations',
               count: cancCount,
