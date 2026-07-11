@@ -303,7 +303,6 @@ function AvailabilitySettingsPage() {
           }
           setDayHours(next);
         }
-        if (i.lesson_buffer_before != null) setBufBefore(Number(i.lesson_buffer_before));
         if (i.lesson_buffer_after != null) setBufAfter(Number(i.lesson_buffer_after));
         if (i.lunch_break_start && i.lunch_break_end) {
           setLunchOn(true);
@@ -378,7 +377,7 @@ function AvailabilitySettingsPage() {
   async function saveBuffers() {
     if (!userId) throw new Error("Not signed in");
     const { error } = await supabase.from("instructors")
-      .update({ lesson_buffer_before: bufBefore, lesson_buffer_after: bufAfter })
+      .update({ lesson_buffer_after: bufAfter })
       .eq("id", userId);
     if (error) throw error;
   }
