@@ -113,7 +113,7 @@ function SettingsPage() {
 
   const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
   const postcodeValid = UK_POSTCODE_RE.test(homePostcode.trim());
-  const postcodeShowError = postcodeBlurred && homePostcode.trim().length > 0 && !postcodeValid;
+  
 
   // Pricing rules
   type RuleType = "time_of_day" | "day_of_week" | "postcode_zone" | "advance_notice";
