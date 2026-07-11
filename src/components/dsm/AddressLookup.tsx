@@ -41,8 +41,11 @@ export function AddressLookup({
 
   const valid = UK_POSTCODE_RE.test(postcode.trim());
 
+  console.log("[address-lookup] component rendered, postcode:", postcode);
+
   async function lookup() {
     const pc = postcode.trim().toUpperCase();
+    console.log("[address-lookup] lookup called, pc:", pc);
     console.log("[address-lookup] postcode entered:", pc);
     if (!UK_POSTCODE_RE.test(pc)) {
       console.warn("[address-lookup] failed local UK postcode regex:", pc);
