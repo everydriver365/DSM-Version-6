@@ -14,7 +14,7 @@ import {
   Coffee,
   
 } from "lucide-react";
-import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
+import { ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
