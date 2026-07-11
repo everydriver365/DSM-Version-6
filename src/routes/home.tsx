@@ -84,6 +84,8 @@ import {
   ShieldCheck,
   Laptop,
   Package,
+  XCircle,
+  RefreshCw,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -243,20 +245,22 @@ function formatMins(mins: number) {
 
 
 type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq';
+  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules';
   count: number;
   primary: string;
   subtitle: string;
   onClick: () => void;
 };
 
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['tests', 'jobs', 'calls', 'enq'];
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['cancellations', 'reschedules', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
   tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
   jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
   calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
+  cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: XCircle },
+  reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
 };
 
 const NA_CARD_STYLE: React.CSSProperties = {
