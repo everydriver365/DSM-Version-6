@@ -407,7 +407,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,lesson_buffer_before,lesson_buffer_after,hourly_rate")
+            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate")
             .eq("id", userId)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
@@ -417,12 +417,16 @@ function SchedulePage() {
         const i = (instrRow.data ?? {}) as {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
+          working_days?: string[] | null;
+          per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
         };
         if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
+        if (Array.isArray(i.working_days) && i.working_days.length) setWorkingDaysList(i.working_days);
+        setPerDayHours(i.per_day_hours ?? null);
         if (i.lesson_buffer_before != null) setBufferBefore(Number(i.lesson_buffer_before));
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
