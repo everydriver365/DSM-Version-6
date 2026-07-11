@@ -267,7 +267,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, min_gap_minutes, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -290,12 +290,9 @@ function SettingsPage() {
       if (instructor && typeof (instructor as { lesson_buffer_after?: number }).lesson_buffer_after === "number") {
         setBufferAfter((instructor as { lesson_buffer_after: number }).lesson_buffer_after);
       }
-      const mgm = (instructor as unknown as { min_gap_minutes?: number } | null)?.min_gap_minutes;
-      if (typeof mgm === "number") {
-        const v = mgm;
-        setMinGapMinutes(v);
-        writeMinGapMinutes(v);
-      }
+      // NOTE: instructors.min_gap_minutes column does not exist in the DB.
+      // min_gap_minutes is a client-only preference stored in localStorage via
+      // readMinGapMinutes / writeMinGapMinutes.
       if (instructor && typeof (instructor as { home_postcode?: string }).home_postcode === "string") {
         setHomePostcode((instructor as { home_postcode: string }).home_postcode);
       }
@@ -437,7 +434,7 @@ function SettingsPage() {
         hourly_rate: hourlyRate,
         default_lesson_duration_minutes: defaultDuration,
         lesson_buffer_minutes: bufferMinutes,
-        min_gap_minutes: minGapMinutes,
+        // min_gap_minutes is client-only (localStorage); column not in DB.
       })
       .eq("id", userId);
     setSavingRates(false);

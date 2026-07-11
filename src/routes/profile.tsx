@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "My profile — DSM by EveryDriver" }] }),
@@ -303,6 +304,10 @@ function ProfilePage() {
   const [phone, setPhone] = useState("");
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [address, setAddress] = useState("");
+  const [homePostcode, setHomePostcode] = useState("");
+  const [homeCity, setHomeCity] = useState("");
+  const [homeLat, setHomeLat] = useState<number | null>(null);
+  const [homeLng, setHomeLng] = useState<number | null>(null);
   const [timezone, setTimezone] = useState("Europe/London");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [avatarColor, setAvatarColor] = useState<string>("blue");
@@ -361,7 +366,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -377,6 +382,16 @@ function ProfilePage() {
         setVehicleModel(inst.vehicle_model ?? inst.car_model ?? "");
         setImageUrl(inst.profile_image_url ?? null);
         setAddress(inst.address ?? "");
+        setHomePostcode((inst as { home_postcode?: string | null }).home_postcode ?? "");
+        setHomeCity((inst as { city?: string | null }).city ?? "");
+        {
+          const la = (inst as { lat?: number | null }).lat;
+          setHomeLat(typeof la === "number" ? la : null);
+        }
+        {
+          const ln = (inst as { lng?: number | null }).lng;
+          setHomeLng(typeof ln === "number" ? ln : null);
+        }
         if (inst.email_verified != null) setEmailVerified(inst.email_verified);
         if (inst.phone_verified != null) setPhoneVerified(inst.phone_verified);
         setTimezone(inst.timezone ?? "Europe/London");
@@ -414,6 +429,10 @@ function ProfilePage() {
       bio: bio.trim() || null,
       profile_image_url: imageUrl,
       address: address.trim() || null,
+      home_postcode: homePostcode.trim() || null,
+      city: homeCity.trim() || null,
+      lat: homeLat,
+      lng: homeLng,
       email_verified: emailVerified,
       phone_verified: phoneVerified,
       timezone,
@@ -798,6 +817,22 @@ function ProfilePage() {
                 value={address}
                 onChange={setAddress}
                 placeholder="Street, city, postcode"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <AddressLookup
+                initialPostcode={homePostcode}
+                initialAddress={address}
+                initialCity={homeCity}
+                onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                  setHomePostcode(postcode);
+                  setHomeCity(city);
+                  setHomeLat(lat);
+                  setHomeLng(lng);
+                  // Only overwrite the free-text address if the user hasn't
+                  // typed one themselves.
+                  if (!address.trim()) setAddress(addr);
+                }}
               />
             </div>
             <div className="sm:col-span-2">
