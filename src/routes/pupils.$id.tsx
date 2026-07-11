@@ -3042,10 +3042,12 @@ function PupilExtras({
 function PupilRatesAndColour({
   pupil,
   instructorRate,
+  instructorBufferAfter,
   onUpdated,
 }: {
   pupil: Pupil;
   instructorRate: number | null;
+  instructorBufferAfter: number | null;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
   const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
