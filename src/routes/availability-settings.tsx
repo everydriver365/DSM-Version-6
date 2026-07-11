@@ -273,7 +273,7 @@ function AvailabilitySettingsPage() {
     (async () => {
       const { data: instr } = await supabase
         .from("instructors")
-        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
+        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
         .eq("id", userId).maybeSingle();
       if (instr) {
         const i = instr as Record<string, unknown>;
@@ -304,11 +304,9 @@ function AvailabilitySettingsPage() {
           setDayHours(next);
         }
         if (i.lesson_buffer_after != null) setBufAfter(Number(i.lesson_buffer_after));
-        if (i.lunch_break_start && i.lunch_break_end) {
-          setLunchOn(true);
-          setLunchStart(String(i.lunch_break_start).slice(0, 5));
-          setLunchEnd(String(i.lunch_break_end).slice(0, 5));
-        }
+        // NOTE: lunch_break_start / lunch_break_end columns do not exist on instructors table.
+        // Lunch break UI state is local-only until a migration adds those columns.
+
         if (i.use_travel_time) setUseTravel(!!i.use_travel_time);
         if (i.avg_travel_speed_mph) setTravelSpeed(Number(i.avg_travel_speed_mph));
         if (i.travel_buffer_mins != null) setTravelBuffer(Number(i.travel_buffer_mins));
@@ -367,10 +365,11 @@ function AvailabilitySettingsPage() {
       working_hours_end: mostCommonEnd,
       working_days: activeEntries,
       per_day_hours: dayHours,
-      lunch_break_start: lunchOn ? lunchStart : null,
-      lunch_break_end: lunchOn ? lunchEnd : null,
+      // lunch_break_start / lunch_break_end intentionally omitted — columns don't exist in DB yet.
     };
-    const { error } = await supabase.from("instructors").update(patch).eq("id", userId);
+    console.log("[availability] saving working hours:", { userId, patch });
+    const { error, status } = await supabase.from("instructors").update(patch).eq("id", userId);
+    console.log("[availability] save result:", status, error);
     if (error) throw error;
   }
 
