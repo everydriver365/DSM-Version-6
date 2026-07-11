@@ -12,7 +12,7 @@ import {
   ChevronUp,
   AlertTriangle,
   Coffee,
-  Car,
+  
 } from "lucide-react";
 import { ChevronRight, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
