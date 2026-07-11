@@ -6,9 +6,11 @@ import {
   Calendar as CalendarIcon,
   CheckCheck,
   PoundSterling,
+  RefreshCw,
   Trash2,
   Users,
   X,
+  XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -65,9 +67,19 @@ function typeIcon(type: string | null) {
       return { bg: "#1877D6", node: <PoundSterling size={18} color="#FFFFFF" /> };
     case "pupil":
       return { bg: "#1877D6", node: <Users size={18} color="#FFFFFF" /> };
+    case "lesson_cancelled_by_pupil":
+      return { bg: "#CC2229", node: <XCircle size={18} color="#FFFFFF" /> };
+    case "reschedule_request":
+      return { bg: "#D97706", node: <RefreshCw size={18} color="#FFFFFF" /> };
     default:
       return { bg: "#6B7280", node: <Bell size={18} color="#FFFFFF" /> };
   }
+}
+
+function typeTitle(type: string | null, fallback: string) {
+  if (type === "lesson_cancelled_by_pupil") return "Lesson cancelled by pupil";
+  if (type === "reschedule_request") return "Reschedule request";
+  return fallback;
 }
 
 function NotificationsPage() {
