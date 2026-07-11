@@ -13,6 +13,8 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { useSaveState } from "@/hooks/useSaveState";
+import { SaveButton } from "@/components/SaveButton";
 
 export const Route = createFileRoute("/availability-settings")({
   head: () => ({
@@ -353,8 +355,12 @@ function AvailabilitySettingsPage() {
     return best;
   };
 
+  const workingHoursSave = useSaveState();
+  const buffersSave = useSaveState();
+  const travelSave = useSaveState();
+
   async function saveWorkingHours() {
-    if (!userId) return;
+    if (!userId) throw new Error("Not signed in");
     const activeEntries = DAY_NAMES.filter((d) => dayHours[d].active);
     const mostCommonStart = mostFrequent(activeEntries.map((d) => dayHours[d].start)) ?? "09:00";
     const mostCommonEnd = mostFrequent(activeEntries.map((d) => dayHours[d].end)) ?? "18:00";
@@ -367,26 +373,23 @@ function AvailabilitySettingsPage() {
       lunch_break_end: lunchOn ? lunchEnd : null,
     };
     const { error } = await supabase.from("instructors").update(patch).eq("id", userId);
-    if (error) { console.error(error); return; }
-    flash("Working hours saved");
+    if (error) throw error;
   }
 
   async function saveBuffers() {
-    if (!userId) return;
+    if (!userId) throw new Error("Not signed in");
     const { error } = await supabase.from("instructors")
       .update({ lesson_buffer_before: bufBefore, lesson_buffer_after: bufAfter })
       .eq("id", userId);
-    if (error) { console.error(error); return; }
-    flash("Buffers saved");
+    if (error) throw error;
   }
 
   async function saveTravel() {
-    if (!userId) return;
+    if (!userId) throw new Error("Not signed in");
     const { error } = await supabase.from("instructors")
       .update({ use_travel_time: useTravel, avg_travel_speed_mph: travelSpeed, travel_buffer_mins: travelBuffer })
       .eq("id", userId);
-    if (error) { console.error(error); return; }
-    flash("Travel settings saved");
+    if (error) throw error;
   }
 
   async function addRecurring() {
@@ -540,7 +543,11 @@ function AvailabilitySettingsPage() {
           )}
         </div>
 
-        <PrimaryButton onClick={saveWorkingHours}>Save working hours</PrimaryButton>
+        <SaveButton
+          state={workingHoursSave.state}
+          onClick={() => workingHoursSave.runSave(saveWorkingHours)}
+          label="Save working hours"
+        />
       </Card>
 
       {/* SECTION 2 — LESSON BUFFERS */}
@@ -550,7 +557,11 @@ function AvailabilitySettingsPage() {
           <SelectField value={bufBefore} onChange={setBufBefore} options={bufferOptions} label="Buffer before lesson" />
           <SelectField value={bufAfter} onChange={setBufAfter} options={bufferOptions} label="Buffer after lesson" />
         </div>
-        <PrimaryButton onClick={saveBuffers}>Save buffers</PrimaryButton>
+        <SaveButton
+          state={buffersSave.state}
+          onClick={() => buffersSave.runSave(saveBuffers)}
+          label="Save buffers"
+        />
       </Card>
 
       {/* SECTION 3 — RECURRING BLOCKS */}
@@ -739,7 +750,11 @@ function AvailabilitySettingsPage() {
           </>
         )}
 
-        <PrimaryButton onClick={saveTravel}>Save travel settings</PrimaryButton>
+        <SaveButton
+          state={travelSave.state}
+          onClick={() => travelSave.runSave(saveTravel)}
+          label="Save travel settings"
+        />
       </Card>
     </div>
   );
