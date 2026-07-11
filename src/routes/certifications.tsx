@@ -141,6 +141,7 @@ function CertificationsPage() {
     setFNoExpiry(false);
     setFReminder(preset?.reminder_days ?? 30);
     setFNotes("");
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
@@ -154,6 +155,7 @@ function CertificationsPage() {
     setFNoExpiry(!c.expiry_date);
     setFReminder(c.reminder_days_before ?? 30);
     setFNotes(c.notes || "");
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
@@ -169,6 +171,7 @@ function CertificationsPage() {
     setFNotes(c.notes || "");
     // Store old cert id so save can archive it after insert
     (window as any).__renewingCertId = c.id;
+    setSaveSuccess(false);
     setSheetOpen(true);
     setMenuFor(null);
   };
