@@ -23,7 +23,10 @@ import {
   AlertTriangle,
   Globe,
   LogOut,
-
+  CreditCard,
+  Calculator,
+  Gift,
+  Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 
