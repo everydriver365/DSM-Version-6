@@ -151,9 +151,11 @@ function SettingsPage() {
   const [ruleAdjValue, setRuleAdjValue] = useState<number>(5);
 
   // === Section: No-show & cancellation policy + Lesson reminders (instructor_reminder_preferences) ===
-  const [noShowFee, setNoShowFee] = useState<number>(0);
-  const [lateCancelFee, setLateCancelFee] = useState<number>(0);
-  const [lateCancelHours, setLateCancelHours] = useState<number>(24);
+  const [noShowPercent, setNoShowPercent] = useState<number>(100);
+  const [cancellationTiers, setCancellationTiers] = useState<Array<{ hours: number; charge_percent: number }>>([
+    { hours: 24, charge_percent: 100 },
+    { hours: 48, charge_percent: 50 },
+  ]);
   const [autoChargeNoShow, setAutoChargeNoShow] = useState<boolean>(false);
   const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
   const [reminderHoursBefore, setReminderHoursBefore] = useState<number>(24);
@@ -406,14 +408,20 @@ function SettingsPage() {
       // Load reminder preferences
       const { data: prefs } = await supabase
         .from("instructor_reminder_preferences")
-        .select("no_show_fee, late_cancel_fee, late_cancel_hours, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
         .eq("instructor_id", user.id)
         .maybeSingle();
       if (prefs) {
         const p = prefs as Record<string, unknown>;
-        if (typeof p.no_show_fee === "number") setNoShowFee(p.no_show_fee);
-        if (typeof p.late_cancel_fee === "number") setLateCancelFee(p.late_cancel_fee);
-        if (typeof p.late_cancel_hours === "number") setLateCancelHours(p.late_cancel_hours);
+        if (typeof p.no_show_charge_percent === "number") setNoShowPercent(p.no_show_charge_percent);
+        if (typeof p.cancellation_tiers === "string") {
+          try {
+            const parsed = JSON.parse(p.cancellation_tiers);
+            if (Array.isArray(parsed) && parsed.length > 0) setCancellationTiers(parsed);
+          } catch { /* keep defaults */ }
+        } else if (Array.isArray(p.cancellation_tiers) && p.cancellation_tiers.length > 0) {
+          setCancellationTiers(p.cancellation_tiers as Array<{ hours: number; charge_percent: number }>);
+        }
         if (typeof p.auto_charge_no_show === "boolean") setAutoChargeNoShow(p.auto_charge_no_show);
         if (typeof p.reminder_enabled === "boolean") setReminderEnabled(p.reminder_enabled);
         if (typeof p.reminder_hours_before === "number") setReminderHoursBefore(p.reminder_hours_before);
