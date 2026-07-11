@@ -31,10 +31,14 @@ type Cert = {
 
 const CERT_PRESETS = [
   { type: "ADI Licence", title: "ADI Licence (Part 3)", reminder_days: 90 },
+  { type: "PDI Licence", title: "PDI Pink Licence", reminder_days: 90 },
   { type: "DBS Check", title: "DBS Enhanced Check", reminder_days: 30 },
   { type: "First Aid", title: "First Aid Certificate", reminder_days: 60 },
   { type: "ADI Part 1", title: "ADI Theory Test (Part 1)", reminder_days: 30 },
   { type: "ADI Part 2", title: "ADI Driving Ability (Part 2)", reminder_days: 30 },
+  { type: "Standards Check", title: "Standards Check", reminder_days: 180 },
+  { type: "Fleet Training", title: "Fleet Training Certificate", reminder_days: 365 },
+  { type: "Cardington", title: "Cardington Special Test", reminder_days: 365 },
   { type: "CPD", title: "CPD Hours", reminder_days: 30 },
   { type: "Insurance", title: "Business Insurance", reminder_days: 30 },
   { type: "MOT", title: "Vehicle MOT", reminder_days: 30 },
