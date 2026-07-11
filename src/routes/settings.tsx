@@ -635,6 +635,39 @@ function SettingsPage() {
         </div>
       </div>
 
+      <div
+        className="mx-4 mt-3 flex items-center cursor-pointer"
+        onClick={() => navigate({ to: "/availability-settings" as never })}
+        style={{
+          background: "#FFFFFF",
+          border: "0.5px solid #E2E6ED",
+          borderRadius: 12,
+          padding: 16,
+          gap: 12,
+        }}
+      >
+        <div
+          className="flex items-center justify-center rounded-xl"
+          style={{ width: 44, height: 44, background: "#E0F4FF", flexShrink: 0 }}
+        >
+          <Clock color="#1A52A0" size={22} />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <span
+            className="font-semibold"
+            style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}
+          >
+            Availability & working hours
+          </span>
+          <span
+            style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}
+          >
+            Working days, hours, buffers, lunch break, time off, travel time
+          </span>
+        </div>
+        <ChevronRight color="#D1D5DB" size={18} />
+      </div>
+
 
       <div className="px-4">
         <Label>ACCOUNT</Label>
