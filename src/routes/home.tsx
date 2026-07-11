@@ -1859,6 +1859,8 @@ function HomePage() {
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
+  const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
+  const [expiringCerts, setExpiringCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
 
   // ----- Desktop layout (>=768px) — mobile untouched -----
   const [isDesktop, setIsDesktop] = useState<boolean>(() =>
