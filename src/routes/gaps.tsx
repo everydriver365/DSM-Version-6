@@ -1649,9 +1649,16 @@ function GapsPage() {
                   time: slot.startTime,
                   duration: 60,
                 });
+                const isPrefilterMatch =
+                  !!prefilter &&
+                  prefilterFound === true &&
+                  slot.date === prefilter.date &&
+                  slot.startTime === prefilter.time;
                 return (
                   <div
                     key={`gap-${slot.startTime}`}
+                    data-slot-key={`${slot.date}-${slot.startTime}`}
+                    className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
                     style={{
                       background: "#FFFFFF",
                       borderRadius: 16,
