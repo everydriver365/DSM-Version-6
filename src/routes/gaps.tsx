@@ -680,8 +680,8 @@ function GapsPage() {
             continue;
           }
           // Build gap boundaries. For each consecutive pair A → B, the required
-          // minimum gap between A.end and B.start is:
-          //   MAX(A.bufAfter, travel time between A and B)
+          // minimum gap between A.end and B.start is A.bufAfter (pupil override
+          // via buffer_after_minutes, else instructor default).
           // Buffer before B is NEVER added on top — a single "buffer after" is
           // the only reservation between lessons.
           const gaps: {
