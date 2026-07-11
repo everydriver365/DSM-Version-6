@@ -328,6 +328,7 @@ function PupilDetailPage() {
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [pupilSeries, setPupilSeries] = useState<Array<{ id: string; day_of_week: string; lesson_time: string; duration_minutes: number; frequency: string }> | null>(null);
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [editDraft, setEditDraft] = useState<{
