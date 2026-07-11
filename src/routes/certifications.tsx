@@ -1,421 +1,501 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, Award, AlertTriangle, ShieldCheck, Heart, BadgeCheck, FileText } from "lucide-react";
-import { Card } from "../components/dsm/Card";
-import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Input } from "../components/dsm/Input";
-import { Button } from "../components/dsm/Button";
-import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, AlertCircle, Award, Calendar, Clock, MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/certifications")({
   head: () => ({
     meta: [
-      { title: "Certifications — DSM by EveryDriver" },
-      { name: "description", content: "Track your professional certifications and expiry dates." },
+      { title: "Certifications & Licences" },
+      { name: "description", content: "Track ADI licence, DBS, first aid and other renewals." },
     ],
   }),
   component: CertificationsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+type CertStatus = "expired" | "expiring_soon" | "valid" | "no_expiry";
 
-type CertType = "adi_badge" | "dbs" | "first_aid" | "insurance" | "other";
+type Cert = {
+  id: string;
+  instructor_id: string;
+  cert_type: string | null;
+  title: string;
+  issued_date: string | null;
+  expiry_date: string | null;
+  reminder_days_before: number;
+  notes: string | null;
+  is_active: boolean;
+  created_at?: string;
+};
 
-const TYPE_OPTIONS: { value: CertType; label: string }[] = [
-  { value: "adi_badge", label: "ADI Badge" },
-  { value: "dbs", label: "DBS Check" },
-  { value: "first_aid", label: "First Aid" },
-  { value: "insurance", label: "Insurance" },
-  { value: "other", label: "Other" },
+const CERT_PRESETS = [
+  { type: "ADI Licence", title: "ADI Licence (Part 3)", reminder_days: 90 },
+  { type: "DBS Check", title: "DBS Enhanced Check", reminder_days: 30 },
+  { type: "First Aid", title: "First Aid Certificate", reminder_days: 60 },
+  { type: "ADI Part 1", title: "ADI Theory Test (Part 1)", reminder_days: 30 },
+  { type: "ADI Part 2", title: "ADI Driving Ability (Part 2)", reminder_days: 30 },
+  { type: "CPD", title: "CPD Hours", reminder_days: 30 },
+  { type: "Insurance", title: "Business Insurance", reminder_days: 30 },
+  { type: "MOT", title: "Vehicle MOT", reminder_days: 30 },
+  { type: "Road Tax", title: "Vehicle Road Tax", reminder_days: 14 },
+  { type: "Other", title: "Other", reminder_days: 30 },
 ];
 
-interface CertRow {
-  id: string;
-  name: string;
-  cert_type: string | null;
-  issued_by: string | null;
-  issue_date: string | null;
-  expiry_date: string | null;
-  cert_number: string | null;
-}
-
-function typeMeta(t: string | null) {
-  switch (t) {
-    case "adi_badge":
-      return { color: "#1877D6", tint: "#EEF4FB", Icon: BadgeCheck, label: "ADI Badge" };
-    case "dbs":
-      return { color: "#1877D6", tint: "#FEF2F2", Icon: ShieldCheck, label: "DBS Check" };
-    case "first_aid":
-      return { color: "#1877D6", tint: "#F3F8FF", Icon: Heart, label: "First Aid" };
-    case "insurance":
-      return { color: "#1877D6", tint: "#EEF4FB", Icon: FileText, label: "Insurance" };
-    default:
-      return { color: "#6B7280", tint: "#F4F4F5", Icon: Award, label: "Other" };
+function getCertStatus(expiryDate: string | null, reminderDays: number): {
+  status: CertStatus;
+  daysUntilExpiry: number | null;
+  colour: string;
+  bg: string;
+  label: string;
+} {
+  if (!expiryDate) {
+    return { status: "no_expiry", daysUntilExpiry: null, colour: "#16A34A", bg: "#E0FFF4", label: "No expiry" };
   }
+  const days = Math.floor((new Date(expiryDate).getTime() - Date.now()) / 86400000);
+  if (days < 0) {
+    return { status: "expired", daysUntilExpiry: days, colour: "#CC2229", bg: "#FEF2F2", label: "Expired" };
+  }
+  if (days <= reminderDays) {
+    return { status: "expiring_soon", daysUntilExpiry: days, colour: "#D97706", bg: "#FFFBEB", label: `Expires in ${days} days` };
+  }
+  return { status: "valid", daysUntilExpiry: days, colour: "#16A34A", bg: "#E0FFF4", label: "Valid" };
 }
 
-function daysUntil(dateStr: string | null): number | null {
-  if (!dateStr) return null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const d = new Date(dateStr);
-  d.setHours(0, 0, 0, 0);
-  return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function formatDate(d: string | null) {
-  if (!d) return "";
-  const dt = new Date(d);
-  return dt.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+function fmtDate(iso: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso + (iso.length === 10 ? "T00:00:00" : ""));
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
 function CertificationsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
-  const [rows, setRows] = useState<CertRow[]>([]);
-  const [showSheet, setShowSheet] = useState(false);
-  const [editing, setEditing] = useState<CertRow | null>(null);
+  const [certs, setCerts] = useState<Cert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [editing, setEditing] = useState<Cert | null>(null);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [certType, setCertType] = useState<CertType>("other");
-  const [issuedBy, setIssuedBy] = useState("");
-  const [issueDate, setIssueDate] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [certNumber, setCertNumber] = useState("");
+  // Form state
+  const [fTitle, setFTitle] = useState("");
+  const [fType, setFType] = useState("Other");
+  const [fIssued, setFIssued] = useState("");
+  const [fExpiry, setFExpiry] = useState("");
+  const [fNoExpiry, setFNoExpiry] = useState(false);
+  const [fReminder, setFReminder] = useState(30);
+  const [fNotes, setFNotes] = useState("");
   const [saving, setSaving] = useState(false);
-  const [sheetError, setSheetError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) setUserId(data.user.id);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate({ to: "/auth" as never });
+        return;
+      }
+      setUserId(user.id);
     })();
-  }, []);
+  }, [navigate]);
 
-  const fetchRows = async (uid: string) => {
-    const { data, error } = await supabase
-      .from("certifications")
-      .select("id, name, cert_type, issued_by, issue_date, expiry_date, cert_number")
+  const load = async (uid: string) => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("instructor_certifications")
+      .select("*")
       .eq("instructor_id", uid)
+      .eq("is_active", true)
       .order("expiry_date", { ascending: true, nullsFirst: false });
-    if (error) console.error("[certifications] fetch error", error);
-    setRows((data ?? []) as unknown as CertRow[]);
+    setCerts((data ?? []) as Cert[]);
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (!userId) return;
-    fetchRows(userId);
+    if (userId) load(userId);
   }, [userId]);
 
-  const openAdd = () => {
+  const grouped = useMemo(() => {
+    const g: Record<CertStatus, Array<{ cert: Cert; s: ReturnType<typeof getCertStatus> }>> = {
+      expired: [], expiring_soon: [], valid: [], no_expiry: [],
+    };
+    for (const c of certs) {
+      const s = getCertStatus(c.expiry_date, c.reminder_days_before ?? 30);
+      g[s.status].push({ cert: c, s });
+    }
+    return g;
+  }, [certs]);
+
+  const expiredCount = grouped.expired.length;
+  const expiringCount = grouped.expiring_soon.length;
+  const validCount = grouped.valid.length + grouped.no_expiry.length;
+
+  const openAdd = (preset?: typeof CERT_PRESETS[number]) => {
     setEditing(null);
-    setName("");
-    setCertType("other");
-    setIssuedBy("");
-    setIssueDate("");
-    setExpiryDate("");
-    setCertNumber("");
-    setSheetError(null);
-    setShowSheet(true);
+    setFTitle(preset?.title ?? "");
+    setFType(preset?.type ?? "Other");
+    setFIssued("");
+    setFExpiry("");
+    setFNoExpiry(false);
+    setFReminder(preset?.reminder_days ?? 30);
+    setFNotes("");
+    setSheetOpen(true);
+    setMenuFor(null);
   };
 
-  const openEdit = (r: CertRow) => {
-    setEditing(r);
-    setName(r.name);
-    setCertType(((r.cert_type as CertType) ?? "other"));
-    setIssuedBy(r.issued_by ?? "");
-    setIssueDate(r.issue_date ?? "");
-    setExpiryDate(r.expiry_date ?? "");
-    setCertNumber(r.cert_number ?? "");
-    setSheetError(null);
-    setShowSheet(true);
+  const openEdit = (c: Cert) => {
+    setEditing(c);
+    setFTitle(c.title);
+    setFType(c.cert_type || "Other");
+    setFIssued(c.issued_date || "");
+    setFExpiry(c.expiry_date || "");
+    setFNoExpiry(!c.expiry_date);
+    setFReminder(c.reminder_days_before ?? 30);
+    setFNotes(c.notes || "");
+    setSheetOpen(true);
+    setMenuFor(null);
+  };
+
+  const openRenew = (c: Cert) => {
+    setEditing(null);
+    setFTitle(c.title);
+    setFType(c.cert_type || "Other");
+    setFIssued(new Date().toISOString().slice(0, 10));
+    setFExpiry("");
+    setFNoExpiry(false);
+    setFReminder(c.reminder_days_before ?? 30);
+    setFNotes(c.notes || "");
+    // Store old cert id so save can archive it after insert
+    (window as any).__renewingCertId = c.id;
+    setSheetOpen(true);
+    setMenuFor(null);
+  };
+
+  const archive = async (c: Cert) => {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("instructor_certifications")
+      .update({ is_active: false })
+      .eq("id", c.id);
+    if (error) {
+      toast.error("Could not archive");
+      return;
+    }
+    toast.success("Archived");
+    setMenuFor(null);
+    load(userId);
   };
 
   const save = async () => {
     if (!userId) return;
-    if (!name.trim()) {
-      setSheetError("Please enter a certification name.");
+    if (!fTitle.trim()) {
+      toast.error("Title is required");
       return;
     }
     setSaving(true);
-    setSheetError(null);
-    const payload = {
-      name: name.trim(),
-      cert_type: certType,
-      issued_by: issuedBy.trim() || null,
-      issue_date: issueDate || null,
-      expiry_date: expiryDate || null,
-      cert_number: certNumber.trim() || null,
+    const payload: Partial<Cert> = {
+      instructor_id: userId,
+      title: fTitle.trim(),
+      cert_type: fType,
+      issued_date: fIssued || null,
+      expiry_date: fNoExpiry ? null : (fExpiry || null),
+      reminder_days_before: fReminder,
+      notes: fNotes.trim() || null,
+      is_active: true,
     };
-    const { error } = editing
-      ? await supabase.from("certifications").update(payload).eq("id", editing.id)
-      : await supabase.from("certifications").insert({ ...payload, instructor_id: userId });
+    let error;
+    if (editing) {
+      ({ error } = await supabase
+        .from("instructor_certifications")
+        .update(payload)
+        .eq("id", editing.id));
+    } else {
+      ({ error } = await supabase
+        .from("instructor_certifications")
+        .insert(payload));
+      const renewId = (window as any).__renewingCertId as string | undefined;
+      if (!error && renewId) {
+        await supabase.from("instructor_certifications").update({ is_active: false }).eq("id", renewId);
+        (window as any).__renewingCertId = undefined;
+      }
+    }
     setSaving(false);
     if (error) {
-      console.error("[certifications] save error", error);
-      setSheetError(error.message);
+      toast.error("Could not save");
       return;
     }
-    setShowSheet(false);
-    await fetchRows(userId);
+    toast.success(editing ? "Updated" : "Saved");
+    setSheetOpen(false);
+    load(userId);
   };
 
-  const remove = async () => {
-    if (!editing) return;
-    const id = editing.id;
-    setShowSheet(false);
-    setRows((prev) => prev.filter((x) => x.id !== id));
-    const { error } = await supabase.from("certifications").delete().eq("id", id);
-    if (error) {
-      console.error("[certifications] delete error", error);
-      if (userId) await fetchRows(userId);
-    }
-  };
+  const groupHeader = (label: string, colour: string, count: number) => (
+    count > 0 ? (
+      <div style={{ margin: "16px 16px 8px", fontSize: 10, fontWeight: 600, color: colour, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Inter, sans-serif" }}>
+        {label}
+      </div>
+    ) : null
+  );
 
-  const expiringCount = rows.filter((r) => {
-    const d = daysUntil(r.expiry_date);
-    return d !== null && d >= 0 && d <= 60;
-  }).length;
+  const CertCard = ({ cert, s }: { cert: Cert; s: ReturnType<typeof getCertStatus> }) => {
+    const progressPct = (() => {
+      if (!cert.issued_date || !cert.expiry_date) return null;
+      const start = new Date(cert.issued_date).getTime();
+      const end = new Date(cert.expiry_date).getTime();
+      if (end <= start) return 100;
+      const now = Date.now();
+      const pct = ((now - start) / (end - start)) * 100;
+      return Math.max(0, Math.min(100, pct));
+    })();
+    return (
+      <div style={{
+        background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12,
+        padding: 0, overflow: "hidden", margin: "0 16px 8px",
+        borderLeft: `3px solid ${s.colour}`, fontFamily: "Inter, sans-serif",
+      }}>
+        <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: s.colour, textTransform: "uppercase", letterSpacing: 0.6 }}>
+              {cert.cert_type || "Certification"}
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", marginTop: 2 }}>{cert.title}</div>
+            {cert.notes ? (
+              <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>{cert.notes}</div>
+            ) : null}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, position: "relative" }}>
+            <span style={{ background: s.bg, color: s.colour, fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999 }}>
+              {s.status === "expired" ? "Expired" : s.status === "expiring_soon" ? "Soon" : s.status === "valid" ? "Valid" : "No expiry"}
+            </span>
+            <button
+              onClick={() => setMenuFor(menuFor === cert.id ? null : cert.id)}
+              style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4, color: "#9CA3AF" }}
+              aria-label="More"
+            >
+              <MoreHorizontal size={16} />
+            </button>
+            {menuFor === cert.id && (
+              <div style={{ position: "absolute", top: 26, right: 0, background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 10, boxShadow: "0 6px 20px rgba(0,0,0,0.1)", zIndex: 20, minWidth: 140, overflow: "hidden" }}>
+                {[
+                  { label: "Edit", onClick: () => openEdit(cert) },
+                  { label: "Renew", onClick: () => openRenew(cert) },
+                  { label: "Archive", onClick: () => archive(cert) },
+                ].map((it) => (
+                  <button key={it.label} onClick={it.onClick} style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", background: "transparent", fontSize: 13, cursor: "pointer", color: "#0F2044" }}>
+                    {it.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div style={{ padding: "0 16px 12px", display: "flex", gap: 16, flexWrap: "wrap" }}>
+          {cert.issued_date && (
+            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "#6B7280" }}>
+              <Calendar size={12} color="#9CA3AF" /> Issued {fmtDate(cert.issued_date)}
+            </div>
+          )}
+          {cert.expiry_date && (
+            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: s.colour, fontWeight: 600 }}>
+              <Clock size={12} color={s.colour} /> {s.label}
+            </div>
+          )}
+        </div>
+        {progressPct !== null && (
+          <div style={{ height: 3, background: "#F3F4F6", margin: "0 16px 12px" }}>
+            <div style={{ height: "100%", background: s.colour, width: `${progressPct}%` }} />
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      {/* TOP BAR */}
-      <div
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
-        style={{ background: "#0B1F3A" }}
-      >
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 100 }}>
+      {/* Top bar */}
+      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", gap: 12, color: "#FFFFFF" }}>
         <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          className="p-1"
+          onClick={() => navigate({ to: "/home" as never })}
+          style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
           aria-label="Back"
         >
-          <ChevronLeft size={24} color="#FFFFFF" />
+          <ArrowLeft size={22} />
         </button>
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-semibold">
-          Certifications
-        </div>
-        <button
-          type="button"
-          onClick={openAdd}
-          className="ml-auto p-1"
-          aria-label="Add certification"
-        >
-          <Plus size={24} color="#FFFFFF" />
-        </button>
+        <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
       </div>
 
-      <div className="pt-[52px]">
-        <div className="mx-4">
-          {expiringCount > 0 && (
-            <div
-              className="mt-3 rounded-lg px-3 py-3 flex items-center"
-              style={{ backgroundColor: "#EEF2F7", gap: 10 }}
-            >
-              <AlertTriangle size={18} color="#0B1F3A" />
-              <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>
-                {expiringCount} certification{expiringCount === 1 ? "" : "s"} expiring soon
-              </div>
-            </div>
-          )}
-
-          <SectionHeader>MY CERTIFICATIONS</SectionHeader>
-
-          {rows.length === 0 ? (
-            <div
-              className="flex flex-col items-center justify-center text-center py-12"
-              style={{ gap: 10 }}
-            >
-              <div
-                className="flex items-center justify-center rounded-full"
-                style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
-              >
-                <Award size={28} color="#1877D6" />
-              </div>
-              <div className="text-[14px] text-[#6B7280]">No certifications added yet</div>
-            </div>
-          ) : (
-            <div className="flex flex-col" style={{ gap: 8 }}>
-              {rows.map((r) => {
-                const meta = typeMeta(r.cert_type);
-                const days = daysUntil(r.expiry_date);
-                let expColor = "#1877D6";
-                let statusText = "";
-                if (days === null) {
-                  expColor = "#6B7280";
-                  statusText = "No expiry set";
-                } else if (days < 0) {
-                  expColor = "#1877D6";
-                  statusText = "Expired";
-                } else if (days <= 60) {
-                  expColor = "#0B1F3A";
-                  statusText = `${days} day${days === 1 ? "" : "s"} remaining`;
-                } else {
-                  expColor = "#1877D6";
-                  statusText = `${days} days remaining`;
-                }
-                const Icon = meta.Icon;
-                return (
-                  <Card key={r.id} className="!py-3 !px-4">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(r)}
-                      className="flex items-start w-full text-left"
-                      style={{ gap: 12 }}
-                    >
-                      <div
-                        className="flex items-center justify-center rounded-full"
-                        style={{
-                          width: 36,
-                          height: 36,
-                          backgroundColor: meta.tint,
-                          flexShrink: 0,
-                        }}
-                      >
-                        <Icon size={18} color={meta.color} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">
-                          {r.name}
-                        </div>
-                        {r.issued_by && (
-                          <div className="text-[13px] text-[#6B7280] truncate">
-                            {r.issued_by}
-                          </div>
-                        )}
-                        <div className="text-[12px] mt-0.5" style={{ color: expColor }}>
-                          {statusText}
-                        </div>
-                      </div>
-                      <div className="text-right" style={{ flexShrink: 0 }}>
-                        <div className="text-[13px] font-medium" style={{ color: expColor }}>
-                          {r.expiry_date ? formatDate(r.expiry_date) : "—"}
-                        </div>
-                      </div>
-                    </button>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </div>
+      {/* Summary strip */}
+      <div style={{ display: "flex", gap: 8, margin: "16px 16px 0" }}>
+        {[
+          { count: expiredCount, label: "Expired", colour: "#CC2229" },
+          { count: expiringCount, label: "Expiring soon", colour: "#D97706" },
+          { count: validCount, label: "Valid", colour: "#16A34A" },
+        ].map((s) => (
+          <div key={s.label} style={{ flex: 1, background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 12, textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: 900, color: s.colour }}>{s.count}</div>
+            <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{s.label}</div>
+          </div>
+        ))}
       </div>
 
-      {/* ADD/EDIT SHEET */}
-      {showSheet && (
-        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setShowSheet(false)}
-          />
-          <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
-            style={{ animation: "slideUp 0.25s ease-out" }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-[16px] font-semibold text-[#0B1F3A]">
-                {editing ? "Edit certification" : "Add certification"}
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSheet(false)}
-                className="text-[13px] text-[#6B7280]"
-              >
-                Cancel
-              </button>
+      {/* Urgent alert */}
+      {(expiredCount > 0 || expiringCount > 0) && (
+        <div style={{ margin: "12px 16px 0", background: "#FEF2F2", border: "0.5px solid #FECACA", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <AlertCircle size={16} color="#CC2229" style={{ marginTop: 1 }} />
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#CC2229" }}>
+              {expiredCount} expired · {expiringCount} expiring soon
             </div>
-
-            <div className="flex flex-col" style={{ gap: 12 }}>
-              <Input
-                label="Certification name"
-                placeholder="e.g. ADI Green Badge"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              <div className="w-full">
-                <label
-                  className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={POPPINS}
-                >
-                  Type
-                </label>
-                <select
-                  value={certType}
-                  onChange={(e) => setCertType(e.target.value as CertType)}
-                  className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    borderWidth: "0.5px",
-                    borderStyle: "solid",
-                    borderColor: "#EEF2F7",
-                  }}
-                >
-                  {TYPE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <Input
-                label="Issued by"
-                placeholder="e.g. DVSA"
-                value={issuedBy}
-                onChange={(e) => setIssuedBy(e.target.value)}
-              />
-              <Input
-                label="Issue date"
-                type="date"
-                value={issueDate}
-                onChange={(e) => setIssueDate(e.target.value)}
-              />
-              <Input
-                label="Expiry date"
-                type="date"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-              />
-              <Input
-                label="Certificate number (optional)"
-                placeholder="e.g. 1234567"
-                value={certNumber}
-                onChange={(e) => setCertNumber(e.target.value)}
-              />
-
-              {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
-                  {sheetError}
-                </div>
-              )}
-
-              <Button onClick={save} disabled={saving || !userId}>
-                {saving ? "Saving…" : editing ? "Update certification" : "Save certification"}
-              </Button>
-
-              {editing && (
-                <button
-                  type="button"
-                  onClick={remove}
-                  className="text-[13px] font-medium py-2"
-                  style={{ color: "#1877D6" }}
-                >
-                  Delete certification
-                </button>
-              )}
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
+              Renew these before your next standards check
             </div>
           </div>
         </div>
       )}
 
-      <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
-        }
-      `}</style>
-    </PageLayout>
+      {/* List */}
+      {loading ? (
+        <div style={{ padding: 32, textAlign: "center", color: "#9CA3AF" }}>Loading…</div>
+      ) : certs.length === 0 ? (
+        <div style={{ padding: "48px 24px 24px", textAlign: "center" }}>
+          <Award size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#6B7280" }}>No certifications tracked</div>
+          <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
+            Add your ADI licence, DBS check and other important dates
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 20 }}>
+            {CERT_PRESETS.map((p) => (
+              <button
+                key={p.type}
+                onClick={() => openAdd(p)}
+                style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer" }}
+              >
+                {p.title}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {groupHeader("EXPIRED", "#CC2229", grouped.expired.length)}
+          {grouped.expired.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
+          {groupHeader("EXPIRING SOON", "#D97706", grouped.expiring_soon.length)}
+          {grouped.expiring_soon.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
+          {groupHeader("VALID", "#16A34A", grouped.valid.length)}
+          {grouped.valid.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
+          {groupHeader("NO EXPIRY DATE", "#9CA3AF", grouped.no_expiry.length)}
+          {grouped.no_expiry.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
+        </>
+      )}
+
+      {/* FAB add */}
+      <button
+        onClick={() => openAdd()}
+        style={{ position: "fixed", right: 20, bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)", width: 56, height: 56, borderRadius: 28, background: "#0F2044", color: "#FFFFFF", border: "none", fontSize: 28, fontWeight: 300, cursor: "pointer", boxShadow: "0 6px 20px rgba(15,32,68,0.35)", zIndex: 30 }}
+        aria-label="Add certification"
+      >
+        +
+      </button>
+
+      {/* Bottom sheet */}
+      {sheetOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 40, display: "flex", alignItems: "flex-end" }} onClick={() => setSheetOpen(false)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, Inter, sans-serif" }}
+          >
+            <div style={{ width: 40, height: 4, background: "#E5E7EB", borderRadius: 2, margin: "0 auto 16px" }} />
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#0F2044", marginBottom: 16 }}>
+              {editing ? "Edit certification" : "Add certification"}
+            </div>
+
+            {!editing && (
+              <>
+                <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 8 }}>Quick add</div>
+                <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginBottom: 12 }}>
+                  {CERT_PRESETS.map((p) => (
+                    <button
+                      key={p.type}
+                      onClick={() => { setFTitle(p.title); setFType(p.type); setFReminder(p.reminder_days); }}
+                      style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
+                    >
+                      {p.title}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <Field label="Title">
+              <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="e.g. ADI Licence" style={inputStyle} />
+            </Field>
+
+            <Field label="Certification type">
+              <select value={fType} onChange={(e) => setFType(e.target.value)} style={inputStyle}>
+                {CERT_PRESETS.map((p) => (
+                  <option key={p.type} value={p.type}>{p.type}</option>
+                ))}
+              </select>
+            </Field>
+
+            <Field label="Issued date">
+              <input type="date" value={fIssued} onChange={(e) => setFIssued(e.target.value)} style={inputStyle} />
+            </Field>
+
+            <Field label="Expiry date">
+              <input type="date" value={fExpiry} disabled={fNoExpiry} onChange={(e) => setFExpiry(e.target.value)} style={{ ...inputStyle, opacity: fNoExpiry ? 0.5 : 1 }} />
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B7280", marginTop: 6, cursor: "pointer" }}>
+                <input type="checkbox" checked={fNoExpiry} onChange={(e) => setFNoExpiry(e.target.checked)} />
+                No expiry date
+              </label>
+            </Field>
+
+            <Field label="Remind me">
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <select value={fReminder} onChange={(e) => setFReminder(Number(e.target.value))} style={{ ...inputStyle, flex: "0 0 auto", width: 100 }}>
+                  {[7, 14, 30, 60, 90, 180].map((d) => (
+                    <option key={d} value={d}>{d} days</option>
+                  ))}
+                </select>
+                <span style={{ fontSize: 12, color: "#6B7280" }}>before expiry</span>
+              </div>
+            </Field>
+
+            <Field label="Notes">
+              <textarea value={fNotes} onChange={(e) => setFNotes(e.target.value)} placeholder="Reference number, provider, etc." rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+            </Field>
+
+            <button
+              onClick={save}
+              disabled={saving}
+              style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 12, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 8, opacity: saving ? 0.7 : 1 }}
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  border: "0.5px solid #E2E6ED",
+  borderRadius: 10,
+  padding: "10px 12px",
+  fontSize: 14,
+  fontFamily: "Inter, sans-serif",
+  color: "#0F2044",
+  background: "#FFFFFF",
+  boxSizing: "border-box",
+};
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, marginBottom: 6 }}>{label}</div>
+      {children}
+    </div>
   );
 }

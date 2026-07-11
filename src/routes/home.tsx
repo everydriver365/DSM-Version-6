@@ -244,14 +244,14 @@ function formatMins(mins: number) {
 
 
 type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules';
+  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules' | 'certs_expired' | 'certs_expiring';
   count: number;
   primary: string;
   subtitle: string;
   onClick: () => void;
 };
 
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['cancellations', 'reschedules', 'tests', 'jobs', 'calls', 'enq'];
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
   tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
@@ -260,6 +260,8 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
   cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: XCircle },
   reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
+  certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: AlertCircle },
+  certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: Clock },
 };
 
 const NA_CARD_STYLE: React.CSSProperties = {
@@ -1857,6 +1859,8 @@ function HomePage() {
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
+  const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
+  const [expiringCerts, setExpiringCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
 
   // ----- Desktop layout (>=768px) — mobile untouched -----
   const [isDesktop, setIsDesktop] = useState<boolean>(() =>
@@ -1948,6 +1952,29 @@ function HomePage() {
         .eq("type", "reschedule_request")
         .eq("read", false);
       if (!cancelled) setRescheduleRequestsCount(reschedCount ?? 0);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  // Certification expiry surfacing
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const cutoff = new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0];
+      const { data } = await supabase
+        .from('instructor_certifications')
+        .select('id, title, expiry_date, reminder_days_before')
+        .eq('instructor_id', userId)
+        .eq('is_active', true)
+        .not('expiry_date', 'is', null)
+        .lte('expiry_date', cutoff)
+        .order('expiry_date', { ascending: true });
+      if (cancelled) return;
+      const now = Date.now();
+      const rows = (data ?? []) as Array<{ id: string; title: string; expiry_date: string }>;
+      setExpiredCerts(rows.filter((c) => new Date(c.expiry_date).getTime() < now));
+      setExpiringCerts(rows.filter((c) => new Date(c.expiry_date).getTime() >= now));
     })();
     return () => { cancelled = true; };
   }, [userId]);
@@ -4585,7 +4612,30 @@ function HomePage() {
 
           const cancCount = recentCancellations.length;
           const cancFirst = recentCancellations[0]?.pupil_first_name || 'A pupil';
+          const nextCertDays = expiringCerts[0]
+            ? Math.floor((new Date(expiringCerts[0].expiry_date).getTime() - Date.now()) / 86400000)
+            : 0;
           const items: NAItem[] = [
+            {
+              key: 'certs_expired',
+              count: expiredCerts.length,
+              primary: expiredCerts.length === 1
+                ? `${expiredCerts[0].title} has expired`
+                : `${expiredCerts.length} certifications have expired`,
+              subtitle: 'Renew before your next standards check',
+              onClick: () => navigate({ to: '/certifications' as never }),
+            },
+            {
+              key: 'certs_expiring',
+              count: expiredCerts.length === 0 ? expiringCerts.length : 0,
+              primary: expiringCerts[0]
+                ? `${expiringCerts[0].title} expires in ${nextCertDays} days`
+                : 'Certifications expiring soon',
+              subtitle: expiringCerts.length > 1
+                ? `${expiringCerts.length} certifications expiring soon`
+                : 'Tap to review and renew',
+              onClick: () => navigate({ to: '/certifications' as never }),
+            },
             {
               key: 'cancellations',
               count: cancCount,
