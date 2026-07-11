@@ -393,38 +393,124 @@ function AvailabilitySettingsPage() {
       <Card>
         <SectionHead icon={<Clock size={16} color={NAVY} />} title="Working hours" />
 
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 8 }}>Which days do you work?</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {DAY_NAMES.map((d) => {
-              const on = workingDays.includes(d);
-              return (
-                <button key={d} type="button" onClick={() => toggleDay(d)}
-                  style={{
-                    padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 600,
-                    background: on ? NAVY : "#fff",
-                    color: on ? "#fff" : "#6B7280",
-                    border: on ? "none" : `0.5px solid ${BORDER}`,
-                    cursor: "pointer",
-                  }}
-                >{DAY_SHORT[d]}</button>
-              );
-            })}
-          </div>
+        {/* Quick set pills */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, color: MUTED }}>Quick set:</span>
+          {[
+            { label: "9-5", s: "09:00", e: "17:00" },
+            { label: "9-6", s: "09:00", e: "18:00" },
+            { label: "8-6", s: "08:00", e: "18:00" },
+          ].map((q) => (
+            <button
+              key={q.label}
+              type="button"
+              onClick={() => quickSetAll(q.s, q.e)}
+              style={{
+                background: "#F0F4FF", color: "#1A52A0",
+                fontSize: 12, fontWeight: 600,
+                padding: "6px 12px", borderRadius: 999,
+                border: "none", cursor: "pointer",
+              }}
+            >
+              {q.label}
+            </button>
+          ))}
         </div>
 
-        <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Start time</div>
-            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)}
-              style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, color: NAVY }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>End time</div>
-            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)}
-              style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, color: NAVY }} />
-          </div>
+        {/* Per-day rows */}
+        <div>
+          {DAY_NAMES.map((d) => {
+            const cfg = dayHours[d];
+            return (
+              <div
+                key={d}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "10px 0",
+                  borderBottom: "0.5px solid #F3F4F6",
+                }}
+              >
+                {/* Left: toggle + day name */}
+                <div style={{ width: 100, display: "flex", alignItems: "center" }}>
+                  <button
+                    type="button" role="switch" aria-checked={cfg.active}
+                    onClick={() => updateDay(d, { active: !cfg.active })}
+                    style={{
+                      width: 34, height: 20, borderRadius: 999, position: "relative",
+                      background: cfg.active ? NAVY : "#EEF2F7", border: "none", cursor: "pointer",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <span style={{
+                      position: "absolute", top: 2, left: cfg.active ? 16 : 2,
+                      width: 16, height: 16, borderRadius: "50%", background: "#fff",
+                      transition: "left 120ms",
+                    }} />
+                  </button>
+                  <span style={{ marginLeft: 8, fontSize: 13, fontWeight: 500, color: NAVY }}>
+                    {DAY_SHORT[d]}
+                  </span>
+                </div>
+
+                {/* Middle: times (only if active) */}
+                {cfg.active ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
+                    <input
+                      type="time" value={cfg.start}
+                      onChange={(e) => updateDay(d, { start: e.target.value })}
+                      style={{
+                        background: "#F7FAFC", border: `0.5px solid ${BORDER}`,
+                        borderRadius: 8, padding: "8px 10px", width: 100,
+                        fontSize: 13, color: NAVY,
+                      }}
+                    />
+                    <span style={{ fontSize: 12, color: "#9CA3AF" }}>to</span>
+                    <input
+                      type="time" value={cfg.end}
+                      onChange={(e) => updateDay(d, { end: e.target.value })}
+                      style={{
+                        background: "#F7FAFC", border: `0.5px solid ${BORDER}`,
+                        borderRadius: 8, padding: "8px 10px", width: 100,
+                        fontSize: 13, color: NAVY,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ flex: 1, fontSize: 12, color: "#C7CCD4" }}>Off</div>
+                )}
+
+                {/* Right: copy actions */}
+                {cfg.active ? (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+                    <button
+                      type="button"
+                      onClick={() => copyToAllActive(d)}
+                      style={{
+                        background: "none", border: "none", cursor: "pointer",
+                        fontSize: 11, fontWeight: 600, color: "#1A52A0", padding: 0,
+                      }}
+                    >
+                      Copy to all ↓
+                    </button>
+                    {d === "Monday" && (
+                      <button
+                        type="button"
+                        onClick={() => copyToWeekdays(d)}
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          fontSize: 11, color: "#9CA3AF", padding: 0,
+                        }}
+                      >
+                        Copy to weekdays
+                      </button>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
+
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
           <div style={{ fontSize: 14, color: NAVY }}>Lunch break</div>
