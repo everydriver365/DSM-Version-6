@@ -4,11 +4,13 @@ import {
   ArrowLeft,
   Clock,
   Shield,
-  RefreshCw,
+  Repeat,
   Calendar as CalendarIcon,
   Car,
   X,
   Plus,
+  ChevronDown,
+  ArrowDown,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
@@ -23,8 +25,14 @@ export const Route = createFileRoute("/availability-settings")({
 });
 
 const NAVY = "#0F2044";
-const MUTED = "#9CA3AF";
+const BLUE = "#185FA5";
+const CHIP_BG = "#E6F1FB";
+const MUTED = "#8A93A3";
+const OFF_TXT = "#C7CCD4";
 const BORDER = "#E2E6ED";
+const ROW_BORDER = "#EEF2F7";
+const FIELD_BG = "#F5F7FA";
+const DASHED_BORDER = "#DCE2EA";
 const FONT = { fontFamily: "Inter, sans-serif" } as const;
 
 const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -68,20 +76,35 @@ function Card({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       background: "#fff",
-      border: `0.5px solid ${BORDER}`,
-      borderRadius: 12,
+      borderRadius: 14,
+      boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       padding: 16,
-      margin: "12px 16px 0",
+      margin: "0 16px 14px",
     }}>{children}</div>
   );
 }
 
-function SectionHead({ icon, title }: { icon: React.ReactNode; title: string }) {
+function IconChip({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      {icon}
-      <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...FONT }}>{title}</div>
+    <div style={{
+      width: 32, height: 32, borderRadius: 9, background: CHIP_BG,
+      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+    }}>{children}</div>
+  );
+}
+
+function SectionHead({ icon, title, tight }: { icon: React.ReactNode; title: string; tight?: boolean }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: tight ? 8 : 14 }}>
+      <IconChip>{icon}</IconChip>
+      <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, ...FONT }}>{title}</div>
     </div>
+  );
+}
+
+function Description({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.5, marginBottom: 14 }}>{children}</div>
   );
 }
 
@@ -93,8 +116,8 @@ function PrimaryButton({ onClick, children, disabled }: { onClick: () => void; c
       disabled={disabled}
       style={{
         background: NAVY, color: "#fff", width: "100%",
-        borderRadius: 12, padding: "12px 0", border: "none",
-        fontSize: 14, fontWeight: 600, marginTop: 12,
+        borderRadius: 12, padding: "13px 0", border: "none",
+        fontSize: 14, fontWeight: 500, marginTop: 14,
         opacity: disabled ? 0.6 : 1, cursor: disabled ? "default" : "pointer",
         ...FONT,
       }}
@@ -102,19 +125,91 @@ function PrimaryButton({ onClick, children, disabled }: { onClick: () => void; c
   );
 }
 
-function OutlineButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+function DashedButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       type="button"
       onClick={onClick}
       style={{
-        background: "#fff", color: NAVY, width: "100%",
-        border: `0.5px solid ${NAVY}`,
-        borderRadius: 12, padding: "10px 0",
-        fontSize: 14, fontWeight: 600, marginTop: 8, cursor: "pointer",
+        background: "transparent", color: BLUE, width: "100%",
+        border: `1.5px dashed ${DASHED_BORDER}`,
+        borderRadius: 12, padding: "12px 0",
+        fontSize: 14, fontWeight: 500, marginTop: 8, cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
         ...FONT,
       }}
     >{children}</button>
+  );
+}
+
+function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
+  return (
+    <button
+      type="button" role="switch" aria-checked={on}
+      onClick={onChange}
+      style={{
+        width: 36, height: 22, borderRadius: 999, position: "relative",
+        background: on ? BLUE : "#E3E7ED", border: "none", cursor: "pointer",
+        flexShrink: 0, padding: 0,
+      }}
+    >
+      <span style={{
+        position: "absolute", top: 3, left: on ? 17 : 3,
+        width: 16, height: 16, borderRadius: "50%", background: "#fff",
+        transition: "left 120ms",
+      }} />
+    </button>
+  );
+}
+
+function TimeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <label style={{
+      flex: 1, background: FIELD_BG, borderRadius: 8,
+      padding: "7px 10px", display: "flex", alignItems: "center",
+      justifyContent: "space-between", cursor: "pointer", position: "relative",
+    }}>
+      <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>{value}</span>
+      <Clock size={13} color={MUTED} />
+      <input
+        type="time" value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          position: "absolute", inset: 0, opacity: 0, cursor: "pointer",
+          border: "none", background: "transparent",
+        }}
+      />
+    </label>
+  );
+}
+
+function SelectField({ value, onChange, options, label }: {
+  value: number; onChange: (v: number) => void;
+  options: { v: number; label: string }[]; label: string;
+}) {
+  return (
+    <div style={{ flex: 1 }}>
+      <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>{label}</div>
+      <div style={{
+        position: "relative", background: FIELD_BG, borderRadius: 10,
+        padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between",
+      }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>
+          {options.find(o => o.v === value)?.label ?? value}
+        </span>
+        <ChevronDown size={13} color={MUTED} />
+        <select
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          style={{
+            position: "absolute", inset: 0, opacity: 0, cursor: "pointer",
+            border: "none", background: "transparent",
+          }}
+        >
+          {options.map(o => <option key={o.v} value={o.v}>{o.label}</option>)}
+        </select>
+      </div>
+    </div>
   );
 }
 
@@ -239,31 +334,12 @@ function AvailabilitySettingsPage() {
   const updateDay = (day: string, patch: Partial<DayHours>) => {
     setDayHours((prev) => ({ ...prev, [day]: { ...prev[day], ...patch } }));
   };
-  const copyToAllActive = (sourceDay: string) => {
-    setDayHours((prev) => {
-      const src = prev[sourceDay];
-      const next = { ...prev };
-      for (const d of DAY_NAMES) {
-        if (next[d].active) next[d] = { ...next[d], start: src.start, end: src.end };
-      }
-      return next;
-    });
-  };
   const copyToWeekdays = (sourceDay: string) => {
     setDayHours((prev) => {
       const src = prev[sourceDay];
       const next = { ...prev };
       for (const d of ["Monday","Tuesday","Wednesday","Thursday","Friday"]) {
         next[d] = { ...next[d], start: src.start, end: src.end };
-      }
-      return next;
-    });
-  };
-  const quickSetAll = (start: string, end: string) => {
-    setDayHours((prev) => {
-      const next = { ...prev };
-      for (const d of DAY_NAMES) {
-        if (next[d].active) next[d] = { ...next[d], start, end };
       }
       return next;
     });
@@ -365,8 +441,10 @@ function AvailabilitySettingsPage() {
     setTimeOff((prev) => prev.filter(t => t.id !== id));
   }
 
+  const bufferOptions = [0,5,10,15,20,30].map(v => ({ v, label: `${v} mins` }));
+
   return (
-    <div style={{ minHeight: "100vh", background: "#fff", paddingBottom: 40, ...FONT }}>
+    <div style={{ minHeight: "100vh", background: "#F5F7FA", paddingBottom: 40, ...FONT }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center",
         background: NAVY, height: 52, padding: "0 8px",
@@ -389,197 +467,104 @@ function AvailabilitySettingsPage() {
         </div>
       ) : null}
 
+      <div style={{ height: 14 }} />
+
       {/* SECTION 1 — WORKING HOURS */}
       <Card>
-        <SectionHead icon={<Clock size={16} color={NAVY} />} title="Working hours" />
+        <SectionHead icon={<Clock size={16} color={BLUE} />} title="Working hours" />
 
-        {/* Quick set pills */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 12, color: MUTED }}>Quick set:</span>
-          {[
-            { label: "9-5", s: "09:00", e: "17:00" },
-            { label: "9-6", s: "09:00", e: "18:00" },
-            { label: "8-6", s: "08:00", e: "18:00" },
-          ].map((q) => (
-            <button
-              key={q.label}
-              type="button"
-              onClick={() => quickSetAll(q.s, q.e)}
-              style={{
-                background: "#F0F4FF", color: "#1A52A0",
-                fontSize: 12, fontWeight: 600,
-                padding: "6px 12px", borderRadius: 999,
-                border: "none", cursor: "pointer",
-              }}
-            >
-              {q.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Per-day rows */}
         <div>
-          {DAY_NAMES.map((d) => {
+          {DAY_NAMES.map((d, idx) => {
             const cfg = dayHours[d];
             return (
               <div
                 key={d}
                 style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  padding: "10px 0",
-                  borderBottom: "0.5px solid #F3F4F6",
+                  padding: "12px 0",
+                  borderTop: idx === 0 ? "none" : `1px solid ${ROW_BORDER}`,
                 }}
               >
-                {/* Left: toggle + day name */}
-                <div style={{ width: 100, display: "flex", alignItems: "center" }}>
-                  <button
-                    type="button" role="switch" aria-checked={cfg.active}
-                    onClick={() => updateDay(d, { active: !cfg.active })}
-                    style={{
-                      width: 34, height: 20, borderRadius: 999, position: "relative",
-                      background: cfg.active ? NAVY : "#EEF2F7", border: "none", cursor: "pointer",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <span style={{
-                      position: "absolute", top: 2, left: cfg.active ? 16 : 2,
-                      width: 16, height: 16, borderRadius: "50%", background: "#fff",
-                      transition: "left 120ms",
-                    }} />
-                  </button>
-                  <span style={{ marginLeft: 8, fontSize: 13, fontWeight: 500, color: NAVY }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <Toggle on={cfg.active} onChange={() => updateDay(d, { active: !cfg.active })} />
+                  <span style={{
+                    width: 34, fontSize: 14, fontWeight: 500,
+                    color: cfg.active ? NAVY : OFF_TXT,
+                  }}>
                     {DAY_SHORT[d]}
                   </span>
+
+                  {cfg.active ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
+                      <TimeField value={cfg.start} onChange={(v) => updateDay(d, { start: v })} />
+                      <span style={{ fontSize: 12, color: OFF_TXT }}>to</span>
+                      <TimeField value={cfg.end} onChange={(v) => updateDay(d, { end: v })} />
+                    </div>
+                  ) : (
+                    <div style={{ flex: 1, textAlign: "right", fontSize: 12, color: OFF_TXT }}>Off</div>
+                  )}
                 </div>
 
-                {/* Middle: times (only if active) */}
-                {cfg.active ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
-                    <input
-                      type="time" value={cfg.start}
-                      onChange={(e) => updateDay(d, { start: e.target.value })}
-                      style={{
-                        background: "#F7FAFC", border: `0.5px solid ${BORDER}`,
-                        borderRadius: 8, padding: "8px 10px", width: 100,
-                        fontSize: 13, color: NAVY,
-                      }}
-                    />
-                    <span style={{ fontSize: 12, color: "#9CA3AF" }}>to</span>
-                    <input
-                      type="time" value={cfg.end}
-                      onChange={(e) => updateDay(d, { end: e.target.value })}
-                      style={{
-                        background: "#F7FAFC", border: `0.5px solid ${BORDER}`,
-                        borderRadius: 8, padding: "8px 10px", width: 100,
-                        fontSize: 13, color: NAVY,
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div style={{ flex: 1, fontSize: 12, color: "#C7CCD4" }}>Off</div>
-                )}
-
-                {/* Right: copy actions */}
-                {cfg.active ? (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+                {cfg.active && (
+                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
                     <button
                       type="button"
-                      onClick={() => copyToAllActive(d)}
+                      onClick={() => copyToWeekdays(d)}
                       style={{
+                        display: "inline-flex", alignItems: "center", gap: 3,
                         background: "none", border: "none", cursor: "pointer",
-                        fontSize: 11, fontWeight: 600, color: "#1A52A0", padding: 0,
+                        fontSize: 11, fontWeight: 500, color: BLUE, padding: 0,
                       }}
                     >
-                      Copy to all ↓
+                      Copy to all weekdays <ArrowDown size={11} />
                     </button>
-                    {d === "Monday" && (
-                      <button
-                        type="button"
-                        onClick={() => copyToWeekdays(d)}
-                        style={{
-                          background: "none", border: "none", cursor: "pointer",
-                          fontSize: 11, color: "#9CA3AF", padding: 0,
-                        }}
-                      >
-                        Copy to weekdays
-                      </button>
-                    )}
                   </div>
-                ) : null}
+                )}
               </div>
             );
           })}
-        </div>
 
-
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
-          <div style={{ fontSize: 14, color: NAVY }}>Lunch break</div>
-          <button type="button" role="switch" aria-checked={lunchOn} onClick={() => setLunchOn((v) => !v)}
-            style={{
-              width: 40, height: 22, borderRadius: 999, position: "relative",
-              background: lunchOn ? NAVY : "#EEF2F7", border: "none", cursor: "pointer",
-            }}>
-            <span style={{
-              position: "absolute", top: 2, left: lunchOn ? 20 : 2,
-              width: 18, height: 18, borderRadius: "50%", background: "#fff",
-              transition: "left 120ms",
-            }} />
-          </button>
-        </div>
-        {lunchOn && (
-          <div style={{ display: "flex", gap: 12 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Lunch start</div>
-              <input type="time" value={lunchStart} onChange={(e) => setLunchStart(e.target.value)}
-                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Lunch end</div>
-              <input type="time" value={lunchEnd} onChange={(e) => setLunchEnd(e.target.value)}
-                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
-            </div>
+          {/* Lunch break row */}
+          <div style={{
+            padding: "12px 0", borderTop: `1px solid ${ROW_BORDER}`,
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>Lunch break</div>
+            <Toggle on={lunchOn} onChange={() => setLunchOn((v) => !v)} />
           </div>
-        )}
+          {lunchOn && (
+            <div style={{ display: "flex", gap: 10, paddingBottom: 4 }}>
+              <TimeField value={lunchStart} onChange={setLunchStart} />
+              <span style={{ fontSize: 12, color: OFF_TXT, alignSelf: "center" }}>to</span>
+              <TimeField value={lunchEnd} onChange={setLunchEnd} />
+            </div>
+          )}
+        </div>
 
         <PrimaryButton onClick={saveWorkingHours}>Save working hours</PrimaryButton>
       </Card>
 
       {/* SECTION 2 — LESSON BUFFERS */}
       <Card>
-        <SectionHead icon={<Shield size={16} color={NAVY} />} title="Lesson buffers" />
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Buffer before lesson</div>
-            <select value={bufBefore} onChange={(e) => setBufBefore(Number(e.target.value))}
-              style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, background: "#fff" }}>
-              {[0,5,10,15,20,30].map(v => <option key={v} value={v}>{v} mins</option>)}
-            </select>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Buffer after lesson</div>
-            <select value={bufAfter} onChange={(e) => setBufAfter(Number(e.target.value))}
-              style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, background: "#fff" }}>
-              {[0,5,10,15,20,30].map(v => <option key={v} value={v}>{v} mins</option>)}
-            </select>
-          </div>
+        <SectionHead icon={<Shield size={16} color={BLUE} />} title="Lesson buffers" />
+        <div style={{ display: "flex", gap: 10 }}>
+          <SelectField value={bufBefore} onChange={setBufBefore} options={bufferOptions} label="Buffer before lesson" />
+          <SelectField value={bufAfter} onChange={setBufAfter} options={bufferOptions} label="Buffer after lesson" />
         </div>
         <PrimaryButton onClick={saveBuffers}>Save buffers</PrimaryButton>
       </Card>
 
       {/* SECTION 3 — RECURRING BLOCKS */}
       <Card>
-        <SectionHead icon={<RefreshCw size={16} color={NAVY} />} title="Recurring unavailability" />
-        <div style={{ fontSize: 12, color: MUTED, marginBottom: 12 }}>
-          Add times you're regularly unavailable e.g. school run, weekly appointment
-        </div>
+        <SectionHead icon={<Repeat size={16} color={BLUE} />} title="Recurring unavailability" tight />
+        <Description>Add times you're regularly unavailable e.g. school run, weekly appointment</Description>
 
         {recurring.map((r, idx) => (
           <div key={r.id} style={{
             display: "flex", alignItems: "center", padding: "10px 0",
-            borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+            borderTop: idx === 0 ? "none" : `1px solid ${ROW_BORDER}`,
             gap: 8,
           }}>
-            <span style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999 }}>
+            <span style={{ background: CHIP_BG, color: BLUE, fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
               {DAY_SHORT[r.day_of_week] ?? r.day_of_week.slice(0, 3)}
             </span>
             <span style={{ fontSize: 14, color: NAVY }}>
@@ -588,22 +573,16 @@ function AvailabilitySettingsPage() {
             <span style={{ fontSize: 12, color: MUTED, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {r.label || ""}
             </span>
-            <button type="button" onClick={() => toggleRecurring(r)}
-              style={{
-                width: 34, height: 20, borderRadius: 999, position: "relative",
-                background: r.is_active ? NAVY : "#E5E7EB", border: "none", cursor: "pointer",
-              }}>
-              <span style={{ position: "absolute", top: 2, left: r.is_active ? 16 : 2, width: 16, height: 16, borderRadius: "50%", background: "#fff" }} />
-            </button>
+            <Toggle on={r.is_active} onChange={() => toggleRecurring(r)} />
             <button type="button" onClick={() => deleteRecurring(r.id)}
               style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>
-              <X size={16} color="#9CA3AF" />
+              <X size={16} color={MUTED} />
             </button>
           </div>
         ))}
 
         {addingRecurring ? (
-          <div style={{ marginTop: 12, padding: 12, background: "#F9FAFB", borderRadius: 8 }}>
+          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 10 }}>
             <div style={{ marginBottom: 8 }}>
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Day</div>
               <select value={rDay} onChange={(e) => setRDay(e.target.value)}
@@ -633,27 +612,25 @@ function AvailabilitySettingsPage() {
               <button type="button" onClick={() => setAddingRecurring(false)}
                 style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: 14, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addRecurring}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (
-          <OutlineButton onClick={() => setAddingRecurring(true)}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Plus size={14} /> Add recurring block</span>
-          </OutlineButton>
+          <DashedButton onClick={() => setAddingRecurring(true)}>
+            <Plus size={15} /> Add recurring block
+          </DashedButton>
         )}
       </Card>
 
       {/* SECTION 4 — TIME OFF */}
       <Card>
-        <SectionHead icon={<CalendarIcon size={16} color={NAVY} />} title="Time off & holidays" />
-        <div style={{ fontSize: 12, color: MUTED, marginBottom: 12 }}>
-          Add holidays, training days or any time you won't be available
-        </div>
+        <SectionHead icon={<CalendarIcon size={16} color={BLUE} />} title="Time off & holidays" tight />
+        <Description>Add holidays, training days or any time you won't be available</Description>
 
         {timeOff.map((t, idx) => (
           <div key={t.id} style={{
             display: "flex", alignItems: "center", padding: "10px 0",
-            borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+            borderTop: idx === 0 ? "none" : `1px solid ${ROW_BORDER}`,
             gap: 8,
           }}>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -662,18 +639,18 @@ function AvailabilitySettingsPage() {
               </div>
               {t.reason ? <div style={{ fontSize: 12, color: MUTED }}>{t.reason}</div> : null}
             </div>
-            <span style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999 }}>
+            <span style={{ background: CHIP_BG, color: BLUE, fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
               {daysBetween(t.start_date, t.end_date)} days
             </span>
             <button type="button" onClick={() => deleteTimeOff(t.id)}
               style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>
-              <X size={16} color="#9CA3AF" />
+              <X size={16} color={MUTED} />
             </button>
           </div>
         ))}
 
         {addingTimeOff ? (
-          <div style={{ marginTop: 12, padding: 12, background: "#F9FAFB", borderRadius: 8 }}>
+          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 10 }}>
             <div style={{ marginBottom: 8 }}>
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Reason</div>
               <input type="text" value={toReason} onChange={(e) => setToReason(e.target.value)}
@@ -693,11 +670,8 @@ function AvailabilitySettingsPage() {
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
-              <div style={{ fontSize: 14, color: NAVY }}>All day</div>
-              <button type="button" role="switch" aria-checked={toAllDay} onClick={() => setToAllDay((v) => !v)}
-                style={{ width: 40, height: 22, borderRadius: 999, position: "relative", background: toAllDay ? NAVY : "#EEF2F7", border: "none", cursor: "pointer" }}>
-                <span style={{ position: "absolute", top: 2, left: toAllDay ? 20 : 2, width: 18, height: 18, borderRadius: "50%", background: "#fff" }} />
-              </button>
+              <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>All day</div>
+              <Toggle on={toAllDay} onChange={() => setToAllDay((v) => !v)} />
             </div>
             {!toAllDay && (
               <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
@@ -717,51 +691,46 @@ function AvailabilitySettingsPage() {
               <button type="button" onClick={() => setAddingTimeOff(false)}
                 style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: 14, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addTimeOff}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (
-          <OutlineButton onClick={() => setAddingTimeOff(true)}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Plus size={14} /> Add time off</span>
-          </OutlineButton>
+          <DashedButton onClick={() => setAddingTimeOff(true)}>
+            <Plus size={15} /> Add time off
+          </DashedButton>
         )}
       </Card>
 
       {/* SECTION 5 — TRAVEL TIME */}
       <Card>
-        <SectionHead icon={<Car size={16} color={NAVY} />} title="Travel time between lessons" />
-        <div style={{ fontSize: 12, color: MUTED, marginBottom: 12 }}>
-          Automatically add travel time between lessons based on pupil postcodes
-        </div>
+        <SectionHead icon={<Car size={16} color={BLUE} />} title="Travel time between lessons" tight />
+        <Description>Automatically add travel time between lessons based on pupil postcodes</Description>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
-          <div style={{ fontSize: 14, color: NAVY }}>Calculate travel time</div>
-          <button type="button" role="switch" aria-checked={useTravel} onClick={() => setUseTravel((v) => !v)}
-            style={{ width: 40, height: 22, borderRadius: 999, position: "relative", background: useTravel ? NAVY : "#EEF2F7", border: "none", cursor: "pointer" }}>
-            <span style={{ position: "absolute", top: 2, left: useTravel ? 20 : 2, width: 18, height: 18, borderRadius: "50%", background: "#fff" }} />
-          </button>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>Calculate travel time</div>
+          <Toggle on={useTravel} onChange={() => setUseTravel((v) => !v)} />
         </div>
 
         {useTravel && (
           <>
-            <div style={{ marginTop: 8 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Average driving speed</div>
-              <select value={travelSpeed} onChange={(e) => setTravelSpeed(Number(e.target.value))}
-                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, background: "#fff" }}>
-                <option value={20}>Urban (20mph)</option>
-                <option value={25}>Mixed (25mph)</option>
-                <option value={30}>Suburban (30mph)</option>
-                <option value={40}>Rural (40mph)</option>
-              </select>
+            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+              <SelectField
+                value={travelSpeed} onChange={setTravelSpeed}
+                label="Average driving speed"
+                options={[
+                  { v: 20, label: "Urban (20mph)" },
+                  { v: 25, label: "Mixed (25mph)" },
+                  { v: 30, label: "Suburban (30mph)" },
+                  { v: 40, label: "Rural (40mph)" },
+                ]}
+              />
+              <SelectField
+                value={travelBuffer} onChange={setTravelBuffer}
+                label="Extra buffer"
+                options={[0,5,10,15].map(v => ({ v, label: `${v} mins` }))}
+              />
             </div>
-            <div style={{ marginTop: 8 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Extra buffer</div>
-              <select value={travelBuffer} onChange={(e) => setTravelBuffer(Number(e.target.value))}
-                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, background: "#fff" }}>
-                {[0,5,10,15].map(v => <option key={v} value={v}>{v} mins</option>)}
-              </select>
-            </div>
-            <div style={{ marginTop: 8, background: "#F0F4FF", border: "0.5px solid #BFDBFE", borderRadius: 8, padding: 12, fontSize: 12, color: "#1A52A0", lineHeight: 1.5 }}>
+            <div style={{ marginTop: 10, background: CHIP_BG, borderRadius: 10, padding: 12, fontSize: 12, color: BLUE, lineHeight: 1.5 }}>
               • DSM calculates straight-line distance between lesson postcodes<br />
               • Travel time = distance ÷ speed + extra buffer<br />
               • This is an estimate — actual drive times may vary<br />
