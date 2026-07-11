@@ -461,6 +461,96 @@ function NewLessonPage() {
             />
           </div>
 
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 12,
+              padding: "14px 16px",
+              background: "#F7FAFC",
+              border: "0.5px solid #E2E6ED",
+              borderRadius: 10,
+            }}
+          >
+            <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
+              <RefreshCw size={14} color="#9CA3AF" />
+              <span style={{ fontSize: 14, color: "#0B1F3A" }}>Make this a recurring lesson</span>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isRecurring}
+              onClick={() => setIsRecurring((v) => !v)}
+              style={{
+                width: 42,
+                height: 24,
+                borderRadius: 999,
+                background: isRecurring ? "#0F2044" : "#D1D5DB",
+                position: "relative",
+                transition: "background 0.15s",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  left: isRecurring ? 20 : 2,
+                  width: 20,
+                  height: 20,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  transition: "left 0.15s",
+                }}
+              />
+            </button>
+          </div>
+
+          {isRecurring && (
+            <div style={{ marginTop: 8, padding: "12px 16px", background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Repeat</label>
+              <div className="grid grid-cols-2 gap-2">
+                {(["weekly", "fortnightly"] as const).map((f) => {
+                  const active = recurringFreq === f;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setRecurringFreq(f)}
+                      style={{
+                        padding: "10px 0",
+                        borderRadius: 10,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        background: active ? "#0F2044" : "#F7FAFC",
+                        color: active ? "#FFFFFF" : "#0F2044",
+                        border: active ? "none" : "0.5px solid #E2E6ED",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {f}
+                    </button>
+                  );
+                })}
+              </div>
+              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Until</label>
+              <input
+                type="date"
+                value={recurringUntil}
+                onChange={(e) => setRecurringUntil(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  borderRadius: 10,
+                  border: "0.5px solid #E2E6ED",
+                  padding: "0 12px",
+                  fontSize: 14,
+                  color: "#0B1F3A",
+                }}
+              />
+            </div>
+          )}
+
           {errors.form && (
             <p className="text-[12px]" style={{ color: "#1877D6" }}>
               {errors.form}
