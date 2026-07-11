@@ -2327,3 +2327,126 @@ function PlaceholderBlock({ text }: { text: string }) {
     </div>
   );
 }
+
+// ============ Shared helpers for new settings sections ============
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="text-[12px] font-medium text-[#6B7280]"
+      style={{ ...POPPINS, marginBottom: -6 }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function PoundInput({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[15px] text-[#6B7280]" style={POPPINS}>£</span>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value) || 0)}
+        className="flex-1 text-[14px] text-[#0B1F3A]"
+        style={{
+          padding: "10px 12px",
+          border: "0.5px solid #EEF2F7",
+          borderRadius: 8,
+          background: "#FFFFFF",
+          ...POPPINS,
+        }}
+      />
+    </div>
+  );
+}
+
+function SelectBox({
+  value,
+  onChange,
+  options,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full text-[14px] text-[#0B1F3A]"
+      style={{
+        padding: "10px 12px",
+        border: "0.5px solid #EEF2F7",
+        borderRadius: 8,
+        background: "#FFFFFF",
+        ...POPPINS,
+      }}
+    >
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>{o.label}</option>
+      ))}
+    </select>
+  );
+}
+
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={(e) => { e.stopPropagation(); onChange(!checked); }}
+      style={{
+        width: 44,
+        height: 26,
+        borderRadius: 13,
+        background: checked ? "#1877D6" : "#D1D5DB",
+        border: "none",
+        position: "relative",
+        cursor: "pointer",
+        flexShrink: 0,
+        transition: "background 0.2s",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 21 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "#fff",
+          transition: "left 0.2s",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+        }}
+      />
+    </button>
+  );
+}
+
+function SaveRow({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full"
+      style={{
+        marginTop: 4,
+        padding: "12px 16px",
+        borderRadius: 10,
+        background: "#0F2044",
+        color: "#FFFFFF",
+        border: "none",
+        fontSize: 14,
+        fontWeight: 600,
+        cursor: "pointer",
+        ...POPPINS,
+      }}
+    >
+      Save
+    </button>
+  );
+}
