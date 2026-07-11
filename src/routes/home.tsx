@@ -1832,7 +1832,7 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
-  const [instructorBufferBefore, setInstructorBufferBefore] = useState<number>(0);
+  const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
   const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [pupilAvailMap, setPupilAvailMap] = useState<Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>>({});
@@ -2350,7 +2350,7 @@ function HomePage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal, lesson_buffer_before, lesson_buffer_after")
+        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal, lesson_buffer_after")
         .eq("id", u.id)
         .maybeSingle();
       if (instErr) console.error("[home] instructors fetch error", instErr);
@@ -2387,9 +2387,7 @@ function HomePage() {
       const weGoal = Number((instructor as any)?.weekly_earnings_goal);
       if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
       if (Number.isFinite(weGoal) && weGoal > 0) setWeeklyEarningsGoal(weGoal);
-      const ibb = Number((instructor as any)?.lesson_buffer_before);
       const iba = Number((instructor as any)?.lesson_buffer_after);
-      if (Number.isFinite(ibb)) setInstructorBufferBefore(ibb);
       if (Number.isFinite(iba)) setInstructorBufferAfter(iba);
       setAuthChecked(true);
     })();
