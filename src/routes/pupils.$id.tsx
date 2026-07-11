@@ -115,7 +115,6 @@ interface Pupil {
   custom_rate: number | null;
   custom_rate_90: number | null;
   custom_rate_120: number | null;
-  buffer_before_minutes: number | null;
   buffer_after_minutes: number | null;
   calendar_colour: string | null;
   theory_status: string | null;
@@ -613,7 +612,7 @@ function PupilDetailPage() {
         ni_amount_total, ni_amount_paid, ni_payer, ni_payment_date, ni_reference,
         emergency_contact_name, emergency_contact_phone, emergency_contact_relation,
         driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120,
-        buffer_before_minutes, buffer_after_minutes, calendar_colour,
+        buffer_after_minutes, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
         test_status, test_examiner
       `)
@@ -3112,11 +3111,9 @@ function PupilRatesAndColour({
     }
   }
 
-  async function saveBuffer(type: "before" | "after", raw: string) {
+  async function saveBuffer(raw: string) {
     const value = raw === "" ? null : Number(raw);
-    const patch = type === "before"
-      ? { buffer_before_minutes: value }
-      : { buffer_after_minutes: value };
+    const patch = { buffer_after_minutes: value };
     const ok = await patchPupil(patch);
     if (ok) {
       onUpdated(patch);
@@ -3194,24 +3191,10 @@ function PupilRatesAndColour({
             Override default buffer times for this pupil
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>Before lesson</span>
-            <select
-              value={pupil.buffer_before_minutes ?? ""}
-              onChange={(e) => void saveBuffer("before", e.target.value)}
-              className="text-[13px]"
-              style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
-            >
-              <option value="">Use default</option>
-              {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-                <option key={m} value={m}>{m} min</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-center justify-between" style={{ marginTop: 8 }}>
-            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>After lesson</span>
+            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>Custom gap after lesson</span>
             <select
               value={pupil.buffer_after_minutes ?? ""}
-              onChange={(e) => void saveBuffer("after", e.target.value)}
+              onChange={(e) => void saveBuffer(e.target.value)}
               className="text-[13px]"
               style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
             >
