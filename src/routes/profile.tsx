@@ -481,6 +481,7 @@ function ProfilePage() {
       toast.error("Couldn't save profile");
       return;
     }
+    setAddressSaved(true);
     if (!emailChanged) toast.success("Saved");
   }
 
