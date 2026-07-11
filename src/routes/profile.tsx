@@ -308,6 +308,7 @@ function ProfilePage() {
   const [homeCity, setHomeCity] = useState("");
   const [homeLat, setHomeLat] = useState<number | null>(null);
   const [homeLng, setHomeLng] = useState<number | null>(null);
+  const [addressSaved, setAddressSaved] = useState(false);
   const [timezone, setTimezone] = useState("Europe/London");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [avatarColor, setAvatarColor] = useState<string>("blue");
