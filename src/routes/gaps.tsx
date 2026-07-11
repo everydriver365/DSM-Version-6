@@ -547,6 +547,7 @@ function GapsPage() {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
+          per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
