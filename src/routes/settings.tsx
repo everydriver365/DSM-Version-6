@@ -100,6 +100,7 @@ function SettingsPage() {
   const [homeLng, setHomeLng] = useState<number | null>(null);
   const [postcodeBlurred, setPostcodeBlurred] = useState(false);
   const [coverageRadius, setCoverageRadius] = useState<number>(10);
+  const [coverageAreaCount, setCoverageAreaCount] = useState<number>(0);
   const [calendarLastSynced, setCalendarLastSynced] = useState<string | null>(null);
   const [savingCoverage, setSavingCoverage] = useState(false);
   const [sendLessonReminders, setSendLessonReminders] = useState<boolean>(true);
