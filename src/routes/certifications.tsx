@@ -347,15 +347,24 @@ function CertificationsPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 100 }}>
       {/* Top bar */}
-      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", gap: 12, color: "#FFFFFF" }}>
+      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#FFFFFF" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={() => navigate({ to: "/home" as never })}
+            style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
+            aria-label="Back"
+          >
+            <ArrowLeft size={22} />
+          </button>
+          <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
+        </div>
         <button
           onClick={() => navigate({ to: "/home" as never })}
           style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
-          aria-label="Back"
+          aria-label="Close"
         >
-          <ArrowLeft size={22} />
+          <X size={22} />
         </button>
-        <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
       </div>
 
       {/* Summary strip */}
