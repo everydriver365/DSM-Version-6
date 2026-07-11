@@ -148,17 +148,32 @@ function OnboardingPage() {
         if (csErr) console.warn("[onboarding] contact_submissions insert error", csErr);
       }
 
-      const rows = DAYS.map(({ key }) => ({
-        instructor_id: userId,
-        day: key,
-        enabled: hours[key].enabled,
-        start_time: hours[key].start,
-        end_time: hours[key].end,
-      }));
+      const dayKeyToName: Record<Day, string> = {
+        mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday",
+        fri: "Friday", sat: "Saturday", sun: "Sunday",
+      };
+      const perDayHours: Record<string, { start: string; end: string; active: boolean }> = {};
+      for (const { key } of DAYS) {
+        perDayHours[dayKeyToName[key]] = {
+          start: hours[key].start,
+          end: hours[key].end,
+          active: hours[key].enabled,
+        };
+      }
+      const activeDayNames = DAYS.filter(({ key }) => hours[key].enabled).map(({ key }) => dayKeyToName[key]);
+      const firstActive = DAYS.find(({ key }) => hours[key].enabled);
+      const repStart = firstActive ? hours[firstActive.key].start : "09:00";
+      const repEnd = firstActive ? hours[firstActive.key].end : "18:00";
       const { error: whErr } = await supabase
-        .from("working_hours")
-        .upsert(rows, { onConflict: "instructor_id,day" });
-      if (whErr) console.warn("[onboarding] working_hours upsert error", whErr);
+        .from("instructors")
+        .update({
+          working_hours_start: repStart,
+          working_hours_end: repEnd,
+          working_days: activeDayNames.length ? activeDayNames : ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          per_day_hours: perDayHours,
+        })
+        .eq("id", userId);
+      if (whErr) console.warn("[onboarding] instructors update error", whErr);
 
       navigate({ to: "/home", replace: true });
     } catch (e: unknown) {
