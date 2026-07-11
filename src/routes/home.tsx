@@ -2734,17 +2734,42 @@ function HomePage() {
         })),
       );
 
-      const { data: wh } = await supabase
-        .from("working_hours")
-        .select("mon, tue, wed, thu, fri, sat, sun, start_time, end_time")
-        .eq("instructor_id", userId)
+      const { data: instrData } = await supabase
+        .from("instructors")
+        .select("working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_before, lesson_buffer_after, lunch_break_start, lunch_break_end, hourly_rate")
+        .eq("id", userId)
         .maybeSingle();
-      if (wh) {
+      if (instrData) {
+        const dayKeyToName: Record<string, string> = {
+          sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday",
+          thu: "Thursday", fri: "Friday", sat: "Saturday",
+        };
+        const workingDaysArr = (instrData.working_days as string[] | null) ?? ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+        const perDay = (instrData.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null) ?? null;
+        const globalStart = instrData.working_hours_start ? String(instrData.working_hours_start).slice(0, 5) : "09:00";
+        const globalEnd = instrData.working_hours_end ? String(instrData.working_hours_end).slice(0, 5) : "18:00";
+
         const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-        const key = dayKeys[todayStart.getDay()];
-        const works = (wh as Record<string, unknown>)[key];
-        setTodayEndTime(works && wh.end_time ? String(wh.end_time).slice(0, 5) : null);
-        setWorkingHours(wh);
+        const todayKey = dayKeys[todayStart.getDay()];
+        const todayName = dayKeyToName[todayKey];
+        const todayCfg = perDay?.[todayName];
+        const todayActive = todayCfg ? todayCfg.active === true : workingDaysArr.includes(todayName);
+        const todayEnd = todayCfg?.end || globalEnd;
+        setTodayEndTime(todayActive ? todayEnd : null);
+
+        // Build a legacy-shaped compat object so existing consumers keep working.
+        const compat: Record<string, unknown> = {
+          start_time: globalStart,
+          end_time: globalEnd,
+          per_day_hours: perDay,
+          working_days: workingDaysArr,
+        };
+        for (const k of dayKeys) {
+          const name = dayKeyToName[k];
+          const cfg = perDay?.[name];
+          compat[k] = cfg ? cfg.active === true : workingDaysArr.includes(name);
+        }
+        setWorkingHours(compat);
       } else {
         setTodayEndTime(null);
         setWorkingHours(null);
