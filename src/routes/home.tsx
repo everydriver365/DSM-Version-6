@@ -244,14 +244,14 @@ function formatMins(mins: number) {
 
 
 type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules';
+  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules' | 'certs_expired' | 'certs_expiring';
   count: number;
   primary: string;
   subtitle: string;
   onClick: () => void;
 };
 
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['cancellations', 'reschedules', 'tests', 'jobs', 'calls', 'enq'];
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
   tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
@@ -260,6 +260,8 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
   cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: XCircle },
   reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
+  certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: AlertCircle },
+  certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: Clock },
 };
 
 const NA_CARD_STYLE: React.CSSProperties = {
