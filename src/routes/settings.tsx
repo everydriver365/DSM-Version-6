@@ -65,7 +65,7 @@ const DAYS = [
 ] as const;
 type DayKey = (typeof DAYS)[number]["key"];
 
-type ExpandKey = "payments" | "lessons" | "rates" | "coverage" | "pricing" | null;
+type ExpandKey = string | null;
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
