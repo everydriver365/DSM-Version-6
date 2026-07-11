@@ -177,13 +177,36 @@ function AvailabilitySettingsPage() {
     (async () => {
       const { data: instr } = await supabase
         .from("instructors")
-        .select("working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
+        .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins")
         .eq("id", userId).maybeSingle();
       if (instr) {
         const i = instr as Record<string, unknown>;
-        if (i.working_hours_start) setStartTime(String(i.working_hours_start).slice(0, 5));
-        if (i.working_hours_end) setEndTime(String(i.working_hours_end).slice(0, 5));
-        if (Array.isArray(i.working_days) && (i.working_days as string[]).length) setWorkingDays(i.working_days as string[]);
+        const perDay = i.per_day_hours as Record<string, DayHours> | null | undefined;
+        if (perDay && typeof perDay === "object") {
+          const next = { ...DEFAULT_DAY_HOURS };
+          for (const d of DAY_NAMES) {
+            const v = perDay[d];
+            if (v && typeof v === "object") {
+              next[d] = {
+                start: String(v.start ?? next[d].start).slice(0, 5),
+                end: String(v.end ?? next[d].end).slice(0, 5),
+                active: !!v.active,
+              };
+            }
+          }
+          setDayHours(next);
+        } else {
+          const s = i.working_hours_start ? String(i.working_hours_start).slice(0, 5) : "09:00";
+          const e = i.working_hours_end ? String(i.working_hours_end).slice(0, 5) : "18:00";
+          const activeList = Array.isArray(i.working_days) && (i.working_days as string[]).length
+            ? (i.working_days as string[])
+            : ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+          const next: Record<string, DayHours> = { ...DEFAULT_DAY_HOURS };
+          for (const d of DAY_NAMES) {
+            next[d] = { start: s, end: e, active: activeList.includes(d) };
+          }
+          setDayHours(next);
+        }
         if (i.lesson_buffer_before != null) setBufBefore(Number(i.lesson_buffer_before));
         if (i.lesson_buffer_after != null) setBufAfter(Number(i.lesson_buffer_after));
         if (i.lunch_break_start && i.lunch_break_end) {
@@ -213,16 +236,57 @@ function AvailabilitySettingsPage() {
     })();
   }, [userId]);
 
-  const toggleDay = (d: string) => {
-    setWorkingDays((prev) => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
+  const updateDay = (day: string, patch: Partial<DayHours>) => {
+    setDayHours((prev) => ({ ...prev, [day]: { ...prev[day], ...patch } }));
+  };
+  const copyToAllActive = (sourceDay: string) => {
+    setDayHours((prev) => {
+      const src = prev[sourceDay];
+      const next = { ...prev };
+      for (const d of DAY_NAMES) {
+        if (next[d].active) next[d] = { ...next[d], start: src.start, end: src.end };
+      }
+      return next;
+    });
+  };
+  const copyToWeekdays = (sourceDay: string) => {
+    setDayHours((prev) => {
+      const src = prev[sourceDay];
+      const next = { ...prev };
+      for (const d of ["Monday","Tuesday","Wednesday","Thursday","Friday"]) {
+        next[d] = { ...next[d], start: src.start, end: src.end };
+      }
+      return next;
+    });
+  };
+  const quickSetAll = (start: string, end: string) => {
+    setDayHours((prev) => {
+      const next = { ...prev };
+      for (const d of DAY_NAMES) {
+        if (next[d].active) next[d] = { ...next[d], start, end };
+      }
+      return next;
+    });
+  };
+  const mostFrequent = (arr: string[]): string | null => {
+    if (!arr.length) return null;
+    const counts = new Map<string, number>();
+    for (const v of arr) counts.set(v, (counts.get(v) ?? 0) + 1);
+    let best = arr[0], bestN = 0;
+    counts.forEach((n, k) => { if (n > bestN) { best = k; bestN = n; } });
+    return best;
   };
 
   async function saveWorkingHours() {
     if (!userId) return;
+    const activeEntries = DAY_NAMES.filter((d) => dayHours[d].active);
+    const mostCommonStart = mostFrequent(activeEntries.map((d) => dayHours[d].start)) ?? "09:00";
+    const mostCommonEnd = mostFrequent(activeEntries.map((d) => dayHours[d].end)) ?? "18:00";
     const patch: Record<string, unknown> = {
-      working_hours_start: startTime,
-      working_hours_end: endTime,
-      working_days: workingDays,
+      working_hours_start: mostCommonStart,
+      working_hours_end: mostCommonEnd,
+      working_days: activeEntries,
+      per_day_hours: dayHours,
       lunch_break_start: lunchOn ? lunchStart : null,
       lunch_break_end: lunchOn ? lunchEnd : null,
     };
