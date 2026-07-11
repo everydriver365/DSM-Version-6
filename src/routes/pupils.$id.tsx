@@ -3182,28 +3182,23 @@ function PupilRatesAndColour({
             </button>
           </div>
         )}
-        {/* Custom buffer times */}
-        <div style={{ marginTop: 12 }}>
-          <div className="text-[14px] font-semibold" style={{ color: "#0F2044", marginBottom: 8, ...POPPINS }}>
-            Custom buffer times
+        {/* Gap after lesson */}
+        <div className="flex justify-between items-center" style={{ marginTop: 12, paddingTop: 10, borderTop: "0.5px solid #F3F4F6" }}>
+          <div className="flex items-center">
+            <Clock size={14} color="#9CA3AF" />
+            <span className="text-sm ml-[6px] text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
           </div>
-          <div className="text-[12px]" style={{ color: "#9CA3AF", marginBottom: 8, ...POPPINS }}>
-            Override default buffer times for this pupil
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[14px]" style={{ color: "#6B7280", ...POPPINS }}>Custom gap after lesson</span>
-            <select
-              value={pupil.buffer_after_minutes ?? ""}
-              onChange={(e) => void saveBuffer(e.target.value)}
-              className="text-[13px]"
-              style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
-            >
-              <option value="">Use default</option>
-              {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-                <option key={m} value={m}>{m} min</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={pupil.buffer_after_minutes ?? ""}
+            onChange={(e) => void saveBuffer(e.target.value)}
+            className="text-[13px]"
+            style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+          >
+            <option value="">Use default</option>
+            {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
+              <option key={m} value={m}>{m} min</option>
+            ))}
+          </select>
         </div>
       </div>
 
