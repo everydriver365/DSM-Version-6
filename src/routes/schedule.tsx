@@ -301,6 +301,8 @@ function SchedulePage() {
   const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
   const [workStart, setWorkStart] = useState<string>("09:00");
   const [workEnd, setWorkEnd] = useState<string>("18:00");
+  const [perDayHours, setPerDayHours] = useState<Record<string, { start: string; end: string; active: boolean }> | null>(null);
+  const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
   const [bufferBefore, setBufferBefore] = useState<number>(0);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
@@ -405,7 +407,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,lesson_buffer_before,lesson_buffer_after,hourly_rate")
+            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate")
             .eq("id", userId)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
@@ -415,12 +417,16 @@ function SchedulePage() {
         const i = (instrRow.data ?? {}) as {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
+          working_days?: string[] | null;
+          per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
         };
         if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
+        if (Array.isArray(i.working_days) && i.working_days.length) setWorkingDaysList(i.working_days);
+        setPerDayHours(i.per_day_hours ?? null);
         if (i.lesson_buffer_before != null) setBufferBefore(Number(i.lesson_buffer_before));
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
@@ -852,23 +858,34 @@ function SchedulePage() {
                   (() => {
                     type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
                     const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
-                    const gaps = detectGaps(
-                      dayLessons.map((l) => ({
-                        status: l.status,
-                        lesson_time: l.lesson_time,
-                        duration_minutes: l.duration_minutes,
-                        pupils: null,
-                      })),
-                      workStart,
-                      workEnd,
-                      bufferBefore,
-                      bufferAfter,
-                      calendarBlocks,
-                      recurringBlocks,
-                      timeOff,
-                      row.key,
-                      hourlyRate,
-                    );
+                    const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+                      new Date(row.key + "T12:00:00").getDay()
+                    ];
+                    const dayConfig = perDayHours?.[dayName];
+                    const dayStart = dayConfig?.start || workStart || "09:00";
+                    const dayEnd = dayConfig?.end || workEnd || "18:00";
+                    const isDayActive = dayConfig
+                      ? dayConfig.active === true
+                      : workingDaysList.includes(dayName);
+                    const gaps = isDayActive
+                      ? detectGaps(
+                          dayLessons.map((l) => ({
+                            status: l.status,
+                            lesson_time: l.lesson_time,
+                            duration_minutes: l.duration_minutes,
+                            pupils: null,
+                          })),
+                          dayStart,
+                          dayEnd,
+                          bufferBefore,
+                          bufferAfter,
+                          calendarBlocks,
+                          recurringBlocks,
+                          timeOff,
+                          row.key,
+                          hourlyRate,
+                        )
+                      : [];
                     const gapRows: GapRow[] = gaps.map((g, i) => ({
                       kind: 'gap-row',
                       id: `gap-${row.key}-${i}`,

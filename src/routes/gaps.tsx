@@ -472,7 +472,7 @@ function GapsPage() {
           supabase
             .from("instructors")
             .select(
-              "working_hours_start,working_hours_end,working_days,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
+              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_before,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end,use_travel_time,avg_travel_speed_mph,travel_buffer_mins",
             )
             .eq("id", userId)
             .maybeSingle(),
@@ -547,6 +547,7 @@ function GapsPage() {
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
+          per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_before?: number | null;
           lesson_buffer_after?: number | null;
           lunch_break_start?: string | null;
@@ -609,14 +610,22 @@ function GapsPage() {
 
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
-        const wsMin = hmToMin(workStart);
-        const weMin = hmToMin(workEnd);
+        const perDayHours = instr.per_day_hours ?? null;
         for (let i = 0; i < 14; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const isWorkDay = workDays.includes(dayName);
+          const dayConfig = perDayHours?.[dayName];
+          const dayStart = dayConfig?.start || workStart || "09:00";
+          const dayEnd = dayConfig?.end || workEnd || "18:00";
+          const isDayActive = dayConfig
+            ? dayConfig.active === true
+            : workDays.includes(dayName);
+          const isWorkDay = isDayActive;
+          const wsMin = hmToMin(dayStart);
+          const weMin = hmToMin(dayEnd);
+
 
           // Time off — if any covers this date and is all-day, skip the day entirely.
           const dayTimeOff = timeOffRows.filter(t => t.start_date <= iso && t.end_date >= iso);
