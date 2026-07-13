@@ -4981,8 +4981,30 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
+                {tab === 'today' && (
+                  <button
+                    type="button"
+                    aria-label="Add lesson"
+                    onClick={() => navigate({ to: '/lessons/new' as never })}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      fontFamily: PF,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: '#185FA5',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    Add <Plus size={14} strokeWidth={2.5} />
+                  </button>
+                )}
               </div>
               <button
                 type="button"
