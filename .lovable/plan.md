@@ -1,10 +1,12 @@
-No code changes requested. See the audit above:
+## Move the + button next to "Today's lessons" in the swipeable stats card
 
-- settings.tsx has 1 inline data section (day booleans only) and 2 menu links to `/availability` and `/availability-settings`.
-- Three editors write working hours across the app: settings.tsx inline toggles, `/availability`, and `/availability-settings` (plus `/onboarding` seeding).
-- Two competing sources of truth:
-  - `public.working_hours` (mon..sun, start_time, end_time, lesson_duration_minutes, break_minutes) — written by settings.tsx, `/availability`, `/onboarding`; read by `/home`.
-  - `public.instructors` (working_hours_start, working_hours_end, working_days, buffers, lunch, travel) — written by `/availability-settings`; read by `/schedule`, `/gaps`.
-- The two are never synced, so editing hours in one editor does not update pages that read the other.
+The + button you're seeing in the screenshot lives in `SwipeableStatsCard` (src/routes/home.tsx, around lines 610–770), not in the `TodayLessonsTile` I edited before. That's why nothing appeared to change.
 
-If you'd like, next step could be a plan to consolidate onto a single source of truth (recommend `working_hours` table) and migrate `/availability-settings`, `/schedule`, and `/gaps` to read/write from it — or the reverse. Tell me which direction you want and I'll write the plan.
+### Change (single file: src/routes/home.tsx)
+
+1. Remove the bottom action row (lines ~714–763) that currently renders the outlined `+` in the lower-left of the "Today" slide, plus its now-empty flex wrapper.
+2. In the title block (line 684), wrap `Today's lessons` and a new inline `+` button in a flex row with `gap: 8` so the button sits immediately to the right of the title, only on the `today` slide (`s.key === "today"`).
+3. Reuse the existing handler behavior: `stopPropagation`, reset `startX/deltaRef/draggingMouse`, then call `onAddLesson()`. Keep `onPointerDown` stopPropagation so the swipe container doesn't hijack the tap.
+4. Style the inline button as a small filled square to match the "Teaching today" one already added: 22×22, `borderRadius: 6`, `background: #185FA5`, white `<Plus size={14} strokeWidth={2.5} />`, no border.
+
+No other tiles, slides, or files change.
