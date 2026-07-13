@@ -4981,8 +4981,30 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
+                {tab === 'today' && (
+                  <button
+                    type="button"
+                    aria-label="Add lesson"
+                    onClick={() => navigate({ to: '/lessons/new' as never })}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      fontFamily: PF,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: '#185FA5',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    Add <Plus size={14} strokeWidth={2.5} />
+                  </button>
+                )}
               </div>
               <button
                 type="button"
@@ -5055,30 +5077,7 @@ function HomePage() {
                 <div style={{ fontFamily: PF }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
-                      <button
-                        type="button"
-                        aria-label="Add lesson"
-                        onClick={(e) => { e.stopPropagation(); navigate({ to: '/lessons/new' as never }); }}
-                        style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 6,
-                          background: '#185FA5',
-                          color: '#FFFFFF',
-                          border: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          cursor: 'pointer',
-                          padding: 0,
-                        }}
-                      >
-                        <Plus size={14} strokeWidth={2.5} />
-                      </button>
-                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
                     </div>
