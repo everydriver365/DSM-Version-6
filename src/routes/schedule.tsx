@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2, Calendar } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock } from "lucide-react";
 import { toast } from "sonner";
 import {
   IconSearch,
@@ -327,6 +327,77 @@ function SchedulePage() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [swipedLessonId, setSwipedLessonId] = useState<string | null>(null);
   const swipeStartX = useRef(0);
+  const [movingLesson, setMovingLesson] = useState<any | null>(null);
+  const [moveMode, setMoveMode] = useState(false);
+  const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
+
+  const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
+    if (!movingLesson) return;
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/lessons?id=eq.' + movingLesson.id,
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            lesson_date: newDate,
+            lesson_time: timeVal,
+            updated_at: new Date().toISOString(),
+          }),
+        },
+      );
+      if (!res.ok) throw new Error('Failed to move lesson');
+
+      const firstName = movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'Your pupil';
+      if (userId) {
+        await supabase.from('instructor_notifications').insert({
+          instructor_id: userId,
+          type: 'lesson_rescheduled',
+          title: 'Lesson rescheduled',
+          body: firstName + "'s lesson moved from " + movingLesson.lesson_time +
+            ' to ' + timeVal + ' on ' + newDate,
+          lesson_id: movingLesson.id,
+        });
+        await supabase.from('chat_messages').insert({
+          instructor_id: userId,
+          pupil_id: movingLesson.pupil_id,
+          sender_type: 'instructor',
+          body: 'Hi, I have rescheduled your lesson from ' +
+            movingLesson.lesson_date + ' at ' + movingLesson.lesson_time +
+            ' to ' + newDate + ' at ' + timeVal +
+            '. Please let me know if this works for you.',
+        });
+      }
+
+      setLessons((prev) =>
+        (prev ?? []).map((l: any) =>
+          l.id === movingLesson.id
+            ? { ...l, lesson_date: newDate, lesson_time: timeVal }
+            : l,
+        ) as Lesson[],
+      );
+
+      setMovingLesson(null);
+      setMoveMode(false);
+      setConfirmMove(null);
+      toast.success('Lesson moved to ' + newDate + ' at ' + newTime);
+    } catch (err) {
+      console.error('[schedule] move error', err);
+      toast.error('Failed to move lesson');
+    }
+  }, [movingLesson, userId]);
+
 
   const loading = lessons === null;
 
@@ -858,6 +929,49 @@ function SchedulePage() {
         <WorkspaceDots activeIndex={1} />
       </div>
 
+      {moveMode && movingLesson && (
+        <div
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 50,
+            background: '#1A52A0',
+            padding: '12px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            ...POPPINS,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Move size={16} color="#FFFFFF" />
+            <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>
+              Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: 600,
+              padding: '6px 12px',
+              borderRadius: 8,
+              border: 'none',
+              cursor: 'pointer',
+              ...POPPINS,
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
+
+
+
       <MonthStrip
         viewMonth={viewMonth}
         selectedDate={selectedDate}
@@ -1043,17 +1157,76 @@ function SchedulePage() {
                       mins: g.gapMins,
                       potential: g.potential,
                     }));
+
+                    // Available slot rows only when a lesson is being moved
+                    type SlotRow = { kind: 'slot-row'; id: string; startMins: number; time: string; dateKey: string };
+                    let slotRows: SlotRow[] = [];
+                    if (moveMode && movingLesson && isDayActive) {
+                      const dur = Number(movingLesson.duration_minutes) || 60;
+                      const wsMin = timeToMins(dayStart);
+                      const weMin = timeToMins(dayEnd);
+                      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+                      const isTodayKey = row.key === ymdLocal(today);
+                      const minStart = isTodayKey ? Math.max(wsMin, nowMins + 30) : wsMin;
+
+                      const busy: Array<{ start: number; end: number }> = [];
+                      for (const l of dayLessons) {
+                        if (l.id === movingLesson.id) continue;
+                        if (String(l.status || '') === 'cancelled') continue;
+                        const s = timeToMins(l.lesson_time);
+                        busy.push({ start: s, end: s + (l.duration_minutes || 60) });
+                      }
+                      const dayBlocks = (calendarBlocks || []).filter((b) => (b.start_datetime || '').substring(0, 10) === row.key);
+                      for (const b of dayBlocks) {
+                        busy.push({
+                          start: timeToMins((b.start_datetime || '').substring(11, 16) || '00:00'),
+                          end: timeToMins((b.end_datetime || '').substring(11, 16) || '23:59'),
+                        });
+                      }
+                      const dayNameForBlocks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+                        new Date(row.key + "T12:00:00").getDay()
+                      ];
+                      for (const b of (recurringBlocks || []).filter((rb) => rb.day_of_week === dayNameForBlocks && rb.is_active !== false)) {
+                        busy.push({ start: timeToMins(b.start_time), end: timeToMins(b.end_time) });
+                      }
+
+                      const off = (timeOff || []).filter((t) => t.start_date <= row.key && t.end_date >= row.key);
+                      const allDayOff = off.some((t) => t.all_day);
+                      if (!allDayOff) {
+                        for (let m = Math.ceil(minStart / 30) * 30; m + dur <= weMin; m += 30) {
+                          const slotEnd = m + dur;
+                          const conflict = busy.some((b) => m < b.end && slotEnd > b.start);
+                          if (conflict) continue;
+                          const hh = String(Math.floor(m / 60)).padStart(2, '0');
+                          const mm = String(m % 60).padStart(2, '0');
+                          slotRows.push({
+                            kind: 'slot-row',
+                            id: `slot-${row.key}-${m}`,
+                            startMins: m,
+                            time: `${hh}:${mm}`,
+                            dateKey: row.key,
+                          });
+                        }
+                      }
+                    }
+
                     const entryWithMins = row.entries.map((e) => ({
                       entry: e,
                       mins: e.start.getHours() * 60 + e.start.getMinutes(),
                     }));
-                    const combined: Array<{ kind: 'entry'; startMins: number; entry: AgendaEntry } | { kind: 'gap'; startMins: number; gap: GapRow }> = [
+                    const combined: Array<
+                      | { kind: 'entry'; startMins: number; entry: AgendaEntry }
+                      | { kind: 'gap'; startMins: number; gap: GapRow }
+                      | { kind: 'slot'; startMins: number; slot: SlotRow }
+                    > = [
                       ...entryWithMins.map((x) => ({ kind: 'entry' as const, startMins: x.mins, entry: x.entry })),
-                      ...gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g })),
+                      ...(moveMode ? [] : gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g }))),
+                      ...slotRows.map((s) => ({ kind: 'slot' as const, startMins: s.startMins, slot: s })),
                     ].sort((a, b) => a.startMins - b.startMins);
-                    const items: Array<AgendaEntry | GapRow> = combined.map((c) =>
-                      c.kind === 'entry' ? c.entry : c.gap,
+                    const items: Array<AgendaEntry | GapRow | SlotRow> = combined.map((c) =>
+                      c.kind === 'entry' ? c.entry : c.kind === 'gap' ? c.gap : c.slot,
                     );
+
 
                     return (
                       <div style={{ position: "relative", paddingLeft: 22 }}>
@@ -1134,6 +1307,57 @@ function SchedulePage() {
                             );
                           }
 
+                          if (e.kind === 'slot-row') {
+                            const dur = Number(movingLesson?.duration_minutes) || 60;
+                            return (
+                              <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
+                                <span
+                                  aria-hidden
+                                  style={{
+                                    position: "absolute",
+                                    left: -22,
+                                    top: 4,
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: "50%",
+                                    background: "#86EFAC",
+                                    border: "2px solid #16A34A",
+                                    boxSizing: "border-box",
+                                  }}
+                                />
+                                <div
+                                  onClick={() => setConfirmMove({ date: e.dateKey, time: e.time })}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: '#E0FFF4',
+                                    border: '0.5px solid #86EFAC',
+                                    borderRadius: 8,
+                                    padding: '10px 14px',
+                                    margin: '2px 0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 10,
+                                    cursor: 'pointer',
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <Clock size={14} color="#16A34A" />
+                                  <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
+                                    {e.time}
+                                  </span>
+                                  <span style={{ fontSize: 11, color: '#16A34A' }}>
+                                    {dur} min slot available
+                                  </span>
+                                  <span style={{ fontSize: 11, color: '#16A34A', fontWeight: 600, marginLeft: 'auto' }}>
+                                    Move here →
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }
+
+
                           // Resolve entry marker/tag color
                           let markerColor = "#8A93A3";
                           let title = "";
@@ -1169,6 +1393,8 @@ function SchedulePage() {
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isSwiped = isLessonRow && swipedLessonId === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                          const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
+                          const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
                                 if (isSwiped) {
@@ -1283,14 +1509,17 @@ function SchedulePage() {
                                     alignItems: "center",
                                     gap: 10,
                                     cursor: clickable ? "pointer" : "default",
-                                    opacity: cancelled ? 0.55 : 1,
+                                    opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
                                     transition: "transform 0.2s ease",
                                     transform: isSwiped ? "translateX(-80px)" : "translateX(0)",
+                                    border: isMovingThis ? '2px solid #1A52A0' : undefined,
+                                    animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
                                 >
+
                                   <span
                                     aria-hidden
                                     style={{
@@ -1321,6 +1550,36 @@ function SchedulePage() {
                                       </div>
                                     ) : null}
                                   </div>
+                                  {isLessonRow && !moveMode && (
+                                    <button
+                                      type="button"
+                                      onClick={(ev) => {
+                                        ev.stopPropagation();
+                                        const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                        setMovingLesson(lesson);
+                                        setMoveMode(true);
+                                        const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
+                                        toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                      }}
+                                      aria-label="Move lesson"
+                                      style={{
+                                        width: 28,
+                                        height: 28,
+                                        borderRadius: '50%',
+                                        background: '#EFF6FF',
+                                        border: '0.5px solid #BFDBFE',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        flexShrink: 0,
+                                        marginLeft: 4,
+                                        padding: 0,
+                                      }}
+                                    >
+                                      <Move size={12} color="#1A52A0" />
+                                    </button>
+                                  )}
                                   {isLessonRow && (
                                     <span
                                       style={{
@@ -1401,7 +1660,91 @@ function SchedulePage() {
       >
         <Plus size={22} color="white" />
       </button>
+
+      {confirmMove && movingLesson && (
+        <div
+          onClick={() => setConfirmMove(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15,32,68,0.5)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(ev) => ev.stopPropagation()}
+            style={{
+              background: '#FFFFFF',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '20px 20px calc(20px + env(safe-area-inset-bottom))',
+              width: '100%',
+              maxWidth: 480,
+              ...POPPINS,
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', marginBottom: 16 }}>
+              Move lesson?
+            </div>
+            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>From</div>
+            <div style={{ fontSize: 14, color: '#9CA3AF', marginBottom: 10 }}>
+              {movingLesson.lesson_date} at {String(movingLesson.lesson_time).slice(0, 5)}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              <ArrowDown size={20} color="#9CA3AF" />
+            </div>
+            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
+            <div style={{ fontSize: 14, color: '#0F2044', fontWeight: 700 }}>
+              {confirmMove.date} at {confirmMove.time}
+            </div>
+            <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, marginBottom: 20 }}>
+              {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'Pupil')} {(movingLesson.pupil?.last_name || movingLesson.pupils?.last_name || '')}
+            </div>
+            <button
+              type="button"
+              onClick={() => handleMoveLesson(confirmMove.date, confirmMove.time)}
+              style={{
+                width: '100%',
+                background: '#0F2044',
+                color: '#FFFFFF',
+                fontWeight: 600,
+                fontSize: 14,
+                padding: '12px 0',
+                borderRadius: 12,
+                border: 'none',
+                cursor: 'pointer',
+                ...POPPINS,
+              }}
+            >
+              Confirm move
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmMove(null)}
+              style={{
+                width: '100%',
+                background: '#FFFFFF',
+                color: '#6B7280',
+                border: '0.5px solid #E2E6ED',
+                fontWeight: 500,
+                fontSize: 14,
+                padding: '12px 0',
+                borderRadius: 12,
+                cursor: 'pointer',
+                marginTop: 8,
+                ...POPPINS,
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 
