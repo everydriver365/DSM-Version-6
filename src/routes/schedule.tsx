@@ -394,19 +394,20 @@ function SchedulePage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
-        const userId = session?.user?.id;
-        if (!token || !userId) return;
+        const uid = session?.user?.id;
+        if (!token || !uid) return;
+        setUserId(uid);
         const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
         const startIso = ymdLocal(rangeStart);
         const endIso = ymdLocal(rangeEnd);
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate")
-            .eq("id", userId)
+            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .eq("id", uid)
             .maybeSingle(),
-          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
-          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${uid}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
         ]);
         if (cancelled) return;
         const i = (instrRow.data ?? {}) as {
@@ -416,6 +417,8 @@ function SchedulePage() {
           per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
+          external_calendar_url?: string | null;
+          calendar_last_synced?: string | null;
         };
         if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
@@ -423,6 +426,11 @@ function SchedulePage() {
         setPerDayHours(i.per_day_hours ?? null);
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
+        setInstructor({
+          external_calendar_url: i.external_calendar_url ?? null,
+          calendar_last_synced: i.calendar_last_synced ?? null,
+        });
+        if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
         if (recRes.ok) {
           const d = await recRes.json();
           if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
