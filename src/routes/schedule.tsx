@@ -751,6 +751,7 @@ function SchedulePage() {
             return (
               <div
                 key={row.key}
+                id={`day-${row.key}`}
                 ref={(el) => {
                   if (el) {
                     dayRefs.current.set(row.key, el);
