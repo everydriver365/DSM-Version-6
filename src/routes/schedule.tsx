@@ -1264,6 +1264,57 @@ function SchedulePage() {
                             );
                           }
 
+                          if (e.kind === 'slot-row') {
+                            const dur = Number(movingLesson?.duration_minutes) || 60;
+                            return (
+                              <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
+                                <span
+                                  aria-hidden
+                                  style={{
+                                    position: "absolute",
+                                    left: -22,
+                                    top: 4,
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: "50%",
+                                    background: "#86EFAC",
+                                    border: "2px solid #16A34A",
+                                    boxSizing: "border-box",
+                                  }}
+                                />
+                                <div
+                                  onClick={() => setConfirmMove({ date: e.dateKey, time: e.time })}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: '#E0FFF4',
+                                    border: '0.5px solid #86EFAC',
+                                    borderRadius: 8,
+                                    padding: '10px 14px',
+                                    margin: '2px 0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 10,
+                                    cursor: 'pointer',
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <Clock size={14} color="#16A34A" />
+                                  <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
+                                    {e.time}
+                                  </span>
+                                  <span style={{ fontSize: 11, color: '#16A34A' }}>
+                                    {dur} min slot available
+                                  </span>
+                                  <span style={{ fontSize: 11, color: '#16A34A', fontWeight: 600, marginLeft: 'auto' }}>
+                                    Move here →
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }
+
+
                           // Resolve entry marker/tag color
                           let markerColor = "#8A93A3";
                           let title = "";
