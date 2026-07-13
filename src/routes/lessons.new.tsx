@@ -21,6 +21,9 @@ export const Route = createFileRoute("/lessons/new")({
   head: () => ({
     meta: [{ title: "Add lesson — DSM by EveryDriver" }],
   }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    date: typeof search.date === "string" ? search.date : "",
+  }),
   component: NewLessonPage,
 });
 
@@ -61,9 +64,10 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
 
 function NewLessonPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [pupilId, setPupilId] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(search.date || "");
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
   const [pickup, setPickup] = useState("");

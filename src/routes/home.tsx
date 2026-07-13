@@ -2884,6 +2884,7 @@ function HomePage() {
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
+  const tomorrowFormatted = formatDayLabel(tomorrowStart);
 
   useEffect(() => {
     if (!userId) return;
@@ -4965,7 +4966,7 @@ function HomePage() {
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
-                {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? "Tomorrow's timeline" : 'Upcoming lessons'}
+                {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
                 {tab === 'today' && (
                   <button
                     type="button"
@@ -4989,14 +4990,62 @@ function HomePage() {
                   </button>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setActiveWs(1)}
-                style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-              >
-                Full schedule
-                <IconArrowRight size={13} stroke={2} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {tab === 'tomorrow' && (
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/lessons/new' as never, search: { date: tomorrowISO } as any })}
+                    style={{
+                      background: '#0F2044',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '5px 10px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      color: 'white',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <Plus size={12} color="white" />
+                    Add
+                  </button>
+                )}
+                {tab === 'next' && (
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/lessons/new' as never })}
+                    style={{
+                      background: '#0F2044',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '5px 10px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      color: 'white',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <Plus size={12} color="white" />
+                    Add
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setActiveWs(1)}
+                  style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                >
+                  Full schedule
+                  <IconArrowRight size={13} stroke={2} />
+                </button>
+              </div>
             </div>
 
             <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 4, background: '#E9EDF2', borderRadius: 12, marginBottom: 10 }}>
