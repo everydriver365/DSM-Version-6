@@ -327,6 +327,77 @@ function SchedulePage() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [swipedLessonId, setSwipedLessonId] = useState<string | null>(null);
   const swipeStartX = useRef(0);
+  const [movingLesson, setMovingLesson] = useState<any | null>(null);
+  const [moveMode, setMoveMode] = useState(false);
+  const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
+
+  const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
+    if (!movingLesson) return;
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/lessons?id=eq.' + movingLesson.id,
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            lesson_date: newDate,
+            lesson_time: timeVal,
+            updated_at: new Date().toISOString(),
+          }),
+        },
+      );
+      if (!res.ok) throw new Error('Failed to move lesson');
+
+      const firstName = movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'Your pupil';
+      if (userId) {
+        await supabase.from('instructor_notifications').insert({
+          instructor_id: userId,
+          type: 'lesson_rescheduled',
+          title: 'Lesson rescheduled',
+          body: firstName + "'s lesson moved from " + movingLesson.lesson_time +
+            ' to ' + timeVal + ' on ' + newDate,
+          lesson_id: movingLesson.id,
+        });
+        await supabase.from('chat_messages').insert({
+          instructor_id: userId,
+          pupil_id: movingLesson.pupil_id,
+          sender_type: 'instructor',
+          body: 'Hi, I have rescheduled your lesson from ' +
+            movingLesson.lesson_date + ' at ' + movingLesson.lesson_time +
+            ' to ' + newDate + ' at ' + timeVal +
+            '. Please let me know if this works for you.',
+        });
+      }
+
+      setLessons((prev) =>
+        (prev ?? []).map((l: any) =>
+          l.id === movingLesson.id
+            ? { ...l, lesson_date: newDate, lesson_time: timeVal }
+            : l,
+        ) as Lesson[],
+      );
+
+      setMovingLesson(null);
+      setMoveMode(false);
+      setConfirmMove(null);
+      toast.success('Lesson moved to ' + newDate + ' at ' + newTime);
+    } catch (err) {
+      console.error('[schedule] move error', err);
+      toast.error('Failed to move lesson');
+    }
+  }, [movingLesson, userId]);
+
 
   const loading = lessons === null;
 
