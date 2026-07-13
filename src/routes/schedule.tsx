@@ -675,50 +675,32 @@ function SchedulePage() {
         <WorkspaceDots activeIndex={1} />
       </div>
 
-      <div
-        style={{
-          padding: "10px 16px 8px",
-          background: "transparent",
+      <MonthStrip
+        viewMonth={calendarMonth}
+        selectedDateKey={selectedDateKey}
+        todayKey={ymdLocal(today)}
+        lessons={lessons ?? []}
+        onPrevMonth={() => {
+          const d = new Date(calendarMonth);
+          d.setMonth(d.getMonth() - 1);
+          setCalendarMonth(d);
         }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            background: "#E9EDF2",
-            borderRadius: 12,
-            padding: 4,
-          }}
-        >
-          {(["calendar", "agenda"] as const).map((v) => {
-            const active = view === v;
-            return (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setView(v)}
-                style={{
-                  flex: 1,
-                  padding: "10px 0",
-                  borderRadius: 9,
-                  border: 0,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  fontWeight: active ? 500 : 400,
-                  textAlign: "center",
-                  background: active ? "#0F2044" : "transparent",
-                  color: active ? "#FFFFFF" : "#8A93A3",
-                  ...POPPINS,
-                }}
-              >
-                {v === "calendar" ? "Calendar" : "Agenda"}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-
+        onNextMonth={() => {
+          const d = new Date(calendarMonth);
+          d.setMonth(d.getMonth() + 1);
+          setCalendarMonth(d);
+        }}
+        onSelectDate={(key) => {
+          setSelectedDateKey(key);
+          scrollToDate(key);
+        }}
+        onToday={() => {
+          const d = new Date(today);
+          d.setDate(1);
+          setCalendarMonth(d);
+          scrollToDate(ymdLocal(today));
+        }}
+      />
 
       <div
         ref={scrollRef}
@@ -730,34 +712,7 @@ function SchedulePage() {
           padding: "0 16px calc(80px + env(safe-area-inset-bottom))",
         }}
       >
-        {view === "calendar" && (
-          <MonthCalendar
-            month={calendarMonth}
-            today={today}
-            selectedDateKey={selectedDateKey}
-            dotsByDay={dotsByDay}
-            onSelectDate={scrollToDate}
-            onPrevMonth={() => {
-              const d = new Date(calendarMonth);
-              d.setMonth(d.getMonth() - 1);
-              setCalendarMonth(d);
-            }}
-            onNextMonth={() => {
-              const d = new Date(calendarMonth);
-              d.setMonth(d.getMonth() + 1);
-              setCalendarMonth(d);
-            }}
-            onOpenMonthPicker={() => {
-              const d = new Date(today);
-              d.setDate(1);
-              setCalendarMonth(d);
-              scrollToDate(ymdLocal(today));
-            }}
-            onSearch={() => navigate({ to: "/search" as never })}
-            onAdd={() => navigate({ to: "/lessons/new" as never })}
-          />
-        )}
-        {view === "calendar" && <div style={{ height: 8 }} />}
+
 
         <div style={{ padding: "8px 0 0" }}>
 
