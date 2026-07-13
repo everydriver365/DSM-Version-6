@@ -1178,11 +1178,31 @@ function SchedulePage() {
                                 goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
                               }
                             : isBlockRow
-                              ? () =>
+                              ? () => {
+                                  const blockEntry = e as Extract<AgendaEntry, { kind: 'block' }>;
+                                  const startD = blockEntry.start;
+                                  const endD = blockEntry.end;
+                                  const pad = (n: number) => String(n).padStart(2, '0');
+                                  const blockDate = `${startD.getFullYear()}-${pad(startD.getMonth() + 1)}-${pad(startD.getDate())}`;
+                                  const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
+                                  const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
                                   toast.info(
-                                    "This event is from Google Calendar. Delete it there then tap Sync to remove it here.",
-                                  )
+                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
+                                    {
+                                      duration: 5000,
+                                      action: {
+                                        label: 'Add as lesson →',
+                                        onClick: () =>
+                                          navigate({
+                                            to: '/lessons/new' as never,
+                                            search: `?date=${blockDate}&time=${blockTime}&duration=${blockDurationMins}` as never,
+                                          }),
+                                      },
+                                    },
+                                  );
+                                }
                               : undefined;
+
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
