@@ -1,13 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import {
-  HomeIcon,
-  PupilsIcon,
-  ScheduleIcon,
-  MessagesIcon,
-  PaymentsIcon,
-  SettingsIcon,
-} from "@/components/icons/DrivingIcons";
+import { Home, CalendarDays, Users, MessageSquare, Grid } from "lucide-react";
 
 export type NavKey = "home" | "pupils" | "schedule" | "messages" | "payments" | "settings";
 
