@@ -508,8 +508,36 @@ function TodayLessonsTile({
         <IconCalendar size={18} strokeWidth={1.5} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 500, color: "#0F2044", lineHeight: 1.3 }}>
-          Today's lessons
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: "#0F2044", lineHeight: 1.3 }}>
+            Today's lessons
+          </div>
+          {onAddLesson && (
+            <button
+              type="button"
+              aria-label="Add lesson"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddLesson();
+              }}
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 6,
+                background: "#185FA5",
+                color: "#FFFFFF",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <Plus size={14} strokeWidth={2.5} />
+            </button>
+          )}
         </div>
         <div style={{ fontSize: 12, fontWeight: 400, color: "#64748B", marginTop: 2, lineHeight: 1.3 }}>
           {subtitle}
@@ -564,32 +592,6 @@ function TodayLessonsTile({
           {total}
         </div>
       </div>
-      {onAddLesson && (
-        <button
-          type="button"
-          aria-label="Add lesson"
-          onClick={(e) => {
-            e.stopPropagation();
-            onAddLesson();
-          }}
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 8,
-            background: "#185FA5",
-            color: "#FFFFFF",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <Plus size={18} strokeWidth={2.5} />
-        </button>
-      )}
     </div>
   );
 }
