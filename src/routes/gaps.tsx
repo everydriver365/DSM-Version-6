@@ -566,6 +566,7 @@ function GapsPage() {
           console.warn("[gaps] recurring/time_off fetch failed", err);
         }
 
+        console.log("[gaps] calendar blocks:", blocks.length, "recurring blocks:", recurringBlocks.length, "time off:", timeOffRows.length);
         if (!cancelled) setCalendarBlocks(blocks);
         if (cancelled) return;
         console.log(
