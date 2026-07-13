@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   IconSearch,
@@ -325,6 +325,8 @@ function SchedulePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [swipedLessonId, setSwipedLessonId] = useState<string | null>(null);
+  const swipeStartX = useRef(0);
 
   const loading = lessons === null;
 
@@ -494,6 +496,108 @@ function SchedulePage() {
       setSyncing(false);
     }
   }, [userId, fetchCalendarBlocks]);
+
+  const handleDeleteLesson = useCallback(async (lesson: any) => {
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+    const isSeries = Boolean(lesson.series_id);
+    // For a recurring lesson, first ask whether to end the series or delete just this one.
+    let endSeries = false;
+    if (isSeries) {
+      endSeries = window.confirm(
+        "This lesson is part of a recurring series.\n\nOK = End the series from this date (delete all future lessons in the series)\nCancel = Delete just this lesson",
+      );
+    }
+
+    const confirmed = window.confirm(
+      (endSeries ? "End series and delete all future lessons for " : "Delete ") +
+        (lesson.pupils?.first_name || "this") +
+        "'s lesson on " +
+        lesson.lesson_date +
+        " at " +
+        lesson.lesson_time +
+        "?",
+    );
+    if (!confirmed) {
+      setSwipedLessonId(null);
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const authHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + token,
+      };
+      const nowIso = new Date().toISOString();
+
+      if (endSeries && lesson.series_id) {
+        // 1. End the series on the parent record
+        await fetch(SUPABASE_URL + "/rest/v1/lesson_series?id=eq." + lesson.series_id, {
+          method: "PATCH",
+          headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ end_date: lesson.lesson_date }),
+        });
+        // 2. Soft-delete this + all future lessons in the series
+        await fetch(
+          SUPABASE_URL +
+            "/rest/v1/lessons?series_id=eq." +
+            lesson.series_id +
+            "&lesson_date=gte." +
+            lesson.lesson_date,
+          {
+            method: "PATCH",
+            headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+            body: JSON.stringify({ deleted_at: nowIso }),
+          },
+        );
+        setLessons((prev) =>
+          (prev ?? []).filter(
+            (l: any) => !(l.series_id === lesson.series_id && l.lesson_date >= lesson.lesson_date),
+          ),
+        );
+      } else {
+        // Soft-delete just this lesson
+        await fetch(SUPABASE_URL + "/rest/v1/lessons?id=eq." + lesson.id, {
+          method: "PATCH",
+          headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ deleted_at: nowIso }),
+        });
+
+        // If prepaid, refund to pupil account_balance
+        if (lesson.payment_status === "prepaid" && Number(lesson.amount_due) > 0) {
+          const pupilRes = await fetch(
+            SUPABASE_URL +
+              "/rest/v1/pupils?id=eq." +
+              lesson.pupil_id +
+              "&select=account_balance",
+            { headers: authHeaders },
+          );
+          const pupilData = await pupilRes.json();
+          const currentBalance = Number(pupilData[0]?.account_balance || 0);
+          await fetch(SUPABASE_URL + "/rest/v1/pupils?id=eq." + lesson.pupil_id, {
+            method: "PATCH",
+            headers: { ...authHeaders, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              account_balance: currentBalance + Number(lesson.amount_due),
+            }),
+          });
+        }
+
+        setLessons((prev) => (prev ?? []).filter((l: any) => l.id !== lesson.id));
+      }
+
+      setSwipedLessonId(null);
+      toast.success(endSeries ? "Series ended" : "Lesson deleted");
+    } catch (err) {
+      toast.error("Failed to delete lesson");
+      setSwipedLessonId(null);
+    }
+  }, []);
+
 
 
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
@@ -1045,7 +1149,24 @@ function SchedulePage() {
                             timeText = "All day";
                           }
                           const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
-                          const clickable = e.kind === "lesson";
+                          const isLessonRow = e.kind === "lesson";
+                          const isBlockRow = e.kind === "block";
+                          const clickable = isLessonRow || isBlockRow;
+                          const isSwiped = isLessonRow && swipedLessonId === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                          const onCardClick = isLessonRow
+                            ? () => {
+                                if (isSwiped) {
+                                  setSwipedLessonId(null);
+                                  return;
+                                }
+                                goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
+                              }
+                            : isBlockRow
+                              ? () =>
+                                  toast.info(
+                                    "This event is from Google Calendar. Delete it there then tap Sync to remove it here.",
+                                  )
+                              : undefined;
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
@@ -1061,52 +1182,109 @@ function SchedulePage() {
                                   background: markerColor,
                                 }}
                               />
-                              <div
-                                onClick={clickable ? () => goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id) : undefined}
-                                role={clickable ? "button" : undefined}
-                                tabIndex={clickable ? 0 : undefined}
-                                style={{
-                                  background: "#FFFFFF",
-                                  borderRadius: 12,
-                                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                                  padding: "12px 14px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 10,
-                                  cursor: clickable ? "pointer" : "default",
-                                  opacity: cancelled ? 0.55 : 1,
-                                  ...POPPINS,
-                                }}
-                              >
-                                <span
-                                  aria-hidden
-                                  style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: "50%",
-                                    background: markerColor,
-                                    flexShrink: 0,
-                                  }}
-                                />
-                                <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
+                                {isLessonRow && (
                                   <div
+                                    onClick={() =>
+                                      handleDeleteLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)
+                                    }
                                     style={{
-                                      fontSize: 14,
-                                      fontWeight: 500,
-                                      color: "#0F2044",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      textDecoration: cancelled ? "line-through" : "none",
+                                      position: "absolute",
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                      width: 80,
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      background: "#CC2229",
+                                      cursor: "pointer",
                                     }}
+                                    role="button"
+                                    aria-label="Delete lesson"
                                   >
-                                    {title}
+                                    <Trash2 size={20} color="#FFFFFF" />
+                                    <span
+                                      style={{
+                                        fontSize: 10,
+                                        color: "#FFFFFF",
+                                        fontWeight: 600,
+                                        marginTop: 2,
+                                      }}
+                                    >
+                                      Delete
+                                    </span>
                                   </div>
-                                  {timeText ? (
-                                    <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                      {timeText}
+                                )}
+                                <div
+                                  onClick={onCardClick}
+                                  onTouchStart={
+                                    isLessonRow
+                                      ? (evt) => {
+                                          swipeStartX.current = evt.touches[0].clientX;
+                                        }
+                                      : undefined
+                                  }
+                                  onTouchEnd={
+                                    isLessonRow
+                                      ? (evt) => {
+                                          const dx = swipeStartX.current - evt.changedTouches[0].clientX;
+                                          const lessonId = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                                          if (dx > 60) setSwipedLessonId(lessonId);
+                                          else if (dx < -20) setSwipedLessonId(null);
+                                        }
+                                      : undefined
+                                  }
+                                  role={clickable ? "button" : undefined}
+                                  tabIndex={clickable ? 0 : undefined}
+                                  style={{
+                                    background: "#FFFFFF",
+                                    borderRadius: 12,
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    padding: "12px 14px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    cursor: clickable ? "pointer" : "default",
+                                    opacity: cancelled ? 0.55 : 1,
+                                    position: "relative",
+                                    zIndex: 1,
+                                    transition: "transform 0.2s ease",
+                                    transform: isSwiped ? "translateX(-80px)" : "translateX(0)",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <span
+                                    aria-hidden
+                                    style={{
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: "50%",
+                                      background: markerColor,
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div
+                                      style={{
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: "#0F2044",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        textDecoration: cancelled ? "line-through" : "none",
+                                      }}
+                                    >
+                                      {title}
                                     </div>
-                                  ) : null}
+                                    {timeText ? (
+                                      <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                        {timeText}
+                                      </div>
+                                    ) : null}
+                                  </div>
                                 </div>
                               </div>
                             </div>
