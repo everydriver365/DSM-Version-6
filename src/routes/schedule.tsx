@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import {
   IconSearch,
   IconPlus,
@@ -25,6 +26,20 @@ export const Route = createFileRoute("/schedule")({
 });
 
 const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+
+function formatRelativeSync(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (!then) return "";
+  const diff = Math.max(0, Date.now() - then);
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + "m ago";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + "h ago";
+  const d = Math.floor(h / 24);
+  return d + "d ago";
+}
 
 // ── Gap detection shared by calendar + agenda views ────────────────────
 function timeToMins(t: string): number {
@@ -306,6 +321,10 @@ function SchedulePage() {
   const [hourlyRate, setHourlyRate] = useState<number>(40);
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
+  const [instructor, setInstructor] = useState<{ external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState<string | null>(null);
 
   const loading = lessons === null;
 
@@ -352,35 +371,32 @@ function SchedulePage() {
   }, [rangeStart, rangeEnd]);
 
   // Fetch external calendar blocks in the same window.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        const userId = session?.user?.id;
-        if (!token || !userId) return;
-        const startIso = ymdLocal(rangeStart);
-        const endIso = ymdLocal(rangeEnd);
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
-          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        if (cancelled) return;
-        setCalendarBlocks(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.warn("[schedule] calendar_blocks fetch failed", err);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+  const fetchCalendarBlocks = useCallback(async () => {
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const uid = session?.user?.id;
+      if (!token || !uid) return;
+      const startIso = ymdLocal(rangeStart);
+      const endIso = ymdLocal(rangeEnd);
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setCalendarBlocks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.warn("[schedule] calendar_blocks fetch failed", err);
+    }
   }, [rangeStart, rangeEnd]);
+
+  useEffect(() => {
+    fetchCalendarBlocks();
+  }, [fetchCalendarBlocks]);
 
   // Fetch instructor working hours + buffers + rate, plus recurring blocks and time off.
   useEffect(() => {
@@ -392,19 +408,20 @@ function SchedulePage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
-        const userId = session?.user?.id;
-        if (!token || !userId) return;
+        const uid = session?.user?.id;
+        if (!token || !uid) return;
+        setUserId(uid);
         const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
         const startIso = ymdLocal(rangeStart);
         const endIso = ymdLocal(rangeEnd);
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate")
-            .eq("id", userId)
+            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .eq("id", uid)
             .maybeSingle(),
-          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
-          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
+          fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${uid}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
         ]);
         if (cancelled) return;
         const i = (instrRow.data ?? {}) as {
@@ -414,6 +431,8 @@ function SchedulePage() {
           per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
+          external_calendar_url?: string | null;
+          calendar_last_synced?: string | null;
         };
         if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
@@ -421,6 +440,11 @@ function SchedulePage() {
         setPerDayHours(i.per_day_hours ?? null);
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
+        setInstructor({
+          external_calendar_url: i.external_calendar_url ?? null,
+          calendar_last_synced: i.calendar_last_synced ?? null,
+        });
+        if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
         if (recRes.ok) {
           const d = await recRes.json();
           if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
@@ -437,6 +461,39 @@ function SchedulePage() {
       cancelled = true;
     };
   }, [rangeStart, rangeEnd]);
+
+  const handleSync = useCallback(async () => {
+    if (!userId) return;
+    setSyncing(true);
+    try {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(SUPABASE_URL + "/functions/v1/sync-external-calendar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ instructorId: userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
+        setLastSynced(new Date().toISOString());
+        await fetchCalendarBlocks();
+      } else {
+        toast.error("Sync failed — check your calendar URL in Settings");
+      }
+    } catch (err) {
+      toast.error("Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }, [userId, fetchCalendarBlocks]);
 
 
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
@@ -659,6 +716,40 @@ function SchedulePage() {
             <IconArrowLeft size={20} stroke={2} />
           </button>
           <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
+          {instructor?.external_calendar_url && (
+            <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <button
+                onClick={handleSync}
+                disabled={syncing}
+                style={{
+                  background: "rgba(255,255,255,0.1)",
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "6px 10px",
+                  cursor: syncing ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  color: "white",
+                }}
+              >
+                <RefreshCw
+                  size={14}
+                  color="white"
+                  style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
+                />
+                <span style={{ fontSize: 11, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>
+                  {syncing ? "Syncing..." : "Sync"}
+                </span>
+              </button>
+              {lastSynced && (
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 1 }}>
+                  Synced {formatRelativeSync(lastSynced)}
+                </div>
+              )}
+            </div>
+          )}
+          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
         </div>
         <WorkspaceDots activeIndex={1} />
       </div>
