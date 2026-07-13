@@ -5718,16 +5718,19 @@ function HomePage() {
           data-workspace="schedule"
           data-ws-index={1}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
       {/* ENABLE NOTIFICATIONS PROMPT */}
