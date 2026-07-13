@@ -1321,7 +1321,44 @@ function SchedulePage() {
                                       </div>
                                     ) : null}
                                   </div>
+                                  {isLessonRow && (
+                                    <span
+                                      style={{
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#1A52A0',
+                                        background: '#E0F4FF',
+                                        borderRadius: 4,
+                                        padding: '1px 5px',
+                                        fontFamily: 'Poppins, sans-serif',
+                                        flexShrink: 0,
+                                      }}
+                                    >
+                                      DSM
+                                    </span>
+                                  )}
+                                  {isBlockRow && (
+                                    <span
+                                      style={{
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#6B7280',
+                                        background: '#F3F4F6',
+                                        borderRadius: 4,
+                                        padding: '1px 5px',
+                                        fontFamily: 'Poppins, sans-serif',
+                                        flexShrink: 0,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 3,
+                                      }}
+                                    >
+                                      <Calendar size={8} color="#6B7280" />
+                                      Google
+                                    </span>
+                                  )}
                                 </div>
+
                               </div>
                             </div>
                           );
