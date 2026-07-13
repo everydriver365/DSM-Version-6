@@ -493,6 +493,9 @@ function GapsPage() {
         const today = new Date();
         const startIso = todayIso();
         const endIso = addDaysIso(today, 14);
+        console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
+        const { data: { session: dbgSession } } = await supabase.auth.getSession();
+        console.log("[gaps] auth session user:", dbgSession?.user?.id);
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
