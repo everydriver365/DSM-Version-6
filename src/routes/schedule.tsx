@@ -310,9 +310,7 @@ function SchedulePage() {
   const loading = lessons === null;
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const todayRef = useRef<HTMLDivElement | null>(null);
   const dayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const didScrollToToday = useRef(false);
   const suppressScrollUpdate = useRef(false);
 
   // Fetch lessons in the full ±window. Uses the same lessons/pupils select
