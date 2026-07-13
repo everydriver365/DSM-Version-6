@@ -48,7 +48,7 @@ const defaultItems: {
   },
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6", inactiveColor = "#6B7280", activeWs, onSelectWs }: Props) {
+export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044", inactiveColor = "#9CA3AF", activeWs, onSelectWs }: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
   // Track workspace changes broadcast by the home carousel so BottomNav stays
   // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
