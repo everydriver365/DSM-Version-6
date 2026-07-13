@@ -5267,52 +5267,99 @@ function HomePage() {
 
 
 
-            {/* 5. QUICK ACTIONS */}
-            <div style={{ marginTop: 22 }}>
-              {(() => {
-                const unread = unreadMsgs.length;
-                const outstandingBadge = outstanding > 0 ? `£${Math.round(outstanding).toLocaleString()}` : null;
-                const pillBadge = (bg: string, color: string, text: React.ReactNode) => (
-                  <span style={{ background: bg, color, fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20, fontVariantNumeric: 'tabular-nums' }}>{text}</span>
-                );
-                const dot = (n: number) => (
-                  <span style={{ background: '#185FA5', color: '#fff', width: 16, height: 16, borderRadius: 999, fontSize: 9, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{n}</span>
-                );
-                const pages: QaTile[][] = [
-                  [
-                    {
-                      key: 'fill', label: 'Fill slots',
-                      onClick: () => navigate({ to: '/gaps' as never }),
-                      icon: <IconBolt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6',
-                      badge: freeSlotCount > 0 ? pillBadge('#FBEFE1', '#B5661E', `${freeSlotCount} free`) : undefined,
-                    },
-                    { key: 'schedule', label: 'Schedule', onClick: () => navigate({ to: '/schedule' as never }), icon: <IconCalendar size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                    { key: 'pupils', label: 'Pupils', onClick: () => navigate({ to: '/pupils' as never }), icon: <IconUsers size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                    {
-                      key: 'payments', label: 'Payments',
-                      onClick: () => navigate({ to: '/payments' as never }),
-                      icon: <IconWallet size={20} stroke={1.5} color="#A32D2D" />, chipBg: '#FCEBEB',
-                      badge: outstandingBadge ? pillBadge('#FCEBEB', '#A32D2D', outstandingBadge) : undefined,
-                    },
-                    {
-                      key: 'messages', label: 'Messages',
-                      onClick: () => navigate({ to: '/messages' as never }),
-                      icon: <IconMessageCircle size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE',
-                      badge: unread > 0 ? dot(unread) : undefined,
-                    },
-                    { key: 'waitlist', label: 'Waitlist', onClick: () => navigate({ to: '/waitlist' as never }), icon: <IconClockHour4 size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                  ],
-                  [
-                    { key: 'add-pupil', label: 'Add pupil', onClick: () => navigate({ to: '/pupils/new' as never }), icon: <IconUserPlus size={20} stroke={1.5} color="#185FA5" />, chipBg: '#E6F1FB' },
-                    { key: 'add-lesson', label: 'Add lesson', onClick: () => navigate({ to: '/lessons/new' as never }), icon: <IconCalendarPlus size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
-                    { key: 'invoices', label: 'Invoices', onClick: () => navigate({ to: '/payments' as never }), icon: <IconReceipt size={20} stroke={1.5} color="#B5661E" />, chipBg: '#FFF3E6' },
-                    { key: 'broadcast', label: 'Broadcast', onClick: () => navigate({ to: '/broadcast' as never }), icon: <IconSpeakerphone size={20} stroke={1.5} color="#6B4FD6" />, chipBg: '#F0EBFF' },
-                    { key: 'reports', label: 'Reports', onClick: () => navigate({ to: '/reports' as never }), icon: <IconChartBar size={20} stroke={1.5} color="#3B6D11" />, chipBg: '#EAF3DE' },
-                    { key: 'more', label: 'More', onClick: () => navigate({ to: '/tools' as never }), icon: <IconDots size={20} stroke={1.5} color="#8A94A6" />, chipBg: '#EEF2F7' },
-                  ],
-                ];
-                return <QuickActionsGrid pages={pages} />;
-              })()}
+            {/* 5. QUICK ACCESS (swipeable 3x2) */}
+            {(() => {
+              const unreadCount = unreadMsgs.length;
+              const quickTiles: Array<{ label: string; sub: string; route: string | null; icon: any; colour: string }> = [
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free today` : 'No gaps', route: '/gaps', icon: Zap, colour: '#D97706' },
+                { label: 'Schedule', sub: `${nextLessons?.length ?? 0} upcoming`, route: '/schedule', icon: CalendarIcon, colour: '#1A52A0' },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: Users, colour: '#7C3AED' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear ✓', route: '/payments', icon: PoundSterling, colour: '#16A34A' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: MessageSquare, colour: '#00B5A5' },
+                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: Clock, colour: '#CC2229' },
+                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0' },
+                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
+                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, colour: '#CC2229' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1A52A0' },
+                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, colour: '#D97706' },
+                { label: 'More', sub: 'All features', route: null, icon: Grid, colour: '#6B7280' },
+              ];
+              const tilesPerPage = 6;
+              const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
+              const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
+              return (
+                <div style={{ margin: '16px 16px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9CA3AF', fontWeight: 600 }}>Quick access</div>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <div
+                          key={i}
+                          onClick={() => setQuickPage(i)}
+                          style={{
+                            width: quickPage === i ? 16 : 5,
+                            height: 5,
+                            borderRadius: 3,
+                            background: quickPage === i ? '#0F2044' : '#E5E7EB',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer',
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
+                    onTouchEnd={(e) => {
+                      const dx = qaStartX.current - e.changedTouches[0].clientX;
+                      if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
+                      if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
+                    }}
+                    style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
+                  >
+                    {currentTiles.map((tile, idx) => {
+                      const Icon = tile.icon;
+                      return (
+                        <button
+                          key={`${tile.label}-${idx}`}
+                          type="button"
+                          onClick={() => {
+                            if (tile.route === null) scrollToWs(7);
+                            else navigate({ to: tile.route as never });
+                          }}
+                          style={{
+                            background: '#FFFFFF',
+                            borderRadius: 16,
+                            padding: '12px 10px',
+                            border: '0.5px solid #F0F0F0',
+                            boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                            minHeight: 80,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontFamily: 'Poppins, sans-serif',
+                          }}
+                        >
+                          <div style={{
+                            width: 40, height: 40, borderRadius: 12,
+                            background: `${tile.colour}15`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            marginBottom: 6,
+                          }}>
+                            <Icon size={20} color={tile.colour} />
+                          </div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{tile.label}</div>
+                          <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
             </div>
 
             {/* 6. AI INSIGHT */}
