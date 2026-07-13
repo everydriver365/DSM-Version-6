@@ -1551,8 +1551,8 @@ function MonthStrip({
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const centreKey = days.some((d) => ymdLocal(d) === selectedDateKey)
-      ? selectedDateKey
+    const centreKey = days.some((d) => ymdLocal(d) === selectedDate)
+      ? selectedDate
       : days.some((d) => ymdLocal(d) === todayKey)
         ? todayKey
         : ymdLocal(days[0]);
@@ -1561,7 +1561,7 @@ function MonthStrip({
     const colWidth = el.scrollWidth / days.length;
     const target = colWidth * idx - el.clientWidth / 2 + colWidth / 2;
     el.scrollTo({ left: Math.max(0, target), behavior: "auto" });
-  }, [days, selectedDateKey, todayKey]);
+  }, [days, selectedDate, todayKey]);
 
   return (
     <div
