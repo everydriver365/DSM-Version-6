@@ -4311,8 +4311,6 @@ function HomePage() {
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
-        onTouchStart={handleCarouselTouchStart}
-        onTouchEnd={handleCarouselTouchEnd}
         style={{
           flex: 1,
           minHeight: 0,
