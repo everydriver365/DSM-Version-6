@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { Home, CalendarDays, Users, MessageSquare, Grid } from "lucide-react";
 
-export type NavKey = "home" | "pupils" | "schedule" | "messages" | "payments" | "settings";
+export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more";
 
 export interface BottomNavItem {
   key: string;
