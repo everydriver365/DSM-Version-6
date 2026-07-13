@@ -639,6 +639,7 @@ function GapsPage() {
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
         const perDayHours = instr.per_day_hours ?? null;
+        console.log("[gaps] per_day_hours:", perDayHours);
         for (let i = 0; i < 14; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
