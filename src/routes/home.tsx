@@ -3923,16 +3923,39 @@ function HomePage() {
                     })}
                   </div>
                 )}
-                <button
-                  onClick={() => navigate({ to: "/schedule" })}
-                  style={{
-                    marginTop: 12, width: "100%", padding: "10px 12px",
-                    borderRadius: 10, border: "1px dashed #1877D6",
-                    background: "transparent", color: "#1877D6",
-                    fontSize: 13, fontWeight: 600, cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >Add lesson +</button>
+                <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "stretch" }}>
+                  <button
+                    onClick={() => navigate({ to: "/schedule" })}
+                    style={{
+                      flex: 1, padding: "10px 12px",
+                      borderRadius: 10, border: "1px dashed #1877D6",
+                      background: "transparent", color: "#1877D6",
+                      fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      fontFamily: "Inter, sans-serif",
+                    }}
+                  >Add lesson +</button>
+                  <button
+                    onClick={handleSyncGoogleClick}
+                    style={{
+                      background: 'white',
+                      border: '0.5px solid #E2E6ED',
+                      borderRadius: 8,
+                      padding: '6px 10px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#1A52A0',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <CalendarIcon size={12} color="#1A52A0" />
+                    Sync Google
+                  </button>
+                </div>
+
               </div>
 
               {/* Outstanding payments */}
