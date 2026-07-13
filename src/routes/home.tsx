@@ -744,55 +744,7 @@ function SwipeableStatsCard({
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
-        <div style={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
-          {onAddLesson && s.key === "today" && (
-            <button
-              type="button"
-              aria-label="Add lesson"
-              onPointerDown={(e) => {
-                // Prevent the swipe container from starting a drag on this tap,
-                // but do NOT swallow touchend/mouseup — the container needs them
-                // to reset its own gesture state before we navigate away.
-                e.stopPropagation();
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                // Reset the swipe container's gesture state defensively in case
-                // any pointer capture is still outstanding on the parent.
-                startX.current = null;
-                deltaRef.current = 0;
-                draggingMouse.current = false;
-                onAddLesson();
-              }}
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 6,
-                background: "transparent",
-                color: "#185FA5",
-                opacity: 0.6,
-                border: "1px solid rgba(24, 95, 165, 0.25)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                padding: 0,
-                transition: "opacity 0.15s ease, background 0.15s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "1";
-                e.currentTarget.style.background = "rgba(24, 95, 165, 0.08)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "0.6";
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              <Plus size={14} strokeWidth={2} />
-            </button>
-          )}
-
-        </div>
+        <div style={{ flex: 1 }} />
         <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 5 }}>
           {slides.map((sl, i) => {
             const active = i === idx;
