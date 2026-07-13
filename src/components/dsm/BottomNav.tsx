@@ -115,16 +115,17 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
               </button>
             );
           })
-        : defaultItems.map(({ key, to, label, Icon }) => {
-            const isActive = key === active;
+        : defaultItems.map(({ key, to, label, Icon, onClick }) => {
+            let isActive = false;
+            if (key === "home") isActive = active === "home" && (currentWs ?? 0) === 0;
+            else if (key === "schedule") isActive = active === "schedule";
+            else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
+            else if (key === "messages") isActive = active === "messages";
+            else if (key === "more") isActive = currentWs === 7;
             const color = isActive ? activeColor : inactiveColor;
-            return (
-              <Link
-                key={key}
-                to={to}
-                className="flex-1 flex flex-col items-center justify-center gap-1 select-none relative"
-                style={{ color }}
-              >
+            const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
+            const inner: ReactNode = (
+              <>
                 {isActive && (
                   <span
                     aria-hidden
@@ -133,10 +134,29 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
                   />
                 )}
                 <Icon size={22} color={color} />
-                <span className="text-[10px] whitespace-nowrap" style={{ color }}>
+                <span className={labelClass} style={{ color }}>
                   {label}
                 </span>
-              </Link>
+              </>
+            );
+            const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
+            if (to) {
+              return (
+                <Link key={key} to={to} className={cls} style={{ color }}>
+                  {inner}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={onClick}
+                className={cls}
+                style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              >
+                {inner}
+              </button>
             );
           })}
     </nav>
