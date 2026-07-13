@@ -304,12 +304,10 @@ function SchedulePage() {
   const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
-  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
-    const d = new Date(today);
-    d.setDate(1);
-    return d;
-  });
-  const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
+  const [viewMonth, setViewMonth] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
+
+  const loading = lessons === null;
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const todayRef = useRef<HTMLDivElement | null>(null);
