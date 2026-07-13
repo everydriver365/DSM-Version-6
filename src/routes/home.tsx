@@ -1677,7 +1677,7 @@ function HomePage() {
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
-  const isSwiping = useRef(false);
+  const isDragging = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
   const [toolSearch, setToolSearch] = useState('');
@@ -1689,18 +1689,18 @@ function HomePage() {
     if (typeof window === 'undefined') return;
     window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index } }));
   };
-  const scrollToWs = (i: number) => {
-    const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+  const scrollToWs = (index: number) => {
+    const clamped = Math.max(0, Math.min(WS_COUNT - 1, index));
     if (clamped === 1) {
       navigate({ to: "/schedule" as never });
       return;
     }
-    setActiveWsState(clamped);
-    dispatchWsChange(clamped);
     const el = carouselRef.current;
     if (!el) return;
     wsIsProgrammatic.current = true;
-    el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
+    el.scrollTo({ left: clamped * window.innerWidth, behavior: 'smooth' });
+    setActiveWsState(clamped);
+    window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index: clamped } }));
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
 
