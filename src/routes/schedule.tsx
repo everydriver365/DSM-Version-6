@@ -304,17 +304,13 @@ function SchedulePage() {
   const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
-  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
-    const d = new Date(today);
-    d.setDate(1);
-    return d;
-  });
-  const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
+  const [viewMonth, setViewMonth] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
+
+  const loading = lessons === null;
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const todayRef = useRef<HTMLDivElement | null>(null);
   const dayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const didScrollToToday = useRef(false);
   const suppressScrollUpdate = useRef(false);
 
   // Fetch lessons in the full ±window. Uses the same lessons/pupils select
@@ -521,29 +517,21 @@ function SchedulePage() {
     return out;
   }, [orderedDayKeysWithToday, entriesByDay]);
 
-  // Fix 1: auto-scroll to today on first paint after data loads.
-  // Suppress the scroll observer during the programmatic scroll so it doesn't
-  // rewrite calendarMonth to a past month during the initial jump.
-  useLayoutEffect(() => {
-    if (didScrollToToday.current) return;
-    if (lessons === null) return;
-    const el = todayRef.current;
-    const scroller = scrollRef.current;
-    if (!scroller) return;
-    suppressScrollUpdate.current = true;
-    if (el) {
-      const top = el.offsetTop - scroller.offsetTop - 8;
-      scroller.scrollTop = top;
-    } else {
-      const nextKey = orderedDayKeysWithToday.find((k) => k >= todayKey);
-      const target = nextKey ? dayRefs.current.get(nextKey) : undefined;
-      if (target) scroller.scrollTop = target.offsetTop - scroller.offsetTop - 8;
-    }
-    didScrollToToday.current = true;
-    window.setTimeout(() => {
-      suppressScrollUpdate.current = false;
-    }, 250);
-  }, [lessons, orderedDayKeysWithToday, todayKey]);
+  // On mount, after data has loaded, scroll to today's section.
+  useEffect(() => {
+    if (loading) return;
+    // Small delay to ensure DOM is rendered
+    setTimeout(() => {
+      const todaySection = document.getElementById('day-' + todayKey);
+      if (todaySection) {
+        suppressScrollUpdate.current = true;
+        todaySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.setTimeout(() => {
+          suppressScrollUpdate.current = false;
+        }, 450);
+      }
+    }, 300);
+  }, [loading]);
 
 
   // As the agenda scrolls, update the calendar month + selected-date
@@ -565,8 +553,8 @@ function SchedulePage() {
     if (currentKey) {
       const [y, m, d] = currentKey.split("-").map(Number);
       const date = new Date(y, m - 1, d);
-      setSelectedDateKey((prev) => (prev === currentKey ? prev : currentKey!));
-      setCalendarMonth((prev) => {
+      setSelectedDate((prev) => (prev === currentKey ? prev : currentKey!));
+      setViewMonth((prev) => {
         if (prev.getFullYear() === date.getFullYear() && prev.getMonth() === date.getMonth()) return prev;
         return new Date(date.getFullYear(), date.getMonth(), 1);
       });
@@ -602,7 +590,7 @@ function SchedulePage() {
       const el = dayRefs.current.get(targetKey);
       const scroller = scrollRef.current;
       if (!el || !scroller) return;
-      setSelectedDateKey(key);
+      setSelectedDate(key);
       suppressScrollUpdate.current = true;
       const top = el.offsetTop - scroller.offsetTop - 8;
       scroller.scrollTo({ top, behavior: "smooth" });
@@ -676,28 +664,28 @@ function SchedulePage() {
       </div>
 
       <MonthStrip
-        viewMonth={calendarMonth}
-        selectedDateKey={selectedDateKey}
+        viewMonth={viewMonth}
+        selectedDate={selectedDate}
         todayKey={ymdLocal(today)}
         lessons={lessons ?? []}
         onPrevMonth={() => {
-          const d = new Date(calendarMonth);
+          const d = new Date(viewMonth);
           d.setMonth(d.getMonth() - 1);
-          setCalendarMonth(d);
+          setViewMonth(d);
         }}
         onNextMonth={() => {
-          const d = new Date(calendarMonth);
+          const d = new Date(viewMonth);
           d.setMonth(d.getMonth() + 1);
-          setCalendarMonth(d);
+          setViewMonth(d);
         }}
         onSelectDate={(key) => {
-          setSelectedDateKey(key);
+          setSelectedDate(key);
           scrollToDate(key);
         }}
         onToday={() => {
           const d = new Date(today);
           d.setDate(1);
-          setCalendarMonth(d);
+          setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
       />
@@ -755,7 +743,6 @@ function SchedulePage() {
                 ref={(el) => {
                   if (el) {
                     dayRefs.current.set(row.key, el);
-                    if (isToday) todayRef.current = el;
                   } else {
                     dayRefs.current.delete(row.key);
                   }
@@ -1506,7 +1493,7 @@ const calChip: React.CSSProperties = {
 
 function MonthStrip({
   viewMonth,
-  selectedDateKey,
+  selectedDate,
   todayKey,
   lessons,
   onPrevMonth,
@@ -1515,7 +1502,7 @@ function MonthStrip({
   onToday,
 }: {
   viewMonth: Date;
-  selectedDateKey: string;
+  selectedDate: string;
   todayKey: string;
   lessons: Lesson[];
   onPrevMonth: () => void;
@@ -1551,8 +1538,8 @@ function MonthStrip({
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const centreKey = days.some((d) => ymdLocal(d) === selectedDateKey)
-      ? selectedDateKey
+    const centreKey = days.some((d) => ymdLocal(d) === selectedDate)
+      ? selectedDate
       : days.some((d) => ymdLocal(d) === todayKey)
         ? todayKey
         : ymdLocal(days[0]);
@@ -1561,7 +1548,7 @@ function MonthStrip({
     const colWidth = el.scrollWidth / days.length;
     const target = colWidth * idx - el.clientWidth / 2 + colWidth / 2;
     el.scrollTo({ left: Math.max(0, target), behavior: "auto" });
-  }, [days, selectedDateKey, todayKey]);
+  }, [days, selectedDate, todayKey]);
 
   return (
     <div
@@ -1627,7 +1614,7 @@ function MonthStrip({
         {days.map((d) => {
           const key = ymdLocal(d);
           const isToday = key === todayKey;
-          const isSelected = key === selectedDateKey;
+          const isSelected = key === selectedDate;
           const hasLessons = lessonDates.has(key);
           const dow = (d.getDay() + 6) % 7; // Mon=0
           const numBg = isToday ? "#0F2044" : isSelected ? "#1A52A0" : "transparent";
