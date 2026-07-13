@@ -143,6 +143,38 @@ import carAsset from "../assets/next-lesson-car.png.asset.json";
 import dsmLogo from "../assets/dsm-logo.png.asset.json";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+async function syncToGoogleCalendar(userId: string, token: string) {
+  try {
+    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({ instructorId: userId }),
+    });
+  } catch (e) {
+    console.warn('[sync] failed', e);
+  }
+  window.open('https://calendar.google.com', '_blank');
+}
+
+async function handleSyncGoogleClick() {
+  const [{ data: userRes }, { data: sess }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ]);
+  const uid = userRes.user?.id;
+  if (!uid) return;
+  await syncToGoogleCalendar(uid, sess.session?.access_token ?? "");
+}
+
+
+
 
 export const Route = createFileRoute("/home")({
   head: () => ({
