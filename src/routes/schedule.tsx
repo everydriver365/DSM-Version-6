@@ -1627,7 +1627,7 @@ function MonthStrip({
         {days.map((d) => {
           const key = ymdLocal(d);
           const isToday = key === todayKey;
-          const isSelected = key === selectedDateKey;
+          const isSelected = key === selectedDate;
           const hasLessons = lessonDates.has(key);
           const dow = (d.getDay() + 6) % 7; // Mon=0
           const numBg = isToday ? "#0F2044" : isSelected ? "#1A52A0" : "transparent";
