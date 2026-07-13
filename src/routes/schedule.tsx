@@ -1397,6 +1397,36 @@ function SchedulePage() {
                                       </div>
                                     ) : null}
                                   </div>
+                                  {isLessonRow && !moveMode && (
+                                    <button
+                                      type="button"
+                                      onClick={(ev) => {
+                                        ev.stopPropagation();
+                                        const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                        setMovingLesson(lesson);
+                                        setMoveMode(true);
+                                        const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
+                                        toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                      }}
+                                      aria-label="Move lesson"
+                                      style={{
+                                        width: 28,
+                                        height: 28,
+                                        borderRadius: '50%',
+                                        background: '#EFF6FF',
+                                        border: '0.5px solid #BFDBFE',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        flexShrink: 0,
+                                        marginLeft: 4,
+                                        padding: 0,
+                                      }}
+                                    >
+                                      <Move size={12} color="#1A52A0" />
+                                    </button>
+                                  )}
                                   {isLessonRow && (
                                     <span
                                       style={{
