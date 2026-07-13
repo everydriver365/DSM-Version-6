@@ -325,6 +325,8 @@ function SchedulePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [swipedLessonId, setSwipedLessonId] = useState<string | null>(null);
+  const swipeStartX = useRef(0);
 
   const loading = lessons === null;
 
