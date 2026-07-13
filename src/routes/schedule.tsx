@@ -497,6 +497,108 @@ function SchedulePage() {
     }
   }, [userId, fetchCalendarBlocks]);
 
+  const handleDeleteLesson = useCallback(async (lesson: any) => {
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+    const isSeries = Boolean(lesson.series_id);
+    // For a recurring lesson, first ask whether to end the series or delete just this one.
+    let endSeries = false;
+    if (isSeries) {
+      endSeries = window.confirm(
+        "This lesson is part of a recurring series.\n\nOK = End the series from this date (delete all future lessons in the series)\nCancel = Delete just this lesson",
+      );
+    }
+
+    const confirmed = window.confirm(
+      (endSeries ? "End series and delete all future lessons for " : "Delete ") +
+        (lesson.pupils?.first_name || "this") +
+        "'s lesson on " +
+        lesson.lesson_date +
+        " at " +
+        lesson.lesson_time +
+        "?",
+    );
+    if (!confirmed) {
+      setSwipedLessonId(null);
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const authHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + token,
+      };
+      const nowIso = new Date().toISOString();
+
+      if (endSeries && lesson.series_id) {
+        // 1. End the series on the parent record
+        await fetch(SUPABASE_URL + "/rest/v1/lesson_series?id=eq." + lesson.series_id, {
+          method: "PATCH",
+          headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ end_date: lesson.lesson_date }),
+        });
+        // 2. Soft-delete this + all future lessons in the series
+        await fetch(
+          SUPABASE_URL +
+            "/rest/v1/lessons?series_id=eq." +
+            lesson.series_id +
+            "&lesson_date=gte." +
+            lesson.lesson_date,
+          {
+            method: "PATCH",
+            headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+            body: JSON.stringify({ deleted_at: nowIso }),
+          },
+        );
+        setLessons((prev) =>
+          (prev ?? []).filter(
+            (l: any) => !(l.series_id === lesson.series_id && l.lesson_date >= lesson.lesson_date),
+          ),
+        );
+      } else {
+        // Soft-delete just this lesson
+        await fetch(SUPABASE_URL + "/rest/v1/lessons?id=eq." + lesson.id, {
+          method: "PATCH",
+          headers: { ...authHeaders, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ deleted_at: nowIso }),
+        });
+
+        // If prepaid, refund to pupil account_balance
+        if (lesson.payment_status === "prepaid" && Number(lesson.amount_due) > 0) {
+          const pupilRes = await fetch(
+            SUPABASE_URL +
+              "/rest/v1/pupils?id=eq." +
+              lesson.pupil_id +
+              "&select=account_balance",
+            { headers: authHeaders },
+          );
+          const pupilData = await pupilRes.json();
+          const currentBalance = Number(pupilData[0]?.account_balance || 0);
+          await fetch(SUPABASE_URL + "/rest/v1/pupils?id=eq." + lesson.pupil_id, {
+            method: "PATCH",
+            headers: { ...authHeaders, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              account_balance: currentBalance + Number(lesson.amount_due),
+            }),
+          });
+        }
+
+        setLessons((prev) => (prev ?? []).filter((l: any) => l.id !== lesson.id));
+      }
+
+      setSwipedLessonId(null);
+      toast.success(endSeries ? "Series ended" : "Lesson deleted");
+    } catch (err) {
+      toast.error("Failed to delete lesson");
+      setSwipedLessonId(null);
+    }
+  }, []);
+
+
 
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
