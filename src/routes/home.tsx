@@ -2912,10 +2912,12 @@ function HomePage() {
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
 
-  const tomorrowLessons = lessons.filter((l) => {
-    const d = lessonDateTime(l);
-    return d >= tomorrowStart && d < dayAfter;
-  });
+  // Tomorrow timeline: include every lesson for tomorrow regardless of status
+  // (except soft-deleted). Match against the ISO date string so we avoid
+  // host-timezone drift between lessonDateTime() and tomorrowStart.
+  const tomorrowLessons = (allLessons ?? []).filter(
+    (l: any) => l.lesson_date === tomorrowISO && l.deleted_at == null,
+  ) as unknown as LessonRow[];
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now);
   const nextTabLessons = nextLessons.slice(0, 5);
 
@@ -2931,6 +2933,16 @@ function HomePage() {
   console.log("[home] weekEarnings derived:", weekEarnings);
   console.log("[home] outstanding derived:", outstanding);
   console.log("[home] todayISO:", todayISO);
+  console.log("[home] tomorrowISO:", tomorrowISO);
+  console.log(
+    "[home] tomorrowLessons:",
+    tomorrowLessons?.length,
+    tomorrowLessons?.map((l: any) => l.lesson_date + " " + l.lesson_time + " " + l.status),
+  );
+  console.log(
+    "[home] allLessons sample dates:",
+    allLessons?.slice(0, 10).map((l: any) => l.lesson_date + " " + l.status),
+  );
 
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
