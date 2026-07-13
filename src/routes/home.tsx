@@ -4994,7 +4994,7 @@ function HomePage() {
                 {tab === 'tomorrow' && (
                   <button
                     type="button"
-                    onClick={() => navigate({ to: '/lessons/new' as never, search: '?date=' + tomorrowISO })}
+                    onClick={() => navigate({ to: '/lessons/new' as never, search: { date: tomorrowISO } as any })}
                     style={{
                       background: '#0F2044',
                       border: 'none',
