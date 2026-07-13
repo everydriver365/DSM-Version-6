@@ -1677,7 +1677,7 @@ function HomePage() {
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
-  const isSwiping = useRef(false);
+  const isDragging = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
   const [toolSearch, setToolSearch] = useState('');
@@ -1689,18 +1689,18 @@ function HomePage() {
     if (typeof window === 'undefined') return;
     window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index } }));
   };
-  const scrollToWs = (i: number) => {
-    const clamped = Math.max(0, Math.min(WS_COUNT - 1, i));
+  const scrollToWs = (index: number) => {
+    const clamped = Math.max(0, Math.min(WS_COUNT - 1, index));
     if (clamped === 1) {
       navigate({ to: "/schedule" as never });
       return;
     }
-    setActiveWsState(clamped);
-    dispatchWsChange(clamped);
     const el = carouselRef.current;
     if (!el) return;
     wsIsProgrammatic.current = true;
-    el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
+    el.scrollTo({ left: clamped * window.innerWidth, behavior: 'smooth' });
+    setActiveWsState(clamped);
+    window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index: clamped } }));
     window.setTimeout(() => { wsIsProgrammatic.current = false; }, 400);
   };
 
@@ -1740,36 +1740,48 @@ function HomePage() {
     }
   };
 
-  const handleCarouselTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    touchStartTime.current = Date.now();
-    isSwiping.current = false;
-  };
-  const handleCarouselTouchEnd = (e: React.TouchEvent) => {
-    const dx = touchStartX.current - e.changedTouches[0].clientX;
-    const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
-    const dt = Date.now() - touchStartTime.current;
-    const isHorizontalSwipe = Math.abs(dx) > dy && Math.abs(dx) > 40 && dt < 400;
-    if (isHorizontalSwipe) {
-      if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
-      else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
-    }
-  };
   useEffect(() => {
     const el = carouselRef.current;
     if (!el) return;
-    const handleTouchMove = (e: TouchEvent) => {
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
+      isDragging.current = false;
+    };
+    const onTouchMove = (e: TouchEvent) => {
       const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
       const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
-      if (dx > dy && dx > 10) {
-        isSwiping.current = true;
+      if (!isDragging.current && dx > 8) {
+        isDragging.current = true;
+      }
+      if (isDragging.current && dx > dy) {
         e.preventDefault();
       }
     };
-    el.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => el.removeEventListener('touchmove', handleTouchMove);
-  }, []);
+    const onTouchEnd = (e: TouchEvent) => {
+      const dx = touchStartX.current - e.changedTouches[0].clientX;
+      const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
+      const dt = Date.now() - touchStartTime.current;
+      const isSwipe = Math.abs(dx) > dy && Math.abs(dx) > 30 && (dt < 500 || Math.abs(dx) > 80);
+      if (isSwipe) {
+        if (dx > 0 && activeWs < WS_COUNT - 1) {
+          scrollToWs(activeWs + 1);
+        } else if (dx < 0 && activeWs > 0) {
+          scrollToWs(activeWs - 1);
+        }
+      }
+      isDragging.current = false;
+    };
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [activeWs]);
   useEffect(() => {
     const log = () => {
       // eslint-disable-next-line no-console
@@ -4299,8 +4311,6 @@ function HomePage() {
       <div
         ref={carouselRef}
         onScroll={handleCarouselScroll}
-        onTouchStart={handleCarouselTouchStart}
-        onTouchEnd={handleCarouselTouchEnd}
         style={{
           flex: 1,
           minHeight: 0,
@@ -4323,16 +4333,19 @@ function HomePage() {
           data-workspace="today"
           data-ws-index={0}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
       {/* NAVY HEADER SECTION (hero + stats strip) */}
@@ -5705,16 +5718,19 @@ function HomePage() {
           data-workspace="schedule"
           data-ws-index={1}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
       {/* ENABLE NOTIFICATIONS PROMPT */}
@@ -6682,16 +6698,19 @@ function HomePage() {
           data-workspace="pupils"
           data-ws-index={2}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         {(() => {
@@ -7010,16 +7029,19 @@ function HomePage() {
           data-workspace="money"
           data-ws-index={3}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
 
@@ -7231,16 +7253,19 @@ function HomePage() {
           data-workspace="marketplace"
           data-ws-index={4}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         <MarketplaceSection navigate={navigate} />
@@ -7250,16 +7275,19 @@ function HomePage() {
           data-workspace="dsm"
           data-ws-index={5}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         <DsmLiveSection navigate={navigate} />
@@ -7269,15 +7297,19 @@ function HomePage() {
           data-workspace="community"
           data-ws-index={6}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
           <div style={{ padding:16, display:'flex', flexDirection:'column', paddingBottom:80, fontFamily:'Inter, sans-serif' }}>
@@ -7429,16 +7461,19 @@ function HomePage() {
           data-workspace="tools"
           data-ws-index={7}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
 
