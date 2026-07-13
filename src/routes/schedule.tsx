@@ -669,6 +669,40 @@ function SchedulePage() {
             <IconArrowLeft size={20} stroke={2} />
           </button>
           <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
+          {instructor?.external_calendar_url && (
+            <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <button
+                onClick={handleSync}
+                disabled={syncing}
+                style={{
+                  background: "rgba(255,255,255,0.1)",
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "6px 10px",
+                  cursor: syncing ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  color: "white",
+                }}
+              >
+                <RefreshCw
+                  size={14}
+                  color="white"
+                  style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
+                />
+                <span style={{ fontSize: 11, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>
+                  {syncing ? "Syncing..." : "Sync"}
+                </span>
+              </button>
+              {lastSynced && (
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 1 }}>
+                  Synced {formatRelativeSync(lastSynced)}
+                </div>
+              )}
+            </div>
+          )}
+          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
         </div>
         <WorkspaceDots activeIndex={1} />
       </div>
