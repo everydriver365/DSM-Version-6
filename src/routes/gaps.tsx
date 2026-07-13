@@ -493,6 +493,9 @@ function GapsPage() {
         const today = new Date();
         const startIso = todayIso();
         const endIso = addDaysIso(today, 14);
+        console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
+        const { data: { session: dbgSession } } = await supabase.auth.getSession();
+        console.log("[gaps] auth session user:", dbgSession?.user?.id);
         const [lessonsRes, instrRes] = await Promise.all([
           supabase
             .from("lessons")
@@ -563,6 +566,7 @@ function GapsPage() {
           console.warn("[gaps] recurring/time_off fetch failed", err);
         }
 
+        console.log("[gaps] calendar blocks:", blocks.length, "recurring blocks:", recurringBlocks.length, "time off:", timeOffRows.length);
         if (!cancelled) setCalendarBlocks(blocks);
         if (cancelled) return;
         console.log(
@@ -635,6 +639,7 @@ function GapsPage() {
         const slots: FreeSlot[] = [];
         const groups: DayGroup[] = [];
         const perDayHours = instr.per_day_hours ?? null;
+        console.log("[gaps] per_day_hours:", perDayHours);
         for (let i = 0; i < 14; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
