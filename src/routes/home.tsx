@@ -2884,6 +2884,7 @@ function HomePage() {
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
+  const tomorrowFormatted = formatDayLabel(tomorrowStart);
 
   useEffect(() => {
     if (!userId) return;
