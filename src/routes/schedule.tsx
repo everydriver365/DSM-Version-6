@@ -602,7 +602,7 @@ function SchedulePage() {
       const el = dayRefs.current.get(targetKey);
       const scroller = scrollRef.current;
       if (!el || !scroller) return;
-      setSelectedDateKey(key);
+      setSelectedDate(key);
       suppressScrollUpdate.current = true;
       const top = el.offsetTop - scroller.offsetTop - 8;
       scroller.scrollTo({ top, behavior: "smooth" });
