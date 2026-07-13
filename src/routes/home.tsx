@@ -609,10 +609,8 @@ type StatSlideData = {
 
 function SwipeableStatsCard({
   slides,
-  onAddLesson,
 }: {
   slides: StatSlideData[];
-  onAddLesson?: () => void;
 }) {
   const [idx, setIdx] = useState(0);
   const startX = useRef<number | null>(null);
