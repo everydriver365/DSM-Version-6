@@ -143,6 +143,38 @@ import carAsset from "../assets/next-lesson-car.png.asset.json";
 import dsmLogo from "../assets/dsm-logo.png.asset.json";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+async function syncToGoogleCalendar(userId: string, token: string) {
+  try {
+    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({ instructorId: userId }),
+    });
+  } catch (e) {
+    console.warn('[sync] failed', e);
+  }
+  window.open('https://calendar.google.com', '_blank');
+}
+
+async function handleSyncGoogleClick() {
+  const [{ data: userRes }, { data: sess }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ]);
+  const uid = userRes.user?.id;
+  if (!uid) return;
+  await syncToGoogleCalendar(uid, sess.session?.access_token ?? "");
+}
+
+
+
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -3891,16 +3923,39 @@ function HomePage() {
                     })}
                   </div>
                 )}
-                <button
-                  onClick={() => navigate({ to: "/schedule" })}
-                  style={{
-                    marginTop: 12, width: "100%", padding: "10px 12px",
-                    borderRadius: 10, border: "1px dashed #1877D6",
-                    background: "transparent", color: "#1877D6",
-                    fontSize: 13, fontWeight: 600, cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >Add lesson +</button>
+                <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "stretch" }}>
+                  <button
+                    onClick={() => navigate({ to: "/schedule" })}
+                    style={{
+                      flex: 1, padding: "10px 12px",
+                      borderRadius: 10, border: "1px dashed #1877D6",
+                      background: "transparent", color: "#1877D6",
+                      fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      fontFamily: "Inter, sans-serif",
+                    }}
+                  >Add lesson +</button>
+                  <button
+                    onClick={handleSyncGoogleClick}
+                    style={{
+                      background: 'white',
+                      border: '0.5px solid #E2E6ED',
+                      borderRadius: 8,
+                      padding: '6px 10px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#1A52A0',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <CalendarIcon size={12} color="#1A52A0" />
+                    Sync Google
+                  </button>
+                </div>
+
               </div>
 
               {/* Outstanding payments */}

@@ -9,6 +9,42 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+async function syncToGoogleCalendar(userId: string, token: string) {
+  try {
+    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({ instructorId: userId }),
+    });
+  } catch (e) {
+    console.warn('[sync] failed', e);
+  }
+  window.open('https://calendar.google.com', '_blank');
+}
+
+async function toastWithSync(message: string) {
+  const [{ data: userRes }, { data: sess }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ]);
+  const uid = userRes.user?.id;
+  const token = sess.session?.access_token ?? "";
+  toast.success(message, {
+    action: uid
+      ? { label: '📅 Sync to Google Cal', onClick: () => syncToGoogleCalendar(uid, token) }
+      : undefined,
+    duration: 8000,
+  });
+}
+
+
 const CANCEL_REASONS = [
   "Pupil cancelled",
   "Pupil no-show",
@@ -116,9 +152,10 @@ function LessonDetailPage() {
       return;
     }
     setDeleteOpen(false);
-    toast.success("Lesson deleted");
+    toastWithSync("Lesson deleted");
     navigate({ to: "/schedule" });
   }
+
 
   useEffect(() => {
     setLoading(true);
@@ -640,7 +677,7 @@ function LessonDetailPage() {
           amountDue={Number(lesson.amount_due ?? 0)}
           when={`${formatDateLong(dateObj)} · ${formatTime(lesson.lesson_time)}`}
           onCancelled={() => {
-            toast.success("Lesson cancelled");
+            toastWithSync("Lesson cancelled");
             navigate({ to: "/schedule" });
           }}
         />

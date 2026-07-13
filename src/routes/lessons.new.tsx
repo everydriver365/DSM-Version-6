@@ -1,12 +1,34 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 import { PageLayout } from "@/components/PageLayout";
+
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+async function syncToGoogleCalendar(userId: string, token: string) {
+  try {
+    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({ instructorId: userId }),
+    });
+  } catch (e) {
+    console.warn('[sync] failed', e);
+  }
+  window.open('https://calendar.google.com', '_blank');
+}
+
 
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
 function extractPostcode(addr: string | null | undefined): string | undefined {
@@ -317,8 +339,16 @@ function NewLessonPage() {
       }
     }
 
+    toast.success('Lesson added', {
+      action: {
+        label: '📅 Sync to Google Cal',
+        onClick: () => syncToGoogleCalendar(user.id, token),
+      },
+      duration: 8000,
+    });
     navigate({ to: "/schedule" });
   }
+
 
   return (
     <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
