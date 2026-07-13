@@ -310,7 +310,6 @@ function SchedulePage() {
     return d;
   });
   const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
-  const [view, setView] = useState<"calendar" | "agenda">("calendar");
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const todayRef = useRef<HTMLDivElement | null>(null);
