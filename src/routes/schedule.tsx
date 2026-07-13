@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import {
   IconSearch,
@@ -885,6 +885,22 @@ function SchedulePage() {
         }}
       />
 
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
+        </div>
+      </div>
+
+
       <div
         ref={scrollRef}
         onScroll={onScroll}
@@ -1162,11 +1178,31 @@ function SchedulePage() {
                                 goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
                               }
                             : isBlockRow
-                              ? () =>
+                              ? () => {
+                                  const blockEntry = e as Extract<AgendaEntry, { kind: 'block' }>;
+                                  const startD = blockEntry.start;
+                                  const endD = blockEntry.end;
+                                  const pad = (n: number) => String(n).padStart(2, '0');
+                                  const blockDate = `${startD.getFullYear()}-${pad(startD.getMonth() + 1)}-${pad(startD.getDate())}`;
+                                  const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
+                                  const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
                                   toast.info(
-                                    "This event is from Google Calendar. Delete it there then tap Sync to remove it here.",
-                                  )
+                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
+                                    {
+                                      duration: 5000,
+                                      action: {
+                                        label: 'Add as lesson →',
+                                        onClick: () =>
+                                          navigate({
+                                            to: '/lessons/new' as never,
+                                            search: `?date=${blockDate}&time=${blockTime}&duration=${blockDurationMins}` as never,
+                                          }),
+                                      },
+                                    },
+                                  );
+                                }
                               : undefined;
+
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
@@ -1285,7 +1321,44 @@ function SchedulePage() {
                                       </div>
                                     ) : null}
                                   </div>
+                                  {isLessonRow && (
+                                    <span
+                                      style={{
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#1A52A0',
+                                        background: '#E0F4FF',
+                                        borderRadius: 4,
+                                        padding: '1px 5px',
+                                        fontFamily: 'Poppins, sans-serif',
+                                        flexShrink: 0,
+                                      }}
+                                    >
+                                      DSM
+                                    </span>
+                                  )}
+                                  {isBlockRow && (
+                                    <span
+                                      style={{
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#6B7280',
+                                        background: '#F3F4F6',
+                                        borderRadius: 4,
+                                        padding: '1px 5px',
+                                        fontFamily: 'Poppins, sans-serif',
+                                        flexShrink: 0,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 3,
+                                      }}
+                                    >
+                                      <Calendar size={8} color="#6B7280" />
+                                      Google
+                                    </span>
+                                  )}
                                 </div>
+
                               </div>
                             </div>
                           );
