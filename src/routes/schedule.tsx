@@ -448,6 +448,39 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd]);
 
+  const handleSync = useCallback(async () => {
+    if (!userId) return;
+    setSyncing(true);
+    try {
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(SUPABASE_URL + "/functions/v1/sync-external-calendar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ instructorId: userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
+        setLastSynced(new Date().toISOString());
+        await fetchCalendarBlocks();
+      } else {
+        toast.error("Sync failed — check your calendar URL in Settings");
+      }
+    } catch (err) {
+      toast.error("Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }, [userId, fetchCalendarBlocks]);
+
 
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
