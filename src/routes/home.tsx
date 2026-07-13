@@ -6698,16 +6698,19 @@ function HomePage() {
           data-workspace="pupils"
           data-ws-index={2}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         {(() => {
@@ -7026,16 +7029,19 @@ function HomePage() {
           data-workspace="money"
           data-ws-index={3}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
 
@@ -7247,16 +7253,19 @@ function HomePage() {
           data-workspace="marketplace"
           data-ws-index={4}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         <MarketplaceSection navigate={navigate} />
@@ -7266,16 +7275,19 @@ function HomePage() {
           data-workspace="dsm"
           data-ws-index={5}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
         <DsmLiveSection navigate={navigate} />
@@ -7285,15 +7297,19 @@ function HomePage() {
           data-workspace="community"
           data-ws-index={6}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
           <div style={{ padding:16, display:'flex', flexDirection:'column', paddingBottom:80, fontFamily:'Inter, sans-serif' }}>
@@ -7445,16 +7461,19 @@ function HomePage() {
           data-workspace="tools"
           data-ws-index={7}
           style={{
-            flex:'0 0 100%',
-            width:'100%',
-            height:'100%',
-            scrollSnapAlign:'start',
-            overflowY:'auto',
-            overflowX:'hidden',
-            WebkitOverflowScrolling:'touch',
-            touchAction:'pan-y', overscrollBehaviorX:'none',
-            paddingBottom:'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)',
-            
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: '#F7FAFC',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
           }}
         >
 
