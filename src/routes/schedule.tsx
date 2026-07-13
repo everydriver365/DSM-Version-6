@@ -1356,14 +1356,17 @@ function SchedulePage() {
                                     alignItems: "center",
                                     gap: 10,
                                     cursor: clickable ? "pointer" : "default",
-                                    opacity: cancelled ? 0.55 : 1,
+                                    opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
                                     transition: "transform 0.2s ease",
                                     transform: isSwiped ? "translateX(-80px)" : "translateX(0)",
+                                    border: isMovingThis ? '2px solid #1A52A0' : undefined,
+                                    animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
                                 >
+
                                   <span
                                     aria-hidden
                                     style={{
