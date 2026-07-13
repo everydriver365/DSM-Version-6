@@ -929,6 +929,49 @@ function SchedulePage() {
         <WorkspaceDots activeIndex={1} />
       </div>
 
+      {moveMode && movingLesson && (
+        <div
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 50,
+            background: '#1A52A0',
+            padding: '12px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            ...POPPINS,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Move size={16} color="#FFFFFF" />
+            <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>
+              Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: 600,
+              padding: '6px 12px',
+              borderRadius: 8,
+              border: 'none',
+              cursor: 'pointer',
+              ...POPPINS,
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
+
+
+
       <MonthStrip
         viewMonth={viewMonth}
         selectedDate={selectedDate}
