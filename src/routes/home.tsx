@@ -1650,6 +1650,8 @@ function HomePage() {
   const [communityEmail, setCommunityEmail] = useState('');
   const [toolSearch, setToolSearch] = useState('');
   const [quickPage, setQuickPage] = useState(0);
+  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
   const dispatchWsChange = (index: number) => {
     if (typeof window === 'undefined') return;
@@ -5270,93 +5272,217 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              const quickTiles: Array<{ label: string; sub: string; route: string | null; icon: any; colour: string }> = [
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free today` : 'No gaps', route: '/gaps', icon: Zap, colour: '#D97706' },
-                { label: 'Schedule', sub: `${nextLessons?.length ?? 0} upcoming`, route: '/schedule', icon: CalendarIcon, colour: '#1A52A0' },
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; wsIndex?: number };
+              const quickTiles: QuickTile[] = [
+                // Page 1 — Daily essentials
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: Zap, colour: '#D97706' },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: CalendarIcon, colour: '#1A52A0', wsIndex: 1 },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: Users, colour: '#7C3AED' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear ✓', route: '/payments', icon: PoundSterling, colour: '#16A34A' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: PoundSterling, colour: '#16A34A' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: MessageSquare, colour: '#00B5A5' },
                 { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: Clock, colour: '#CC2229' },
+                // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0' },
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
+                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1A52A0' },
+                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, colour: '#16A34A' },
+                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, colour: '#16A34A' },
+                // Page 3 — Business
                 { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, colour: '#CC2229' },
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1A52A0' },
                 { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, colour: '#D97706' },
-                { label: 'More', sub: 'All features', route: null, icon: Grid, colour: '#6B7280' },
+                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, colour: '#16A34A' },
+                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, colour: '#6B7280' },
+                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, colour: '#D97706' },
+                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, colour: '#6B7280' },
+                // Page 4 — Reports
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1A52A0' },
+                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, colour: '#D97706' },
+                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, colour: '#16A34A' },
+                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, colour: '#7C3AED' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, colour: '#1A52A0' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, colour: '#16A34A' },
+                // Page 5 — Admin
+                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, colour: '#6B7280' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, colour: '#1A52A0' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, colour: '#1A52A0' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, colour: '#1A52A0' },
+                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, colour: '#00B5A5' },
+                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, colour: '#16A34A' },
+                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, colour: '#D97706' },
               ];
               const tilesPerPage = 6;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
+
+              const goTile = (tile: QuickTile) => {
+                if (typeof tile.wsIndex === 'number') scrollToWs(tile.wsIndex);
+                else if (tile.route === null) scrollToWs(7);
+                else navigate({ to: tile.route as never });
+              };
+
+              const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
+                const Icon = tile.icon;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => { goTile(tile); onTap?.(); }}
+                    style={{
+                      background: '#FFFFFF',
+                      borderRadius: 16,
+                      padding: '12px 10px',
+                      border: '0.5px solid #F0F0F0',
+                      boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                      minHeight: 80,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 12,
+                      background: `${tile.colour}15`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      marginBottom: 6,
+                    }}>
+                      <Icon size={20} color={tile.colour} />
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{tile.label}</div>
+                    <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                  </button>
+                );
+              };
+
+              const sq = quickSearchQuery.trim().toLowerCase();
+              const searchResults = sq
+                ? quickTiles.filter((t) => t.label.toLowerCase().includes(sq) || t.sub.toLowerCase().includes(sq))
+                : quickTiles;
+
               return (
-                <div style={{ margin: '16px 16px 0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9CA3AF', fontWeight: 600 }}>Quick access</div>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      {Array.from({ length: totalPages }).map((_, i) => (
-                        <div
-                          key={i}
-                          onClick={() => setQuickPage(i)}
-                          style={{
-                            width: quickPage === i ? 16 : 5,
-                            height: 5,
-                            borderRadius: 3,
-                            background: quickPage === i ? '#0F2044' : '#E5E7EB',
-                            transition: 'all 0.2s ease',
-                            cursor: 'pointer',
-                          }}
-                        />
-                      ))}
+                <>
+                  <div style={{ margin: '16px 16px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9CA3AF', fontWeight: 600 }}>Quick access</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          {Array.from({ length: totalPages }).map((_, i) => (
+                            <div
+                              key={i}
+                              onClick={() => setQuickPage(i)}
+                              style={{
+                                width: quickPage === i ? 16 : 5,
+                                height: 5,
+                                borderRadius: 3,
+                                background: quickPage === i ? '#0F2044' : '#E5E7EB',
+                                transition: 'all 0.2s ease',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { setQuickSearchQuery(''); setQuickSearchOpen(true); }}
+                          style={{ background: 'none', border: 'none', padding: 0, marginLeft: 8, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                          aria-label="Search quick access"
+                        >
+                          <Search size={16} color="#9CA3AF" />
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
+                      onTouchEnd={(e) => {
+                        const dx = qaStartX.current - e.changedTouches[0].clientX;
+                        if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
+                        if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
+                      }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
+                    >
+                      {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
-                  <div
-                    onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
-                    onTouchEnd={(e) => {
-                      const dx = qaStartX.current - e.changedTouches[0].clientX;
-                      if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
-                      if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
-                    }}
-                    style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
-                  >
-                    {currentTiles.map((tile, idx) => {
-                      const Icon = tile.icon;
-                      return (
-                        <button
-                          key={`${tile.label}-${idx}`}
-                          type="button"
-                          onClick={() => {
-                            if (tile.route === null) scrollToWs(7);
-                            else navigate({ to: tile.route as never });
-                          }}
-                          style={{
-                            background: '#FFFFFF',
-                            borderRadius: 16,
-                            padding: '12px 10px',
-                            border: '0.5px solid #F0F0F0',
-                            boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
-                            minHeight: 80,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            fontFamily: 'Poppins, sans-serif',
-                          }}
-                        >
-                          <div style={{
-                            width: 40, height: 40, borderRadius: 12,
-                            background: `${tile.colour}15`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            marginBottom: 6,
-                          }}>
-                            <Icon size={20} color={tile.colour} />
+
+                  {quickSearchOpen && (
+                    <div
+                      onClick={() => setQuickSearchOpen(false)}
+                      style={{
+                        position: 'fixed',
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        background: 'rgba(0,0,0,0.5)',
+                        zIndex: 100,
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          background: '#FFFFFF',
+                          borderRadius: '20px 20px 0 0',
+                          padding: 20,
+                          maxHeight: '80vh',
+                          overflowY: 'auto',
+                          width: '100%',
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Search tools</div>
+                          <button
+                            type="button"
+                            onClick={() => setQuickSearchOpen(false)}
+                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                            aria-label="Close search"
+                          >
+                            <X size={20} color="#6B7280" />
+                          </button>
+                        </div>
+                        <div style={{
+                          background: '#F7FAFC',
+                          border: '0.5px solid #E2E6ED',
+                          borderRadius: 12,
+                          padding: '12px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          marginBottom: 16,
+                        }}>
+                          <Search size={16} color="#9CA3AF" />
+                          <input
+                            autoFocus
+                            type="text"
+                            placeholder="Search all features..."
+                            value={quickSearchQuery}
+                            onChange={(e) => setQuickSearchQuery(e.target.value)}
+                            style={{
+                              flex: 1,
+                              border: 'none',
+                              outline: 'none',
+                              background: 'transparent',
+                              fontSize: 14,
+                              color: '#0F2044',
+                              fontFamily: 'Poppins, sans-serif',
+                            }}
+                          />
+                        </div>
+                        {searchResults.length === 0 ? (
+                          <div style={{ fontSize: 14, color: '#9CA3AF', textAlign: 'center', padding: 24 }}>
+                            No features found
                           </div>
-                          <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{tile.label}</div>
-                          <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                        ) : (
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                            {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               );
             })()}
 
