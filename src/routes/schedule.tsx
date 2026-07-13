@@ -1506,7 +1506,7 @@ const calChip: React.CSSProperties = {
 
 function MonthStrip({
   viewMonth,
-  selectedDateKey,
+  selectedDate,
   todayKey,
   lessons,
   onPrevMonth,
@@ -1515,7 +1515,7 @@ function MonthStrip({
   onToday,
 }: {
   viewMonth: Date;
-  selectedDateKey: string;
+  selectedDate: string;
   todayKey: string;
   lessons: Lesson[];
   onPrevMonth: () => void;
