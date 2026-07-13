@@ -680,41 +680,9 @@ function SwipeableStatsCard({
         >
           {s.icon}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
-            {onAddLesson && s.key === "today" && (
-              <button
-                type="button"
-                aria-label="Add lesson"
-                onPointerDown={(e) => { e.stopPropagation(); }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  startX.current = null;
-                  deltaRef.current = 0;
-                  draggingMouse.current = false;
-                  onAddLesson();
-                }}
-                style={{
-                  width: 22,
-                  height: 22,
-                  borderRadius: 6,
-                  background: "#185FA5",
-                  color: "#FFFFFF",
-                  border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                <Plus size={14} strokeWidth={2.5} />
-              </button>
-            )}
-          </div>
-          <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
+            <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
           <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
