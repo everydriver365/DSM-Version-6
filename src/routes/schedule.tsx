@@ -1660,7 +1660,91 @@ function SchedulePage() {
       >
         <Plus size={22} color="white" />
       </button>
+
+      {confirmMove && movingLesson && (
+        <div
+          onClick={() => setConfirmMove(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15,32,68,0.5)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(ev) => ev.stopPropagation()}
+            style={{
+              background: '#FFFFFF',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '20px 20px calc(20px + env(safe-area-inset-bottom))',
+              width: '100%',
+              maxWidth: 480,
+              ...POPPINS,
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', marginBottom: 16 }}>
+              Move lesson?
+            </div>
+            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>From</div>
+            <div style={{ fontSize: 14, color: '#9CA3AF', marginBottom: 10 }}>
+              {movingLesson.lesson_date} at {String(movingLesson.lesson_time).slice(0, 5)}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              <ArrowDown size={20} color="#9CA3AF" />
+            </div>
+            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
+            <div style={{ fontSize: 14, color: '#0F2044', fontWeight: 700 }}>
+              {confirmMove.date} at {confirmMove.time}
+            </div>
+            <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, marginBottom: 20 }}>
+              {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'Pupil')} {(movingLesson.pupil?.last_name || movingLesson.pupils?.last_name || '')}
+            </div>
+            <button
+              type="button"
+              onClick={() => handleMoveLesson(confirmMove.date, confirmMove.time)}
+              style={{
+                width: '100%',
+                background: '#0F2044',
+                color: '#FFFFFF',
+                fontWeight: 600,
+                fontSize: 14,
+                padding: '12px 0',
+                borderRadius: 12,
+                border: 'none',
+                cursor: 'pointer',
+                ...POPPINS,
+              }}
+            >
+              Confirm move
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmMove(null)}
+              style={{
+                width: '100%',
+                background: '#FFFFFF',
+                color: '#6B7280',
+                border: '0.5px solid #E2E6ED',
+                fontWeight: 500,
+                fontSize: 14,
+                padding: '12px 0',
+                borderRadius: 12,
+                cursor: 'pointer',
+                marginTop: 8,
+                ...POPPINS,
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 
