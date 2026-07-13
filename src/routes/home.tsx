@@ -1740,36 +1740,48 @@ function HomePage() {
     }
   };
 
-  const handleCarouselTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    touchStartTime.current = Date.now();
-    isSwiping.current = false;
-  };
-  const handleCarouselTouchEnd = (e: React.TouchEvent) => {
-    const dx = touchStartX.current - e.changedTouches[0].clientX;
-    const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
-    const dt = Date.now() - touchStartTime.current;
-    const isHorizontalSwipe = Math.abs(dx) > dy && Math.abs(dx) > 40 && dt < 400;
-    if (isHorizontalSwipe) {
-      if (dx > 0 && activeWs < WS_COUNT - 1) scrollToWs(activeWs + 1);
-      else if (dx < 0 && activeWs > 0) scrollToWs(activeWs - 1);
-    }
-  };
   useEffect(() => {
     const el = carouselRef.current;
     if (!el) return;
-    const handleTouchMove = (e: TouchEvent) => {
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
+      isDragging.current = false;
+    };
+    const onTouchMove = (e: TouchEvent) => {
       const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
       const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
-      if (dx > dy && dx > 10) {
-        isSwiping.current = true;
+      if (!isDragging.current && dx > 8) {
+        isDragging.current = true;
+      }
+      if (isDragging.current && dx > dy) {
         e.preventDefault();
       }
     };
-    el.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => el.removeEventListener('touchmove', handleTouchMove);
-  }, []);
+    const onTouchEnd = (e: TouchEvent) => {
+      const dx = touchStartX.current - e.changedTouches[0].clientX;
+      const dy = Math.abs(touchStartY.current - e.changedTouches[0].clientY);
+      const dt = Date.now() - touchStartTime.current;
+      const isSwipe = Math.abs(dx) > dy && Math.abs(dx) > 30 && (dt < 500 || Math.abs(dx) > 80);
+      if (isSwipe) {
+        if (dx > 0 && activeWs < WS_COUNT - 1) {
+          scrollToWs(activeWs + 1);
+        } else if (dx < 0 && activeWs > 0) {
+          scrollToWs(activeWs - 1);
+        }
+      }
+      isDragging.current = false;
+    };
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [activeWs]);
   useEffect(() => {
     const log = () => {
       // eslint-disable-next-line no-console
