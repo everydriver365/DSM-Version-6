@@ -1648,6 +1648,9 @@ function HomePage() {
   const isSwiping = useRef(false);
   const WS_COUNT = 8;
   const [communityEmail, setCommunityEmail] = useState('');
+  const [toolSearch, setToolSearch] = useState('');
+  const [quickPage, setQuickPage] = useState(0);
+  const qaStartX = useRef(0);
   const dispatchWsChange = (index: number) => {
     if (typeof window === 'undefined') return;
     window.dispatchEvent(new CustomEvent('dsm-workspace-change', { detail: { index } }));
