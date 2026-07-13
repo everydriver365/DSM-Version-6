@@ -7205,103 +7205,169 @@ function HomePage() {
           <div style={{ fontSize:13, color:'rgba(11,31,58,0.60)', marginTop:2 }}>Everything, in one place</div>
         </div>
       {/* SEARCH */}
-      <div className="mx-4 mt-2">
-        <div className="flex items-center gap-2 rounded-xl bg-white" style={{ border: '0.5px solid #EEF2F7', padding: '8px 12px' }}>
-          <Search size={16} color="#6B7280" />
+      <div style={{ margin: '16px 16px 4px' }}>
+        <div style={{
+          background: '#FFFFFF',
+          border: '0.5px solid #E2E6ED',
+          borderRadius: 14,
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+        }}>
+          <Search size={16} color="#9CA3AF" />
           <input
             type="text"
-            placeholder="Search tools…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 text-[13px] text-[#0B1F3A] outline-none bg-transparent"
-            style={{ fontFamily: "Inter, sans-serif" }}
+            placeholder="Search tools..."
+            value={toolSearch}
+            onChange={(e) => setToolSearch(e.target.value)}
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              fontSize: 13,
+              fontFamily: 'Poppins, sans-serif',
+              color: '#0F2044',
+              background: 'transparent',
+            }}
           />
-          {searchQuery && (
-            <button type="button" onClick={() => setSearchQuery("")} className="text-[12px] text-[#6B7280]">Clear</button>
+          {toolSearch && (
+            <button
+              type="button"
+              onClick={() => setToolSearch('')}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              aria-label="Clear search"
+            >
+              <X size={14} color="#9CA3AF" />
+            </button>
           )}
         </div>
       </div>
 
       {/* TOOL GROUPS */}
       {(() => {
-        const groups: Array<{ title: string; tiles: Array<{ icon: React.ReactNode; label: string; route: string }> }> = [
-          { title: 'Teaching', tiles: [
-            { icon: <ClipboardCheck size={20} color="#FFFFFF" />, label: 'EOL wizard', route: '/lessons' },
-            { icon: <BookOpen size={20} color="#FFFFFF" />, label: 'Syllabus', route: '/standards' },
-            { icon: <GraduationCap size={20} color="#FFFFFF" />, label: 'Test day', route: '/testday' },
-            { icon: <ClipboardList size={20} color="#FFFFFF" />, label: 'Mock tests', route: '/mock-tests' },
-            { icon: <FileText size={20} color="#FFFFFF" />, label: 'Reflective logs', route: '/reflective-log' },
-            { icon: <FileSignature size={20} color="#FFFFFF" />, label: 'Lesson notes', route: '/lesson-notes' },
-            { icon: <Clock size={20} color="#FFFFFF" />, label: 'Running late', route: '/running-late' },
-            { icon: <CalendarIcon size={20} color="#FFFFFF" />, label: 'Lesson plan', route: '/lesson-plan' },
-          ]},
-          { title: 'Business', tiles: [
-            { icon: <BookOpen size={20} color="#FFFFFF" />, label: 'CPD log', route: '/cpd' },
-            { icon: <Award size={20} color="#FFFFFF" />, label: 'Certifications', route: '/certifications' },
-            { icon: <FolderOpen size={20} color="#FFFFFF" />, label: 'Document vault', route: '/documents' },
-            { icon: <Receipt size={20} color="#FFFFFF" />, label: 'Expenses', route: '/expenses' },
-            { icon: <Car size={20} color="#FFFFFF" />, label: 'Mileage', route: '/mileage' },
-            { icon: <Car size={20} color="#FFFFFF" />, label: 'Vehicle', route: '/vehicle' },
-            { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, label: 'Invoices', route: '/invoices' },
-            { icon: <CalendarCheck size={20} color="#FFFFFF" />, label: 'Month end', route: '/monthend' },
-          ]},
-          { title: 'Admin', tiles: [
-            { icon: <SettingsIcon size={20} color="#FFFFFF" />, label: 'Settings', route: '/settings' },
-            { icon: <HelpCircle size={20} color="#FFFFFF" />, label: 'Intake questions', route: '/intake-questions' },
-            { icon: <CalendarOff size={20} color="#FFFFFF" />, label: 'No-show policy', route: '/no-show-policy' },
-            { icon: <MapPin size={20} color="#FFFFFF" />, label: 'Postcode rates', route: '/postcode-rates' },
-            { icon: <Gift size={20} color="#FFFFFF" />, label: 'Discount codes', route: '/discount-codes' },
-            { icon: <Zap size={20} color="#FFFFFF" />, label: 'Automations', route: '/automations' },
-            { icon: <FileText size={20} color="#FFFFFF" />, label: 'T&Cs', route: '/terms' },
-          ]},
-          { title: 'Reports', tiles: [
-            { icon: <BarChart3 size={20} color="#FFFFFF" />, label: 'MTD', route: '/month-to-date' },
-            { icon: <Calculator size={20} color="#FFFFFF" />, label: 'Tax report', route: '/tax-report' },
-            { icon: <BarChart2 size={20} color="#FFFFFF" />, label: 'Weekly report', route: '/weekly-report' },
-            { icon: <CalendarDays size={20} color="#FFFFFF" />, label: 'End of day', route: '/end-of-day' },
-            { icon: <FileText size={20} color="#FFFFFF" />, label: 'Annual report', route: '/reports' },
-            { icon: <TrendingUp size={20} color="#FFFFFF" />, label: 'Earnings forecast', route: '/earnings-forecast' },
-            { icon: <Activity size={20} color="#FFFFFF" />, label: 'Business health', route: '/business-health' },
-          ]},
+        type Tool = { label: string; sub: string; route: string; icon: any; colour: string; group: string };
+        const allTools: Tool[] = [
+          // TEACHING
+          { label: 'EOL Wizard', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0', group: 'Teaching' },
+          { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1A52A0', group: 'Teaching' },
+          { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: Clock, colour: '#CC2229', group: 'Teaching' },
+          { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED', group: 'Teaching' },
+          { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED', group: 'Teaching' },
+          { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, colour: '#16A34A', group: 'Teaching' },
+          { label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', icon: ClipboardCheck, colour: '#16A34A', group: 'Teaching' },
+          { label: 'Lesson notes', sub: 'Templates', route: '/lesson-notes', icon: FileText, colour: '#9CA3AF', group: 'Teaching' },
+          // BUSINESS
+          { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, colour: '#D97706', group: 'Business' },
+          { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, colour: '#16A34A', group: 'Business' },
+          { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, colour: '#CC2229', group: 'Business' },
+          { label: 'Find fuel', sub: 'Nearby stations', route: '/fuel', icon: Fuel, colour: '#D97706', group: 'Business' },
+          { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, colour: '#6B7280', group: 'Business' },
+          { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, colour: '#6B7280', group: 'Business' },
+          { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, colour: '#1A52A0', group: 'Business' },
+          { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, colour: '#1A52A0', group: 'Business' },
+          // ADMIN
+          { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, colour: '#6B7280', group: 'Admin' },
+          { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, colour: '#1A52A0', group: 'Admin' },
+          { label: "Intake Q's", sub: 'New pupils', route: '/intake-questions', icon: ClipboardList, colour: '#7C3AED', group: 'Admin' },
+          { label: 'No-show', sub: 'Policy', route: '/no-show-policy', icon: AlertTriangle, colour: '#CC2229', group: 'Admin' },
+          { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, colour: '#D97706', group: 'Admin' },
+          { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, colour: '#16A34A', group: 'Admin' },
+          { label: 'Cal sync', sub: 'Google Cal', route: '/calendarsync', icon: CalendarIcon, colour: '#1A52A0', group: 'Admin' },
+          { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, colour: '#00B5A5', group: 'Admin' },
+          // REPORTS
+          { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1A52A0', group: 'Reports' },
+          { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, colour: '#D97706', group: 'Reports' },
+          { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, colour: '#16A34A', group: 'Reports' },
+          { label: 'End of day', sub: 'Daily summary', route: '/end-of-day', icon: Moon, colour: '#7C3AED', group: 'Reports' },
+          { label: 'Annual', sub: 'Year report', route: '/reports', icon: FileText, colour: '#6B7280', group: 'Reports' },
+          { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, colour: '#16A34A', group: 'Reports' },
+          { label: 'Health', sub: 'Business health', route: '/business-health', icon: Activity, colour: '#CC2229', group: 'Reports' },
         ];
-        const q = searchQuery.trim().toLowerCase();
-        const filtered = groups
-          .map((g) => ({ ...g, tiles: q ? g.tiles.filter((t) => t.label.toLowerCase().includes(q)) : g.tiles }))
-          .filter((g) => g.tiles.length > 0);
-        if (filtered.length === 0) {
+        const q = toolSearch.trim().toLowerCase();
+        const filteredTools = q
+          ? allTools.filter((t) =>
+              t.label.toLowerCase().includes(q) ||
+              t.sub.toLowerCase().includes(q) ||
+              t.group.toLowerCase().includes(q)
+            )
+          : allTools;
+
+        const renderTile = (t: Tool, key: string) => {
+          const Icon = t.icon;
           return (
-            <div className="mx-4 mt-6 text-center text-[13px] text-[#6B7280]">
-              No tools match “{searchQuery}”
+            <button
+              key={key}
+              type="button"
+              onClick={() => navigate({ to: t.route as never })}
+              style={{
+                background: '#FFFFFF',
+                borderRadius: 16,
+                padding: '12px 10px',
+                border: '0.5px solid #F0F0F0',
+                boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                minHeight: 80,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              <div style={{
+                width: 40, height: 40, borderRadius: 12,
+                background: `${t.colour}15`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 6,
+              }}>
+                <Icon size={20} color={t.colour} />
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{t.label}</div>
+              <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{t.sub}</div>
+            </button>
+          );
+        };
+
+        if (q) {
+          if (filteredTools.length === 0) {
+            return (
+              <div style={{ margin: '24px 16px 0', textAlign: 'center', fontSize: 13, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
+                No tools found for "{toolSearch}"
+              </div>
+            );
+          }
+          return (
+            <div style={{ margin: '16px 16px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              {filteredTools.map((t) => renderTile(t, `${t.group}-${t.route}-${t.label}`))}
             </div>
           );
         }
-        return filtered.map((g) => (
-          <div key={g.title} className="mx-4 mt-5">
-            <div
-              className="text-[11px] uppercase mb-2"
-              style={{ color: '#6B7280', letterSpacing: 0.8, fontFamily: 'Inter, sans-serif', fontWeight: 700 }}
-            >
-              {g.title}
+
+        const groupOrder = ['Teaching', 'Business', 'Admin', 'Reports'];
+        return groupOrder.map((groupName) => {
+          const tiles = allTools.filter((t) => t.group === groupName);
+          if (tiles.length === 0) return null;
+          return (
+            <div key={groupName} style={{ margin: '20px 16px 0' }}>
+              <div style={{
+                fontSize: 11,
+                textTransform: 'uppercase',
+                marginBottom: 8,
+                color: '#6B7280',
+                letterSpacing: 0.8,
+                fontFamily: 'Poppins, sans-serif',
+                fontWeight: 700,
+              }}>
+                {groupName}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                {tiles.map((t) => renderTile(t, `${groupName}-${t.route}-${t.label}`))}
+              </div>
             </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 8,
-              }}
-            >
-              {g.tiles.map((t) => (
-                <AccessTile
-                  key={`${g.title}-${t.route}-${t.label}`}
-                  icon={t.icon}
-                  route={t.route}
-                  label={t.label}
-                  onClick={() => navigate({ to: t.route as never })}
-                />
-              ))}
-            </div>
-          </div>
-        ));
+          );
+        });
       })()}
       <style>{`
         @keyframes skeleton-pulse {
