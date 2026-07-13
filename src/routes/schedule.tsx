@@ -1149,7 +1149,24 @@ function SchedulePage() {
                             timeText = "All day";
                           }
                           const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
-                          const clickable = e.kind === "lesson";
+                          const isLessonRow = e.kind === "lesson";
+                          const isBlockRow = e.kind === "block";
+                          const clickable = isLessonRow || isBlockRow;
+                          const isSwiped = isLessonRow && swipedLessonId === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                          const onCardClick = isLessonRow
+                            ? () => {
+                                if (isSwiped) {
+                                  setSwipedLessonId(null);
+                                  return;
+                                }
+                                goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
+                              }
+                            : isBlockRow
+                              ? () =>
+                                  toast.info(
+                                    "This event is from Google Calendar. Delete it there then tap Sync to remove it here.",
+                                  )
+                              : undefined;
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
@@ -1165,52 +1182,109 @@ function SchedulePage() {
                                   background: markerColor,
                                 }}
                               />
-                              <div
-                                onClick={clickable ? () => goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id) : undefined}
-                                role={clickable ? "button" : undefined}
-                                tabIndex={clickable ? 0 : undefined}
-                                style={{
-                                  background: "#FFFFFF",
-                                  borderRadius: 12,
-                                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                                  padding: "12px 14px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 10,
-                                  cursor: clickable ? "pointer" : "default",
-                                  opacity: cancelled ? 0.55 : 1,
-                                  ...POPPINS,
-                                }}
-                              >
-                                <span
-                                  aria-hidden
-                                  style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: "50%",
-                                    background: markerColor,
-                                    flexShrink: 0,
-                                  }}
-                                />
-                                <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
+                                {isLessonRow && (
                                   <div
+                                    onClick={() =>
+                                      handleDeleteLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)
+                                    }
                                     style={{
-                                      fontSize: 14,
-                                      fontWeight: 500,
-                                      color: "#0F2044",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      textDecoration: cancelled ? "line-through" : "none",
+                                      position: "absolute",
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                      width: 80,
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      background: "#CC2229",
+                                      cursor: "pointer",
                                     }}
+                                    role="button"
+                                    aria-label="Delete lesson"
                                   >
-                                    {title}
+                                    <Trash2 size={20} color="#FFFFFF" />
+                                    <span
+                                      style={{
+                                        fontSize: 10,
+                                        color: "#FFFFFF",
+                                        fontWeight: 600,
+                                        marginTop: 2,
+                                      }}
+                                    >
+                                      Delete
+                                    </span>
                                   </div>
-                                  {timeText ? (
-                                    <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                      {timeText}
+                                )}
+                                <div
+                                  onClick={onCardClick}
+                                  onTouchStart={
+                                    isLessonRow
+                                      ? (evt) => {
+                                          swipeStartX.current = evt.touches[0].clientX;
+                                        }
+                                      : undefined
+                                  }
+                                  onTouchEnd={
+                                    isLessonRow
+                                      ? (evt) => {
+                                          const dx = swipeStartX.current - evt.changedTouches[0].clientX;
+                                          const lessonId = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                                          if (dx > 60) setSwipedLessonId(lessonId);
+                                          else if (dx < -20) setSwipedLessonId(null);
+                                        }
+                                      : undefined
+                                  }
+                                  role={clickable ? "button" : undefined}
+                                  tabIndex={clickable ? 0 : undefined}
+                                  style={{
+                                    background: "#FFFFFF",
+                                    borderRadius: 12,
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    padding: "12px 14px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    cursor: clickable ? "pointer" : "default",
+                                    opacity: cancelled ? 0.55 : 1,
+                                    position: "relative",
+                                    zIndex: 1,
+                                    transition: "transform 0.2s ease",
+                                    transform: isSwiped ? "translateX(-80px)" : "translateX(0)",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <span
+                                    aria-hidden
+                                    style={{
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: "50%",
+                                      background: markerColor,
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div
+                                      style={{
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: "#0F2044",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        textDecoration: cancelled ? "line-through" : "none",
+                                      }}
+                                    >
+                                      {title}
                                     </div>
-                                  ) : null}
+                                    {timeText ? (
+                                      <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                        {timeText}
+                                      </div>
+                                    ) : null}
+                                  </div>
                                 </div>
                               </div>
                             </div>
