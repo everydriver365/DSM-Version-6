@@ -1114,17 +1114,76 @@ function SchedulePage() {
                       mins: g.gapMins,
                       potential: g.potential,
                     }));
+
+                    // Available slot rows only when a lesson is being moved
+                    type SlotRow = { kind: 'slot-row'; id: string; startMins: number; time: string; dateKey: string };
+                    let slotRows: SlotRow[] = [];
+                    if (moveMode && movingLesson && isDayActive) {
+                      const dur = Number(movingLesson.duration_minutes) || 60;
+                      const wsMin = timeToMins(dayStart);
+                      const weMin = timeToMins(dayEnd);
+                      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+                      const isTodayKey = row.key === ymdLocal(today);
+                      const minStart = isTodayKey ? Math.max(wsMin, nowMins + 30) : wsMin;
+
+                      const busy: Array<{ start: number; end: number }> = [];
+                      for (const l of dayLessons) {
+                        if (l.id === movingLesson.id) continue;
+                        if (String(l.status || '') === 'cancelled') continue;
+                        const s = timeToMins(l.lesson_time);
+                        busy.push({ start: s, end: s + (l.duration_minutes || 60) });
+                      }
+                      const dayBlocks = (calendarBlocks || []).filter((b) => (b.start_datetime || '').substring(0, 10) === row.key);
+                      for (const b of dayBlocks) {
+                        busy.push({
+                          start: timeToMins((b.start_datetime || '').substring(11, 16) || '00:00'),
+                          end: timeToMins((b.end_datetime || '').substring(11, 16) || '23:59'),
+                        });
+                      }
+                      const dayNameForBlocks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+                        new Date(row.key + "T12:00:00").getDay()
+                      ];
+                      for (const b of (recurringBlocks || []).filter((rb) => rb.day_of_week === dayNameForBlocks && rb.is_active !== false)) {
+                        busy.push({ start: timeToMins(b.start_time), end: timeToMins(b.end_time) });
+                      }
+
+                      const off = (timeOff || []).filter((t) => t.start_date <= row.key && t.end_date >= row.key);
+                      const allDayOff = off.some((t) => t.all_day);
+                      if (!allDayOff) {
+                        for (let m = Math.ceil(minStart / 30) * 30; m + dur <= weMin; m += 30) {
+                          const slotEnd = m + dur;
+                          const conflict = busy.some((b) => m < b.end && slotEnd > b.start);
+                          if (conflict) continue;
+                          const hh = String(Math.floor(m / 60)).padStart(2, '0');
+                          const mm = String(m % 60).padStart(2, '0');
+                          slotRows.push({
+                            kind: 'slot-row',
+                            id: `slot-${row.key}-${m}`,
+                            startMins: m,
+                            time: `${hh}:${mm}`,
+                            dateKey: row.key,
+                          });
+                        }
+                      }
+                    }
+
                     const entryWithMins = row.entries.map((e) => ({
                       entry: e,
                       mins: e.start.getHours() * 60 + e.start.getMinutes(),
                     }));
-                    const combined: Array<{ kind: 'entry'; startMins: number; entry: AgendaEntry } | { kind: 'gap'; startMins: number; gap: GapRow }> = [
+                    const combined: Array<
+                      | { kind: 'entry'; startMins: number; entry: AgendaEntry }
+                      | { kind: 'gap'; startMins: number; gap: GapRow }
+                      | { kind: 'slot'; startMins: number; slot: SlotRow }
+                    > = [
                       ...entryWithMins.map((x) => ({ kind: 'entry' as const, startMins: x.mins, entry: x.entry })),
-                      ...gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g })),
+                      ...(moveMode ? [] : gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g }))),
+                      ...slotRows.map((s) => ({ kind: 'slot' as const, startMins: s.startMins, slot: s })),
                     ].sort((a, b) => a.startMins - b.startMins);
-                    const items: Array<AgendaEntry | GapRow> = combined.map((c) =>
-                      c.kind === 'entry' ? c.entry : c.gap,
+                    const items: Array<AgendaEntry | GapRow | SlotRow> = combined.map((c) =>
+                      c.kind === 'entry' ? c.entry : c.kind === 'gap' ? c.gap : c.slot,
                     );
+
 
                     return (
                       <div style={{ position: "relative", paddingLeft: 22 }}>
