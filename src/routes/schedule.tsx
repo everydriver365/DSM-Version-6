@@ -1240,6 +1240,8 @@ function SchedulePage() {
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isSwiped = isLessonRow && swipedLessonId === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
+                          const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
+                          const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
                                 if (isSwiped) {
