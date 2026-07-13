@@ -5360,8 +5360,6 @@ function HomePage() {
               );
             })()}
 
-            </div>
-
             {/* 6. AI INSIGHT */}
             {(() => {
               const insightAccent = '#6B4FD6';
