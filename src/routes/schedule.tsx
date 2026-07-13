@@ -519,29 +519,21 @@ function SchedulePage() {
     return out;
   }, [orderedDayKeysWithToday, entriesByDay]);
 
-  // Fix 1: auto-scroll to today on first paint after data loads.
-  // Suppress the scroll observer during the programmatic scroll so it doesn't
-  // rewrite calendarMonth to a past month during the initial jump.
-  useLayoutEffect(() => {
-    if (didScrollToToday.current) return;
-    if (lessons === null) return;
-    const el = todayRef.current;
-    const scroller = scrollRef.current;
-    if (!scroller) return;
-    suppressScrollUpdate.current = true;
-    if (el) {
-      const top = el.offsetTop - scroller.offsetTop - 8;
-      scroller.scrollTop = top;
-    } else {
-      const nextKey = orderedDayKeysWithToday.find((k) => k >= todayKey);
-      const target = nextKey ? dayRefs.current.get(nextKey) : undefined;
-      if (target) scroller.scrollTop = target.offsetTop - scroller.offsetTop - 8;
-    }
-    didScrollToToday.current = true;
-    window.setTimeout(() => {
-      suppressScrollUpdate.current = false;
-    }, 250);
-  }, [lessons, orderedDayKeysWithToday, todayKey]);
+  // On mount, after data has loaded, scroll to today's section.
+  useEffect(() => {
+    if (loading) return;
+    // Small delay to ensure DOM is rendered
+    setTimeout(() => {
+      const todaySection = document.getElementById('day-' + todayKey);
+      if (todaySection) {
+        suppressScrollUpdate.current = true;
+        todaySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.setTimeout(() => {
+          suppressScrollUpdate.current = false;
+        }, 450);
+      }
+    }, 300);
+  }, [loading]);
 
 
   // As the agenda scrolls, update the calendar month + selected-date
