@@ -1,15 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import {
-  HomeIcon,
-  PupilsIcon,
-  ScheduleIcon,
-  MessagesIcon,
-  PaymentsIcon,
-  SettingsIcon,
-} from "@/components/icons/DrivingIcons";
+import { Home, CalendarDays, Users, MessageSquare, Grid } from "lucide-react";
 
-export type NavKey = "home" | "pupils" | "schedule" | "messages" | "payments" | "settings";
+export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more";
 
 export interface BottomNavItem {
   key: string;
@@ -33,16 +26,29 @@ interface Props {
   onSelectWs?: (index: number) => void;
 }
 
-const defaultItems: { key: NavKey; to: string; label: string; Icon: ComponentType<{ size?: number; color?: string }> }[] = [
-  { key: "home", to: "/home", label: "Home", Icon: HomeIcon },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: PupilsIcon },
-  { key: "schedule", to: "/schedule", label: "Schedule", Icon: ScheduleIcon },
-  { key: "messages", to: "/messages", label: "Messages", Icon: MessagesIcon },
-  { key: "payments", to: "/payments", label: "Payments", Icon: PaymentsIcon },
-  { key: "settings", to: "/settings", label: "Settings", Icon: SettingsIcon },
+const defaultItems: {
+  key: NavKey;
+  to: string | null;
+  label: string;
+  Icon: ComponentType<{ size?: number; color?: string }>;
+  onClick?: () => void;
+}[] = [
+  { key: "home", to: "/home", label: "Home", Icon: Home },
+  { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
+  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
+  { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
+  {
+    key: "more",
+    to: null,
+    label: "More",
+    Icon: Grid,
+    onClick: () => {
+      window.dispatchEvent(new CustomEvent("dsm-workspace-change", { detail: { index: 7 } }));
+    },
+  },
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6", inactiveColor = "#6B7280", activeWs, onSelectWs }: Props) {
+export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044", inactiveColor = "#9CA3AF", activeWs, onSelectWs }: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
   // Track workspace changes broadcast by the home carousel so BottomNav stays
   // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
@@ -109,16 +115,17 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6",
               </button>
             );
           })
-        : defaultItems.map(({ key, to, label, Icon }) => {
-            const isActive = key === active;
+        : defaultItems.map(({ key, to, label, Icon, onClick }) => {
+            let isActive = false;
+            if (key === "home") isActive = active === "home" && (currentWs ?? 0) === 0;
+            else if (key === "schedule") isActive = active === "schedule";
+            else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
+            else if (key === "messages") isActive = active === "messages";
+            else if (key === "more") isActive = currentWs === 7;
             const color = isActive ? activeColor : inactiveColor;
-            return (
-              <Link
-                key={key}
-                to={to}
-                className="flex-1 flex flex-col items-center justify-center gap-1 select-none relative"
-                style={{ color }}
-              >
+            const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
+            const inner: ReactNode = (
+              <>
                 {isActive && (
                   <span
                     aria-hidden
@@ -127,10 +134,29 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6",
                   />
                 )}
                 <Icon size={22} color={color} />
-                <span className="text-[10px] whitespace-nowrap" style={{ color }}>
+                <span className={labelClass} style={{ color }}>
                   {label}
                 </span>
-              </Link>
+              </>
+            );
+            const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
+            if (to) {
+              return (
+                <Link key={key} to={to} className={cls} style={{ color }}>
+                  {inner}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={onClick}
+                className={cls}
+                style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              >
+                {inner}
+              </button>
             );
           })}
     </nav>
