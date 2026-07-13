@@ -676,28 +676,28 @@ function SchedulePage() {
       </div>
 
       <MonthStrip
-        viewMonth={calendarMonth}
-        selectedDateKey={selectedDateKey}
+        viewMonth={viewMonth}
+        selectedDate={selectedDate}
         todayKey={ymdLocal(today)}
         lessons={lessons ?? []}
         onPrevMonth={() => {
-          const d = new Date(calendarMonth);
+          const d = new Date(viewMonth);
           d.setMonth(d.getMonth() - 1);
-          setCalendarMonth(d);
+          setViewMonth(d);
         }}
         onNextMonth={() => {
-          const d = new Date(calendarMonth);
+          const d = new Date(viewMonth);
           d.setMonth(d.getMonth() + 1);
-          setCalendarMonth(d);
+          setViewMonth(d);
         }}
         onSelectDate={(key) => {
-          setSelectedDateKey(key);
+          setSelectedDate(key);
           scrollToDate(key);
         }}
         onToday={() => {
           const d = new Date(today);
           d.setDate(1);
-          setCalendarMonth(d);
+          setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
       />
