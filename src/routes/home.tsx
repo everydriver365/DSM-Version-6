@@ -1650,6 +1650,8 @@ function HomePage() {
   const [communityEmail, setCommunityEmail] = useState('');
   const [toolSearch, setToolSearch] = useState('');
   const [quickPage, setQuickPage] = useState(0);
+  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
   const dispatchWsChange = (index: number) => {
     if (typeof window === 'undefined') return;
