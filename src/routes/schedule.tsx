@@ -307,6 +307,10 @@ function SchedulePage() {
   const [hourlyRate, setHourlyRate] = useState<number>(40);
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
+  const [instructor, setInstructor] = useState<{ external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState<string | null>(null);
 
   const loading = lessons === null;
 
