@@ -26,13 +26,26 @@ interface Props {
   onSelectWs?: (index: number) => void;
 }
 
-const defaultItems: { key: NavKey; to: string; label: string; Icon: ComponentType<{ size?: number; color?: string }> }[] = [
-  { key: "home", to: "/home", label: "Home", Icon: HomeIcon },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: PupilsIcon },
-  { key: "schedule", to: "/schedule", label: "Schedule", Icon: ScheduleIcon },
-  { key: "messages", to: "/messages", label: "Messages", Icon: MessagesIcon },
-  { key: "payments", to: "/payments", label: "Payments", Icon: PaymentsIcon },
-  { key: "settings", to: "/settings", label: "Settings", Icon: SettingsIcon },
+const defaultItems: {
+  key: NavKey;
+  to: string | null;
+  label: string;
+  Icon: ComponentType<{ size?: number; color?: string }>;
+  onClick?: () => void;
+}[] = [
+  { key: "home", to: "/home", label: "Home", Icon: Home },
+  { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
+  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
+  { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
+  {
+    key: "more",
+    to: null,
+    label: "More",
+    Icon: Grid,
+    onClick: () => {
+      window.dispatchEvent(new CustomEvent("dsm-workspace-change", { detail: { index: 7 } }));
+    },
+  },
 ];
 
 export function BottomNav({ active, items, activeIndex, activeColor = "#1877D6", inactiveColor = "#6B7280", activeWs, onSelectWs }: Props) {
