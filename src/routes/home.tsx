@@ -5077,30 +5077,7 @@ function HomePage() {
                 <div style={{ fontFamily: PF }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
-                      <button
-                        type="button"
-                        aria-label="Add lesson"
-                        onClick={(e) => { e.stopPropagation(); navigate({ to: '/lessons/new' as never }); }}
-                        style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 6,
-                          background: '#185FA5',
-                          color: '#FFFFFF',
-                          border: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          cursor: 'pointer',
-                          padding: 0,
-                        }}
-                      >
-                        <Plus size={14} strokeWidth={2.5} />
-                      </button>
-                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
                     </div>
