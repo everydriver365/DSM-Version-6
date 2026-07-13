@@ -152,9 +152,10 @@ function LessonDetailPage() {
       return;
     }
     setDeleteOpen(false);
-    toast.success("Lesson deleted");
+    toastWithSync("Lesson deleted");
     navigate({ to: "/schedule" });
   }
+
 
   useEffect(() => {
     setLoading(true);
