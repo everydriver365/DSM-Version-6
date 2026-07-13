@@ -339,8 +339,16 @@ function NewLessonPage() {
       }
     }
 
+    toast.success('Lesson added', {
+      action: {
+        label: '📅 Sync to Google Cal',
+        onClick: () => syncToGoogleCalendar(user.id, token),
+      },
+      duration: 8000,
+    });
     navigate({ to: "/schedule" });
   }
+
 
   return (
     <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
