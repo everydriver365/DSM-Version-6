@@ -743,7 +743,6 @@ function SchedulePage() {
                 ref={(el) => {
                   if (el) {
                     dayRefs.current.set(row.key, el);
-                    if (isToday) todayRef.current = el;
                   } else {
                     dayRefs.current.delete(row.key);
                   }
