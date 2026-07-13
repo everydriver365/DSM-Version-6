@@ -565,8 +565,8 @@ function SchedulePage() {
     if (currentKey) {
       const [y, m, d] = currentKey.split("-").map(Number);
       const date = new Date(y, m - 1, d);
-      setSelectedDateKey((prev) => (prev === currentKey ? prev : currentKey!));
-      setCalendarMonth((prev) => {
+      setSelectedDate((prev) => (prev === currentKey ? prev : currentKey!));
+      setViewMonth((prev) => {
         if (prev.getFullYear() === date.getFullYear() && prev.getMonth() === date.getMonth()) return prev;
         return new Date(date.getFullYear(), date.getMonth(), 1);
       });
