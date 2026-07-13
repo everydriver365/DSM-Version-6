@@ -310,7 +310,6 @@ function SchedulePage() {
     return d;
   });
   const [selectedDateKey, setSelectedDateKey] = useState<string>(() => ymdLocal(today));
-  const [view, setView] = useState<"calendar" | "agenda">("calendar");
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const todayRef = useRef<HTMLDivElement | null>(null);
@@ -676,50 +675,32 @@ function SchedulePage() {
         <WorkspaceDots activeIndex={1} />
       </div>
 
-      <div
-        style={{
-          padding: "10px 16px 8px",
-          background: "transparent",
+      <MonthStrip
+        viewMonth={calendarMonth}
+        selectedDateKey={selectedDateKey}
+        todayKey={ymdLocal(today)}
+        lessons={lessons ?? []}
+        onPrevMonth={() => {
+          const d = new Date(calendarMonth);
+          d.setMonth(d.getMonth() - 1);
+          setCalendarMonth(d);
         }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            background: "#E9EDF2",
-            borderRadius: 12,
-            padding: 4,
-          }}
-        >
-          {(["calendar", "agenda"] as const).map((v) => {
-            const active = view === v;
-            return (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setView(v)}
-                style={{
-                  flex: 1,
-                  padding: "10px 0",
-                  borderRadius: 9,
-                  border: 0,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  fontWeight: active ? 500 : 400,
-                  textAlign: "center",
-                  background: active ? "#0F2044" : "transparent",
-                  color: active ? "#FFFFFF" : "#8A93A3",
-                  ...POPPINS,
-                }}
-              >
-                {v === "calendar" ? "Calendar" : "Agenda"}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-
+        onNextMonth={() => {
+          const d = new Date(calendarMonth);
+          d.setMonth(d.getMonth() + 1);
+          setCalendarMonth(d);
+        }}
+        onSelectDate={(key) => {
+          setSelectedDateKey(key);
+          scrollToDate(key);
+        }}
+        onToday={() => {
+          const d = new Date(today);
+          d.setDate(1);
+          setCalendarMonth(d);
+          scrollToDate(ymdLocal(today));
+        }}
+      />
 
       <div
         ref={scrollRef}
@@ -731,34 +712,7 @@ function SchedulePage() {
           padding: "0 16px calc(80px + env(safe-area-inset-bottom))",
         }}
       >
-        {view === "calendar" && (
-          <MonthCalendar
-            month={calendarMonth}
-            today={today}
-            selectedDateKey={selectedDateKey}
-            dotsByDay={dotsByDay}
-            onSelectDate={scrollToDate}
-            onPrevMonth={() => {
-              const d = new Date(calendarMonth);
-              d.setMonth(d.getMonth() - 1);
-              setCalendarMonth(d);
-            }}
-            onNextMonth={() => {
-              const d = new Date(calendarMonth);
-              d.setMonth(d.getMonth() + 1);
-              setCalendarMonth(d);
-            }}
-            onOpenMonthPicker={() => {
-              const d = new Date(today);
-              d.setDate(1);
-              setCalendarMonth(d);
-              scrollToDate(ymdLocal(today));
-            }}
-            onSearch={() => navigate({ to: "/search" as never })}
-            onAdd={() => navigate({ to: "/lessons/new" as never })}
-          />
-        )}
-        {view === "calendar" && <div style={{ height: 8 }} />}
+
 
         <div style={{ padding: "8px 0 0" }}>
 
@@ -797,6 +751,7 @@ function SchedulePage() {
             return (
               <div
                 key={row.key}
+                id={`day-${row.key}`}
                 ref={(el) => {
                   if (el) {
                     dayRefs.current.set(row.key, el);
@@ -1548,5 +1503,188 @@ const calChip: React.CSSProperties = {
   cursor: "pointer",
   padding: 0,
 };
+
+function MonthStrip({
+  viewMonth,
+  selectedDateKey,
+  todayKey,
+  lessons,
+  onPrevMonth,
+  onNextMonth,
+  onSelectDate,
+  onToday,
+}: {
+  viewMonth: Date;
+  selectedDateKey: string;
+  todayKey: string;
+  lessons: Lesson[];
+  onPrevMonth: () => void;
+  onNextMonth: () => void;
+  onSelectDate: (key: string) => void;
+  onToday: () => void;
+}) {
+  const scroller = useRef<HTMLDivElement | null>(null);
+
+  const days = useMemo(() => {
+    const first = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+    const daysIn = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 0).getDate();
+    const out: Date[] = [];
+    for (let i = 0; i < daysIn; i++) {
+      out.push(new Date(first.getFullYear(), first.getMonth(), i + 1));
+    }
+    return out;
+  }, [viewMonth]);
+
+  const lessonDates = useMemo(() => {
+    const s = new Set<string>();
+    for (const l of lessons) {
+      if ((l.status || "") === "cancelled") continue;
+      s.add(l.lesson_date.substring(0, 10));
+    }
+    return s;
+  }, [lessons]);
+
+  const monthLabel = viewMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  const dayLetters = ["M", "T", "W", "T", "F", "S", "S"];
+
+  // Centre the week that contains selectedDate (or today) when month changes.
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const centreKey = days.some((d) => ymdLocal(d) === selectedDateKey)
+      ? selectedDateKey
+      : days.some((d) => ymdLocal(d) === todayKey)
+        ? todayKey
+        : ymdLocal(days[0]);
+    const idx = days.findIndex((d) => ymdLocal(d) === centreKey);
+    if (idx < 0) return;
+    const colWidth = el.scrollWidth / days.length;
+    const target = colWidth * idx - el.clientWidth / 2 + colWidth / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: "auto" });
+  }, [days, selectedDateKey, todayKey]);
+
+  return (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderBottom: "0.5px solid #E2E6ED",
+        padding: "12px 16px",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+        ...POPPINS,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <button
+          type="button"
+          onClick={onPrevMonth}
+          aria-label="Previous month"
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0F2044", display: "inline-flex" }}
+        >
+          <IconChevronLeft size={18} stroke={2} />
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>{monthLabel}</div>
+          <button
+            type="button"
+            onClick={onToday}
+            style={{
+              background: "transparent",
+              border: 0,
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#1A52A0",
+              padding: "2px 6px",
+              ...POPPINS,
+            }}
+          >
+            Today
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={onNextMonth}
+          aria-label="Next month"
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0F2044", display: "inline-flex" }}
+        >
+          <IconChevronRight size={18} stroke={2} />
+        </button>
+      </div>
+
+      <div
+        ref={scroller}
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {days.map((d) => {
+          const key = ymdLocal(d);
+          const isToday = key === todayKey;
+          const isSelected = key === selectedDateKey;
+          const hasLessons = lessonDates.has(key);
+          const dow = (d.getDay() + 6) % 7; // Mon=0
+          const numBg = isToday ? "#0F2044" : isSelected ? "#1A52A0" : "transparent";
+          const numColor = isToday || isSelected ? "#FFFFFF" : "#0F2044";
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onSelectDate(key)}
+              style={{
+                flex: "0 0 calc(100% / 7)",
+                padding: "4px 2px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 4,
+                background: "transparent",
+                border: 0,
+                cursor: "pointer",
+                scrollSnapAlign: "start",
+                ...POPPINS,
+              }}
+            >
+              <span style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 500 }}>{dayLetters[dow]}</span>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: numBg,
+                  color: numColor,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {d.getDate()}
+              </span>
+              <span
+                aria-hidden
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: hasLessons ? "#1A52A0" : "transparent",
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 
 
