@@ -674,8 +674,8 @@ function SwipeableStatsCard({
       style={{
         position: "relative",
         background: "#FFFFFF",
-        borderRadius: 16,
-        padding: 16,
+        borderRadius: 12,
+        padding: "14px 16px",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         marginBottom: 14,
         userSelect: "none",
@@ -702,39 +702,27 @@ function SwipeableStatsCard({
         if (draggingMouse.current) commit();
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            background: "#EEF2F7",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            color: "#185FA5",
-          }}
-        >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ color: "#185FA5", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {s.icon}
-        </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
-            <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
-          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044" }}>{s.title}</div>
+          <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2 }}>{s.subtitleTop}</div>
+          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 1 }}>{s.subtitleBottom}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
           {s.right.kind === "circle" ? (
             <div
               style={{
-                width: 44,
-                height: 44,
+                width: 32,
+                height: 32,
                 borderRadius: "50%",
-                border: "2px solid #EEF2F7",
+                border: "3px solid #E6F1FB",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 20,
+                fontSize: 12,
                 fontWeight: 600,
                 color: s.right.active ? "#185FA5" : "#B0BAC9",
               }}
@@ -743,13 +731,13 @@ function SwipeableStatsCard({
             </div>
           ) : (
             <>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
               {s.right.label && <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.right.label}</div>}
             </>
           )}
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
         <div style={{ flex: 1 }} />
         <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 5 }}>
           {slides.map((sl, i) => {
@@ -764,9 +752,9 @@ function SwipeableStatsCard({
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  height: 6,
-                  width: active ? 16 : 6,
-                  borderRadius: active ? 4 : "50%",
+                  height: 5,
+                  width: active ? 16 : 5,
+                  borderRadius: active ? 3 : "50%",
                   background: active ? "#185FA5" : "#D0D5DD",
                 }}
               />
@@ -778,6 +766,7 @@ function SwipeableStatsCard({
     </div>
   );
 }
+
 
 
 
