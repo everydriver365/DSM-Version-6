@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { generateInsights, type InsightInput } from "@/lib/insights.functions";
-import { isDemoModeEnabled, getHomeDemoOverrides } from "@/lib/home-demo";
 
 import {
   Phone,
@@ -187,12 +186,7 @@ export const Route = createFileRoute("/home")({
   validateSearch: (search: Record<string, unknown>) => {
     const raw = search.ws;
     const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
-    const demoRaw = search.demo;
-    const demo = demoRaw === true || demoRaw === "true" ? true : undefined;
-    return {
-      ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined,
-      demo,
-    };
+    return { ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined };
   },
   component: HomePage,
 });
@@ -307,9 +301,9 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
 
 const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
-  borderRadius: 12,
-  padding: '12px 14px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+  borderRadius: 14,
+  padding: '12px 16px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
   display: 'flex',
   alignItems: 'center',
   gap: 12,
@@ -317,11 +311,7 @@ const NA_CARD_STYLE: React.CSSProperties = {
 };
 
 function NeedsAttentionRow({ item }: { item: NAItem }) {
-  const { accent, Icon } = NA_CATEGORY_STYLES[item.key];
-  // Red tint for urgent/overdue items
-  const isUrgent = item.key === 'certs_expired' || item.key === 'cancellations' || item.key === 'reschedules';
-  const chipBackground = isUrgent ? '#FCEBEB' : NA_CATEGORY_STYLES[item.key].chipBg;
-  const chipAccent = isUrgent ? '#A32D2D' : accent;
+  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
   return (
     <div
       onClick={item.onClick}
@@ -330,22 +320,21 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
       className="cf-tap"
       style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
     >
-      <div style={{ width: 32, height: 32, borderRadius: 8, background: chipBackground, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <Icon size={16} color={chipAccent} />
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={18} color={accent} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.primary}
         </div>
-        <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.subtitle}
         </div>
       </div>
-      <IconChevronRight size={15} color="#C7CCD4" />
+      <IconChevronRight size={15} color="#B0BAC9" />
     </div>
   );
 }
-
 
 function NeedsAttentionAllClear() {
   return (
@@ -377,8 +366,8 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '16px 16px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#A32D2D', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
@@ -680,8 +669,8 @@ function SwipeableStatsCard({
       style={{
         position: "relative",
         background: "#FFFFFF",
-        borderRadius: 12,
-        padding: "14px 16px",
+        borderRadius: 16,
+        padding: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         marginBottom: 14,
         userSelect: "none",
@@ -708,27 +697,39 @@ function SwipeableStatsCard({
         if (draggingMouse.current) commit();
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ color: "#185FA5", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            background: "#EEF2F7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            color: "#185FA5",
+          }}
+        >
           {s.icon}
-        </span>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044" }}>{s.title}</div>
-          <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2 }}>{s.subtitleTop}</div>
-          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 1 }}>{s.subtitleBottom}</div>
+        </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
+            <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
+          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
           {s.right.kind === "circle" ? (
             <div
               style={{
-                width: 32,
-                height: 32,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
-                border: "3px solid #E6F1FB",
+                border: "2px solid #EEF2F7",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 12,
+                fontSize: 20,
                 fontWeight: 600,
                 color: s.right.active ? "#185FA5" : "#B0BAC9",
               }}
@@ -737,13 +738,13 @@ function SwipeableStatsCard({
             </div>
           ) : (
             <>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
               {s.right.label && <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.right.label}</div>}
             </>
           )}
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
         <div style={{ flex: 1 }} />
         <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 5 }}>
           {slides.map((sl, i) => {
@@ -758,9 +759,9 @@ function SwipeableStatsCard({
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  height: 5,
-                  width: active ? 16 : 5,
-                  borderRadius: active ? 3 : "50%",
+                  height: 6,
+                  width: active ? 16 : 6,
+                  borderRadius: active ? 4 : "50%",
                   background: active ? "#185FA5" : "#D0D5DD",
                 }}
               />
@@ -772,7 +773,6 @@ function SwipeableStatsCard({
     </div>
   );
 }
-
 
 
 
@@ -1926,45 +1926,6 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
-
-  // ===== DEMO MODE (visual QA only — dev builds + ?demo=true) =====
-  // Never active in production bundles. Injects mock data into the UI layer
-  // only; does not write to Supabase. See src/lib/home-demo.ts.
-  const routeSearch = Route.useSearch();
-  const isDemo = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    if (!import.meta.env.DEV) return false;
-    return (routeSearch as any)?.demo === true || isDemoModeEnabled();
-  }, [routeSearch]);
-  const demoData = useMemo(() => (isDemo ? getHomeDemoOverrides() : null), [isDemo]);
-  useEffect(() => {
-    if (!demoData) return;
-    // Reference-equal setState calls bail out, so this settles after any
-    // real fetch that lands afterwards would otherwise clobber the mocks.
-    setAllLessons(demoData.allLessons);
-    setLessons(demoData.lessons as unknown as LessonRow[]);
-    setNextLesson(demoData.nextLesson as unknown as LessonRow);
-    setPrevLesson(demoData.prevLesson as unknown as any);
-    setOutstanding(demoData.outstanding);
-    setOutstandingBreakdown(demoData.outstandingBreakdown as any);
-    setWeekEarnings(demoData.weekEarnings);
-    setTodayEarnings(demoData.todayEarnings);
-    setActivePupilsCount(demoData.activePupilsCount);
-    setUpcomingTests(demoData.upcomingTests);
-    setSwapRequests(demoData.swapRequests as any);
-    setRecentCancellations(demoData.recentCancellations);
-    setRescheduleRequestsCount(demoData.rescheduleRequestsCount);
-    setExpiredCerts(demoData.expiredCerts);
-    setExpiringCerts(demoData.expiringCerts);
-    setPendingSwapCount(demoData.pendingSwapCount);
-    setUnreadMsgs(demoData.unreadMsgs as any);
-    setWorkingHours(demoData.workingHours);
-    setAiSuggestions(demoData.aiSuggestions);
-    // Short-circuit auth loading so demo screens render without a login.
-    setAuthChecked(true);
-    setUserId((cur) => cur ?? "demo-user");
-  });
-
 
   // Pupil cancellations (last 24h) + unread reschedule requests
   useEffect(() => {
@@ -4190,30 +4151,6 @@ function HomePage() {
       />
 
       <PushPermissionCard />
-      {isDemo && (
-        <div
-          aria-label="Demo mode"
-          style={{
-            position: 'fixed',
-            top: 'calc(env(safe-area-inset-top, 0px) + 6px)',
-            right: 8,
-            zIndex: 200,
-            background: 'rgba(255,255,255,0.92)',
-            color: '#6B7280',
-            fontFamily: 'Inter, sans-serif',
-            fontSize: 10,
-            fontWeight: 600,
-            padding: '2px 8px',
-            borderRadius: 999,
-            border: '1px solid #E5E7EB',
-            letterSpacing: 0.2,
-            pointerEvents: 'none',
-          }}
-        >
-          Demo mode
-        </div>
-      )}
-
 
       {/* SLIDE-IN MENU */}
       {menuOpen && (
@@ -5091,46 +5028,13 @@ function HomePage() {
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
             <SwipeableStatsCard slides={statSlides} />
 
-            {/* 2. WHAT'S NEW — renders only when there's genuinely new/time-relevant content */}
-            {(() => {
-              type WNRow = { key: string; dotColor: string; text: string; route: string };
-              const rows: WNRow[] = [];
-              // Placeholder for future wiring: DSM Live sessions starting within 24h,
-              // and new Marketplace listings in the instructor's category. When data
-              // sources are wired, push { key, dotColor, text, route } into rows.
-              if (rows.length === 0) return null;
-              return (
-                <div style={{ marginTop: 16, background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '14px 16px', fontFamily: PF }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 8 }}>What's new</div>
-                  <div>
-                    {rows.map((r, i) => (
-                      <div
-                        key={r.key}
-                        onClick={() => navigate({ to: r.route as never })}
-                        role="button"
-                        tabIndex={0}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 10,
-                          padding: '10px 0',
-                          borderTop: i === 0 ? 'none' : '1px solid #EEF2F7',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <span aria-hidden style={{ width: 6, height: 6, borderRadius: 999, background: r.dotColor, flexShrink: 0 }} />
-                        <div style={{ flex: 1, minWidth: 0, fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.text}</div>
-                        <IconChevronRight size={13} color="#C7CCD4" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
+
+
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
-
                 {tab === 'today' && (
                   <button
                     type="button"
@@ -5321,8 +5225,7 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: '#E6F1FB',
-                              borderLeft: '3px solid #185FA5',
+                              background: '#FFFFFF',
                               borderRadius: 12,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
@@ -5332,12 +5235,11 @@ function HomePage() {
                               cursor: 'pointer',
                             }}
                           >
-                            <Zap size={16} color="#185FA5" />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
-                              <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#185FA5', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
@@ -5349,7 +5251,7 @@ function HomePage() {
                                 color: '#FFFFFF',
                                 fontSize: 12,
                                 fontWeight: 500,
-                                padding: '8px 14px',
+                                padding: '8px 12px',
                                 borderRadius: 9,
                                 border: 'none',
                                 cursor: 'pointer',
@@ -5359,7 +5261,6 @@ function HomePage() {
                               Fill
                             </button>
                           </div>
-
                         </div>
                       );
 
@@ -5716,7 +5617,7 @@ function HomePage() {
 
             {/* 6. AI INSIGHT */}
             {(() => {
-              
+              const insightAccent = '#6B4FD6';
               const hasAiSuggestions = aiSuggestions && aiSuggestions.length > 0;
               const suggestions = hasAiSuggestions ? aiSuggestions : [];
               const currentSuggestion = suggestions[aiInsightIndex] ?? null;
@@ -5753,53 +5654,56 @@ function HomePage() {
                 <div
                   style={{
                     marginTop: 22,
-                    background: '#0F2044',
+                    background: '#FFFFFF',
                     borderRadius: 14,
                     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     overflow: 'hidden',
-                    padding: '14px 16px',
+                    display: 'flex',
+                    flexDirection: 'row',
                     width: '100%',
                   }}
                 >
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
-                    AI insight
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 400, color: '#FFFFFF', marginBottom: 10, lineHeight: 1.4 }}>
-                    {insightText}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    {hasAction && (
+                  <div style={{ width: 4, background: insightAccent, flexShrink: 0 }} aria-hidden />
+                  <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: insightAccent, letterSpacing: '0.04em', marginBottom: 5 }}>
+                      AI INSIGHT
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', marginBottom: 8, lineHeight: 1.35 }}>
+                      {insightText}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                      {hasAction ? (
+                        <button
+                          type="button"
+                          onClick={runAction}
+                          style={{
+                            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            fontSize: 12, fontWeight: 500, color: insightAccent,
+                          }}
+                        >
+                          {actionLabel} →
+                        </button>
+                      ) : <span />}
                       <button
                         type="button"
-                        onClick={runAction}
+                        onClick={() => setAiInsightDismissedKey(dismissKey)}
                         style={{
                           background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                           fontFamily: 'inherit',
-                          fontSize: 12, fontWeight: 500, color: '#6FA8D6',
+                          fontSize: 11, color: '#B0BAC9',
                         }}
                       >
-                        {actionLabel} →
+                        Dismiss
                       </button>
+                    </div>
+                    {aiInsightsLoading && !hasAiSuggestions && (
+                      <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => setAiInsightDismissedKey(dismissKey)}
-                      style={{
-                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        fontSize: 12, color: '#9AA6BC',
-                      }}
-                    >
-                      Dismiss
-                    </button>
                   </div>
-                  {aiInsightsLoading && !hasAiSuggestions && (
-                    <div style={{ fontSize: 12, color: '#9AA6BC', marginTop: 8 }}>Generating insights…</div>
-                  )}
                 </div>
               );
             })()}
-
 
 
 
