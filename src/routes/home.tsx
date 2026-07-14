@@ -5423,7 +5423,7 @@ function HomePage() {
                 <>
                   <div style={{ margin: '16px 16px 0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9CA3AF', fontWeight: 600 }}>Quick access</div>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#8A93A3', fontWeight: 600 }}>Quick access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -5431,10 +5431,10 @@ function HomePage() {
                               key={i}
                               onClick={() => setQuickPage(i)}
                               style={{
-                                width: quickPage === i ? 16 : 5,
-                                height: 5,
-                                borderRadius: 3,
-                                background: quickPage === i ? '#0F2044' : '#E5E7EB',
+                                width: quickPage === i ? 14 : 4,
+                                height: 4,
+                                borderRadius: 2,
+                                background: quickPage === i ? '#0F2044' : '#DCE2EA',
                                 transition: 'all 0.2s ease',
                                 cursor: 'pointer',
                               }}
@@ -5447,10 +5447,11 @@ function HomePage() {
                           style={{ background: 'none', border: 'none', padding: 0, marginLeft: 8, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                           aria-label="Search quick access"
                         >
-                          <Search size={16} color="#9CA3AF" />
+                          <IconSearch size={16} color="#8A93A3" />
                         </button>
                       </div>
                     </div>
+
                     <div
                       onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
                       onTouchEnd={(e) => {
