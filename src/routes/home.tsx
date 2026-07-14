@@ -1004,7 +1004,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
       {/* SECTION HEADER */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: "#12142B" }}>Top marketplace</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: "#12142B" }}>DSM Marketplace</div>
         <button
           type="button"
           onClick={() => navigate({ to: "/marketplace" as never })}
@@ -7242,7 +7242,7 @@ function DiscoverSection() {
       {hasMarket && listings && (
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={headerLabel}>Top marketplace</div>
+            <div style={headerLabel}>DSM Marketplace</div>
             <button type="button" style={viewAll} onClick={() => navigate({ to: "/marketplace" })}>
               View all →
             </button>
