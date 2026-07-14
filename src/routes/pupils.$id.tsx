@@ -2640,6 +2640,23 @@ function PupilDetailPage() {
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
+            <label className="block text-[12px] text-[#6B7280] mb-4">
+              Date of birth <span className="text-[11px] text-[#9CA3AF]">(optional)</span>
+              <input
+                type="date"
+                value={editDraft.date_of_birth}
+                onChange={(e) => setEditDraft((d) => ({ ...d, date_of_birth: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              />
+              {editDraft.date_of_birth && (
+                <span className="mt-1 inline-block text-[11px] text-[#9CA3AF]">
+                  {Math.floor((Date.now() - new Date(editDraft.date_of_birth).getTime()) / (365.25 * 86400000))} years old
+                </span>
+              )}
+            </label>
+
+
 
             <label className="text-[12px] text-[#6B7280] block mb-4">
               Status
