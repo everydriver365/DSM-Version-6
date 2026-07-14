@@ -4575,26 +4575,27 @@ function HomePage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 6,
-                padding: '8px 12px',
-                borderTop: '1px solid #EEF1F5',
-                background: '#FAFBFC',
+                padding: heroExpanded ? '10px 0 16px' : '8px 12px',
+                borderTop: heroExpanded ? 'none' : '1px solid #EEF1F5',
+                background: heroExpanded ? '#F3F8FF' : '#FAFBFC',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
-                fontSize: 11,
-                fontWeight: 700,
-                color: '#1877D6',
-                textTransform: 'uppercase',
-                letterSpacing: 0.6,
+                fontSize: heroExpanded ? 12 : 11,
+                fontWeight: heroExpanded ? 500 : 700,
+                color: heroExpanded ? '#185FA5' : '#1877D6',
+                textTransform: heroExpanded ? 'none' : 'uppercase',
+                letterSpacing: heroExpanded ? 0 : 0.6,
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
-              <ChevronDown
-                size={16}
-                color="#1877D6"
-                style={{ transition: 'transform 200ms', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-              />
+              {heroExpanded ? (
+                <ChevronUp size={14} color="#185FA5" />
+              ) : (
+                <ChevronDown size={16} color="#1877D6" />
+              )}
             </div>
           )}
+
 
           {upcoming && heroExpanded && (
             <HeroExpandedPanel
