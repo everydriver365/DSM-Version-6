@@ -43,7 +43,7 @@ const defaultItems: {
     label: "More",
     Icon: Grid,
     onClick: () => {
-      window.dispatchEvent(new CustomEvent("dsm-workspace-change", { detail: { index: 7 } }));
+      window.dispatchEvent(new CustomEvent("dsm-more-open"));
     },
   },
 ];
