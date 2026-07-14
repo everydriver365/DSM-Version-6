@@ -5033,13 +5033,46 @@ function HomePage() {
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
             <SwipeableStatsCard slides={statSlides} />
 
-
-
+            {/* 2. WHAT'S NEW — renders only when there's genuinely new/time-relevant content */}
+            {(() => {
+              type WNRow = { key: string; dotColor: string; text: string; route: string };
+              const rows: WNRow[] = [];
+              // Placeholder for future wiring: DSM Live sessions starting within 24h,
+              // and new Marketplace listings in the instructor's category. When data
+              // sources are wired, push { key, dotColor, text, route } into rows.
+              if (rows.length === 0) return null;
+              return (
+                <div style={{ marginTop: 16, background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '14px 16px', fontFamily: PF }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 8 }}>What's new</div>
+                  <div>
+                    {rows.map((r, i) => (
+                      <div
+                        key={r.key}
+                        onClick={() => navigate({ to: r.route as never })}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '10px 0',
+                          borderTop: i === 0 ? 'none' : '1px solid #EEF2F7',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <span aria-hidden style={{ width: 6, height: 6, borderRadius: 999, background: r.dotColor, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0, fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.text}</div>
+                        <IconChevronRight size={13} color="#C7CCD4" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
+
                 {tab === 'today' && (
                   <button
                     type="button"
