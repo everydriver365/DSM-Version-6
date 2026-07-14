@@ -398,6 +398,8 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      date_of_birth: editDraft.date_of_birth || null,
+
       status: editDraft.status || "active",
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
