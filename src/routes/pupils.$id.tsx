@@ -333,6 +333,10 @@ function PupilDetailPage() {
   const [pupilSeries, setPupilSeries] = useState<Array<{ id: string; day_of_week: string; lesson_time: string; duration_minutes: number; frequency: string }> | null>(null);
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
+  const [prepaidEditing, setPrepaidEditing] = useState(false);
+  const [prepaidHoursDraft, setPrepaidHoursDraft] = useState("");
+  const [accountBalDraft, setAccountBalDraft] = useState("");
+  const [prepaidSaving, setPrepaidSaving] = useState(false);
   const [editDraft, setEditDraft] = useState<{
     first_name: string;
     last_name: string;
