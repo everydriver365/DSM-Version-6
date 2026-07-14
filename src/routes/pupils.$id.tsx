@@ -368,6 +368,8 @@ function PupilDetailPage() {
       last_name: pupil.last_name ?? "",
       phone: pupil.phone ?? "",
       email: pupil.email ?? "",
+      date_of_birth: pupil.date_of_birth ?? "",
+
       status: (pupil.status ?? "active") || "active",
       prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
       prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
