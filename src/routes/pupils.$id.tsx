@@ -338,6 +338,7 @@ function PupilDetailPage() {
     last_name: string;
     phone: string;
     email: string;
+    date_of_birth: string;
     status: string;
     prepaid_hours: string;
     prepaid_amount_paid: string;
@@ -349,6 +350,7 @@ function PupilDetailPage() {
     last_name: "",
     phone: "",
     email: "",
+    date_of_birth: "",
     status: "active",
     prepaid_hours: "",
     prepaid_amount_paid: "",
@@ -356,6 +358,7 @@ function PupilDetailPage() {
     custom_rate_90: "",
     custom_rate_120: "",
   });
+
 
 
   const openEditSheet = () => {
