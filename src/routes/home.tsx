@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { generateInsights, type InsightInput } from "@/lib/insights.functions";
+import { isDemoModeEnabled, getHomeDemoOverrides } from "@/lib/home-demo";
 
 import {
   Phone,
@@ -1920,6 +1921,40 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // ===== DEMO MODE (visual QA only — dev builds + ?demo=true) =====
+  // Never active in production bundles. Injects mock data into the UI layer
+  // only; does not write to Supabase. See src/lib/home-demo.ts.
+  const isDemo = useMemo(() => isDemoModeEnabled(), []);
+  const demoData = useMemo(() => (isDemo ? getHomeDemoOverrides() : null), [isDemo]);
+  useEffect(() => {
+    if (!demoData) return;
+    // Reference-equal setState calls bail out, so this settles after any
+    // real fetch that lands afterwards would otherwise clobber the mocks.
+    setAllLessons(demoData.allLessons);
+    setLessons(demoData.lessons as unknown as LessonRow[]);
+    setNextLesson(demoData.nextLesson as unknown as LessonRow);
+    setPrevLesson(demoData.prevLesson as unknown as any);
+    setOutstanding(demoData.outstanding);
+    setOutstandingBreakdown(demoData.outstandingBreakdown as any);
+    setWeekEarnings(demoData.weekEarnings);
+    setTodayEarnings(demoData.todayEarnings);
+    setActivePupilsCount(demoData.activePupilsCount);
+    setUpcomingTests(demoData.upcomingTests);
+    setSwapRequests(demoData.swapRequests as any);
+    setRecentCancellations(demoData.recentCancellations);
+    setRescheduleRequestsCount(demoData.rescheduleRequestsCount);
+    setExpiredCerts(demoData.expiredCerts);
+    setExpiringCerts(demoData.expiringCerts);
+    setPendingSwapCount(demoData.pendingSwapCount);
+    setUnreadMsgs(demoData.unreadMsgs as any);
+    setWorkingHours(demoData.workingHours);
+    setAiSuggestions(demoData.aiSuggestions);
+    // Short-circuit auth loading so demo screens render without a login.
+    setAuthChecked(true);
+    setUserId((cur) => cur ?? "demo-user");
+  });
+
 
   // Pupil cancellations (last 24h) + unread reschedule requests
   useEffect(() => {
@@ -4145,6 +4180,30 @@ function HomePage() {
       />
 
       <PushPermissionCard />
+      {isDemo && (
+        <div
+          aria-label="Demo mode"
+          style={{
+            position: 'fixed',
+            top: 'calc(env(safe-area-inset-top, 0px) + 6px)',
+            right: 8,
+            zIndex: 200,
+            background: 'rgba(255,255,255,0.92)',
+            color: '#6B7280',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 10,
+            fontWeight: 600,
+            padding: '2px 8px',
+            borderRadius: 999,
+            border: '1px solid #E5E7EB',
+            letterSpacing: 0.2,
+            pointerEvents: 'none',
+          }}
+        >
+          Demo mode
+        </div>
+      )}
+
 
       {/* SLIDE-IN MENU */}
       {menuOpen && (
