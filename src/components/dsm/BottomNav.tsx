@@ -37,15 +37,8 @@ const defaultItems: {
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
-  {
-    key: "more",
-    to: null,
-    label: "More",
-    Icon: Grid,
-    onClick: () => {
-      window.dispatchEvent(new CustomEvent("dsm-more-open"));
-    },
-  },
+  { key: "more", to: "/more", label: "More", Icon: Grid },
+
 ];
 
 export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044", inactiveColor = "#9CA3AF", activeWs, onSelectWs }: Props) {
