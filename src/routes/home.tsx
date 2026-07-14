@@ -5230,7 +5230,8 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: '#FFFFFF',
+                              background: '#E6F1FB',
+                              borderLeft: '3px solid #185FA5',
                               borderRadius: 12,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
@@ -5240,11 +5241,12 @@ function HomePage() {
                               cursor: 'pointer',
                             }}
                           >
+                            <Zap size={16} color="#185FA5" />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
-                              <div style={{ fontSize: 11, color: '#185FA5', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
@@ -5256,7 +5258,7 @@ function HomePage() {
                                 color: '#FFFFFF',
                                 fontSize: 12,
                                 fontWeight: 500,
-                                padding: '8px 12px',
+                                padding: '8px 14px',
                                 borderRadius: 9,
                                 border: 'none',
                                 cursor: 'pointer',
@@ -5266,6 +5268,7 @@ function HomePage() {
                               Fill
                             </button>
                           </div>
+
                         </div>
                       );
 
