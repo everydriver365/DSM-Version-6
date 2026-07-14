@@ -5387,10 +5387,9 @@ function HomePage() {
                     onClick={() => { goTile(tile); onTap?.(); }}
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 16,
-                      padding: '12px 10px',
-                      border: '0.5px solid #F0F0F0',
-                      boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                      borderRadius: 14,
+                      padding: '14px 12px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                       minHeight: 80,
                       display: 'flex',
                       flexDirection: 'column',
@@ -5401,18 +5400,19 @@ function HomePage() {
                     }}
                   >
                     <div style={{
-                      width: 40, height: 40, borderRadius: 12,
-                      background: `${tile.colour}15`,
+                      width: 36, height: 36, borderRadius: 10,
+                      background: tile.chipBg ?? `${tile.colour}15`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 6,
+                      marginBottom: 8,
                     }}>
-                      <Icon size={20} color={tile.colour} />
+                      <Icon size={18} color={tile.colour} />
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{tile.label}</div>
-                    <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2 }}>{tile.label}</div>
+                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
                   </button>
                 );
               };
+
 
               const sq = quickSearchQuery.trim().toLowerCase();
               const searchResults = sq
