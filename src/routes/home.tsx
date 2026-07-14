@@ -126,7 +126,9 @@ import {
   IconBriefcase,
   IconCircleCheck,
   IconArrowRight,
+  IconGift,
 } from "@tabler/icons-react";
+
 
 
 import {
@@ -284,14 +286,14 @@ function formatMins(mins: number) {
 
 
 type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules' | 'certs_expired' | 'certs_expiring';
+  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules' | 'certs_expired' | 'certs_expiring' | 'birthday';
   count: number;
   primary: string;
   subtitle: string;
   onClick: () => void;
 };
 
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
+const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'birthday', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
   tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
@@ -302,7 +304,9 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
   reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
   certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: AlertCircle },
   certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: Clock },
+  birthday: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconGift },
 };
+
 
 const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
@@ -1698,6 +1702,10 @@ function HomePage() {
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
   const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
   const [expiringCerts, setExpiringCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
+  type BirthdayPupil = { id: string; name: string | null; first_name: string | null; phone: string | null; date_of_birth: string; calendar_colour: string | null };
+  const [birthdayToday, setBirthdayToday] = useState<BirthdayPupil[]>([]);
+  const [birthdaySheetOpen, setBirthdaySheetOpen] = useState(false);
+
 
   // ----- Desktop layout (>=768px) — mobile untouched -----
   const [isDesktop, setIsDesktop] = useState<boolean>(() =>
@@ -1815,6 +1823,32 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Birthday reminders
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('pupils')
+        .select('id, name, first_name, phone, date_of_birth, calendar_colour')
+        .eq('instructor_id', userId)
+        .not('date_of_birth', 'is', null)
+        .neq('status', 'archived');
+      if (cancelled) return;
+      const today = new Date();
+      const m = today.getMonth() + 1;
+      const d = today.getDate();
+      const rows = ((data ?? []) as BirthdayPupil[]).filter((p) => {
+        if (!p.date_of_birth) return false;
+        const dob = new Date(p.date_of_birth);
+        return dob.getMonth() + 1 === m && dob.getDate() === d;
+      });
+      setBirthdayToday(rows);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
@@ -4494,7 +4528,17 @@ function HomePage() {
               subtitle: latestEnq ? latestEnq.name : `${naEnquiries} items need attention`,
               onClick: () => navigate({ to: '/waitlist' as never }),
             },
+            {
+              key: 'birthday',
+              count: birthdayToday.length,
+              primary: birthdayToday.length === 1
+                ? `${birthdayToday[0].first_name || birthdayToday[0].name || 'A pupil'}'s birthday today 🎂`
+                : `${birthdayToday.length} birthdays today 🎂`,
+              subtitle: 'Tap to send a gift message',
+              onClick: () => setBirthdaySheetOpen(true),
+            },
           ];
+
           return <NeedsAttentionSection items={items} />;
         })()}
 
@@ -5667,8 +5711,79 @@ function HomePage() {
 
 
 
-
+      {birthdaySheetOpen && (
+        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/40" onClick={() => setBirthdaySheetOpen(false)} />
+          <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
+            <div className="flex items-center justify-between px-4 mb-3">
+              <div className="flex items-center gap-2">
+                <IconGift size={20} color="#6B4FD6" />
+                <div className="text-[16px] font-semibold" style={{ color: '#0F2044' }}>
+                  {birthdayToday.length === 1 ? 'Birthday today' : `${birthdayToday.length} birthdays today`}
+                </div>
+              </div>
+              <button type="button" onClick={() => setBirthdaySheetOpen(false)} aria-label="Close">
+                <IconX size={20} color="#6B7280" />
+              </button>
+            </div>
+            {birthdayToday.map((p) => {
+              const displayName = p.first_name || p.name || 'Pupil';
+              const initials = displayName.split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
+              const age = p.date_of_birth
+                ? Math.floor((Date.now() - new Date(p.date_of_birth).getTime()) / (365.25 * 86400000))
+                : null;
+              const bg = p.calendar_colour || '#6B4FD6';
+              const giftMsg = encodeURIComponent(
+                `Happy birthday ${displayName}! 🎂 As a birthday treat, I'd like to offer you £10 off your next lesson. Just mention this message when we next speak. Hope you have a wonderful day!`
+              );
+              return (
+                <div key={p.id} style={{ borderTop: '0.5px solid #F3F4F6' }}>
+                  <div className="flex items-center gap-3" style={{ padding: '14px 16px' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 20, background: bg, color: '#FFFFFF', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14px] font-semibold truncate" style={{ color: '#0F2044' }}>{displayName}</div>
+                      {age !== null && (
+                        <div className="text-[12px]" style={{ color: '#9CA3AF' }}>{age} today 🎂</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 px-4 pb-3">
+                    <a
+                      href={p.phone ? `sms:${p.phone}?body=${giftMsg}` : `sms:?body=${giftMsg}`}
+                      className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
+                    >
+                      🎁 Send gift message
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => { setBirthdaySheetOpen(false); navigate({ to: '/messages/$pupilId' as never, params: { pupilId: p.id } as never }); }}
+                      className="flex-1 rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      style={{ background: '#0F2044', color: '#FFFFFF', border: 'none', cursor: 'pointer' }}
+                    >
+                      💬 Message
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="px-4 mt-2">
+              <button
+                type="button"
+                onClick={() => setBirthdaySheetOpen(false)}
+                className="w-full rounded-xl py-2.5 text-[13px] font-semibold"
+                style={{ background: '#F3F4F6', color: '#6B7280', border: 'none', cursor: 'pointer' }}
+              >
+                ✓ Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
 
   );
 
@@ -7169,9 +7284,12 @@ function DiscoverSection() {
           </div>
         </div>
       )}
+
+
     </div>
   );
 }
+
 
 
 

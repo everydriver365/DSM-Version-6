@@ -61,6 +61,8 @@ function NewPupilPage() {
   const [firstName, setFirstName] = useState(preFirst);
   const [lastName, setLastName] = useState(preLast);
   const [phone, setPhone] = useState(search.phone ?? "");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState("");
   const [leadSource, setLeadSource] = useState("");
@@ -163,6 +165,8 @@ function NewPupilPage() {
       status: "active",
     };
     if (phone.trim()) insert.phone = phone.trim();
+    if (dateOfBirth) insert.date_of_birth = dateOfBirth;
+
     if (address.trim()) insert.address = address.trim();
     if (postcode.trim()) insert.postcode = postcode.trim().toUpperCase();
     if (leadSource) {
@@ -264,6 +268,32 @@ function NewPupilPage() {
             onChange={(e) => setPhone(e.target.value)}
             maxLength={30}
           />
+          <div className="flex flex-col gap-1">
+            <label
+              className="text-[13px] font-medium text-[#0B1F3A]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Date of birth
+            </label>
+            <input
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              className="text-[14px] text-[#0B1F3A]"
+              style={{
+                height: 44,
+                borderRadius: 8,
+                border: "1px solid #EEF2F7",
+                padding: "0 12px",
+                backgroundColor: "#fff",
+                fontFamily: "Inter, sans-serif",
+              }}
+            />
+            <p className="text-[11px]" style={{ color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
+              Optional — used for birthday reminders
+            </p>
+          </div>
+
           <Input
             ref={addressInputRef}
             label="Home address"

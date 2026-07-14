@@ -125,7 +125,9 @@ interface Pupil {
   test_examiner: string | null;
   lat: number | null;
   lng: number | null;
+  date_of_birth: string | null;
 }
+
 
 interface Lesson {
   id: string;
@@ -336,6 +338,7 @@ function PupilDetailPage() {
     last_name: string;
     phone: string;
     email: string;
+    date_of_birth: string;
     status: string;
     prepaid_hours: string;
     prepaid_amount_paid: string;
@@ -347,6 +350,7 @@ function PupilDetailPage() {
     last_name: "",
     phone: "",
     email: "",
+    date_of_birth: "",
     status: "active",
     prepaid_hours: "",
     prepaid_amount_paid: "",
@@ -356,6 +360,7 @@ function PupilDetailPage() {
   });
 
 
+
   const openEditSheet = () => {
     if (!pupil) return;
     setEditDraft({
@@ -363,6 +368,8 @@ function PupilDetailPage() {
       last_name: pupil.last_name ?? "",
       phone: pupil.phone ?? "",
       email: pupil.email ?? "",
+      date_of_birth: pupil.date_of_birth ?? "",
+
       status: (pupil.status ?? "active") || "active",
       prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
       prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
@@ -391,6 +398,8 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      date_of_birth: editDraft.date_of_birth || null,
+
       status: editDraft.status || "active",
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
@@ -633,8 +642,9 @@ function PupilDetailPage() {
         driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120,
         buffer_after_minutes, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status, test_examiner
+        test_status, test_examiner, date_of_birth
       `)
+
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
@@ -2630,6 +2640,23 @@ function PupilDetailPage() {
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
+            <label className="block text-[12px] text-[#6B7280] mb-4">
+              Date of birth <span className="text-[11px] text-[#9CA3AF]">(optional)</span>
+              <input
+                type="date"
+                value={editDraft.date_of_birth}
+                onChange={(e) => setEditDraft((d) => ({ ...d, date_of_birth: e.target.value }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              />
+              {editDraft.date_of_birth && (
+                <span className="mt-1 inline-block text-[11px] text-[#9CA3AF]">
+                  {Math.floor((Date.now() - new Date(editDraft.date_of_birth).getTime()) / (365.25 * 86400000))} years old
+                </span>
+              )}
+            </label>
+
+
 
             <label className="text-[12px] text-[#6B7280] block mb-4">
               Status
