@@ -5660,52 +5660,90 @@ function HomePage() {
                   style={{
                     marginTop: 22,
                     background: '#FFFFFF',
-                    borderRadius: 14,
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    borderRadius: 12,
+                    boxShadow: '0 2px 8px rgba(11,31,58,0.04)',
+                    borderLeft: `4px solid ${insightAccent}`,
                     overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'row',
                     width: '100%',
+                    fontFamily: 'Inter, sans-serif',
                   }}
                 >
-                  <div style={{ width: 4, background: insightAccent, flexShrink: 0 }} aria-hidden />
-                  <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: insightAccent, letterSpacing: '0.04em', marginBottom: 5 }}>
-                      AI INSIGHT
+                  <div style={{ padding: '14px 16px 10px' }}>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: insightAccent,
+                        letterSpacing: '0.14em',
+                        textTransform: 'uppercase',
+                        marginBottom: 6,
+                      }}
+                    >
+                      AI Insight
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', marginBottom: 8, lineHeight: 1.35 }}>
+                    <div
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: insightInk,
+                        lineHeight: 1.3,
+                      }}
+                    >
                       {insightText}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                      {hasAction ? (
-                        <button
-                          type="button"
-                          onClick={runAction}
-                          style={{
-                            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                            fontFamily: 'inherit',
-                            fontSize: 12, fontWeight: 500, color: insightAccent,
-                          }}
-                        >
-                          {actionLabel} →
-                        </button>
-                      ) : <span />}
+                  </div>
+                  <div
+                    style={{
+                      padding: '2px 16px 14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    {hasAction ? (
                       <button
                         type="button"
-                        onClick={() => setAiInsightDismissedKey(dismissKey)}
+                        onClick={runAction}
                         style={{
-                          background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
                           fontFamily: 'inherit',
-                          fontSize: 11, color: '#B0BAC9',
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: insightAccent,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
                         }}
                       >
-                        Dismiss
+                        {actionLabel}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
                       </button>
-                    </div>
-                    {aiInsightsLoading && !hasAiSuggestions && (
-                      <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
-                    )}
+                    ) : <span />}
+                    <button
+                      type="button"
+                      onClick={() => setAiInsightDismissedKey(dismissKey)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: '#94A3B8',
+                      }}
+                    >
+                      Dismiss
+                    </button>
                   </div>
+                  {aiInsightsLoading && !hasAiSuggestions && (
+                    <div style={{ padding: '0 16px 12px', fontSize: 12, color: MUTED }}>Generating insights…</div>
+                  )}
                 </div>
               );
             })()}
