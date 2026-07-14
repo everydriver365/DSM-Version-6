@@ -13,18 +13,29 @@
  * `src/routes/home.tsx` (search for "home-demo" and "isDemo").
  */
 
-/** True only on dev/preview builds AND with `?demo=true` in the URL. */
+/**
+ * True only on dev/preview builds AND when demo mode is requested via URL.
+ * Accepts either `?demo=true` (query) or `#demo` (hash). A service worker on
+ * preview strips unknown query params, so hash works most reliably. Once
+ * detected, the flag is cached in sessionStorage so client-side navs keep it.
+ */
 export function isDemoModeEnabled(): boolean {
   if (typeof window === "undefined") return false;
-  // Strip demo mode from production builds entirely.
   if (!import.meta.env.DEV) return false;
   try {
     const params = new URLSearchParams(window.location.search);
-    return params.get("demo") === "true";
+    const inQuery = params.get("demo") === "true";
+    const inHash = /(^|[#&])demo(=true)?(&|$)/.test(window.location.hash || "");
+    if (inQuery || inHash) {
+      try { window.sessionStorage.setItem("dsm-home-demo", "1"); } catch {}
+      return true;
+    }
+    return window.sessionStorage.getItem("dsm-home-demo") === "1";
   } catch {
     return false;
   }
 }
+
 
 function ymdLondon(d: Date): string {
   const parts = new Intl.DateTimeFormat("en-GB", {
