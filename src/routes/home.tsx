@@ -5194,10 +5194,14 @@ function HomePage() {
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
               const goTile = (tile: QuickTile) => {
-                if (typeof tile.wsIndex === 'number') scrollToWs(tile.wsIndex);
-                else if (tile.route === null) scrollToWs(7);
-                else navigate({ to: tile.route as never });
+                if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
+                if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
+                if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
+                if (tile.wsIndex === 6) { navigate({ to: '/dsm-live' as never }); return; }
+                if (tile.wsIndex === 7 || tile.route === null) { navigate({ to: '/more' as never }); return; }
+                navigate({ to: tile.route as never });
               };
+
 
               const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
                 const Icon = tile.icon;
