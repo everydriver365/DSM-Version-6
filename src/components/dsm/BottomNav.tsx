@@ -115,7 +115,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
             else if (key === "schedule") isActive = active === "schedule";
             else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
             else if (key === "messages") isActive = active === "messages";
-            else if (key === "more") isActive = currentWs === 7;
+            else if (key === "more") isActive = active === "more";
             const color = isActive ? activeColor : inactiveColor;
             const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
             const inner: ReactNode = (
