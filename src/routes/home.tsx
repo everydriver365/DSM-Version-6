@@ -187,7 +187,12 @@ export const Route = createFileRoute("/home")({
   validateSearch: (search: Record<string, unknown>) => {
     const raw = search.ws;
     const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
-    return { ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined };
+    const demoRaw = search.demo;
+    const demo = demoRaw === true || demoRaw === "true" ? true : undefined;
+    return {
+      ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined,
+      demo,
+    };
   },
   component: HomePage,
 });
