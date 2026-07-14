@@ -590,7 +590,6 @@ function SchedulePage() {
         "?",
     );
     if (!confirmed) {
-      setSwipedLessonId(null);
       return;
     }
 
@@ -659,11 +658,9 @@ function SchedulePage() {
         setLessons((prev) => (prev ?? []).filter((l: any) => l.id !== lesson.id));
       }
 
-      setSwipedLessonId(null);
       toast.success(endSeries ? "Series ended" : "Lesson deleted");
     } catch (err) {
       toast.error("Failed to delete lesson");
-      setSwipedLessonId(null);
     }
   }, []);
 
