@@ -12,7 +12,6 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/schedule")({
@@ -908,7 +907,6 @@ function SchedulePage() {
           )}
           <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
         </div>
-        <WorkspaceDots activeIndex={1} />
       </div>
 
       {moveMode && movingLesson && (
