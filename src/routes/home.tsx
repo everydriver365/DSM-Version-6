@@ -5662,56 +5662,53 @@ function HomePage() {
                 <div
                   style={{
                     marginTop: 22,
-                    background: '#FFFFFF',
+                    background: '#0F2044',
                     borderRadius: 14,
                     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'row',
+                    padding: '14px 16px',
                     width: '100%',
                   }}
                 >
-                  <div style={{ width: 4, background: insightAccent, flexShrink: 0 }} aria-hidden />
-                  <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: insightAccent, letterSpacing: '0.04em', marginBottom: 5 }}>
-                      AI INSIGHT
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', marginBottom: 8, lineHeight: 1.35 }}>
-                      {insightText}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                      {hasAction ? (
-                        <button
-                          type="button"
-                          onClick={runAction}
-                          style={{
-                            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                            fontFamily: 'inherit',
-                            fontSize: 12, fontWeight: 500, color: insightAccent,
-                          }}
-                        >
-                          {actionLabel} →
-                        </button>
-                      ) : <span />}
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
+                    AI insight
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 400, color: '#FFFFFF', marginBottom: 10, lineHeight: 1.4 }}>
+                    {insightText}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    {hasAction && (
                       <button
                         type="button"
-                        onClick={() => setAiInsightDismissedKey(dismissKey)}
+                        onClick={runAction}
                         style={{
                           background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                           fontFamily: 'inherit',
-                          fontSize: 11, color: '#B0BAC9',
+                          fontSize: 12, fontWeight: 500, color: '#6FA8D6',
                         }}
                       >
-                        Dismiss
+                        {actionLabel} →
                       </button>
-                    </div>
-                    {aiInsightsLoading && !hasAiSuggestions && (
-                      <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => setAiInsightDismissedKey(dismissKey)}
+                      style={{
+                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        fontSize: 12, color: '#9AA6BC',
+                      }}
+                    >
+                      Dismiss
+                    </button>
                   </div>
+                  {aiInsightsLoading && !hasAiSuggestions && (
+                    <div style={{ fontSize: 12, color: '#9AA6BC', marginTop: 8 }}>Generating insights…</div>
+                  )}
                 </div>
               );
             })()}
+
 
 
 
