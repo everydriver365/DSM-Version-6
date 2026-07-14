@@ -1702,6 +1702,10 @@ function HomePage() {
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
   const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
   const [expiringCerts, setExpiringCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
+  type BirthdayPupil = { id: string; name: string | null; first_name: string | null; phone: string | null; date_of_birth: string; calendar_colour: string | null };
+  const [birthdayToday, setBirthdayToday] = useState<BirthdayPupil[]>([]);
+  const [birthdaySheetOpen, setBirthdaySheetOpen] = useState(false);
+
 
   // ----- Desktop layout (>=768px) — mobile untouched -----
   const [isDesktop, setIsDesktop] = useState<boolean>(() =>
