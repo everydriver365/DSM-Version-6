@@ -325,8 +325,6 @@ function SchedulePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
-  const [swipedLessonId, setSwipedLessonId] = useState<string | null>(null);
-  const swipeStartX = useRef(0);
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
@@ -592,7 +590,6 @@ function SchedulePage() {
         "?",
     );
     if (!confirmed) {
-      setSwipedLessonId(null);
       return;
     }
 
@@ -661,11 +658,9 @@ function SchedulePage() {
         setLessons((prev) => (prev ?? []).filter((l: any) => l.id !== lesson.id));
       }
 
-      setSwipedLessonId(null);
       toast.success(endSeries ? "Series ended" : "Lesson deleted");
     } catch (err) {
       toast.error("Failed to delete lesson");
-      setSwipedLessonId(null);
     }
   }, []);
 
@@ -838,19 +833,6 @@ function SchedulePage() {
   // ── Chrome ────────────────────────────────────────────────────────────
   return (
     <div
-      onTouchStart={(e) => {
-        (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }}
-      onTouchEnd={(e) => {
-        const s = (window as any).__wsSwipe;
-        if (!s) return;
-        const dx = e.changedTouches[0].clientX - s.x;
-        const dy = e.changedTouches[0].clientY - s.y;
-        (window as any).__wsSwipe = null;
-        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
-        const target = dx < 0 ? 2 : 0; // schedule=1: left→pupils(2), right→today(0)
-        navigate({ to: "/home" as never, search: { ws: target } as any });
-      }}
       style={{
         position: "fixed",
         inset: 0,
@@ -1392,15 +1374,10 @@ function SchedulePage() {
                           const isLessonRow = e.kind === "lesson";
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
-                          const isSwiped = isLessonRow && swipedLessonId === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
-                                if (isSwiped) {
-                                  setSwipedLessonId(null);
-                                  return;
-                                }
                                 goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
                               }
                             : isBlockRow
@@ -1445,59 +1422,8 @@ function SchedulePage() {
                                 }}
                               />
                               <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
-                                {isLessonRow && (
-                                  <div
-                                    onClick={() =>
-                                      handleDeleteLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)
-                                    }
-                                    style={{
-                                      position: "absolute",
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 0,
-                                      width: 80,
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      background: "#CC2229",
-                                      cursor: "pointer",
-                                    }}
-                                    role="button"
-                                    aria-label="Delete lesson"
-                                  >
-                                    <Trash2 size={20} color="#FFFFFF" />
-                                    <span
-                                      style={{
-                                        fontSize: 10,
-                                        color: "#FFFFFF",
-                                        fontWeight: 600,
-                                        marginTop: 2,
-                                      }}
-                                    >
-                                      Delete
-                                    </span>
-                                  </div>
-                                )}
                                 <div
                                   onClick={onCardClick}
-                                  onTouchStart={
-                                    isLessonRow
-                                      ? (evt) => {
-                                          swipeStartX.current = evt.touches[0].clientX;
-                                        }
-                                      : undefined
-                                  }
-                                  onTouchEnd={
-                                    isLessonRow
-                                      ? (evt) => {
-                                          const dx = swipeStartX.current - evt.changedTouches[0].clientX;
-                                          const lessonId = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id;
-                                          if (dx > 60) setSwipedLessonId(lessonId);
-                                          else if (dx < -20) setSwipedLessonId(null);
-                                        }
-                                      : undefined
-                                  }
                                   role={clickable ? "button" : undefined}
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
@@ -1512,8 +1438,6 @@ function SchedulePage() {
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
-                                    transition: "transform 0.2s ease",
-                                    transform: isSwiped ? "translateX(-80px)" : "translateX(0)",
                                     border: isMovingThis ? '2px solid #1A52A0' : undefined,
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
@@ -2291,7 +2215,7 @@ function MonthStrip({
           display: "flex",
           overflowX: "auto",
           overflowY: "hidden",
-          scrollSnapType: "x mandatory",
+          
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
@@ -2319,7 +2243,7 @@ function MonthStrip({
                 background: "transparent",
                 border: 0,
                 cursor: "pointer",
-                scrollSnapAlign: "start",
+                
                 ...POPPINS,
               }}
             >
