@@ -653,7 +653,7 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
-        console.log("[pupils.$id] pupil data:", p, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+        console.log("[pupils.$id] pupil data:", p, "account_balance:", p?.account_balance);
         if (p?.test_centre_id) {
           supabase
             .from("test_centres")
