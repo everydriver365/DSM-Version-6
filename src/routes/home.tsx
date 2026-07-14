@@ -5426,7 +5426,7 @@ function HomePage() {
       })()}
 
 
-        <div style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px) + 16px)' }} />
+        <div style={{ height: 10 }} />
         </section>
 
 
