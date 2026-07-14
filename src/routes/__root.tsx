@@ -37,6 +37,8 @@ function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname.startsWith("/pupils")) return "pupils";
   if (pathname.startsWith("/schedule") || pathname.startsWith("/lessons")) return "schedule";
   if (pathname.startsWith("/messages")) return "messages";
+  if (pathname === "/more") return "more";
+
   if (
     pathname.startsWith("/settings") ||
     pathname === "/profile" ||
