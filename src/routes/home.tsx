@@ -9313,6 +9313,182 @@ function TestsBreakdownModal({
       </DialogContent>
     </Dialog>
   );
+
+const DISCOVER_SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const DISCOVER_SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+
+const DISCOVER_HEADERS = {
+  apikey: DISCOVER_SUPABASE_ANON_KEY,
+  Authorization: `Bearer ${DISCOVER_SUPABASE_ANON_KEY}`,
+};
+
+type DiscoverListing = {
+  id: string;
+  title: string;
+  price_display: string | null;
+  image_urls: string[] | null;
+  is_featured: boolean;
+  marketplace_categories: { name: string; slug: string } | null;
+};
+
+function DiscoverSection() {
+  const navigate = useNavigate();
+  const [sessions, setSessions] = useState<LiveSession[] | null>(null);
+  const [listings, setListings] = useState<DiscoverListing[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `${DISCOVER_SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&order=session_date.asc&order=session_time.asc`,
+          { headers: DISCOVER_HEADERS },
+        );
+        const data = (await res.json()) as LiveSession[];
+        if (!cancelled) setSessions(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setSessions([]);
+      }
+
+      try {
+        const featRes = await fetch(
+          `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name,slug)&order=created_at.desc&limit=2`,
+          { headers: DISCOVER_HEADERS },
+        );
+        let feat = (await featRes.json()) as DiscoverListing[];
+        if (!Array.isArray(feat)) feat = [];
+        if (feat.length < 2) {
+          const fillRes = await fetch(
+            `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name,slug)&order=created_at.desc&limit=4`,
+            { headers: DISCOVER_HEADERS },
+          );
+          const fill = (await fillRes.json()) as DiscoverListing[];
+          if (Array.isArray(fill)) {
+            const have = new Set(feat.map((l) => l.id));
+            for (const l of fill) {
+              if (feat.length >= 2) break;
+              if (!have.has(l.id)) feat.push(l);
+            }
+          }
+        }
+        if (!cancelled) setListings(feat.slice(0, 2));
+      } catch {
+        if (!cancelled) setListings([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const upcoming = useMemo(() => {
+    if (!sessions) return [];
+    const now = Date.now();
+    return sessions
+      .filter((s) => {
+        const dt = new Date(`${s.session_date}T${s.session_time || "00:00"}:00`).getTime();
+        return Number.isFinite(dt) ? dt >= now : true;
+      })
+      .slice(0, 2);
+  }, [sessions]);
+
+  const hasLive = upcoming.length > 0;
+  const hasMarket = (listings ?? []).length > 0;
+  if (!hasLive && !hasMarket) return null;
+
+  const viewAll = { fontSize: 12, fontWeight: 500, color: "#185FA5", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" } as const;
+  const headerLabel = { fontSize: 14, fontWeight: 600, color: "#0F2044" } as const;
+  const cardShell = { background: "#fff", borderRadius: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", cursor: "pointer" } as const;
+
+  return (
+    <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
+      {hasLive && (
+        <div style={{ marginBottom: hasMarket ? 20 : 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#E24B4A" }} />
+              <div style={headerLabel}>DSM Live</div>
+            </div>
+            <button type="button" style={viewAll} onClick={() => navigate({ to: "/dsm-live" })}>
+              View all →
+            </button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: upcoming.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>
+            {upcoming.map((s) => (
+              <div
+                key={s.id}
+                style={cardShell}
+                onClick={() => navigate({ to: "/dsm-live/$sessionId", params: { sessionId: s.id } })}
+              >
+                <div
+                  style={{
+                    height: 90,
+                    background: s.image_url ? `url(${s.image_url}) center/cover` : "#0F2044",
+                  }}
+                />
+                <div style={{ padding: "10px 12px" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {s.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2 }}>
+                    {formatSessionDate(s.session_date)} · {formatSessionTime(s.session_time)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {hasMarket && listings && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={headerLabel}>Top marketplace</div>
+            <button type="button" style={viewAll} onClick={() => navigate({ to: "/marketplace" })}>
+              View all →
+            </button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: listings.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>
+            {listings.map((l) => {
+              const img = l.image_urls && l.image_urls[0];
+              return (
+                <div
+                  key={l.id}
+                  style={cardShell}
+                  onClick={() => navigate({ to: "/marketplace/$listingId" as never, params: { listingId: l.id } as never })}
+                >
+                  <div style={{ position: "relative", height: 80, background: img ? `url(${img}) center/cover` : "#EEF2F7" }}>
+                    {l.is_featured && (
+                      <span style={{ position: "absolute", top: 8, left: 8, background: "#E24B4A", color: "#fff", fontSize: 8, fontWeight: 500, padding: "3px 8px", borderRadius: 20 }}>
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ padding: "10px 12px" }}>
+                    {l.marketplace_categories && (
+                      <div style={{ fontSize: 10, color: "#8A93A3", marginBottom: 2 }}>
+                        {l.marketplace_categories.name}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {l.title}
+                    </div>
+                    {l.price_display && (
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#A32D2D", marginTop: 2 }}>
+                        {l.price_display}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
+
 
 
