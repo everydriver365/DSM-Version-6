@@ -125,7 +125,9 @@ interface Pupil {
   test_examiner: string | null;
   lat: number | null;
   lng: number | null;
+  date_of_birth: string | null;
 }
+
 
 interface Lesson {
   id: string;
