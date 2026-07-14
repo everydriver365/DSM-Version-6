@@ -165,6 +165,8 @@ function NewPupilPage() {
       status: "active",
     };
     if (phone.trim()) insert.phone = phone.trim();
+    if (dateOfBirth) insert.date_of_birth = dateOfBirth;
+
     if (address.trim()) insert.address = address.trim();
     if (postcode.trim()) insert.postcode = postcode.trim().toUpperCase();
     if (leadSource) {
