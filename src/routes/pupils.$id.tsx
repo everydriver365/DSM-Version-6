@@ -630,7 +630,7 @@ function PupilDetailPage() {
       .from("pupils")
       .select(`
         id, name, first_name, last_name, phone, email, status,
-        balance_owed, account_balance,
+        account_balance,
         test_date, test_time, test_centre,
         test_centre_id,
         prepaid_hours, prepaid_amount_paid,
