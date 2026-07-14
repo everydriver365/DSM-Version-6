@@ -4151,7 +4151,7 @@ function HomePage() {
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
             overscrollBehaviorX: 'none',
-            paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
+            paddingBottom: 10,
           }}
         >
       {/* NAVY HEADER SECTION (hero + stats strip) */}
