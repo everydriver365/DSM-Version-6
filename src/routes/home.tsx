@@ -4098,69 +4098,8 @@ function HomePage() {
         </div>
       )}
 
-      {/* WORKSPACE DOTS + ACTIVE LABEL */}
-      {(() => {
-        const WORKSPACES = ['Today','Schedule','Pupils','Money','Market','DSM','Community','Tools'];
-        return (
-          <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:5, padding:'4px 16px 8px', background:'#0F2044', flexShrink:0, zIndex:10 }}>
-            {WORKSPACES.map((lbl, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Go to ${lbl}`}
-                onClick={() => setActiveWs(i)}
-                style={{
-                  width: activeWs === i ? 22 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  background: activeWs === i ? '#FFFFFF' : 'rgba(255,255,255,0.25)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'all 0.25s ease',
-                }}
-              />
-            ))}
-            <span
-              style={{
-                color: 'rgba(255,255,255,0.6)',
-                fontSize: 11,
-                fontWeight: 600,
-                fontFamily: 'Poppins, sans-serif',
-                marginLeft: 10,
-                letterSpacing: 0.5,
-                textTransform: 'uppercase',
-                minWidth: 80,
-              }}
-            >
-              {WORKSPACES[activeWs]}
-            </span>
-          </div>
-        );
-      })()}
 
 
-      {/* WORKSPACES CAROUSEL */}
-      <div
-        ref={carouselRef}
-        onScroll={handleCarouselScroll}
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display:'flex',
-          overflowX:'scroll',
-          overflowY:'hidden',
-          scrollSnapType:'x mandatory',
-          scrollBehavior:'smooth',
-          overscrollBehaviorX:'contain',
-          WebkitOverflowScrolling:'touch',
-          scrollbarWidth:'none',
-          msOverflowStyle:'none',
-          touchAction:'pan-y pinch-zoom',
-          background: PAGE_BACKGROUND,
-        }}
-        className="hide-scrollbar carousel-hide-scrollbar"
-      >
 
 <section
           data-workspace="today"
