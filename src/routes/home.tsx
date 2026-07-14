@@ -5,7 +5,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
-import { generateInsights, type InsightInput } from "@/lib/insights.functions";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 
 import {
