@@ -7213,9 +7213,82 @@ function DiscoverSection() {
           </div>
         </div>
       )}
+
+      {birthdaySheetOpen && (
+        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/40" onClick={() => setBirthdaySheetOpen(false)} />
+          <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
+            <div className="flex items-center justify-between px-4 mb-3">
+              <div className="flex items-center gap-2">
+                <IconGift size={20} color="#6B4FD6" />
+                <div className="text-[16px] font-semibold" style={{ color: '#0F2044' }}>
+                  {birthdayToday.length === 1 ? 'Birthday today' : `${birthdayToday.length} birthdays today`}
+                </div>
+              </div>
+              <button type="button" onClick={() => setBirthdaySheetOpen(false)} aria-label="Close">
+                <IconX size={20} color="#6B7280" />
+              </button>
+            </div>
+            {birthdayToday.map((p) => {
+              const displayName = p.first_name || p.name || 'Pupil';
+              const initials = displayName.split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
+              const age = p.date_of_birth
+                ? Math.floor((Date.now() - new Date(p.date_of_birth).getTime()) / (365.25 * 86400000))
+                : null;
+              const bg = p.calendar_colour || '#6B4FD6';
+              const giftMsg = encodeURIComponent(
+                `Happy birthday ${displayName}! 🎂 As a birthday treat, I'd like to offer you £10 off your next lesson. Just mention this message when we next speak. Hope you have a wonderful day!`
+              );
+              return (
+                <div key={p.id} style={{ borderTop: '0.5px solid #F3F4F6' }}>
+                  <div className="flex items-center gap-3 px-4" style={{ padding: '14px 16px' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 20, background: bg, color: '#FFFFFF', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14px] font-semibold truncate" style={{ color: '#0F2044' }}>{displayName}</div>
+                      {age !== null && (
+                        <div className="text-[12px]" style={{ color: '#9CA3AF' }}>{age} today 🎂</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 px-4 pb-3">
+                    <a
+                      href={p.phone ? `sms:${p.phone}?body=${giftMsg}` : `sms:?body=${giftMsg}`}
+                      className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
+                    >
+                      🎁 Send gift message
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => { setBirthdaySheetOpen(false); navigate({ to: '/messages/$pupilId' as never, params: { pupilId: p.id } as never }); }}
+                      className="flex-1 rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      style={{ background: '#0F2044', color: '#FFFFFF', border: 'none', cursor: 'pointer' }}
+                    >
+                      💬 Message
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="px-4 mt-2">
+              <button
+                type="button"
+                onClick={() => setBirthdaySheetOpen(false)}
+                className="w-full rounded-xl py-2.5 text-[13px] font-semibold"
+                style={{ background: '#F3F4F6', color: '#6B7280', border: 'none', cursor: 'pointer' }}
+              >
+                ✓ Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 
 
 
