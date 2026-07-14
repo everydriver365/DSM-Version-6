@@ -4890,25 +4890,8 @@ function HomePage() {
           },
         ];
 
-        const aiInsightsPayload: InsightInput = {
-          todayLessons: todayLessons.length,
-          todayUpcoming,
-          todayCompleted,
-          todayEarnings,
-          weekLessons: weekLessonsTotal,
-          weekEarnings,
-          monthLessons: monthLessonsCompleted,
-          monthEarnings,
-          ytdLessons: ytdLessonsCompleted,
-          ytdEarnings,
-          outstanding,
-          newPupils: naJobs,
-          upcomingTests: naTests,
-          pendingSwaps: naEnquiries,
-          freeSlots: freeSlotCount,
-          unreadMessages: unreadMsgs.length,
-          waitlistCount: 0,
-        };
+
+
 
         // ---- Smart Business Card: slot freed from a recent pupil cancellation ----
         const freedSlot = (allLessons || []).find((l: any) =>
@@ -4920,14 +4903,8 @@ function HomePage() {
 
         return (
           <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
-            <AiInsightsRunner
-              payload={aiInsightsPayload}
-              fetcher={generateInsightsFn}
-              suggestions={aiSuggestions}
-              setSuggestions={setAiSuggestions}
-              setIndex={setAiInsightIndex}
-              setLoading={setAiInsightsLoading}
-            />
+
+
 
             {/* Smart Business Card: slot freed */}
             {freedSlot && (() => {
@@ -5565,134 +5542,8 @@ function HomePage() {
 
             <DiscoverSection />
 
-            {/* 6. AI INSIGHT */}
-            {(() => {
-              const insightAccent = '#10B981';
-              const insightInk = '#0B1F3A';
-              const hasAiSuggestions = aiSuggestions && aiSuggestions.length > 0;
-              const suggestions = hasAiSuggestions ? aiSuggestions : [];
-              const currentSuggestion = suggestions[aiInsightIndex] ?? null;
-              const hasFallback = Boolean(aiInsight);
 
-              if (!hasAiSuggestions && !hasFallback) return null;
 
-              // Dismiss key — identifies the current insight so a new one re-shows the card.
-              const dismissKey = hasAiSuggestions
-                ? `ai:${aiInsightIndex}:${currentSuggestion?.title ?? ''}`
-                : `fb:${aiInsight?.text ?? ''}`;
-              if (aiInsightDismissedKey === dismissKey) return null;
-
-              const insightText = hasAiSuggestions
-                ? `${currentSuggestion!.title} — ${currentSuggestion!.body}`
-                : aiInsight!.text;
-              const actionLabel = hasAiSuggestions
-                ? (currentSuggestion?.cta ?? 'View suggestion')
-                : (aiInsight?.actionLabel ?? aiInsight?.cta ?? 'View suggestion');
-              const hasAction = hasAiSuggestions
-                ? Boolean(currentSuggestion?.route)
-                : Boolean(aiInsight?.onAction || aiInsight?.to);
-              const runAction = () => {
-                if (hasAiSuggestions) {
-                  if (currentSuggestion?.route) navigate({ to: currentSuggestion.route as never });
-                } else if (aiInsight?.onAction) {
-                  aiInsight.onAction();
-                } else if (aiInsight?.to) {
-                  navigate({ to: aiInsight.to as never });
-                }
-              };
-
-              return (
-                <div
-                  style={{
-                    marginTop: 22,
-                    background: '#FFFFFF',
-                    borderRadius: 12,
-                    boxShadow: '0 2px 8px rgba(11,31,58,0.04)',
-                    borderLeft: `4px solid ${insightAccent}`,
-                    overflow: 'hidden',
-                    width: '100%',
-                    fontFamily: 'Inter, sans-serif',
-                  }}
-                >
-                  <div style={{ padding: '14px 16px 10px' }}>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 700,
-                        color: insightAccent,
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        marginBottom: 6,
-                      }}
-                    >
-                      AI Insight
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: insightInk,
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {insightText}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      padding: '2px 16px 14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {hasAction ? (
-                      <button
-                        type="button"
-                        onClick={runAction}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          fontFamily: 'inherit',
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: insightAccent,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                        }}
-                      >
-                        {actionLabel}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    ) : <span />}
-                    <button
-                      type="button"
-                      onClick={() => setAiInsightDismissedKey(dismissKey)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#94A3B8',
-                      }}
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                  {aiInsightsLoading && !hasAiSuggestions && (
-                    <div style={{ padding: '0 16px 12px', fontSize: 12, color: MUTED }}>Generating insights…</div>
-                  )}
-                </div>
-              );
-            })()}
 
 
 
