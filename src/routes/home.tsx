@@ -4528,7 +4528,17 @@ function HomePage() {
               subtitle: latestEnq ? latestEnq.name : `${naEnquiries} items need attention`,
               onClick: () => navigate({ to: '/waitlist' as never }),
             },
+            {
+              key: 'birthday',
+              count: birthdayToday.length,
+              primary: birthdayToday.length === 1
+                ? `${birthdayToday[0].first_name || birthdayToday[0].name || 'A pupil'}'s birthday today 🎂`
+                : `${birthdayToday.length} birthdays today 🎂`,
+              subtitle: 'Tap to send a gift message',
+              onClick: () => setBirthdaySheetOpen(true),
+            },
           ];
+
           return <NeedsAttentionSection items={items} />;
         })()}
 
