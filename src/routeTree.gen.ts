@@ -50,6 +50,7 @@ import { Route as NotificationsettingsRouteImport } from './routes/notifications
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NoShowPolicyRouteImport } from './routes/no-show-policy'
 import { Route as MtdRouteImport } from './routes/mtd'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MonthToDateRouteImport } from './routes/month-to-date'
 import { Route as MinisiteRouteImport } from './routes/minisite'
@@ -344,6 +345,11 @@ const NoShowPolicyRoute = NoShowPolicyRouteImport.update({
 const MtdRoute = MtdRouteImport.update({
   id: '/mtd',
   path: '/mtd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MonthendRoute = MonthendRouteImport.update({
@@ -839,6 +845,7 @@ export interface FileRoutesByFullPath {
   '/minisite': typeof MinisiteRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
+  '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -969,6 +976,7 @@ export interface FileRoutesByTo {
   '/minisite': typeof MinisiteRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
+  '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -1102,6 +1110,7 @@ export interface FileRoutesById {
   '/minisite': typeof MinisiteRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
+  '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -1236,6 +1245,7 @@ export interface FileRouteTypes {
     | '/minisite'
     | '/month-to-date'
     | '/monthend'
+    | '/more'
     | '/mtd'
     | '/no-show-policy'
     | '/notifications'
@@ -1366,6 +1376,7 @@ export interface FileRouteTypes {
     | '/minisite'
     | '/month-to-date'
     | '/monthend'
+    | '/more'
     | '/mtd'
     | '/no-show-policy'
     | '/notifications'
@@ -1498,6 +1509,7 @@ export interface FileRouteTypes {
     | '/minisite'
     | '/month-to-date'
     | '/monthend'
+    | '/more'
     | '/mtd'
     | '/no-show-policy'
     | '/notifications'
@@ -1632,6 +1644,7 @@ export interface RootRouteChildren {
   MinisiteRoute: typeof MinisiteRoute
   MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
+  MoreRoute: typeof MoreRoute
   MtdRoute: typeof MtdRoute
   NoShowPolicyRoute: typeof NoShowPolicyRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -1992,6 +2005,13 @@ declare module '@tanstack/react-router' {
       path: '/mtd'
       fullPath: '/mtd'
       preLoaderRoute: typeof MtdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/monthend': {
@@ -2751,6 +2771,7 @@ const rootRouteChildren: RootRouteChildren = {
   MinisiteRoute: MinisiteRoute,
   MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
+  MoreRoute: MoreRoute,
   MtdRoute: MtdRoute,
   NoShowPolicyRoute: NoShowPolicyRoute,
   NotificationsRoute: NotificationsRoute,

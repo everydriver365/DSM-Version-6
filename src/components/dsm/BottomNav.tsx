@@ -28,24 +28,18 @@ interface Props {
 
 const defaultItems: {
   key: NavKey;
-  to: string | null;
+  to: string;
   label: string;
   Icon: ComponentType<{ size?: number; color?: string }>;
   onClick?: () => void;
 }[] = [
+
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
-  {
-    key: "more",
-    to: null,
-    label: "More",
-    Icon: Grid,
-    onClick: () => {
-      window.dispatchEvent(new CustomEvent("dsm-more-open"));
-    },
-  },
+  { key: "more", to: "/more", label: "More", Icon: Grid },
+
 ];
 
 export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044", inactiveColor = "#9CA3AF", activeWs, onSelectWs }: Props) {
@@ -121,7 +115,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
             else if (key === "schedule") isActive = active === "schedule";
             else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
             else if (key === "messages") isActive = active === "messages";
-            else if (key === "more") isActive = currentWs === 7;
+            else if (key === "more") isActive = active === "more";
             const color = isActive ? activeColor : inactiveColor;
             const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
             const inner: ReactNode = (
