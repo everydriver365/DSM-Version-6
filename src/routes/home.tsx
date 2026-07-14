@@ -5407,8 +5407,9 @@ function HomePage() {
                     }}>
                       <Icon size={18} color={tile.colour} />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2 }}>{tile.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
                     <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+
                   </button>
                 );
               };
