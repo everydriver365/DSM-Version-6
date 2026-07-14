@@ -301,9 +301,9 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
 
 const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
-  borderRadius: 14,
-  padding: '12px 16px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  borderRadius: 12,
+  padding: '12px 14px',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   display: 'flex',
   alignItems: 'center',
   gap: 12,
@@ -311,7 +311,11 @@ const NA_CARD_STYLE: React.CSSProperties = {
 };
 
 function NeedsAttentionRow({ item }: { item: NAItem }) {
-  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
+  const { accent, Icon } = NA_CATEGORY_STYLES[item.key];
+  // Red tint for urgent/overdue items
+  const isUrgent = item.key === 'certs_expired' || item.key === 'cancellations' || item.key === 'reschedules';
+  const chipBackground = isUrgent ? '#FCEBEB' : NA_CATEGORY_STYLES[item.key].chipBg;
+  const chipAccent = isUrgent ? '#A32D2D' : accent;
   return (
     <div
       onClick={item.onClick}
@@ -320,21 +324,22 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
       className="cf-tap"
       style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
     >
-      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <Icon size={18} color={accent} />
+      <div style={{ width: 32, height: 32, borderRadius: 8, background: chipBackground, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={16} color={chipAccent} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.primary}
         </div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.subtitle}
         </div>
       </div>
-      <IconChevronRight size={15} color="#B0BAC9" />
+      <IconChevronRight size={15} color="#C7CCD4" />
     </div>
   );
 }
+
 
 function NeedsAttentionAllClear() {
   return (
@@ -366,8 +371,8 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '16px 16px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 15, fontWeight: 600, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#E24B4A', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#A32D2D', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
@@ -5028,13 +5033,46 @@ function HomePage() {
             {/* 1. SWIPEABLE STATS CARD (replaces Today's lessons + week stat tiles) */}
             <SwipeableStatsCard slides={statSlides} />
 
-
-
+            {/* 2. WHAT'S NEW — renders only when there's genuinely new/time-relevant content */}
+            {(() => {
+              type WNRow = { key: string; dotColor: string; text: string; route: string };
+              const rows: WNRow[] = [];
+              // Placeholder for future wiring: DSM Live sessions starting within 24h,
+              // and new Marketplace listings in the instructor's category. When data
+              // sources are wired, push { key, dotColor, text, route } into rows.
+              if (rows.length === 0) return null;
+              return (
+                <div style={{ marginTop: 16, background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '14px 16px', fontFamily: PF }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 8 }}>What's new</div>
+                  <div>
+                    {rows.map((r, i) => (
+                      <div
+                        key={r.key}
+                        onClick={() => navigate({ to: r.route as never })}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '10px 0',
+                          borderTop: i === 0 ? 'none' : '1px solid #EEF2F7',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <span aria-hidden style={{ width: 6, height: 6, borderRadius: 999, background: r.dotColor, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0, fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.text}</div>
+                        <IconChevronRight size={13} color="#C7CCD4" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
+
                 {tab === 'today' && (
                   <button
                     type="button"
@@ -5225,7 +5263,8 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: '#FFFFFF',
+                              background: '#E6F1FB',
+                              borderLeft: '3px solid #185FA5',
                               borderRadius: 12,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
@@ -5235,11 +5274,12 @@ function HomePage() {
                               cursor: 'pointer',
                             }}
                           >
+                            <Zap size={16} color="#185FA5" />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
-                              <div style={{ fontSize: 11, color: '#185FA5', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#4A7BA6', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
@@ -5251,7 +5291,7 @@ function HomePage() {
                                 color: '#FFFFFF',
                                 fontSize: 12,
                                 fontWeight: 500,
-                                padding: '8px 12px',
+                                padding: '8px 14px',
                                 borderRadius: 9,
                                 border: 'none',
                                 cursor: 'pointer',
@@ -5261,6 +5301,7 @@ function HomePage() {
                               Fill
                             </button>
                           </div>
+
                         </div>
                       );
 
@@ -5617,7 +5658,7 @@ function HomePage() {
 
             {/* 6. AI INSIGHT */}
             {(() => {
-              const insightAccent = '#6B4FD6';
+              
               const hasAiSuggestions = aiSuggestions && aiSuggestions.length > 0;
               const suggestions = hasAiSuggestions ? aiSuggestions : [];
               const currentSuggestion = suggestions[aiInsightIndex] ?? null;
@@ -5654,56 +5695,53 @@ function HomePage() {
                 <div
                   style={{
                     marginTop: 22,
-                    background: '#FFFFFF',
+                    background: '#0F2044',
                     borderRadius: 14,
                     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'row',
+                    padding: '14px 16px',
                     width: '100%',
                   }}
                 >
-                  <div style={{ width: 4, background: insightAccent, flexShrink: 0 }} aria-hidden />
-                  <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: insightAccent, letterSpacing: '0.04em', marginBottom: 5 }}>
-                      AI INSIGHT
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: '#12142B', marginBottom: 8, lineHeight: 1.35 }}>
-                      {insightText}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                      {hasAction ? (
-                        <button
-                          type="button"
-                          onClick={runAction}
-                          style={{
-                            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                            fontFamily: 'inherit',
-                            fontSize: 12, fontWeight: 500, color: insightAccent,
-                          }}
-                        >
-                          {actionLabel} →
-                        </button>
-                      ) : <span />}
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
+                    AI insight
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 400, color: '#FFFFFF', marginBottom: 10, lineHeight: 1.4 }}>
+                    {insightText}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    {hasAction && (
                       <button
                         type="button"
-                        onClick={() => setAiInsightDismissedKey(dismissKey)}
+                        onClick={runAction}
                         style={{
                           background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                           fontFamily: 'inherit',
-                          fontSize: 11, color: '#B0BAC9',
+                          fontSize: 12, fontWeight: 500, color: '#6FA8D6',
                         }}
                       >
-                        Dismiss
+                        {actionLabel} →
                       </button>
-                    </div>
-                    {aiInsightsLoading && !hasAiSuggestions && (
-                      <div style={{ fontSize: 12, color: MUTED, marginTop: 8 }}>Generating insights…</div>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => setAiInsightDismissedKey(dismissKey)}
+                      style={{
+                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        fontSize: 12, color: '#9AA6BC',
+                      }}
+                    >
+                      Dismiss
+                    </button>
                   </div>
+                  {aiInsightsLoading && !hasAiSuggestions && (
+                    <div style={{ fontSize: 12, color: '#9AA6BC', marginTop: 8 }}>Generating insights…</div>
+                  )}
                 </div>
               );
             })()}
+
 
 
 
