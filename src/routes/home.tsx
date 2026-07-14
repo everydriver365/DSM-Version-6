@@ -8091,25 +8091,51 @@ function HeroExpandedPanel({
         </div>
       </div>
 
-      {/* Account */}
-      {balance > 0 && (
-        <div style={{ marginTop: 16 }}>
-          <div style={sectionLabel}>ACCOUNT</div>
-          <div style={{ background: '#FCEBEB', borderRadius: 12, padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif' }}>
-            <span style={{ fontSize: 15, fontWeight: 600, color: '#A32D2D' }}>£{balance.toFixed(2)} outstanding</span>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${balance.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                style={{ background: '#FFFFFF', color: '#0F2044', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-              >Chase</button>
-              <button
-                onClick={() => navigateTo('/payments')}
-                style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-              >Mark paid</button>
+      {/* Account — driven by lessons.payment_status + lessons.amount_due */}
+      {(() => {
+        const status = (lesson.payment_status ?? 'unpaid').toLowerCase();
+        const amount = balance;
+
+        let label: string | null = null;
+        let fg = '#0F2044';
+        let bg = '#FFFFFF';
+        let showActions = false;
+
+        if (status === 'paid') {
+          label = 'Paid ✓'; fg = '#1F6B2E'; bg = '#E6F4EA';
+        } else if (status === 'prepaid') {
+          label = 'Prepaid ✓'; fg = '#1F6B2E'; bg = '#E6F4EA';
+        } else if (status === 'cancelled') {
+          label = 'Cancelled'; fg = '#5A6270'; bg = '#E9EDF2';
+        } else if (status === 'partial') {
+          label = `£${amount.toFixed(2)} remaining`; fg = '#8A5A00'; bg = '#FFF3D6'; showActions = true;
+        } else if (status === 'unpaid' && amount > 0) {
+          label = `£${amount.toFixed(2)} due`; fg = '#8A5A00'; bg = '#FFF3D6'; showActions = true;
+        }
+
+        if (!label) return null;
+
+        return (
+          <div style={{ marginTop: 16 }}>
+            <div style={sectionLabel}>ACCOUNT</div>
+            <div style={{ background: bg, borderRadius: 12, padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: fg }}>{label}</span>
+              {showActions && (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
+                    style={{ background: '#FFFFFF', color: '#0F2044', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                  >Chase</button>
+                  <button
+                    onClick={() => navigateTo('/payments')}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                  >Mark paid</button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Last lesson */}
       <div style={{ marginTop: 16 }}>
