@@ -4,10 +4,16 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
+import {
+  X, BookOpen, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
+  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
+  Gift, FileCheck, Zap, BarChart3, Calculator, Moon, TrendingUp, Activity,
+} from "lucide-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -16,6 +22,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
+
 
 function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "course_booking") return `/bookings/${notification.reference_id}`;
