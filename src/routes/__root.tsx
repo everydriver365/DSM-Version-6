@@ -4,10 +4,16 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
+import {
+  X, BookOpen, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
+  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
+  Gift, FileCheck, Zap, BarChart3, Calculator, Moon, TrendingUp, Activity,
+} from "lucide-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -16,6 +22,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
+
 
 function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "course_booking") return `/bookings/${notification.reference_id}`;
@@ -343,7 +350,120 @@ function RootComponent() {
       </div>
       {!hideNav && <BottomNav active={active} />}
       <CommandPalette />
+      <MoreMenu />
     </QueryClientProvider>
   );
 }
+
+function MoreMenu() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const handler = () => {
+      console.log("[more-menu] dsm-more-open event received");
+      setOpen(true);
+    };
+    window.addEventListener('dsm-more-open', handler);
+    return () => window.removeEventListener('dsm-more-open', handler);
+  }, []);
+
+  if (!open) return null;
+
+  const close = () => setOpen(false);
+  const go = (route: string) => { close(); navigate({ to: route as never }); };
+
+  const groups: Array<{ label: string; items: Array<{ icon: any; colour: string; label: string; route: string }> }> = [
+    { label: 'Teaching', items: [
+      { icon: BookOpen, colour: '#1A52A0', label: 'EOL Wizard', route: '/eol' },
+      { icon: RefreshCw, colour: '#1A52A0', label: 'Recurring', route: '/lesson-series' },
+      { icon: Clock, colour: '#CC2229', label: 'Running late', route: '/running-late' },
+      { icon: Award, colour: '#7C3AED', label: 'Log test', route: '/driving-test' },
+      { icon: ArrowLeftRight, colour: '#7C3AED', label: 'Test swap', route: '/test-swaps' },
+      { icon: GraduationCap, colour: '#16A34A', label: 'Syllabus', route: '/standards' },
+      { icon: ClipboardCheck, colour: '#16A34A', label: 'Mock tests', route: '/mock-tests' },
+      { icon: FileText, colour: '#9CA3AF', label: 'Lesson notes', route: '/lesson-notes' },
+    ]},
+    { label: 'Business', items: [
+      { icon: Award, colour: '#D97706', label: 'Certifications', route: '/certifications' },
+      { icon: GraduationCap, colour: '#16A34A', label: 'CPD log', route: '/cpd' },
+      { icon: Receipt, colour: '#CC2229', label: 'Expenses', route: '/expenses' },
+      { icon: Fuel, colour: '#D97706', label: 'Find fuel', route: '/fuel' },
+      { icon: Car, colour: '#6B7280', label: 'Vehicle', route: '/vehicle' },
+      { icon: MapPin, colour: '#6B7280', label: 'Mileage', route: '/mileage' },
+      { icon: FileText, colour: '#1A52A0', label: 'Invoices', route: '/invoices' },
+      { icon: MapPin, colour: '#1A52A0', label: 'Coverage', route: '/coverage-areas' },
+    ]},
+    { label: 'Admin', items: [
+      { icon: Settings, colour: '#6B7280', label: 'Settings', route: '/settings' },
+      { icon: Clock, colour: '#1A52A0', label: 'Availability', route: '/availability-settings' },
+      { icon: Calendar, colour: '#1A52A0', label: 'Calendar sync', route: '/calendarsync' },
+      { icon: Gift, colour: '#00B5A5', label: 'Referrals', route: '/referrals' },
+      { icon: FileCheck, colour: '#16A34A', label: 'T&Cs', route: '/terms' },
+      { icon: Zap, colour: '#D97706', label: 'Automations', route: '/automations' },
+    ]},
+    { label: 'Reports', items: [
+      { icon: BarChart3, colour: '#1A52A0', label: 'MTD', route: '/mtd' },
+      { icon: Calculator, colour: '#D97706', label: 'Tax report', route: '/tax-report' },
+      { icon: Calendar, colour: '#16A34A', label: 'Weekly', route: '/weekly-report' },
+      { icon: Moon, colour: '#7C3AED', label: 'End of day', route: '/end-of-day' },
+      { icon: TrendingUp, colour: '#16A34A', label: 'Forecast', route: '/earnings-forecast' },
+      { icon: Activity, colour: '#CC2229', label: 'Health', route: '/business-health' },
+    ]},
+  ];
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
+      <div onClick={close} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: '#F7FAFC', borderRadius: '20px 20px 0 0', maxHeight: '85vh', overflowY: 'auto', paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px' }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E5E7EB' }} />
+        </div>
+        <div style={{ padding: '8px 20px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontWeight: 700, fontSize: 18, color: '#0F2044', fontFamily: 'Poppins, sans-serif' }}>More</span>
+          <button onClick={close} style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <X size={16} color="#6B7280" />
+          </button>
+        </div>
+        {groups.map(group => (
+          <div key={group.label} style={{ padding: '0 16px 16px' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10, fontFamily: 'Poppins, sans-serif' }}>
+              {group.label}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+              {group.items.map(item => (
+                <button
+                  key={item.label}
+                  onClick={() => go(item.route)}
+                  style={{ background: 'white', border: '0.5px solid #F0F0F0', borderRadius: 14, padding: '12px 8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(15,32,68,0.04)' }}
+                >
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: item.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <item.icon size={20} color={item.colour} />
+                  </div>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: '#0F2044', fontFamily: 'Poppins, sans-serif', textAlign: 'center', lineHeight: 1.2 }}>
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+        <div style={{ padding: '0 16px 16px', display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => go('/dsm-live')}
+            style={{ flex: 1, background: '#0F2044', color: 'white', border: 'none', borderRadius: 14, padding: '14px', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 13 }}
+          >
+            🔴 DSM Live
+          </button>
+          <button
+            onClick={() => go('/marketplace')}
+            style={{ flex: 1, background: '#1A52A0', color: 'white', border: 'none', borderRadius: 14, padding: '14px', cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 13 }}
+          >
+            🛒 Marketplace
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
