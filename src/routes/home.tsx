@@ -1685,12 +1685,8 @@ function HomePage() {
   const [communityEmail, setCommunityEmail] = useState('');
   const [toolSearch, setToolSearch] = useState('');
   const [quickPage, setQuickPage] = useState(0);
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  useEffect(() => {
-    const handler = () => setMoreMenuOpen(true);
-    window.addEventListener('dsm-more-open', handler);
-    return () => window.removeEventListener('dsm-more-open', handler);
-  }, []);
+
+
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
