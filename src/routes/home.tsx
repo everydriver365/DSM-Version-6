@@ -5621,7 +5621,8 @@ function HomePage() {
 
             {/* 6. AI INSIGHT */}
             {(() => {
-              const insightAccent = '#6B4FD6';
+              const insightAccent = '#10B981';
+              const insightInk = '#0B1F3A';
               const hasAiSuggestions = aiSuggestions && aiSuggestions.length > 0;
               const suggestions = hasAiSuggestions ? aiSuggestions : [];
               const currentSuggestion = suggestions[aiInsightIndex] ?? null;
