@@ -4855,7 +4855,7 @@ function HomePage() {
                 )}
                 <button
                   type="button"
-                  onClick={() => setActiveWs(1)}
+                  onClick={() => navigate({ to: '/schedule' as never })}
                   style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                 >
                   Full schedule
