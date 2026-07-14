@@ -28,11 +28,12 @@ interface Props {
 
 const defaultItems: {
   key: NavKey;
-  to: string | null;
+  to: string;
   label: string;
   Icon: ComponentType<{ size?: number; color?: string }>;
   onClick?: () => void;
 }[] = [
+
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
