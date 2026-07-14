@@ -1930,7 +1930,12 @@ function HomePage() {
   // ===== DEMO MODE (visual QA only — dev builds + ?demo=true) =====
   // Never active in production bundles. Injects mock data into the UI layer
   // only; does not write to Supabase. See src/lib/home-demo.ts.
-  const isDemo = useMemo(() => isDemoModeEnabled(), []);
+  const routeSearch = Route.useSearch();
+  const isDemo = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    if (!import.meta.env.DEV) return false;
+    return (routeSearch as any)?.demo === true || isDemoModeEnabled();
+  }, [routeSearch]);
   const demoData = useMemo(() => (isDemo ? getHomeDemoOverrides() : null), [isDemo]);
   useEffect(() => {
     if (!demoData) return;
