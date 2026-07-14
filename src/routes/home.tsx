@@ -54,6 +54,8 @@ import {
   Tag,
   Zap,
   CalendarDays,
+  Calendar,
+  Settings,
   Crown,
   X,
   UserCircle,
