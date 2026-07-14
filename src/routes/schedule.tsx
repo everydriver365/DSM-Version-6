@@ -2215,7 +2215,7 @@ function MonthStrip({
           display: "flex",
           overflowX: "auto",
           overflowY: "hidden",
-          scrollSnapType: "x mandatory",
+          
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
@@ -2243,7 +2243,7 @@ function MonthStrip({
                 background: "transparent",
                 border: 0,
                 cursor: "pointer",
-                scrollSnapAlign: "start",
+                
                 ...POPPINS,
               }}
             >
