@@ -635,8 +635,9 @@ function PupilDetailPage() {
         driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120,
         buffer_after_minutes, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status, test_examiner
+        test_status, test_examiner, date_of_birth
       `)
+
       .eq("id", id)
       .is("deleted_at", null)
       .maybeSingle()
