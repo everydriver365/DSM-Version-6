@@ -521,6 +521,42 @@ function CalendarSyncPage() {
           </Button>
         </Card>
 
+        {/* How calendar sync works */}
+        <div
+          style={{
+            backgroundColor: "#F0F4FF",
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: "#BFDBFE",
+            borderRadius: 12,
+            padding: 16,
+            marginLeft: 16,
+            marginRight: 16,
+            marginTop: 12,
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <Info size={16} color="#1A52A0" className="shrink-0 mt-0.5" />
+            <div>
+              <div
+                className="text-[14px] font-semibold"
+                style={{ ...POPPINS, color: "#0F2044", marginBottom: 8 }}
+              >
+                How calendar sync works
+              </div>
+              <ul
+                className="text-xs"
+                style={{ ...POPPINS, color: "#6B7280", lineHeight: 1.6 }}
+              >
+                <li>✓ Your Google Calendar events sync into DSM every 2 hours</li>
+                <li>✓ DSM lessons appear in Google Calendar within 24 hours</li>
+                <li>✓ DSM is always up to date — use it as your primary schedule</li>
+                <li>○ Google Calendar is a read-only view — manage lessons in DSM</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Info banner */}
         <div
           className="mt-3 flex items-start gap-3"
