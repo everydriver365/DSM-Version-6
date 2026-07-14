@@ -4471,7 +4471,7 @@ function HomePage() {
               count: naTests,
               primary: `${naTests} driving test${naTests === 1 ? '' : 's'} upcoming`,
               subtitle: soonestTest ? `${soonestTest.name} · ${fmtShortDate(soonestTest.test_date)}` : `${naTests} items need attention`,
-              onClick: () => setActiveWs(2),
+              onClick: () => navigate({ to: '/pupils' as never }),
             },
             {
               key: 'jobs',
