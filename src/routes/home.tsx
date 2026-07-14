@@ -1823,6 +1823,32 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Birthday reminders
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('pupils')
+        .select('id, name, first_name, phone, date_of_birth, calendar_colour')
+        .eq('instructor_id', userId)
+        .not('date_of_birth', 'is', null)
+        .neq('status', 'archived');
+      if (cancelled) return;
+      const today = new Date();
+      const m = today.getMonth() + 1;
+      const d = today.getDate();
+      const rows = ((data ?? []) as BirthdayPupil[]).filter((p) => {
+        if (!p.date_of_birth) return false;
+        const dob = new Date(p.date_of_birth);
+        return dob.getMonth() + 1 === m && dob.getDate() === d;
+      });
+      setBirthdayToday(rows);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
   useEffect(() => {
     if (!isDesktop) return;
     let cancelled = false;
