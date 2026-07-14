@@ -1244,40 +1244,58 @@ function SchedulePage() {
                                   role="button"
                                   tabIndex={0}
                                   style={{
-                                    background: "#FFFFFF",
+                                    position: "relative",
+                                    background: "#1A52A0",
                                     borderRadius: 12,
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: "center",
                                     gap: 10,
                                     cursor: "pointer",
+                                    overflow: "hidden",
                                     ...POPPINS,
                                   }}
                                 >
-                                  <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044", fontVariantNumeric: "tabular-nums" }}>
+                                  <div
+                                    aria-hidden
+                                    style={{
+                                      position: "absolute",
+                                      top: -20,
+                                      right: -20,
+                                      width: 80,
+                                      height: 80,
+                                      borderRadius: "50%",
+                                      background: "rgba(255,255,255,0.08)",
+                                      filter: "blur(20px)",
+                                    }}
+                                  />
+                                  <div style={{ flex: 1, minWidth: 0, position: "relative", zIndex: 1 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF", fontVariantNumeric: "tabular-nums" }}>
                                       {e.startTime} – {e.endTime}
                                     </div>
-                                    <div style={{ fontSize: 11, color: "#4A7BA6", marginTop: 2 }}>
+                                    <div style={{ fontSize: 11, color: "#A7C8F0", marginTop: 2 }}>
                                       {formatMins(e.mins)} free
                                     </div>
                                   </div>
-                                  <div style={{ fontSize: 12, fontWeight: 600, color: "#3B6D11" }}>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#86EFAC", position: "relative", zIndex: 1 }}>
                                     £{e.potential}
                                   </div>
                                   <button
                                     type="button"
                                     onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                     style={{
-                                      background: "#185FA5",
-                                      color: "#FFFFFF",
+                                      position: "relative",
+                                      zIndex: 1,
+                                      background: "#FFFFFF",
+                                      color: "#1A52A0",
                                       fontSize: 12,
-                                      fontWeight: 500,
+                                      fontWeight: 600,
                                       padding: "8px 12px",
                                       borderRadius: 9,
                                       border: "none",
                                       cursor: "pointer",
+                                      boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
                                     }}
                                   >
                                     Fill
