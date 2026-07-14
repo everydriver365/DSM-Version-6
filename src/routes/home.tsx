@@ -301,9 +301,9 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
 
 const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
-  borderRadius: 14,
-  padding: '12px 16px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  borderRadius: 12,
+  padding: '12px 14px',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   display: 'flex',
   alignItems: 'center',
   gap: 12,
@@ -311,7 +311,11 @@ const NA_CARD_STYLE: React.CSSProperties = {
 };
 
 function NeedsAttentionRow({ item }: { item: NAItem }) {
-  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
+  const { accent, Icon } = NA_CATEGORY_STYLES[item.key];
+  // Red tint for urgent/overdue items
+  const isUrgent = item.key === 'certs_expired' || item.key === 'cancellations' || item.key === 'reschedules';
+  const chipBackground = isUrgent ? '#FCEBEB' : NA_CATEGORY_STYLES[item.key].chipBg;
+  const chipAccent = isUrgent ? '#A32D2D' : accent;
   return (
     <div
       onClick={item.onClick}
@@ -320,21 +324,22 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
       className="cf-tap"
       style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
     >
-      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <Icon size={18} color={accent} />
+      <div style={{ width: 32, height: 32, borderRadius: 8, background: chipBackground, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={16} color={chipAccent} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.primary}
         </div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.subtitle}
         </div>
       </div>
-      <IconChevronRight size={15} color="#B0BAC9" />
+      <IconChevronRight size={15} color="#C7CCD4" />
     </div>
   );
 }
+
 
 function NeedsAttentionAllClear() {
   return (
