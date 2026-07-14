@@ -5620,6 +5620,8 @@ function HomePage() {
               );
             })()}
 
+            <DiscoverSection />
+
             {/* 6. AI INSIGHT */}
             {(() => {
               const insightAccent = '#10B981';
