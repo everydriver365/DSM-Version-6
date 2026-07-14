@@ -83,7 +83,7 @@ interface Pupil {
   last_name: string | null;
   phone: string | null;
   email: string | null;
-  balance_owed: number | null;
+  
   account_balance: number | null;
   prepaid_hours: number | null;
   prepaid_amount_paid: number | null;
@@ -333,6 +333,10 @@ function PupilDetailPage() {
   const [pupilSeries, setPupilSeries] = useState<Array<{ id: string; day_of_week: string; lesson_time: string; duration_minutes: number; frequency: string }> | null>(null);
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
+  const [prepaidEditing, setPrepaidEditing] = useState(false);
+  const [prepaidHoursDraft, setPrepaidHoursDraft] = useState("");
+  const [accountBalDraft, setAccountBalDraft] = useState("");
+  const [prepaidSaving, setPrepaidSaving] = useState(false);
   const [editDraft, setEditDraft] = useState<{
     first_name: string;
     last_name: string;
@@ -630,7 +634,7 @@ function PupilDetailPage() {
       .from("pupils")
       .select(`
         id, name, first_name, last_name, phone, email, status,
-        balance_owed, account_balance,
+        account_balance,
         test_date, test_time, test_centre,
         test_centre_id,
         prepaid_hours, prepaid_amount_paid,
@@ -653,7 +657,7 @@ function PupilDetailPage() {
         const p = (data as Pupil) ?? null;
         setPupil(p);
         setNotesDraft(p?.notes ?? "");
-        console.log("[pupils.$id] pupil data:", p, "balance_owed:", p?.balance_owed, "account_balance:", p?.account_balance);
+        console.log("[pupils.$id] pupil data:", p, "account_balance:", p?.account_balance);
         if (p?.test_centre_id) {
           supabase
             .from("test_centres")
@@ -1445,6 +1449,320 @@ function PupilDetailPage() {
       )}
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
         <div className="px-4">
+        {pupil && (
+          <>
+            {/* Prepaid balance card */}
+            <div
+              className="mt-3"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 16,
+                padding: 16,
+              }}
+            >
+              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                <div className="flex items-center gap-2">
+                  <PoundSterling size={16} color="#16A34A" />
+                  <span className="font-semibold text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
+                    Prepaid balance
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  aria-label={prepaidEditing ? "Cancel edit" : "Edit prepaid balance"}
+                  onClick={() => {
+                    if (prepaidEditing) {
+                      setPrepaidEditing(false);
+                    } else {
+                      setPrepaidHoursDraft(pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "");
+                      setAccountBalDraft(pupil.account_balance != null ? String(pupil.account_balance) : "");
+                      setPrepaidEditing(true);
+                    }
+                  }}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 999,
+                    background: "#F3F4F6",
+                    color: "#6B7280",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {prepaidEditing ? <X size={14} /> : <Pencil size={14} />}
+                </button>
+              </div>
+
+              {!prepaidEditing ? (
+                <div className="flex">
+                  <div className="flex-1 text-center">
+                    <div className="font-black" style={{ fontSize: 28, color: "#16A34A", ...POPPINS, lineHeight: 1.1 }}>
+                      {Number(pupil.prepaid_hours ?? 0)}
+                    </div>
+                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Hours purchased
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center" style={{ borderLeft: "0.5px solid #F3F4F6" }}>
+                    <div className="font-black" style={{ fontSize: 28, color: "#1A52A0", ...POPPINS, lineHeight: 1.1 }}>
+                      £{Number(pupil.account_balance ?? 0)}
+                    </div>
+                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Account credit
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[12px] font-medium" style={{ color: "#0F2044", ...POPPINS }}>
+                      Hours purchased
+                    </label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.5"
+                      min="0"
+                      value={prepaidHoursDraft}
+                      onChange={(e) => setPrepaidHoursDraft(e.target.value)}
+                      className="w-full mt-1"
+                      style={{
+                        height: 40,
+                        padding: "0 12px",
+                        borderRadius: 10,
+                        border: "0.5px solid #E2E6ED",
+                        background: "#FFFFFF",
+                        color: "#0F2044",
+                        ...POPPINS,
+                      }}
+                    />
+                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Total hours this pupil has paid for upfront
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[12px] font-medium" style={{ color: "#0F2044", ...POPPINS }}>
+                      Account credit £
+                    </label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      value={accountBalDraft}
+                      onChange={(e) => setAccountBalDraft(e.target.value)}
+                      className="w-full mt-1"
+                      style={{
+                        height: 40,
+                        padding: "0 12px",
+                        borderRadius: 10,
+                        border: "0.5px solid #E2E6ED",
+                        background: "#FFFFFF",
+                        color: "#0F2044",
+                        ...POPPINS,
+                      }}
+                    />
+                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Credit balance from overpayments or advance payments
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={prepaidSaving}
+                    onClick={async () => {
+                      if (!pupil) return;
+                      setPrepaidSaving(true);
+                      const toNum = (v: string) => {
+                        const t = v.trim();
+                        if (t === "") return 0;
+                        const n = Number(t);
+                        return Number.isFinite(n) ? n : 0;
+                      };
+                      const patch = {
+                        prepaid_hours: toNum(prepaidHoursDraft),
+                        account_balance: toNum(accountBalDraft),
+                      };
+                      const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+                      setPrepaidSaving(false);
+                      if (error) {
+                        toast.error("Failed to save — please try again");
+                        return;
+                      }
+                      setPupil({ ...pupil, ...patch });
+                      setPrepaidEditing(false);
+                      toast.success("✓ Prepaid balance updated");
+                    }}
+                    className="w-full rounded-xl text-white font-semibold"
+                    style={{
+                      backgroundColor: "#16A34A",
+                      paddingTop: 12,
+                      paddingBottom: 12,
+                      marginTop: 12,
+                      opacity: prepaidSaving ? 0.6 : 1,
+                      ...POPPINS,
+                    }}
+                  >
+                    {prepaidSaving ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Quick edit card: status, test date/time, theory pass */}
+            <div
+              className="mt-3"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 16,
+                padding: 16,
+              }}
+            >
+              <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
+                <Pencil size={14} color="#1A52A0" />
+                <span className="font-semibold text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
+                  Quick edit
+                </span>
+              </div>
+
+              {/* Status */}
+              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
+                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Status</span>
+                <select
+                  value={(pupil.status ?? "active") || "active"}
+                  onChange={async (e) => {
+                    const next = e.target.value;
+                    const prev = pupil.status;
+                    setPupil({ ...pupil, status: next });
+                    const { error } = await supabase.from("pupils").update({ status: next }).eq("id", pupil.id);
+                    if (error) {
+                      setPupil({ ...pupil, status: prev });
+                      toast.error("Failed to save — please try again");
+                      return;
+                    }
+                    toast.success("✓ Status updated");
+                  }}
+                  style={{
+                    height: 36,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "0.5px solid #E2E6ED",
+                    background: "#FFFFFF",
+                    color: "#0F2044",
+                    fontSize: 13,
+                    ...POPPINS,
+                  }}
+                >
+                  <option value="active">Active</option>
+                  <option value="passed">Passed</option>
+                  <option value="failed">Failed</option>
+                  <option value="paused">Paused</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+
+              {/* Test date */}
+              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
+                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Test date</span>
+                <input
+                  type="date"
+                  value={pupil.test_date ?? ""}
+                  onChange={async (e) => {
+                    const next = e.target.value || null;
+                    const prev = pupil.test_date;
+                    setPupil({ ...pupil, test_date: next });
+                    const { error } = await supabase.from("pupils").update({ test_date: next }).eq("id", pupil.id);
+                    if (error) {
+                      setPupil({ ...pupil, test_date: prev });
+                      toast.error("Failed to save — please try again");
+                      return;
+                    }
+                    toast.success("✓ Test date updated");
+                  }}
+                  style={{
+                    height: 36,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "0.5px solid #E2E6ED",
+                    background: "#FFFFFF",
+                    color: "#0F2044",
+                    fontSize: 13,
+                    ...POPPINS,
+                  }}
+                />
+              </div>
+
+              {/* Test time */}
+              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
+                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Test time</span>
+                <input
+                  type="time"
+                  value={pupil.test_time ? pupil.test_time.slice(0, 5) : ""}
+                  onChange={async (e) => {
+                    const next = e.target.value || null;
+                    const prev = pupil.test_time;
+                    setPupil({ ...pupil, test_time: next });
+                    const { error } = await supabase.from("pupils").update({ test_time: next }).eq("id", pupil.id);
+                    if (error) {
+                      setPupil({ ...pupil, test_time: prev });
+                      toast.error("Failed to save — please try again");
+                      return;
+                    }
+                    toast.success("✓ Test time updated");
+                  }}
+                  style={{
+                    height: 36,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "0.5px solid #E2E6ED",
+                    background: "#FFFFFF",
+                    color: "#0F2044",
+                    fontSize: 13,
+                    ...POPPINS,
+                  }}
+                />
+              </div>
+
+              {/* Theory test passed */}
+              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
+                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Theory test passed</span>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(pupil.theory_pass)}
+                    onChange={async (e) => {
+                      const next = e.target.checked;
+                      const prev = pupil.theory_pass;
+                      setPupil({ ...pupil, theory_pass: next });
+                      const { error } = await supabase.from("pupils").update({ theory_pass: next }).eq("id", pupil.id);
+                      if (error) {
+                        setPupil({ ...pupil, theory_pass: prev });
+                        toast.error("Failed to save — please try again");
+                        return;
+                      }
+                      toast.success(next ? "✓ Theory test marked passed" : "✓ Theory test updated");
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div
+                    className="w-11 h-6 rounded-full transition-colors"
+                    style={{ backgroundColor: pupil.theory_pass ? "#16A34A" : "#CBD5E1" }}
+                  />
+                  <div
+                    className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                    style={{ transform: pupil.theory_pass ? "translateX(20px)" : "translateX(0)" }}
+                  />
+                </label>
+              </div>
+
+              <div className="text-[11px] mt-2" style={{ color: "#9CA3AF", ...POPPINS }}>
+                For all other fields, use the pencil in the header to open the full editor.
+              </div>
+            </div>
+          </>
+        )}
+
         <SectionHeader>QUICK ACTIONS</SectionHeader>
         <div className="grid grid-cols-3 gap-2">
           <ActionTile
