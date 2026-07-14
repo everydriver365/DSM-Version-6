@@ -83,7 +83,7 @@ interface Pupil {
   last_name: string | null;
   phone: string | null;
   email: string | null;
-  balance_owed: number | null;
+  
   account_balance: number | null;
   prepaid_hours: number | null;
   prepaid_amount_paid: number | null;
