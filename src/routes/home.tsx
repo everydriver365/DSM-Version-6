@@ -110,8 +110,10 @@ import {
   IconLayoutGrid,
   IconX,
   IconCalendar,
+  IconClock,
   IconDots,
   IconSearch,
+
   IconUserPlus,
   IconCalendarPlus,
   IconReceipt,
@@ -5326,17 +5328,18 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; wsIndex?: number };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number };
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: Zap, colour: '#D97706' },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: CalendarIcon, colour: '#1A52A0', wsIndex: 1 },
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: Users, colour: '#7C3AED' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: PoundSterling, colour: '#16A34A' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: MessageSquare, colour: '#00B5A5' },
-                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: Clock, colour: '#CC2229' },
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B5661E', chipBg: '#FBEFE1' },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, colour: '#185FA5', wsIndex: 1, chipBg: '#E6F1FB' },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FD6', chipBg: '#F0EBFF' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: IconCurrencyPound, colour: '#3B6D11', chipBg: '#EAF3DE' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
+                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
                 // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0' },
+
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
                 { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED' },
                 { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1A52A0' },
@@ -5384,10 +5387,9 @@ function HomePage() {
                     onClick={() => { goTile(tile); onTap?.(); }}
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 16,
-                      padding: '12px 10px',
-                      border: '0.5px solid #F0F0F0',
-                      boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+                      borderRadius: 14,
+                      padding: '14px 12px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                       minHeight: 80,
                       display: 'flex',
                       flexDirection: 'column',
@@ -5398,18 +5400,20 @@ function HomePage() {
                     }}
                   >
                     <div style={{
-                      width: 40, height: 40, borderRadius: 12,
-                      background: `${tile.colour}15`,
+                      width: 36, height: 36, borderRadius: 10,
+                      background: tile.chipBg ?? `${tile.colour}15`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 6,
+                      marginBottom: 8,
                     }}>
-                      <Icon size={20} color={tile.colour} />
+                      <Icon size={18} color={tile.colour} />
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>{tile.label}</div>
-                    <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
+                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+
                   </button>
                 );
               };
+
 
               const sq = quickSearchQuery.trim().toLowerCase();
               const searchResults = sq
@@ -5420,7 +5424,7 @@ function HomePage() {
                 <>
                   <div style={{ margin: '16px 16px 0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9CA3AF', fontWeight: 600 }}>Quick access</div>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#8A93A3', fontWeight: 600 }}>Quick access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -5428,10 +5432,10 @@ function HomePage() {
                               key={i}
                               onClick={() => setQuickPage(i)}
                               style={{
-                                width: quickPage === i ? 16 : 5,
-                                height: 5,
-                                borderRadius: 3,
-                                background: quickPage === i ? '#0F2044' : '#E5E7EB',
+                                width: quickPage === i ? 14 : 4,
+                                height: 4,
+                                borderRadius: 2,
+                                background: quickPage === i ? '#0F2044' : '#DCE2EA',
                                 transition: 'all 0.2s ease',
                                 cursor: 'pointer',
                               }}
@@ -5444,10 +5448,11 @@ function HomePage() {
                           style={{ background: 'none', border: 'none', padding: 0, marginLeft: 8, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                           aria-label="Search quick access"
                         >
-                          <Search size={16} color="#9CA3AF" />
+                          <IconSearch size={16} color="#8A93A3" />
                         </button>
                       </div>
                     </div>
+
                     <div
                       onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
                       onTouchEnd={(e) => {
