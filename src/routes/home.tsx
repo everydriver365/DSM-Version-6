@@ -5328,17 +5328,18 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; wsIndex?: number };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number };
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: Zap, colour: '#D97706' },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: CalendarIcon, colour: '#1A52A0', wsIndex: 1 },
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: Users, colour: '#7C3AED' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: PoundSterling, colour: '#16A34A' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: MessageSquare, colour: '#00B5A5' },
-                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: Clock, colour: '#CC2229' },
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B5661E', chipBg: '#FBEFE1' },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, colour: '#185FA5', wsIndex: 1, chipBg: '#E6F1FB' },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FD6', chipBg: '#F0EBFF' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: IconCurrencyPound, colour: '#3B6D11', chipBg: '#EAF3DE' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
+                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
                 // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0' },
+
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
                 { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED' },
                 { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1A52A0' },
