@@ -5,7 +5,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
-import { generateInsights, type InsightInput } from "@/lib/insights.functions";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 
 import {
@@ -1409,55 +1408,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   );
 }
 
-type AiSuggestion = { title: string; body: string; cta: string | null; route: string | null };
-
-function AiInsightsRunner({
-  payload,
-  fetcher,
-  suggestions,
-  setSuggestions,
-  setIndex,
-  setLoading,
-}: {
-  payload: InsightInput;
-  fetcher: (args: { data: InsightInput }) => Promise<{ suggestions?: AiSuggestion[] } | null | undefined>;
-  suggestions: AiSuggestion[] | null;
-  setSuggestions: (s: AiSuggestion[] | null) => void;
-  setIndex: React.Dispatch<React.SetStateAction<number>>;
-  setLoading: (b: boolean) => void;
-}) {
-  const depKey = `${payload.todayLessons}|${payload.weekLessons}|${payload.monthLessons}|${payload.newPupils}|${payload.upcomingTests}|${payload.pendingSwaps}|${payload.freeSlots}|${payload.unreadMessages}`;
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    fetcher({ data: payload })
-      .then((result) => {
-        if (cancelled) return;
-        const list = result?.suggestions ?? [];
-        setSuggestions(list.length > 0 ? list : null);
-        setIndex(0);
-      })
-      .catch(() => {
-        if (!cancelled) setSuggestions(null);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depKey]);
-
-  useEffect(() => {
-    if (!suggestions || suggestions.length <= 1) return;
-    const len = suggestions.length;
-    const interval = window.setInterval(() => {
-      setIndex((i) => (i + 1) % len);
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [suggestions, setIndex]);
-
-  return null;
-}
 
 
 type QaTile = {
@@ -1666,13 +1616,6 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
 
 function HomePage() {
   const navigate = useNavigate();
-  const generateInsightsFn = useServerFn(generateInsights);
-
-  // ===== AI insights state =====
-  const [aiSuggestions, setAiSuggestions] = useState<Array<{ title: string; body: string; cta: string | null; route: string | null }> | null>(null);
-  const [aiInsightIndex, setAiInsightIndex] = useState(0);
-  const [aiInsightsLoading, setAiInsightsLoading] = useState(false);
-  const [aiInsightDismissedKey, setAiInsightDismissedKey] = useState<string | null>(null);
 
   // ===== Mobile workspaces carousel state =====
   const carouselRef = useRef<HTMLDivElement | null>(null);
