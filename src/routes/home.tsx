@@ -2764,7 +2764,7 @@ function HomePage() {
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
   // client-side dedupe: keyed by lesson id, expires after 5 min
-  const chipCacheRef = useRef<Map<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>(new Map());
+  const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
   useEffect(() => {
     if (!upcoming?.id) {
