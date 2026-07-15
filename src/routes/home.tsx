@@ -5353,10 +5353,51 @@ function HomePage() {
                             No features found
                           </div>
                         ) : (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                             {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {runningLateOpen && (
+                    <div
+                      onClick={() => setRunningLateOpen(false)}
+                      style={{
+                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
+                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <IconClock size={20} color="#C23B3B" strokeWidth={1.8} />
+                          </div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late</div>
+                        </div>
+                        <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                          Notify today's pupils you're running late. This will send a heads-up message to each pupil with a lesson later today.
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            type="button"
+                            onClick={() => setRunningLateOpen(false)}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0F2044', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                          >
+                            Notify pupils
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
