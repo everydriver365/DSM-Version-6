@@ -5139,15 +5139,15 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number; attention?: boolean; onTapOverride?: () => void };
               const quickTiles: QuickTile[] = [
-                // Page 1 — Daily essentials
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B5661E', chipBg: '#FBEFE1' },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, colour: '#185FA5', wsIndex: 1, chipBg: '#E6F1FB' },
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FD6', chipBg: '#F0EBFF' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: IconCurrencyPound, colour: '#3B6D11', chipBg: '#EAF3DE' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
-                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
+                // Page 1 — Daily essentials (spec-locked)
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} gaps open` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0 },
+                { label: 'Schedule', sub: 'View diary', route: '/schedule', icon: IconCalendar, colour: '#185FA5', chipBg: '#E6F1FB' },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FA0', chipBg: '#EAE3F5' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All settled', route: '/payments', icon: IconCurrencyPound, colour: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB', attention: unreadCount > 0 },
+                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, colour: '#C23B3B', chipBg: '#FBE2E2', onTapOverride: () => setRunningLateOpen(true) },
                 // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1877D6' },
 
