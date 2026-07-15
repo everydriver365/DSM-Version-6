@@ -296,8 +296,10 @@ function ActionTile({
 
 function PupilDetailPage() {
   const { id } = Route.useParams();
+  const { lessonId: focusLessonId } = Route.useSearch();
   const navigate = useNavigate();
   const [pupil, setPupil] = useState<Pupil | null>(null);
+  const [lastMessage, setLastMessage] = useState<{ body: string; created_at: string; sender_type: string } | null>(null);
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [pastLessons, setPastLessons] = useState<Lesson[] | null>(null);
   const [pastExpanded, setPastExpanded] = useState(false);
