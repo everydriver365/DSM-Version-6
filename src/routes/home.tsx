@@ -2033,8 +2033,8 @@ function HomePage() {
   const notifBanner = (() => {
     const type = toastNotif?.type || "default";
     const map: Record<string, { bg: string; Icon: any; route: string }> = {
-      booking: { bg: "#1A52A0", Icon: BookOpen, route: "/bookings" },
-      course_booking: { bg: "#1A52A0", Icon: BookOpen, route: "/bookings" },
+      booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
+      course_booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
       payment: { bg: "#16A34A", Icon: PoundSterling, route: "/payments" },
       message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
       rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
@@ -3076,7 +3076,7 @@ function HomePage() {
     const end = new Date(start.getTime() + (l.duration_minutes ?? 60) * 60000);
     const isLive = now >= start && now < end;
     const status = (l.status ?? "").toLowerCase();
-    const accent = status === "cancelled" ? "#9CA3AF" : "#1A52A0";
+    const accent = status === "cancelled" ? "#9CA3AF" : "#1877D6";
 
     const balance = Number(l.amount_due ?? 0);
     const paid = (l.payment_status === "paid") || balance <= 0;
@@ -3691,7 +3691,7 @@ function HomePage() {
                     const potential = Math.round(availableHours * hourlyRate);
                     const fmt24 = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
                     const workingLabel = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : "Not working today";
-                    const AVATAR_PALETTE = ["#1A52A0", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
+                    const AVATAR_PALETTE = ["#1877D6", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
                     const pupils = outstandingBreakdown.slice(0, 5);
                     const extraPupils = Math.max(0, activePupilsCount - pupils.length);
                     return (
@@ -3700,7 +3700,7 @@ function HomePage() {
                         borderRadius: 20, overflow: "hidden", margin: "12px 16px 0",
                         fontFamily: "Inter, sans-serif",
                       }}>
-                        <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1A52A0)" }} />
+                        <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
                         <div style={{ padding: 20 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                             <div style={{ fontWeight: 900, fontSize: 18, color: "#0F2044" }}>📅 Free day today</div>
@@ -3710,7 +3710,7 @@ function HomePage() {
                             {[
                               { value: `${availableHours} hrs`, label: "Available", color: "#0F2044" },
                               { value: `£${potential}`, label: "Potential", color: "#16A34A" },
-                              { value: `${activePupilsCount}`, label: "Pupils", color: "#1A52A0" },
+                              { value: `${activePupilsCount}`, label: "Pupils", color: "#1877D6" },
                             ].map((s) => (
                               <div key={s.label} style={{
                                 flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
@@ -3826,11 +3826,11 @@ function HomePage() {
                       gap: 4,
                       fontSize: 11,
                       fontWeight: 600,
-                      color: '#1A52A0',
+                      color: '#1877D6',
                       fontFamily: 'Poppins, sans-serif',
                     }}
                   >
-                    <CalendarIcon size={12} color="#1A52A0" />
+                    <CalendarIcon size={12} color="#1877D6" />
                     Sync Google
                   </button>
                 </div>
@@ -4157,7 +4157,7 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0B1F3A', marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px) + 12px)', paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 20px 50px rgba(10,22,40,0.12)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative', border: '1px solid #F1F5F9', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 20px 50px rgba(21,57,88,0.12)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative', border: '1px solid #F1F5F9', fontFamily: 'Inter, sans-serif' }}>
           {/* Car edit toggle (dev) */}
           <button
             type="button"
@@ -4215,12 +4215,12 @@ function HomePage() {
                 );
               })()}
               {/* Subtle dark gradient for legibility of overlays */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,22,40,0.25) 0%, rgba(10,22,40,0) 35%, rgba(10,22,40,0) 65%, rgba(10,22,40,0.25) 100%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(21,57,88,0.25) 0%, rgba(21,57,88,0) 35%, rgba(21,57,88,0) 65%, rgba(21,57,88,0.25) 100%)', pointerEvents: 'none' }} />
 
 
               {/* Top-left: NEXT LESSON badge */}
               <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
-                <span style={{ background: 'rgba(10,22,40,0.9)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', color: '#FFFFFF', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <span style={{ background: 'rgba(21,57,88,0.9)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', color: '#FFFFFF', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   Next Lesson
                 </span>
               </div>
@@ -4238,13 +4238,13 @@ function HomePage() {
                 const showArrived = goingActive;
                 return (
                   <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 10, fontWeight: 900, padding: '4px 8px', borderRadius: 6, boxShadow: '0 4px 10px rgba(26,82,160,0.35)', border: '1px solid rgba(255,255,255,0.25)', display: 'inline-flex', alignItems: 'center', gap: 4, letterSpacing: '0.04em' }}>
+                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 900, padding: '4px 8px', borderRadius: 6, boxShadow: '0 4px 10px rgba(24,119,214,0.35)', border: '1px solid rgba(255,255,255,0.25)', display: 'inline-flex', alignItems: 'center', gap: 4, letterSpacing: '0.04em' }}>
                       <Car size={10} color="#FFFFFF" /> CAR
                     </span>
                     {(showEol || showArrived) && (
                       <div style={{ display: 'flex', gap: 4 }}>
                         {showArrived && (
-                          <span style={{ background: '#10B981', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(16,185,129,0.35)', display: 'inline-flex', alignItems: 'center', gap: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <span style={{ background: '#22C580', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(34,197,128,0.35)', display: 'inline-flex', alignItems: 'center', gap: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                             <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#FFFFFF' }} />
                             Arrived
                           </span>
@@ -4264,7 +4264,7 @@ function HomePage() {
             {/* ---------- Split body: date rail + info panel ---------- */}
             <div style={{ display: 'flex' }}>
               {/* Date rail */}
-              <div style={{ width: 64, background: '#0A1628', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', flexShrink: 0, color: '#FFFFFF' }}>
+              <div style={{ width: 64, background: '#153958', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', flexShrink: 0, color: '#FFFFFF' }}>
                 {upcoming ? (() => {
                   const d = lessonDateTime(upcoming);
                   const day = d.getDate();
@@ -4282,7 +4282,7 @@ function HomePage() {
 
               {/* Info panel */}
               <div style={{ flex: 1, padding: '18px 18px 16px' }}>
-                <h2 style={{ color: '#0A1628', fontSize: 19, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: 0, lineHeight: 1, marginBottom: 16 }}>
+                <h2 style={{ color: '#153958', fontSize: 19, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: 0, lineHeight: 1, marginBottom: 16 }}>
                   {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
                 </h2>
 
@@ -4290,7 +4290,7 @@ function HomePage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {/* Time */}
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <Clock size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+                      <Clock size={16} color="#1877D6" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
                       <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B' }}>
                         {formatTime(upcoming)} <span style={{ color: '#94A3B8', fontWeight: 500 }}>({formatDuration(upcoming.duration_minutes)})</span>
                       </div>
@@ -4298,7 +4298,7 @@ function HomePage() {
 
                     {/* Pickup */}
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <MapPin size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+                      <MapPin size={16} color="#1877D6" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
                       <div style={{ fontSize: 13, fontWeight: 600, color: '#334155', lineHeight: 1.3, minWidth: 0 }}>
                         {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || <span style={{ color: '#94A3B8', fontStyle: 'italic', fontWeight: 500 }}>No pickup set</span>}
                       </div>
@@ -4319,29 +4319,29 @@ function HomePage() {
                   return (
                     <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
                       {phone ? (
-                        <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1A52A0', color: '#fff', boxShadow: '0 4px 10px rgba(26,82,160,0.25)' }}>
+                        <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1877D6', color: '#fff', boxShadow: '0 4px 10px rgba(24,119,214,0.25)' }}>
                           <Phone size={14} color="#ffffff" /> Call
                         </a>
                       ) : (
-                        <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1A52A0', color: '#fff', opacity: 0.5 }}>
+                        <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1877D6', color: '#fff', opacity: 0.5 }}>
                           <Phone size={14} color="#ffffff" /> Call
                         </button>
                       )}
                       {phone ? (
-                        <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#FFFFFF', color: '#0A1628', border: '2px solid #E2E8F0' }}>
-                          <MessageSquare size={14} color="#0A1628" /> Text
+                        <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#FFFFFF', color: '#153958', border: '2px solid #E2E8F0' }}>
+                          <MessageSquare size={14} color="#153958" /> Text
                         </a>
                       ) : (
-                        <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#FFFFFF', color: '#0A1628', border: '2px solid #E2E8F0', opacity: 0.5 }}>
-                          <MessageSquare size={14} color="#0A1628" /> Text
+                        <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#FFFFFF', color: '#153958', border: '2px solid #E2E8F0', opacity: 0.5 }}>
+                          <MessageSquare size={14} color="#153958" /> Text
                         </button>
                       )}
                       {navQuery ? (
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`} target="_blank" rel="noopener noreferrer" onClick={stop} style={{ ...btnBase, background: '#0A1628', color: '#fff' }}>
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`} target="_blank" rel="noopener noreferrer" onClick={stop} style={{ ...btnBase, background: '#153958', color: '#fff' }}>
                           <Navigation size={14} color="#ffffff" /> Go
                         </a>
                       ) : (
-                        <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#0A1628', color: '#fff', opacity: 0.5 }}>
+                        <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#153958', color: '#fff', opacity: 0.5 }}>
                           <Navigation size={14} color="#ffffff" /> Go
                         </button>
                       )}
@@ -4406,16 +4406,16 @@ function HomePage() {
                 fontFamily: 'Inter, sans-serif',
                 fontSize: heroExpanded ? 12 : 11,
                 fontWeight: heroExpanded ? 600 : 800,
-                color: heroExpanded ? '#0A1628' : '#1A52A0',
+                color: heroExpanded ? '#153958' : '#1877D6',
                 textTransform: heroExpanded ? 'none' : 'uppercase',
                 letterSpacing: heroExpanded ? 0 : '0.08em',
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
               {heroExpanded ? (
-                <ChevronUp size={14} color="#0A1628" />
+                <ChevronUp size={14} color="#153958" />
               ) : (
-                <ChevronDown size={16} color="#1A52A0" />
+                <ChevronDown size={16} color="#1877D6" />
               )}
             </div>
           )}
@@ -4571,7 +4571,7 @@ function HomePage() {
         const BORDER = 'rgba(15,32,68,0.10)';
         const MUTED = '#64748B';
         const NAVY = '#0F2044';
-        const ACCENT = '#1A52A0';
+        const ACCENT = '#1877D6';
         const DANGER = '#C9302C';
         const AMBER_BG = '#FEF3C7';
         const AMBER_FG = '#92400E';
@@ -5222,11 +5222,11 @@ function HomePage() {
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
                 { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
                 // Page 2 — Teaching
-                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1A52A0' },
+                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1877D6' },
 
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
                 { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1A52A0' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1877D6' },
                 { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, colour: '#16A34A' },
                 { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, colour: '#16A34A' },
                 // Page 3 — Business
@@ -5237,17 +5237,17 @@ function HomePage() {
                 { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, colour: '#D97706' },
                 { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, colour: '#6B7280' },
                 // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1A52A0' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1877D6' },
                 { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, colour: '#D97706' },
                 { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, colour: '#16A34A' },
                 { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, colour: '#7C3AED' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, colour: '#1A52A0' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, colour: '#1877D6' },
                 { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, colour: '#16A34A' },
                 // Page 5 — Admin
                 { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, colour: '#6B7280' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, colour: '#1A52A0' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, colour: '#1A52A0' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, colour: '#1A52A0' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, colour: '#1877D6' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, colour: '#1877D6' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, colour: '#1877D6' },
                 { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, colour: '#00B5A5' },
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, colour: '#16A34A' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, colour: '#D97706' },
@@ -5496,7 +5496,7 @@ function HomePage() {
               >
                 <div style={{
                   width: 36, height: 36, borderRadius: "50%",
-                  background: "#1A52A0",
+                  background: "#1877D6",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FFFFFF", fontSize: 13, fontWeight: 700, flexShrink: 0,
                   backgroundImage: (m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url) ? `url(${m.pupils?.profile_image_url ?? (m.pupils as any)?.photo_url})` : undefined,
