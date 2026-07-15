@@ -4169,7 +4169,7 @@ function HomePage() {
                   height: 6,
                   borderRadius: '50%',
                   background: upcoming ? '#22C580' : '#94A3B8',
-                  ...(upcoming && { animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }),
+                  boxShadow: upcoming ? '0 0 0 4px rgba(34,197,128,0.25)' : 'none',
                 }}
               />
               <span style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
