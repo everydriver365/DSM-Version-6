@@ -207,6 +207,16 @@ function LessonDetailPage() {
     })();
   }, [lesson]);
 
+  useEffect(() => {
+    if (!lesson?.pupil_id) return;
+    navigate({
+      to: "/pupils/$id",
+      params: { id: lesson.pupil_id } as any,
+      search: { lessonId: lesson.id } as any,
+      replace: true,
+    });
+  }, [lesson?.id, lesson?.pupil_id, navigate]);
+
   async function updateStatus(status: string) {
     if (!lesson || updating) return;
     setUpdating(true);
