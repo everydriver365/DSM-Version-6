@@ -4157,8 +4157,8 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0B1F3A', marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px) + 12px)', paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 2px 12px rgba(0,0,0,0.10)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative' }}>
-          {/* Car edit toggle */}
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 20px 50px rgba(10,22,40,0.12)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative', border: '1px solid #F1F5F9', fontFamily: 'Inter, sans-serif' }}>
+          {/* Car edit toggle (dev) */}
           <button
             type="button"
             onClick={(e) => {
@@ -4169,208 +4169,237 @@ function HomePage() {
               });
             }}
             style={{
-              position: 'absolute', top: 6, right: 6, zIndex: 10,
+              position: 'absolute', top: 6, right: 6, zIndex: 20,
               fontSize: 10, fontWeight: 700, fontFamily: 'Inter, sans-serif',
               padding: '4px 8px', borderRadius: 6, border: 'none',
-              background: carEditMode ? '#1877D6' : 'rgba(11,31,58,0.08)',
+              background: carEditMode ? '#1877D6' : 'rgba(255,255,255,0.85)',
               color: carEditMode ? '#FFFFFF' : '#0B1F3A', cursor: 'pointer',
+              opacity: carEditMode ? 1 : 0,
             }}
             title="Drag the car to reposition. Values are saved automatically."
           >
             {carEditMode ? '✓ Done' : '✎ Car'}
           </button>
+
+          {/* Tap target: banner + info block toggles expand */}
           <div
             onClick={() => !carEditMode && upcoming && setHeroExpanded((v) => !v)}
-            style={{ textAlign: 'left', padding: 16, cursor: upcoming && !carEditMode ? 'pointer' : 'default', position: 'relative', overflow: 'hidden' }}
+            style={{ cursor: upcoming && !carEditMode ? 'pointer' : 'default' }}
           >
-            {/* Car image - fills the tile and fades behind content/buttons via mask */}
-            <img
-              src={carAsset.url}
-              alt=""
-              aria-hidden
-              draggable={false}
-              onPointerDown={(e) => {
-                if (!carEditMode) return;
-                e.stopPropagation();
-                e.preventDefault();
-                const target = e.currentTarget;
-                target.setPointerCapture(e.pointerId);
-                const startX = e.clientX;
-                const startY = e.clientY;
-                const startRight = carPos.right;
-                const startTop = carPos.top;
-                const onMove = (ev: PointerEvent) => {
-                  const dx = ev.clientX - startX;
-                  const dy = ev.clientY - startY;
-                  setCarPos((p) => ({ ...p, right: Math.round(startRight - dx), top: Math.round(startTop + dy) }));
-                };
-                const onUp = (ev: PointerEvent) => {
-                  try { target.releasePointerCapture(ev.pointerId); } catch {}
-                  window.removeEventListener("pointermove", onMove);
-                  window.removeEventListener("pointerup", onUp);
-                };
-                window.addEventListener("pointermove", onMove);
-                window.addEventListener("pointerup", onUp);
-              }}
-              style={{
-                width: '62%',
-                height: '88%',
-                objectFit: 'cover',
-                objectPosition: 'right',
-                position: 'absolute',
-                right: '-1px',
-                top: '-44px',
-                opacity: 1,
-                zIndex: carEditMode ? 5 : 0,
-                pointerEvents: carEditMode ? 'auto' : 'none',
-                cursor: carEditMode ? 'move' : 'default',
-                outline: carEditMode ? '2px dashed #1877D6' : 'none',
-                WebkitMaskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
-                WebkitMaskComposite: 'source-in',
-                maskImage: carEditMode ? 'none' : 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 12%, #000 45%), linear-gradient(to bottom, #000 0%, #000 60%, rgba(0,0,0,0.45) 85%, transparent 100%)',
-                maskComposite: 'intersect',
-              }}
-            />
+            {/* ---------- Photo banner ---------- */}
+            <div style={{ position: 'relative', height: 140, width: '100%', background: 'linear-gradient(135deg, #E8EEF7 0%, #C8D5E8 100%)', overflow: 'hidden' }}>
+              <img
+                src={carAsset.url}
+                alt=""
+                aria-hidden
+                draggable={false}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  objectPosition: `center ${carPos.objectPositionY}%`,
+                  display: 'block',
+                }}
+              />
+              {/* Subtle dark gradient for legibility */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,22,40,0.15) 0%, rgba(10,22,40,0) 40%, rgba(10,22,40,0) 60%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
 
-            {/* Label */}
-            <div style={{ fontSize: 9, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Inter, sans-serif', position: 'relative', zIndex: 1 }}>
-              Next lesson · {upcoming ? formatDayLabel(lessonDateTime(upcoming)) : '—'}
+              {/* Top-left: NEXT LESSON badge */}
+              <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
+                <span style={{ background: 'rgba(10,22,40,0.9)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', color: '#FFFFFF', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  Next Lesson
+                </span>
+              </div>
+
+              {/* Top-right: Car chip + status pills */}
+              {upcoming && (() => {
+                const endPassed = (() => {
+                  try {
+                    const start = lessonDateTime(upcoming);
+                    const end = new Date(start.getTime() + (upcoming.duration_minutes ?? 60) * 60000);
+                    return end.getTime() <= Date.now();
+                  } catch { return false; }
+                })();
+                const showEol = endPassed && !upcoming.eol_completed;
+                const showArrived = goingActive;
+                return (
+                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                    <span style={{ background: '#1A52A0', color: '#FFFFFF', fontSize: 10, fontWeight: 900, padding: '4px 8px', borderRadius: 6, boxShadow: '0 4px 10px rgba(26,82,160,0.35)', border: '1px solid rgba(255,255,255,0.25)', display: 'inline-flex', alignItems: 'center', gap: 4, letterSpacing: '0.04em' }}>
+                      <Car size={10} color="#FFFFFF" /> CAR
+                    </span>
+                    {(showEol || showArrived) && (
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        {showArrived && (
+                          <span style={{ background: '#10B981', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(16,185,129,0.35)', display: 'inline-flex', alignItems: 'center', gap: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#FFFFFF' }} />
+                            Arrived
+                          </span>
+                        )}
+                        {showEol && (
+                          <span style={{ background: '#F59E0B', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(245,158,11,0.35)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            EOL
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
-            {/* Content */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#0B1F3A', letterSpacing: -1, lineHeight: '30px', fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                  {upcoming ? formatTime(upcoming) : '—'}
-                </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#0B1F3A', marginTop: 4, fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
+
+            {/* ---------- Split body: date rail + info panel ---------- */}
+            <div style={{ display: 'flex' }}>
+              {/* Date rail */}
+              <div style={{ width: 64, background: '#0A1628', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', flexShrink: 0, color: '#FFFFFF' }}>
+                {upcoming ? (() => {
+                  const d = lessonDateTime(upcoming);
+                  const day = d.getDate();
+                  const mon = d.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
+                  return (
+                    <>
+                      <span style={{ fontSize: 26, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>{day}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', opacity: 0.7, marginTop: 4, textTransform: 'uppercase' }}>{mon}</span>
+                    </>
+                  );
+                })() : (
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', opacity: 0.6, textTransform: 'uppercase', textAlign: 'center', padding: '0 4px' }}>No date</span>
+                )}
+              </div>
+
+              {/* Info panel */}
+              <div style={{ flex: 1, padding: '18px 18px 16px' }}>
+                <h2 style={{ color: '#0A1628', fontSize: 19, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: 0, lineHeight: 1, marginBottom: 16 }}>
                   {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginTop: 2, fontFamily: 'Inter, sans-serif', textShadow: '0 1px 2px rgba(255,255,255,0.9)' }}>
-                  {upcoming ? formatDuration(upcoming.duration_minutes) : ''}
-                </div>
+                </h2>
+
+                {upcoming && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {/* Time */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                      <Clock size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B' }}>
+                        {formatTime(upcoming)} <span style={{ color: '#94A3B8', fontWeight: 500 }}>({formatDuration(upcoming.duration_minutes)})</span>
+                      </div>
+                    </div>
+
+                    {/* Pickup */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                      <MapPin size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#334155', lineHeight: 1.3, minWidth: 0 }}>
+                        {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || <span style={{ color: '#94A3B8', fontStyle: 'italic', fontWeight: 500 }}>No pickup set</span>}
+                      </div>
+                    </div>
+
+                    {/* Payment */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                      <PoundSterling size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+                      {(() => {
+                        const status = (upcoming.payment_status ?? '').toLowerCase();
+                        const amt = Number(upcoming.amount_due ?? 0);
+                        const isPaid = status === 'paid' || status === 'prepaid';
+                        const isCancelled = status === 'cancelled';
+                        if (isPaid) {
+                          return (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ fontSize: 13, fontWeight: 800, color: '#059669', textTransform: 'uppercase', letterSpacing: '0.02em' }}>£{amt.toFixed(2)} {status === 'prepaid' ? 'Prepaid' : 'Paid'}</span>
+                              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', background: '#D1FAE5', color: '#065F46', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Cleared</span>
+                            </div>
+                          );
+                        }
+                        if (isCancelled) {
+                          return <span style={{ fontSize: 13, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.02em' }}>Cancelled</span>;
+                        }
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontSize: 13, fontWeight: 900, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.02em' }}>£{amt.toFixed(2)} Due</span>
+                            <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', background: '#FEE2E2', color: '#991B1B', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{status === 'partial' ? 'Partial' : 'Pending'}</span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                {upcoming && (() => {
+                  const phone = upcoming?.pupils?.phone ?? "";
+                  const address = upcoming?.pupils?.address ?? "";
+                  const postcode = upcoming?.pupils?.postcode ?? "";
+                  const navQuery = [address, postcode].filter(Boolean).join(", ");
+                  const stop = (e: React.MouseEvent) => e.stopPropagation();
+                  const btnBase: React.CSSProperties = { flex: 1, height: 38, borderRadius: 10, fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, textDecoration: 'none', border: 'none', textTransform: 'uppercase', letterSpacing: '0.04em' };
+                  return (
+                    <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+                      {phone ? (
+                        <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1A52A0', color: '#fff', boxShadow: '0 4px 10px rgba(26,82,160,0.25)' }}>
+                          <Phone size={14} color="#ffffff" /> Call
+                        </a>
+                      ) : (
+                        <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1A52A0', color: '#fff', opacity: 0.5 }}>
+                          <Phone size={14} color="#ffffff" /> Call
+                        </button>
+                      )}
+                      {phone ? (
+                        <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#FFFFFF', color: '#0A1628', border: '2px solid #E2E8F0' }}>
+                          <MessageSquare size={14} color="#0A1628" /> Text
+                        </a>
+                      ) : (
+                        <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#FFFFFF', color: '#0A1628', border: '2px solid #E2E8F0', opacity: 0.5 }}>
+                          <MessageSquare size={14} color="#0A1628" /> Text
+                        </button>
+                      )}
+                      {navQuery ? (
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`} target="_blank" rel="noopener noreferrer" onClick={stop} style={{ ...btnBase, background: '#0A1628', color: '#fff' }}>
+                          <Navigation size={14} color="#ffffff" /> Go
+                        </a>
+                      ) : (
+                        <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#0A1628', color: '#fff', opacity: 0.5 }}>
+                          <Navigation size={14} color="#ffffff" /> Go
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
-            {/* Action buttons - raised above the car image */}
-            {upcoming && (() => {
-              const phone = upcoming?.pupils?.phone ?? "";
-              const address = upcoming?.pupils?.address ?? "";
-              const postcode = upcoming?.pupils?.postcode ?? "";
-              const navQuery = [address, postcode].filter(Boolean).join(", ");
-              const stop = (e: React.MouseEvent) => e.stopPropagation();
-              const btnBase: React.CSSProperties = { flex: 1, height: 36, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, textDecoration: 'none', border: 'none' };
-              return (
-                <div style={{ display: 'flex', gap: 8, marginTop: 12, position: 'relative', zIndex: 2 }}>
-                  {phone ? (
-                    <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1877D6', color: '#fff' }}>
-                      <Phone size={16} color="#ffffff" /> Call
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1877D6', color: '#fff', opacity: 0.6 }}>
-                      <Phone size={16} color="#ffffff" /> Call
-                    </button>
-                  )}
-                  {phone ? (
-                    <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)' }}>
-                      <MessageSquare size={16} color="#0B1F3A" /> Text
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#F3F8FF', color: '#0B1F3A', border: '1px solid rgba(11,31,58,0.12)', opacity: 0.6 }}>
-                      <MessageSquare size={16} color="#0B1F3A" /> Text
-                    </button>
-                  )}
-                  {navQuery ? (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={stop}
-                      style={{ ...btnBase, background: '#0B1F3A', color: '#fff' }}
-                    >
-                      <Navigation size={16} color="#ffffff" /> Go
-                    </a>
-                  ) : (
-                    <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#0B1F3A', color: '#fff', opacity: 0.6 }}>
-                      <Navigation size={16} color="#ffffff" /> Go
-                    </button>
-                  )}
-                </div>
-              );
-            })()}
           </div>
+
+          {/* Car edit controls (dev) */}
           {carEditMode && (
             <div
               onClick={(e) => e.stopPropagation()}
               style={{
-                margin: '12px 16px 16px',
+                margin: '0 16px 16px',
                 background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
                 padding: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 fontSize: 11, fontFamily: 'Inter, sans-serif', color: '#0B1F3A',
                 display: 'flex', flexDirection: 'column', gap: 6,
               }}
             >
-              <div style={{ fontWeight: 700 }}>Drag image to move</div>
-              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
-                W {carPos.width}%
-                <input type="range" min={20} max={120} value={carPos.width}
-                  onChange={(e) => setCarPos((p) => ({ ...p, width: Number(e.target.value) }))}
-                  style={{ flex: 1 }} />
-              </label>
-              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
-                H {carPos.heightPct}%
-                <input type="range" min={40} max={160} value={carPos.heightPct}
-                  onChange={(e) => setCarPos((p) => ({ ...p, heightPct: Number(e.target.value) }))}
-                  style={{ flex: 1 }} />
-              </label>
+              <div style={{ fontWeight: 700 }}>Adjust banner image</div>
               <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
                 Y-focus {carPos.objectPositionY}%
                 <input type="range" min={0} max={100} value={carPos.objectPositionY}
                   onChange={(e) => setCarPos((p) => ({ ...p, objectPositionY: Number(e.target.value) }))}
                   style={{ flex: 1 }} />
               </label>
-              <div style={{ fontSize: 10, color: '#6B7280' }}>
-                right: {carPos.right}, top: {carPos.top}
-              </div>
               <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
                 <button type="button" onClick={() => { setCarPos(defaultCarPos); toast("Car position reset"); }}
                   style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
                   Reset
                 </button>
                 <button type="button" onClick={() => {
-                  const txt = JSON.stringify(carPos);
-                  try { navigator.clipboard?.writeText(txt); toast.success("Car position copied to clipboard"); } catch {}
-                  console.log('[car position]', txt);
+                  if (typeof window !== 'undefined') {
+                    try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
+                  }
+                  setCarEditMode(false);
+                  toast.success('Position saved');
                 }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
-                  Copy
-                </button>
-                <button type="button" onClick={() => {
-                  const blob = new Blob([JSON.stringify(carPos, null, 2)], { type: 'application/json' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'car-position.json';
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
-                  URL.revokeObjectURL(url);
-                  toast.success('Car position exported');
-                }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
-                  Export
+                  style={{ flex: 2, fontSize: 11, fontWeight: 700, padding: '6px 6px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
+                  Save
                 </button>
               </div>
-              <button type="button" onClick={() => {
-                if (typeof window !== 'undefined') {
-                  try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
-                }
-                setCarEditMode(false);
-                toast.success('Car position saved');
-              }}
-                style={{ width: '100%', marginTop: 6, fontSize: 12, fontWeight: 700, padding: '8px 8px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
-                Save position
-              </button>
             </div>
           )}
+
           {/* Expand affordance footer */}
           {upcoming && (
             <div
@@ -4380,23 +4409,23 @@ function HomePage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 6,
-                padding: heroExpanded ? '10px 0 16px' : '8px 12px',
-                borderTop: heroExpanded ? 'none' : '1px solid #EEF1F5',
-                background: heroExpanded ? '#F3F8FF' : '#FAFBFC',
+                padding: heroExpanded ? '10px 0 16px' : '10px 12px',
+                borderTop: heroExpanded ? 'none' : '1px solid #F1F5F9',
+                background: heroExpanded ? '#F8FAFC' : '#FAFBFC',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
                 fontSize: heroExpanded ? 12 : 11,
-                fontWeight: heroExpanded ? 500 : 700,
-                color: heroExpanded ? '#185FA5' : '#1877D6',
+                fontWeight: heroExpanded ? 600 : 800,
+                color: heroExpanded ? '#0A1628' : '#1A52A0',
                 textTransform: heroExpanded ? 'none' : 'uppercase',
-                letterSpacing: heroExpanded ? 0 : 0.6,
+                letterSpacing: heroExpanded ? 0 : '0.08em',
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
               {heroExpanded ? (
-                <ChevronUp size={14} color="#185FA5" />
+                <ChevronUp size={14} color="#0A1628" />
               ) : (
-                <ChevronDown size={16} color="#1877D6" />
+                <ChevronDown size={16} color="#1A52A0" />
               )}
             </div>
           )}
