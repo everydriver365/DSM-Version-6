@@ -5976,6 +5976,37 @@ function HeroExpandedPanel({
 
   return (
     <div style={{ background: '#F3F8FF', borderRadius: '0 0 16px 16px', padding: 12 }}>
+      {/* Row 0 — Call / Text / Navigate actions */}
+      <div style={{ margin: '-12px -12px 12px', padding: '12px 14px', background: '#FAFBFC', borderTop: '1px solid #EEF2F7', borderBottom: '1px solid #EEF2F7', display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          onClick={() => { if (phone) window.location.href = `tel:${phone}`; else toast('No phone number'); }}
+          aria-label="Call"
+          style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+        >
+          <Phone size={14} color="#0F2044" />
+        </button>
+        <button
+          type="button"
+          onClick={() => sendSms(`Hi ${firstName}, `)}
+          aria-label="Text"
+          style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+        >
+          <IconMessageCircle size={14} color="#0F2044" />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const q = [lesson.pickup_location, lesson.pupils?.address, lesson.pupils?.postcode].filter(Boolean).join(', ');
+            if (!q) { toast('No pickup set'); return; }
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`, '_blank');
+          }}
+          style={{ flex: 3, background: '#185FA5', color: '#FFFFFF', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
+        >
+          <Navigation size={14} color="#FFFFFF" />
+          Navigate
+        </button>
+      </div>
       {/* Row 1 — status pills */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
         <button
