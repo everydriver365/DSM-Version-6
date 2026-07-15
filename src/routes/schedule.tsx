@@ -948,7 +948,7 @@ function SchedulePage() {
           </button>
         </div>
       )}
-      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
+      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(24,119,214,0.5); } 50% { box-shadow: 0 0 0 6px rgba(24,119,214,0); } }`}</style>
 
 
 
@@ -1247,7 +1247,7 @@ function SchedulePage() {
                                     position: "relative",
                                     background: "#1877D6",
                                     borderRadius: 12,
-                                    boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
+                                    boxShadow: "0 4px 16px rgba(24,119,214, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: "center",
