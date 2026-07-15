@@ -5185,6 +5185,7 @@ function HomePage() {
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
               const goTile = (tile: QuickTile) => {
+                if (tile.onTapOverride) { tile.onTapOverride(); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
@@ -5201,30 +5202,35 @@ function HomePage() {
                     key={key}
                     type="button"
                     onClick={() => { goTile(tile); onTap?.(); }}
+                    onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)'; }}
+                    onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ''; }}
+                    onTouchCancel={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ''; }}
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 14,
-                      padding: '14px 12px',
+                      borderRadius: 16,
+                      padding: '14px 12px 13px',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                      minHeight: 80,
+                      border: 'none',
+                      minHeight: 92,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: 'Poppins, sans-serif',
+                      transition: 'transform 0.12s ease',
                     }}
                   >
                     <div style={{
-                      width: 36, height: 36, borderRadius: 10,
+                      width: 44, height: 44, borderRadius: 12,
                       background: tile.chipBg ?? `${tile.colour}15`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 8,
+                      marginBottom: 10,
                     }}>
-                      <Icon size={18} color={tile.colour} />
+                      <Icon size={22} color={tile.colour} stroke={1.8} />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: tile.attention ? 600 : 400, color: tile.attention ? '#C23B3B' : '#5A6B85', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
 
                   </button>
                 );
