@@ -5197,17 +5197,20 @@ function HomePage() {
 
               const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
                 const Icon = tile.icon;
+                const subColor = tile.attention ? '#C23B3B' : '#5A6B85';
+                const subWeight = tile.attention ? 600 : 400;
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => { goTile(tile); onTap?.(); }}
+                    className="cf-tap"
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 14,
-                      padding: '14px 12px',
+                      border: 'none',
+                      borderRadius: 16,
+                      padding: '14px 12px 13px',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                      minHeight: 80,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
@@ -5217,16 +5220,15 @@ function HomePage() {
                     }}
                   >
                     <div style={{
-                      width: 36, height: 36, borderRadius: 10,
-                      background: tile.chipBg ?? `${tile.colour}15`,
+                      width: 44, height: 44, borderRadius: 12,
+                      background: tile.chipBg,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 8,
+                      marginBottom: 10,
                     }}>
-                      <Icon size={18} color={tile.colour} />
+                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
-
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
                   </button>
                 );
               };
