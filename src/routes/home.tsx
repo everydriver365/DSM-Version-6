@@ -2841,7 +2841,7 @@ function HomePage() {
       weather: weatherData,
       drive: driveData,
       expires: Date.now() + 5 * 60 * 1000,
-    });
+    };
   }, [upcoming?.id, weatherData, driveData, weatherLoading, driveLoading]);
 
 
