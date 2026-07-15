@@ -4564,8 +4564,6 @@ function HomePage() {
 
 
 
-
-      </div>
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
         const PF = 'Poppins, Inter, sans-serif';
