@@ -1923,6 +1923,222 @@ function PupilDetailPage() {
           </div>
         );
       })()}
+
+        {(() => {
+          const all = [...(lessons ?? []), ...(pastLessons ?? [])];
+          let focus: Lesson | null = null;
+          if (focusLessonId) focus = all.find((l) => l.id === focusLessonId) ?? null;
+          if (!focus && lessons && lessons.length > 0) focus = lessons[0];
+          if (!focus && pastLessons && pastLessons.length > 0) focus = pastLessons[0];
+          if (!focus) {
+            return (
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  border: "0.5px solid rgba(15,32,68,0.10)",
+                  padding: "20px 16px",
+                  marginTop: 12,
+                  textAlign: "center",
+                  ...POPPINS,
+                }}
+              >
+                <Calendar_ /> {/* placeholder replaced below */}
+              </div>
+            );
+          }
+          const start = new Date(`${focus.lesson_date}T${focus.lesson_time || "00:00"}:00`);
+          const end = new Date(start.getTime() + (focus.duration_minutes ?? 60) * 60000);
+          const now = new Date();
+          const isLive = now >= start && now < end;
+          const isPast = now >= end;
+          const firstName = (pupil?.name ?? "there").split(/\s+/)[0];
+          const phone = pupil?.phone ?? null;
+          const pickup = focus.pickup_location || pupil?.address || "";
+          const mapSrc = pickup
+            ? `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_KEY}&q=${encodeURIComponent(pickup)}&zoom=15`
+            : null;
+          const sendSms = (body: string) => {
+            if (!phone) { toast.error("No phone number"); return; }
+            window.location.href = `sms:${phone}?&body=${encodeURIComponent(body)}`;
+          };
+          const balance = Number(focus.amount_due ?? 0);
+          const isPaid = focus.payment_status === "paid" || focus.payment_status === "prepaid";
+          const isCancelled = focus.status === "cancelled";
+
+          const sendPaymentLink = () => {
+            if (!phone) { toast.error("No phone on file"); return; }
+            const amountPence = Math.round(balance * 100);
+            const payUrl = `https://everydriver.co.uk/pay?amount=${amountPence}&desc=${encodeURIComponent("Lesson payment")}&ref=${focus!.id}`;
+            const msg = `Hi ${firstName}, you have an outstanding lesson payment of £${balance.toFixed(2)}. Please pay here: ${payUrl}`;
+            window.location.href = `sms:${phone}?&body=${encodeURIComponent(msg)}`;
+          };
+          const markPaid = async () => {
+            const { error } = await supabase.from("lessons").update({ payment_status: "paid" }).eq("id", focus!.id);
+            if (error) { toast.error("Could not mark as paid"); return; }
+            toast.success("Marked as paid");
+            setLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
+            setPastLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
+          };
+
+          const pillBase: React.CSSProperties = {
+            background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12,
+            padding: '10px 0', display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer',
+            fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 500, color: '#0F2044',
+          };
+          const rowBtn: React.CSSProperties = {
+            width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
+            fontFamily: 'Inter, sans-serif', fontSize: 14, color: "#0F2044", fontWeight: 500,
+          };
+
+          const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";
+          const labelColor = isLive ? "#137333" : isCancelled ? "#B42318" : "#1877D6";
+          const lastMsgTime = lastMessage
+            ? new Date(lastMessage.created_at).toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })
+            : "";
+          const lastMsgPreview = lastMessage
+            ? (lastMessage.sender_type === "instructor" ? "You: " : "") + (lastMessage.body || "").slice(0, 60)
+            : "No messages yet";
+
+          return (
+            <>
+              {/* Lesson Details Card */}
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", overflow: "hidden", marginTop: 12 }}>
+                <div style={{ height: 140, background: "#EEF2F7", position: "relative" }}>
+                  {mapSrc ? (
+                    <iframe
+                      title="Pickup map"
+                      src={mapSrc}
+                      style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#8A93A3", fontSize: 12, ...POPPINS }}>
+                      <MapPin size={16} style={{ marginRight: 6 }} /> No pickup on file
+                    </div>
+                  )}
+                  <span
+                    style={{
+                      position: "absolute", top: 10, left: 10, background: "#FFFFFF",
+                      color: labelColor, fontSize: 11, fontWeight: 700,
+                      padding: "4px 10px", borderRadius: 999, letterSpacing: 0.3,
+                      textTransform: "uppercase", ...POPPINS,
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+                <div style={{ padding: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                    <Calendar size={16} color="#1877D6" />
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", ...POPPINS }}>
+                      {formatDateShort(start)} · {formatTime(focus.lesson_time)}
+                    </div>
+                    <span style={{ fontSize: 12, color: "#64748B", ...POPPINS }}>
+                      · {focus.duration_minutes ?? 60} mins
+                    </span>
+                  </div>
+                  {pickup && (
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
+                      <MapPin size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
+                      <div style={{ flex: 1, fontSize: 13, color: "#0F2044", ...POPPINS }}>{pickup}</div>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
+                        target="_blank" rel="noreferrer"
+                        style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, flexShrink: 0, ...POPPINS }}
+                      >Navigate</a>
+                    </div>
+                  )}
+                  {!isPast && !isCancelled && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
+                        <MapPin size={16} color="#0F2044" />
+                        <span>Here</span>
+                      </button>
+                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, on the way!`)}>
+                        <Send size={16} color="#0F2044" />
+                        <span>Going</span>
+                      </button>
+                      <button style={{ ...pillBase, background: '#185FA5', color: '#FFFFFF', borderColor: '#185FA5' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
+                        <Check size={16} color="#FFFFFF" />
+                        <span style={{ color: '#FFFFFF' }}>Arrived</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Manage Lesson Card */}
+              {!isCancelled && (
+                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", overflow: "hidden", marginTop: 12 }}>
+                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <RefreshCw size={16} color="#1877D6" /> Reschedule
+                    </span>
+                    <ChevronRight size={18} color="#64748B" />
+                  </button>
+                  <div style={{ height: "0.5px", background: "rgba(15,32,68,0.10)" }} />
+                  <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
+                      <CreditCard size={16} color="#1877D6" /> Send payment link
+                    </span>
+                    <ChevronRight size={18} color="#64748B" />
+                  </button>
+                  <div style={{ height: "0.5px", background: "rgba(15,32,68,0.10)" }} />
+                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id } })}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
+                      <X size={16} color="#B42318" /> Cancel lesson
+                    </span>
+                    <ChevronRight size={18} color="#64748B" />
+                  </button>
+                </div>
+              )}
+
+              {/* Messages Card */}
+              <div
+                onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
+                style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", padding: 14, marginTop: 12, cursor: "pointer" }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <MessageSquare size={16} color="#1877D6" />
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", ...POPPINS }}>Messages</span>
+                    {unreadMessages > 0 && (
+                      <span style={{ background: "#B42318", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
+                </div>
+                <div style={{ fontSize: 13, color: lastMessage ? "#0F2044" : "#8A93A3", ...POPPINS, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {lastMsgPreview}
+                </div>
+                {lastMessage && (
+                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 4, ...POPPINS }}>{lastMsgTime}</div>
+                )}
+              </div>
+
+              {/* Outstanding balance card */}
+              {balance > 0 && !isPaid && (
+                <div style={{ background: "#FFF8E8", borderRadius: 16, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044", ...POPPINS }}>£{balance.toFixed(2)}</div>
+                  </div>
+                  <button
+                    onClick={markPaid}
+                    style={{ background: "#137333", color: "#FFF", border: "none", borderRadius: 999, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", ...POPPINS }}
+                  >
+                    Mark paid
+                  </button>
+                </div>
+              )}
+            </>
+          );
+        })()}
+
         <SectionHeader>UPCOMING LESSONS</SectionHeader>
         {lessons === null ? null : lessons.length === 0 ? (
           <div className="flex items-center justify-center py-12">
