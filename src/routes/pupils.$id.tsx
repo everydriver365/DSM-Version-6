@@ -12,6 +12,9 @@ import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
 
 export const Route = createFileRoute("/pupils/$id")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    lessonId: typeof search.lessonId === "string" ? search.lessonId : undefined,
+  }),
   head: () => ({
     meta: [{ title: "Pupil — DSM by EveryDriver" }],
   }),
