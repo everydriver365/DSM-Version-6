@@ -4278,7 +4278,7 @@ function HomePage() {
 
           {/* Tap body */}
           <div
-            onClick={() => upcoming && setHeroExpanded((v) => !v)}
+            onClick={() => upcoming && navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
             style={{ cursor: upcoming ? 'pointer' : 'default' }}
           >
             <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -4490,6 +4490,7 @@ function HomePage() {
               setGoingActive={setGoingActive}
               onOpenLate={() => setLateOpen(true)}
               navigateTo={(to) => navigate({ to })}
+              onOpenLesson={() => navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
               onEol={() => setEolLesson(upcoming)}
             />
           )}
@@ -5923,6 +5924,7 @@ function HeroExpandedPanel({
   setGoingActive,
   onOpenLate,
   navigateTo,
+  onOpenLesson,
   onEol,
 }: {
   lesson: LessonRow;
@@ -5931,6 +5933,7 @@ function HeroExpandedPanel({
   setGoingActive: (v: boolean) => void;
   onOpenLate: () => void;
   navigateTo: (to: string) => void;
+  onOpenLesson: () => void;
   onEol: () => void;
 }) {
   const phone = lesson.pupils?.phone ?? null;
@@ -6002,7 +6005,7 @@ function HeroExpandedPanel({
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
         <button
           style={pillBase}
-          onClick={() => navigateTo(`/pupils/${lesson.pupil_id}`)}
+          onClick={onOpenLesson}
         >
           <ClipboardList size={16} color="#0F2044" />
           <span style={pillLabel}>Prep</span>
