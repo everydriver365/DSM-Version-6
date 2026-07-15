@@ -4304,34 +4304,8 @@ function HomePage() {
                       </div>
                     </div>
 
-                    {/* Payment */}
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <PoundSterling size={16} color="#1A52A0" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
-                      {(() => {
-                        const status = (upcoming.payment_status ?? '').toLowerCase();
-                        const amt = Number(upcoming.amount_due ?? 0);
-                        const isPaid = status === 'paid' || status === 'prepaid';
-                        const isCancelled = status === 'cancelled';
-                        if (isPaid) {
-                          return (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <span style={{ fontSize: 13, fontWeight: 800, color: '#059669', textTransform: 'uppercase', letterSpacing: '0.02em' }}>£{amt.toFixed(2)} {status === 'prepaid' ? 'Prepaid' : 'Paid'}</span>
-                              <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', background: '#D1FAE5', color: '#065F46', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Cleared</span>
-                            </div>
-                          );
-                        }
-                        if (isCancelled) {
-                          return <span style={{ fontSize: 13, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.02em' }}>Cancelled</span>;
-                        }
-                        return (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 13, fontWeight: 900, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.02em' }}>£{amt.toFixed(2)} Due</span>
-                            <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', background: '#FEE2E2', color: '#991B1B', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{status === 'partial' ? 'Partial' : 'Pending'}</span>
-                          </div>
-                        );
-                      })()}
-                    </div>
                   </div>
+
                 )}
 
                 {/* Action buttons */}
