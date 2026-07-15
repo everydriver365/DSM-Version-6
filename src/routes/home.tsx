@@ -3077,11 +3077,11 @@ function HomePage() {
         key={l.id}
         role="button"
         tabIndex={0}
-        onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+        onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } })}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            navigate({ to: "/lessons/$id", params: { id: l.id } });
+            navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } });
           }
         }}
         className="bg-white flex items-center justify-between hover:bg-[#F8F9FB]"
@@ -3358,11 +3358,11 @@ function HomePage() {
           key={l.id}
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } })}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              navigate({ to: "/lessons/$id", params: { id: l.id } });
+              navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } });
             }
           }}
           className="text-left w-full cursor-pointer"
@@ -3410,11 +3410,11 @@ function HomePage() {
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+          onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } })}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              navigate({ to: "/lessons/$id", params: { id: l.id } });
+              navigate({ to: "/pupils/$id", params: { id: l.pupil_id }, search: { lessonId: l.id } });
             }
           }}
           className="flex-1 text-left cursor-pointer"
@@ -3762,7 +3762,7 @@ function HomePage() {
                       return (
                         <button
                           key={l.id}
-                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } as any })}
+                          onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           style={{
                             display: "grid", gridTemplateColumns: "70px 1fr auto auto",
                             gap: 12, alignItems: "center", padding: "10px 12px",
