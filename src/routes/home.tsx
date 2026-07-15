@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
+import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
+import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
+import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 import {
   Phone,
