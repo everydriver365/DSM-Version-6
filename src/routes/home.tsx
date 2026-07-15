@@ -146,8 +146,6 @@ import {
   scheduleLessonReminder,
   isSupported as notificationsSupported,
 } from "../lib/pushNotifications";
-import carAsset from "../assets/next-lesson-car.png.asset.json";
-import dsmLogo from "../assets/dsm-logo.png.asset.json";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -2140,23 +2138,6 @@ function HomePage() {
   const [lateOpen, setLateOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ----- Car image position (drag-to-reposition, persisted in localStorage) -----
-  type CarPos = { right: number; top: number; width: number; heightPct: number; objectPositionY: number };
-  const CAR_POS_KEY = "home.nextLessonCar.pos.v1";
-  const defaultCarPos: CarPos = { right: -30, top: 0, width: 60, heightPct: 100, objectPositionY: 25 };
-  const [carPos, setCarPos] = useState<CarPos>(() => {
-    if (typeof window === "undefined") return defaultCarPos;
-    try {
-      const raw = window.localStorage.getItem(CAR_POS_KEY);
-      if (!raw) return defaultCarPos;
-      return { ...defaultCarPos, ...JSON.parse(raw) };
-    } catch { return defaultCarPos; }
-  });
-  const [carEditMode, setCarEditMode] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
-  }, [carPos]);
 
 
   // AT A GLANCE state
@@ -4157,240 +4138,192 @@ function HomePage() {
       {/* NAVY HEADER SECTION (hero + stats strip) */}
       <div style={{ backgroundColor: '#0B1F3A', marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px) + 12px)', paddingBottom: 24, borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
         {/* NEXT LESSON HERO */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: heroExpanded ? '16px 16px 0 0' : 16, boxShadow: '0 20px 50px rgba(21,57,88,0.12)', overflow: heroExpanded ? 'visible' : 'hidden', margin: '-4px 16px 0', position: 'relative', border: '1px solid #F1F5F9', fontFamily: 'Inter, sans-serif' }}>
-          {/* Car edit toggle (dev) */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setCarEditMode((v) => {
-                if (v) toast.success("Car position saved");
-                return !v;
-              });
-            }}
-            style={{
-              position: 'absolute', top: 6, right: 6, zIndex: 20,
-              fontSize: 10, fontWeight: 700, fontFamily: 'Inter, sans-serif',
-              padding: '4px 8px', borderRadius: 6, border: 'none',
-              background: carEditMode ? '#1877D6' : 'rgba(255,255,255,0.85)',
-              color: carEditMode ? '#FFFFFF' : '#0B1F3A', cursor: 'pointer',
-              opacity: carEditMode ? 1 : 0,
-            }}
-            title="Drag the car to reposition. Values are saved automatically."
-          >
-            {carEditMode ? '✓ Done' : '✎ Car'}
-          </button>
-
-          {/* Tap target: banner + info block toggles expand */}
+        {/* NEXT LESSON HERO — compact action tile */}
+        <div
+          className="cf-tap"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: heroExpanded ? '16px 16px 0 0' : 16,
+            boxShadow: '0 20px 50px rgba(21,57,88,0.12)',
+            overflow: 'hidden',
+            margin: '-4px 16px 0',
+            position: 'relative',
+            border: '1px solid #F1F5F9',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {/* Header strip */}
           <div
-            onClick={() => !carEditMode && upcoming && setHeroExpanded((v) => !v)}
-            style={{ cursor: upcoming && !carEditMode ? 'pointer' : 'default' }}
+            style={{
+              background: '#153958',
+              padding: '10px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
           >
-            {/* ---------- Map banner (pickup location) ---------- */}
-            <div style={{ position: 'relative', height: 140, width: '100%', background: 'linear-gradient(135deg, #E8EEF7 0%, #C8D5E8 100%)', overflow: 'hidden' }}>
-              {(() => {
-                const mapKey = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
-                const q = upcoming ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') : '';
-                if (upcoming && mapKey && q) {
-                  const src = `https://www.google.com/maps/embed/v1/place?key=${mapKey}&q=${encodeURIComponent(q)}&zoom=15`;
-                  return (
-                    <iframe
-                      title="Pickup location"
-                      src={src}
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      style={{ width: '100%', height: '100%', border: 0, display: 'block', pointerEvents: carEditMode ? 'none' : 'auto' }}
-                      allowFullScreen
-                    />
-                  );
-                }
-                return (
-                  <img
-                    src={carAsset.url}
-                    alt=""
-                    aria-hidden
-                    draggable={false}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: `center ${carPos.objectPositionY}%`, display: 'block' }}
-                  />
-                );
-              })()}
-              {/* Subtle dark gradient for legibility of overlays */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(21,57,88,0.25) 0%, rgba(21,57,88,0) 35%, rgba(21,57,88,0) 65%, rgba(21,57,88,0.25) 100%)', pointerEvents: 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: upcoming ? '#22C580' : '#94A3B8',
+                  boxShadow: upcoming ? '0 0 0 4px rgba(34,197,128,0.25)' : 'none',
+                }}
+              />
+              <span style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                Next Lesson
+              </span>
+            </div>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 10, fontWeight: 500 }}>
+              {upcoming ? 'Dashboard' : 'No lesson'}
+            </span>
+          </div>
 
-
-              {/* Top-left: NEXT LESSON badge */}
-              <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
-                <span style={{ background: 'rgba(21,57,88,0.9)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', color: '#FFFFFF', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Next Lesson
-                </span>
+          {/* Tap body */}
+          <div
+            onClick={() => upcoming && setHeroExpanded((v) => !v)}
+            style={{ cursor: upcoming ? 'pointer' : 'default' }}
+          >
+            <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: 14 }}>
+              {/* Date / icon rail */}
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div
+                  style={{
+                    width: 56,
+                    height: 56,
+                    background: '#F3F8FF',
+                    borderRadius: 12,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: upcoming ? '2px solid #1877D6' : '2px dashed rgba(24,119,214,0.2)',
+                  }}
+                >
+                  {upcoming ? (() => {
+                    const d = lessonDateTime(upcoming);
+                    return (
+                      <>
+                        <span style={{ fontSize: 22, fontWeight: 900, lineHeight: 1, color: '#153958', letterSpacing: '-0.03em' }}>{d.getDate()}</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', color: '#1877D6', marginTop: 2, textTransform: 'uppercase' }}>
+                          {d.toLocaleString('en-GB', { month: 'short' }).toUpperCase()}
+                        </span>
+                      </>
+                    );
+                  })() : (
+                    <>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(21,57,88,0.4)', lineHeight: 1, textTransform: 'uppercase' }}>No</span>
+                      <span style={{ fontSize: 12, fontWeight: 900, color: 'rgba(21,57,88,0.4)', lineHeight: 1 }}>Date</span>
+                    </>
+                  )}
+                </div>
+                {!upcoming && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: -4,
+                      right: -4,
+                      width: 20,
+                      height: 20,
+                      background: '#1877D6',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 6px rgba(24,119,214,0.25)',
+                    }}
+                  >
+                    <Plus size={12} color="#FFFFFF" strokeWidth={3} />
+                  </div>
+                )}
               </div>
 
-              {/* Top-right: Car chip + status pills */}
-              {upcoming && (() => {
-                const endPassed = (() => {
-                  try {
-                    const start = lessonDateTime(upcoming);
-                    const end = new Date(start.getTime() + (upcoming.duration_minutes ?? 60) * 60000);
-                    return end.getTime() <= Date.now();
-                  } catch { return false; }
-                })();
-                const showEol = endPassed && !upcoming.eol_completed;
-                const showArrived = goingActive;
-                return (
-                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 900, padding: '4px 8px', borderRadius: 6, boxShadow: '0 4px 10px rgba(24,119,214,0.35)', border: '1px solid rgba(255,255,255,0.25)', display: 'inline-flex', alignItems: 'center', gap: 4, letterSpacing: '0.04em' }}>
-                      <Car size={10} color="#FFFFFF" /> CAR
-                    </span>
-                    {(showEol || showArrived) && (
-                      <div style={{ display: 'flex', gap: 4 }}>
-                        {showArrived && (
-                          <span style={{ background: '#22C580', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(34,197,128,0.35)', display: 'inline-flex', alignItems: 'center', gap: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#FFFFFF' }} />
-                            Arrived
-                          </span>
-                        )}
-                        {showEol && (
-                          <span style={{ background: '#F59E0B', color: '#FFFFFF', fontSize: 9, fontWeight: 700, padding: '3px 6px', borderRadius: 4, boxShadow: '0 2px 6px rgba(245,158,11,0.35)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            EOL
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
+              {/* Info */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h3
+                  style={{
+                    color: '#153958',
+                    fontSize: 15,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                    margin: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
+                </h3>
+                <p style={{ color: '#1877D6', fontSize: 13, fontWeight: 500, margin: '4px 0 0' }}>
+                  {upcoming
+                    ? `${formatTime(upcoming)} · ${formatDuration(upcoming.duration_minutes)}`
+                    : 'Book your next session'}
+                </p>
+                {upcoming && (
+                  <p
+                    style={{
+                      color: '#64748B',
+                      fontSize: 12,
+                      fontWeight: 500,
+                      margin: '4px 0 0',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup set'}
+                  </p>
+                )}
+              </div>
+
+              {/* Quick action */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (upcoming) setHeroExpanded((v) => !v);
+                  else navigate({ to: '/lessons/new' });
+                }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: '#F3F8FF',
+                  border: 'none',
+                  color: '#153958',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  transition: 'background 0.15s, color 0.15s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#1877D6'; e.currentTarget.style.color = '#FFFFFF'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#F3F8FF'; e.currentTarget.style.color = '#153958'; }}
+              >
+                {upcoming ? <ChevronRight size={20} /> : <Plus size={20} />}
+              </button>
             </div>
 
-            {/* ---------- Split body: date rail + info panel ---------- */}
-            <div style={{ display: 'flex' }}>
-              {/* Date rail */}
-              <div style={{ width: 64, background: '#153958', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', flexShrink: 0, color: '#FFFFFF' }}>
-                {upcoming ? (() => {
-                  const d = lessonDateTime(upcoming);
-                  const day = d.getDate();
-                  const mon = d.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-                  return (
-                    <>
-                      <span style={{ fontSize: 26, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>{day}</span>
-                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', opacity: 0.7, marginTop: 4, textTransform: 'uppercase' }}>{mon}</span>
-                    </>
-                  );
-                })() : (
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', opacity: 0.6, textTransform: 'uppercase', textAlign: 'center', padding: '0 4px' }}>No date</span>
-                )}
+            {/* Subtle footer rail */}
+            <div style={{ padding: '0 16px 14px' }}>
+              <div style={{ height: 4, width: '100%', background: '#F3F8FF', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: upcoming ? '100%' : '33%', background: 'rgba(24,119,214,0.2)', borderRadius: 2 }} />
               </div>
-
-              {/* Info panel */}
-              <div style={{ flex: 1, padding: '18px 18px 16px' }}>
-                <h2 style={{ color: '#153958', fontSize: 19, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: 0, lineHeight: 1, marginBottom: 16 }}>
-                  {upcoming ? pupilName(upcoming) : 'No upcoming lessons'}
-                </h2>
-
-                {upcoming && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    {/* Time */}
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <Clock size={16} color="#1877D6" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B' }}>
-                        {formatTime(upcoming)} <span style={{ color: '#94A3B8', fontWeight: 500 }}>({formatDuration(upcoming.duration_minutes)})</span>
-                      </div>
-                    </div>
-
-                    {/* Pickup */}
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <MapPin size={16} color="#1877D6" strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#334155', lineHeight: 1.3, minWidth: 0 }}>
-                        {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || <span style={{ color: '#94A3B8', fontStyle: 'italic', fontWeight: 500 }}>No pickup set</span>}
-                      </div>
-                    </div>
-
-                  </div>
-
-                )}
-
-                {/* Action buttons */}
-                {upcoming && (() => {
-                  const phone = upcoming?.pupils?.phone ?? "";
-                  const address = upcoming?.pupils?.address ?? "";
-                  const postcode = upcoming?.pupils?.postcode ?? "";
-                  const navQuery = [address, postcode].filter(Boolean).join(", ");
-                  const stop = (e: React.MouseEvent) => e.stopPropagation();
-                  const btnBase: React.CSSProperties = { flex: 1, height: 38, borderRadius: 10, fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, textDecoration: 'none', border: 'none', textTransform: 'uppercase', letterSpacing: '0.04em' };
-                  return (
-                    <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-                      {phone ? (
-                        <a href={`tel:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#1877D6', color: '#fff', boxShadow: '0 4px 10px rgba(24,119,214,0.25)' }}>
-                          <Phone size={14} color="#ffffff" /> Call
-                        </a>
-                      ) : (
-                        <button onClick={(e) => { stop(e); toast("No phone number for this pupil"); }} style={{ ...btnBase, background: '#1877D6', color: '#fff', opacity: 0.5 }}>
-                          <Phone size={14} color="#ffffff" /> Call
-                        </button>
-                      )}
-                      {phone ? (
-                        <a href={`sms:${phone}`} target="_top" rel="noopener" onClick={stop} style={{ ...btnBase, background: '#FFFFFF', color: '#153958', border: '2px solid #E2E8F0' }}>
-                          <MessageSquare size={14} color="#153958" /> Text
-                        </a>
-                      ) : (
-                        <button onClick={(e) => { stop(e); toast("No phone number"); }} style={{ ...btnBase, background: '#FFFFFF', color: '#153958', border: '2px solid #E2E8F0', opacity: 0.5 }}>
-                          <MessageSquare size={14} color="#153958" /> Text
-                        </button>
-                      )}
-                      {navQuery ? (
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navQuery)}`} target="_blank" rel="noopener noreferrer" onClick={stop} style={{ ...btnBase, background: '#153958', color: '#fff' }}>
-                          <Navigation size={14} color="#ffffff" /> Go
-                        </a>
-                      ) : (
-                        <button onClick={(e) => { stop(e); toast("No pickup address set"); }} style={{ ...btnBase, background: '#153958', color: '#fff', opacity: 0.5 }}>
-                          <Navigation size={14} color="#ffffff" /> Go
-                        </button>
-                      )}
-                    </div>
-                  );
-                })()}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+                <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Pupil: {upcoming ? pupilName(upcoming) : 'Unassigned'}
+                </span>
+                <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Status: {upcoming ? (upcoming.status || 'Scheduled') : 'Idle'}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Car edit controls (dev) */}
-          {carEditMode && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                margin: '0 16px 16px',
-                background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8,
-                padding: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                fontSize: 11, fontFamily: 'Inter, sans-serif', color: '#0B1F3A',
-                display: 'flex', flexDirection: 'column', gap: 6,
-              }}
-            >
-              <div style={{ fontWeight: 700 }}>Adjust banner image</div>
-              <label style={{ display: 'flex', justifyContent: 'space-between', gap: 6, alignItems: 'center' }}>
-                Y-focus {carPos.objectPositionY}%
-                <input type="range" min={0} max={100} value={carPos.objectPositionY}
-                  onChange={(e) => setCarPos((p) => ({ ...p, objectPositionY: Number(e.target.value) }))}
-                  style={{ flex: 1 }} />
-              </label>
-              <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-                <button type="button" onClick={() => { setCarPos(defaultCarPos); toast("Car position reset"); }}
-                  style={{ flex: 1, fontSize: 11, padding: '6px 6px', border: '1px solid #E5E7EB', background: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
-                  Reset
-                </button>
-                <button type="button" onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    try { window.localStorage.setItem(CAR_POS_KEY, JSON.stringify(carPos)); } catch {}
-                  }
-                  setCarEditMode(false);
-                  toast.success('Position saved');
-                }}
-                  style={{ flex: 2, fontSize: 11, fontWeight: 700, padding: '6px 6px', border: 'none', background: '#1877D6', color: '#FFF', borderRadius: 6, cursor: 'pointer' }}>
-                  Save
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Expand affordance footer */}
+          {/* Expand affordance */}
           {upcoming && (
             <div
               onClick={() => setHeroExpanded((v) => !v)}
@@ -4399,27 +4332,21 @@ function HomePage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 6,
-                padding: heroExpanded ? '10px 0 16px' : '10px 12px',
-                borderTop: heroExpanded ? 'none' : '1px solid #F1F5F9',
-                background: heroExpanded ? '#F8FAFC' : '#FAFBFC',
+                padding: '8px 12px',
+                borderTop: '1px solid #F1F5F9',
+                background: '#FAFBFC',
                 cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: heroExpanded ? 12 : 11,
-                fontWeight: heroExpanded ? 600 : 800,
-                color: heroExpanded ? '#153958' : '#1877D6',
-                textTransform: heroExpanded ? 'none' : 'uppercase',
-                letterSpacing: heroExpanded ? 0 : '0.08em',
+                fontSize: 11,
+                fontWeight: 800,
+                color: '#1877D6',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
-              {heroExpanded ? (
-                <ChevronUp size={14} color="#153958" />
-              ) : (
-                <ChevronDown size={16} color="#1877D6" />
-              )}
+              {heroExpanded ? <ChevronUp size={14} color="#153958" /> : <ChevronDown size={16} color="#1877D6" />}
             </div>
           )}
-
 
           {upcoming && heroExpanded && (
             <HeroExpandedPanel
