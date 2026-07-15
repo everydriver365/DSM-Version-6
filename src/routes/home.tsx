@@ -5664,7 +5664,10 @@ function HomePage() {
         rows={weekLessonRows}
         onOpenLesson={(id: string) => {
           setLessonsOpen(false);
-          navigate({ to: "/lessons/$id", params: { id } });
+          const row = weekLessonRows.find((r) => r.id === id);
+          if (row?.pupil_id) {
+            navigate({ to: "/pupils/$id", params: { id: row.pupil_id } as any, search: { lessonId: id } as any });
+          }
         }}
         onDelete={async (id: string, reason: string, notes: string) => {
           const prev = weekLessonRows;
