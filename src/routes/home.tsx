@@ -4186,21 +4186,37 @@ function HomePage() {
             onClick={() => !carEditMode && upcoming && setHeroExpanded((v) => !v)}
             style={{ cursor: upcoming && !carEditMode ? 'pointer' : 'default' }}
           >
-            {/* ---------- Photo banner ---------- */}
+            {/* ---------- Map banner (pickup location) ---------- */}
             <div style={{ position: 'relative', height: 140, width: '100%', background: 'linear-gradient(135deg, #E8EEF7 0%, #C8D5E8 100%)', overflow: 'hidden' }}>
-              <img
-                src={carAsset.url}
-                alt=""
-                aria-hidden
-                draggable={false}
-                style={{
-                  width: '100%', height: '100%', objectFit: 'cover',
-                  objectPosition: `center ${carPos.objectPositionY}%`,
-                  display: 'block',
-                }}
-              />
-              {/* Subtle dark gradient for legibility */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,22,40,0.15) 0%, rgba(10,22,40,0) 40%, rgba(10,22,40,0) 60%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
+              {(() => {
+                const mapKey = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+                const q = upcoming ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') : '';
+                if (upcoming && mapKey && q) {
+                  const src = `https://www.google.com/maps/embed/v1/place?key=${mapKey}&q=${encodeURIComponent(q)}&zoom=15`;
+                  return (
+                    <iframe
+                      title="Pickup location"
+                      src={src}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      style={{ width: '100%', height: '100%', border: 0, display: 'block', pointerEvents: carEditMode ? 'none' : 'auto' }}
+                      allowFullScreen
+                    />
+                  );
+                }
+                return (
+                  <img
+                    src={carAsset.url}
+                    alt=""
+                    aria-hidden
+                    draggable={false}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: `center ${carPos.objectPositionY}%`, display: 'block' }}
+                  />
+                );
+              })()}
+              {/* Subtle dark gradient for legibility of overlays */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,22,40,0.25) 0%, rgba(10,22,40,0) 35%, rgba(10,22,40,0) 65%, rgba(10,22,40,0.25) 100%)', pointerEvents: 'none' }} />
+
 
               {/* Top-left: NEXT LESSON badge */}
               <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
