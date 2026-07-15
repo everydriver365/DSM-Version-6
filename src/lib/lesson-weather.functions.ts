@@ -26,15 +26,14 @@ const TTL_MS = 45 * 60 * 1000;
 export const getLessonWeather = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }): Promise<LessonWeather> => {
-    const owmKey = process.env.OPENWEATHERMAP_API_KEY;
     const googleKey = process.env.GOOGLE_API_KEY;
-    if (!owmKey) return null;
+    if (!googleKey) return null;
 
     let lat = data.lat;
     let lon = data.lon;
 
     // Geocode postcode via Google if coords not supplied.
-    if ((lat == null || lon == null) && data.postcode && googleKey) {
+    if ((lat == null || lon == null) && data.postcode) {
       try {
         const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           data.postcode + ", UK",
@@ -61,14 +60,20 @@ export const getLessonWeather = createServerFn({ method: "POST" })
     if (cached && cached.expires > now) return cached.value;
 
     try {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${owmKey}`;
+      // Google Maps Platform Weather API — current conditions
+      const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${googleKey}&location.latitude=${lat}&location.longitude=${lon}&unitsSystem=METRIC`;
       const res = await fetch(url);
       if (!res.ok) return null;
       const json: any = await res.json();
+      const tempC = json?.temperature?.degrees;
+      if (tempC == null) return null;
+      const desc: string = json?.weatherCondition?.description?.text
+        ?? json?.weatherCondition?.type
+        ?? "Unknown";
       const value: LessonWeather = {
-        tempC: Math.round(json?.main?.temp ?? 0),
-        condition: json?.weather?.[0]?.main ?? "Unknown",
-        icon: json?.weather?.[0]?.icon ?? "",
+        tempC: Math.round(tempC),
+        condition: typeof desc === "string" ? desc : "Unknown",
+        icon: json?.weatherCondition?.iconBaseUri ?? "",
       };
       CACHE.set(cacheKey, { value, expires: now + TTL_MS });
       return value;
