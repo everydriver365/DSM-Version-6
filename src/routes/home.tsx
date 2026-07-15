@@ -1624,6 +1624,7 @@ function HomePage() {
   const [quickPage, setQuickPage] = useState(0);
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
+  const [runningLateOpen, setRunningLateOpen] = useState(false);
   const qaStartX = useRef(0);
 
 
