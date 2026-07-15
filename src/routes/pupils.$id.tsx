@@ -144,6 +144,7 @@ interface Lesson {
   eol_completed: boolean | null;
   cancellation_reason: string | null;
   deleted_at: string | null;
+  pickup_location: string | null;
 }
 
 function initials(name: string) {
