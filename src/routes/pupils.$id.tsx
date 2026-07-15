@@ -508,6 +508,7 @@ function PupilDetailPage() {
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
+  const focusedLessonCardRef = useRef<HTMLDivElement>(null);
   const pastCollapsedInit = useRef(false);
 
   // Auto-collapse past lessons if more than 5 entries
@@ -518,6 +519,14 @@ function PupilDetailPage() {
     }
     pastCollapsedInit.current = true;
   }, [pastLessons]);
+
+  useEffect(() => {
+    if (!focusLessonId) return;
+    if (lessons === null || pastLessons === null) return;
+    window.requestAnimationFrame(() => {
+      focusedLessonCardRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+  }, [focusLessonId, lessons, pastLessons]);
 
   // Preload Google Maps Places on mount so autocomplete is ready when user taps Edit.
   useEffect(() => {
@@ -2005,7 +2014,18 @@ function PupilDetailPage() {
           return (
             <>
               {/* Lesson Details Card */}
-              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", overflow: "hidden", marginTop: 12 }}>
+              <div
+                ref={focusedLessonCardRef}
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  border: focusLessonId ? "2px solid #1877D6" : "0.5px solid rgba(15,32,68,0.10)",
+                  overflow: "hidden",
+                  marginTop: 12,
+                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "none",
+                  scrollMarginTop: 64,
+                }}
+              >
                 <div style={{ height: 140, background: "#EEF2F7", position: "relative" }}>
                   {mapSrc ? (
                     <iframe
@@ -2181,7 +2201,7 @@ function PupilDetailPage() {
                     </div>
                   )}
                   <div
-                    onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                    onClick={() => navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } })}
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
                       padding: "12px 16px", cursor: "pointer",
@@ -2295,7 +2315,7 @@ function PupilDetailPage() {
                           </div>
                         )}
                         <div
-                          onClick={() => navigate({ to: "/lessons/$id", params: { id: l.id } })}
+                          onClick={() => navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } })}
                           style={{
                             width: "100%", display: "flex", alignItems: "center", gap: 12,
                             padding: "12px 16px", cursor: "pointer",
