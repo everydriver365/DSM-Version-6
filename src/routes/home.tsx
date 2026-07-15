@@ -5363,6 +5363,56 @@ function HomePage() {
                       </div>
                     </div>
                   )}
+
+                  {runningLateOpen && (() => {
+                    const upcoming = (todayLessons || []).filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status));
+                    const withPhone = upcoming.filter((l: any) => l.pupils?.phone);
+                    const notify = () => {
+                      withPhone.forEach((l: any) => {
+                        const name = l.pupils?.first_name || l.pupils?.name || 'there';
+                        const body = encodeURIComponent(`Hi ${name}, quick heads up — I'm running a few minutes late for your lesson today. Thanks for your patience!`);
+                        try { window.open(`sms:${l.pupils.phone}?body=${body}`, '_self'); } catch {}
+                      });
+                      setRunningLateOpen(false);
+                    };
+                    return (
+                      <div
+                        onClick={() => setRunningLateOpen(false)}
+                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif' }}
+                      >
+                        <div onClick={(e) => e.stopPropagation()} style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <IconClock size={22} color="#C23B3B" stroke={1.8} />
+                            </div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late?</div>
+                          </div>
+                          <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                            {upcoming.length === 0
+                              ? 'You have no upcoming lessons today.'
+                              : `Notify ${withPhone.length} of ${upcoming.length} remaining pupil${upcoming.length === 1 ? '' : 's'} today that you're running late.`}
+                          </div>
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <button
+                              type="button"
+                              onClick={() => setRunningLateOpen(false)}
+                              style={{ flex: 1, background: '#F3F4F6', color: '#0F2044', border: 'none', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              disabled={withPhone.length === 0}
+                              onClick={notify}
+                              style={{ flex: 1, background: withPhone.length === 0 ? '#E5E7EB' : '#C23B3B', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, cursor: withPhone.length === 0 ? 'not-allowed' : 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                            >
+                              Notify pupils
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </>
               );
             })()}
