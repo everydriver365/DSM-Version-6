@@ -446,6 +446,19 @@ function PupilDetailPage() {
       .then(({ data }) => {
         if (!cancelled) setPupilSeries((data as any) ?? []);
       });
+    supabase
+      .from("chat_messages")
+      .select("body, created_at, sender_type")
+      .eq("instructor_id", userId)
+      .eq("pupil_id", id)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (cancelled) return;
+        const row = (data as any[])?.[0];
+        setLastMessage(row ?? null);
+      });
     return () => {
       cancelled = true;
     };
