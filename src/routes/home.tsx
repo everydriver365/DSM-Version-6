@@ -4332,10 +4332,10 @@ function HomePage() {
               {hasMap && (
                 <iframe
                   title="Pickup map"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed&maptype=roadmap&layer=traffic`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, filter: 'saturate(1.05)' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, filter: 'saturate(1.75) contrast(1.15) brightness(1.05)' }}
                 />
               )}
               {/* Gradient overlay for legibility */}
