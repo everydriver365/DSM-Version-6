@@ -2756,6 +2756,96 @@ function HomePage() {
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
 
+  // ── Next Lesson traffic + weather chips ───────────────────────────────────
+  const fetchWeather = useServerFn(getLessonWeather);
+  const fetchDriveTime = useServerFn(getLessonDriveTime);
+  const [weatherData, setWeatherData] = useState<LessonWeather>(null);
+  const [driveData, setDriveData] = useState<LessonDriveTime>(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [driveLoading, setDriveLoading] = useState(false);
+  // client-side dedupe: keyed by lesson id, expires after 5 min
+  const chipCacheRef = useRef<Map<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>(new Map());
+
+  useEffect(() => {
+    if (!upcoming?.id) {
+      setWeatherData(null);
+      setDriveData(null);
+      return;
+    }
+    const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
+      .filter(Boolean)
+      .join(", ");
+    const postcode = upcoming.pupils?.postcode ?? null;
+    if (!destination && !postcode) return;
+
+    const cacheKey = upcoming.id;
+    const cached = chipCacheRef.current.get(cacheKey);
+    const nowMs = Date.now();
+    if (cached && cached.expires > nowMs) {
+      setWeatherData(cached.weather);
+      setDriveData(cached.drive);
+      return;
+    }
+
+    let cancelled = false;
+
+    // Weather — kick off immediately (no geolocation needed).
+    setWeatherLoading(true);
+    fetchWeather({ data: { postcode: postcode ?? destination } })
+      .then((w) => { if (!cancelled) setWeatherData(w); })
+      .catch(() => { if (!cancelled) setWeatherData(null); })
+      .finally(() => { if (!cancelled) setWeatherLoading(false); });
+
+    // Drive time — needs instructor geolocation; hide chip if not available.
+    if (destination && typeof navigator !== "undefined" && navigator.geolocation) {
+      setDriveLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (cancelled) return;
+          fetchDriveTime({
+            data: {
+              originLat: pos.coords.latitude,
+              originLon: pos.coords.longitude,
+              destination,
+            },
+          })
+            .then((d) => { if (!cancelled) setDriveData(d); })
+            .catch(() => { if (!cancelled) setDriveData(null); })
+            .finally(() => {
+              if (cancelled) return;
+              setDriveLoading(false);
+              // Cache both once drive resolves (weather may still be pending; cache on next tick handled below)
+              chipCacheRef.current.set(cacheKey, {
+                weather: weatherData,
+                drive: driveData,
+                expires: Date.now() + 5 * 60 * 1000,
+              });
+            });
+        },
+        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); } },
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
+      );
+    } else {
+      setDriveData(null);
+    }
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcoming?.id]);
+
+  // Cache the resolved pair whenever both settle
+  useEffect(() => {
+    if (!upcoming?.id) return;
+    if (weatherLoading || driveLoading) return;
+    chipCacheRef.current.set(upcoming.id, {
+      weather: weatherData,
+      drive: driveData,
+      expires: Date.now() + 5 * 60 * 1000,
+    });
+  }, [upcoming?.id, weatherData, driveData, weatherLoading, driveLoading]);
+
+
+
   // Fetch previous lesson for the upcoming pupil when hero expands
   useEffect(() => {
     if (!heroExpanded || !upcoming?.pupil_id || !userId) return;
