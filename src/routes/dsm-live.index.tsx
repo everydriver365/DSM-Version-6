@@ -632,7 +632,7 @@ function SessionCard({
   // Category → gradient mapping.
   const gradient = (() => {
     const c = (s.category ?? "").toLowerCase();
-    if (c.includes("standards")) return "linear-gradient(135deg, #1877D6, #0F2044)";
+    if (c.includes("standards")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
     if (c.includes("business") || c.includes("coach")) return "linear-gradient(135deg, #16A34A, #14532D)";
     if (c.includes("cpd") || c.includes("webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
     if (c.includes("new adi") || c.includes("adi support")) return "linear-gradient(135deg, #D97706, #92400E)";

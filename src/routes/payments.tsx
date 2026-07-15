@@ -30,7 +30,7 @@ const BLUE = "#1877D6";
 const TEAL = "#00B5A5";
 const PURPLE = "#7C3AED";
 const CYAN = "#0891B2";
-const CARD_BLUE = "#1877D6";
+const CARD_BLUE = "#1A52A0";
 
 const PUPIL_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
 function pupilAvatarColor(id: string) {

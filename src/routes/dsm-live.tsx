@@ -28,7 +28,7 @@ export const CATEGORIES = [
 ] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  "Standards Check": "#1877D6",
+  "Standards Check": "#1A52A0",
   "Business Coaching": "#16A34A",
   "CPD Webinar": "#7C3AED",
   "New ADI": "#D97706",

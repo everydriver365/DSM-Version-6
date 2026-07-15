@@ -126,7 +126,7 @@ function PupilHistoryPage() {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isCompleted = l.status === "completed";
                   const isCancelled = l.status === "cancelled";
-                  const bg = isCancelled ? "#E5E7EB" : "#1877D6";
+                  const bg = isCancelled ? "#E5E7EB" : "#1A52A0";
                   return (
                     <div
                       key={l.id}
@@ -164,7 +164,7 @@ function PupilHistoryPage() {
                           Feedback
                         </Button>
                       ) : (
-                        <span style={{ background: "#DBEAFE", color: "#1877D6", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS, textTransform: "capitalize" }}>
+                        <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS, textTransform: "capitalize" }}>
                           {l.status}
                         </span>
                       )}

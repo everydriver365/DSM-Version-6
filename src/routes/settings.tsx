@@ -796,7 +796,7 @@ function SettingsPage() {
           className="flex items-center justify-center rounded-xl"
           style={{ width: 44, height: 44, background: "#E0F4FF", flexShrink: 0 }}
         >
-          <Clock color="#1877D6" size={22} />
+          <Clock color="#1A52A0" size={22} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col">
           <span
@@ -1257,7 +1257,7 @@ function SettingsPage() {
               flexShrink: 0,
             }}
           >
-            <MapPin size={22} color="#1877D6" />
+            <MapPin size={22} color="#1A52A0" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Coverage areas</div>
@@ -1830,7 +1830,7 @@ function SettingsPage() {
                 type="button"
                 onClick={() => setCancellationTiers((prev) => [...prev, { hours: 72, charge_percent: 25 }])}
                 className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
+                style={{ color: "#1A52A0", background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
               >
                 + Add tier
               </button>
@@ -1854,7 +1854,7 @@ function SettingsPage() {
         {/* Section 2 — Lesson reminders (automation) */}
         <SectionCard>
           <MenuRow
-            icon={<Bell color="#1877D6" />}
+            icon={<Bell color="#1A52A0" />}
             iconBg="#E0F4FF"
             label="Lesson reminders"
             subLabel="Automated reminders for lessons and payments"

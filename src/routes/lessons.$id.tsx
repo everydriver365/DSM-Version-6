@@ -438,7 +438,7 @@ function LessonDetailPage() {
             const NAVY = '#0F2044';
             const BORDER = 'rgba(15,32,68,0.10)';
             const MUTED = '#64748B';
-            const ACCENT = '#1877D6';
+            const ACCENT = '#1A52A0';
             return (
               <div className="mx-4 mt-3" style={{ position: 'relative', background: '#FFFFFF', border: `0.5px solid ${BORDER}`, borderRadius: 10, padding: '13px 16px 13px 19px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, fontFamily: 'Poppins, Inter, sans-serif' }}>
                 <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '10px 0 0 10px' }} />

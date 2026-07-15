@@ -86,7 +86,7 @@ function staticMapUrl(lat: number | null, lng: number | null, radius: number, si
   if (lat == null || lng == null) return "";
   // Approx radius zoom: 11 works well for ~10mi; adjust slightly by radius.
   const zoom = radius <= 3 ? 12 : radius <= 8 ? 11 : radius <= 15 ? 10 : 9;
-  const path = `path=color:0x1877D6AA|weight:2|fillcolor:0x1877D633|geodesic:true|` +
+  const path = `path=color:0x1A52A0AA|weight:2|fillcolor:0x1A52A033|geodesic:true|` +
     circlePathPoints(lat, lng, radius).join("|");
   return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${size}&maptype=roadmap&${path}&key=${GOOGLE_MAPS_KEY}`;
 }
@@ -258,7 +258,7 @@ function CoverageAreasPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <MapPin size={16} color="#1877D6" />
+          <MapPin size={16} color="#1A52A0" />
           <div style={{ fontWeight: 600, fontSize: 14, color: "#0F2044" }}>Define where you teach</div>
         </div>
         <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -382,7 +382,7 @@ function AreaCard({
           {area.is_primary && (
             <span
               style={{
-                backgroundColor: "#1877D6",
+                backgroundColor: "#1A52A0",
                 color: "#fff",
                 fontSize: 11,
                 fontWeight: 700,
@@ -398,7 +398,7 @@ function AreaCard({
           <button
             type="button"
             onClick={onEdit}
-            style={{ background: "none", border: "none", color: "#1877D6", fontSize: 12, cursor: "pointer", padding: 0 }}
+            style={{ background: "none", border: "none", color: "#1A52A0", fontSize: 12, cursor: "pointer", padding: 0 }}
           >
             Edit
           </button>
@@ -664,7 +664,7 @@ function AreaEditor({
                 onClick={() => removeOutcode(oc)}
                 style={{
                   backgroundColor: "#F0F4FF",
-                  color: "#1877D6",
+                  color: "#1A52A0",
                   fontSize: 12,
                   fontWeight: 700,
                   padding: "4px 10px",
@@ -697,7 +697,7 @@ function AreaEditor({
           step={0.5}
           value={radius}
           onChange={(e) => setRadius(Number(e.target.value))}
-          style={{ width: "100%", marginTop: 4, accentColor: "#1877D6" }}
+          style={{ width: "100%", marginTop: 4, accentColor: "#1A52A0" }}
         />
         <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
           How far from the centre of this area you're willing to travel
@@ -728,7 +728,7 @@ function AreaEditor({
             width: 44,
             height: 26,
             borderRadius: 999,
-            backgroundColor: isPrimary ? "#1877D6" : "#E2E6ED",
+            backgroundColor: isPrimary ? "#1A52A0" : "#E2E6ED",
             border: "none",
             position: "relative",
             cursor: "pointer",

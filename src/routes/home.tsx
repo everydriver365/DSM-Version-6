@@ -1624,7 +1624,6 @@ function HomePage() {
   const [quickPage, setQuickPage] = useState(0);
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
-  const [runningLateOpen, setRunningLateOpen] = useState(false);
   const qaStartX = useRef(0);
 
 
@@ -5140,15 +5139,15 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number; attention?: boolean; onTapOverride?: () => void };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number };
               const quickTiles: QuickTile[] = [
-                // Page 1 — Daily essentials (spec-locked)
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} gaps open` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0 },
-                { label: 'Schedule', sub: 'View diary', route: '/schedule', icon: IconCalendar, colour: '#185FA5', chipBg: '#E6F1FB' },
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FA0', chipBg: '#EAE3F5' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All settled', route: '/payments', icon: IconCurrencyPound, colour: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB', attention: unreadCount > 0 },
-                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, colour: '#C23B3B', chipBg: '#FBE2E2', onTapOverride: () => setRunningLateOpen(true) },
+                // Page 1 — Daily essentials
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B5661E', chipBg: '#FBEFE1' },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, colour: '#185FA5', wsIndex: 1, chipBg: '#E6F1FB' },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FD6', chipBg: '#F0EBFF' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: IconCurrencyPound, colour: '#3B6D11', chipBg: '#EAF3DE' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
+                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
                 // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1877D6' },
 
@@ -5185,7 +5184,6 @@ function HomePage() {
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
               const goTile = (tile: QuickTile) => {
-                if (tile.onTapOverride) { tile.onTapOverride(); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
@@ -5202,35 +5200,30 @@ function HomePage() {
                     key={key}
                     type="button"
                     onClick={() => { goTile(tile); onTap?.(); }}
-                    onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)'; }}
-                    onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ''; }}
-                    onTouchCancel={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ''; }}
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 16,
-                      padding: '14px 12px 13px',
+                      borderRadius: 14,
+                      padding: '14px 12px',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                      border: 'none',
-                      minHeight: 92,
+                      minHeight: 80,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: 'Poppins, sans-serif',
-                      transition: 'transform 0.12s ease',
                     }}
                   >
                     <div style={{
-                      width: 44, height: 44, borderRadius: 12,
+                      width: 36, height: 36, borderRadius: 10,
                       background: tile.chipBg ?? `${tile.colour}15`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 10,
+                      marginBottom: 8,
                     }}>
-                      <Icon size={22} color={tile.colour} stroke={1.8} />
+                      <Icon size={18} color={tile.colour} />
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 12, fontWeight: tile.attention ? 600 : 400, color: tile.attention ? '#C23B3B' : '#5A6B85', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
+                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
 
                   </button>
                 );
@@ -5246,7 +5239,7 @@ function HomePage() {
                 <>
                   <div style={{ margin: '16px 16px 0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: '#0F2044' }}>Quick access</div>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#8A93A3', fontWeight: 600 }}>Quick access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -5282,7 +5275,7 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
@@ -5363,56 +5356,6 @@ function HomePage() {
                       </div>
                     </div>
                   )}
-
-                  {runningLateOpen && (() => {
-                    const upcoming = (todayLessons || []).filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status));
-                    const withPhone = upcoming.filter((l: any) => l.pupils?.phone);
-                    const notify = () => {
-                      withPhone.forEach((l: any) => {
-                        const name = l.pupils?.first_name || l.pupils?.name || 'there';
-                        const body = encodeURIComponent(`Hi ${name}, quick heads up — I'm running a few minutes late for your lesson today. Thanks for your patience!`);
-                        try { window.open(`sms:${l.pupils.phone}?body=${body}`, '_self'); } catch {}
-                      });
-                      setRunningLateOpen(false);
-                    };
-                    return (
-                      <div
-                        onClick={() => setRunningLateOpen(false)}
-                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif' }}
-                      >
-                        <div onClick={(e) => e.stopPropagation()} style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <IconClock size={22} color="#C23B3B" stroke={1.8} />
-                            </div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late?</div>
-                          </div>
-                          <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
-                            {upcoming.length === 0
-                              ? 'You have no upcoming lessons today.'
-                              : `Notify ${withPhone.length} of ${upcoming.length} remaining pupil${upcoming.length === 1 ? '' : 's'} today that you're running late.`}
-                          </div>
-                          <div style={{ display: 'flex', gap: 8 }}>
-                            <button
-                              type="button"
-                              onClick={() => setRunningLateOpen(false)}
-                              style={{ flex: 1, background: '#F3F4F6', color: '#0F2044', border: 'none', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="button"
-                              disabled={withPhone.length === 0}
-                              onClick={notify}
-                              style={{ flex: 1, background: withPhone.length === 0 ? '#E5E7EB' : '#C23B3B', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: '12px 16px', fontSize: 14, fontWeight: 600, cursor: withPhone.length === 0 ? 'not-allowed' : 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                            >
-                              Notify pupils
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </>
               );
             })()}

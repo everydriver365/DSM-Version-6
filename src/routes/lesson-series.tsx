@@ -441,7 +441,7 @@ function LessonSeriesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <RefreshCw size={18} color="#1877D6" />
+          <RefreshCw size={18} color="#1A52A0" />
           <div>
             <p style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Recurring lesson series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -480,7 +480,7 @@ function LessonSeriesPage() {
         <>
           {series.map((s) => {
             const p = s.pupils;
-            const colour = p?.calendar_colour || "#1877D6";
+            const colour = p?.calendar_colour || "#1A52A0";
             const next = nextOccurrenceFor(s);
             const generated = counts[s.id] ?? 0;
             return (
@@ -527,7 +527,7 @@ function LessonSeriesPage() {
                     <span
                       style={{
                         background: "#F0F4FF",
-                        color: "#1877D6",
+                        color: "#1A52A0",
                         fontSize: 11,
                         fontWeight: 700,
                         padding: "2px 8px",
@@ -749,7 +749,7 @@ function LessonSeriesPage() {
                 <div style={{ padding: 12, fontSize: 13, color: "#9CA3AF" }}>No pupils found</div>
               ) : (
                 filteredPupils.slice(0, 20).map((p) => {
-                  const c = p.calendar_colour || "#1877D6";
+                  const c = p.calendar_colour || "#1A52A0";
                   return (
                     <button
                       key={p.id}

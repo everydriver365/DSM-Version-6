@@ -301,7 +301,7 @@ function CalendarSyncPage() {
           }}
         >
           <div className="flex items-center gap-2">
-            <Calendar size={18} color="#1877D6" />
+            <Calendar size={18} color="#1A52A0" />
             <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0F2044" }}>
               Import your Google Calendar
             </div>
@@ -316,12 +316,12 @@ function CalendarSyncPage() {
             className="flex items-center justify-between w-full"
             style={POPPINS}
           >
-            <span className="text-sm font-semibold" style={{ color: "#1877D6" }}>
+            <span className="text-sm font-semibold" style={{ color: "#1A52A0" }}>
               How to get your Google Calendar URL
             </span>
             <ChevronDown
               size={16}
-              color="#1877D6"
+              color="#1A52A0"
               style={{ transform: howToOpen ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
             />
           </button>
@@ -395,7 +395,7 @@ function CalendarSyncPage() {
                   inputRef.current?.focus();
                 }}
                 className="text-xs font-semibold"
-                style={{ ...POPPINS, color: "#1877D6", marginTop: 6 }}
+                style={{ ...POPPINS, color: "#1A52A0", marginTop: 6 }}
               >
                 Update URL →
               </button>
@@ -443,7 +443,7 @@ function CalendarSyncPage() {
             className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
             style={{
               ...POPPINS,
-              backgroundColor: "#1877D6",
+              backgroundColor: "#1A52A0",
               paddingTop: 12,
               paddingBottom: 12,
               marginTop: 12,
@@ -466,7 +466,7 @@ function CalendarSyncPage() {
                 onClick={() => runSync(savedUrl || externalCalendarUrl)}
                 disabled={syncing}
                 className="text-xs font-semibold"
-                style={{ ...POPPINS, color: "#1877D6" }}
+                style={{ ...POPPINS, color: "#1A52A0" }}
               >
                 Sync now
               </button>
@@ -536,7 +536,7 @@ function CalendarSyncPage() {
           }}
         >
           <div className="flex items-start gap-3">
-            <Info size={16} color="#1877D6" className="shrink-0 mt-0.5" />
+            <Info size={16} color="#1A52A0" className="shrink-0 mt-0.5" />
             <div>
               <div
                 className="text-[14px] font-semibold"

@@ -358,7 +358,7 @@ function MockTestsPage() {
         <StatCard
           label="Last result"
           value={stats.last ? (stats.last.passed ? "Pass ✓" : "Fail ✗") : "—"}
-          tone={stats.last ? (stats.last.passed ? "#1CA36B" : "#DC2626") : undefined}
+          tone={stats.last ? (stats.last.passed ? "#059669" : "#DC2626") : undefined}
         />
       </div>
 
@@ -456,7 +456,7 @@ function MockTestsPage() {
                     className="text-[11px] font-semibold px-2 py-1 rounded-full"
                     style={{
                       backgroundColor: t.passed ? "#D1FAE5" : "#FEE2E2",
-                      color: t.passed ? "#1CA36B" : "#B91C1C",
+                      color: t.passed ? "#059669" : "#B91C1C",
                     }}
                   >
                     {t.passed ? "PASS" : "FAIL"}
@@ -560,7 +560,7 @@ function MockTestsPage() {
                     onClick={() => setPassed(true)}
                     className="flex-1 h-12 rounded-lg text-[14px] font-semibold"
                     style={{
-                      backgroundColor: passed === true ? "#22C580" : "#F3F4F6",
+                      backgroundColor: passed === true ? "#10B981" : "#F3F4F6",
                       color: passed === true ? "#FFFFFF" : "#0F2044",
                       border: "none",
                     }}

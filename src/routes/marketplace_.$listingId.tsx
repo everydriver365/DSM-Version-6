@@ -201,7 +201,7 @@ function ListingDetailPage() {
             style={{
               background: "none",
               border: "none",
-              color: "#1877D6",
+              color: "#1A52A0",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -219,7 +219,7 @@ function ListingDetailPage() {
               height: 220,
               background: heroImage
                 ? `#F3F8FF url(${heroImage}) center/cover`
-                : "linear-gradient(135deg,#0F2044,#1877D6)",
+                : "linear-gradient(135deg,#0F2044,#1A52A0)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -285,7 +285,7 @@ function ListingDetailPage() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 3,
-                      color: "#1CA36B",
+                      color: "#059669",
                       fontSize: 11,
                       fontWeight: 600,
                     }}
@@ -839,7 +839,7 @@ function EnquirySheet({
           disabled={sending}
           style={{
             width: "100%",
-            background: "#1877D6",
+            background: "#1A52A0",
             color: "#FFFFFF",
             border: "none",
             fontSize: 14,
@@ -885,7 +885,7 @@ function SimilarCard({
           borderRadius: "12px 12px 0 0",
           background: img
             ? `#F3F8FF url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1877D6)",
+            : "linear-gradient(135deg,#0F2044,#1A52A0)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
