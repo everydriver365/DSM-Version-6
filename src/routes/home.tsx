@@ -91,6 +91,7 @@ import {
   AlertTriangle,
   FileCheck,
   Grid,
+  ArrowRight,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -7071,10 +7072,53 @@ type DiscoverListing = {
   id: string;
   title: string;
   price_display: string | null;
+  price_amount: number | null;
   image_urls: string[] | null;
   is_featured: boolean;
   marketplace_categories: { name: string; slug: string } | null;
 };
+
+function formatDiscoverDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr + "T00:00:00");
+    return d.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+function formatDiscoverTime(timeStr: string): string {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  const hh = String(Number(h) || 0).padStart(2, "0");
+  const mm = (m ?? "00").padStart(2, "0");
+  return `${hh}:${mm}`;
+}
+
+function toSentenceCase(s: string): string {
+  if (!s) return s;
+  const lower = s.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
+function splitPrice(
+  l: DiscoverListing,
+): { amount: string; unit: string } | null {
+  const disp = (l.price_display ?? "").trim();
+  const m = disp.match(/£?\s*([\d,.]+)\s*(.*)$/);
+  if (m && m[1]) {
+    return { amount: `£${m[1]}`, unit: (m[2] || "").trim() };
+  }
+  if (l.price_amount != null) {
+    return { amount: `£${l.price_amount}`, unit: disp };
+  }
+  return null;
+}
 
 function DiscoverSection() {
   const navigate = useNavigate();
@@ -7096,15 +7140,17 @@ function DiscoverSection() {
       }
 
       try {
+        const sel =
+          "id,title,price_display,price_amount,image_urls,is_featured,marketplace_categories(name,slug)";
         const featRes = await fetch(
-          `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name,slug)&order=created_at.desc&limit=2`,
+          `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=${sel}&order=created_at.desc&limit=2`,
           { headers: DISCOVER_HEADERS },
         );
         let feat = (await featRes.json()) as DiscoverListing[];
         if (!Array.isArray(feat)) feat = [];
         if (feat.length < 2) {
           const fillRes = await fetch(
-            `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name,slug)&order=created_at.desc&limit=4`,
+            `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=${sel}&order=created_at.desc&limit=4`,
             { headers: DISCOVER_HEADERS },
           );
           const fill = (await fillRes.json()) as DiscoverListing[];
@@ -7131,7 +7177,9 @@ function DiscoverSection() {
     const now = Date.now();
     return sessions
       .filter((s) => {
-        const dt = new Date(`${s.session_date}T${s.session_time || "00:00"}:00`).getTime();
+        const dt = new Date(
+          `${s.session_date}T${s.session_time || "00:00"}:00`,
+        ).getTime();
         return Number.isFinite(dt) ? dt >= now : true;
       })
       .slice(0, 2);
@@ -7141,42 +7189,153 @@ function DiscoverSection() {
   const hasMarket = (listings ?? []).length > 0;
   if (!hasLive && !hasMarket) return null;
 
-  const viewAll = { fontSize: 12, fontWeight: 500, color: "#185FA5", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" } as const;
-  const headerLabel = { fontSize: 14, fontWeight: 600, color: "#0F2044" } as const;
-  const cardShell = { background: "#fff", borderRadius: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", cursor: "pointer" } as const;
+  const headerTitle = {
+    fontSize: 17,
+    fontWeight: 700,
+    color: "#0F2044",
+    fontFamily: "Poppins, sans-serif",
+  } as const;
+
+  const viewAllBtn = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#185FA5",
+    background: "none",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    fontFamily: "Poppins, sans-serif",
+  } as const;
+
+  const cardShell = {
+    background: "#FFFFFF",
+    borderRadius: 16,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+    overflow: "hidden",
+    cursor: "pointer",
+  } as const;
+
+  const heroBase = {
+    height: 96,
+    width: "100%",
+    position: "relative" as const,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  };
+
+  const gradientLive = "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)";
+  const gradientMarket =
+    "linear-gradient(135deg, #6B4FD6 0%, #185FA5 100%)";
+
+  const pillBase = {
+    position: "absolute" as const,
+    top: 8,
+    left: 8,
+    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: 700,
+    padding: "3px 8px",
+    borderRadius: 999,
+    letterSpacing: "0.02em",
+  };
+
+  const titleStyle = {
+    fontSize: 14.5,
+    fontWeight: 700,
+    color: "#0F2044",
+    lineHeight: 1.28,
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical" as const,
+    overflow: "hidden",
+    minHeight: 37,
+  };
+
+  const metaRow = {
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    fontSize: 11.5,
+    color: "#5A6B85",
+  } as const;
 
   return (
     <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
       {hasLive && (
-        <div style={{ marginBottom: hasMarket ? 20 : 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#E24B4A" }} />
-              <div style={headerLabel}>DSM Live</div>
+        <div style={{ marginBottom: hasMarket ? 24 : 0 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 14,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#C23B3B",
+                }}
+              />
+              <div style={headerTitle}>DSM Live</div>
             </div>
-            <button type="button" style={viewAll} onClick={() => navigate({ to: "/dsm-live" })}>
-              View all →
+            <button
+              type="button"
+              style={viewAllBtn}
+              onClick={() => navigate({ to: "/dsm-live" })}
+            >
+              View all
+              <ArrowRight size={14} strokeWidth={2} />
             </button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: upcoming.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                upcoming.length === 1 ? "1fr" : "1fr 1fr",
+              gap: 12,
+            }}
+          >
             {upcoming.map((s) => (
               <div
                 key={s.id}
                 style={cardShell}
-                onClick={() => navigate({ to: "/dsm-live/$sessionId", params: { sessionId: s.id } })}
+                onClick={() =>
+                  navigate({
+                    to: "/dsm-live/$sessionId",
+                    params: { sessionId: s.id },
+                  })
+                }
               >
                 <div
                   style={{
-                    height: 90,
-                    background: s.image_url ? `url(${s.image_url}) center/cover` : "#0F2044",
+                    ...heroBase,
+                    background: s.image_url
+                      ? `url(${s.image_url}) center/cover, ${gradientLive}`
+                      : gradientLive,
                   }}
-                />
-                <div style={{ padding: "10px 12px" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {s.title}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2 }}>
-                    {formatSessionDate(s.session_date)} · {formatSessionTime(s.session_time)}
+                >
+                  <span style={{ ...pillBase, background: "#0F2044" }}>
+                    Upcoming
+                  </span>
+                </div>
+                <div style={{ padding: "12px 12px 13px" }}>
+                  <div style={titleStyle}>{s.title}</div>
+                  <div style={{ marginTop: 6, display: "grid", gap: 3 }}>
+                    <div style={metaRow}>
+                      <Calendar size={13} strokeWidth={2} />
+                      <span>{formatDiscoverDate(s.session_date)}</span>
+                    </div>
+                    <div style={metaRow}>
+                      <Clock size={13} strokeWidth={2} />
+                      <span>{formatDiscoverTime(s.session_time)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -7187,40 +7346,103 @@ function DiscoverSection() {
 
       {hasMarket && listings && (
         <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={headerLabel}>DSM Marketplace</div>
-            <button type="button" style={viewAll} onClick={() => navigate({ to: "/marketplace" })}>
-              View all →
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 14,
+            }}
+          >
+            <div style={headerTitle}>DSM Marketplace</div>
+            <button
+              type="button"
+              style={viewAllBtn}
+              onClick={() => navigate({ to: "/marketplace" })}
+            >
+              View all
+              <ArrowRight size={14} strokeWidth={2} />
             </button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: listings.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                listings.length === 1 ? "1fr" : "1fr 1fr",
+              gap: 12,
+            }}
+          >
             {listings.map((l) => {
               const img = l.image_urls && l.image_urls[0];
+              const price = splitPrice(l);
               return (
                 <div
                   key={l.id}
                   style={cardShell}
-                  onClick={() => navigate({ to: "/marketplace/$listingId" as never, params: { listingId: l.id } as never })}
+                  onClick={() =>
+                    navigate({
+                      to: "/marketplace/$listingId" as never,
+                      params: { listingId: l.id } as never,
+                    })
+                  }
                 >
-                  <div style={{ position: "relative", height: 80, background: img ? `url(${img}) center/cover` : "#EEF2F7" }}>
+                  <div
+                    style={{
+                      ...heroBase,
+                      background: img
+                        ? `url(${img}) center/cover, ${gradientMarket}`
+                        : gradientMarket,
+                    }}
+                  >
                     {l.is_featured && (
-                      <span style={{ position: "absolute", top: 8, left: 8, background: "#E24B4A", color: "#fff", fontSize: 8, fontWeight: 500, padding: "3px 8px", borderRadius: 20 }}>
+                      <span style={{ ...pillBase, background: "#C23B3B" }}>
                         Featured
                       </span>
                     )}
                   </div>
-                  <div style={{ padding: "10px 12px" }}>
+                  <div style={{ padding: "12px 12px 13px" }}>
                     {l.marketplace_categories && (
-                      <div style={{ fontSize: 10, color: "#8A93A3", marginBottom: 2 }}>
-                        {l.marketplace_categories.name}
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#5A6B85",
+                          marginBottom: 4,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {toSentenceCase(l.marketplace_categories.name)}
                       </div>
                     )}
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {l.title}
-                    </div>
-                    {l.price_display && (
-                      <div style={{ fontSize: 12, fontWeight: 600, color: "#A32D2D", marginTop: 2 }}>
-                        {l.price_display}
+                    <div style={titleStyle}>{l.title}</div>
+                    {price && (
+                      <div
+                        style={{
+                          marginTop: 6,
+                          display: "flex",
+                          alignItems: "baseline",
+                          gap: 4,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "#0F2044",
+                          }}
+                        >
+                          {price.amount}
+                        </span>
+                        {price.unit && (
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 500,
+                              color: "#5A6B85",
+                            }}
+                          >
+                            {price.unit}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -7230,8 +7452,6 @@ function DiscoverSection() {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
