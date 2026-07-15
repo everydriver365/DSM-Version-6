@@ -7249,17 +7249,21 @@ type DiscoverListing = {
   marketplace_categories: { name: string; slug: string } | null;
 };
 
-function formatDiscoverDate(dateStr: string): string {
+function formatDiscoverDay(dateStr: string): string {
   try {
     const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-GB", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return String(d.getDate());
   } catch {
-    return dateStr;
+    return "–";
+  }
+}
+
+function formatDiscoverMonth(dateStr: string): string {
+  try {
+    const d = new Date(dateStr + "T00:00:00");
+    return d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+  } catch {
+    return "";
   }
 }
 
@@ -7289,6 +7293,33 @@ function splitPrice(
     return { amount: `£${l.price_amount}`, unit: disp };
   }
   return null;
+}
+
+const DISCOVER_CATEGORY_ICONS: Record<
+  string,
+  React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>
+> = {
+  tracking: MapPin,
+  hardware: Camera,
+  dashcams: Camera,
+  health: Heart,
+  learning: GraduationCap,
+  cpd: GraduationCap,
+  courses: BookOpen,
+  insurance: ShieldCheck,
+  vehicles: Car,
+  cars: Car,
+  maintenance: Wrench,
+  services: Briefcase,
+  marketing: Megaphone,
+  promotion: Star,
+};
+
+function discoverIconFor(
+  slug?: string | null,
+): React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }> {
+  if (!slug) return Package;
+  return DISCOVER_CATEGORY_ICONS[slug] ?? Package;
 }
 
 function DiscoverSection() {
@@ -7381,57 +7412,22 @@ function DiscoverSection() {
     fontFamily: "Poppins, sans-serif",
   } as const;
 
-  const cardShell = {
+  const cardShell: React.CSSProperties = {
     background: "#FFFFFF",
-    borderRadius: 16,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+    borderRadius: 14,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
     overflow: "hidden",
     cursor: "pointer",
-  } as const;
-
-  const heroBase = {
-    height: 96,
-    width: "100%",
-    position: "relative" as const,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
   };
 
   const gradientLive = "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)";
-  const gradientMarket =
-    "linear-gradient(135deg, #6B4FD6 0%, #185FA5 100%)";
+  const gradientMarket = "linear-gradient(135deg, #6B4FD6 0%, #185FA5 100%)";
 
-  const pillBase = {
-    position: "absolute" as const,
-    top: 8,
-    left: 8,
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: 700,
-    padding: "3px 8px",
-    borderRadius: 999,
-    letterSpacing: "0.02em",
-  };
-
-  const titleStyle = {
-    fontSize: 14.5,
-    fontWeight: 700,
-    color: "#0F2044",
-    lineHeight: 1.28,
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical" as const,
+  const truncate: React.CSSProperties = {
     overflow: "hidden",
-    minHeight: 37,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   };
-
-  const metaRow = {
-    display: "flex",
-    alignItems: "center",
-    gap: 5,
-    fontSize: 11.5,
-    color: "#5A6B85",
-  } as const;
 
   return (
     <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
@@ -7470,7 +7466,7 @@ function DiscoverSection() {
               display: "grid",
               gridTemplateColumns:
                 upcoming.length === 1 ? "1fr" : "1fr 1fr",
-              gap: 12,
+              gap: 8,
             }}
           >
             {upcoming.map((s) => (
@@ -7486,26 +7482,74 @@ function DiscoverSection() {
               >
                 <div
                   style={{
-                    ...heroBase,
+                    height: 70,
+                    width: "100%",
                     background: s.image_url
-                      ? `url(${s.image_url}) center/cover, ${gradientLive}`
+                      ? `url(${s.image_url}) center/cover`
                       : gradientLive,
+                    borderTopLeftRadius: 14,
+                    borderTopRightRadius: 14,
                   }}
-                >
-                  <span style={{ ...pillBase, background: "#0F2044" }}>
-                    Upcoming
-                  </span>
-                </div>
-                <div style={{ padding: "12px 12px 13px" }}>
-                  <div style={titleStyle}>{s.title}</div>
-                  <div style={{ marginTop: 6, display: "grid", gap: 3 }}>
-                    <div style={metaRow}>
-                      <Calendar size={13} strokeWidth={2} />
-                      <span>{formatDiscoverDate(s.session_date)}</span>
+                />
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: 32,
+                      background: "#0F2044",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "6px 0",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "#FFFFFF",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {formatDiscoverDay(s.session_date)}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 7,
+                        fontWeight: 600,
+                        color: "#9AA6BC",
+                        textTransform: "uppercase",
+                        marginTop: 2,
+                      }}
+                    >
+                      {formatDiscoverMonth(s.session_date)}
+                    </span>
+                  </div>
+                  <div style={{ flex: 1, padding: 8, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "#0F2044",
+                        lineHeight: 1.2,
+                        ...truncate,
+                      }}
+                    >
+                      {s.title}
                     </div>
-                    <div style={metaRow}>
-                      <Clock size={13} strokeWidth={2} />
-                      <span>{formatDiscoverTime(s.session_time)}</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        marginTop: 4,
+                      }}
+                    >
+                      <IconClock size={10} color="#8A93A3" />
+                      <span style={{ fontSize: 9, color: "#5A6270" }}>
+                        {formatDiscoverTime(s.session_time)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -7525,7 +7569,7 @@ function DiscoverSection() {
               marginBottom: 14,
             }}
           >
-            <div style={headerTitle}>DSM Marketplace</div>
+            <div style={headerTitle}>Top marketplace</div>
             <button
               type="button"
               style={viewAllBtn}
@@ -7540,12 +7584,14 @@ function DiscoverSection() {
               display: "grid",
               gridTemplateColumns:
                 listings.length === 1 ? "1fr" : "1fr 1fr",
-              gap: 12,
+              gap: 8,
             }}
           >
             {listings.map((l) => {
               const img = l.image_urls && l.image_urls[0];
               const price = splitPrice(l);
+              const Icon = discoverIconFor(l.marketplace_categories?.slug);
+              const catName = l.marketplace_categories?.name ?? "";
               return (
                 <div
                   key={l.id}
@@ -7559,63 +7605,85 @@ function DiscoverSection() {
                 >
                   <div
                     style={{
-                      ...heroBase,
+                      height: 64,
+                      width: "100%",
                       background: img
-                        ? `url(${img}) center/cover, ${gradientMarket}`
+                        ? `url(${img}) center/cover`
                         : gradientMarket,
+                      borderTopLeftRadius: 14,
+                      borderTopRightRadius: 14,
+                      position: "relative",
                     }}
                   >
                     {l.is_featured && (
-                      <span style={{ ...pillBase, background: "#C23B3B" }}>
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: 6,
+                          left: 6,
+                          background: "#E24B4A",
+                          color: "#FFFFFF",
+                          fontSize: 8,
+                          fontWeight: 500,
+                          padding: "2px 6px",
+                          borderRadius: 20,
+                        }}
+                      >
                         Featured
                       </span>
                     )}
                   </div>
-                  <div style={{ padding: "12px 12px 13px" }}>
-                    {l.marketplace_categories && (
+                  <div style={{ display: "flex" }}>
+                    <div
+                      style={{
+                        width: 32,
+                        background: "#0F2044",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Icon size={13} color="#FFFFFF" strokeWidth={2} />
+                    </div>
+                    <div style={{ flex: 1, padding: 8, minWidth: 0 }}>
+                      {catName && (
+                        <div
+                          style={{
+                            fontSize: 9,
+                            color: "#8A93A3",
+                            textTransform: "uppercase",
+                            letterSpacing: 0.3,
+                          }}
+                        >
+                          {toSentenceCase(catName)}
+                        </div>
+                      )}
                       <div
                         style={{
                           fontSize: 11,
-                          color: "#5A6B85",
-                          marginBottom: 4,
-                          fontWeight: 500,
+                          fontWeight: 700,
+                          color: "#0F2044",
+                          lineHeight: 1.2,
+                          ...truncate,
+                          marginTop: catName ? 1 : 0,
                         }}
                       >
-                        {toSentenceCase(l.marketplace_categories.name)}
+                        {l.title}
                       </div>
-                    )}
-                    <div style={titleStyle}>{l.title}</div>
-                    {price && (
-                      <div
-                        style={{
-                          marginTop: 6,
-                          display: "flex",
-                          alignItems: "baseline",
-                          gap: 4,
-                        }}
-                      >
-                        <span
+                      {price && (
+                        <div
                           style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: "#0F2044",
+                            fontSize: 10,
+                            fontWeight: 600,
+                            color: "#A32D2D",
+                            marginTop: 3,
                           }}
                         >
-                          {price.amount}
-                        </span>
-                        {price.unit && (
-                          <span
-                            style={{
-                              fontSize: 11,
-                              fontWeight: 500,
-                              color: "#5A6B85",
-                            }}
-                          >
-                            {price.unit}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                          {`${price.amount} ${price.unit}`.trim()}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
