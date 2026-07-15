@@ -2815,7 +2815,7 @@ function HomePage() {
               if (cancelled) return;
               setDriveLoading(false);
               // Cache both once drive resolves (weather may still be pending; cache on next tick handled below)
-              chipCacheRef.current[cacheKey] = ({
+              chipCacheRef.current[cacheKey] = {
                 weather: weatherData,
                 drive: driveData,
                 expires: Date.now() + 5 * 60 * 1000,
@@ -2837,7 +2837,7 @@ function HomePage() {
   useEffect(() => {
     if (!upcoming?.id) return;
     if (weatherLoading || driveLoading) return;
-    chipCacheRef.current[upcoming.id] = ({
+    chipCacheRef.current[upcoming.id] = {
       weather: weatherData,
       drive: driveData,
       expires: Date.now() + 5 * 60 * 1000,
