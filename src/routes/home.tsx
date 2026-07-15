@@ -4312,43 +4312,65 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Hero strip */}
-        <div
-          style={{
-            position: 'relative',
-            height: 88,
-            background: upcoming?.pupils?.profile_image_url
-              ? `url(${upcoming.pupils.profile_image_url}) center/cover no-repeat`
-              : 'linear-gradient(135deg, #6B4FD6, #185FA5)',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 14px',
-          }}
-        >
-          <div
-            style={{
-              width: 40, height: 40, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              color: '#FFFFFF', fontSize: 13, fontWeight: 600,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            {upcoming
-              ? (pupilName(upcoming).split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('') || '?').toUpperCase()
-              : '—'}
-          </div>
-          {upcoming && driveData && (
-            <span
+        {/* Hero strip — map when we have a pickup, else gradient/photo */}
+        {(() => {
+          const mapQuery = upcoming
+            ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
+            : '';
+          const hasMap = !!mapQuery;
+          return (
+            <div
               style={{
-                position: 'absolute', top: 9, right: 10,
-                background: 'rgba(15,32,68,0.5)', color: '#FFFFFF',
-                fontSize: 10, fontWeight: 600, padding: '4px 9px', borderRadius: 999,
+                position: 'relative',
+                height: 120,
+                background: upcoming?.pupils?.profile_image_url && !hasMap
+                  ? `url(${upcoming.pupils.profile_image_url}) center/cover no-repeat`
+                  : 'linear-gradient(135deg, #6B4FD6, #185FA5)',
+                overflow: 'hidden',
               }}
             >
-              {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
-            </span>
-          )}
-        </div>
+              {hasMap && (
+                <iframe
+                  title="Pickup map"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, filter: 'saturate(1.05)' }}
+                />
+              )}
+              {/* Gradient overlay for legibility */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,32,68,0.35) 0%, rgba(15,32,68,0) 45%, rgba(15,32,68,0.55) 100%)', pointerEvents: 'none' }} />
+              {/* Avatar overlay */}
+              <div
+                style={{
+                  position: 'absolute', left: 14, bottom: 12,
+                  width: 40, height: 40, borderRadius: '50%',
+                  background: 'rgba(15,32,68,0.7)', backdropFilter: 'blur(4px)',
+                  color: '#FFFFFF', fontSize: 13, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '2px solid rgba(255,255,255,0.9)',
+                  pointerEvents: 'none',
+                }}
+              >
+                {upcoming
+                  ? (pupilName(upcoming).split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('') || '?').toUpperCase()
+                  : '—'}
+              </div>
+              {upcoming && driveData && (
+                <span
+                  style={{
+                    position: 'absolute', top: 9, right: 10,
+                    background: 'rgba(15,32,68,0.75)', color: '#FFFFFF',
+                    fontSize: 10, fontWeight: 600, padding: '4px 9px', borderRadius: 999,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
+                </span>
+              )}
+            </div>
+          );
+        })()}
 
         {upcoming ? (() => {
           const d = lessonDateTime(upcoming);
