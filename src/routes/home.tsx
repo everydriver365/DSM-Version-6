@@ -4411,7 +4411,7 @@ function HomePage() {
               padding: '9px 0',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               fontSize: 11, fontWeight: 600, color: '#185FA5',
-              cursor: 'pointer', border: 'none', borderTop: '1px solid #EEF2F7',
+              cursor: 'pointer', border: 'none',
               fontFamily: 'Inter, sans-serif',
             }}
           >
