@@ -323,7 +323,7 @@ function OnboardingPage() {
             </p>
 
             <ChoiceCard
-              icon={<CheckCircle size={22} color="#10B981" />}
+              icon={<CheckCircle size={22} color="#22C580" />}
               title="Yes, set me up"
               subtitle="I'll get a free page at everydriver.co.uk/i/[your-name]"
               selected={websiteChoice === "yes"}
@@ -390,7 +390,7 @@ function OnboardingPage() {
         {step === 6 && (
           <div className="flex flex-col items-center gap-4">
             <div
-              className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
+              className="h-16 w-16 rounded-full bg-[#22C580] flex items-center justify-center animate-bounce"
               style={{ animationIterationCount: 1 }}
             >
               <Check size={36} color="#fff" strokeWidth={3} />

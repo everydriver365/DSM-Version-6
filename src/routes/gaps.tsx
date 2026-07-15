@@ -33,7 +33,7 @@ export const Route = createFileRoute("/gaps")({
 
 const FONT = { fontFamily: "Inter, sans-serif" } as const;
 const NAVY = "#0F2044";
-const BLUE = "#1A52A0";
+const BLUE = "#1877D6";
 const BLUE_BRIGHT = "#3B82F6";
 const TINT = "#E0F4FF";
 const TEAL = "#00B5A5";
@@ -79,7 +79,7 @@ interface BusyEntry {
   color: string;
 }
 
-const BUSY_PALETTE = ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#10B981", "#EC4899"];
+const BUSY_PALETTE = ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#22C580", "#EC4899"];
 function pickBusyColor(preferred: string | null | undefined, idx: number) {
   if (preferred && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(preferred)) return preferred;
   return BUSY_PALETTE[idx % BUSY_PALETTE.length];
@@ -115,7 +115,7 @@ function minToHm(m: number) {
 function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
   const t = (title || "").toLowerCase();
   if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
-    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
+    return { bg: "#EFF6FF", border: "#1877D6", icon: "💼", text: "#1877D6" };
   if (
     t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
     t.includes("appointment") || t.includes("medical") || t.includes("physio")

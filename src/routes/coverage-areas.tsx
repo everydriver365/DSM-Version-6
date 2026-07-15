@@ -258,7 +258,7 @@ function CoverageAreasPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <MapPin size={16} color="#1A52A0" />
+          <MapPin size={16} color="#1877D6" />
           <div style={{ fontWeight: 600, fontSize: 14, color: "#0F2044" }}>Define where you teach</div>
         </div>
         <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -382,7 +382,7 @@ function AreaCard({
           {area.is_primary && (
             <span
               style={{
-                backgroundColor: "#1A52A0",
+                backgroundColor: "#1877D6",
                 color: "#fff",
                 fontSize: 11,
                 fontWeight: 700,
@@ -398,7 +398,7 @@ function AreaCard({
           <button
             type="button"
             onClick={onEdit}
-            style={{ background: "none", border: "none", color: "#1A52A0", fontSize: 12, cursor: "pointer", padding: 0 }}
+            style={{ background: "none", border: "none", color: "#1877D6", fontSize: 12, cursor: "pointer", padding: 0 }}
           >
             Edit
           </button>
@@ -664,7 +664,7 @@ function AreaEditor({
                 onClick={() => removeOutcode(oc)}
                 style={{
                   backgroundColor: "#F0F4FF",
-                  color: "#1A52A0",
+                  color: "#1877D6",
                   fontSize: 12,
                   fontWeight: 700,
                   padding: "4px 10px",
@@ -697,7 +697,7 @@ function AreaEditor({
           step={0.5}
           value={radius}
           onChange={(e) => setRadius(Number(e.target.value))}
-          style={{ width: "100%", marginTop: 4, accentColor: "#1A52A0" }}
+          style={{ width: "100%", marginTop: 4, accentColor: "#1877D6" }}
         />
         <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
           How far from the centre of this area you're willing to travel
@@ -728,7 +728,7 @@ function AreaEditor({
             width: 44,
             height: 26,
             borderRadius: 999,
-            backgroundColor: isPrimary ? "#1A52A0" : "#E2E6ED",
+            backgroundColor: isPrimary ? "#1877D6" : "#E2E6ED",
             border: "none",
             position: "relative",
             cursor: "pointer",

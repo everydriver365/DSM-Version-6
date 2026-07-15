@@ -267,7 +267,7 @@ function RewardsPage() {
                   padding: "2px 8px",
                   borderRadius: 999,
                   background: "#E0F4FF",
-                  color: "#1A52A0",
+                  color: "#1877D6",
                 }}
               >
                 +{a.points} pts
@@ -334,7 +334,7 @@ function RewardsPage() {
                     padding: "8px 10px",
                     borderRadius: 10,
                     background: isMe ? "#E0F4FF" : "#FFFFFF",
-                    borderLeft: isMe ? "4px solid #1A52A0" : "4px solid transparent",
+                    borderLeft: isMe ? "4px solid #1877D6" : "4px solid transparent",
                     border: isMe ? undefined : "0.5px solid #F0F2F5",
                   }}
                 >
@@ -440,7 +440,7 @@ function RewardsPage() {
               style={{
                 position: "absolute",
                 inset: 0,
-                background: showOnLeaderboard ? "#1A52A0" : "#D1D5DB",
+                background: showOnLeaderboard ? "#1877D6" : "#D1D5DB",
                 borderRadius: 999,
                 transition: "background 200ms",
               }}

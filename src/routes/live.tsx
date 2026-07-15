@@ -521,7 +521,7 @@ function LivePage() {
   const distanceMiles = distanceKm * 0.621371;
 
   return (
-    <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#0A1628" }}>
+    <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#153958" }}>
       <style>{`
         @keyframes liveDotPulse {
           0%,100% { opacity: 1; transform: scale(1); }
@@ -632,7 +632,7 @@ function LivePage() {
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           }}
         >
-          <span style={{ fontSize: 22, fontWeight: 800, color: "#0A1628", lineHeight: 1 }}>
+          <span style={{ fontSize: 22, fontWeight: 800, color: "#153958", lineHeight: 1 }}>
             {speedLimit}
           </span>
         </div>

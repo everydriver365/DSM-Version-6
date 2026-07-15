@@ -478,7 +478,7 @@ function DrivingTestPage() {
   }
 
   const resultColor = (r: string | null) =>
-    r === "pass" ? "#059669" : r === "fail" ? "#DC2626" : "#6B7280";
+    r === "pass" ? "#1CA36B" : r === "fail" ? "#DC2626" : "#6B7280";
 
   return (
     <PageLayout className="pb-32" style={INTER}>
@@ -782,7 +782,7 @@ function CentreSearchSelect({
               setShowDropdown(true);
             }}
             className="text-[12px] font-semibold"
-            style={{ color: "#1A52A0", background: "none", border: "none" }}
+            style={{ color: "#1877D6", background: "none", border: "none" }}
           >
             Change
           </button>
@@ -846,7 +846,7 @@ function CentreSearchSelect({
                 <div
                   onClick={() => addCentreByName(centreSearch)}
                   className="cursor-pointer flex items-center gap-2"
-                  style={{ padding: "12px 16px", color: "#1A52A0" }}
+                  style={{ padding: "12px 16px", color: "#1877D6" }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F7FAFC")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
@@ -1114,7 +1114,7 @@ function RecordTab(props: any) {
         <SectionTitle icon={<Trophy size={16} color="#0F2044" />}>Result</SectionTitle>
         <div className="grid grid-cols-3 gap-2">
           {[
-            { k: "pass", label: "PASS 🎉", bg: "#059669" },
+            { k: "pass", label: "PASS 🎉", bg: "#1CA36B" },
             { k: "fail", label: "FAIL", bg: "#DC2626" },
             { k: "terminated", label: "Terminated", bg: "#6B7280" },
           ].map((r) => (

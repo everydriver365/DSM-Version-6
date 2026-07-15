@@ -325,9 +325,9 @@ function ReflectiveLogPage() {
                 {log.what_went_well && (
                   <div
                     className="pl-3 text-[14px]"
-                    style={{ borderLeft: "3px solid #10B981", color: "#0F2044", marginBottom: 12 }}
+                    style={{ borderLeft: "3px solid #22C580", color: "#0F2044", marginBottom: 12 }}
                   >
-                    <div className="text-xs font-semibold mb-1" style={{ color: "#059669" }}>
+                    <div className="text-xs font-semibold mb-1" style={{ color: "#1CA36B" }}>
                       ✅ What went well
                     </div>
                     <div style={{ whiteSpace: "pre-wrap" }}>{log.what_went_well}</div>
@@ -349,9 +349,9 @@ function ReflectiveLogPage() {
                 {log.next_goals && (
                   <div
                     className="pl-3 text-[14px]"
-                    style={{ borderLeft: "3px solid #1A52A0", color: "#0F2044", marginBottom: 12 }}
+                    style={{ borderLeft: "3px solid #1877D6", color: "#0F2044", marginBottom: 12 }}
                   >
-                    <div className="text-xs font-semibold mb-1" style={{ color: "#1A52A0" }}>
+                    <div className="text-xs font-semibold mb-1" style={{ color: "#1877D6" }}>
                       🎯 Next lesson goals
                     </div>
                     <div style={{ whiteSpace: "pre-wrap" }}>{log.next_goals}</div>
@@ -423,7 +423,7 @@ function ReflectiveLogPage() {
                     }}
                     className="text-sm font-medium mt-1"
                     style={{
-                      color: "#1A52A0",
+                      color: "#1877D6",
                       background: "none",
                       border: "none",
                       padding: 0,
@@ -500,7 +500,7 @@ function ReflectiveLogPage() {
             </div>
             <div className="px-4 pt-2 space-y-4">
               <div>
-                <div className="text-xs font-semibold mb-1" style={{ color: "#059669" }}>
+                <div className="text-xs font-semibold mb-1" style={{ color: "#1CA36B" }}>
                   ✅ What went well?
                 </div>
                 <MicTextarea value={went} onChange={setWent} rows={3} />
@@ -512,7 +512,7 @@ function ReflectiveLogPage() {
                 <MicTextarea value={improve} onChange={setImprove} rows={3} />
               </div>
               <div>
-                <div className="text-xs font-semibold mb-1" style={{ color: "#1A52A0" }}>
+                <div className="text-xs font-semibold mb-1" style={{ color: "#1877D6" }}>
                   🎯 Goals for next lesson?
                 </div>
                 <MicTextarea value={goals} onChange={setGoals} rows={3} />

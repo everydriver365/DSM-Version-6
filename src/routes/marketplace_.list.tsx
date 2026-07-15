@@ -225,7 +225,7 @@ function MarketplaceListPage() {
             onClick={() => navigate({ to: "/marketplace" })}
             style={{
               marginTop: 16,
-              background: "#1A52A0",
+              background: "#1877D6",
               color: "#FFFFFF",
               border: "none",
               fontSize: 14,
@@ -562,7 +562,7 @@ function MarketplaceListPage() {
             disabled={submitting}
             style={{
               flex: 2,
-              background: "#1A52A0",
+              background: "#1877D6",
               color: "#FFFFFF",
               border: "none",
               fontSize: 14,
@@ -826,7 +826,7 @@ function PreviewSheet({
               height: 160,
               background: image
                 ? `#F3F8FF url(${image}) center/cover`
-                : "linear-gradient(135deg,#0F2044,#1A52A0)",
+                : "linear-gradient(135deg,#0F2044,#1877D6)",
             }}
           />
           <div style={{ padding: 12 }}>
