@@ -4235,7 +4235,6 @@ function HomePage() {
         style={{
           backgroundColor: '#0F2044',
           marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-          paddingTop: 'calc(60px + env(safe-area-inset-top, 0px) + 16px)',
           padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
           display: 'flex',
           justifyContent: 'space-between',
