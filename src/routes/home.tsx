@@ -365,7 +365,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   const active = items.filter((i) => i.count > 0);
   if (active.length === 0) {
     return (
-      <div style={{ margin: '16px 16px 0' }}>
+      <div style={{ margin: '0 16px' }}>
         <NeedsAttentionAllClear />
       </div>
     );
