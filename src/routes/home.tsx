@@ -4371,6 +4371,45 @@ function HomePage() {
                     {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup set'}
                   </p>
                 )}
+                {upcoming && (weatherLoading || driveLoading || weatherData || driveData) && (
+                  <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                    {driveLoading ? (
+                      <span style={{ height: 22, width: 92, borderRadius: 11, background: 'linear-gradient(90deg, #F1F5F9 0%, #E2E8F0 50%, #F1F5F9 100%)', backgroundSize: '200% 100%', animation: 'chipShimmer 1.2s linear infinite' }} />
+                    ) : driveData ? (
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '3px 8px', borderRadius: 11,
+                        background: driveData.trafficLabel === 'Heavy traffic' ? '#FEE2E2' : driveData.trafficLabel === 'Moderate traffic' ? '#FEF3C7' : '#DCFCE7',
+                        color: driveData.trafficLabel === 'Heavy traffic' ? '#B91C1C' : driveData.trafficLabel === 'Moderate traffic' ? '#92400E' : '#166534',
+                        fontSize: 11, fontWeight: 700, lineHeight: 1,
+                      }}>
+                        <Car size={11} />
+                        {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
+                      </span>
+                    ) : null}
+                    {weatherLoading ? (
+                      <span style={{ height: 22, width: 74, borderRadius: 11, background: 'linear-gradient(90deg, #F1F5F9 0%, #E2E8F0 50%, #F1F5F9 100%)', backgroundSize: '200% 100%', animation: 'chipShimmer 1.2s linear infinite' }} />
+                    ) : weatherData ? (
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '3px 8px', borderRadius: 11,
+                        background: '#EFF6FF', color: '#1E40AF',
+                        fontSize: 11, fontWeight: 700, lineHeight: 1,
+                      }}>
+                        {(() => {
+                          const c = weatherData.condition.toLowerCase();
+                          if (c.includes('rain') || c.includes('drizzle')) return <CloudRain size={11} />;
+                          if (c.includes('snow')) return <CloudSnow size={11} />;
+                          if (c.includes('thunder')) return <CloudLightning size={11} />;
+                          if (c.includes('mist') || c.includes('fog') || c.includes('haze')) return <CloudFog size={11} />;
+                          if (c.includes('cloud')) return <CloudIcon size={11} />;
+                          return <Sun size={11} />;
+                        })()}
+                        {weatherData.tempC}° · {weatherData.condition}
+                      </span>
+                    ) : null}
+                  </div>
+                )}
               </div>
 
               {/* Quick action */}
