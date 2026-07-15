@@ -4189,7 +4189,7 @@ function HomePage() {
             {/* ---------- Map banner (pickup location) ---------- */}
             <div style={{ position: 'relative', height: 140, width: '100%', background: 'linear-gradient(135deg, #E8EEF7 0%, #C8D5E8 100%)', overflow: 'hidden' }}>
               {(() => {
-                const mapKey = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+                const mapKey = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
                 const q = upcoming ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') : '';
                 if (upcoming && mapKey && q) {
                   const src = `https://www.google.com/maps/embed/v1/place?key=${mapKey}&q=${encodeURIComponent(q)}&zoom=15`;
