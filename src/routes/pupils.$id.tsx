@@ -508,6 +508,7 @@ function PupilDetailPage() {
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
   const addressInputRef = useRef<HTMLInputElement>(null);
+  const focusedLessonCardRef = useRef<HTMLDivElement>(null);
   const pastCollapsedInit = useRef(false);
 
   // Auto-collapse past lessons if more than 5 entries
@@ -518,6 +519,14 @@ function PupilDetailPage() {
     }
     pastCollapsedInit.current = true;
   }, [pastLessons]);
+
+  useEffect(() => {
+    if (!focusLessonId) return;
+    if (lessons === null || pastLessons === null) return;
+    window.requestAnimationFrame(() => {
+      focusedLessonCardRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+  }, [focusLessonId, lessons, pastLessons]);
 
   // Preload Google Maps Places on mount so autocomplete is ready when user taps Edit.
   useEffect(() => {
