@@ -788,6 +788,15 @@ function SchedulePage() {
   }, []);
 
   const goToLesson = (id: string) => {
+    const lesson = lessons.find((l) => l.id === id);
+    if (lesson?.pupil_id) {
+      navigate({
+        to: "/pupils/$id" as never,
+        params: { id: lesson.pupil_id } as never,
+        search: { lessonId: id } as never,
+      });
+      return;
+    }
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
 
