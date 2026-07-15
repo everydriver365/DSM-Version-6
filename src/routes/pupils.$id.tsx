@@ -1943,7 +1943,7 @@ function PupilDetailPage() {
                   ...POPPINS,
                 }}
               >
-                <Calendar_ /> {/* placeholder replaced below */}
+                <span style={{ fontSize: 13, color: "#8A93A3", ...POPPINS }}>No lessons yet</span>
               </div>
             );
           }
