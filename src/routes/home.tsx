@@ -146,8 +146,6 @@ import {
   scheduleLessonReminder,
   isSupported as notificationsSupported,
 } from "../lib/pushNotifications";
-import carAsset from "../assets/next-lesson-car.png.asset.json";
-import dsmLogo from "../assets/dsm-logo.png.asset.json";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
