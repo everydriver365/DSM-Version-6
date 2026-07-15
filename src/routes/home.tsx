@@ -1624,6 +1624,7 @@ function HomePage() {
 
   const [quickPage, setQuickPage] = useState(0);
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
 
@@ -5140,51 +5141,51 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; colour: string; chipBg?: string; wsIndex?: number };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' };
               const quickTiles: QuickTile[] = [
-                // Page 1 — Daily essentials
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} free` : 'No gaps', route: '/gaps', icon: IconBolt, colour: '#B5661E', chipBg: '#FBEFE1' },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, colour: '#185FA5', wsIndex: 1, chipBg: '#E6F1FB' },
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, colour: '#6B4FD6', chipBg: '#F0EBFF' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All clear', route: '/payments', icon: IconCurrencyPound, colour: '#3B6D11', chipBg: '#EAF3DE' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new', route: '/messages', icon: IconMessageCircle, colour: '#185FA5', chipBg: '#E6F1FB' },
-                { label: 'Running late', sub: 'Alert pupils', route: '/running-late', icon: IconClock, colour: '#A32D2D', chipBg: '#FCEBEB' },
+                // Page 1 — Daily essentials (spec)
+                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} gaps open` : 'No gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0 },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#185FA5', chipBg: '#E6F1FB', wsIndex: 1 },
+                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5' },
+                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#185FA5', chipBg: '#E6F1FB', attention: unreadCount > 0 },
+                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late' },
                 // Page 2 — Teaching
-                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, colour: '#1877D6' },
-
-                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, colour: '#7C3AED' },
-                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, colour: '#7C3AED' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, colour: '#1877D6' },
-                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, colour: '#16A34A' },
-                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, colour: '#16A34A' },
+                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
+                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
                 // Page 3 — Business
-                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, colour: '#CC2229' },
-                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, colour: '#D97706' },
-                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, colour: '#16A34A' },
-                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, colour: '#6B7280' },
-                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, colour: '#D97706' },
-                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, colour: '#6B7280' },
+                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2' },
+                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3' },
+                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
+                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3' },
+                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
                 // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, colour: '#1877D6' },
-                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, colour: '#D97706' },
-                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, colour: '#16A34A' },
-                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, colour: '#7C3AED' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, colour: '#1877D6' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, colour: '#16A34A' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3' },
+                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
                 // Page 5 — Admin
-                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, colour: '#6B7280' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, colour: '#1877D6' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, colour: '#1877D6' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, colour: '#1877D6' },
-                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, colour: '#00B5A5' },
-                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, colour: '#16A34A' },
-                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, colour: '#D97706' },
+                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
+                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE' },
+                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3' },
               ];
               const tilesPerPage = 6;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
               const goTile = (tile: QuickTile) => {
+                if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
@@ -5196,17 +5197,20 @@ function HomePage() {
 
               const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
                 const Icon = tile.icon;
+                const subColor = tile.attention ? '#C23B3B' : '#5A6B85';
+                const subWeight = tile.attention ? 600 : 400;
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => { goTile(tile); onTap?.(); }}
+                    className="cf-tap"
                     style={{
                       background: '#FFFFFF',
-                      borderRadius: 14,
-                      padding: '14px 12px',
+                      border: 'none',
+                      borderRadius: 16,
+                      padding: '14px 12px 13px',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                      minHeight: 80,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
@@ -5216,16 +5220,15 @@ function HomePage() {
                     }}
                   >
                     <div style={{
-                      width: 36, height: 36, borderRadius: 10,
-                      background: tile.chipBg ?? `${tile.colour}15`,
+                      width: 44, height: 44, borderRadius: 12,
+                      background: tile.chipBg,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 8,
+                      marginBottom: 10,
                     }}>
-                      <Icon size={18} color={tile.colour} />
+                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
-
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
                   </button>
                 );
               };
@@ -5240,7 +5243,7 @@ function HomePage() {
                 <>
                   <div style={{ margin: '16px 16px 0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#8A93A3', fontWeight: 600 }}>Quick access</div>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', color: '#0F2044', fontWeight: 700 }}>QUICK ACCESS</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -5276,7 +5279,7 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
@@ -5350,10 +5353,51 @@ function HomePage() {
                             No features found
                           </div>
                         ) : (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                             {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {runningLateOpen && (
+                    <div
+                      onClick={() => setRunningLateOpen(false)}
+                      style={{
+                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
+                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <IconClock size={20} color="#C23B3B" strokeWidth={1.8} />
+                          </div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late</div>
+                        </div>
+                        <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                          Notify today's pupils you're running late. This will send a heads-up message to each pupil with a lesson later today.
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            type="button"
+                            onClick={() => setRunningLateOpen(false)}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0F2044', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                          >
+                            Notify pupils
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
