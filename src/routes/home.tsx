@@ -5243,7 +5243,7 @@ function HomePage() {
                 <>
                   <div style={{ margin: '16px 16px 0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#8A93A3', fontWeight: 600 }}>Quick access</div>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', color: '#0F2044', fontWeight: 700 }}>QUICK ACCESS</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
