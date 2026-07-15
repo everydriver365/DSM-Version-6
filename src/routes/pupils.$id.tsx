@@ -1506,7 +1506,7 @@ function PupilDetailPage() {
                     </div>
                   </div>
                   <div className="flex-1 text-center" style={{ borderLeft: "0.5px solid #F3F4F6" }}>
-                    <div className="font-black" style={{ fontSize: 28, color: "#1A52A0", ...POPPINS, lineHeight: 1.1 }}>
+                    <div className="font-black" style={{ fontSize: 28, color: "#1877D6", ...POPPINS, lineHeight: 1.1 }}>
                       £{Number(pupil.account_balance ?? 0)}
                     </div>
                     <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
@@ -1620,7 +1620,7 @@ function PupilDetailPage() {
               }}
             >
               <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
-                <Pencil size={14} color="#1A52A0" />
+                <Pencil size={14} color="#1877D6" />
                 <span className="font-semibold text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
                   Quick edit
                 </span>
@@ -1933,7 +1933,7 @@ function PupilDetailPage() {
               const isPaid = l.payment_status === "paid";
               const unpaid = !isPaid && price > 0;
               const showGap = gapDays > 7;
-              const colour = pupil?.calendar_colour || "#1A52A0";
+              const colour = pupil?.calendar_colour || "#1877D6";
               const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
 
               return (
@@ -1966,7 +1966,7 @@ function PupilDetailPage() {
                       </div>
                     </div>
                     {live ? (
-                      <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
+                      <span style={{ background: "#DBEAFE", color: "#1877D6", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
                     ) : unpaid && past ? (
                       <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>£{price.toFixed(0)}</span>
                     ) : isPaid ? (
@@ -1986,13 +1986,13 @@ function PupilDetailPage() {
         <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
-              <RefreshCw size={14} color="#1A52A0" />
+              <RefreshCw size={14} color="#1877D6" />
               <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", ...POPPINS }}>Recurring lessons</span>
             </div>
             <button
               type="button"
               onClick={() => navigate({ to: "/lesson-series" as never, search: { pupilId: id } as never })}
-              style={{ fontSize: 12, color: "#1A52A0", fontWeight: 600, ...POPPINS }}
+              style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, ...POPPINS }}
             >
               + Add series
             </button>
@@ -2039,7 +2039,7 @@ function PupilDetailPage() {
           <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
-              const colour = pupil?.calendar_colour || "#1A52A0";
+              const colour = pupil?.calendar_colour || "#1877D6";
               const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
               return (
                 <>
@@ -2175,7 +2175,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <MapPin size={16} color="#1A52A0" /> Address
+                <MapPin size={16} color="#1877D6" /> Address
               </span>
               <button
                 type="button"
@@ -2223,7 +2223,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <BookOpen size={16} color="#1A52A0" /> Theory test
+                <BookOpen size={16} color="#1877D6" /> Theory test
               </span>
               <button
                 type="button"
@@ -3167,7 +3167,7 @@ function NIRow({
 }
 
 const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
-const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0F2044"];
+const CAL_COLOURS = ["#1877D6", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0F2044"];
 const EXTRAS_CARD: React.CSSProperties = {
   borderRadius: 12,
   border: "0.5px solid #E2E6ED",
@@ -3360,7 +3360,7 @@ function PupilExtras({
                 onChange={(e) => toggleLicenceChecked(e.target.checked)}
                 disabled={savingChecked}
                 className="w-4 h-4"
-                style={{ accentColor: "#1A52A0" }}
+                style={{ accentColor: "#1877D6" }}
               />
               <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
                 Licence checked and verified ✓
@@ -3370,7 +3370,7 @@ function PupilExtras({
               type="button"
               onClick={() => setRequestSheetOpen(true)}
               className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
-              style={{ color: "#1A52A0", ...POPPINS }}
+              style={{ color: "#1877D6", ...POPPINS }}
             >
               Request DVLA check code
               <ExternalLink size={14} />
@@ -3418,7 +3418,7 @@ function PupilExtras({
               className="flex items-center gap-3 w-full mb-2 rounded-lg"
               style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
             >
-              <MessageSquare size={18} color="#1A52A0" />
+              <MessageSquare size={18} color="#1877D6" />
               <div className="flex-1">
                 <div className="text-[14px] font-semibold">Send SMS</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -3432,7 +3432,7 @@ function PupilExtras({
               className="flex items-center gap-3 w-full rounded-lg"
               style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
             >
-              <Mail size={18} color="#1A52A0" />
+              <Mail size={18} color="#1877D6" />
               <div className="flex-1">
                 <div className="text-[14px] font-semibold">Send email</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>

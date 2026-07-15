@@ -87,7 +87,7 @@ const categoryColour = (category: string) => {
     'Insurance': '#3B82F6',
     'Marketing': '#8B5CF6',
     'Equipment': '#6B7280',
-    'Training': '#10B981',
+    'Training': '#22C580',
     'Vehicle': '#EF4444',
     'Phone': '#06B6D4',
     'Professional fees': '#0B1F3A',

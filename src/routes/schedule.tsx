@@ -248,7 +248,7 @@ function fmtTime(d: Date) {
 function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
   const t = (title || "").toLowerCase();
   if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
-    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
+    return { bg: "#EFF6FF", border: "#1877D6", icon: "💼", text: "#1877D6" };
   if (
     t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
     t.includes("appointment") || t.includes("medical") || t.includes("physio")
@@ -915,7 +915,7 @@ function SchedulePage() {
             position: 'sticky',
             top: 0,
             zIndex: 50,
-            background: '#1A52A0',
+            background: '#1877D6',
             padding: '12px 16px',
             display: 'flex',
             alignItems: 'center',
@@ -948,7 +948,7 @@ function SchedulePage() {
           </button>
         </div>
       )}
-      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
+      <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(24,119,214,0.5); } 50% { box-shadow: 0 0 0 6px rgba(24,119,214,0); } }`}</style>
 
 
 
@@ -981,7 +981,7 @@ function SchedulePage() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1877D6' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -1245,9 +1245,9 @@ function SchedulePage() {
                                   tabIndex={0}
                                   style={{
                                     position: "relative",
-                                    background: "#1A52A0",
+                                    background: "#1877D6",
                                     borderRadius: 12,
-                                    boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
+                                    boxShadow: "0 4px 16px rgba(24,119,214, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: "center",
@@ -1288,7 +1288,7 @@ function SchedulePage() {
                                       position: "relative",
                                       zIndex: 1,
                                       background: "#FFFFFF",
-                                      color: "#1A52A0",
+                                      color: "#1877D6",
                                       fontSize: 12,
                                       fontWeight: 600,
                                       padding: "8px 12px",
@@ -1454,7 +1454,7 @@ function SchedulePage() {
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
-                                    border: isMovingThis ? '2px solid #1A52A0' : undefined,
+                                    border: isMovingThis ? '2px solid #1877D6' : undefined,
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
@@ -1517,7 +1517,7 @@ function SchedulePage() {
                                         padding: 0,
                                       }}
                                     >
-                                      <Move size={12} color="#1A52A0" />
+                                      <Move size={12} color="#1877D6" />
                                     </button>
                                   )}
                                   {isLessonRow && (
@@ -1525,7 +1525,7 @@ function SchedulePage() {
                                       style={{
                                         fontSize: 9,
                                         fontWeight: 700,
-                                        color: '#1A52A0',
+                                        color: '#1877D6',
                                         background: '#E0F4FF',
                                         borderRadius: 4,
                                         padding: '1px 5px',
@@ -2207,7 +2207,7 @@ function MonthStrip({
               cursor: "pointer",
               fontSize: 12,
               fontWeight: 600,
-              color: "#1A52A0",
+              color: "#1877D6",
               padding: "2px 6px",
               ...POPPINS,
             }}
@@ -2242,7 +2242,7 @@ function MonthStrip({
           const isSelected = key === selectedDate;
           const hasLessons = lessonDates.has(key);
           const dow = (d.getDay() + 6) % 7; // Mon=0
-          const numBg = isToday ? "#0F2044" : isSelected ? "#1A52A0" : "transparent";
+          const numBg = isToday ? "#0F2044" : isSelected ? "#1877D6" : "transparent";
           const numColor = isToday || isSelected ? "#FFFFFF" : "#0F2044";
           return (
             <button
@@ -2287,7 +2287,7 @@ function MonthStrip({
                   width: 4,
                   height: 4,
                   borderRadius: "50%",
-                  background: hasLessons ? "#1A52A0" : "transparent",
+                  background: hasLessons ? "#1877D6" : "transparent",
                 }}
               />
             </button>

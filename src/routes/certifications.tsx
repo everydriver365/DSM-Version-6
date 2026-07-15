@@ -418,7 +418,7 @@ function CertificationsPage() {
               <button
                 key={p.type}
                 onClick={() => openAdd(p)}
-                style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer" }}
+                style={{ background: "#F0F4FF", color: "#1877D6", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer" }}
               >
                 {p.title}
               </button>
@@ -493,7 +493,7 @@ function CertificationsPage() {
                         <button
                           key={p.type}
                           onClick={() => { setFTitle(p.title); setFType(p.type); setFReminder(p.reminder_days); }}
-                          style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
+                          style={{ background: "#F0F4FF", color: "#1877D6", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
                         >
                           {p.title}
                         </button>

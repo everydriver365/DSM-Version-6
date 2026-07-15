@@ -521,7 +521,7 @@ function LivePage() {
   const distanceMiles = distanceKm * 0.621371;
 
   return (
-    <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#0A1628" }}>
+    <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#153958" }}>
       <style>{`
         @keyframes liveDotPulse {
           0%,100% { opacity: 1; transform: scale(1); }
@@ -539,7 +539,7 @@ function LivePage() {
         style={{
           height: 52,
           paddingTop: "env(safe-area-inset-top, 0px)",
-          background: "rgba(10,22,40,0.85)",
+          background: "rgba(21,57,88,0.85)",
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
         }}
@@ -632,7 +632,7 @@ function LivePage() {
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           }}
         >
-          <span style={{ fontSize: 22, fontWeight: 800, color: "#0A1628", lineHeight: 1 }}>
+          <span style={{ fontSize: 22, fontWeight: 800, color: "#153958", lineHeight: 1 }}>
             {speedLimit}
           </span>
         </div>
@@ -644,7 +644,7 @@ function LivePage() {
         style={{
           right: 16,
           bottom: 260,
-          background: "rgba(10,22,40,0.85)",
+          background: "rgba(21,57,88,0.85)",
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
           padding: "10px 16px",
@@ -717,7 +717,7 @@ function LivePage() {
               fontWeight: 700,
               cursor: "pointer",
               marginBottom: 8,
-              boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
+              boxShadow: "0 4px 12px rgba(24,119,214,0.3)",
             }}
           >
             Start manual tracking

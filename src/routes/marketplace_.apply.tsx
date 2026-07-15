@@ -15,7 +15,7 @@ export const Route = createFileRoute("/marketplace_/apply")({
 });
 
 const NAVY = "#0F2044";
-const BLUE = "#1A52A0";
+const BLUE = "#1877D6";
 const BG_HERO = "#F0F4FF";
 const BORDER_HERO = "#BFDBFE";
 const MUTED = "#64748B";
