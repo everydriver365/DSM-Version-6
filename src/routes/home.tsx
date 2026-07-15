@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
+import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
+import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
+import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 import {
   Phone,
@@ -2753,6 +2756,96 @@ function HomePage() {
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
 
+  // ── Next Lesson traffic + weather chips ───────────────────────────────────
+  const fetchWeather = useServerFn(getLessonWeather);
+  const fetchDriveTime = useServerFn(getLessonDriveTime);
+  const [weatherData, setWeatherData] = useState<LessonWeather>(null);
+  const [driveData, setDriveData] = useState<LessonDriveTime>(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [driveLoading, setDriveLoading] = useState(false);
+  // client-side dedupe: keyed by lesson id, expires after 5 min
+  const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
+
+  useEffect(() => {
+    if (!upcoming?.id) {
+      setWeatherData(null);
+      setDriveData(null);
+      return;
+    }
+    const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
+      .filter(Boolean)
+      .join(", ");
+    const postcode = upcoming.pupils?.postcode ?? null;
+    if (!destination && !postcode) return;
+
+    const cacheKey = upcoming.id;
+    const cached = chipCacheRef.current[cacheKey];
+    const nowMs = Date.now();
+    if (cached && cached.expires > nowMs) {
+      setWeatherData(cached.weather);
+      setDriveData(cached.drive);
+      return;
+    }
+
+    let cancelled = false;
+
+    // Weather — kick off immediately (no geolocation needed).
+    setWeatherLoading(true);
+    fetchWeather({ data: { postcode: postcode ?? destination } })
+      .then((w) => { if (!cancelled) setWeatherData(w); })
+      .catch(() => { if (!cancelled) setWeatherData(null); })
+      .finally(() => { if (!cancelled) setWeatherLoading(false); });
+
+    // Drive time — needs instructor geolocation; hide chip if not available.
+    if (destination && typeof navigator !== "undefined" && navigator.geolocation) {
+      setDriveLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (cancelled) return;
+          fetchDriveTime({
+            data: {
+              originLat: pos.coords.latitude,
+              originLon: pos.coords.longitude,
+              destination,
+            },
+          })
+            .then((d) => { if (!cancelled) setDriveData(d); })
+            .catch(() => { if (!cancelled) setDriveData(null); })
+            .finally(() => {
+              if (cancelled) return;
+              setDriveLoading(false);
+              // Cache both once drive resolves (weather may still be pending; cache on next tick handled below)
+              chipCacheRef.current[cacheKey] = {
+                weather: weatherData,
+                drive: driveData,
+                expires: Date.now() + 5 * 60 * 1000,
+              };
+            });
+        },
+        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); } },
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
+      );
+    } else {
+      setDriveData(null);
+    }
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcoming?.id]);
+
+  // Cache the resolved pair whenever both settle
+  useEffect(() => {
+    if (!upcoming?.id) return;
+    if (weatherLoading || driveLoading) return;
+    chipCacheRef.current[upcoming.id] = {
+      weather: weatherData,
+      drive: driveData,
+      expires: Date.now() + 5 * 60 * 1000,
+    };
+  }, [upcoming?.id, weatherData, driveData, weatherLoading, driveLoading]);
+
+
+
   // Fetch previous lesson for the upcoming pupil when hero expands
   useEffect(() => {
     if (!heroExpanded || !upcoming?.pupil_id || !userId) return;
@@ -3981,7 +4074,7 @@ function HomePage() {
   return (
     <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', background: '#0F2044', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
-      <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
+      <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
       <InstructorTopBar
         firstName={firstName}
@@ -4277,6 +4370,45 @@ function HomePage() {
                   >
                     {[upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup set'}
                   </p>
+                )}
+                {upcoming && (weatherLoading || driveLoading || weatherData || driveData) && (
+                  <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                    {driveLoading ? (
+                      <span style={{ height: 22, width: 92, borderRadius: 11, background: 'linear-gradient(90deg, #F1F5F9 0%, #E2E8F0 50%, #F1F5F9 100%)', backgroundSize: '200% 100%', animation: 'chipShimmer 1.2s linear infinite' }} />
+                    ) : driveData ? (
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '3px 8px', borderRadius: 11,
+                        background: driveData.trafficLabel === 'Heavy traffic' ? '#FEE2E2' : driveData.trafficLabel === 'Moderate traffic' ? '#FEF3C7' : '#DCFCE7',
+                        color: driveData.trafficLabel === 'Heavy traffic' ? '#B91C1C' : driveData.trafficLabel === 'Moderate traffic' ? '#92400E' : '#166534',
+                        fontSize: 11, fontWeight: 700, lineHeight: 1,
+                      }}>
+                        <Car size={11} />
+                        {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
+                      </span>
+                    ) : null}
+                    {weatherLoading ? (
+                      <span style={{ height: 22, width: 74, borderRadius: 11, background: 'linear-gradient(90deg, #F1F5F9 0%, #E2E8F0 50%, #F1F5F9 100%)', backgroundSize: '200% 100%', animation: 'chipShimmer 1.2s linear infinite' }} />
+                    ) : weatherData ? (
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '3px 8px', borderRadius: 11,
+                        background: '#EFF6FF', color: '#1E40AF',
+                        fontSize: 11, fontWeight: 700, lineHeight: 1,
+                      }}>
+                        {(() => {
+                          const c = weatherData.condition.toLowerCase();
+                          if (c.includes('rain') || c.includes('drizzle')) return <CloudRain size={11} />;
+                          if (c.includes('snow')) return <CloudSnow size={11} />;
+                          if (c.includes('thunder')) return <CloudLightning size={11} />;
+                          if (c.includes('mist') || c.includes('fog') || c.includes('haze')) return <CloudFog size={11} />;
+                          if (c.includes('cloud')) return <CloudIcon size={11} />;
+                          return <Sun size={11} />;
+                        })()}
+                        {weatherData.tempC}° · {weatherData.condition}
+                      </span>
+                    ) : null}
+                  </div>
                 )}
               </div>
 
