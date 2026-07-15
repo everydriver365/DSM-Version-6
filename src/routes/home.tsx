@@ -5057,7 +5057,7 @@ function HomePage() {
                           }}
                         />
                         <div
-                          onClick={() => navigate({ to: '/lessons/$id', params: { id: l.id } })}
+                          onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
                           tabIndex={0}
                           style={{
