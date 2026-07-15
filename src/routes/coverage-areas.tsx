@@ -86,7 +86,7 @@ function staticMapUrl(lat: number | null, lng: number | null, radius: number, si
   if (lat == null || lng == null) return "";
   // Approx radius zoom: 11 works well for ~10mi; adjust slightly by radius.
   const zoom = radius <= 3 ? 12 : radius <= 8 ? 11 : radius <= 15 ? 10 : 9;
-  const path = `path=color:0x1A52A0AA|weight:2|fillcolor:0x1A52A033|geodesic:true|` +
+  const path = `path=color:0x1877D6AA|weight:2|fillcolor:0x1877D633|geodesic:true|` +
     circlePathPoints(lat, lng, radius).join("|");
   return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${size}&maptype=roadmap&${path}&key=${GOOGLE_MAPS_KEY}`;
 }
