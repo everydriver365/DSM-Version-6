@@ -12,6 +12,8 @@ import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } fr
 
 import {
   Phone,
+  Building2 as Building,
+  Info,
   Car,
   Bell,
   Menu,
@@ -1721,6 +1723,9 @@ function HomePage() {
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
+  const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
+  const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
+  const [instructorArea, setInstructorArea] = useState<string>('your area');
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
   const [allPupilsList, setAllPupilsList] = useState<Array<{
     id: string;
@@ -1772,31 +1777,62 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId]);
 
-  // Local alerts (community issues). NOTE: local_alerts table not yet created;
-  // stays null until migration runs and rows exist.
+  // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase
+        const { data: instructor } = await supabase
+          .from('instructors')
+          .select('home_postcode, city')
+          .eq('id', userId)
+          .maybeSingle();
+        const outcode = (instructor as any)?.home_postcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
+        const area = (instructor as any)?.city || outcode || 'your area';
+        if (!cancelled) setInstructorArea(area);
+
+        let query = supabase
           .from('local_alerts')
-          .select('*')
-          .eq('instructor_id', userId)
-          .order('created_at', { ascending: false })
-          .limit(20);
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
+          .eq('is_active', true)
+          .gt('expires_at', new Date().toISOString())
+          .order('upvotes', { ascending: false })
+          .limit(3);
+        if (outcode) query = query.eq('outcode', outcode);
+        const { data, error } = await query;
         if (cancelled) return;
-        if (error || !Array.isArray(data) || data.length === 0) {
-          setLocalAlerts(null);
-        } else {
-          setLocalAlerts(data);
+        if (error) { setLocalAlerts([]); return; }
+        setLocalAlerts(Array.isArray(data) ? data : []);
+
+        // Local chat room + latest message
+        if (outcode) {
+          const { data: room } = await supabase
+            .from('local_chat_rooms')
+            .select('id, area_name')
+            .eq('outcode', outcode)
+            .maybeSingle();
+          if (cancelled) return;
+          if (room) {
+            setLocalRoom(room as any);
+            const { data: latest } = await supabase
+              .from('local_chat_messages')
+              .select('message, created_at, instructors(name)')
+              .eq('room_id', (room as any).id)
+              .is('deleted_at', null)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (!cancelled) setLocalChatLatest(latest as any);
+          }
         }
       } catch {
-        if (!cancelled) setLocalAlerts(null);
+        if (!cancelled) setLocalAlerts([]);
       }
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
 
   // Pupil cancellations (last 24h) + unread reschedule requests
   useEffect(() => {
@@ -4552,49 +4588,103 @@ function HomePage() {
         })()}
 
         {/* ============ LOCAL ISSUES ============ */}
-        {/* NOTE: local_alerts table not yet created — this section is hidden until migration runs and rows exist. */}
         {localAlerts !== null && localAlerts.length > 0 && (
-          <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
-              <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
+          <div style={{ margin: '12px 16px 0', fontFamily: 'Poppins, Inter, sans-serif' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <AlertTriangle size={14} color="#D97706" />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>Local issues</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate({ to: '/community' as never })}
+                style={{ fontSize: 11, color: '#185FA5', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+              >
+                See all →
+              </button>
             </div>
-            {localAlerts.map((a, i) => (
-              <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
-            ))}
+            {localAlerts.slice(0, 2).map((alert: any) => {
+              const typeConfig = ({
+                roadworks: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
+                road_closure: { bg: '#FEF3C7', colour: '#D97706', Icon: AlertTriangle },
+                heavy_traffic: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
+                hazard: { bg: '#FCEBEB', colour: '#A32D2D', Icon: AlertTriangle },
+                test_centre_busy: { bg: '#FCEBEB', colour: '#A32D2D', Icon: Building },
+                test_centre_delay: { bg: '#FCEBEB', colour: '#A32D2D', Icon: Clock },
+                examiner_tip: { bg: '#F5F3FF', colour: '#6B4FD6', Icon: Info },
+                other: { bg: '#F3F4F6', colour: '#6B7280', Icon: Info },
+              } as any)[alert.alert_type] || { bg: '#F3F4F6', colour: '#6B7280', Icon: Info };
+              const Icon = typeConfig.Icon;
+              return (
+                <div
+                  key={alert.id}
+                  onClick={() => navigate({ to: '/community' as never })}
+                  style={{
+                    background: 'white', borderRadius: 10, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    padding: '10px 12px', marginBottom: 6, display: 'flex', alignItems: 'center',
+                    gap: 10, cursor: 'pointer',
+                  }}
+                >
+                  <div style={{
+                    width: 28, height: 28, borderRadius: 8, background: typeConfig.bg,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <Icon size={14} color={typeConfig.colour} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {alert.description}
+                    </div>
+                    <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1 }}>
+                      {alert.location_name && `${alert.location_name} · `}{alert.upvotes} confirmed
+                    </div>
+                  </div>
+                  <ChevronRight size={12} color="#D1D5DB" />
+                </div>
+              );
+            })}
+            {localAlerts.length > 2 && (
+              <button
+                onClick={() => navigate({ to: '/community' as never })}
+                style={{ fontSize: 11, color: '#185FA5', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
+              >
+                +{localAlerts.length - 2} more local alerts →
+              </button>
+            )}
           </div>
         )}
 
         {/* ============ LOCAL CHAT ============ */}
-        {/* NOTE: local_chat_messages table + area filtering (postcode/coverage matching) not yet implemented. Placeholder row shown when instructor has a coverage area configured. */}
-        {(() => {
-          const area = ''; // TODO: pull from instructor profile coverage area
-          if (!area) return null;
-          const unread = 0;
-          const preview = `Be the first to chat in ${area}`;
-          return (
-            <div
-              onClick={() => navigate({ to: '/messages' as never })}
-              style={{
-                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px',
-                display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F0EBFF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <MessageSquare size={15} color="#6B4FD6" />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>Local chat · {area}</div>
-                <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{preview}</div>
-              </div>
-              {unread > 0 && (
-                <span style={{ background: '#A32D2D', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>{unread}</span>
-              )}
+        {localRoom && (
+          <div
+            onClick={() => navigate({ to: '/community' as never })}
+            style={{
+              margin: '8px 16px 0', background: 'white', borderRadius: 10,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
+              display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+              fontFamily: 'Poppins, Inter, sans-serif',
+            }}
+          >
+            <div style={{
+              width: 28, height: 28, borderRadius: 8, background: '#F0EBFF',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <MessageSquare size={14} color="#6B4FD6" />
             </div>
-          );
-        })()}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>
+                Local chat · {localRoom.area_name}
+              </div>
+              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {localChatLatest
+                  ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
+                  : `Be the first to chat in ${localRoom.area_name}!`}
+              </div>
+            </div>
+            <ChevronRight size={12} color="#D1D5DB" />
+          </div>
+        )}
+
 
 
 
