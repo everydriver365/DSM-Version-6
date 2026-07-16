@@ -4553,21 +4553,17 @@ function HomePage() {
 
         {/* ============ LOCAL ISSUES ============ */}
         {/* NOTE: local_alerts table not yet created — this section is hidden until migration runs and rows exist. */}
-        {(() => {
-          const alerts: any[] = [];
-          if (alerts.length === 0) return null;
-          return (
-            <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
-                <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
-              </div>
-              {alerts.map((a, i) => (
-                <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
-              ))}
+        {localAlerts !== null && localAlerts.length > 0 && (
+          <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
+              <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
             </div>
-          );
-        })()}
+            {localAlerts.map((a, i) => (
+              <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
+            ))}
+          </div>
+        )}
 
         {/* ============ LOCAL CHAT ============ */}
         {/* NOTE: local_chat_messages table + area filtering (postcode/coverage matching) not yet implemented. Placeholder row shown when instructor has a coverage area configured. */}
