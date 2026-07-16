@@ -4485,7 +4485,7 @@ function HomePage() {
         </Dialog>
 
 
-        {/* Needs attention */}
+        {/* ============ TESTS ROW ============ */}
         {(() => {
           const fmtShortDate = (iso: string) => {
             const d = new Date(iso + 'T00:00:00');
@@ -4493,99 +4493,86 @@ function HomePage() {
             return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
           };
           const nowMs = Date.now();
-          const soonestTest = [...(upcomingTests ?? [])]
-            .filter((p) => {
-              if (!p.test_date) return false;
-              const days = Math.floor((new Date(p.test_date).getTime() - nowMs) / 86400000);
-              return days >= 0 && days <= 7;
-            })
-            .sort((a, b) => a.test_date.localeCompare(b.test_date))[0];
-          const latestEnq = [...(swapRequests ?? [])]
-            .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))[0];
-
-          const cancCount = recentCancellations.length;
-          const cancFirst = recentCancellations[0]?.pupil_first_name || 'A pupil';
-          const nextCertDays = expiringCerts[0]
-            ? Math.floor((new Date(expiringCerts[0].expiry_date).getTime() - Date.now()) / 86400000)
-            : 0;
-          const items: NAItem[] = [
-            {
-              key: 'certs_expired',
-              count: expiredCerts.length,
-              primary: expiredCerts.length === 1
-                ? `${expiredCerts[0].title} has expired`
-                : `${expiredCerts.length} certifications have expired`,
-              subtitle: 'Renew before your next standards check',
-              onClick: () => navigate({ to: '/certifications' as never }),
-            },
-            {
-              key: 'certs_expiring',
-              count: expiredCerts.length === 0 ? expiringCerts.length : 0,
-              primary: expiringCerts[0]
-                ? `${expiringCerts[0].title} expires in ${nextCertDays} days`
-                : 'Certifications expiring soon',
-              subtitle: expiringCerts.length > 1
-                ? `${expiringCerts.length} certifications expiring soon`
-                : 'Tap to review and renew',
-              onClick: () => navigate({ to: '/certifications' as never }),
-            },
-            {
-              key: 'cancellations',
-              count: cancCount,
-              primary: cancCount === 1
-                ? `${cancFirst} cancelled their lesson`
-                : `${cancCount} lessons cancelled by pupils today`,
-              subtitle: 'Tap to review and fill the slot',
-              onClick: () => navigate({ to: '/notifications' as never }),
-            },
-            {
-              key: 'reschedules',
-              count: rescheduleRequestsCount,
-              primary: `${rescheduleRequestsCount} reschedule request${rescheduleRequestsCount === 1 ? '' : 's'}`,
-              subtitle: 'Pupils waiting for a reply',
-              onClick: () => navigate({ to: '/messages' as never }),
-            },
-            {
-              key: 'tests',
-              count: naTests,
-              primary: `${naTests} driving test${naTests === 1 ? '' : 's'} upcoming`,
-              subtitle: soonestTest ? `${soonestTest.name} · ${fmtShortDate(soonestTest.test_date)}` : `${naTests} items need attention`,
-              onClick: () => navigate({ to: '/pupils' as never }),
-            },
-            {
-              key: 'jobs',
-              count: naJobs,
-              primary: `${naJobs} job${naJobs === 1 ? '' : 's'} pending`,
-              subtitle: `${naJobs} items need attention`,
-              onClick: () => navigate({ to: '/bookings' as never }),
-            },
-            {
-              key: 'calls',
-              count: naCalls,
-              primary: `${naCalls} call${naCalls === 1 ? '' : 's'} to return`,
-              subtitle: `${naCalls} items need attention`,
-              onClick: () => navigate({ to: '/messages' as never }),
-            },
-            {
-              key: 'enq',
-              count: naEnquiries,
-              primary: `${naEnquiries} new ${naEnquiries === 1 ? "enquiry" : "enquiries"}`,
-              subtitle: latestEnq ? latestEnq.name : `${naEnquiries} items need attention`,
-              onClick: () => navigate({ to: '/waitlist' as never }),
-            },
-            {
-              key: 'birthday',
-              count: birthdayToday.length,
-              primary: birthdayToday.length === 1
-                ? `${birthdayToday[0].first_name || birthdayToday[0].name || 'A pupil'}'s birthday today 🎂`
-                : `${birthdayToday.length} birthdays today 🎂`,
-              subtitle: 'Tap to send a gift message',
-              onClick: () => setBirthdaySheetOpen(true),
-            },
-          ];
-
-          return <NeedsAttentionSection items={items} />;
+          const testsSorted = [...(upcomingTests ?? [])]
+            .filter((p) => p.test_date && new Date(p.test_date).getTime() >= nowMs - 86400000)
+            .sort((a, b) => a.test_date.localeCompare(b.test_date));
+          if (testsSorted.length === 0) return null;
+          const next = testsSorted[0];
+          return (
+            <div
+              onClick={() => navigate({ to: '/tests' as never })}
+              style={{
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 14px',
+                display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              <span style={{
+                background: '#E6F1FB', color: '#185FA5', fontSize: 11, fontWeight: 700,
+                padding: '4px 10px', borderRadius: 999, display: 'inline-flex',
+                alignItems: 'center', gap: 4, flexShrink: 0,
+              }}>
+                <Car size={12} color="#185FA5" />
+                {testsSorted.length} test{testsSorted.length === 1 ? '' : 's'}
+              </span>
+              <span style={{ fontSize: 12, color: '#5A6270', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                Next: {next.name}, {fmtShortDate(next.test_date)}
+              </span>
+              <ChevronRight size={14} color="#C7CCD4" />
+            </div>
+          );
         })()}
+
+        {/* ============ LOCAL ISSUES ============ */}
+        {/* NOTE: local_alerts table not yet created — this section is hidden until migration runs and rows exist. */}
+        {(() => {
+          const alerts: any[] = [];
+          if (alerts.length === 0) return null;
+          return (
+            <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
+                <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
+              </div>
+              {alerts.map((a, i) => (
+                <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
+              ))}
+            </div>
+          );
+        })()}
+
+        {/* ============ LOCAL CHAT ============ */}
+        {/* NOTE: local_chat_messages table + area filtering (postcode/coverage matching) not yet implemented. Placeholder row shown when instructor has a coverage area configured. */}
+        {(() => {
+          const area = ''; // TODO: pull from instructor profile coverage area
+          if (!area) return null;
+          const unread = 0;
+          const preview = `Be the first to chat in ${area}`;
+          return (
+            <div
+              onClick={() => navigate({ to: '/messages' as never })}
+              style={{
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px',
+                display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: '#F0EBFF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <MessageSquare size={15} color="#6B4FD6" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>Local chat · {area}</div>
+                <div style={{ fontSize: 11, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{preview}</div>
+              </div>
+              {unread > 0 && (
+                <span style={{ background: '#A32D2D', color: '#FFFFFF', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>{unread}</span>
+              )}
+            </div>
+          );
+        })()}
+
 
 
 
