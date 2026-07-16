@@ -5223,10 +5223,10 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late'; badge?: number };
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials (spec)
-                { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} gaps open` : 'No gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0 },
+                { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount },
                 { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#185FA5', chipBg: '#E6F1FB', wsIndex: 1 },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5' },
                 { label: 'Payments', sub: `${outstanding > 0 ? `£${Math.round(outstanding)} outstanding` : 'All settled'}\n£${Math.round(weekEarnings)} this wk`, route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
@@ -5306,8 +5306,31 @@ function HomePage() {
                       background: tile.chipBg,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       marginBottom: 10,
+                      position: 'relative',
                     }}>
                       <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
+                      {(tile.badge ?? 0) > 0 && (
+                        <span style={{
+                          position: 'absolute',
+                          top: -2,
+                          right: -2,
+                          minWidth: 18,
+                          height: 18,
+                          padding: '0 5px',
+                          borderRadius: 999,
+                          background: '#CC2229',
+                          color: '#FFFFFF',
+                          fontSize: 10,
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                          fontFamily: 'Inter, sans-serif',
+                        }}>
+                          {tile.badge}
+                        </span>
+                      )}
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
                     <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : undefined }}>{tile.sub}</div>
