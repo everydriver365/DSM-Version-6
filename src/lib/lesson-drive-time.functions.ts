@@ -64,12 +64,18 @@ export const getLessonDriveTime = createServerFn({ method: "POST" })
       const start = leg.start_location;
       const end = leg.end_location;
       const polyline = route.overview_polyline?.points;
+      const bounds = route.bounds;
+      const ne = bounds?.northeast;
+      const sw = bounds?.southwest;
+      const visibleParam =
+        ne && sw ? `&visible=${ne.lat},${ne.lng}|${sw.lat},${sw.lng}` : "";
       const staticMapUrl =
         googleKey && polyline && start && end
-          ? `https://maps.googleapis.com/maps/api/staticmap?size=600x300&scale=2&maptype=roadmap&format=png` +
+          ? `https://maps.googleapis.com/maps/api/staticmap?size=640x220&scale=2&maptype=roadmap&format=png` +
             `&path=enc:${encodeURIComponent(polyline)}` +
             `&markers=color:green%7Clabel:S%7C${start.lat},${start.lng}` +
             `&markers=color:red%7Clabel:E%7C${end.lat},${end.lng}` +
+            visibleParam +
             `&key=${googleKey}`
           : null;
 
