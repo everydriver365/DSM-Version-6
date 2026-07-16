@@ -295,7 +295,7 @@ function AlertsTab({
   };
 
   return (
-    <div style={{ padding: 16 }}>
+    <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
           Alerts near {instructorArea}
@@ -334,29 +334,62 @@ function AlertsTab({
           <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
             Your active alerts
           </div>
-          {myAlerts.map((a) => (
-            <div key={a.id} style={{
-              background: "white", borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              padding: "14px 16px", marginBottom: 8,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>{a.description}</div>
-                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{formatCountdown(a.expires_at)}</div>
+          {myAlerts.map((a) => {
+            const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
+            return (
+              <div key={a.id} style={{
+                background: cfg.bg,
+                borderLeft: `3px solid ${cfg.colour}`,
+                borderRadius: 12,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                padding: "14px 16px",
+                marginBottom: 8,
+                position: "relative",
+              }}>
+                <div style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  background: "#0F2044",
+                  color: "white",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  borderRadius: 999,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.3,
+                }}>
+                  Your alert
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleCancel(a)}
-                  style={{
-                    background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 8,
-                    padding: "6px 12px", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
+                <div style={{ paddingRight: 80 }}>
+                  <div style={{
+                    fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                    color: cfg.colour, letterSpacing: 0.3,
+                  }}>
+                    {cfg.label}
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+                    {a.description}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                    {formatCountdown(a.expires_at)}
+                  </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+                  <button
+                    type="button"
+                    onClick={() => handleCancel(a)}
+                    style={{
+                      background: "#FEF2F2", color: "#CC2229", border: "0.5px solid #FECACA",
+                      borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
