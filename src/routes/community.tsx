@@ -484,7 +484,15 @@ function ReportSheet({
   const canSubmit = !!selectedType && description.trim().length > 0 && !submitting;
 
   const submit = async () => {
-    if (!canSubmit || !userId) return;
+    console.log("[community] report sheet open: (submit tapped)");
+    console.log("[community] selected type:", selectedType);
+    console.log("[community] description:", description);
+    console.log("[community] instructor area:", instructorArea, instructorOutcode);
+    console.log("[community] canSubmit:", canSubmit, "userId:", userId);
+    if (!canSubmit || !userId) {
+      console.warn("[community] submit blocked: canSubmit/userId falsy");
+      return;
+    }
     setSubmitting(true);
     const expiryMinutes = expiry === "30min" ? 30
       : expiry === "1hour" ? 60
@@ -503,15 +511,19 @@ function ReportSheet({
       is_anonymous: isAnonymous,
       expires_at: new Date(Date.now() + expiryMinutes * 60000).toISOString(),
     };
-    const { error } = await supabase.from("local_alerts").insert(payload);
+    console.log("[community] submit payload:", payload);
+    const { data, error } = await supabase.from("local_alerts").insert(payload).select();
+    console.log("[community] insert result:", data, error);
     setSubmitting(false);
     if (error) {
-      toast.error("Couldn't post alert");
+      console.error("[community] insert error:", error);
+      toast.error("Failed to report: " + error.message);
       return;
     }
     toast.success("Alert reported — thanks for helping local ADIs!");
     onSubmitted();
   };
+
 
   return (
     <div style={{
