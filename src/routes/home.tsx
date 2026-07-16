@@ -1720,6 +1720,7 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
   const [allPupilsList, setAllPupilsList] = useState<Array<{
     id: string;
@@ -1767,6 +1768,32 @@ function HomePage() {
         const data = await res.json();
         if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
       } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  // Local alerts (community issues). NOTE: local_alerts table not yet created;
+  // stays null until migration runs and rows exist.
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('local_alerts')
+          .select('*')
+          .eq('instructor_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (cancelled) return;
+        if (error || !Array.isArray(data) || data.length === 0) {
+          setLocalAlerts(null);
+        } else {
+          setLocalAlerts(data);
+        }
+      } catch {
+        if (!cancelled) setLocalAlerts(null);
+      }
     })();
     return () => { cancelled = true; };
   }, [userId]);
@@ -4526,21 +4553,17 @@ function HomePage() {
 
         {/* ============ LOCAL ISSUES ============ */}
         {/* NOTE: local_alerts table not yet created — this section is hidden until migration runs and rows exist. */}
-        {(() => {
-          const alerts: any[] = [];
-          if (alerts.length === 0) return null;
-          return (
-            <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
-                <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
-              </div>
-              {alerts.map((a, i) => (
-                <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
-              ))}
+        {localAlerts !== null && localAlerts.length > 0 && (
+          <div style={{ margin: '0 16px 12px', fontFamily: 'Inter, sans-serif' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase' }}>Local issues</div>
+              <button type="button" onClick={() => navigate({ to: '/notifications' as never })} style={{ background: 'none', border: 'none', fontSize: 12, color: '#185FA5', cursor: 'pointer' }}>See all</button>
             </div>
-          );
-        })()}
+            {localAlerts.map((a, i) => (
+              <div key={i} style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '11px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }} />
+            ))}
+          </div>
+        )}
 
         {/* ============ LOCAL CHAT ============ */}
         {/* NOTE: local_chat_messages table + area filtering (postcode/coverage matching) not yet implemented. Placeholder row shown when instructor has a coverage area configured. */}
@@ -7643,6 +7666,32 @@ function DiscoverSection() {
             })}
           </div>
         </div>
+      )}
+
+      {/* REPORT ALERT FAB */}
+      {localAlerts !== null && (
+        <button
+          onClick={() => navigate({ to: '/community' as never })}
+          style={{
+            position: 'fixed',
+            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 12px)',
+            right: 16,
+            background: '#CC2229',
+            border: 'none',
+            borderRadius: '50%',
+            width: 48,
+            height: 48,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(204,34,41,0.4)',
+            zIndex: 40,
+          }}
+          aria-label="Report local issue"
+        >
+          <AlertTriangle size={20} color="white" />
+        </button>
       )}
     </div>
   );
