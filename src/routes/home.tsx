@@ -5306,8 +5306,31 @@ function HomePage() {
                       background: tile.chipBg,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       marginBottom: 10,
+                      position: 'relative',
                     }}>
                       <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
+                      {(tile.badge ?? 0) > 0 && (
+                        <span style={{
+                          position: 'absolute',
+                          top: -2,
+                          right: -2,
+                          minWidth: 18,
+                          height: 18,
+                          padding: '0 5px',
+                          borderRadius: 999,
+                          background: '#CC2229',
+                          color: '#FFFFFF',
+                          fontSize: 10,
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                          fontFamily: 'Inter, sans-serif',
+                        }}>
+                          {tile.badge}
+                        </span>
+                      )}
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
                     <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : undefined }}>{tile.sub}</div>
