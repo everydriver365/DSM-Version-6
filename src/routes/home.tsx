@@ -1775,31 +1775,62 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId]);
 
-  // Local alerts (community issues). NOTE: local_alerts table not yet created;
-  // stays null until migration runs and rows exist.
+  // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase
+        const { data: instructor } = await supabase
+          .from('instructors')
+          .select('home_postcode, city')
+          .eq('id', userId)
+          .maybeSingle();
+        const outcode = (instructor as any)?.home_postcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
+        const area = (instructor as any)?.city || outcode || 'your area';
+        if (!cancelled) setInstructorArea(area);
+
+        let query = supabase
           .from('local_alerts')
-          .select('*')
-          .eq('instructor_id', userId)
-          .order('created_at', { ascending: false })
-          .limit(20);
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
+          .eq('is_active', true)
+          .gt('expires_at', new Date().toISOString())
+          .order('upvotes', { ascending: false })
+          .limit(3);
+        if (outcode) query = query.eq('outcode', outcode);
+        const { data, error } = await query;
         if (cancelled) return;
-        if (error || !Array.isArray(data) || data.length === 0) {
-          setLocalAlerts(null);
-        } else {
-          setLocalAlerts(data);
+        if (error) { setLocalAlerts([]); return; }
+        setLocalAlerts(Array.isArray(data) ? data : []);
+
+        // Local chat room + latest message
+        if (outcode) {
+          const { data: room } = await supabase
+            .from('local_chat_rooms')
+            .select('id, area_name')
+            .eq('outcode', outcode)
+            .maybeSingle();
+          if (cancelled) return;
+          if (room) {
+            setLocalRoom(room as any);
+            const { data: latest } = await supabase
+              .from('local_chat_messages')
+              .select('message, created_at, instructors(name)')
+              .eq('room_id', (room as any).id)
+              .is('deleted_at', null)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (!cancelled) setLocalChatLatest(latest as any);
+          }
         }
       } catch {
-        if (!cancelled) setLocalAlerts(null);
+        if (!cancelled) setLocalAlerts([]);
       }
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
 
   // Pupil cancellations (last 24h) + unread reschedule requests
   useEffect(() => {
