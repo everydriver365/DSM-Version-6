@@ -2824,6 +2824,8 @@ function HomePage() {
   const fetchDriveTime = useServerFn(getLessonDriveTime);
   const [weatherData, setWeatherData] = useState<LessonWeather>(null);
   const [driveData, setDriveData] = useState<LessonDriveTime>(null);
+  const [instructorLocation, setInstructorLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [routeImgError, setRouteImgError] = useState(false);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
   // client-side dedupe: keyed by lesson id, expires after 5 min
