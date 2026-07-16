@@ -7695,31 +7695,8 @@ function DiscoverSection() {
         </div>
       )}
 
-      {/* REPORT ALERT FAB */}
-      {localAlerts !== null && (
-        <button
-          onClick={() => navigate({ to: '/community' as never })}
-          style={{
-            position: 'fixed',
-            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 12px)',
-            right: 16,
-            background: '#CC2229',
-            border: 'none',
-            borderRadius: '50%',
-            width: 48,
-            height: 48,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(204,34,41,0.4)',
-            zIndex: 40,
-          }}
-          aria-label="Report local issue"
-        >
-          <AlertTriangle size={20} color="white" />
-        </button>
-      )}
+
+
     </div>
   );
 }
