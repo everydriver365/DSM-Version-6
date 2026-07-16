@@ -7422,136 +7422,8 @@ function DiscoverSection() {
 
   return (
     <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
-      {hasLive && (
-        <div style={{ marginBottom: hasMarket ? 24 : 0 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 14,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#C23B3B",
-                }}
-              />
-              <div style={headerTitle}>DSM Live</div>
-            </div>
-            <button
-              type="button"
-              style={viewAllBtn}
-              onClick={() => navigate({ to: "/dsm-live" })}
-            >
-              View all
-              <ArrowRight size={14} strokeWidth={2} />
-            </button>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                upcoming.length === 1 ? "1fr" : "1fr 1fr",
-              gap: 8,
-            }}
-          >
-            {upcoming.map((s) => (
-              <div
-                key={s.id}
-                style={cardShell}
-                onClick={() =>
-                  navigate({
-                    to: "/dsm-live/$sessionId",
-                    params: { sessionId: s.id },
-                  })
-                }
-              >
-                <div
-                  style={{
-                    height: 70,
-                    width: "100%",
-                    background: s.image_url
-                      ? `url(${s.image_url}) center/cover`
-                      : gradientLive,
-                    borderTopLeftRadius: 14,
-                    borderTopRightRadius: 14,
-                  }}
-                />
-                <div style={{ display: "flex" }}>
-                  <div
-                    style={{
-                      width: 32,
-                      background: "#0F2044",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "6px 0",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: "#FFFFFF",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {formatDiscoverDay(s.session_date)}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 7,
-                        fontWeight: 600,
-                        color: "#9AA6BC",
-                        textTransform: "uppercase",
-                        marginTop: 2,
-                      }}
-                    >
-                      {formatDiscoverMonth(s.session_date)}
-                    </span>
-                  </div>
-                  <div style={{ flex: 1, padding: 8, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        color: "#0F2044",
-                        lineHeight: 1.2,
-                        ...truncate,
-                      }}
-                    >
-                      {s.title}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                        marginTop: 4,
-                      }}
-                    >
-                      <IconClock size={10} color="#8A93A3" />
-                      <span style={{ fontSize: 9, color: "#5A6270" }}>
-                        {formatDiscoverTime(s.session_time)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {hasMarket && listings && (
-        <div>
+        <div style={{ marginBottom: hasLive ? 24 : 0 }}>
           <div
             style={{
               display: "flex",
@@ -7560,7 +7432,7 @@ function DiscoverSection() {
               marginBottom: 14,
             }}
           >
-            <div style={headerTitle}>Top marketplace</div>
+            <div style={headerTitle}>Marketplace</div>
             <button
               type="button"
               style={viewAllBtn}
@@ -7596,7 +7468,7 @@ function DiscoverSection() {
                 >
                   <div
                     style={{
-                      height: 64,
+                      height: 70,
                       width: "100%",
                       background: img
                         ? `url(${img}) center/cover`
@@ -7624,57 +7496,124 @@ function DiscoverSection() {
                       </span>
                     )}
                   </div>
-                  <div style={{ display: "flex" }}>
-                    <div
-                      style={{
-                        width: 32,
-                        background: "#0F2044",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Icon size={13} color="#FFFFFF" strokeWidth={2} />
-                    </div>
-                    <div style={{ flex: 1, padding: 8, minWidth: 0 }}>
-                      {catName && (
-                        <div
-                          style={{
-                            fontSize: 9,
-                            color: "#8A93A3",
-                            textTransform: "uppercase",
-                            letterSpacing: 0.3,
-                          }}
-                        >
-                          {toSentenceCase(catName)}
-                        </div>
-                      )}
+                  <div style={{ padding: 8, minWidth: 0 }}>
+                    {catName && (
                       <div
                         style={{
-                          fontSize: 11,
-                          fontWeight: 700,
-                          color: "#0F2044",
-                          lineHeight: 1.2,
-                          ...truncate,
-                          marginTop: catName ? 1 : 0,
+                          fontSize: 8,
+                          color: "#8A93A3",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.3,
                         }}
                       >
-                        {l.title}
+                        {toSentenceCase(catName)}
                       </div>
-                      {price && (
-                        <div
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 600,
-                            color: "#A32D2D",
-                            marginTop: 3,
-                          }}
-                        >
-                          {`${price.amount} ${price.unit}`.trim()}
-                        </div>
-                      )}
+                    )}
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "#0F2044",
+                        lineHeight: 1.2,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        marginTop: catName ? 2 : 0,
+                      }}
+                    >
+                      {l.title}
                     </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginTop: 6 }}>
+                      {price ? (
+                        <span style={{ fontSize: 11, fontWeight: 700, color: '#A32D2D', ...truncate, minWidth: 0 }}>
+                          {`${price.amount} ${price.unit}`.trim()}
+                        </span>
+                      ) : <span />}
+                      <span style={{ background: '#185FA5', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '5px 8px', borderRadius: 7, flexShrink: 0 }}>View</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {hasLive && (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 14,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#C23B3B",
+                }}
+              />
+              <div style={headerTitle}>DSM Live</div>
+            </div>
+            <button
+              type="button"
+              style={viewAllBtn}
+              onClick={() => navigate({ to: "/dsm-live" })}
+            >
+              View all
+              <ArrowRight size={14} strokeWidth={2} />
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {upcoming.map((s) => {
+              const isToday = (() => {
+                try {
+                  const d = new Date(`${s.session_date}T00:00:00`);
+                  const t = new Date();
+                  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
+                } catch { return false; }
+              })();
+              return (
+                <div
+                  key={s.id}
+                  style={{ ...cardShell, display: 'flex', alignItems: 'stretch' }}
+                  onClick={() =>
+                    navigate({
+                      to: "/dsm-live/$sessionId",
+                      params: { sessionId: s.id },
+                    })
+                  }
+                >
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      background: s.image_url ? `url(${s.image_url}) center/cover` : gradientLive,
+                      position: 'relative',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {isToday && (
+                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#A32D2D', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 4, letterSpacing: 0.4 }}>
+                        LIVE
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, padding: '8px 10px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ fontSize: 8, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                      {formatDiscoverDay(s.session_date)} {formatDiscoverMonth(s.session_date)} · {formatDiscoverTime(s.session_time)}
+                    </div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#0F2044', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
+                    <div style={{ fontSize: 9, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
+                    <span style={{ background: '#185FA5', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 7 }}>Join</span>
                   </div>
                 </div>
               );
@@ -7685,6 +7624,7 @@ function DiscoverSection() {
     </div>
   );
 }
+
 
 
 
