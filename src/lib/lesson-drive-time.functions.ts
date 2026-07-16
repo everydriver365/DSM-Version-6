@@ -11,6 +11,13 @@ export type LessonDriveTime = {
   durationMinutes: number;
   normalDurationMinutes: number;
   trafficLabel: "Light traffic" | "Moderate traffic" | "Heavy traffic";
+  originLat: number;
+  originLng: number;
+  destination: string;
+  directionsUrl: string;
+  staticMapUrl: string | null;
+  routeSummary: string | null;
+  distanceText: string | null;
 } | null;
 
 type CacheEntry = { value: LessonDriveTime; expires: number };
@@ -40,8 +47,9 @@ export const getLessonDriveTime = createServerFn({ method: "POST" })
       const res = await fetch(url);
       if (!res.ok) return null;
       const json: any = await res.json();
-      const leg = json?.routes?.[0]?.legs?.[0];
-      if (!leg) return null;
+      const route = json?.routes?.[0];
+      const leg = route?.legs?.[0];
+      if (!route || !leg) return null;
 
       const normalSec: number = leg.duration?.value ?? 0;
       const trafficSec: number = leg.duration_in_traffic?.value ?? normalSec;
@@ -53,10 +61,38 @@ export const getLessonDriveTime = createServerFn({ method: "POST" })
         : "Light traffic" | "Moderate traffic" | "Heavy traffic" =
         ratio < 1.15 ? "Light traffic" : ratio < 1.4 ? "Moderate traffic" : "Heavy traffic";
 
+      const start = leg.start_location;
+      const end = leg.end_location;
+      const polyline = route.overview_polyline?.points;
+      const staticMapUrl =
+        googleKey && polyline && start && end
+          ? `https://maps.googleapis.com/maps/api/staticmap?size=600x300&scale=2&maptype=roadmap&format=png` +
+            `&path=enc:${encodeURIComponent(polyline)}` +
+            `&markers=color:green%7Clabel:S%7C${start.lat},${start.lng}` +
+            `&markers=color:red%7Clabel:E%7C${end.lat},${end.lng}` +
+            `&key=${googleKey}`
+          : null;
+
+      const directionsUrl =
+        `https://www.google.com/maps/dir/?api=1` +
+        `&origin=${encodeURIComponent(`${data.originLat},${data.originLon}`)}` +
+        `&destination=${encodeURIComponent(destStr)}` +
+        `&travelmode=driving`;
+
+      const routeSummary = (route.summary as string | undefined) || null;
+      const distanceText = (leg.distance?.text as string | undefined) || null;
+
       const value: LessonDriveTime = {
         durationMinutes: Math.max(1, Math.round(trafficSec / 60)),
         normalDurationMinutes: Math.max(1, Math.round(normalSec / 60)),
         trafficLabel,
+        originLat: data.originLat,
+        originLng: data.originLon,
+        destination: destStr,
+        directionsUrl,
+        staticMapUrl,
+        routeSummary,
+        distanceText,
       };
       CACHE.set(cacheKey, { value, expires: now + TTL_MS });
       return value;

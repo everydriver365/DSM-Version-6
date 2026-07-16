@@ -2824,15 +2824,19 @@ function HomePage() {
   const fetchDriveTime = useServerFn(getLessonDriveTime);
   const [weatherData, setWeatherData] = useState<LessonWeather>(null);
   const [driveData, setDriveData] = useState<LessonDriveTime>(null);
+  const [instructorLocation, setInstructorLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [routeImgError, setRouteImgError] = useState(false);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
   // client-side dedupe: keyed by lesson id, expires after 5 min
   const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
   useEffect(() => {
+    setRouteImgError(false);
     if (!upcoming?.id) {
       setWeatherData(null);
       setDriveData(null);
+      setInstructorLocation(null);
       return;
     }
     const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
@@ -2865,6 +2869,7 @@ function HomePage() {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (cancelled) return;
+          setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           fetchDriveTime({
             data: {
               originLat: pos.coords.latitude,
@@ -2885,7 +2890,7 @@ function HomePage() {
               };
             });
         },
-        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); } },
+        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); setInstructorLocation(null); } },
         { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
       );
     } else {
@@ -4379,14 +4384,22 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Hero strip — map when we have a pickup, else gradient/photo */}
+        {/* Hero strip — route map (click to open Google Maps) */}
         {(() => {
           const mapQuery = upcoming
             ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
             : '';
           const hasMap = !!mapQuery;
+          const fallbackDirectionsUrl = mapQuery
+            ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
+            : '';
+          const directionsUrl = driveData?.directionsUrl || fallbackDirectionsUrl;
+          const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
           return (
             <div
+              onClick={() => {
+                if (directionsUrl) window.open(directionsUrl, '_blank');
+              }}
               style={{
                 position: 'relative',
                 height: 120,
@@ -4394,15 +4407,25 @@ function HomePage() {
                   ? `url(${upcoming.pupils.profile_image_url}) center/cover no-repeat`
                   : 'linear-gradient(135deg, #6B4FD6, #185FA5)',
                 overflow: 'hidden',
+                cursor: directionsUrl ? 'pointer' : 'default',
               }}
             >
-              {hasMap && (
+              {hasMap && showRouteMap && (
+                <img
+                  src={driveData.staticMapUrl!}
+                  alt="Route map"
+                  loading="lazy"
+                  onError={() => setRouteImgError(true)}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none', filter: 'saturate(1.6) contrast(1.08)' }}
+                />
+              )}
+              {hasMap && !showRouteMap && (
                 <iframe
                   title="Pickup map"
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed&maptype=roadmap&layer=traffic`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, filter: 'saturate(1.75) contrast(1.15) brightness(1.05)' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none', filter: 'saturate(1.75) contrast(1.15) brightness(1.05)' }}
                 />
               )}
               {/* Gradient overlay for legibility */}
@@ -4423,6 +4446,22 @@ function HomePage() {
                   ? (pupilName(upcoming).split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('') || '?').toUpperCase()
                   : '—'}
               </div>
+              {upcoming && directionsUrl && (
+                <span
+                  title={driveData?.routeSummary || 'Route'}
+                  style={{
+                    position: 'absolute', top: 9, left: 10,
+                    maxWidth: 150,
+                    background: 'rgba(15,32,68,0.85)', color: '#FFFFFF',
+                    fontSize: 10, fontWeight: 700, padding: '4px 9px', borderRadius: 999,
+                    pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 4,
+                    fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Navigation size={10} color="#FFFFFF" />
+                  {driveData?.routeSummary ? `via ${driveData.routeSummary}` : 'Route'}
+                </span>
+              )}
               {upcoming && driveData && (
                 <span
                   style={{
@@ -4434,6 +4473,21 @@ function HomePage() {
                 >
                   {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
                 </span>
+              )}
+              {upcoming && directionsUrl && (
+                <div
+                  style={{
+                    position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)',
+                    background: 'rgba(255,255,255,0.95)', color: '#0F2044',
+                    fontSize: 10, fontWeight: 700, padding: '5px 12px', borderRadius: 999,
+                    pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 4,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  <Navigation size={10} color="#0F2044" />
+                  Open in Google Maps
+                </div>
               )}
             </div>
           );
