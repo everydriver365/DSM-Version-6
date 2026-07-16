@@ -5310,7 +5310,7 @@ function HomePage() {
                       <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.sub}</div>
+                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : undefined }}>{tile.sub}</div>
                   </button>
                 );
               };
