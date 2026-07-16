@@ -86,7 +86,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
                   />
                 )}
                 <it.Icon size={22} color={color} />
-                <span className="text-[10px] whitespace-nowrap" style={{ color }}>{it.label}</span>
+                <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
               </>
             );
             const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
@@ -117,7 +117,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
             else if (key === "messages") isActive = active === "messages";
             else if (key === "more") isActive = active === "more";
             const color = isActive ? activeColor : inactiveColor;
-            const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
+            const labelClass = `text-[9px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
             const inner: ReactNode = (
               <>
                 {isActive && (
