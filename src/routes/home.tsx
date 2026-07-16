@@ -2832,9 +2832,11 @@ function HomePage() {
   const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
   useEffect(() => {
+    setRouteImgError(false);
     if (!upcoming?.id) {
       setWeatherData(null);
       setDriveData(null);
+      setInstructorLocation(null);
       return;
     }
     const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
