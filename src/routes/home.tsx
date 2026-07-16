@@ -1720,6 +1720,7 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
   const [allPupilsList, setAllPupilsList] = useState<Array<{
     id: string;
