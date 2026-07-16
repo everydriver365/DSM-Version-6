@@ -2890,7 +2890,7 @@ function HomePage() {
               };
             });
         },
-        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); } },
+        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); setInstructorLocation(null); } },
         { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
       );
     } else {
