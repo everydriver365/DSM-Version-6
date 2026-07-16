@@ -2817,7 +2817,7 @@ function HomePage() {
   }, [nextLesson, notifPermission]);
 
 
-  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? lessons[0];
+  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? null;
 
   // ── Next Lesson traffic + weather chips ───────────────────────────────────
   const fetchWeather = useServerFn(getLessonWeather);
