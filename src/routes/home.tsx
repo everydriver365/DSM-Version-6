@@ -4495,7 +4495,11 @@ function HomePage() {
 
         {upcoming && driveData ? (() => {
           const startD = lessonDateTime(upcoming);
-          const etaMs = Date.now() + driveData.durationMinutes * 60000;
+          const nowMs = Date.now();
+          // Only show ETA banner for lessons that haven't started yet (within next 12h)
+          const msUntilStart = startD.getTime() - nowMs;
+          if (msUntilStart <= 0 || msUntilStart > 12 * 60 * 60 * 1000) return null;
+          const etaMs = nowMs + driveData.durationMinutes * 60000;
           const lateMin = Math.round((etaMs - startD.getTime()) / 60000);
           const etaLabel = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
           const isLate = lateMin >= 2;
