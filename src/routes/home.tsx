@@ -4268,23 +4268,27 @@ function HomePage() {
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
+      {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
       <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
         {[
-          { label: 'TODAY', value: String(todayLessons.length), sub: todayLessons.length === 1 ? 'lesson' : 'lessons' },
-          { label: 'THIS WEEK', value: `£${Math.round(weekEarnings)}`, sub: 'earned' },
-          { label: 'FREE SLOTS', value: String(freeSlotCount), sub: freeSlotCount === 1 ? 'gap open' : 'gaps open' },
+          { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#A32D2D', route: '/messages' },
+          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/waitlist' },
+          { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#185FA5', route: '/enquiries' },
         ].map((s) => (
-          <div
+          <button
             key={s.label}
+            type="button"
+            onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 12,
               boxShadow: '0 4px 14px rgba(0,0,0,0.08)', padding: 12, minWidth: 0,
+              border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
-            <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4 }}>{s.label}</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', marginTop: 4 }}>{s.value}</div>
-            <div style={{ fontSize: 9, color: '#8A93A3', marginTop: 2 }}>{s.sub}</div>
-          </div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#0F2044', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+          </button>
         ))}
       </div>
 
