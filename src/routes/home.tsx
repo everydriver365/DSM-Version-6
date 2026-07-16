@@ -1772,6 +1772,32 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId]);
 
+  // Local alerts (community issues). NOTE: local_alerts table not yet created;
+  // stays null until migration runs and rows exist.
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('local_alerts')
+          .select('*')
+          .eq('instructor_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (cancelled) return;
+        if (error || !Array.isArray(data) || data.length === 0) {
+          setLocalAlerts(null);
+        } else {
+          setLocalAlerts(data);
+        }
+      } catch {
+        if (!cancelled) setLocalAlerts(null);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
   // Pupil cancellations (last 24h) + unread reschedule requests
   useEffect(() => {
     if (!userId) return;
