@@ -12,6 +12,8 @@ import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } fr
 
 import {
   Phone,
+  Building2 as Building,
+  Info,
   Car,
   Bell,
   Menu,
