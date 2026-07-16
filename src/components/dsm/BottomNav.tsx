@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { Home, CalendarDays, Users, MessageSquare, Grid } from "lucide-react";
+import { Home, CalendarDays, Users, MessageCircle, LayoutGrid } from "lucide-react";
 
 export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more" | "settings" | "payments";
 
@@ -37,12 +37,12 @@ const defaultItems: {
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
   { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
-  { key: "messages", to: "/messages", label: "Messages", Icon: MessageSquare },
-  { key: "more", to: "/more", label: "More", Icon: Grid },
+  { key: "messages", to: "/messages", label: "Messages", Icon: MessageCircle },
+  { key: "more", to: "/more", label: "More", Icon: LayoutGrid },
 
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044", inactiveColor = "#9CA3AF", activeWs, onSelectWs }: Props) {
+export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5", inactiveColor = "#8A93A3", activeWs, onSelectWs }: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
   // Track workspace changes broadcast by the home carousel so BottomNav stays
   // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
@@ -86,7 +86,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
                   />
                 )}
                 <it.Icon size={22} color={color} />
-                <span className="text-[10px] whitespace-nowrap" style={{ color }}>{it.label}</span>
+                <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
               </>
             );
             const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
@@ -117,7 +117,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#0F2044",
             else if (key === "messages") isActive = active === "messages";
             else if (key === "more") isActive = active === "more";
             const color = isActive ? activeColor : inactiveColor;
-            const labelClass = `text-[10px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
+            const labelClass = `text-[9px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
             const inner: ReactNode = (
               <>
                 {isActive && (
