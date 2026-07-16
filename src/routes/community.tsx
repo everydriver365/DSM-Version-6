@@ -309,12 +309,16 @@ function AlertsTab({
           <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Be the first to report an issue</div>
           <button
             type="button"
-            onClick={() => setReportSheetOpen(true)}
+            onClick={() => {
+              console.log("[community] FAB tapped (empty state)");
+              setReportSheetOpen(true);
+            }}
             style={{
               background: "#CC2229", color: "white", border: "none", borderRadius: 12,
               padding: "10px 24px", marginTop: 16, fontWeight: 600, cursor: "pointer",
             }}
           >
+
             Report alert
           </button>
         </div>
