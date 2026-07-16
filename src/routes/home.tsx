@@ -5229,7 +5229,7 @@ function HomePage() {
                 { label: 'Fill slots', sub: freeSlotCount > 0 ? `${freeSlotCount} gaps open` : 'No gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0 },
                 { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#185FA5', chipBg: '#E6F1FB', wsIndex: 1 },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} due` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
+                { label: 'Payments', sub: `${outstanding > 0 ? `£${Math.round(outstanding)} outstanding` : 'All settled'}\n£${Math.round(weekEarnings)} this wk`, route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0 },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#185FA5', chipBg: '#E6F1FB', attention: unreadCount > 0 },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late' },
                 // Page 2 — Teaching
