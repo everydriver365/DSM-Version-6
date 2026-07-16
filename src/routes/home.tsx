@@ -2869,6 +2869,7 @@ function HomePage() {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (cancelled) return;
+          setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           fetchDriveTime({
             data: {
               originLat: pos.coords.latitude,
