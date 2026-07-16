@@ -120,6 +120,7 @@ function CommunityPage() {
         .maybeSingle();
       const outcode = (instructor as any)?.home_postcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
       const area = (instructor as any)?.city || outcode || "Your area";
+      console.log("[community] instructor fetch:", { area, outcode, instructor });
       setInstructorArea(area);
       setInstructorOutcode(outcode);
       setInstructorFirstNameState(firstName((instructor as any)?.name));
@@ -383,6 +384,7 @@ function AlertsTab({
 
       {reportSheetOpen && (
         <ReportSheet
+          reportSheetOpen={reportSheetOpen}
           onClose={() => setReportSheetOpen(false)}
           onSubmitted={() => { setReportSheetOpen(false); load(); }}
           userId={userId}
@@ -468,8 +470,9 @@ function AlertCard({
 /* ============================================================ REPORT SHEET */
 
 function ReportSheet({
-  onClose, onSubmitted, userId, instructorFirstName, instructorArea, instructorOutcode,
+  reportSheetOpen, onClose, onSubmitted, userId, instructorFirstName, instructorArea, instructorOutcode,
 }: {
+  reportSheetOpen: boolean;
   onClose: () => void;
   onSubmitted: () => void;
   userId: string | null;
@@ -493,12 +496,13 @@ function ReportSheet({
 
   useEffect(() => {
     console.log("[community] ReportSheet mounted; agreed:", agreed);
+    console.log("[community] report sheet open:", reportSheetOpen);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const canSubmit = !!selectedType && description.trim().length > 0 && !submitting;
+  const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
 
   const submit = async () => {
-    console.log("[community] report sheet open: (submit tapped)");
+    console.log("[community] report sheet open:", reportSheetOpen);
     console.log("[community] selected type:", selectedType);
     console.log("[community] description:", description);
     console.log("[community] instructor area:", instructorArea, instructorOutcode);
@@ -522,7 +526,6 @@ function ReportSheet({
       upvotes: 0,
       upvoted_by: [],
       is_active: true,
-      is_anonymous: isAnonymous,
       expires_at: new Date(Date.now() + expiryMinutes * 60000).toISOString(),
     };
     console.log("[community] submit payload:", payload);
