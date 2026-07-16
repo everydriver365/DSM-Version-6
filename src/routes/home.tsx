@@ -4493,6 +4493,49 @@ function HomePage() {
           );
         })()}
 
+        {upcoming && driveData ? (() => {
+          const startD = lessonDateTime(upcoming);
+          const etaMs = Date.now() + driveData.durationMinutes * 60000;
+          const lateMin = Math.round((etaMs - startD.getTime()) / 60000);
+          const etaLabel = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+          const isLate = lateMin >= 2;
+          return (
+            <div
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                padding: '8px 14px',
+                background: isLate ? '#FEECEC' : '#EAF4FF',
+                borderTop: '1px solid #EEF2F7', borderBottom: '1px solid #EEF2F7',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                <Clock size={13} color={isLate ? '#C23B3B' : '#185FA5'} />
+                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#C23B3B' : '#0F2044' }}>
+                  {isLate ? `Late by ~${lateMin} min` : `ETA ${etaLabel}`}
+                </span>
+                <span style={{ fontSize: 11, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {isLate ? `arriving ${etaLabel}` : `on time`}
+                </span>
+              </div>
+              {isLate && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
+                  style={{
+                    background: '#C23B3B', color: '#FFFFFF', border: 'none',
+                    fontSize: 11, fontWeight: 700, padding: '6px 10px', borderRadius: 999,
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif', flexShrink: 0,
+                    display: 'flex', alignItems: 'center', gap: 4,
+                  }}
+                >
+                  <MessageSquare size={11} /> Send "Running late"
+                </button>
+              )}
+            </div>
+          );
+        })() : null}
+
         {upcoming ? (() => {
           const d = lessonDateTime(upcoming);
           const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
