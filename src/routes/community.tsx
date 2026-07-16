@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import {
   ArrowLeft,
   Plus,
@@ -97,6 +99,40 @@ function firstName(name: string | null | undefined): string {
   if (!name) return "Someone";
   return name.trim().split(/\s+/)[0] || "Someone";
 }
+
+const reverseGeocodeLocation = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ lat: z.number(), lng: z.number() }).parse(data)
+  )
+  .handler(async ({ data }): Promise<{ location: string | null; lat: number; lng: number }> => {
+    const googleKey = process.env.GOOGLE_API_KEY;
+    if (!googleKey) {
+      console.warn("[community] GOOGLE_API_KEY not set");
+      return { location: null, lat: data.lat, lng: data.lng };
+    }
+    try {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${data.lat},${data.lng}&key=${googleKey}&result_type=route|street_address`
+      );
+      if (!res.ok) {
+        console.warn("[community] geocode response not ok:", res.status);
+        return { location: null, lat: data.lat, lng: data.lng };
+      }
+      const json: any = await res.json();
+      const result = json?.results?.[0];
+      if (!result) return { location: null, lat: data.lat, lng: data.lng };
+      const components = result.address_components ?? [];
+      const road = components.find((c: any) => c.types.includes("route"))?.long_name;
+      const town = components.find(
+        (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
+      )?.long_name;
+      const locationStr = [road, town].filter(Boolean).join(", ") || result.formatted_address;
+      return { location: locationStr, lat: data.lat, lng: data.lng };
+    } catch (err) {
+      console.warn("[community] reverse geocode failed:", err);
+      return { location: null, lat: data.lat, lng: data.lng };
+    }
+  });
 
 function CommunityPage() {
   const navigate = useNavigate();
@@ -522,6 +558,9 @@ function ReportSheet({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [expiry, setExpiry] = useState<"30min" | "1hour" | "2hours" | "allday">("1hour");
   const [submitting, setSubmitting] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [reportLat, setReportLat] = useState<number | null>(null);
+  const [reportLng, setReportLng] = useState<number | null>(null);
 
   useEffect(() => {
     setIsAnonymous(selectedType === "examiner_tip");
@@ -531,6 +570,37 @@ function ReportSheet({
     console.log("[community] ReportSheet mounted; agreed:", agreed);
     console.log("[community] report sheet open:", reportSheetOpen);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!reportSheetOpen) return;
+    if (!navigator.geolocation) {
+      setLocationLoading(false);
+      return;
+    }
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setReportLat(latitude);
+        setReportLng(longitude);
+        try {
+          const result = await reverseGeocodeLocation({ data: { lat: latitude, lng: longitude } });
+          if (result.location) {
+            setLocation(result.location);
+          }
+        } catch (err) {
+          console.warn("[community] reverse geocode failed:", err);
+        } finally {
+          setLocationLoading(false);
+        }
+      },
+      (error) => {
+        console.warn("[community] geolocation error:", error);
+        setLocationLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
+  }, [reportSheetOpen]);
 
   const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
 
@@ -556,6 +626,8 @@ function ReportSheet({
       location_name: location.trim() || null,
       area: instructorArea,
       outcode: instructorOutcode,
+      lat: reportLat,
+      lng: reportLng,
       upvotes: 0,
       upvoted_by: [],
       is_active: true,
@@ -665,16 +737,53 @@ function ReportSheet({
 
             <div style={{ padding: "0 20px", marginBottom: 12 }}>
               <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Where?</div>
-              <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Road name, junction or test centre..."
-                style={{
-                  width: "100%", background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-                  borderRadius: 10, padding: "11px 14px", fontSize: 14, outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
+              <div style={{ position: "relative" }}>
+                <MapPin size={16} color="#9CA3AF" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                <input
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
+                  disabled={locationLoading}
+                  style={{
+                    width: "100%",
+                    padding: "11px 36px 11px 34px",
+                    background: "#F7FAFC",
+                    border: "0.5px solid " + (location ? "#86EFAC" : "#E2E6ED"),
+                    borderRadius: 10,
+                    fontSize: 13,
+                    fontFamily: "Poppins, sans-serif",
+                    color: "#0F2044",
+                    outline: "none",
+                    boxSizing: "border-box",
+                    opacity: locationLoading ? 0.7 : 1,
+                  }}
+                />
+                {location && !locationLoading && (
+                  <button
+                    type="button"
+                    onClick={() => setLocation("")}
+                    style={{
+                      position: "absolute", right: 10, top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "none", border: "none",
+                      cursor: "pointer", color: "#9CA3AF",
+                      fontSize: 16, lineHeight: 1, padding: 4,
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              {locationLoading && (
+                <div style={{ fontSize: 12, color: "#185FA5", marginTop: 6 }}>
+                  Getting your location...
+                </div>
+              )}
+              {location && !locationLoading && (
+                <div style={{ fontSize: 12, color: "#22C580", marginTop: 6 }}>
+                  Location detected — edit if needed
+                </div>
+              )}
             </div>
 
             <div style={{ padding: "0 20px", marginBottom: 12 }}>
