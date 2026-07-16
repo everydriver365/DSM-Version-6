@@ -491,6 +491,10 @@ function ReportSheet({
     setIsAnonymous(selectedType === "examiner_tip");
   }, [selectedType]);
 
+  useEffect(() => {
+    console.log("[community] ReportSheet mounted; agreed:", agreed);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const canSubmit = !!selectedType && description.trim().length > 0 && !submitting;
 
   const submit = async () => {
