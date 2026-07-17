@@ -1000,11 +1000,12 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {featured.map((tile, idx) => {
             const img = firstImageUrl(tile.image_urls);
             const price = parsePrice(tile.price_display);
-            const features = featuresFor(tile.marketplace_categories?.name, tile.title);
+            const allFeatures = featuresFor(tile.marketplace_categories?.name, tile.title);
+            const features = allFeatures.slice(0, 2);
             const badge = badgeFor(idx, tile.is_featured);
             return (
               <div
@@ -1023,7 +1024,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 }}
               >
                 {/* Hero image */}
-                <div style={{ position: "relative", height: 96, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
+                <div style={{ position: "relative", height: 88, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
                   {img ? (
                     <img
                       src={img}
@@ -1075,8 +1076,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   {/* Pricing panel */}
                   <div
                     style={{
-                      width: "20%",
-                      minWidth: 48,
+                      width: "18%",
+                      minWidth: 42,
                       background: "linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%)",
                       display: "flex",
                       flexDirection: "column",
@@ -1088,7 +1089,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   >
                     {price ? (
                       <>
-                        <div style={{ fontSize: 16, fontWeight: 800, color: "#FFFFFF", lineHeight: 1, textAlign: "center" }}>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: "#FFFFFF", lineHeight: 1, textAlign: "center" }}>
                           {price.price}
                         </div>
                         <div
@@ -1112,17 +1113,17 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
                   {/* Content */}
                   <div style={{ flex: 1, padding: "10px 10px 8px", display: "flex", flexDirection: "column", minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, marginBottom: 3 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, marginBottom: 3 }}>
                       {tile.title}
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 10,
                         color: "#6B7280",
                         lineHeight: 1.3,
                         marginBottom: 8,
                         display: "-webkit-box",
-                        WebkitLineClamp: 2,
+                        WebkitLineClamp: 1,
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                       }}
@@ -1131,7 +1132,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         ? `${tile.marketplace_categories.name} for driving instructors.`
                         : "Premium service for driving instructors."}
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 4px", marginBottom: "auto" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: "auto" }}>
                       {features.map((f, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
                           <f.icon size={11} color="#2563EB" strokeWidth={1.8} />
