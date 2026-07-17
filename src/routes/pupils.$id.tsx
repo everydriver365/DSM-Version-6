@@ -3876,6 +3876,9 @@ function PupilRatesAndColour({
         </select>
       </div>
 
+      {/* Ready to Learn */}
+      <ReadyToLearnCard pupilId={pupil.id} />
+
       {/* Calendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
