@@ -83,13 +83,11 @@ import {
   ArrowLeftRight,
   Moon,
   Megaphone,
-  Camera,
   Activity,
   CheckCircle2,
   Sparkles,
-  Briefcase,
-  Wrench,
   ShieldCheck,
+
   Laptop,
   Package,
   XCircle,
@@ -97,6 +95,9 @@ import {
   FileCheck,
   Grid,
   ArrowRight,
+  Smartphone,
+  Headphones,
+  Infinity,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -816,12 +817,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     marketplace_suppliers: { name: string; logo_url: string | null } | null;
   };
 
-  type CategoryRow = { id: string; name: string };
-
   const [listings, setListings] = useState<ListingTile[]>([]);
-  const [_categories, setCategories] = useState<CategoryRow[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     let cancelled = false;
@@ -848,24 +844,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       }
     })();
 
-    (async () => {
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_categories?select=id,name&order=name.asc`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-          },
-        );
-        const data = (await res.json()) as CategoryRow[];
-        if (!cancelled) setCategories(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error("[home] categories fetch failed", err);
-      }
-    })();
-
     return () => {
       cancelled = true;
     };
@@ -886,229 +864,323 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     return arr[0] ?? null;
   };
 
-  // Category definitions per spec — display label, icon, accent colour, and data-model synonyms.
-  const CATEGORY_DEFS: {
-    label: string;
-    Icon: React.ComponentType<{ size?: number; color?: string }>;
-    color: string;
-    matches: string[]; // category names in data that map to this tile
-  }[] = [
-    { label: "All",        Icon: LayoutGrid,   color: "#185FA5", matches: [] },
-    { label: "ADI",        Icon: Award,        color: "#6B4FD6", matches: ["ADI", "ADI Training"] },
-    { label: "Business",   Icon: Briefcase,    color: "#185FA5", matches: ["Business", "Business Services"] },
-    { label: "Equipment",  Icon: Wrench,       color: "#854F0B", matches: ["Equipment"] },
-    { label: "For Sale",   Icon: Tag,          color: "#C4501E", matches: ["For Sale"] },
-    { label: "Insurance",  Icon: ShieldCheck,  color: "#3B6D11", matches: ["Insurance"] },
-    { label: "Technology", Icon: Laptop,       color: "#0C8577", matches: ["Technology"] },
-    { label: "Vehicles",   Icon: Car,          color: "#A32D2D", matches: ["Vehicles"] },
-  ];
-
-  const catDefFor = (name: string | null | undefined) => {
-    if (!name) return CATEGORY_DEFS[0];
-    const hit = CATEGORY_DEFS.find((d) => d.matches.includes(name));
-    return hit ?? CATEGORY_DEFS[0];
+  const parsePrice = (priceDisplay: string | null | undefined): { price: string; period: string } | null => {
+    if (!priceDisplay) return null;
+    const match = priceDisplay.match(/^£?([\d,]+(?:\.\d{2})?)\s*(.*)$/i);
+    if (!match) return { price: priceDisplay, period: "" };
+    const period = match[2].trim().toLowerCase();
+    return { price: `£${match[1]}`, period: period || "one-off" };
   };
 
-  const filteredListings = useMemo(() => {
-    const activeDef = CATEGORY_DEFS.find((d) => d.label === activeCategory);
-    const q = searchQuery.trim().toLowerCase();
-    return listings.filter((l) => {
-      const catName = l.marketplace_categories?.name ?? "";
-      if (activeCategory !== "All" && activeDef && !activeDef.matches.includes(catName)) return false;
-      if (q && !l.title.toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [listings, activeCategory, searchQuery]);
+  const featuresFor = (categoryName: string | null | undefined, title: string) => {
+    const c = (categoryName ?? "").toLowerCase();
+    const t = title.toLowerCase();
+    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
+      return [
+        { icon: Globe, label: "SEO Optimised" },
+        { icon: Zap, label: "Instant Setup" },
+        { icon: ShieldCheck, label: "SSL Included" },
+        { icon: Smartphone, label: "Mobile Friendly" },
+      ];
+    }
+    if (c.includes("insurance") || t.includes("insurance")) {
+      return [
+        { icon: ShieldCheck, label: "Instant Cover" },
+        { icon: Headphones, label: "UK Support" },
+        { icon: FileCheck, label: "ADI Approved" },
+        { icon: Zap, label: "Quick Quote" },
+      ];
+    }
+    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
+      return [
+        { icon: Car, label: "ADI Ready" },
+        { icon: ShieldCheck, label: "Insured" },
+        { icon: CheckCircle2, label: "Serviced" },
+        { icon: Zap, label: "Fast Delivery" },
+      ];
+    }
+    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
+      return [
+        { icon: BarChart2, label: "Analytics" },
+        { icon: Headphones, label: "UK Support" },
+        { icon: Infinity, label: "Unlimited Bookings" },
+        { icon: Smartphone, label: "Mobile Friendly" },
+      ];
+    }
+    return [
+      { icon: BarChart2, label: "Analytics" },
+      { icon: Headphones, label: "UK Support" },
+      { icon: CalendarCheck, label: "Instant Setup" },
+      { icon: ShieldCheck, label: "SSL Included" },
+    ];
+  };
+
+  const badgeFor = (index: number, isFeatured: boolean | null): string => {
+    if (isFeatured) return "Featured";
+    if (index === 1) return "Best Seller";
+    return "New";
+  };
 
   const openListing = (listingId: string) => {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
+  const featured = listings.slice(0, 2);
+
   return (
     <div
       style={{
-        padding: "16px 16px 96px",
-        background: PAGE_BACKGROUND,
+        padding: "40px 16px 96px",
+        background: "#F7F8FA",
         minHeight: "100%",
         fontFamily: "Inter, sans-serif",
       }}
     >
-      {/* SEARCH BAR */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 12,
-          padding: "9px 12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          marginBottom: 14,
-        }}
-      >
-        <Search size={16} color="#B0BAC9" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search products..."
-          style={{
-            flex: 1,
-            minWidth: 0,
-            border: 0,
-            outline: "none",
-            background: "transparent",
-            fontSize: 13,
-            color: "#12142B",
-            fontFamily: "Inter, sans-serif",
-          }}
-        />
-      </div>
-
-      {/* CATEGORY GRID */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 8,
-          marginBottom: 20,
-        }}
-      >
-        {CATEGORY_DEFS.map((c) => {
-          const active = activeCategory === c.label;
-          const accent = active ? c.color : "#8A94A6";
-          return (
-            <button
-              key={c.label}
-              type="button"
-              onClick={() => setActiveCategory(c.label)}
-              style={{
-                background: "#FFFFFF",
-                border: active ? "2px solid #185FA5" : "2px solid transparent",
-                borderRadius: 14,
-                padding: "10px 4px",
-                textAlign: "center",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 5,
-                fontFamily: "Inter, sans-serif",
-              }}
-            >
-              <c.Icon size={20} color={accent} />
-              <div style={{ fontSize: 10, fontWeight: 500, color: accent, lineHeight: 1.1 }}>
-                {c.label}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      <style>{`
+        .marketplace-card {
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .marketplace-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 24px 48px -12px rgba(15, 32, 68, 0.14), 0 8px 16px -4px rgba(15, 32, 68, 0.08);
+        }
+        .marketplace-card:hover .marketplace-hero-img {
+          transform: scale(1.05);
+        }
+        .marketplace-card:hover .marketplace-cta {
+          transform: translateX(4px);
+        }
+        @keyframes marketplace-pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        .marketplace-badge-pulse {
+          animation: marketplace-pulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
 
       {/* SECTION HEADER */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: "#12142B" }}>DSM Marketplace</div>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24, gap: 16 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#185FA5", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>
+            MARKETPLACE
+          </div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#0F2044", marginBottom: 4, lineHeight: 1.2 }}>
+            Featured Services
+          </div>
+          <div style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.4 }}>
+            Tools and services to grow your driving business
+          </div>
+        </div>
         <button
           type="button"
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{ background: "none", border: 0, cursor: "pointer", fontSize: 13, fontWeight: 500, color: "#185FA5", padding: 0, fontFamily: "Inter, sans-serif" }}
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E6ED",
+            borderRadius: 20,
+            padding: "8px 14px",
+            fontSize: 12,
+            fontWeight: 600,
+            color: "#0F2044",
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            boxShadow: "0 1px 2px rgba(15,32,68,0.05)",
+            fontFamily: "Inter, sans-serif",
+          }}
         >
-          View all →
+          View all services
         </button>
       </div>
 
-      {/* PRODUCT GRID */}
-      {filteredListings.length === 0 ? (
+      {/* FEATURED CARDS */}
+      {featured.length === 0 ? (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 0", gap: 8 }}>
           <Package size={36} color="#D0D5DD" />
-          <div style={{ fontSize: 14, color: "#B0BAC9" }}>No products found</div>
+          <div style={{ fontSize: 14, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {filteredListings.map((tile) => {
-            const catName = tile.marketplace_categories?.name ?? "";
-            const def = catDefFor(catName);
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {featured.map((tile, idx) => {
             const img = firstImageUrl(tile.image_urls);
-            const featured = !!tile.is_featured;
-            const thumbBg = def.color;
-            const iconColor = thumbBg === "#0F2044" ? "#3D7BE0" : "#FFFFFF";
+            const price = parsePrice(tile.price_display);
+            const features = featuresFor(tile.marketplace_categories?.name, tile.title);
+            const badge = badgeFor(idx, tile.is_featured);
             return (
-              <button
+              <div
                 key={tile.id}
-                type="button"
+                className="marketplace-card"
                 onClick={() => openListing(tile.id)}
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: 24,
                   overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  boxShadow: "0 4px 6px -1px rgba(15, 32, 68, 0.05), 0 10px 20px -4px rgba(15, 32, 68, 0.08)",
                   cursor: "pointer",
-                  border: 0,
-                  padding: 0,
-                  textAlign: "left",
                   display: "flex",
                   flexDirection: "column",
-                  fontFamily: "Inter, sans-serif",
+                  minWidth: 0,
                 }}
               >
-                {/* Thumbnail */}
-                <div
-                  style={{
-                    position: "relative",
-                    height: 96,
-                    background: thumbBg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
+                {/* Hero image */}
+                <div style={{ position: "relative", height: 140, overflow: "hidden", borderRadius: "16px 16px 0 0" }}>
                   {img ? (
-                    <img src={img} alt={tile.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    <img
+                      src={img}
+                      alt={tile.title}
+                      className="marketplace-hero-img"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                        transition: "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+                      }}
+                    />
                   ) : (
-                    <def.Icon size={38} color={iconColor} />
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Sparkles size={40} color="#FFFFFF" />
+                    </div>
                   )}
                   <span
+                    className="marketplace-badge-pulse"
                     style={{
                       position: "absolute",
-                      top: 8,
-                      left: 8,
-                      background: featured ? "#E24B4A" : "rgba(255,255,255,0.2)",
-                      color: "#FFFFFF",
-                      padding: "2px 8px",
-                      borderRadius: 20,
-                      fontSize: 9,
-                      fontWeight: 600,
-                      whiteSpace: "nowrap",
+                      top: 12,
+                      left: 12,
+                      background: "#FFFFFF",
+                      color: "#2563EB",
+                      padding: "4px 10px",
+                      borderRadius: 999,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      boxShadow: "0 2px 8px rgba(15,32,68,0.12)",
                     }}
                   >
-                    {featured ? "Featured" : (catName || def.label)}
+                    {badge}
                   </span>
                 </div>
 
                 {/* Body */}
-                <div style={{ padding: "10px 12px 12px" }}>
-                  <div style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9", marginBottom: 3, textTransform: "none" }}>
-                    {catName || def.label}
-                  </div>
+                <div style={{ display: "flex", flexDirection: "row", flex: 1, minHeight: 0 }}>
+                  {/* Pricing panel */}
                   <div
                     style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "#12142B",
-                      marginBottom: 4,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      width: "20%",
+                      minWidth: 56,
+                      background: "linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%)",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "12px 6px",
+                      gap: 4,
                     }}
                   >
-                    {tile.title}
+                    {price ? (
+                      <>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: "#FFFFFF", lineHeight: 1, textAlign: "center" }}>
+                          {price.price}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 500,
+                            color: "rgba(255,255,255,0.85)",
+                            textAlign: "center",
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {price.period}
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textAlign: "center" }}>
+                        Enquire
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#A32D2D" }}>
-                    {tile.price_display || "Enquire"}
+
+                  {/* Content */}
+                  <div style={{ flex: 1, padding: "14px 14px 12px", display: "flex", flexDirection: "column", minWidth: 0 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#0F2044", lineHeight: 1.25, marginBottom: 4 }}>
+                      {tile.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#6B7280",
+                        lineHeight: 1.4,
+                        marginBottom: 10,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {tile.marketplace_categories?.name
+                        ? `${tile.marketplace_categories.name} for driving instructors.`
+                        : "Premium service for driving instructors."}
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 6px", marginBottom: "auto" }}>
+                      {features.map((f, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
+                          <f.icon size={13} color="#2563EB" strokeWidth={1.8} />
+                          <span
+                            style={{
+                              fontSize: 10,
+                              color: "#6B7280",
+                              fontWeight: 500,
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {f.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </button>
+
+                {/* Footer */}
+                <div style={{ padding: "0 16px 14px" }}>
+                  <div style={{ height: 1, background: "#E2E6ED", marginBottom: 10 }} />
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                      type="button"
+                      style={{
+                        background: "transparent",
+                        border: 0,
+                        padding: 0,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#2563EB",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontFamily: "Inter, sans-serif",
+                      }}
+                    >
+                      <span>View details</span>
+                      <span className="marketplace-cta" style={{ display: "inline-flex", transition: "transform 0.3s ease" }}>
+                        →
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -5796,6 +5868,7 @@ function HomePage() {
               );
             })()}
 
+            <MarketplaceSection navigate={navigate} />
             <DiscoverSection />
 
 
@@ -7602,57 +7675,11 @@ function formatDiscoverTime(timeStr: string): string {
   return `${hh}:${mm}`;
 }
 
-function toSentenceCase(s: string): string {
-  if (!s) return s;
-  const lower = s.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
-}
-
-function splitPrice(
-  l: DiscoverListing,
-): { amount: string; unit: string } | null {
-  const disp = (l.price_display ?? "").trim();
-  const m = disp.match(/£?\s*([\d,.]+)\s*(.*)$/);
-  if (m && m[1]) {
-    return { amount: `£${m[1]}`, unit: (m[2] || "").trim() };
-  }
-  if (l.price_amount != null) {
-    return { amount: `£${l.price_amount}`, unit: disp };
-  }
-  return null;
-}
-
-const DISCOVER_CATEGORY_ICONS: Record<
-  string,
-  React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>
-> = {
-  tracking: MapPin,
-  hardware: Camera,
-  dashcams: Camera,
-  health: Heart,
-  learning: GraduationCap,
-  cpd: GraduationCap,
-  courses: BookOpen,
-  insurance: ShieldCheck,
-  vehicles: Car,
-  cars: Car,
-  maintenance: Wrench,
-  services: Briefcase,
-  marketing: Megaphone,
-  promotion: Star,
-};
-
-function discoverIconFor(
-  slug?: string | null,
-): React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }> {
-  if (!slug) return Package;
-  return DISCOVER_CATEGORY_ICONS[slug] ?? Package;
-}
 
 function DiscoverSection() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
-  const [listings, setListings] = useState<DiscoverListing[] | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -7668,33 +7695,6 @@ function DiscoverSection() {
         if (!cancelled) setSessions([]);
       }
 
-      try {
-        const sel =
-          "id,title,price_display,price_amount,image_urls,is_featured,marketplace_categories(name,slug)";
-        const featRes = await fetch(
-          `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=${sel}&order=created_at.desc&limit=2`,
-          { headers: DISCOVER_HEADERS },
-        );
-        let feat = (await featRes.json()) as DiscoverListing[];
-        if (!Array.isArray(feat)) feat = [];
-        if (feat.length < 2) {
-          const fillRes = await fetch(
-            `${DISCOVER_SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=${sel}&order=created_at.desc&limit=4`,
-            { headers: DISCOVER_HEADERS },
-          );
-          const fill = (await fillRes.json()) as DiscoverListing[];
-          if (Array.isArray(fill)) {
-            const have = new Set(feat.map((l) => l.id));
-            for (const l of fill) {
-              if (feat.length >= 2) break;
-              if (!have.has(l.id)) feat.push(l);
-            }
-          }
-        }
-        if (!cancelled) setListings(feat.slice(0, 2));
-      } catch {
-        if (!cancelled) setListings([]);
-      }
     })();
     return () => {
       cancelled = true;
@@ -7715,8 +7715,8 @@ function DiscoverSection() {
   }, [sessions]);
 
   const hasLive = upcoming.length > 0;
-  const hasMarket = (listings ?? []).length > 0;
-  if (!hasLive && !hasMarket) return null;
+  if (!hasLive) return null;
+
 
   const headerTitle = {
     fontSize: 17,
@@ -7758,123 +7758,6 @@ function DiscoverSection() {
 
   return (
     <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
-      {hasMarket && listings && (
-        <div style={{ marginBottom: hasLive ? 24 : 0 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 14,
-            }}
-          >
-            <div style={headerTitle}>Marketplace</div>
-            <button
-              type="button"
-              style={viewAllBtn}
-              onClick={() => navigate({ to: "/marketplace" })}
-            >
-              View all
-              <ArrowRight size={14} strokeWidth={2} />
-            </button>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                listings.length === 1 ? "1fr" : "1fr 1fr",
-              gap: 8,
-            }}
-          >
-            {listings.map((l) => {
-              const img = l.image_urls && l.image_urls[0];
-              const price = splitPrice(l);
-              const Icon = discoverIconFor(l.marketplace_categories?.slug);
-              const catName = l.marketplace_categories?.name ?? "";
-              return (
-                <div
-                  key={l.id}
-                  style={cardShell}
-                  onClick={() =>
-                    navigate({
-                      to: "/marketplace/$listingId" as never,
-                      params: { listingId: l.id } as never,
-                    })
-                  }
-                >
-                  <div
-                    style={{
-                      height: 70,
-                      width: "100%",
-                      background: img
-                        ? `url(${img}) center/cover`
-                        : gradientMarket,
-                      borderTopLeftRadius: 14,
-                      borderTopRightRadius: 14,
-                      position: "relative",
-                    }}
-                  >
-                    {l.is_featured && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: 6,
-                          left: 6,
-                          background: "#E24B4A",
-                          color: "#FFFFFF",
-                          fontSize: 8,
-                          fontWeight: 500,
-                          padding: "2px 6px",
-                          borderRadius: 20,
-                        }}
-                      >
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ padding: 8, minWidth: 0 }}>
-                    {catName && (
-                      <div
-                        style={{
-                          fontSize: 8,
-                          color: "#8A93A3",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.3,
-                        }}
-                      >
-                        {toSentenceCase(catName)}
-                      </div>
-                    )}
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        color: "#0F2044",
-                        lineHeight: 1.2,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        marginTop: catName ? 2 : 0,
-                      }}
-                    >
-                      {l.title}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginTop: 6 }}>
-                      {price ? (
-                        <span style={{ fontSize: 11, fontWeight: 700, color: '#A32D2D', ...truncate, minWidth: 0 }}>
-                          {`${price.amount} ${price.unit}`.trim()}
-                        </span>
-                      ) : <span />}
-                      <span style={{ background: '#185FA5', color: '#FFFFFF', fontSize: 10, fontWeight: 600, padding: '5px 8px', borderRadius: 7, flexShrink: 0 }}>View</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {hasLive && (
         <div>
