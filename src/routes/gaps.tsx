@@ -1154,7 +1154,7 @@ function GapsPage() {
     pupilId: string,
     via: "sms" | "message",
     slot: { date: string; time: string; duration: number },
-    discount?: { type: "percentage" | "fixed"; value: number },
+    discount?: DiscountCode,
   ) {
     if (!userId) return;
     try {
@@ -1163,14 +1163,16 @@ function GapsPage() {
       let discounted_price: number | null = null;
       let discount_type: string | null = null;
       let discount_value: number | null = null;
+      let discount_code_id: string | null = null;
       if (pupil && discount) {
         original_price = calcOriginalPrice(pupil, slot.duration);
         discount_type = discount.type;
-        discount_value = discount.value;
+        discount_value = Number(discount.value);
+        discount_code_id = discount.id;
         discounted_price =
           discount.type === "percentage"
-            ? Math.round(original_price * (1 - discount.value / 100) * 100) / 100
-            : Math.max(0, Math.round((original_price - discount.value) * 100) / 100);
+            ? Math.round(original_price * (1 - Number(discount.value) / 100) * 100) / 100
+            : Math.max(0, Math.round((original_price - Number(discount.value)) * 100) / 100);
       }
       const row = {
         instructor_id: userId,
@@ -1180,6 +1182,7 @@ function GapsPage() {
         duration_minutes: slot.duration,
         status: "sent",
         sent_via: via,
+        discount_code_id,
         discount_type,
         discount_value,
         original_price,
@@ -1228,9 +1231,8 @@ function GapsPage() {
     }
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
     const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
     for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, discount);
+      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
     }
     toast.success(`Text queued for ${firstNameOf(r.pupil)} — sending shortly`);
   }
@@ -1295,7 +1297,6 @@ function GapsPage() {
 
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
     const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
 
     // 1. Insert in-app chat_messages for everyone immediately + log offers.
     for (const { pupil, body } of withBodies) {
@@ -1310,7 +1311,7 @@ function GapsPage() {
         console.error("[gaps] chat_messages insert failed:", chatErr);
       }
       for (const s of slotsForOffer) {
-        void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
+        void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
       }
     }
 
@@ -1348,9 +1349,8 @@ function GapsPage() {
   function handleMessage(r: Ranked) {
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
     const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
     for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
+      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
     }
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
