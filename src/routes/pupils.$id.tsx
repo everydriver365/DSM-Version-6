@@ -1185,7 +1185,7 @@ function PupilDetailPage() {
                 className="rounded-2xl p-5 space-y-5"
                 style={{
                   backgroundColor: "#FFFFFF",
-                  boxShadow: "0 10px 40px -15px rgba(15,32,68,0.18)",
+                  boxShadow: "0 10px 40px -15px rgba(11,31,58,0.18)",
                 }}
               >
                 {/* Photo consent row */}
@@ -1945,7 +1945,7 @@ function PupilDetailPage() {
                 style={{
                   background: "#FFFFFF",
                   borderRadius: 16,
-                  border: "0.5px solid rgba(15,32,68,0.10)",
+                  border: "0.5px solid rgba(11,31,58,0.10)",
                   padding: "20px 16px",
                   marginTop: 12,
                   textAlign: "center",
@@ -2019,7 +2019,7 @@ function PupilDetailPage() {
                 style={{
                   background: "#FFFFFF",
                   borderRadius: 16,
-                  border: focusLessonId ? "2px solid #1877D6" : "0.5px solid rgba(15,32,68,0.10)",
+                  border: focusLessonId ? "2px solid #1877D6" : "0.5px solid rgba(11,31,58,0.10)",
                   overflow: "hidden",
                   marginTop: 12,
                   boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "none",
@@ -2093,21 +2093,21 @@ function PupilDetailPage() {
 
               {/* Manage Lesson Card */}
               {!isCancelled && (
-                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", overflow: "hidden", marginTop: 12 }}>
+                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", overflow: "hidden", marginTop: 12 }}>
                   <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <RefreshCw size={16} color="#1877D6" /> Reschedule
                     </span>
                     <ChevronRight size={18} color="#64748B" />
                   </button>
-                  <div style={{ height: "0.5px", background: "rgba(15,32,68,0.10)" }} />
+                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
                   <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
                       <CreditCard size={16} color="#1877D6" /> Send payment link
                     </span>
                     <ChevronRight size={18} color="#64748B" />
                   </button>
-                  <div style={{ height: "0.5px", background: "rgba(15,32,68,0.10)" }} />
+                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
                   <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
                       <X size={16} color="#B42318" /> Cancel lesson
@@ -2120,7 +2120,7 @@ function PupilDetailPage() {
               {/* Messages Card */}
               <div
                 onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
-                style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(15,32,68,0.10)", padding: 14, marginTop: 12, cursor: "pointer" }}
+                style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", padding: 14, marginTop: 12, cursor: "pointer" }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2167,7 +2167,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
               const prev = idx > 0 ? lessons[idx - 1] : null;
@@ -2194,7 +2194,7 @@ function PupilDetailPage() {
               return (
                 <Fragment key={l.id}>
                   {showGap && (
-                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)" }}>
+                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
                       <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                         {gapDays} day{gapDays > 1 ? "s" : ""} gap
                       </span>
@@ -2205,7 +2205,7 @@ function PupilDetailPage() {
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
                       padding: "12px 16px", cursor: "pointer",
-                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(15,32,68,0.10)",
+                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
                       ...POPPINS,
                     }}
                   >
@@ -2291,7 +2291,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
               const colour = pupil?.calendar_colour || "#1A52A0";
@@ -2308,7 +2308,7 @@ function PupilDetailPage() {
                     return (
                       <Fragment key={l.id}>
                         {showGap && (
-                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(15,32,68,0.10)" }}>
+                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
                             <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                               {gapDays} day{gapDays > 1 ? "s" : ""} gap
                             </span>
@@ -2319,7 +2319,7 @@ function PupilDetailPage() {
                           style={{
                             width: "100%", display: "flex", alignItems: "center", gap: 12,
                             padding: "12px 16px", cursor: "pointer",
-                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(15,32,68,0.10)",
+                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
                             ...POPPINS,
                           }}
                         >
@@ -2349,7 +2349,7 @@ function PupilDetailPage() {
                       type="button"
                       onClick={() => setPastExpanded((v) => !v)}
                       className="w-full flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
-                      style={{ borderTop: "0.5px solid rgba(15,32,68,0.10)", background: "none", border: "none", ...POPPINS }}
+                      style={{ borderTop: "0.5px solid rgba(11,31,58,0.10)", background: "none", border: "none", ...POPPINS }}
                     >
                       {pastExpanded
                         ? "Show less"
