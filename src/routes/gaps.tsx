@@ -2441,9 +2441,6 @@ function PupilCard({
   multi,
   selected,
   onToggleSelect,
-  onText,
-  onMessage,
-  onBook,
 }: {
   rank: number;
   r: Ranked;
@@ -2451,9 +2448,6 @@ function PupilCard({
   multi: boolean;
   selected: boolean;
   onToggleSelect: () => void;
-  onText: () => void;
-  onMessage: () => void;
-  onBook: () => void;
 }) {
   const rc = rankColor(rank);
   const availLabel =
