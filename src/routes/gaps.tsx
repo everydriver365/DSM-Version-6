@@ -2232,7 +2232,7 @@ function GapsPage() {
               }}
             >
               <button
-                onClick={() => void bulkText()}
+                onClick={() => void bulkMessageSelected()}
                 style={{
                   width: "100%",
                   background: "#FFFFFF",
