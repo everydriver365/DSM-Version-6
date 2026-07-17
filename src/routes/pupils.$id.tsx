@@ -4336,8 +4336,8 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
     return () => { cancelled = true; };
   }, [pupilId]);
 
-  function toggleDay(k: number) {
-    setDays((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k].sort((a, b) => a - b)));
+  function toggleDay(k: string) {
+    setDays((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k].sort()));
   }
 
   async function save() {
