@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Phone, Send, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Phone, Send, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -34,6 +35,52 @@ interface ChatMessage {
   deleted_at: string | null;
 }
 
+interface PendingOffer {
+  id: string;
+  instructor_id: string;
+  pupil_id: string;
+  slot_date: string;
+  slot_time: string;
+  duration_minutes: number;
+  status: string;
+  sent_via: string | null;
+  discount_code_id: string | null;
+  discount_type: string | null;
+  discount_value: number | null;
+  original_price: number | null;
+  discounted_price: number | null;
+  created_at: string;
+}
+
+function formatSlotWhen(slotDate: string, slotTime: string): string {
+  try {
+    const d = new Date(`${slotDate}T${slotTime}`);
+    const dateStr = d.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+    const timeStr = slotTime.slice(0, 5);
+    return `${dateStr} at ${timeStr}`;
+  } catch {
+    return `${slotDate} at ${slotTime}`;
+  }
+}
+
+const ACCEPT_WORDS = ["yes", "yeah", "yep", "yup", "sure", "ok", "okay", "confirm", "sounds good"];
+function looksLikeAcceptance(body: string): boolean {
+  const t = body.trim().toLowerCase();
+  if (!t) return false;
+  for (const w of ACCEPT_WORDS) {
+    if (t === w) return true;
+    if (t.startsWith(w)) {
+      const nextChar = t.charAt(w.length);
+      if (nextChar === "" || /[\s.!?,]/.test(nextChar)) return true;
+    }
+  }
+  return false;
+}
+
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", {
     hour: "2-digit",
@@ -49,6 +96,8 @@ function PupilThreadPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
+  const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
+  const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -132,6 +181,152 @@ function PupilThreadPage() {
     const el = scrollerRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
+
+  // Detect likely acceptance on the most recent pupil message and look up a pending offer.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!messages.length) {
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      const last = messages[messages.length - 1];
+      if (last.sender_type !== "pupil" || !looksLikeAcceptance(last.body ?? "")) {
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("gap_filler_offers")
+        .select("*")
+        .eq("pupil_id", pupilId)
+        .eq("status", "sent")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("[pupil-thread] pending offer lookup failed:", error);
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      if (!cancelled) setPendingOffer((data as unknown as PendingOffer) ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [messages, pupilId]);
+
+  async function handleConfirmBook() {
+    if (!pendingOffer || !userId || booking) return;
+    setBooking(true);
+    try {
+      // a) Resolve pricing + optional discount validity
+      let amountDue: number | null = pendingOffer.original_price;
+      let discountInvalid = false;
+      let discountToIncrement: { id: string; uses_count: number | null } | null = null;
+
+      if (pendingOffer.discount_code_id) {
+        const { data: dc, error: dcErr } = await supabase
+          .from("discount_codes")
+          .select("*")
+          .eq("id", pendingOffer.discount_code_id)
+          .maybeSingle();
+        if (dcErr) {
+          console.error("[pupil-thread] discount fetch failed:", dcErr);
+          throw dcErr;
+        }
+        const now = Date.now();
+        const expired =
+          dc?.expires_at ? new Date(dc.expires_at as string).getTime() < now : false;
+        const overUsed =
+          dc?.max_uses != null && (dc.uses_count ?? 0) >= (dc.max_uses as number);
+        if (!dc || dc.active === false || expired || overUsed) {
+          discountInvalid = true;
+          amountDue = pendingOffer.original_price;
+        } else {
+          amountDue = pendingOffer.discounted_price ?? pendingOffer.original_price;
+          discountToIncrement = {
+            id: dc.id as string,
+            uses_count: (dc.uses_count as number | null) ?? 0,
+          };
+        }
+      }
+
+      // b) Insert lesson
+      const { error: lessonErr } = await supabase.from("lessons").insert({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        lesson_date: pendingOffer.slot_date,
+        lesson_time: pendingOffer.slot_time,
+        duration_minutes: pendingOffer.duration_minutes,
+        status: "confirmed",
+        amount_due: amountDue,
+        payment_status: "unpaid",
+      });
+      if (lessonErr) {
+        console.error("[pupil-thread] lesson insert failed:", lessonErr);
+        throw lessonErr;
+      }
+
+      // Increment discount uses_count after successful lesson insert
+      if (discountToIncrement) {
+        const { error: incErr } = await supabase
+          .from("discount_codes")
+          .update({ uses_count: (discountToIncrement.uses_count ?? 0) + 1 })
+          .eq("id", discountToIncrement.id);
+        if (incErr) console.error("[pupil-thread] discount increment failed:", incErr);
+      }
+
+      // c) Update offer row
+      const { error: offerErr } = await supabase
+        .from("gap_filler_offers")
+        .update({ status: "accepted", accepted_at: new Date().toISOString() })
+        .eq("id", pendingOffer.id);
+      if (offerErr) {
+        console.error("[pupil-thread] offer update failed:", offerErr);
+        throw offerErr;
+      }
+
+      const when = formatSlotWhen(pendingOffer.slot_date, pendingOffer.slot_time);
+      const displayName = pupil?.name ?? pupil?.first_name ?? "Pupil";
+
+      // d) Instructor notification
+      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+        instructor_id: userId,
+        title: "Lesson booked!",
+        body: `${displayName} confirmed ${when}`,
+        type: "lesson",
+        read: false,
+      });
+      if (notifErr) console.error("[pupil-thread] notification insert failed:", notifErr);
+
+      // e) Confirmation chat message
+      const confirmationBody = `Great news — you're booked in for ${when}! See you then.`;
+      const { error: chatErr } = await supabase.from("chat_messages").insert({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        sender_type: "instructor",
+        sender_id: userId,
+        body: confirmationBody,
+      });
+      if (chatErr) console.error("[pupil-thread] confirmation message insert failed:", chatErr);
+
+      // f) Success
+      if (discountInvalid) {
+        toast.success(
+          "Booked — note: the discount code was no longer valid, full price applied",
+        );
+      } else {
+        toast.success(`Lesson booked for ${when}`);
+      }
+      setPendingOffer(null);
+      setBooking(false);
+    } catch (err) {
+      console.error("[pupil-thread] confirm & book failed:", err);
+      toast.error("Something went wrong booking this lesson — please check and try again");
+      setBooking(false);
+    }
+  }
+
 
   async function handleSend() {
     const body = messageText.trim();
@@ -321,6 +516,82 @@ function PupilThreadPage() {
           })
         )}
       </div>
+
+      {/* Likely-acceptance banner */}
+      {pendingOffer && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 128,
+            left: 0,
+            right: 0,
+            zIndex: 51,
+            maxWidth: 480,
+            margin: "0 auto",
+            padding: "0 12px",
+          }}
+        >
+          <div
+            style={{
+              background: "#ECFDF5",
+              border: "1px solid #A7F3D0",
+              borderRadius: 14,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              boxShadow: "0 4px 12px rgba(6, 78, 59, 0.08)",
+              ...POPPINS,
+            }}
+          >
+            <CheckCircle2 size={18} color="#059669" style={{ marginTop: 2, flexShrink: 0 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 13, color: "#064E3B", lineHeight: 1.35 }}>
+                Looks like {pupil?.first_name ?? pupil?.name ?? "this pupil"} accepted the{" "}
+                <strong>{formatSlotWhen(pendingOffer.slot_date, pendingOffer.slot_time)}</strong> slot
+              </div>
+              <div style={{ display: "flex", gap: 10, marginTop: 8, alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={handleConfirmBook}
+                  disabled={booking}
+                  style={{
+                    background: "#059669",
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "6px 14px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: booking ? "default" : "pointer",
+                    opacity: booking ? 0.6 : 1,
+                    ...POPPINS,
+                  }}
+                >
+                  {booking ? "Booking…" : "Confirm & book"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPendingOffer(null)}
+                  disabled={booking}
+                  style={{
+                    background: "transparent",
+                    color: "#065F46",
+                    border: "none",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: booking ? "default" : "pointer",
+                    padding: "6px 4px",
+                    ...POPPINS,
+                  }}
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Input bar */}
 <div style={{
