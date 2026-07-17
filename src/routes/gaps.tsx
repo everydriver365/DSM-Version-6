@@ -1134,21 +1134,58 @@ function GapsPage() {
     }
   }
 
-  async function logOffer(pupilId: string, via: "sms" | "message") {
+  function calcOriginalPrice(pupil: Pupil, durationMinutes: number): number {
+    if (durationMinutes === 90 && pupil.custom_rate_90 && pupil.custom_rate_90 > 0) {
+      return Number(pupil.custom_rate_90);
+    }
+    if (durationMinutes === 120 && pupil.custom_rate_120 && pupil.custom_rate_120 > 0) {
+      return Number(pupil.custom_rate_120);
+    }
+    if (durationMinutes === 60 && pupil.custom_rate && pupil.custom_rate > 0) {
+      return Number(pupil.custom_rate);
+    }
+    if (pupil.custom_rate && pupil.custom_rate > 0) {
+      return Math.round(Number(pupil.custom_rate) * (durationMinutes / 60) * 100) / 100;
+    }
+    return Math.round((hourlyRate || 0) * (durationMinutes / 60) * 100) / 100;
+  }
+
+  async function logOffer(
+    pupilId: string,
+    via: "sms" | "message",
+    slot: { date: string; time: string; duration: number },
+    discount?: { type: "percentage" | "fixed"; value: number },
+  ) {
     if (!userId) return;
-    const slots = searchSlots.length ? searchSlots : selectedSlots;
-    if (!slots.length) return;
     try {
-      const rows = slots.map((s) => ({
+      const pupil = ranked?.find((r) => r.pupil.id === pupilId)?.pupil;
+      let original_price: number | null = null;
+      let discounted_price: number | null = null;
+      let discount_type: string | null = null;
+      let discount_value: number | null = null;
+      if (pupil && discount) {
+        original_price = calcOriginalPrice(pupil, slot.duration);
+        discount_type = discount.type;
+        discount_value = discount.value;
+        discounted_price =
+          discount.type === "percentage"
+            ? Math.round(original_price * (1 - discount.value / 100) * 100) / 100
+            : Math.max(0, Math.round((original_price - discount.value) * 100) / 100);
+      }
+      const row = {
         instructor_id: userId,
         pupil_id: pupilId,
-        slot_date: s.date,
-        slot_time: s.time,
-        duration_minutes: s.duration,
+        slot_date: slot.date,
+        slot_time: slot.time,
+        duration_minutes: slot.duration,
         status: "sent",
         sent_via: via,
-      }));
-      const { error } = await supabase.from("gap_filler_offers").insert(rows);
+        discount_type,
+        discount_value,
+        original_price,
+        discounted_price,
+      };
+      const { error } = await supabase.from("gap_filler_offers").insert(row);
       if (error) throw error;
       setReloadKey((k) => k + 1);
     } catch (err) {
