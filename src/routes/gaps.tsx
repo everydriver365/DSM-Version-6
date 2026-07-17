@@ -1231,9 +1231,8 @@ function GapsPage() {
     }
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
     const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
     for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, discount);
+      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
     }
     toast.success(`Text queued for ${firstNameOf(r.pupil)} — sending shortly`);
   }
