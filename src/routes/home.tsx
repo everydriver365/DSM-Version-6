@@ -930,6 +930,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   return (
     <div
       style={{
+        margin: "0 -16px",
         padding: "40px 16px 96px",
         background: "#F7F8FA",
         minHeight: "100%",
@@ -5698,7 +5699,7 @@ function HomePage() {
                     .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                     .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
                   `}</style>
-                  <div style={{ background: '#F7F8FA', margin: '16px 0 0', padding: '18px 16px 20px', borderRadius: 0 }}>
+                  <div style={{ background: '#F7F8FA', margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                       <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0F2044', fontWeight: 800 }}>Quick Access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -7757,7 +7758,7 @@ function DiscoverSection() {
   };
 
   return (
-    <div style={{ margin: "20px 16px 0", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Poppins, sans-serif" }}>
 
       {hasLive && (
         <div>
