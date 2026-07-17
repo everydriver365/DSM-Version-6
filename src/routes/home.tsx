@@ -2092,7 +2092,7 @@ function HomePage() {
             style={{
               background: "#0B1F3A",
               color: "#FFFFFF",
-              borderRadius: 12,
+              borderRadius: 10,
               padding: "12px 14px",
               display: "flex",
               gap: 10,
@@ -3833,7 +3833,7 @@ function HomePage() {
     };
     const cardStyle: React.CSSProperties = {
       background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-      borderRadius: 12, padding: 16,
+      borderRadius: 10, padding: 16,
     };
     const statLabel: React.CSSProperties = {
       fontSize: 12, fontWeight: 600, color: "#6B7280",
@@ -3941,7 +3941,7 @@ function HomePage() {
                     return (
                       <div style={{
                         background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-                        borderRadius: 20, overflow: "hidden", margin: "12px 16px 0",
+                        borderRadius: 10, overflow: "hidden", margin: "12px 16px 0",
                         fontFamily: "Inter, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
@@ -4448,7 +4448,7 @@ function HomePage() {
             type="button"
             onClick={() => navigate({ to: s.route as never })}
             style={{
-              flex: 1, background: '#FFFFFF', borderRadius: 12,
+              flex: 1, background: '#FFFFFF', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
@@ -4475,7 +4475,7 @@ function HomePage() {
         style={{
           margin: '0 16px 20px',
           background: '#FFFFFF',
-          borderRadius: 20,
+          borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
@@ -4803,7 +4803,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 10,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 14px',
                 display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
@@ -5033,7 +5033,7 @@ function HomePage() {
         const cardBase: React.CSSProperties = {
           background: '#FFFFFF',
           border: `0.5px solid ${BORDER}`,
-          borderRadius: 16,
+          borderRadius: 10,
           fontFamily: PF,
         };
         const rowTap: React.CSSProperties = {
@@ -5051,7 +5051,7 @@ function HomePage() {
             tabIndex={onClick ? 0 : undefined}
             style={{
               ...cardBase,
-              borderRadius: 14,
+              borderRadius: 10,
               padding: '12px 14px',
               minHeight: 66,
               display: 'flex',
