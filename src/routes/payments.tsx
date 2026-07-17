@@ -20,7 +20,7 @@ export const Route = createFileRoute("/payments")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0F2044";
+const NAVY = "#0B1F3A";
 const BORDER = "#E2E6ED";
 const MUTED = "#6B7280";
 const GREEN = "#16A34A";
@@ -32,7 +32,7 @@ const PURPLE = "#7C3AED";
 const CYAN = "#0891B2";
 const CARD_BLUE = "#1A52A0";
 
-const PUPIL_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+const PUPIL_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
 function pupilAvatarColor(id: string) {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
@@ -489,7 +489,7 @@ function PaymentsPage() {
                 fontWeight: 500,
                 borderRadius: 20,
                 border: 0,
-                background: active ? "#0F2044" : "#FFFFFF",
+                background: active ? "#0B1F3A" : "#FFFFFF",
                 color: active ? "#FFFFFF" : "#8A94A6",
                 boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
                 whiteSpace: "nowrap",

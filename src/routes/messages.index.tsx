@@ -23,7 +23,7 @@ const SUPABASE_ANON_KEY =
 
 const FONT = { fontFamily: "Inter, sans-serif" } as const;
 
-const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
 function avatarColor(id: string) {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
@@ -330,7 +330,7 @@ function MessagesIndexPage() {
       {/* Header */}
       <div
         style={{
-          background: "#0F2044",
+          background: "#0B1F3A",
           color: "#FFFFFF",
           padding: "16px 18px 18px",
           display: "flex",
@@ -421,8 +421,8 @@ function MessagesIndexPage() {
                 cursor: "pointer",
                 background: "transparent",
                 border: 0,
-                borderBottom: active ? "2px solid #0F2044" : "2px solid transparent",
-                color: active ? "#0F2044" : "#8A93A3",
+                borderBottom: active ? "2px solid #0B1F3A" : "2px solid transparent",
+                color: active ? "#0B1F3A" : "#8A93A3",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -482,7 +482,7 @@ function MessagesIndexPage() {
                   flex: 1,
                   width: "100%",
                   ...FONT,
-                  color: "#0F2044",
+                  color: "#0B1F3A",
                 }}
               />
             </div>
@@ -585,7 +585,7 @@ function MessagesIndexPage() {
                           style={{
                             fontSize: 15,
                             fontWeight: 500,
-                            color: "#0F2044",
+                            color: "#0B1F3A",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -606,7 +606,7 @@ function MessagesIndexPage() {
                                 width: 8,
                                 height: 8,
                                 borderRadius: "50%",
-                                background: "#185FA5",
+                                background: "#1877D6",
                               }}
                             />
                           )}
@@ -615,7 +615,7 @@ function MessagesIndexPage() {
                       <div
                         style={{
                           fontSize: 13,
-                          color: unread ? "#0F2044" : "#5A6270",
+                          color: unread ? "#0B1F3A" : "#5A6270",
                           fontWeight: unread ? 500 : 400,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -693,7 +693,7 @@ function LocalChatView(props: {
           borderBottom: "0.5px solid #E2E6ED",
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>{areaName} ADIs</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ADIs</div>
         <div style={{ fontSize: 11, color: "#9CA3AF" }}>
           {room?.instructor_count ?? 1} members
         </div>
@@ -752,7 +752,7 @@ function LocalChatView(props: {
                     <div style={{ maxWidth: "75%" }}>
                       <div
                         style={{
-                          background: "#0F2044",
+                          background: "#0B1F3A",
                           color: "#FFFFFF",
                           borderRadius: "16px 16px 4px 16px",
                           padding: "10px 14px",
@@ -805,7 +805,7 @@ function LocalChatView(props: {
                           padding: "10px 14px",
                           fontSize: 13,
                           lineHeight: 1.35,
-                          color: "#0F2044",
+                          color: "#0B1F3A",
                           wordBreak: "break-word",
                         }}
                       >
@@ -885,7 +885,7 @@ function LocalChatView(props: {
             padding: "10px 14px",
             fontSize: 13,
             outline: "none",
-            color: "#0F2044",
+            color: "#0B1F3A",
             ...FONT,
           }}
         />
@@ -895,7 +895,7 @@ function LocalChatView(props: {
           disabled={!newMessage.trim() || !room}
           onClick={onSend}
           style={{
-            background: newMessage.trim() ? "#0F2044" : "#B0BAC9",
+            background: newMessage.trim() ? "#0B1F3A" : "#B0BAC9",
             color: "#FFFFFF",
             border: 0,
             width: 36,
