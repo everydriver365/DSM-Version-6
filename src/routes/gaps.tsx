@@ -1172,12 +1172,24 @@ function GapsPage() {
     return `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
   }
 
-  function handleText(r: Ranked) {
+  async function handleText(r: Ranked) {
     const body = buildTextBody(r);
-    const phone = r.pupil.phone || "";
-    const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-    window.location.href = href;
+    if (!r.pupil.phone) {
+      toast.error("Pupil has no phone number");
+      return;
+    }
+    const { error } = await supabase.from("sms_queue").insert({
+      instructor_id: userId,
+      pupil_phone: r.pupil.phone,
+      message: body,
+    });
+    if (error) {
+      console.error("[gaps] sms_queue insert failed:", error);
+      toast.error("Failed to queue text");
+      return;
+    }
     void logOffer(r.pupil.id, "sms");
+    toast.success(`Text queued for ${firstNameOf(r.pupil)} — sending shortly`);
   }
 
   function buildDefaultTemplate(): string {
