@@ -1349,9 +1349,8 @@ function GapsPage() {
   function handleMessage(r: Ranked) {
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
     const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
     for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
+      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
     }
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
