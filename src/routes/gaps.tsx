@@ -2384,6 +2384,8 @@ function PupilCard({
   r,
   dayOfWeekLabel,
   multi,
+  selected,
+  onToggleSelect,
   onText,
   onMessage,
   onBook,
@@ -2392,6 +2394,8 @@ function PupilCard({
   r: Ranked;
   dayOfWeekLabel: string;
   multi: boolean;
+  selected: boolean;
+  onToggleSelect: () => void;
   onText: () => void;
   onMessage: () => void;
   onBook: () => void;
@@ -2426,6 +2430,22 @@ function PupilCard({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSelect();
+            }}
+            onChange={() => {}}
+            style={{
+              width: 18,
+              height: 18,
+              accentColor: NAVY,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          />
           <span
             style={{
               background: rc.bg,
