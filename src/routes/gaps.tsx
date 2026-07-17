@@ -936,6 +936,31 @@ function GapsPage() {
     })();
   }, [userId, reloadKey]);
 
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: inst } = await supabase
+        .from("instructors")
+        .select("name, first_name, last_name")
+        .eq("id", userId)
+        .maybeSingle();
+      if (inst) {
+        const n =
+          (inst as any).name ||
+          `${(inst as any).first_name ?? ""} ${(inst as any).last_name ?? ""}`.trim();
+        setInstructorName(n || "Your instructor");
+      }
+      const { data: dcs, error: dcErr } = await supabase
+        .from("discount_codes")
+        .select("id, code, type, value")
+        .eq("instructor_id", userId)
+        .eq("active", true)
+        .is("deleted_at", null);
+      if (dcErr) console.error("[gaps] discount_codes fetch failed", dcErr);
+      setDiscountCodes(((dcs ?? []) as any[]) as DiscountCode[]);
+    })();
+  }, [userId]);
+
   async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
