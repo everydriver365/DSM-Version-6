@@ -1123,32 +1123,43 @@ function GapsPage() {
     void logOffer(r.pupil.id, "sms");
   }
 
-  async function bulkText() {
-    if (selectedPupilIds.size === 0 || !ranked) return;
+  async function bulkMessageSelected() {
+    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
     const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
     let sent = 0;
-    let skipped = 0;
+    let appOnly = 0;
     for (let i = 0; i < selected.length; i++) {
       const r = selected[i];
-      const phone = r.pupil.phone || "";
-      if (!phone) {
-        skipped++;
-        continue;
-      }
       const body = buildTextBody(r);
-      const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-      window.location.href = href;
+      const phone = r.pupil.phone || "";
+
+      const { error: chatErr } = await supabase.from("chat_messages").insert({
+        instructor_id: userId,
+        pupil_id: r.pupil.id,
+        sender_type: "instructor",
+        sender_id: userId,
+        body,
+      });
+      if (chatErr) console.error("[gaps] chat_messages insert failed:", chatErr);
+
+      if (phone) {
+        const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+        window.location.href = href;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } else {
+        appOnly++;
+      }
       void logOffer(r.pupil.id, "sms");
       sent++;
-      await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    if (skipped > 0) {
-      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"} (${skipped} skipped — no phone number)`);
+    if (appOnly > 0) {
+      toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"} (${appOnly} by app only — no phone number)`);
     } else {
-      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
+      toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
     }
     setSelectedPupilIds(new Set());
   }
+
 
   function handleMessage(r: Ranked) {
     void logOffer(r.pupil.id, "message");
@@ -2108,10 +2119,8 @@ function GapsPage() {
                   return next;
                 });
               }}
-              onText={() => handleText(r)}
-              onMessage={() => handleMessage(r)}
-              onBook={() => handleBook(r)}
             />
+
           ))}
         </div>
       )}
@@ -2223,7 +2232,7 @@ function GapsPage() {
               }}
             >
               <button
-                onClick={() => void bulkText()}
+                onClick={() => void bulkMessageSelected()}
                 style={{
                   width: "100%",
                   background: "#FFFFFF",
@@ -2240,7 +2249,7 @@ function GapsPage() {
                   gap: 8,
                 }}
               >
-                Text {selectedPupilIds.size} selected →
+                Message {selectedPupilIds.size} selected →
               </button>
             </div>
           )}
@@ -2432,9 +2441,6 @@ function PupilCard({
   multi,
   selected,
   onToggleSelect,
-  onText,
-  onMessage,
-  onBook,
 }: {
   rank: number;
   r: Ranked;
@@ -2442,9 +2448,6 @@ function PupilCard({
   multi: boolean;
   selected: boolean;
   onToggleSelect: () => void;
-  onText: () => void;
-  onMessage: () => void;
-  onBook: () => void;
 }) {
   const rc = rankColor(rank);
   const availLabel =
@@ -2613,62 +2616,6 @@ function PupilCard({
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-        <button
-          onClick={onText}
-          style={{
-            background: NAVY,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          📱 Text
-        </button>
-        <button
-          onClick={onMessage}
-          style={{
-            background: TEAL,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <MessageSquare size={14} /> Message
-        </button>
-        <button
-          onClick={onBook}
-          style={{
-            background: "#FFFFFF",
-            color: NAVY,
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: `0.5px solid ${NAVY}`,
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <Plus size={14} /> Book
-        </button>
-      </div>
     </div>
   );
 }
