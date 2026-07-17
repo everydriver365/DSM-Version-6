@@ -3065,13 +3065,25 @@ function HomePage() {
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
+  // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
   const blocksForDate = (dateStr: string) =>
     (calendarBlocks || [])
-      .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
-      .map((b) => ({
-        start: timeToMins((b.start_datetime ?? "").substring(11, 16) || "00:00"),
-        end: timeToMins((b.end_datetime ?? "").substring(11, 16) || "23:59"),
-      }))
+      .map((b) => {
+        const sd = new Date(b.start_datetime);
+        const ed = new Date(b.end_datetime);
+        if (isNaN(sd.getTime()) || isNaN(ed.getTime())) return null;
+        const localDateStr = `${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`;
+        const localStartTime = `${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`;
+        const localEndTime = `${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`;
+        return {
+          localDate: localDateStr,
+          start: timeToMins(localStartTime),
+          end: timeToMins(localEndTime),
+          title: b.title ?? 'Busy',
+        };
+      })
+      .filter((b): b is { localDate: string; start: number; end: number; title: string } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title }))
       .sort((a, b) => a.start - b.start);
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
@@ -4949,7 +4961,10 @@ function HomePage() {
         const nowT = new Date();
         const fmt24 = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
-        type Row = { kind: 'lesson'; l: LessonRow } | { kind: 'gap'; start: Date; mins: number };
+        type Row =
+          | { kind: 'lesson'; l: LessonRow }
+          | { kind: 'gap'; start: Date; mins: number }
+          | { kind: 'calendar'; title: string; start: Date; end: Date };
         const rows: Row[] = [];
         for (let i = 0; i < sorted.length; i++) {
           const l = sorted[i];
@@ -4985,6 +5000,28 @@ function HomePage() {
             if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
           }
         }
+
+        // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
+        if (tab === 'today' || tab === 'tomorrow') {
+          const baseDate = tab === 'today' ? todayStart : tomorrowStart;
+          const blocks = tab === 'today' ? todayBlocks : tomorrowBlocks;
+          for (const b of blocks) {
+            const s = new Date(baseDate);
+            s.setHours(0, 0, 0, 0);
+            s.setMinutes(b.start);
+            const e = new Date(baseDate);
+            e.setHours(0, 0, 0, 0);
+            e.setMinutes(b.end);
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e });
+          }
+        }
+
+        // Re-sort chronologically so lessons, gaps, and calendar events interleave in real time order.
+        rows.sort((a, b) => {
+          const at = a.kind === 'lesson' ? lessonDateTime(a.l).getTime() : a.start.getTime();
+          const bt = b.kind === 'lesson' ? lessonDateTime(b.l).getTime() : b.start.getTime();
+          return at - bt;
+        });
 
         const todayGapCount = rows.filter((r) => r.kind === 'gap').length;
 
@@ -5460,6 +5497,61 @@ function HomePage() {
                         </div>
                       );
 
+                    }
+                    if (r.kind === 'calendar') {
+                      const cs = r.start;
+                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                      return (
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                          <span
+                            aria-hidden
+                            style={{
+                              position: 'absolute',
+                              left: -22,
+                              top: 4,
+                              width: 12,
+                              height: 12,
+                              borderRadius: '50%',
+                              background: '#C7CDD6',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                          <div
+                            style={{
+                              background: '#F5F6F8',
+                              border: '1px dashed #D5D9E0',
+                              borderRadius: 10,
+                              padding: '12px 14px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 34,
+                                height: 34,
+                                borderRadius: 8,
+                                background: '#E9EBEF',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                              }}
+                            >
+                              <IconCalendar size={16} color="#8A93A3" strokeWidth={1.75} />
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', fontVariantNumeric: 'tabular-nums' }}>
+                                {fmtT(cs)} · {r.title}
+                              </div>
+                              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                                From Google Calendar
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
                     }
                     const row = { kind: 'lesson' as const, l: r.l };
 
