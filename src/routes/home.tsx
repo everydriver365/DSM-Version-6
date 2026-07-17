@@ -4423,7 +4423,7 @@ function HomePage() {
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#0F2044', textTransform: 'uppercase', letterSpacing: 0.5 }}>Next lesson</span>
+        <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Next lesson</span>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
