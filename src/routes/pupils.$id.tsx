@@ -2108,7 +2108,7 @@ function PupilDetailPage() {
                     <ChevronRight size={18} color="#64748B" />
                   </button>
                   <div style={{ height: "0.5px", background: "rgba(15,32,68,0.10)" }} />
-                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id } })}>
+                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
                       <X size={16} color="#B42318" /> Cancel lesson
                     </span>
