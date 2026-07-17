@@ -4792,7 +4792,7 @@ function HomePage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <AlertTriangle size={14} color="#D97706" />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>Local issues</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Local issues</span>
               </div>
               <button
                 type="button"
