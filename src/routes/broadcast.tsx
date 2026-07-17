@@ -71,6 +71,7 @@ function BroadcastPage() {
   const [weekIds, setWeekIds] = useState<Set<string>>(new Set());
   const [owedIds, setOwedIds] = useState<Set<string>>(new Set());
   const [listening, setListening] = useState(false);
+  const [instructorId, setInstructorId] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
