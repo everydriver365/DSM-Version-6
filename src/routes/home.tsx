@@ -3181,22 +3181,28 @@ function HomePage() {
   })();
 
 
-  const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = (() => {
-    const startMins = timeToMins(workingHours?.start_time ? String(workingHours.start_time) : "09:00");
-    const endMins = timeToMins(todayEndTime ?? "18:00");
-    const resolveAfter = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.after != null ? pupilBufferMap[pid].after as number : instructorBufferAfter);
-    // Merge lessons and calendar blocks (both with instructor buffer after) into sorted busy intervals.
+  function computeFreeMinutes(
+    dateLessons: LessonRow[],
+    dateBlocks: { start: number; end: number }[],
+    startTimeStr: string,
+    endTimeStr: string | null,
+    bufferAfter: number,
+    pupilBuf: Record<string, { before: number | null; after: number | null }>
+  ) {
+    const startMins = timeToMins(startTimeStr);
+    const endMins = timeToMins(endTimeStr ?? "18:00");
+    const resolveAfter = (pid: string | null | undefined) =>
+      pid && pupilBuf[pid]?.after != null ? (pupilBuf[pid].after as number) : bufferAfter;
     type Busy = { start: number; end: number };
     const busy: Busy[] = [];
-    for (const l of todayLessons) {
+    for (const l of dateLessons) {
       const s = lessonDateTime(l);
       const startM = s.getHours() * 60 + s.getMinutes();
-      const endM = s.getHours() * 60 + s.getMinutes() + (l.duration_minutes ?? 60) + resolveAfter(l.pupil_id);
+      const endM = startM + (l.duration_minutes ?? 60) + resolveAfter(l.pupil_id);
       busy.push({ start: startM, end: endM });
     }
-    for (const b of todayBlocks) busy.push({ start: b.start, end: b.end + instructorBufferAfter });
+    for (const b of dateBlocks) busy.push({ start: b.start, end: b.end + bufferAfter });
     busy.sort((a, b) => a.start - b.start);
-    // Merge overlapping/adjacent intervals so we count gaps between distinct busy blocks only.
     const merged: Busy[] = [];
     for (const iv of busy) {
       const tail = merged[merged.length - 1];
@@ -3221,7 +3227,33 @@ function HomePage() {
     }
     consider(endMins - merged[merged.length - 1].end);
     return { count, totalMinutes };
+  }
+
+  const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
+  const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
+    todayLessons, todayBlocks, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
+  );
+
+  const tomorrowEndTime = (() => {
+    if (!workingHours) return "18:00";
+    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+    const dayKeyToName: Record<string, string> = {
+      sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday",
+      thu: "Thursday", fri: "Friday", sat: "Saturday",
+    };
+    const key = dayKeys[tomorrowStart.getDay()];
+    const name = dayKeyToName[key];
+    const perDay = (workingHours as Record<string, unknown>).per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
+    const cfg = perDay?.[name];
+    const workingDaysArr = ((workingHours as Record<string, unknown>).working_days as string[] | null) ?? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const active = cfg ? cfg.active === true : workingDaysArr.includes(name);
+    return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
   })();
+
+  const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
+    tomorrowLessons, tomorrowBlocks, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
+  );
+
 
 
   console.log("[next-free] todayLessons:", todayLessons?.length);
