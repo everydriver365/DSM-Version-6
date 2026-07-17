@@ -707,7 +707,7 @@ function GapsPage() {
               end: b.endMins,
               title: `${c.icon} ${b.title}`,
               color: c.border as string | null,
-              bufAfter: 0,
+              bufAfter: instrBufAfter,
             };
           });
           // Recurring blocks for this weekday.
@@ -718,7 +718,7 @@ function GapsPage() {
               end: hmToMin(b.end_time),
               title: `🔄 ${b.label ?? "Recurring"}`,
               color: "#7C3AED" as string | null,
-              bufAfter: 0,
+              bufAfter: instrBufAfter,
             }));
           // Partial time off for this day.
           const dayPartialOff = dayTimeOff
@@ -728,7 +728,7 @@ function GapsPage() {
               end: hmToMin(t.end_time!),
               title: `🌴 ${t.reason ?? "Time off"}`,
               color: "#0EA5E9" as string | null,
-              bufAfter: 0,
+              bufAfter: instrBufAfter,
             }));
           // Lunch break — block gap detection during it.
           const lunchInfo =
