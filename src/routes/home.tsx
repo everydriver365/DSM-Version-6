@@ -5498,6 +5498,61 @@ function HomePage() {
                       );
 
                     }
+                    if (r.kind === 'calendar') {
+                      const cs = r.start;
+                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                      return (
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                          <span
+                            aria-hidden
+                            style={{
+                              position: 'absolute',
+                              left: -22,
+                              top: 4,
+                              width: 12,
+                              height: 12,
+                              borderRadius: '50%',
+                              background: '#C7CDD6',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                          <div
+                            style={{
+                              background: '#F5F6F8',
+                              border: '1px dashed #D5D9E0',
+                              borderRadius: 10,
+                              padding: '12px 14px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 34,
+                                height: 34,
+                                borderRadius: 8,
+                                background: '#E9EBEF',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                              }}
+                            >
+                              <IconCalendar size={16} color="#8A93A3" strokeWidth={1.75} />
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', fontVariantNumeric: 'tabular-nums' }}>
+                                {fmtT(cs)} · {r.title}
+                              </div>
+                              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                                From Google Calendar
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
                     const row = { kind: 'lesson' as const, l: r.l };
 
                     const l = row.l;
