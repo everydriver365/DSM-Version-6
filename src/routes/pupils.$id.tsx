@@ -4299,7 +4299,7 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
   const [loaded, setLoaded] = useState(false);
   const [saved, setSaved] = useState<RTLSettings | null>(null);
   const [edit, setEdit] = useState(false);
-  const [days, setDays] = useState<number[]>([]);
+  const [days, setDays] = useState<string[]>([]);
   const [from, setFrom] = useState("09:00");
   const [until, setUntil] = useState("18:00");
   const [notice, setNotice] = useState("24");
