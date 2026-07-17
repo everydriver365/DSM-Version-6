@@ -326,6 +326,7 @@ function RootComponent() {
         });
 
         console.log('[calendar] External calendar synced on app open');
+        window.dispatchEvent(new Event('calendar-synced'));
       } catch (err) {
         // Silent fail — never block app load
         console.warn('[calendar] External calendar sync failed:', err);
