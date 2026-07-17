@@ -2206,7 +2206,44 @@ function GapsPage() {
 
       {selectedSlots.length > 0 && (
         <>
-          <div style={{ height: 108 }} />
+          <div style={{ height: selectedPupilIds.size > 0 ? 168 : 108 }} />
+          {selectedPupilIds.size > 0 && (
+            <div
+              style={{
+                position: "fixed",
+                bottom: 148,
+                left: 0,
+                right: 0,
+                padding: "14px 20px",
+                background: "rgba(15,32,68,0.95)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                borderTop: `1px solid ${NAVY}`,
+                zIndex: 50,
+              }}
+            >
+              <button
+                onClick={() => void bulkText()}
+                style={{
+                  width: "100%",
+                  background: "#FFFFFF",
+                  color: NAVY,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
+              >
+                Text {selectedPupilIds.size} selected →
+              </button>
+            </div>
+          )}
           <div
             style={{
               position: "fixed",
