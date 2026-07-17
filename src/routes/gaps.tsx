@@ -17,6 +17,14 @@ import {
 import { ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { BottomSheet } from "../components/dsm/BottomSheet";
+
+type DiscountCode = {
+  id: string;
+  code: string;
+  type: "percentage" | "fixed";
+  value: number;
+};
 
 export const Route = createFileRoute("/gaps")({
   head: () => ({
