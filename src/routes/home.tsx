@@ -5513,7 +5513,7 @@ function HomePage() {
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3' },
               ];
-              const tilesPerPage = 6;
+              const tilesPerPage = 4;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
@@ -5669,7 +5669,7 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
