@@ -4400,7 +4400,7 @@ function HomePage() {
             <div
               style={{
                 position: 'relative',
-                height: 220,
+                height: 150,
                 borderRadius: '16px 16px 0 0',
                 background: '#E8EEF3',
                 overflow: 'hidden',
@@ -4431,11 +4431,11 @@ function HomePage() {
                   type="button"
                   onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
                   style={{
-                    position: 'absolute', top: 12, left: 12,
+                    position: 'absolute', top: 10, left: 10,
                     background: '#0F2044', color: '#FFFFFF',
                     border: 'none', borderRadius: 999,
-                    padding: '10px 18px',
-                    fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                    padding: '6px 12px',
+                    fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
                     display: 'flex', alignItems: 'center', gap: 6,
                     cursor: 'pointer', fontFamily: 'Inter, sans-serif',
                     boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
@@ -4449,15 +4449,15 @@ function HomePage() {
               {streetLabel && (
                 <div
                   style={{
-                    position: 'absolute', top: 18, left: '50%', transform: 'translateX(-50%)',
+                    position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     pointerEvents: 'none', maxWidth: '65%',
                   }}
                 >
                   <div style={{
                     background: '#FFFFFF', color: '#0F2044',
-                    borderRadius: 999, padding: '6px 12px',
-                    fontSize: 12, fontWeight: 700,
+                    borderRadius: 999, padding: '4px 10px',
+                    fontSize: 11, fontWeight: 700,
                     display: 'flex', alignItems: 'center', gap: 5,
                     boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
@@ -4481,11 +4481,11 @@ function HomePage() {
                   type="button"
                   onClick={(e) => { e.stopPropagation(); window.open(mapsPlaceUrl, '_blank'); }}
                   style={{
-                    position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
+                    position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
                     background: '#FFFFFF', color: '#0F2044',
                     border: 'none', borderRadius: 999,
-                    padding: '8px 14px',
-                    fontSize: 12, fontWeight: 700,
+                    padding: '6px 12px',
+                    fontSize: 11, fontWeight: 700,
                     display: 'flex', alignItems: 'center', gap: 6,
                     cursor: 'pointer', fontFamily: 'Inter, sans-serif',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
@@ -4564,46 +4564,46 @@ function HomePage() {
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ display: 'flex', cursor: 'pointer', padding: 12, gap: 12, alignItems: 'stretch' }}
+              style={{ display: 'flex', cursor: 'pointer', padding: 10, gap: 10, alignItems: 'stretch' }}
             >
               {/* Date column */}
               <div style={{
-                width: 92, flexShrink: 0,
-                background: '#0F2044', borderRadius: 16,
+                width: 72, flexShrink: 0,
+                background: '#0F2044', borderRadius: 14,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                padding: '14px 0',
+                padding: '10px 0',
               }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#9AA6BC', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#9AA6BC', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                   {d.toLocaleString('en-GB', { weekday: 'short' })}
                 </span>
-                <span style={{ fontSize: 40, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginTop: 2 }}>{d.getDate()}</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#6FA8D6', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
+                <span style={{ fontSize: 28, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginTop: 2 }}>{d.getDate()}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
                   {d.toLocaleString('en-GB', { month: 'short' })}
                 </span>
               </div>
 
               {/* Info column */}
               <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {pupilName(upcoming)}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-                  <span style={{ width: 18, height: 18, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Clock size={10} color="#185FA5" />
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Clock size={9} color="#185FA5" />
                   </span>
-                  <span style={{ fontSize: 15, color: '#0F2044', fontWeight: 500 }}>{timeRange}</span>
+                  <span style={{ fontSize: 13, color: '#0F2044', fontWeight: 500 }}>{timeRange}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, minWidth: 0 }}>
-                  <span style={{ width: 18, height: 18, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <MapPin size={10} color="#185FA5" />
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <MapPin size={9} color="#185FA5" />
                   </span>
-                  <span style={{ fontSize: 13, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
+                  <span style={{ fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
                 </div>
               </div>
 
               {/* Price column */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: amountColor, lineHeight: 1 }}>{priceStr}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: amountColor, lineHeight: 1 }}>{priceStr}</div>
                 <span style={{
                   marginTop: 6,
                   background: pillBg, color: pillColor,
@@ -4623,7 +4623,7 @@ function HomePage() {
 
         {/* Expand footer */}
         {upcoming && (
-          <div style={{ padding: '0 12px 12px' }}>
+          <div style={{ padding: '0 10px 10px' }}>
             <button
               type="button"
               onClick={() => setHeroExpanded((v) => !v)}
@@ -4632,9 +4632,9 @@ function HomePage() {
                 background: '#EEF2F7',
                 border: 'none',
                 borderRadius: 999,
-                padding: '10px 0',
+                padding: '8px 0',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                fontSize: 13, fontWeight: 600, color: '#185FA5',
+                fontSize: 12, fontWeight: 600, color: '#185FA5',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
