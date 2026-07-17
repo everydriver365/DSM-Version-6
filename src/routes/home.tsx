@@ -380,7 +380,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '0 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
         <div style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
           {active.length} urgent
         </div>
@@ -962,7 +962,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       {/* SECTION HEADER */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 16, gap: 12 }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, fontFamily: "Inter, sans-serif" }}>
             DSM Marketplace
           </div>
         </div>
@@ -1330,7 +1330,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             aria-hidden
             style={{ width: 8, height: 8, borderRadius: "50%", background: "#E24B4A", flexShrink: 0 }}
           />
-          <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 18, fontWeight: 500, color: "#0F2044" }}>
+          <h2 style={{ margin: 0, fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 700, color: "#0F2044" }}>
             DSM Live
           </h2>
         </div>
@@ -4423,7 +4423,7 @@ function HomePage() {
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#0F2044', textTransform: 'uppercase', letterSpacing: 0.5 }}>Next lesson</span>
+        <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Next lesson</span>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
@@ -4792,7 +4792,7 @@ function HomePage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <AlertTriangle size={14} color="#D97706" />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>Local issues</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Local issues</span>
               </div>
               <button
                 type="button"
@@ -4871,7 +4871,7 @@ function HomePage() {
               <MessageSquare size={14} color="#6B4FD6" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>
                 Local chat · {localRoom.area_name}
               </div>
               <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -5167,7 +5167,7 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: "Inter, sans-serif", letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
                 {tab === 'today' && (
                   <button
@@ -5689,7 +5689,7 @@ function HomePage() {
                   `}</style>
                   <div style={{ background: '#F7F8FA', margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                      <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0F2044', fontWeight: 800 }}>Quick Access</div>
+                      <div style={{ fontSize: 18, color: '#0F2044', fontWeight: 700, fontFamily: "Inter, sans-serif" }}>Quick Access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -7708,7 +7708,7 @@ function DiscoverSection() {
 
 
   const headerTitle = {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: 700,
     color: "#0F2044",
     fontFamily: "Inter, sans-serif",
