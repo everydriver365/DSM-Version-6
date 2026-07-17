@@ -1025,7 +1025,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 }}
               >
                 {/* Hero image */}
-                <div style={{ position: "relative", height: 160, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
+                <div style={{ position: "relative", height: 140, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
                   {img ? (
                     <img
                       src={img}
