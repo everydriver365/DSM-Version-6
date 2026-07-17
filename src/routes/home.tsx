@@ -3181,11 +3181,11 @@ function HomePage() {
   })();
 
 
-  const freeSlotCount = (() => {
+  const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = (() => {
     const startMins = timeToMins(workingHours?.start_time ? String(workingHours.start_time) : "09:00");
     const endMins = timeToMins(todayEndTime ?? "18:00");
     const resolveAfter = (pid: string | null | undefined) => (pid && pupilBufferMap[pid]?.after != null ? pupilBufferMap[pid].after as number : instructorBufferAfter);
-    // Merge lessons (with buffer only after) and calendar blocks (no buffer) into sorted busy intervals.
+    // Merge lessons and calendar blocks (both with instructor buffer after) into sorted busy intervals.
     type Busy = { start: number; end: number };
     const busy: Busy[] = [];
     for (const l of todayLessons) {
@@ -3194,7 +3194,7 @@ function HomePage() {
       const endM = s.getHours() * 60 + s.getMinutes() + (l.duration_minutes ?? 60) + resolveAfter(l.pupil_id);
       busy.push({ start: startM, end: endM });
     }
-    for (const b of todayBlocks) busy.push({ start: b.start, end: b.end });
+    for (const b of todayBlocks) busy.push({ start: b.start, end: b.end + instructorBufferAfter });
     busy.sort((a, b) => a.start - b.start);
     // Merge overlapping/adjacent intervals so we count gaps between distinct busy blocks only.
     const merged: Busy[] = [];
@@ -3206,14 +3206,21 @@ function HomePage() {
         merged.push({ ...iv });
       }
     }
-    if (merged.length === 0) return Math.max(0, Math.floor((endMins - startMins) / 60));
-    let count = 0;
-    if (merged[0].start - startMins >= 60) count++;
-    for (let i = 0; i < merged.length - 1; i++) {
-      if (merged[i + 1].start - merged[i].end >= 60) count++;
+    if (merged.length === 0) {
+      const span = Math.max(0, endMins - startMins);
+      return { count: Math.floor(span / 60), totalMinutes: span };
     }
-    if (endMins - merged[merged.length - 1].end >= 60) count++;
-    return count;
+    let count = 0;
+    let totalMinutes = 0;
+    const consider = (gap: number) => {
+      if (gap >= 60) { count++; totalMinutes += gap; }
+    };
+    consider(merged[0].start - startMins);
+    for (let i = 0; i < merged.length - 1; i++) {
+      consider(merged[i + 1].start - merged[i].end);
+    }
+    consider(endMins - merged[merged.length - 1].end);
+    return { count, totalMinutes };
   })();
 
 
