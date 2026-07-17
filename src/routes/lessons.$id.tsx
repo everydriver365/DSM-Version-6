@@ -131,6 +131,7 @@ function statusColor(s: string) {
 
 function LessonDetailPage() {
   const { id } = Route.useParams();
+  const search = Route.useSearch();
   console.log("[lessons.$id] mounted, id:", id);
   const navigate = useNavigate();
   const router = useRouter();
@@ -145,15 +146,23 @@ function LessonDetailPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [insightDismissed, setInsightDismissed] = useState(false);
+  const [autoCancelHandled, setAutoCancelHandled] = useState(false);
 
+  useEffect(() => {
+    if (autoCancelHandled) return;
+    if (search.action !== "cancel") return;
+    if (!lesson) return;
+    if (lesson.status === "cancelled") return;
+    setCancelOpen(true);
+    setAutoCancelHandled(true);
+  }, [search.action, lesson, autoCancelHandled]);
 
-
-  async function confirmDelete() {
+  async function confirmDelete(reason: string) {
     if (deleting) return;
     setDeleting(true);
     const { error } = await supabase
       .from("lessons")
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString(), deletion_reason: reason })
       .eq("id", id);
     setDeleting(false);
     if (error) {
