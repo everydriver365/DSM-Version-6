@@ -1154,7 +1154,7 @@ function GapsPage() {
     pupilId: string,
     via: "sms" | "message",
     slot: { date: string; time: string; duration: number },
-    discount?: { type: "percentage" | "fixed"; value: number },
+    discount?: DiscountCode,
   ) {
     if (!userId) return;
     try {
@@ -1163,14 +1163,16 @@ function GapsPage() {
       let discounted_price: number | null = null;
       let discount_type: string | null = null;
       let discount_value: number | null = null;
+      let discount_code_id: string | null = null;
       if (pupil && discount) {
         original_price = calcOriginalPrice(pupil, slot.duration);
         discount_type = discount.type;
-        discount_value = discount.value;
+        discount_value = Number(discount.value);
+        discount_code_id = discount.id;
         discounted_price =
           discount.type === "percentage"
-            ? Math.round(original_price * (1 - discount.value / 100) * 100) / 100
-            : Math.max(0, Math.round((original_price - discount.value) * 100) / 100);
+            ? Math.round(original_price * (1 - Number(discount.value) / 100) * 100) / 100
+            : Math.max(0, Math.round((original_price - Number(discount.value)) * 100) / 100);
       }
       const row = {
         instructor_id: userId,
@@ -1180,6 +1182,7 @@ function GapsPage() {
         duration_minutes: slot.duration,
         status: "sent",
         sent_via: via,
+        discount_code_id,
         discount_type,
         discount_value,
         original_price,
