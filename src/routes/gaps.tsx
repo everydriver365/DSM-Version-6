@@ -1249,7 +1249,6 @@ function GapsPage() {
     });
 
     // 1. Insert in-app chat_messages for everyone immediately.
-    let chatSent = 0;
     for (const { pupil, body } of withBodies) {
       const { error: chatErr } = await supabase.from("chat_messages").insert({
         instructor_id: userId,
@@ -1260,8 +1259,6 @@ function GapsPage() {
       });
       if (chatErr) {
         console.error("[gaps] chat_messages insert failed:", chatErr);
-      } else {
-        chatSent++;
       }
     }
 
@@ -1285,7 +1282,6 @@ function GapsPage() {
       }
     }
 
-    const total = withBodies.length;
     toast.success(
       `Text queued for ${smsRows.length} pupil${smsRows.length === 1 ? "" : "s"} — sending shortly`,
     );
