@@ -1021,10 +1021,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
+                  height: 300,
                 }}
               >
                 {/* Hero image */}
-                <div style={{ position: "relative", height: 88, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
+                <div style={{ position: "relative", height: 160, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
                   {img ? (
                     <img
                       src={img}
@@ -1112,16 +1113,16 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   </div>
 
                   {/* Content */}
-                  <div style={{ flex: 1, padding: "10px 10px 8px", display: "flex", flexDirection: "column", minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, marginBottom: 3 }}>
+                  <div style={{ flex: 1, padding: "8px 10px 6px", display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, marginBottom: 2 }}>
                       {tile.title}
                     </div>
                     <div
                       style={{
-                        fontSize: 10,
+                        fontSize: 9,
                         color: "#6B7280",
                         lineHeight: 1.3,
-                        marginBottom: 8,
+                        marginBottom: 6,
                         display: "-webkit-box",
                         WebkitLineClamp: 1,
                         WebkitBoxOrient: "vertical",
@@ -1132,13 +1133,13 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         ? `${tile.marketplace_categories.name} for driving instructors.`
                         : "Premium service for driving instructors."}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: "auto" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: "auto" }}>
                       {features.map((f, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-                          <f.icon size={11} color="#2563EB" strokeWidth={1.8} />
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
+                          <f.icon size={10} color="#2563EB" strokeWidth={1.8} />
                           <span
                             style={{
-                              fontSize: 9,
+                              fontSize: 8.5,
                               color: "#6B7280",
                               fontWeight: 500,
                               whiteSpace: "nowrap",
@@ -1155,8 +1156,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 </div>
 
                 {/* Footer */}
-                <div style={{ padding: "0 12px 10px" }}>
-                  <div style={{ height: 1, background: "#E2E6ED", marginBottom: 8 }} />
+                <div style={{ padding: "0 10px 8px" }}>
+                  <div style={{ height: 1, background: "#E2E6ED", marginBottom: 6 }} />
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                       type="button"
@@ -1164,7 +1165,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         background: "transparent",
                         border: 0,
                         padding: 0,
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: 600,
                         color: "#2563EB",
                         cursor: "pointer",
