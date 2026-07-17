@@ -3005,7 +3005,8 @@ function HomePage() {
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
-    (async () => {
+
+    const fetchCalendarBlocks = async () => {
       const { data, error } = await supabase
         .from("calendar_blocks")
         .select("id, start_datetime, end_datetime, title")
@@ -3019,9 +3020,19 @@ function HomePage() {
         return;
       }
       setCalendarBlocks((data as any[]) ?? []);
-    })();
+    };
+
+    fetchCalendarBlocks();
+
+    const handleCalendarSynced = () => {
+      console.log("[home] calendar-synced event received; refetching calendar_blocks");
+      fetchCalendarBlocks();
+    };
+    window.addEventListener('calendar-synced', handleCalendarSynced);
+
     return () => {
       cancelled = true;
+      window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
   }, [userId, todayISO, tomorrowISO]);
 
