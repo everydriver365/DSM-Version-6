@@ -1,14 +1,25 @@
-Deploy the `receive-sms` Supabase Edge Function to the active Supabase project (`bjpqxfrihwjcqprmoqfs`).
+## Why calendar events don't show on Today
 
-Goal: make the Twilio inbound SMS webhook handler live at the Supabase Functions URL so it can validate Twilio signatures, match sender phone numbers to pupils, and insert replies into `chat_messages`.
+In `src/routes/home.tsx` around line 5354, the timeline render filters `rows` to just lessons:
 
-What the plan covers:
-1. Verify the local function source (`supabase/functions/receive-sms/index.ts`) and its README are current and correct.
-2. Ensure the Supabase CLI is configured for the project ref `bjpqxfrihwjcqprmoqfs` (create/link `supabase/config.toml` or run the equivalent deploy command with `--project-ref`).
-3. Deploy the function using `supabase functions deploy receive-sms` (or the latest equivalent CLI command).
-4. After deployment, report the function endpoint URL and confirm the deployed function is reachable (e.g., via a `GET` or `OPTIONS` probe that returns the expected Twilio/XML response or CORS headers).
-5. Note any required environment variables on the Supabase project (`TWILIO_AUTH_TOKEN`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) so the user can set them in the Supabase Dashboard if not already present.
+```ts
+const lessonRows = rows.filter(r => r.kind === 'lesson');
+if (lessonRows.length === 0) {
+  // returns "Your day is wide open" card or "No lessons today"
+  return ...;
+}
+// rows.map(...) with calendar branch never runs
+```
 
-Blocker/dependency: Supabase CLI deployment requires an authenticated Supabase access token or an already-linked project in the workspace. If the sandbox environment does not have Supabase CLI auth configured, I will surface the exact command and ask the user to run it locally (or provide access), then confirm the result.
+So `rows.map` (which contains the `calendar` branch added earlier) only ever renders when there is at least one lesson. Your Today has `todayLessons: 0`, so the early return fires and the Google Calendar blocks in `rows` are dropped on the floor. Tomorrow has the same bug (also 0 lessons in your logs). It works on Schedule because Schedule uses a different render path.
 
-No other files will be changed; this is purely a deployment of the existing `supabase/functions/receive-sms/index.ts` function.
+## Fix (only `src/routes/home.tsx`)
+
+Change the empty-state logic so calendar rows count as timeline content:
+
+1. Compute `calendarRows = rows.filter(r => r.kind === 'calendar')` alongside `lessonRows`.
+2. Change the early-return guard from `if (lessonRows.length === 0)` to `if (lessonRows.length === 0 && calendarRows.length === 0)` — only show "Your day is wide open" / "No lessons today" when there is nothing at all to display.
+3. In the header meta line (currently `{lessonRows.length} lesson(s)`), when `lessonRows.length === 0` and calendar events exist, show `{calendarRows.length} calendar event(s)` instead, so the header isn't misleading.
+4. Leave `rows.map` untouched — the existing `r.kind === 'calendar'` branch already renders the muted grey card correctly.
+
+Out of scope: the free-minutes math for the "wide open" card (it already runs after this change only when there are truly no blocks either), and the Next tab (still won't have calendar rows by design).

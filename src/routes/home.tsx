@@ -5353,10 +5353,11 @@ function HomePage() {
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
+              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date } => r.kind === 'calendar');
               const headerLabel = tab === 'today' ? 'Teaching today' : tab === 'tomorrow' ? 'Teaching tomorrow' : 'Upcoming lessons';
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
-              if (lessonRows.length === 0) {
+              if (lessonRows.length === 0 && calendarRows.length === 0) {
                 const freeMinutes = tab === 'today' ? totalFreeMinutesToday : tab === 'tomorrow' ? totalFreeMinutesTomorrow : 0;
                 if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= 60) {
                   const hours = Math.round(freeMinutes / 60);
@@ -5403,9 +5404,12 @@ function HomePage() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
-                      {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
+                      {lessonRows.length === 0
+                        ? `${calendarRows.length} calendar event${calendarRows.length === 1 ? '' : 's'}`
+                        : `${lessonRows.length} lesson${lessonRows.length === 1 ? '' : 's'}`}
                     </div>
                   </div>
+
 
 
                   {/* Timeline container with vertical connector */}
