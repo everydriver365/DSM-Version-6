@@ -4265,17 +4265,18 @@ function PracticalEditor({
 }
 
 const DOW = [
-  { key: 1, label: "Mon" },
-  { key: 2, label: "Tue" },
-  { key: 3, label: "Wed" },
-  { key: 4, label: "Thu" },
-  { key: 5, label: "Fri" },
-  { key: 6, label: "Sat" },
-  { key: 0, label: "Sun" },
+  { key: "Monday", label: "Mon" },
+  { key: "Tuesday", label: "Tue" },
+  { key: "Wednesday", label: "Wed" },
+  { key: "Thursday", label: "Thu" },
+  { key: "Friday", label: "Fri" },
+  { key: "Saturday", label: "Sat" },
+  { key: "Sunday", label: "Sun" },
 ];
 
 interface RTLSettings {
-  available_days: number[] | null;
+  available_days: string[] | null;
+
   available_from: string | null;
   available_until: string | null;
   min_notice_hours: number | null;
@@ -4298,7 +4299,7 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
   const [loaded, setLoaded] = useState(false);
   const [saved, setSaved] = useState<RTLSettings | null>(null);
   const [edit, setEdit] = useState(false);
-  const [days, setDays] = useState<number[]>([]);
+  const [days, setDays] = useState<string[]>([]);
   const [from, setFrom] = useState("09:00");
   const [until, setUntil] = useState("18:00");
   const [notice, setNotice] = useState("24");
@@ -4335,8 +4336,8 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
     return () => { cancelled = true; };
   }, [pupilId]);
 
-  function toggleDay(k: number) {
-    setDays((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k].sort((a, b) => a - b)));
+  function toggleDay(k: string) {
+    setDays((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k].sort()));
   }
 
   async function save() {
