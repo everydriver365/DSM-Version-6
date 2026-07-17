@@ -2318,7 +2318,7 @@ function GapsPage() {
               }}
             >
               <button
-                onClick={() => void bulkMessageSelected()}
+                onClick={openMessageSheet}
                 style={{
                   width: "100%",
                   background: "#FFFFFF",
