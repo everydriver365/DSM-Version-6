@@ -152,14 +152,28 @@ function getBlockColour(title: string): { bg: string; border: string; icon: stri
   return { bg: "#F3F4F6", border: "#9CA3AF", icon: "📅", text: "#6B7280" };
 }
 
+function localDateStr(iso?: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function localTimeStr(iso?: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
 function getCalendarBlocksForDate(
   calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
   dateStr: string,
 ): { startMins: number; endMins: number; title: string; isAllDay: boolean }[] {
   return (calendarBlocks || [])
     .filter((b) => {
-      const startDate = (b.start_datetime ?? "").substring(0, 10);
-      const endDate = (b.end_datetime ?? "").substring(0, 10);
+      const startDate = localDateStr(b.start_datetime);
+      const endDate = localDateStr(b.end_datetime);
       return (
         startDate === dateStr ||
         (startDate < dateStr && endDate > dateStr) ||
@@ -167,10 +181,10 @@ function getCalendarBlocksForDate(
       );
     })
     .map((b) => {
-      const startDate = (b.start_datetime ?? "").substring(0, 10);
-      const endDate = (b.end_datetime ?? "").substring(0, 10);
-      const startTime = (b.start_datetime ?? "").substring(11, 16) || "00:00";
-      const endTime = (b.end_datetime ?? "").substring(11, 16) || "23:59";
+      const startDate = localDateStr(b.start_datetime);
+      const endDate = localDateStr(b.end_datetime);
+      const startTime = localTimeStr(b.start_datetime) || "00:00";
+      const endTime = localTimeStr(b.end_datetime) || "23:59";
       const isAllDay =
         startTime === "00:00" && (endTime === "00:00" || endTime === "23:59");
       // For multi-day spans, clamp to full-day on interior/end dates.
