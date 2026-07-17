@@ -2092,7 +2092,7 @@ function HomePage() {
             style={{
               background: "#0B1F3A",
               color: "#FFFFFF",
-              borderRadius: 12,
+              borderRadius: 10,
               padding: "12px 14px",
               display: "flex",
               gap: 10,
@@ -3833,7 +3833,7 @@ function HomePage() {
     };
     const cardStyle: React.CSSProperties = {
       background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-      borderRadius: 12, padding: 16,
+      borderRadius: 10, padding: 16,
     };
     const statLabel: React.CSSProperties = {
       fontSize: 12, fontWeight: 600, color: "#6B7280",
@@ -3941,7 +3941,7 @@ function HomePage() {
                     return (
                       <div style={{
                         background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-                        borderRadius: 20, overflow: "hidden", margin: "12px 16px 0",
+                        borderRadius: 10, overflow: "hidden", margin: "12px 16px 0",
                         fontFamily: "Inter, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
@@ -4448,7 +4448,7 @@ function HomePage() {
             type="button"
             onClick={() => navigate({ to: s.route as never })}
             style={{
-              flex: 1, background: '#FFFFFF', borderRadius: 12,
+              flex: 1, background: '#FFFFFF', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
@@ -4475,7 +4475,7 @@ function HomePage() {
         style={{
           margin: '0 16px 20px',
           background: '#FFFFFF',
-          borderRadius: 20,
+          borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
@@ -4803,7 +4803,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 10,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 14px',
                 display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
@@ -5033,7 +5033,7 @@ function HomePage() {
         const cardBase: React.CSSProperties = {
           background: '#FFFFFF',
           border: `0.5px solid ${BORDER}`,
-          borderRadius: 16,
+          borderRadius: 10,
           fontFamily: PF,
         };
         const rowTap: React.CSSProperties = {
@@ -5051,7 +5051,7 @@ function HomePage() {
             tabIndex={onClick ? 0 : undefined}
             style={{
               ...cardBase,
-              borderRadius: 14,
+              borderRadius: 10,
               padding: '12px 14px',
               minHeight: 66,
               display: 'flex',
@@ -5166,7 +5166,7 @@ function HomePage() {
                     background: '#FFFBEB',
                     border: '0.5px solid #D97706',
                     borderLeft: '4px solid #D97706',
-                    borderRadius: 16,
+                    borderRadius: 10,
                     padding: '14px 16px',
                     fontFamily: PF,
                     display: 'flex',
@@ -5174,7 +5174,7 @@ function HomePage() {
                     alignItems: 'center',
                   }}
                 >
-                  <div style={{ width: 40, height: 40, borderRadius: 11, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Zap size={20} color="#D97706" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -5334,8 +5334,8 @@ function HomePage() {
                   const hours = Math.round(freeMinutes / 60);
                   const dayLabel = tab === 'today' ? 'today' : 'tomorrow';
                   return (
-                    <div style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #185FA5, #0F2044)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ background: '#FFFFFF', borderRadius: 10, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #185FA5, #0F2044)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <IconBolt size={22} color="#FFFFFF" stroke={2} />
                       </div>
                       <div style={{ fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Your day is wide open</div>
@@ -5422,7 +5422,7 @@ function HomePage() {
                             tabIndex={0}
                             style={{
                               background: '#FFFFFF',
-                              borderRadius: 12,
+                              borderRadius: 10,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
                               display: 'flex',
@@ -5524,7 +5524,7 @@ function HomePage() {
                             cursor: 'pointer',
                             background: '#FFFFFF',
                             border: 'none',
-                            borderRadius: 12,
+                            borderRadius: 10,
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                             boxSizing: 'border-box',
                           }}
@@ -5886,7 +5886,7 @@ function HomePage() {
                         style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock size={20} color="#C23B3B" strokeWidth={1.8} />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late</div>
@@ -5971,7 +5971,7 @@ function HomePage() {
                 style={{
                   background: "#FFFFFF",
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 12,
+                  borderRadius: 10,
                   padding: "12px 14px",
                   marginBottom: 8,
                   display: "flex",
