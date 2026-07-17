@@ -398,6 +398,7 @@ function GapsPage() {
 
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
+  const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
