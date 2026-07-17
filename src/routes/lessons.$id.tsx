@@ -54,9 +54,19 @@ const CANCEL_REASONS = [
   "Other",
 ] as const;
 
+const DELETE_REASONS = [
+  "Booked in error",
+  "Duplicate entry",
+  "Test/demo lesson",
+  "Other",
+] as const;
+
 export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
     meta: [{ title: "Lesson — DSM by EveryDriver" }],
+  }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    action: search.action === "cancel" ? ("cancel" as const) : undefined,
   }),
   component: LessonDetailPage,
 });
