@@ -4263,3 +4263,280 @@ function PracticalEditor({
     </div>
   );
 }
+
+const DOW = [
+  { key: 1, label: "Mon" },
+  { key: 2, label: "Tue" },
+  { key: 3, label: "Wed" },
+  { key: 4, label: "Thu" },
+  { key: 5, label: "Fri" },
+  { key: 6, label: "Sat" },
+  { key: 0, label: "Sun" },
+];
+
+interface RTLSettings {
+  available_days: number[] | null;
+  available_from: string | null;
+  available_until: string | null;
+  min_notice_hours: number | null;
+  short_notice_opt_in: boolean | null;
+  preferred_duration_minutes: number | null;
+  max_lessons_per_week: number | null;
+}
+
+function fmtTimeLabel(t: string | null): string {
+  if (!t) return "";
+  const [hStr, mStr] = t.split(":");
+  const h = Number(hStr);
+  const m = Number(mStr);
+  const ampm = h >= 12 ? "pm" : "am";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return m ? `${h12}:${String(m).padStart(2, "0")}${ampm}` : `${h12}${ampm}`;
+}
+
+function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [saved, setSaved] = useState<RTLSettings | null>(null);
+  const [edit, setEdit] = useState(false);
+  const [days, setDays] = useState<number[]>([]);
+  const [from, setFrom] = useState("09:00");
+  const [until, setUntil] = useState("18:00");
+  const [notice, setNotice] = useState("24");
+  const [shortNotice, setShortNotice] = useState(false);
+  const [duration, setDuration] = useState<string>(""); // "", "60", "90", "120"
+  const [maxPerWeek, setMaxPerWeek] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("pupil_ready_to_learn_settings")
+        .select("*")
+        .eq("pupil_id", pupilId)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.error("[ready-to-learn] load error", error);
+      }
+      const row = (data ?? null) as RTLSettings | null;
+      if (row) {
+        setSaved(row);
+        setDays(Array.isArray(row.available_days) ? row.available_days : []);
+        setFrom(row.available_from?.slice(0, 5) || "09:00");
+        setUntil(row.available_until?.slice(0, 5) || "18:00");
+        setNotice(row.min_notice_hours != null ? String(row.min_notice_hours) : "24");
+        setShortNotice(!!row.short_notice_opt_in);
+        setDuration(row.preferred_duration_minutes != null ? String(row.preferred_duration_minutes) : "");
+        setMaxPerWeek(row.max_lessons_per_week != null ? String(row.max_lessons_per_week) : "");
+      }
+      setLoaded(true);
+    })();
+    return () => { cancelled = true; };
+  }, [pupilId]);
+
+  function toggleDay(k: number) {
+    setDays((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k].sort((a, b) => a - b)));
+  }
+
+  async function save() {
+    setSaving(true);
+    const { data: userData } = await supabase.auth.getUser();
+    const instructorId = userData.user?.id;
+    if (!instructorId) {
+      setSaving(false);
+      toast.error("Failed to save — please try again");
+      return;
+    }
+    const payload = {
+      pupil_id: pupilId,
+      instructor_id: instructorId,
+      available_days: days,
+      available_from: from || null,
+      available_until: until || null,
+      min_notice_hours: notice === "" ? null : Number(notice),
+      short_notice_opt_in: shortNotice,
+      preferred_duration_minutes: duration === "" ? null : Number(duration),
+      max_lessons_per_week: maxPerWeek === "" ? null : Number(maxPerWeek),
+    };
+    const { error } = await supabase
+      .from("pupil_ready_to_learn_settings")
+      .upsert(payload, { onConflict: "pupil_id" });
+    setSaving(false);
+    if (error) {
+      console.error("[ready-to-learn] save error", error);
+      toast.error("Failed to save — please try again");
+      return;
+    }
+    setSaved({
+      available_days: payload.available_days,
+      available_from: payload.available_from,
+      available_until: payload.available_until,
+      min_notice_hours: payload.min_notice_hours,
+      short_notice_opt_in: payload.short_notice_opt_in,
+      preferred_duration_minutes: payload.preferred_duration_minutes,
+      max_lessons_per_week: payload.max_lessons_per_week,
+    });
+    setEdit(false);
+    toast.success("Ready to Learn settings saved");
+  }
+
+  const hasSaved = !!saved && (
+    (saved.available_days && saved.available_days.length > 0) ||
+    !!saved.available_from ||
+    !!saved.available_until ||
+    saved.min_notice_hours != null ||
+    saved.short_notice_opt_in ||
+    saved.preferred_duration_minutes != null ||
+    saved.max_lessons_per_week != null
+  );
+
+  const summary = (() => {
+    if (!saved) return "";
+    const parts: string[] = [];
+    if (saved.available_days && saved.available_days.length) {
+      parts.push(saved.available_days.map((d) => DOW.find((x) => x.key === d)?.label ?? "").filter(Boolean).join(", "));
+    }
+    if (saved.available_from || saved.available_until) {
+      parts.push(`${fmtTimeLabel(saved.available_from)}–${fmtTimeLabel(saved.available_until)}`);
+    }
+    if (saved.min_notice_hours != null) parts.push(`${saved.min_notice_hours}hrs notice`);
+    if (saved.short_notice_opt_in) parts.push("short notice ok");
+    if (saved.preferred_duration_minutes) parts.push(`${saved.preferred_duration_minutes} min`);
+    if (saved.max_lessons_per_week != null) parts.push(`max ${saved.max_lessons_per_week}/wk`);
+    return parts.join(" · ");
+  })();
+
+  return (
+    <div style={EXTRAS_CARD}>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Clock size={18} color="#1877D6" />
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Ready to Learn</span>
+        </div>
+        {!edit && loaded && (
+          <button type="button" onClick={() => setEdit(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+            {hasSaved ? "Edit" : "Add"}
+          </button>
+        )}
+      </div>
+      <div className="text-[12px] mb-3" style={{ color: "#6B7280", ...POPPINS }}>
+        Availability preferences for Gap Filler matching
+      </div>
+
+      {!loaded ? (
+        <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Loading…</div>
+      ) : !edit ? (
+        hasSaved ? (
+          <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>{summary}</div>
+        ) : (
+          <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Not set</div>
+        )
+      ) : (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Available days</label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {DOW.map((d) => {
+                const on = days.includes(d.key);
+                return (
+                  <button
+                    key={d.key}
+                    type="button"
+                    onClick={() => toggleDay(d.key)}
+                    className="text-[12px] font-semibold rounded-full"
+                    style={{
+                      padding: "6px 12px",
+                      background: on ? "#1877D6" : "#F3F4F6",
+                      color: on ? "#fff" : "#0B1F3A",
+                      border: on ? "0.5px solid #1877D6" : "0.5px solid #E2E6ED",
+                      ...POPPINS,
+                    }}
+                  >
+                    {d.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>From</label>
+              <input style={{ ...EXTRAS_INPUT, marginTop: 4 }} type="time" value={from} onChange={(e) => setFrom(e.target.value)} />
+            </div>
+            <div className="flex-1">
+              <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Until</label>
+              <input style={{ ...EXTRAS_INPUT, marginTop: 4 }} type="time" value={until} onChange={(e) => setUntil(e.target.value)} />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Minimum notice (hours)</label>
+            <input style={{ ...EXTRAS_INPUT, marginTop: 4 }} type="number" min="0" inputMode="numeric" value={notice} onChange={(e) => setNotice(e.target.value)} />
+          </div>
+
+          <label className="flex items-center justify-between text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+            <span>Accept short-notice slots</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={shortNotice}
+              onClick={() => setShortNotice((v) => !v)}
+              style={{
+                width: 44,
+                height: 26,
+                borderRadius: 999,
+                background: shortNotice ? "#1877D6" : "#E2E6ED",
+                position: "relative",
+                transition: "background 150ms",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  left: shortNotice ? 21 : 3,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  transition: "left 150ms",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              />
+            </button>
+          </label>
+
+          <div>
+            <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Preferred duration</label>
+            <select
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              style={{ ...EXTRAS_INPUT, marginTop: 4 }}
+            >
+              <option value="">No preference</option>
+              <option value="60">60 min</option>
+              <option value="90">90 min</option>
+              <option value="120">120 min</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Max lessons per week (optional)</label>
+            <input style={{ ...EXTRAS_INPUT, marginTop: 4 }} type="number" min="0" inputMode="numeric" placeholder="No limit" value={maxPerWeek} onChange={(e) => setMaxPerWeek(e.target.value)} />
+          </div>
+
+          <div className="flex gap-2 mt-1">
+            <button type="button" onClick={save} disabled={saving} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+              {saving ? "Saving…" : "Save settings"}
+            </button>
+            <button type="button" onClick={() => setEdit(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
