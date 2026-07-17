@@ -2538,64 +2538,6 @@ function GapsPage() {
         </div>
       </BottomSheet>
 
-      {pendingSendQueue.length > 0 && pendingSendIndex < pendingSendQueue.length && (
-        <div
-          style={{
-            position: "fixed",
-            left: 12,
-            right: 12,
-            bottom: 12,
-            zIndex: 80,
-            background: NAVY,
-            color: "#FFFFFF",
-            borderRadius: 14,
-            padding: "12px 14px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>
-              Text opened for {firstNameOf(pendingSendQueue[pendingSendIndex].pupil)} — confirm once sent
-            </div>
-            <div style={{ fontSize: 11, opacity: 0.75, marginTop: 2 }}>
-              {pendingSendIndex + 1} of {pendingSendQueue.length}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handlePendingSkip}
-            style={{
-              background: "transparent",
-              color: "#FFFFFF",
-              border: "1px solid rgba(255,255,255,0.4)",
-              borderRadius: 999,
-              padding: "8px 12px",
-              fontSize: 12,
-              fontWeight: 600,
-            }}
-          >
-            Skip
-          </button>
-          <button
-            type="button"
-            onClick={handlePendingSent}
-            style={{
-              background: "#22C580",
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: 999,
-              padding: "8px 14px",
-              fontSize: 12,
-              fontWeight: 700,
-            }}
-          >
-            Sent ✓
-          </button>
-        </div>
-      )}
     </div>
   );
 }
