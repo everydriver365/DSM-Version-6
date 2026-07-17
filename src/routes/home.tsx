@@ -317,7 +317,7 @@ const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
   borderRadius: 14,
   padding: '12px 16px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   display: 'flex',
   alignItems: 'center',
   gap: 12,
@@ -979,7 +979,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             color: "#0F2044",
             cursor: "pointer",
             whiteSpace: "nowrap",
-            boxShadow: "0 1px 2px rgba(15,32,68,0.05)",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             fontFamily: "Inter, sans-serif",
           }}
         >
@@ -1010,7 +1010,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   background: "#FFFFFF",
                   borderRadius: 16,
                   overflow: "hidden",
-                  boxShadow: "0 3px 5px -1px rgba(15, 32, 68, 0.04), 0 6px 12px -3px rgba(15, 32, 68, 0.06)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   cursor: "pointer",
                   display: "flex",
                   flexDirection: "column",
@@ -3519,7 +3519,7 @@ function HomePage() {
     let cardStyle: React.CSSProperties = { ...cardBase, border: "0.5px solid #EEF2F7" };
     if (state === "past") cardStyle = { ...cardBase, backgroundColor: "#F8F9FB", opacity: 0.6, border: "0.5px solid #EEF2F7" };
     else if (state === "current") cardStyle = { ...cardBase, borderLeft: "3px solid #1877D6", boxShadow: "0 0 0 1px #1877D620" };
-    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0B1F3A", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" };
+    else if (state === "next") cardStyle = { ...cardBase, borderLeft: "3px solid #0B1F3A", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" };
 
     const timeColor = isPast ? "#9CA3AF" : "#0B1F3A";
     const nameColor = isPast ? "#9CA3AF" : "#0B1F3A";
@@ -4449,7 +4449,7 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 12,
-              boxShadow: '0 4px 14px rgba(0,0,0,0.08)', padding: 12, minWidth: 0,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
@@ -4476,7 +4476,7 @@ function HomePage() {
           margin: '0 16px 20px',
           background: '#FFFFFF',
           borderRadius: 20,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
         }}
@@ -5741,7 +5741,7 @@ function HomePage() {
               return (
                 <>
                   <style>{`
-                    .qa-card:active { transform: scale(0.975); box-shadow: 0 1px 2px rgba(15,32,68,0.06), 0 4px 12px -6px rgba(15,32,68,0.10) !important; }
+                    .qa-card:active { transform: scale(0.975); }
                     .qa-card:active .qa-icon { transform: scale(0.92); }
                     @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
                     .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
@@ -5774,7 +5774,7 @@ function HomePage() {
                             width: 32, height: 32, borderRadius: 999,
                             background: '#FFFFFF', border: 'none', padding: 0, marginLeft: 4, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 1px 2px rgba(15,32,68,0.06), 0 4px 10px -4px rgba(15,32,68,0.10)',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                           }}
                           aria-label="Search quick access"
                         >
