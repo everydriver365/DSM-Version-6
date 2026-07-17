@@ -1044,7 +1044,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       style={{
                         width: "100%",
                         height: "100%",
-                        background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
+                        background: "#0F2044",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1060,7 +1060,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       top: 8,
                       left: 8,
                       background: "#FFFFFF",
-                      color: "#2563EB",
+                      color: "#0F2044",
                       padding: "3px 8px",
                       borderRadius: 999,
                       fontSize: 9,
@@ -1079,7 +1079,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     style={{
                       width: "18%",
                       minWidth: 42,
-                      background: "linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%)",
+                      background: "#0F2044",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -1136,7 +1136,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: "auto" }}>
                       {features.map((f, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
-                          <f.icon size={10} color="#2563EB" strokeWidth={1.8} />
+                          <f.icon size={10} color="#0F2044" strokeWidth={1.8} />
                           <span
                             style={{
                               fontSize: 8.5,
@@ -1167,7 +1167,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         padding: 0,
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#2563EB",
+                        color: "#0F2044",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
