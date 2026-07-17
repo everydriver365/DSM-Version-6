@@ -3065,13 +3065,25 @@ function HomePage() {
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
+  // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
   const blocksForDate = (dateStr: string) =>
     (calendarBlocks || [])
-      .filter((b) => (b.start_datetime ?? "").substring(0, 10) === dateStr)
-      .map((b) => ({
-        start: timeToMins((b.start_datetime ?? "").substring(11, 16) || "00:00"),
-        end: timeToMins((b.end_datetime ?? "").substring(11, 16) || "23:59"),
-      }))
+      .map((b) => {
+        const sd = new Date(b.start_datetime);
+        const ed = new Date(b.end_datetime);
+        if (isNaN(sd.getTime()) || isNaN(ed.getTime())) return null;
+        const localDateStr = `${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`;
+        const localStartTime = `${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`;
+        const localEndTime = `${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`;
+        return {
+          localDate: localDateStr,
+          start: timeToMins(localStartTime),
+          end: timeToMins(localEndTime),
+          title: b.title ?? 'Busy',
+        };
+      })
+      .filter((b): b is { localDate: string; start: number; end: number; title: string } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title }))
       .sort((a, b) => a.start - b.start);
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
