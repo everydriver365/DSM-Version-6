@@ -4598,26 +4598,6 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Open in Google Maps — bottom center */}
-              {upcoming && mapsPlaceUrl && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); window.open(mapsPlaceUrl, '_blank'); }}
-                  style={{
-                    position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
-                    background: '#FFFFFF', color: '#0B1F3A',
-                    border: 'none', borderRadius: 999,
-                    padding: '6px 12px',
-                    fontSize: 11, fontWeight: 700,
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                  }}
-                >
-                  <MapPin size={13} color="#EA4335" />
-                  Open in Google Maps
-                </button>
-              )}
             </div>
           );
         })()}
