@@ -1021,7 +1021,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
-                  height: 240,
                 }}
               >
                 {/* Hero image */}
