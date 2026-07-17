@@ -42,7 +42,7 @@ function initials(name: string) {
   return (a + b).toUpperCase() || "?";
 }
 
-const AVATAR_PALETTE = ["#185FA5", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#A32D2D", "#854F0B", "#185F8A"];
+const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
 // Explicit per-pupil colour overrides (takes precedence over hash).
 const PUPIL_COLOR_OVERRIDES: Record<string, string> = {};
 // Match Joseph Thorne by name-normalised key (id-agnostic override handled in avatarColor via name)
@@ -400,7 +400,7 @@ function PupilsIndexPage() {
                   ...POPPINS,
                   padding: "9px 4px",
                   fontSize: 13,
-                  backgroundColor: active ? "#0F2044" : "transparent",
+                  backgroundColor: active ? "#0B1F3A" : "transparent",
                   color: active ? "#FFFFFF" : "#8A94A6",
                   fontWeight: 500,
                   border: "none",
@@ -560,7 +560,7 @@ function PupilsIndexPage() {
                           <span
                             style={{
                               backgroundColor: "#FCEBEB",
-                              color: "#A32D2D",
+                              color: "#CC2229",
                               fontSize: 10,
                               fontWeight: 500,
                               padding: "2px 7px",

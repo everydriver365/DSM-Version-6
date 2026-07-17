@@ -40,7 +40,7 @@ export const Route = createFileRoute("/gaps")({
 });
 
 const FONT = { fontFamily: "Inter, sans-serif" } as const;
-const NAVY = "#0F2044";
+const NAVY = "#0B1F3A";
 const BLUE = "#1A52A0";
 const BLUE_BRIGHT = "#3B82F6";
 const TINT = "#E0F4FF";
@@ -1389,7 +1389,7 @@ function GapsPage() {
 
   const HAIRLINE = "#EEF2F7";
   const CHIP_BG = "#E6F1FB";
-  const ACCENT = "#185FA5";
+  const ACCENT = "#1877D6";
   const TEXT_PRIMARY = "#12142B";
   const TEXT_MUTED = "#B0BAC9";
   const TEXT_SUBTLE = "#8A94A6";
@@ -1544,7 +1544,7 @@ function GapsPage() {
         >
           <XCircle size={16} color="#CC2229" style={{ flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "#0F2044" }}>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "#0B1F3A" }}>
               Lesson cancelled — fill this slot?
             </div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
@@ -1602,7 +1602,7 @@ function GapsPage() {
             flexShrink: 0,
           }}
         >
-          <Zap size={18} color="#185FA5" />
+          <Zap size={18} color="#1877D6" />
         </div>
         <div style={{ fontSize: 13, color: "#5A6270", lineHeight: 1.5 }}>
           We rank pupils by availability, preferences and time since last lesson.
@@ -1619,7 +1619,7 @@ function GapsPage() {
           marginBottom: 2,
         }}
       >
-        <div style={{ fontSize: 19, fontWeight: 600, color: "#0F2044" }}>
+        <div style={{ fontSize: 19, fontWeight: 600, color: "#0B1F3A" }}>
           Your free slots
         </div>
         {freeSlots.length > 0 && (
@@ -1643,7 +1643,7 @@ function GapsPage() {
               padding: 0,
               fontSize: 13,
               fontWeight: 500,
-              color: "#185FA5",
+              color: "#1877D6",
               cursor: "pointer",
             }}
           >
@@ -1744,7 +1744,7 @@ function GapsPage() {
                         width: 8,
                         height: 8,
                         borderRadius: 999,
-                        background: "#185FA5",
+                        background: "#1877D6",
                         display: "inline-block",
                       }}
                     />
@@ -1752,7 +1752,7 @@ function GapsPage() {
                       style={{
                         fontSize: 14,
                         fontWeight: 600,
-                        color: "#0F2044",
+                        color: "#0B1F3A",
                       }}
                     >
                       {shortLabel}
@@ -1774,7 +1774,7 @@ function GapsPage() {
                       padding: "6px 12px",
                       fontSize: 12,
                       fontWeight: 500,
-                      color: "#185FA5",
+                      color: "#1877D6",
                       cursor: "pointer",
                     }}
                   >
@@ -1832,7 +1832,7 @@ function GapsPage() {
                       padding: 0,
                       fontSize: 12,
                       fontWeight: 500,
-                      color: "#185FA5",
+                      color: "#1877D6",
                       cursor: "pointer",
                     }}
                   >
@@ -1946,7 +1946,7 @@ function GapsPage() {
                           width: 42,
                           height: 42,
                           borderRadius: 12,
-                          background: "linear-gradient(135deg, #185FA5, #0F2044)",
+                          background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -1958,7 +1958,7 @@ function GapsPage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
-                            color: "#0F2044",
+                            color: "#0B1F3A",
                             fontWeight: 600,
                             fontSize: 15,
                             overflow: "hidden",
@@ -2003,11 +2003,11 @@ function GapsPage() {
                           gap: 8,
                         }}
                       >
-                        <Clock size={14} color="#185FA5" />
+                        <Clock size={14} color="#1877D6" />
                         <span
                           style={{
                             fontSize: 13,
-                            color: "#185FA5",
+                            color: "#1877D6",
                             fontWeight: 500,
                           }}
                         >
@@ -2070,9 +2070,9 @@ function GapsPage() {
                                 });
                               }}
                               style={{
-                                background: isSelected ? "#185FA5" : "#FFFFFF",
+                                background: isSelected ? "#1877D6" : "#FFFFFF",
                                 color: isSelected ? "#FFFFFF" : "#8A94A6",
-                                border: `1px solid ${isSelected ? "#185FA5" : "#EEF2F7"}`,
+                                border: `1px solid ${isSelected ? "#1877D6" : "#EEF2F7"}`,
                                 borderRadius: 999,
                                 padding: "4px 10px",
                                 fontSize: 11,
@@ -2277,7 +2277,7 @@ function GapsPage() {
                 onClick={() => navigate({ to: "/marketplace" })}
                 style={{
                   marginTop: 10,
-                  background: "#0F2044",
+                  background: "#0B1F3A",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: 12,

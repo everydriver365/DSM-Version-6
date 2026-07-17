@@ -152,12 +152,12 @@ function detectGaps(
 
 // Deterministic pupil colour palette. Same pupil_id -> same colour everywhere.
 const PUPIL_PALETTE = [
-  "#185FA5",
+  "#1877D6",
   "#6B4FD6",
   "#3B6D11",
   "#C4501E",
   "#0C8577",
-  "#A32D2D",
+  "#CC2229",
   "#854F0B",
   "#185F8A",
 ];
@@ -851,7 +851,7 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-      <div style={{ background: "#0F2044", paddingTop: "env(safe-area-inset-top, 0px)" }}>
+      <div style={{ background: "#0B1F3A", paddingTop: "env(safe-area-inset-top, 0px)" }}>
         <div
           style={{
             display: "flex",
@@ -1082,7 +1082,7 @@ function SchedulePage() {
                     style={{
                       fontSize: 16,
                       fontWeight: 600,
-                      color: "#0F2044",
+                      color: "#0B1F3A",
                       fontVariantNumeric: "tabular-nums",
                       ...POPPINS,
                     }}
@@ -1244,7 +1244,7 @@ function SchedulePage() {
                                     height: 12,
                                     borderRadius: "50%",
                                     background: "#E6F1FB",
-                                    border: "2px solid #185FA5",
+                                    border: "2px solid #1877D6",
                                     boxSizing: "border-box",
                                   }}
                                 />
@@ -1484,7 +1484,7 @@ function SchedulePage() {
                                       style={{
                                         fontSize: 14,
                                         fontWeight: 500,
-                                        color: "#0F2044",
+                                        color: "#0B1F3A",
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
                                         whiteSpace: "nowrap",
@@ -1596,7 +1596,7 @@ function SchedulePage() {
           width: 50,
           height: 50,
           borderRadius: '50%',
-          background: '#0F2044',
+          background: '#0B1F3A',
           border: 'none',
           cursor: 'pointer',
           display: 'flex',
@@ -1635,7 +1635,7 @@ function SchedulePage() {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', marginBottom: 16 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', marginBottom: 16 }}>
               Move lesson?
             </div>
             <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>From</div>
@@ -1646,7 +1646,7 @@ function SchedulePage() {
               <ArrowDown size={20} color="#9CA3AF" />
             </div>
             <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
-            <div style={{ fontSize: 14, color: '#0F2044', fontWeight: 700 }}>
+            <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 700 }}>
               {confirmMove.date} at {confirmMove.time}
             </div>
             <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, marginBottom: 20 }}>
@@ -1657,7 +1657,7 @@ function SchedulePage() {
               onClick={() => handleMoveLesson(confirmMove.date, confirmMove.time)}
               style={{
                 width: '100%',
-                background: '#0F2044',
+                background: '#0B1F3A',
                 color: '#FFFFFF',
                 fontWeight: 600,
                 fontSize: 14,
@@ -1729,7 +1729,7 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
           fontSize: 11,
           fontWeight: 500,
           letterSpacing: "0.04em",
-          color: isPast ? "#94A3B8" : isToday ? "#185FA5" : "#6B7280",
+          color: isPast ? "#94A3B8" : isToday ? "#1877D6" : "#6B7280",
         }}
       >
         {weekday}
@@ -1743,7 +1743,7 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: isToday ? "#185FA5" : "transparent",
+          background: isToday ? "#1877D6" : "transparent",
           color: isToday ? "#FFFFFF" : isPast ? "#94A3B8" : "#0B1F3A",
           fontSize: 15,
           fontWeight: 600,
@@ -1973,7 +1973,7 @@ function MonthCalendar({
               fontSize: 15,
               fontWeight: 500,
               lineHeight: 1,
-              color: "#0F2044",
+              color: "#0B1F3A",
               ...POPPINS,
               cursor: "pointer",
             }}
@@ -1992,13 +1992,13 @@ function MonthCalendar({
             onClick={onSearch}
             style={{ ...calChip, background: "#E6F1FB" }}
           >
-            <IconSearch size={14} stroke={1.75} color="#185FA5" />
+            <IconSearch size={14} stroke={1.75} color="#1877D6" />
           </button>
           <button
             type="button"
             aria-label="Add lesson"
             onClick={onAdd}
-            style={{ ...calChip, background: "#185FA5" }}
+            style={{ ...calChip, background: "#1877D6" }}
           >
             <IconPlus size={14} stroke={1.75} color="#FFFFFF" />
           </button>
@@ -2042,10 +2042,10 @@ function MonthCalendar({
           const numColour = isToday
             ? "#FFFFFF"
             : isSelected
-              ? "#185FA5"
+              ? "#1877D6"
               : !inMonth
                 ? "#C7CCD4"
-                : "#0F2044";
+                : "#0B1F3A";
           return (
             <button
               type="button"
@@ -2071,8 +2071,8 @@ function MonthCalendar({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: isToday ? "#185FA5" : "transparent",
-                  border: isSelected ? "1.5px solid #185FA5" : "none",
+                  background: isToday ? "#1877D6" : "transparent",
+                  border: isSelected ? "1.5px solid #1877D6" : "none",
                   color: numColour,
                   fontSize: 13,
                   fontWeight: isToday || isSelected ? 500 : 400,
@@ -2201,12 +2201,12 @@ function MonthStrip({
           type="button"
           onClick={onPrevMonth}
           aria-label="Previous month"
-          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0F2044", display: "inline-flex" }}
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0B1F3A", display: "inline-flex" }}
         >
           <IconChevronLeft size={18} stroke={2} />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>{monthLabel}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
           <button
             type="button"
             onClick={onToday}
@@ -2228,7 +2228,7 @@ function MonthStrip({
           type="button"
           onClick={onNextMonth}
           aria-label="Next month"
-          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0F2044", display: "inline-flex" }}
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0B1F3A", display: "inline-flex" }}
         >
           <IconChevronRight size={18} stroke={2} />
         </button>
@@ -2251,8 +2251,8 @@ function MonthStrip({
           const isSelected = key === selectedDate;
           const hasLessons = lessonDates.has(key);
           const dow = (d.getDay() + 6) % 7; // Mon=0
-          const numBg = isToday ? "#0F2044" : isSelected ? "#1A52A0" : "transparent";
-          const numColor = isToday || isSelected ? "#FFFFFF" : "#0F2044";
+          const numBg = isToday ? "#0B1F3A" : isSelected ? "#1A52A0" : "transparent";
+          const numColor = isToday || isSelected ? "#FFFFFF" : "#0B1F3A";
           return (
             <button
               key={key}

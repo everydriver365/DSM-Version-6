@@ -1154,7 +1154,7 @@ function PupilDetailPage() {
 
                     <span
                       className="mt-2 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                      style={{ backgroundColor: "#00B5A5", color: "#0F2044", ...POPPINS }}
+                      style={{ backgroundColor: "#00B5A5", color: "#0B1F3A", ...POPPINS }}
                     >
                       {badge.label}
                     </span>
@@ -1240,7 +1240,7 @@ function PupilDetailPage() {
                         type="button"
                         onClick={() => navigate({ to: "/pupils/payments/$id", params: { id } })}
                         className="text-left rounded-xl p-4"
-                        style={{ backgroundColor: "#0F2044" }}
+                        style={{ backgroundColor: "#0B1F3A" }}
                       >
                         <p
                           className="text-[10px] font-bold uppercase tracking-widest"
@@ -1266,7 +1266,7 @@ function PupilDetailPage() {
                           Practical test
                         </p>
                         <p
-                          className="text-[14px] font-semibold text-[#0F2044] mt-1 leading-tight"
+                          className="text-[14px] font-semibold text-[#0B1F3A] mt-1 leading-tight"
                           style={POPPINS}
                         >
                           {testValue}
@@ -1343,7 +1343,7 @@ function PupilDetailPage() {
                           ].map((s) => (
                             <div key={s.label} className="flex flex-col">
                               <span className="text-[10px] font-medium text-slate-500" style={POPPINS}>{s.label}</span>
-                              <span className="text-[12px] font-bold text-[#0F2044]" style={POPPINS}>
+                              <span className="text-[12px] font-bold text-[#0B1F3A]" style={POPPINS}>
                                 {s.value}
                                 <span className="text-slate-400 font-medium">/{s.max}</span>
                               </span>
@@ -1367,7 +1367,7 @@ function PupilDetailPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Theory</p>
-                            <p className="text-[12px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+                            <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
                               {pupil.theory_status || "Not started"}
                             </p>
                           </div>
@@ -1387,7 +1387,7 @@ function PupilDetailPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
-                            <p className="text-[12px] font-semibold text-[#0F2044] truncate" style={POPPINS}>
+                            <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
                               {pupil.test_status || (practBooked ? "Booked" : "Not booked")}
                             </p>
                           </div>
@@ -1492,7 +1492,7 @@ function PupilDetailPage() {
               <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
                 <div className="flex items-center gap-2">
                   <PoundSterling size={16} color="#16A34A" />
-                  <span className="font-semibold text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
+                  <span className="font-semibold text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
                     Prepaid balance
                   </span>
                 </div>
@@ -1545,7 +1545,7 @@ function PupilDetailPage() {
               ) : (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[12px] font-medium" style={{ color: "#0F2044", ...POPPINS }}>
+                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
                       Hours purchased
                     </label>
                     <input
@@ -1562,7 +1562,7 @@ function PupilDetailPage() {
                         borderRadius: 10,
                         border: "0.5px solid #E2E6ED",
                         background: "#FFFFFF",
-                        color: "#0F2044",
+                        color: "#0B1F3A",
                         ...POPPINS,
                       }}
                     />
@@ -1571,7 +1571,7 @@ function PupilDetailPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-[12px] font-medium" style={{ color: "#0F2044", ...POPPINS }}>
+                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
                       Account credit £
                     </label>
                     <input
@@ -1587,7 +1587,7 @@ function PupilDetailPage() {
                         borderRadius: 10,
                         border: "0.5px solid #E2E6ED",
                         background: "#FFFFFF",
-                        color: "#0F2044",
+                        color: "#0B1F3A",
                         ...POPPINS,
                       }}
                     />
@@ -1649,7 +1649,7 @@ function PupilDetailPage() {
             >
               <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
                 <Pencil size={14} color="#1A52A0" />
-                <span className="font-semibold text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
+                <span className="font-semibold text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
                   Quick edit
                 </span>
               </div>
@@ -1677,7 +1677,7 @@ function PupilDetailPage() {
                     borderRadius: 8,
                     border: "0.5px solid #E2E6ED",
                     background: "#FFFFFF",
-                    color: "#0F2044",
+                    color: "#0B1F3A",
                     fontSize: 13,
                     ...POPPINS,
                   }}
@@ -1714,7 +1714,7 @@ function PupilDetailPage() {
                     borderRadius: 8,
                     border: "0.5px solid #E2E6ED",
                     background: "#FFFFFF",
-                    color: "#0F2044",
+                    color: "#0B1F3A",
                     fontSize: 13,
                     ...POPPINS,
                   }}
@@ -1745,7 +1745,7 @@ function PupilDetailPage() {
                     borderRadius: 8,
                     border: "0.5px solid #E2E6ED",
                     background: "#FFFFFF",
-                    color: "#0F2044",
+                    color: "#0B1F3A",
                     fontSize: 13,
                     ...POPPINS,
                   }}
@@ -1994,12 +1994,12 @@ function PupilDetailPage() {
             background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12,
             padding: '10px 0', display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer',
-            fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 500, color: '#0F2044',
+            fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 500, color: '#0B1F3A',
           };
           const rowBtn: React.CSSProperties = {
             width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
             padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
-            fontFamily: 'Inter, sans-serif', fontSize: 14, color: "#0F2044", fontWeight: 500,
+            fontFamily: 'Inter, sans-serif', fontSize: 14, color: "#0B1F3A", fontWeight: 500,
           };
 
           const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";
@@ -2054,7 +2054,7 @@ function PupilDetailPage() {
                 <div style={{ padding: 16 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <Calendar size={16} color="#1877D6" />
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", ...POPPINS }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
                       {formatDateShort(start)} · {formatTime(focus.lesson_time)}
                     </div>
                     <span style={{ fontSize: 12, color: "#64748B", ...POPPINS }}>
@@ -2064,7 +2064,7 @@ function PupilDetailPage() {
                   {pickup && (
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
                       <MapPin size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
-                      <div style={{ flex: 1, fontSize: 13, color: "#0F2044", ...POPPINS }}>{pickup}</div>
+                      <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A", ...POPPINS }}>{pickup}</div>
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
                         target="_blank" rel="noreferrer"
@@ -2075,14 +2075,14 @@ function PupilDetailPage() {
                   {!isPast && !isCancelled && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                       <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
-                        <MapPin size={16} color="#0F2044" />
+                        <MapPin size={16} color="#0B1F3A" />
                         <span>Here</span>
                       </button>
                       <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, on the way!`)}>
-                        <Send size={16} color="#0F2044" />
+                        <Send size={16} color="#0B1F3A" />
                         <span>Going</span>
                       </button>
-                      <button style={{ ...pillBase, background: '#185FA5', color: '#FFFFFF', borderColor: '#185FA5' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
+                      <button style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF', borderColor: '#1877D6' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
                         <Check size={16} color="#FFFFFF" />
                         <span style={{ color: '#FFFFFF' }}>Arrived</span>
                       </button>
@@ -2125,14 +2125,14 @@ function PupilDetailPage() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <MessageSquare size={16} color="#1877D6" />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", ...POPPINS }}>Messages</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Messages</span>
                     {unreadMessages > 0 && (
                       <span style={{ background: "#B42318", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
                     )}
                   </div>
                   <span style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
                 </div>
-                <div style={{ fontSize: 13, color: lastMessage ? "#0F2044" : "#8A93A3", ...POPPINS, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: 13, color: lastMessage ? "#0B1F3A" : "#8A93A3", ...POPPINS, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {lastMsgPreview}
                 </div>
                 {lastMessage && (
@@ -2145,7 +2145,7 @@ function PupilDetailPage() {
                 <div style={{ background: "#FFF8E8", borderRadius: 16, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0F2044", ...POPPINS }}>£{balance.toFixed(2)}</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>£{balance.toFixed(2)}</div>
                   </div>
                   <button
                     onClick={markPaid}
@@ -2213,7 +2213,7 @@ function PupilDetailPage() {
                       {initials}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
                       <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
@@ -2242,7 +2242,7 @@ function PupilDetailPage() {
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <RefreshCw size={14} color="#1A52A0" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", ...POPPINS }}>Recurring lessons</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recurring lessons</span>
             </div>
             <button
               type="button"
@@ -2270,7 +2270,7 @@ function PupilDetailPage() {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0F2044" }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A" }}>
                     {s.day_of_week} at {(s.lesson_time || "").slice(0, 5)}
                   </div>
                   <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, textTransform: "capitalize" }}>
@@ -2327,7 +2327,7 @@ function PupilDetailPage() {
                             {initials}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0B1F3A", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                               {formatDateShort(d)}
                             </div>
                             <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
@@ -2523,7 +2523,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <Car size={16} color="#0F2044" /> Practical test
+                <Car size={16} color="#0B1F3A" /> Practical test
               </span>
               <button
                 type="button"
@@ -3422,7 +3422,7 @@ function NIRow({
 }
 
 const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
-const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0F2044"];
+const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0B1F3A"];
 const EXTRAS_CARD: React.CSSProperties = {
   borderRadius: 12,
   border: "0.5px solid #E2E6ED",
@@ -3857,7 +3857,7 @@ function PupilRatesAndColour({
         <div className="flex items-center gap-2">
           <Clock size={16} color="#9CA3AF" />
           <div className="flex flex-col">
-            <span className="text-[13px] font-semibold text-[#0F2044]" style={POPPINS}>Gap after lesson</span>
+            <span className="text-[13px] font-semibold text-[#0B1F3A]" style={POPPINS}>Gap after lesson</span>
             <span className="text-xs text-[#9CA3AF]" style={POPPINS}>
               Override the default {instructorBufferAfter != null ? `${instructorBufferAfter} min ` : ""}buffer for this pupil
             </span>
@@ -3867,7 +3867,7 @@ function PupilRatesAndColour({
           value={pupil.buffer_after_minutes ?? ""}
           onChange={(e) => void saveBuffer(e.target.value)}
           className="text-[13px]"
-          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
         >
           <option value="">Use default</option>
           {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
