@@ -452,7 +452,7 @@ function CertificationsPage() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 40, display: "flex", alignItems: "flex-end" }} onClick={() => setSheetOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, Inter, sans-serif" }}
+            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Inter, sans-serif" }}
           >
             <div style={{ width: 40, height: 4, background: "#E5E7EB", borderRadius: 2, margin: "0 auto 16px" }} />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
