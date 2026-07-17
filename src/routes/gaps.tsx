@@ -17,6 +17,14 @@ import {
 import { ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { BottomSheet } from "../components/dsm/BottomSheet";
+
+type DiscountCode = {
+  id: string;
+  code: string;
+  type: "percentage" | "fixed";
+  value: number;
+};
 
 export const Route = createFileRoute("/gaps")({
   head: () => ({
@@ -400,6 +408,11 @@ function GapsPage() {
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
   const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
+  const [messageSheetOpen, setMessageSheetOpen] = useState(false);
+  const [messageTemplate, setMessageTemplate] = useState("");
+  const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
+  const [instructorName, setInstructorName] = useState("Your instructor");
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
@@ -923,6 +936,31 @@ function GapsPage() {
     })();
   }, [userId, reloadKey]);
 
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: inst } = await supabase
+        .from("instructors")
+        .select("name, first_name, last_name")
+        .eq("id", userId)
+        .maybeSingle();
+      if (inst) {
+        const n =
+          (inst as any).name ||
+          `${(inst as any).first_name ?? ""} ${(inst as any).last_name ?? ""}`.trim();
+        setInstructorName(n || "Your instructor");
+      }
+      const { data: dcs, error: dcErr } = await supabase
+        .from("discount_codes")
+        .select("id, code, type, value")
+        .eq("instructor_id", userId)
+        .eq("active", true)
+        .is("deleted_at", null);
+      if (dcErr) console.error("[gaps] discount_codes fetch failed", dcErr);
+      setDiscountCodes(((dcs ?? []) as any[]) as DiscountCode[]);
+    })();
+  }, [userId]);
+
   async function findPupils(override?: SelectedSlot[]) {
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
@@ -1123,6 +1161,50 @@ function GapsPage() {
     void logOffer(r.pupil.id, "sms");
   }
 
+  function buildDefaultTemplate(): string {
+    const slots = searchSlots.length ? searchSlots : selectedSlots;
+    let when = "[date] at [time]";
+    if (slots.length === 1) {
+      when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)}`;
+    } else if (slots.length > 1) {
+      const lines = slots
+        .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
+        .join("\n");
+      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n{instructor_name}`;
+    }
+    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? {instructor_name}`;
+  }
+
+  function openMessageSheet() {
+    setMessageTemplate(buildDefaultTemplate());
+    setSelectedDiscountId(null);
+    setMessageSheetOpen(true);
+  }
+
+  function discountLineFor(dc: DiscountCode): string {
+    const value =
+      dc.type === "percentage" ? `${dc.value}% off` : `£${dc.value} off`;
+    return `Use code ${dc.code} for ${value} this lesson!`;
+  }
+
+  const DISCOUNT_MARKER = "Use code ";
+  function applyDiscountToTemplate(dcId: string | null) {
+    setSelectedDiscountId(dcId);
+    setMessageTemplate((prev) => {
+      // strip any existing discount line
+      const stripped = prev
+        .split("\n")
+        .filter((l) => !l.trimStart().startsWith(DISCOUNT_MARKER))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trimEnd();
+      if (!dcId) return stripped;
+      const dc = discountCodes.find((d) => d.id === dcId);
+      if (!dc) return stripped;
+      return `${stripped}\n\n${discountLineFor(dc)}`;
+    });
+  }
+
   async function bulkMessageSelected() {
     if (selectedPupilIds.size === 0 || !ranked || !userId) return;
     const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
@@ -1130,7 +1212,10 @@ function GapsPage() {
     let appOnly = 0;
     for (let i = 0; i < selected.length; i++) {
       const r = selected[i];
-      const body = buildTextBody(r);
+      const first = firstNameOf(r.pupil);
+      const body = messageTemplate
+        .replace(/\{name\}/g, first)
+        .replace(/\{instructor_name\}/g, instructorName);
       const phone = r.pupil.phone || "";
 
       const { error: chatErr } = await supabase.from("chat_messages").insert({
@@ -1157,6 +1242,7 @@ function GapsPage() {
     } else {
       toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
     }
+    setMessageSheetOpen(false);
     setSelectedPupilIds(new Set());
   }
 
@@ -2232,7 +2318,7 @@ function GapsPage() {
               }}
             >
               <button
-                onClick={() => void bulkMessageSelected()}
+                onClick={openMessageSheet}
                 style={{
                   width: "100%",
                   background: "#FFFFFF",
@@ -2296,6 +2382,111 @@ function GapsPage() {
           </div>
         </>
       )}
+
+      <BottomSheet
+        open={messageSheetOpen}
+        onOpenChange={setMessageSheetOpen}
+        title="Message selected pupils"
+        description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#4A5A73",
+                marginBottom: 6,
+              }}
+            >
+              Message
+            </label>
+            <textarea
+              value={messageTemplate}
+              onChange={(e) => setMessageTemplate(e.target.value)}
+              rows={7}
+              style={{
+                width: "100%",
+                border: "1px solid #D5DDE8",
+                borderRadius: 12,
+                padding: 12,
+                fontSize: 14,
+                color: "#0B1F3A",
+                fontFamily: "inherit",
+                resize: "vertical",
+              }}
+            />
+            <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+              {"{name}"} and {"{instructor_name}"} will be replaced for each pupil.
+            </p>
+          </div>
+
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#4A5A73",
+                marginBottom: 6,
+              }}
+            >
+              Add a discount
+            </label>
+            <select
+              value={selectedDiscountId ?? ""}
+              onChange={(e) => applyDiscountToTemplate(e.target.value || null)}
+              style={{
+                width: "100%",
+                border: "1px solid #D5DDE8",
+                borderRadius: 12,
+                padding: "10px 12px",
+                fontSize: 14,
+                color: "#0B1F3A",
+                background: "#FFFFFF",
+              }}
+            >
+              <option value="">No discount</option>
+              {discountCodes.map((dc) => (
+                <option key={dc.id} value={dc.id}>
+                  {dc.code} —{" "}
+                  {dc.type === "percentage"
+                    ? `${dc.value}% off`
+                    : `£${dc.value} off`}
+                </option>
+              ))}
+            </select>
+            {discountCodes.length === 0 && (
+              <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+                No active discount codes.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => void bulkMessageSelected()}
+            disabled={!messageTemplate.trim() || selectedPupilIds.size === 0}
+            style={{
+              width: "100%",
+              background: "#0B1F3A",
+              color: "#FFFFFF",
+              fontWeight: 700,
+              fontSize: 15,
+              borderRadius: 14,
+              border: "none",
+              padding: "14px 20px",
+              cursor: "pointer",
+              opacity:
+                !messageTemplate.trim() || selectedPupilIds.size === 0 ? 0.5 : 1,
+            }}
+          >
+            Send to {selectedPupilIds.size} pupil
+            {selectedPupilIds.size === 1 ? "" : "s"}
+          </button>
+        </div>
+      </BottomSheet>
     </div>
   );
 }
