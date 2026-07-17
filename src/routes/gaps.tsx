@@ -226,6 +226,9 @@ interface Pupil {
   phone: string | null;
   postcode: string | null;
   calendar_colour: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
 }
 
 interface Availability {
@@ -989,7 +992,7 @@ function GapsPage() {
         supabase
           .from("pupils")
           .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour",
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
           )
           .eq("instructor_id", userId)
           .eq("status", "active")
@@ -1131,21 +1134,58 @@ function GapsPage() {
     }
   }
 
-  async function logOffer(pupilId: string, via: "sms" | "message") {
+  function calcOriginalPrice(pupil: Pupil, durationMinutes: number): number {
+    if (durationMinutes === 90 && pupil.custom_rate_90 && pupil.custom_rate_90 > 0) {
+      return Number(pupil.custom_rate_90);
+    }
+    if (durationMinutes === 120 && pupil.custom_rate_120 && pupil.custom_rate_120 > 0) {
+      return Number(pupil.custom_rate_120);
+    }
+    if (durationMinutes === 60 && pupil.custom_rate && pupil.custom_rate > 0) {
+      return Number(pupil.custom_rate);
+    }
+    if (pupil.custom_rate && pupil.custom_rate > 0) {
+      return Math.round(Number(pupil.custom_rate) * (durationMinutes / 60) * 100) / 100;
+    }
+    return Math.round((hourlyRate || 0) * (durationMinutes / 60) * 100) / 100;
+  }
+
+  async function logOffer(
+    pupilId: string,
+    via: "sms" | "message",
+    slot: { date: string; time: string; duration: number },
+    discount?: { type: "percentage" | "fixed"; value: number },
+  ) {
     if (!userId) return;
-    const slots = searchSlots.length ? searchSlots : selectedSlots;
-    if (!slots.length) return;
     try {
-      const rows = slots.map((s) => ({
+      const pupil = ranked?.find((r) => r.pupil.id === pupilId)?.pupil;
+      let original_price: number | null = null;
+      let discounted_price: number | null = null;
+      let discount_type: string | null = null;
+      let discount_value: number | null = null;
+      if (pupil && discount) {
+        original_price = calcOriginalPrice(pupil, slot.duration);
+        discount_type = discount.type;
+        discount_value = discount.value;
+        discounted_price =
+          discount.type === "percentage"
+            ? Math.round(original_price * (1 - discount.value / 100) * 100) / 100
+            : Math.max(0, Math.round((original_price - discount.value) * 100) / 100);
+      }
+      const row = {
         instructor_id: userId,
         pupil_id: pupilId,
-        slot_date: s.date,
-        slot_time: s.time,
-        duration_minutes: s.duration,
+        slot_date: slot.date,
+        slot_time: slot.time,
+        duration_minutes: slot.duration,
         status: "sent",
         sent_via: via,
-      }));
-      const { error } = await supabase.from("gap_filler_offers").insert(rows);
+        discount_type,
+        discount_value,
+        original_price,
+        discounted_price,
+      };
+      const { error } = await supabase.from("gap_filler_offers").insert(row);
       if (error) throw error;
       setReloadKey((k) => k + 1);
     } catch (err) {
@@ -1186,7 +1226,12 @@ function GapsPage() {
       toast.error("Failed to queue text");
       return;
     }
-    void logOffer(r.pupil.id, "sms");
+    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
+    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
+    for (const s of slotsForOffer) {
+      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, discount);
+    }
     toast.success(`Text queued for ${firstNameOf(r.pupil)} — sending shortly`);
   }
 
@@ -1248,7 +1293,11 @@ function GapsPage() {
       return { pupil: r.pupil, body };
     });
 
-    // 1. Insert in-app chat_messages for everyone immediately.
+    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
+    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
+
+    // 1. Insert in-app chat_messages for everyone immediately + log offers.
     for (const { pupil, body } of withBodies) {
       const { error: chatErr } = await supabase.from("chat_messages").insert({
         instructor_id: userId,
@@ -1259,6 +1308,9 @@ function GapsPage() {
       });
       if (chatErr) {
         console.error("[gaps] chat_messages insert failed:", chatErr);
+      }
+      for (const s of slotsForOffer) {
+        void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
       }
     }
 
@@ -1294,7 +1346,12 @@ function GapsPage() {
 
 
   function handleMessage(r: Ranked) {
-    void logOffer(r.pupil.id, "message");
+    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
+    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
+    for (const s of slotsForOffer) {
+      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
+    }
     navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
   }
 
