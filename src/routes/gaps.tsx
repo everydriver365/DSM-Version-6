@@ -992,7 +992,7 @@ function GapsPage() {
         supabase
           .from("pupils")
           .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour",
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
           )
           .eq("instructor_id", userId)
           .eq("status", "active")
