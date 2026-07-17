@@ -1192,16 +1192,18 @@ function GapsPage() {
 
   function buildDefaultTemplate(): string {
     const slots = searchSlots.length ? searchSlots : selectedSlots;
+    const cta = "Reply YES to confirm, or let me know if another time works better!";
     let when = "[date] at [time]";
     if (slots.length === 1) {
       when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)} (${slots[0].duration} min)`;
+      return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
     } else if (slots.length > 1) {
       const lines = slots
         .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
         .join("\n");
-      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n{instructor_name}`;
+      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n${cta} {instructor_name}`;
     }
-    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? {instructor_name}`;
+    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
   }
 
   function openMessageSheet() {
