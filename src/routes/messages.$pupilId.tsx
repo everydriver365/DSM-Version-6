@@ -622,7 +622,7 @@ function PupilThreadPage() {
       borderRadius: 20,
       padding: '10px 16px',
       fontSize: 14,
-      fontFamily: 'Poppins, sans-serif',
+      fontFamily: 'Inter, sans-serif',
       resize: 'none',
       outline: 'none',
       maxHeight: 120,
