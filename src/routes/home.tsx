@@ -5167,7 +5167,7 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 17, fontWeight: 500, color: '#0F2044', fontFamily: PF, letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: "Inter, sans-serif", letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
                 {tab === 'today' && (
                   <button
