@@ -1156,8 +1156,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 </div>
 
                 {/* Footer */}
-                <div style={{ padding: "0 12px 10px" }}>
-                  <div style={{ height: 1, background: "#E2E6ED", marginBottom: 8 }} />
+                <div style={{ padding: "0 10px 8px" }}>
+                  <div style={{ height: 1, background: "#E2E6ED", marginBottom: 6 }} />
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                       type="button"
@@ -1165,7 +1165,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         background: "transparent",
                         border: 0,
                         padding: 0,
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: 600,
                         color: "#2563EB",
                         cursor: "pointer",
