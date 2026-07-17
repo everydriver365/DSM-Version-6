@@ -5507,14 +5507,15 @@ function HomePage() {
                               width: 12,
                               height: 12,
                               borderRadius: '50%',
-                              background: '#C7CDD6',
+                              background: '#E6F1FB',
+                              border: '2px solid #1877D6',
                               boxSizing: 'border-box',
                             }}
                           />
                           <div
                             style={{
-                              background: '#F5F6F8',
-                              border: '1px dashed #D5D9E0',
+                              background: '#F4F8FE',
+                              border: '1px solid #D6E6F8',
                               borderRadius: 10,
                               padding: '12px 14px',
                               display: 'flex',
@@ -5527,24 +5528,25 @@ function HomePage() {
                                 width: 34,
                                 height: 34,
                                 borderRadius: 8,
-                                background: '#E9EBEF',
+                                background: '#E1ECFB',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 flexShrink: 0,
                               }}
                             >
-                              <IconCalendar size={16} color="#8A93A3" strokeWidth={1.75} />
+                              <IconCalendar size={16} color="#1877D6" strokeWidth={1.75} />
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(cs)} · {r.title}
                               </div>
-                              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
                                 From Google Calendar
                               </div>
                             </div>
                           </div>
+
                         </div>
                       );
                     }
