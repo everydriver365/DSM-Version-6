@@ -204,7 +204,6 @@ interface Pupil {
   phone: string | null;
   postcode: string | null;
   calendar_colour: string | null;
-  last_lesson_date: string | null;
 }
 
 interface Availability {
@@ -934,7 +933,7 @@ function GapsPage() {
         supabase
           .from("pupils")
           .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour,last_lesson_date",
+            "id,name,first_name,last_name,phone,postcode,calendar_colour",
           )
           .eq("instructor_id", userId)
           .eq("status", "active")
@@ -951,6 +950,10 @@ function GapsPage() {
           .in("status", ["completed", "confirmed", "pending", "in_progress"])
           .order("lesson_date", { ascending: false }),
       ]);
+
+      if (pupilsRes.error) console.error("[gaps] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[gaps] availability query failed:", availRes.error);
+      if (lessonsRes.error) console.error("[gaps] lessons query failed:", lessonsRes.error);
 
       const pupils = (pupilsRes.data ?? []) as Pupil[];
       const availMap = new Map<string, Availability>();
@@ -992,7 +995,7 @@ function GapsPage() {
 
       const scored: Ranked[] = pupils.map((p) => {
         const s = availMap.get(p.id) || null;
-        const last = lastLessonMap.get(p.id) || p.last_lesson_date || null;
+        const last = lastLessonMap.get(p.id) || null;
         const matched: SlotMatch[] = slotsToScore.map((sl) =>
           scoreSlot(p, s, last, sl, nowMs),
         );
