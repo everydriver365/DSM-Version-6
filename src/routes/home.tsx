@@ -962,7 +962,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       {/* SECTION HEADER */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 16, gap: 12 }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, fontFamily: "Inter, sans-serif" }}>
             DSM Marketplace
           </div>
         </div>
