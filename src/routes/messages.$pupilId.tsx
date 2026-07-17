@@ -96,6 +96,8 @@ function PupilThreadPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
+  const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
+  const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
