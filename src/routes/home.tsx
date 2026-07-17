@@ -7708,7 +7708,7 @@ function DiscoverSection() {
 
 
   const headerTitle = {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: 700,
     color: "#0F2044",
     fontFamily: "Inter, sans-serif",
