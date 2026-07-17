@@ -2382,6 +2382,111 @@ function GapsPage() {
           </div>
         </>
       )}
+
+      <BottomSheet
+        open={messageSheetOpen}
+        onOpenChange={setMessageSheetOpen}
+        title="Message selected pupils"
+        description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#4A5A73",
+                marginBottom: 6,
+              }}
+            >
+              Message
+            </label>
+            <textarea
+              value={messageTemplate}
+              onChange={(e) => setMessageTemplate(e.target.value)}
+              rows={7}
+              style={{
+                width: "100%",
+                border: "1px solid #D5DDE8",
+                borderRadius: 12,
+                padding: 12,
+                fontSize: 14,
+                color: "#0B1F3A",
+                fontFamily: "inherit",
+                resize: "vertical",
+              }}
+            />
+            <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+              {"{name}"} and {"{instructor_name}"} will be replaced for each pupil.
+            </p>
+          </div>
+
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#4A5A73",
+                marginBottom: 6,
+              }}
+            >
+              Add a discount
+            </label>
+            <select
+              value={selectedDiscountId ?? ""}
+              onChange={(e) => applyDiscountToTemplate(e.target.value || null)}
+              style={{
+                width: "100%",
+                border: "1px solid #D5DDE8",
+                borderRadius: 12,
+                padding: "10px 12px",
+                fontSize: 14,
+                color: "#0B1F3A",
+                background: "#FFFFFF",
+              }}
+            >
+              <option value="">No discount</option>
+              {discountCodes.map((dc) => (
+                <option key={dc.id} value={dc.id}>
+                  {dc.code} —{" "}
+                  {dc.type === "percentage"
+                    ? `${dc.value}% off`
+                    : `£${dc.value} off`}
+                </option>
+              ))}
+            </select>
+            {discountCodes.length === 0 && (
+              <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+                No active discount codes.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => void bulkMessageSelected()}
+            disabled={!messageTemplate.trim() || selectedPupilIds.size === 0}
+            style={{
+              width: "100%",
+              background: "#0B1F3A",
+              color: "#FFFFFF",
+              fontWeight: 700,
+              fontSize: 15,
+              borderRadius: 14,
+              border: "none",
+              padding: "14px 20px",
+              cursor: "pointer",
+              opacity:
+                !messageTemplate.trim() || selectedPupilIds.size === 0 ? 0.5 : 1,
+            }}
+          >
+            Send to {selectedPupilIds.size} pupil
+            {selectedPupilIds.size === 1 ? "" : "s"}
+          </button>
+        </div>
+      </BottomSheet>
     </div>
   );
 }
