@@ -2616,62 +2616,6 @@ function PupilCard({
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-        <button
-          onClick={onText}
-          style={{
-            background: NAVY,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          📱 Text
-        </button>
-        <button
-          onClick={onMessage}
-          style={{
-            background: TEAL,
-            color: "#FFFFFF",
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <MessageSquare size={14} /> Message
-        </button>
-        <button
-          onClick={onBook}
-          style={{
-            background: "#FFFFFF",
-            color: NAVY,
-            borderRadius: 12,
-            padding: "10px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            border: `0.5px solid ${NAVY}`,
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <Plus size={14} /> Book
-        </button>
-      </div>
     </div>
   );
 }
