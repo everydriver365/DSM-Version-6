@@ -751,7 +751,7 @@ function ReportSheet({
                     border: "0.5px solid " + (location ? "#86EFAC" : "#E2E6ED"),
                     borderRadius: 10,
                     fontSize: 13,
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     color: "#0F2044",
                     outline: "none",
                     boxSizing: "border-box",

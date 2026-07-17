@@ -24,7 +24,7 @@ export const Route = createFileRoute("/schedule")({
   component: SchedulePage,
 });
 
-const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 function formatRelativeSync(iso: string): string {
   const then = new Date(iso).getTime();
@@ -903,7 +903,7 @@ function SchedulePage() {
                   color="white"
                   style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
                 />
-                <span style={{ fontSize: 11, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>
+                <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
                   {syncing ? "Syncing..." : "Sync"}
                 </span>
               </button>
@@ -991,15 +991,15 @@ function SchedulePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
         </div>
       </div>
 
@@ -1538,7 +1538,7 @@ function SchedulePage() {
                                         background: '#E0F4FF',
                                         borderRadius: 4,
                                         padding: '1px 5px',
-                                        fontFamily: 'Poppins, sans-serif',
+                                        fontFamily: 'Inter, sans-serif',
                                         flexShrink: 0,
                                       }}
                                     >
@@ -1554,7 +1554,7 @@ function SchedulePage() {
                                         background: '#F3F4F6',
                                         borderRadius: 4,
                                         padding: '1px 5px',
-                                        fontFamily: 'Poppins, sans-serif',
+                                        fontFamily: 'Inter, sans-serif',
                                         flexShrink: 0,
                                         display: 'flex',
                                         alignItems: 'center',

@@ -538,7 +538,7 @@ function TodayLessonsTile({
         gap: 12,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Poppins, Inter, sans-serif",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       <span
@@ -1254,7 +1254,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return () => { cancelled = true; };
   }, []);
 
-  const POPPINS = "'Poppins', system-ui, -apple-system, sans-serif";
+  const POPPINS = "Inter, sans-serif";
 
   // "Tue 21 Jul · 10:10am" (sentence case)
   const fmtDateTime = (d: string, t: string) => {
@@ -1504,7 +1504,7 @@ type QaTile = {
 };
 
 function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
-  const PF = "'Poppins', system-ui, -apple-system, sans-serif";
+  const PF = "Inter, sans-serif";
   const NAVY = '#12142B';
   const [page, setPage] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -4045,7 +4045,7 @@ function HomePage() {
                       fontSize: 11,
                       fontWeight: 600,
                       color: '#1877D6',
-                      fontFamily: 'Poppins, sans-serif',
+                      fontFamily: 'Inter, sans-serif',
                     }}
                   >
                     <CalendarIcon size={12} color="#1877D6" />
@@ -4801,7 +4801,7 @@ function HomePage() {
 
         {/* ============ LOCAL ISSUES ============ */}
         {localAlerts !== null && localAlerts.length > 0 && (
-          <div style={{ margin: '12px 16px 0', fontFamily: 'Poppins, Inter, sans-serif' }}>
+          <div style={{ margin: '12px 16px 0', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <AlertTriangle size={14} color="#D97706" />
@@ -4874,7 +4874,7 @@ function HomePage() {
               margin: '8px 16px 0', background: 'white', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
               display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-              fontFamily: 'Poppins, Inter, sans-serif',
+              fontFamily: 'Inter, sans-serif',
             }}
           >
             <div style={{
@@ -4903,7 +4903,7 @@ function HomePage() {
 
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
-        const PF = 'Poppins, Inter, sans-serif';
+        const PF = 'Inter, sans-serif';
         const BORDER = 'rgba(15,32,68,0.10)';
         const MUTED = '#64748B';
         const NAVY = '#0F2044';
@@ -5222,7 +5222,7 @@ function HomePage() {
                       color: 'white',
                       fontSize: 11,
                       fontWeight: 600,
-                      fontFamily: 'Poppins, sans-serif',
+                      fontFamily: 'Inter, sans-serif',
                     }}
                   >
                     <Plus size={12} color="white" />
@@ -5245,7 +5245,7 @@ function HomePage() {
                       color: 'white',
                       fontSize: 11,
                       fontWeight: 600,
-                      fontFamily: 'Poppins, sans-serif',
+                      fontFamily: 'Inter, sans-serif',
                     }}
                   >
                     <Plus size={12} color="white" />
@@ -5626,7 +5626,7 @@ function HomePage() {
                       justifyContent: 'flex-start',
                       cursor: 'pointer',
                       textAlign: 'left',
-                      fontFamily: 'Poppins, sans-serif',
+                      fontFamily: 'Inter, sans-serif',
                       transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                       overflow: 'hidden',
                     }}
@@ -5760,7 +5760,7 @@ function HomePage() {
                         zIndex: 100,
                         display: 'flex',
                         alignItems: 'flex-end',
-                        fontFamily: 'Poppins, sans-serif',
+                        fontFamily: 'Inter, sans-serif',
                       }}
                     >
                       <div
@@ -5809,7 +5809,7 @@ function HomePage() {
                               background: 'transparent',
                               fontSize: 14,
                               color: '#0F2044',
-                              fontFamily: 'Poppins, sans-serif',
+                              fontFamily: 'Inter, sans-serif',
                             }}
                           />
                         </div>
@@ -5831,7 +5831,7 @@ function HomePage() {
                       onClick={() => setRunningLateOpen(false)}
                       style={{
                         position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
-                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif',
+                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Inter, sans-serif',
                       }}
                     >
                       <div
@@ -5851,14 +5851,14 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0F2044', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0F2044', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
                           >
                             Notify pupils
                           </button>
@@ -6172,7 +6172,7 @@ function HomePage() {
 
 
       {birthdaySheetOpen && (
-        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
+        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Inter, sans-serif' }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setBirthdaySheetOpen(false)} />
           <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
             <div className="flex items-center justify-between px-4 mb-3">
@@ -6578,7 +6578,7 @@ function TabBtn({
         padding: "8px 6px",
         fontWeight: 500,
         fontSize: 13,
-        fontFamily: "Poppins, Inter, sans-serif",
+        fontFamily: "Inter, sans-serif",
         lineHeight: 1.2,
         border: "none",
         cursor: "pointer",
@@ -7724,7 +7724,7 @@ function DiscoverSection() {
     fontSize: 17,
     fontWeight: 700,
     color: "#0F2044",
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Inter, sans-serif",
   } as const;
 
   const viewAllBtn = {
@@ -7738,7 +7738,7 @@ function DiscoverSection() {
     border: "none",
     padding: 0,
     cursor: "pointer",
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Inter, sans-serif",
   } as const;
 
   const cardShell: React.CSSProperties = {
@@ -7759,7 +7759,7 @@ function DiscoverSection() {
   };
 
   return (
-    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Inter, sans-serif" }}>
 
       {hasLive && (
         <div>

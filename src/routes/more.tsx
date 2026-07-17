@@ -87,7 +87,7 @@ function MorePage() {
   const go = (route: string) => navigate({ to: route as never });
 
   return (
-    <div style={{ background: '#F7FAFC', minHeight: '100vh', paddingBottom: 80, fontFamily: 'Poppins, sans-serif' }}>
+    <div style={{ background: '#F7FAFC', minHeight: '100vh', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
       {/* Top bar */}
       <div style={{ background: '#0F2044', padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 style={{ fontWeight: 700, fontSize: 18, color: 'white', margin: 0 }}>More</h1>
@@ -119,7 +119,7 @@ function MorePage() {
             border: 'none',
             outline: 'none',
             fontSize: 13,
-            fontFamily: 'Poppins, sans-serif',
+            fontFamily: 'Inter, sans-serif',
             color: '#0F2044',
             background: 'transparent',
           }}
@@ -158,7 +158,7 @@ function MorePage() {
                   gap: 12,
                   cursor: 'pointer',
                   textAlign: 'left',
-                  fontFamily: 'Poppins, sans-serif',
+                  fontFamily: 'Inter, sans-serif',
                 }}
               >
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -215,7 +215,7 @@ function MorePage() {
                       border: '0.5px solid #F0F0F0',
                       cursor: 'pointer',
                       textAlign: 'center',
-                      fontFamily: 'Poppins, sans-serif',
+                      fontFamily: 'Inter, sans-serif',
                     }}
                   >
                     <div
