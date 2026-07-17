@@ -1250,7 +1250,6 @@ function GapsPage() {
 
     // 1. Insert in-app chat_messages for everyone immediately.
     let chatSent = 0;
-    let appOnly = 0;
     for (const { pupil, body } of withBodies) {
       const { error: chatErr } = await supabase.from("chat_messages").insert({
         instructor_id: userId,
@@ -1263,66 +1262,38 @@ function GapsPage() {
         console.error("[gaps] chat_messages insert failed:", chatErr);
       } else {
         chatSent++;
-        if (!pupil.phone) {
-          appOnly++;
-          void logOffer(pupil.id, "message");
-        }
       }
     }
 
     setMessageSheetOpen(false);
 
-    // 2. Queue up pupils with a phone for instructor-paced SMS handoff.
-    const smsQueue = withBodies.filter((x) => !!x.pupil.phone);
-    if (smsQueue.length === 0) {
-      toast.success(
-        appOnly > 0
-          ? `In-app message sent to ${chatSent} pupil${chatSent === 1 ? "" : "s"} (no phone numbers).`
-          : `Message sent to ${chatSent} pupil${chatSent === 1 ? "" : "s"}.`,
-      );
-      setSelectedPupilIds(new Set());
-      return;
+    // 2. Queue texts via sms_queue for pupils with a phone number.
+    const smsRows = withBodies
+      .filter((x) => !!x.pupil.phone)
+      .map((x) => ({
+        instructor_id: userId,
+        pupil_phone: x.pupil.phone!,
+        message: x.body,
+      }));
+
+    if (smsRows.length > 0) {
+      const { error: smsErr } = await supabase.from("sms_queue").insert(smsRows);
+      if (smsErr) {
+        console.error("[gaps] sms_queue insert failed:", smsErr);
+        toast.error("Failed to queue texts");
+        return;
+      }
     }
 
-    setPendingConfirmed(0);
-    setPendingSkipped(0);
-    setPendingSendIndex(0);
-    setPendingSendQueue(smsQueue);
-    const first = smsQueue[0];
-    window.location.href = `sms:${first.pupil.phone}?body=${encodeURIComponent(first.body)}`;
+    const total = withBodies.length;
+    toast.success(
+      `Text queued for ${smsRows.length} pupil${smsRows.length === 1 ? "" : "s"} — sending shortly`,
+    );
+    setSelectedPupilIds(new Set());
   }
 
-  function advancePendingSend(next: number, confirmed: number, skipped: number) {
-    if (next >= pendingSendQueue.length) {
-      toast.success(
-        `SMS: ${confirmed} confirmed sent, ${skipped} skipped.`,
-      );
-      setPendingSendQueue([]);
-      setPendingSendIndex(0);
-      setPendingConfirmed(0);
-      setPendingSkipped(0);
-      setSelectedPupilIds(new Set());
-      return;
-    }
-    setPendingSendIndex(next);
-    setPendingConfirmed(confirmed);
-    setPendingSkipped(skipped);
-    const item = pendingSendQueue[next];
-    window.location.href = `sms:${item.pupil.phone}?body=${encodeURIComponent(item.body)}`;
-  }
 
-  function handlePendingSent() {
-    const item = pendingSendQueue[pendingSendIndex];
-    if (!item) return;
-    void logOffer(item.pupil.id, "sms");
-    advancePendingSend(pendingSendIndex + 1, pendingConfirmed + 1, pendingSkipped);
-  }
 
-  function handlePendingSkip() {
-    const item = pendingSendQueue[pendingSendIndex];
-    if (!item) return;
-    advancePendingSend(pendingSendIndex + 1, pendingConfirmed, pendingSkipped + 1);
-  }
 
 
 
