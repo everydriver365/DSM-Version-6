@@ -90,16 +90,14 @@ Deno.serve(async (req) => {
   const params: Record<string, string> = {};
   for (const [k, v] of form.entries()) params[k] = v;
 
-  // Reconstruct the exact public URL Twilio hit (Twilio signs this).
-  // Prefer x-forwarded-* since edge functions sit behind a proxy.
-  const proto = req.headers.get("x-forwarded-proto") ?? "https";
-  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "";
-  const reqUrl = new URL(req.url);
-  const publicUrl = `${proto}://${host}${reqUrl.pathname}${reqUrl.search}`;
+  // Hardcoded URL matching exactly what's configured in the Twilio console.
+  const publicUrl = "https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/receive-sms";
 
   const signatureHeader = req.headers.get("x-twilio-signature") ?? "";
   const base = buildSignatureBase(publicUrl, params);
   const expected = await hmacSha1Base64(TWILIO_AUTH_TOKEN, base);
+
+  console.log("receive-sms: signature check", { publicUrl, base, expected, signatureHeader });
 
   if (!signatureHeader || !safeEqual(signatureHeader, expected)) {
     console.warn("receive-sms: invalid Twilio signature", {
