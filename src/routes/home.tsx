@@ -5297,6 +5297,26 @@ function HomePage() {
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
               if (lessonRows.length === 0) {
+                if (tab === 'today' && totalFreeMinutesToday >= 60) {
+                  const hours = Math.round(totalFreeMinutesToday / 60);
+                  return (
+                    <div style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #185FA5, #0F2044)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <IconBolt size={22} color="#FFFFFF" stroke={2} />
+                      </div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Your day is wide open</div>
+                      <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>{hours} hours free today — fill a gap before it goes to waste.</div>
+                      <button
+                        type="button"
+                        onClick={() => navigate({ to: '/gaps' })}
+                        style={{ marginTop: 4, width: '100%', background: '#0F2044', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                      >
+                        <IconBolt size={16} color="#FFFFFF" stroke={2} />
+                        Open gap filler
+                      </button>
+                    </div>
+                  );
+                }
                 return (
                   <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
                     {emptyLabel}
