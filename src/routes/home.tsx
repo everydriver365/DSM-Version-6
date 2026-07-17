@@ -965,11 +965,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 10, fontWeight: 700, color: "#185FA5", letterSpacing: 1.4, textTransform: "uppercase", marginBottom: 4 }}>
             MARKETPLACE
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", marginBottom: 2, lineHeight: 1.2 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>
             Featured Services
-          </div>
-          <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.3 }}>
-            Tools and services to grow your driving business
           </div>
         </div>
         <button
