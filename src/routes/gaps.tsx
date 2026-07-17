@@ -398,6 +398,7 @@ function GapsPage() {
 
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
+  const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
@@ -1097,28 +1098,56 @@ function GapsPage() {
     }
   }
 
-  function handleText(r: Ranked) {
+  function buildTextBody(r: Ranked): string {
     const first = firstNameOf(r.pupil);
     const matches = r.matchedSlots.filter((m) => m.match);
-    const offerSlots =
-      matches.length > 0 ? matches : r.matchedSlots;
-    let body: string;
+    const offerSlots = matches.length > 0 ? matches : r.matchedSlots;
     if (offerSlots.length === 1) {
       const s = offerSlots[0];
-      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    } else {
-      const lines = offerSlots
-        .map(
-          (s) =>
-            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
-        )
-        .join("\n");
-      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
     }
+    const lines = offerSlots
+      .map(
+        (s) =>
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+      )
+      .join("\n");
+    return `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+  }
+
+  function handleText(r: Ranked) {
+    const body = buildTextBody(r);
     const phone = r.pupil.phone || "";
     const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
     window.location.href = href;
     void logOffer(r.pupil.id, "sms");
+  }
+
+  async function bulkText() {
+    if (selectedPupilIds.size === 0 || !ranked) return;
+    const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
+    let sent = 0;
+    let skipped = 0;
+    for (let i = 0; i < selected.length; i++) {
+      const r = selected[i];
+      const phone = r.pupil.phone || "";
+      if (!phone) {
+        skipped++;
+        continue;
+      }
+      const body = buildTextBody(r);
+      const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+      void logOffer(r.pupil.id, "sms");
+      sent++;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    if (skipped > 0) {
+      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"} (${skipped} skipped — no phone number)`);
+    } else {
+      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
+    }
+    setSelectedPupilIds(new Set());
   }
 
   function handleMessage(r: Ranked) {
@@ -2070,6 +2099,15 @@ function GapsPage() {
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
               multi={searchSlots.length > 1}
+              selected={selectedPupilIds.has(r.pupil.id)}
+              onToggleSelect={() => {
+                setSelectedPupilIds((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(r.pupil.id)) next.delete(r.pupil.id);
+                  else next.add(r.pupil.id);
+                  return next;
+                });
+              }}
               onText={() => handleText(r)}
               onMessage={() => handleMessage(r)}
               onBook={() => handleBook(r)}
@@ -2168,7 +2206,44 @@ function GapsPage() {
 
       {selectedSlots.length > 0 && (
         <>
-          <div style={{ height: 108 }} />
+          <div style={{ height: selectedPupilIds.size > 0 ? 168 : 108 }} />
+          {selectedPupilIds.size > 0 && (
+            <div
+              style={{
+                position: "fixed",
+                bottom: 148,
+                left: 0,
+                right: 0,
+                padding: "14px 20px",
+                background: "rgba(15,32,68,0.95)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                borderTop: `1px solid ${NAVY}`,
+                zIndex: 50,
+              }}
+            >
+              <button
+                onClick={() => void bulkText()}
+                style={{
+                  width: "100%",
+                  background: "#FFFFFF",
+                  color: NAVY,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
+              >
+                Text {selectedPupilIds.size} selected →
+              </button>
+            </div>
+          )}
           <div
             style={{
               position: "fixed",
@@ -2355,6 +2430,8 @@ function PupilCard({
   r,
   dayOfWeekLabel,
   multi,
+  selected,
+  onToggleSelect,
   onText,
   onMessage,
   onBook,
@@ -2363,6 +2440,8 @@ function PupilCard({
   r: Ranked;
   dayOfWeekLabel: string;
   multi: boolean;
+  selected: boolean;
+  onToggleSelect: () => void;
   onText: () => void;
   onMessage: () => void;
   onBook: () => void;
@@ -2397,6 +2476,22 @@ function PupilCard({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSelect();
+            }}
+            onChange={() => {}}
+            style={{
+              width: 18,
+              height: 18,
+              accentColor: NAVY,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          />
           <span
             style={{
               background: rc.bg,
