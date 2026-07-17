@@ -428,6 +428,11 @@ function GapsPage() {
   const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
   const [instructorName, setInstructorName] = useState("Your instructor");
 
+  const [pendingSendQueue, setPendingSendQueue] = useState<Array<{ pupil: Ranked["pupil"]; body: string }>>([]);
+  const [pendingSendIndex, setPendingSendIndex] = useState(0);
+  const [pendingConfirmed, setPendingConfirmed] = useState(0);
+  const [pendingSkipped, setPendingSkipped] = useState(0);
+
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
