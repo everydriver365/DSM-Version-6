@@ -517,6 +517,82 @@ function PupilThreadPage() {
         )}
       </div>
 
+      {/* Likely-acceptance banner */}
+      {pendingOffer && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 128,
+            left: 0,
+            right: 0,
+            zIndex: 51,
+            maxWidth: 480,
+            margin: "0 auto",
+            padding: "0 12px",
+          }}
+        >
+          <div
+            style={{
+              background: "#ECFDF5",
+              border: "1px solid #A7F3D0",
+              borderRadius: 14,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              boxShadow: "0 4px 12px rgba(6, 78, 59, 0.08)",
+              ...POPPINS,
+            }}
+          >
+            <CheckCircle2 size={18} color="#059669" style={{ marginTop: 2, flexShrink: 0 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 13, color: "#064E3B", lineHeight: 1.35 }}>
+                Looks like {pupil?.first_name ?? pupil?.name ?? "this pupil"} accepted the{" "}
+                <strong>{formatSlotWhen(pendingOffer.slot_date, pendingOffer.slot_time)}</strong> slot
+              </div>
+              <div style={{ display: "flex", gap: 10, marginTop: 8, alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={handleConfirmBook}
+                  disabled={booking}
+                  style={{
+                    background: "#059669",
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "6px 14px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: booking ? "default" : "pointer",
+                    opacity: booking ? 0.6 : 1,
+                    ...POPPINS,
+                  }}
+                >
+                  {booking ? "Booking…" : "Confirm & book"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPendingOffer(null)}
+                  disabled={booking}
+                  style={{
+                    background: "transparent",
+                    color: "#065F46",
+                    border: "none",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: booking ? "default" : "pointer",
+                    padding: "6px 4px",
+                    ...POPPINS,
+                  }}
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Input bar */}
 <div style={{
   position: 'fixed',
