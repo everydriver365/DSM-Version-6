@@ -4362,15 +4362,12 @@ function HomePage() {
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#A32D2D' }} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.5 }}>Next lesson</span>
-        </div>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#0F2044', textTransform: 'uppercase', letterSpacing: 0.5 }}>Next lesson</span>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
-          style={{ background: 'none', border: 'none', padding: 0, fontSize: 11, fontWeight: 500, color: '#185FA5', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-        >Full schedule</button>
+          style={{ background: 'none', border: 'none', padding: 0, fontSize: 13, fontWeight: 600, color: '#185FA5', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: 0.5, fontFamily: 'Inter, sans-serif' }}
+        >View schedule</button>
       </div>
 
       {/* ============ NEXT LESSON CARD ============ */}
@@ -4378,13 +4375,13 @@ function HomePage() {
         style={{
           margin: '0 16px 20px',
           background: '#FFFFFF',
-          borderRadius: 14,
-          boxShadow: '0 4px 16px rgba(24,95,165,0.10)',
+          borderRadius: 20,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Hero strip — route map (click to open Google Maps) */}
+        {/* Map hero */}
         {(() => {
           const mapQuery = upcoming
             ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
@@ -4394,20 +4391,19 @@ function HomePage() {
             ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
             : '';
           const directionsUrl = driveData?.directionsUrl || fallbackDirectionsUrl;
+          const mapsPlaceUrl = mapQuery
+            ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+            : '';
           const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
+          const streetLabel = upcoming?.pickup_location || upcoming?.pupils?.address || upcoming?.pupils?.postcode || '';
           return (
             <div
-              onClick={() => {
-                if (directionsUrl) window.open(directionsUrl, '_blank');
-              }}
               style={{
                 position: 'relative',
-                height: 120,
-                background: upcoming?.pupils?.profile_image_url && !hasMap
-                  ? `url(${upcoming.pupils.profile_image_url}) center/cover no-repeat`
-                  : 'linear-gradient(135deg, #6B4FD6, #185FA5)',
+                height: 220,
+                borderRadius: '16px 16px 0 0',
+                background: '#E8EEF3',
                 overflow: 'hidden',
-                cursor: directionsUrl ? 'pointer' : 'default',
               }}
             >
               {hasMap && showRouteMap && (
@@ -4416,87 +4412,97 @@ function HomePage() {
                   alt="Route map"
                   loading="lazy"
                   onError={() => setRouteImgError(true)}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none', filter: 'saturate(1.6) contrast(1.08)' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
                 />
               )}
               {hasMap && !showRouteMap && (
                 <iframe
                   title="Pickup map"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed&maptype=roadmap&layer=traffic`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none', filter: 'saturate(1.75) contrast(1.15) brightness(1.05)' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
                 />
               )}
-              {/* Gradient overlay for legibility */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,32,68,0.35) 0%, rgba(15,32,68,0) 45%, rgba(15,32,68,0.55) 100%)', pointerEvents: 'none' }} />
-              {/* Avatar overlay */}
-              <div
-                style={{
-                  position: 'absolute', left: 14, bottom: 12,
-                  width: 40, height: 40, borderRadius: '50%',
-                  background: 'rgba(15,32,68,0.7)', backdropFilter: 'blur(4px)',
-                  color: '#FFFFFF', fontSize: 13, fontWeight: 600,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '2px solid rgba(255,255,255,0.9)',
-                  pointerEvents: 'none',
-                }}
-              >
-                {upcoming
-                  ? (pupilName(upcoming).split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('') || '?').toUpperCase()
-                  : '—'}
-              </div>
+
+              {/* ROUTE pill — top-left */}
               {upcoming && directionsUrl && (
-                <span
-                  title={driveData?.routeSummary || 'Route'}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
                   style={{
-                    position: 'absolute', top: 9, left: 10,
-                    maxWidth: 150,
-                    background: 'rgba(15,32,68,0.85)', color: '#FFFFFF',
-                    fontSize: 10, fontWeight: 700, padding: '4px 9px', borderRadius: 999,
-                    pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 4,
-                    fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    position: 'absolute', top: 12, left: 12,
+                    background: '#0F2044', color: '#FFFFFF',
+                    border: 'none', borderRadius: 999,
+                    padding: '10px 18px',
+                    fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
                   }}
                 >
-                  <Navigation size={10} color="#FFFFFF" />
-                  {driveData?.routeSummary ? `via ${driveData.routeSummary}` : 'Route'}
-                </span>
+                  <Navigation size={13} color="#FFFFFF" /> Route
+                </button>
               )}
-              {upcoming && driveData && (
-                <span
-                  style={{
-                    position: 'absolute', top: 9, right: 10,
-                    background: 'rgba(15,32,68,0.75)', color: '#FFFFFF',
-                    fontSize: 10, fontWeight: 600, padding: '4px 9px', borderRadius: 999,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {driveData.durationMinutes} min · {driveData.trafficLabel.replace(' traffic', '')}
-                </span>
-              )}
-              {upcoming && directionsUrl && (
+
+              {/* Location pin pill — upper middle */}
+              {streetLabel && (
                 <div
                   style={{
-                    position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)',
-                    background: 'rgba(255,255,255,0.95)', color: '#0F2044',
-                    fontSize: 10, fontWeight: 700, padding: '5px 12px', borderRadius: 999,
-                    pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 4,
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-                    fontFamily: 'Inter, sans-serif',
+                    position: 'absolute', top: 18, left: '50%', transform: 'translateX(-50%)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    pointerEvents: 'none', maxWidth: '65%',
                   }}
                 >
-                  <Navigation size={10} color="#0F2044" />
-                  Open in Google Maps
+                  <div style={{
+                    background: '#FFFFFF', color: '#0F2044',
+                    borderRadius: 999, padding: '6px 12px',
+                    fontSize: 12, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
+                  }}>
+                    <MapPin size={12} color="#185FA5" />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{streetLabel}</span>
+                  </div>
+                  <div style={{
+                    width: 0, height: 0,
+                    borderLeft: '5px solid transparent',
+                    borderRight: '5px solid transparent',
+                    borderTop: '5px solid #FFFFFF',
+                    marginTop: -1,
+                  }} />
                 </div>
+              )}
+
+              {/* Open in Google Maps — bottom center */}
+              {upcoming && mapsPlaceUrl && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); window.open(mapsPlaceUrl, '_blank'); }}
+                  style={{
+                    position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
+                    background: '#FFFFFF', color: '#0F2044',
+                    border: 'none', borderRadius: 999,
+                    padding: '8px 14px',
+                    fontSize: 12, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+                  }}
+                >
+                  <MapPin size={13} color="#EA4335" />
+                  Open in Google Maps
+                </button>
               )}
             </div>
           );
         })()}
 
+        {/* ETA banner (preserved) */}
         {upcoming && driveData ? (() => {
           const startD = lessonDateTime(upcoming);
           const nowMs = Date.now();
-          // Only show ETA banner for lessons that haven't started yet (within next 12h)
           const msUntilStart = startD.getTime() - nowMs;
           if (msUntilStart <= 0 || msUntilStart > 12 * 60 * 60 * 1000) return null;
           const etaMs = nowMs + driveData.durationMinutes * 60000;
@@ -4509,7 +4515,7 @@ function HomePage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 padding: '8px 14px',
                 background: isLate ? '#FEECEC' : '#EAF4FF',
-                borderTop: '1px solid #EEF2F7', borderBottom: '1px solid #EEF2F7',
+                borderBottom: '1px solid #EEF2F7',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
@@ -4540,6 +4546,7 @@ function HomePage() {
           );
         })() : null}
 
+        {/* Details row */}
         {upcoming ? (() => {
           const d = lessonDateTime(upcoming);
           const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
@@ -4549,36 +4556,62 @@ function HomePage() {
           const amount = Number(upcoming.amount_due ?? 0);
           const priceStr = `£${amount.toFixed(2)}`;
           const paidLabel = status === 'paid' ? 'Paid' : status === 'prepaid' ? 'Prepaid' : status === 'partial' ? 'Partial' : status === 'cancelled' ? 'Cancelled' : 'Due';
-          const paidColor = status === 'paid' || status === 'prepaid' ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#A32D2D';
-          const address = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup set';
+          const isPositive = status === 'paid' || status === 'prepaid';
+          const pillBg = isPositive ? '#EAF3DE' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
+          const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#A32D2D';
+          const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#A32D2D';
+          const postcode = upcoming.pupils?.postcode || upcoming.pickup_location || upcoming.pupils?.address || 'No pickup';
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ display: 'flex', cursor: 'pointer' }}
+              style={{ display: 'flex', cursor: 'pointer', padding: 12, gap: 12, alignItems: 'stretch' }}
             >
-              <div style={{ width: 46, background: '#0F2044', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px 0', flexShrink: 0 }}>
-                <span style={{ fontSize: 17, fontWeight: 700, color: '#FFFFFF', lineHeight: 1 }}>{d.getDate()}</span>
-                <span style={{ fontSize: 8, fontWeight: 600, color: '#9AA6BC', marginTop: 3, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              {/* Date column */}
+              <div style={{
+                width: 92, flexShrink: 0,
+                background: '#0F2044', borderRadius: 16,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                padding: '14px 0',
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#9AA6BC', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  {d.toLocaleString('en-GB', { weekday: 'short' })}
+                </span>
+                <span style={{ fontSize: 40, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginTop: 2 }}>{d.getDate()}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#6FA8D6', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
                   {d.toLocaleString('en-GB', { month: 'short' })}
                 </span>
               </div>
-              <div style={{ flex: 1, padding: '12px 14px', minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
-                    {pupilName(upcoming)}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: paidColor, flexShrink: 0 }}>
-                    {priceStr} · {paidLabel}
-                  </span>
+
+              {/* Info column */}
+              <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {pupilName(upcoming)}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-                  <Clock size={12} color="#8A93A3" />
-                  <span style={{ fontSize: 11, color: '#5A6270' }}>{timeRange}</span>
+                  <span style={{ width: 18, height: 18, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Clock size={10} color="#185FA5" />
+                  </span>
+                  <span style={{ fontSize: 15, color: '#0F2044', fontWeight: 500 }}>{timeRange}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, minWidth: 0 }}>
-                  <MapPin size={12} color="#8A93A3" />
-                  <span style={{ fontSize: 11, color: '#185FA5', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{address}</span>
+                  <span style={{ width: 18, height: 18, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <MapPin size={10} color="#185FA5" />
+                  </span>
+                  <span style={{ fontSize: 13, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
                 </div>
+              </div>
+
+              {/* Price column */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: amountColor, lineHeight: 1 }}>{priceStr}</div>
+                <span style={{
+                  marginTop: 6,
+                  background: pillBg, color: pillColor,
+                  fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                  padding: '3px 10px', borderRadius: 999,
+                }}>
+                  {paidLabel}
+                </span>
               </div>
             </div>
           );
@@ -4590,24 +4623,28 @@ function HomePage() {
 
         {/* Expand footer */}
         {upcoming && (
-          <button
-            type="button"
-            onClick={() => setHeroExpanded((v) => !v)}
-            style={{
-              width: '100%',
-              borderTop: '1px solid #EEF2F7',
-              background: '#FFFFFF',
-              padding: '9px 0',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              fontSize: 11, fontWeight: 600, color: '#185FA5',
-              cursor: 'pointer', border: 'none',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {heroExpanded ? 'Hide details' : 'Tap for details'}
-            {heroExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
+          <div style={{ padding: '0 12px 12px' }}>
+            <button
+              type="button"
+              onClick={() => setHeroExpanded((v) => !v)}
+              style={{
+                width: '100%',
+                background: '#EEF2F7',
+                border: 'none',
+                borderRadius: 999,
+                padding: '10px 0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                fontSize: 13, fontWeight: 600, color: '#185FA5',
+                cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              {heroExpanded ? 'Hide details' : 'Tap for details'}
+              {heroExpanded ? <ChevronUp size={14} /> : <ChevronRight size={14} />}
+            </button>
+          </div>
         )}
+
 
         {upcoming && heroExpanded && (
           <HeroExpandedPanel
