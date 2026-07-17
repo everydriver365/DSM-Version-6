@@ -808,10 +808,12 @@ function GapsPage() {
             }
             const effStart = rawCursor + leftReserve;
             const effEnd = rawEnd;
-            if (effEnd - effStart >= 60) {
+            const clampedStart = Math.max(effStart, wsMin);
+            const clampedEnd = Math.min(effEnd, weMin);
+            if (clampedEnd - clampedStart >= 60) {
               gaps.push({
-                start: effStart,
-                end: effEnd,
+                start: clampedStart,
+                end: clampedEnd,
                 bufferTotal: leftReserve,
                 gapReason,
                 fromPostcode: previousLesson?.postcode,
@@ -825,10 +827,12 @@ function GapsPage() {
           // Tail gap to end of workday (no next lesson → only reserve A's after buffer)
           const tailLeftReserve = hasPrevLesson ? previousLesson!.bufAfter : 0;
           const tailStart = rawCursor + tailLeftReserve;
-          if (weMin - tailStart >= 60) {
+          const clampedTailStart = Math.max(tailStart, wsMin);
+          const clampedTailEnd = weMin;
+          if (clampedTailEnd - clampedTailStart >= 60) {
             gaps.push({
-              start: tailStart,
-              end: weMin,
+              start: clampedTailStart,
+              end: clampedTailEnd,
               bufferTotal: tailLeftReserve,
               gapReason:
                 tailLeftReserve > 0 ? `${tailLeftReserve} min buffer` : "",
