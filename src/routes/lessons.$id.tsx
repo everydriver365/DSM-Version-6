@@ -682,16 +682,15 @@ function LessonDetailPage() {
         onCancel={() => setPendingComplete(false)}
       />
 
-      <ConfirmDialog
+      <DeleteLessonSheet
         open={deleteOpen}
-        title="Delete this lesson?"
-        message="This removes it from your schedule and reports. Use Cancel instead if the pupil cancelled — that keeps the record and any fee."
-        confirmLabel={deleting ? "Deleting…" : "Delete"}
-        onConfirm={confirmDelete}
-        onCancel={() => {
+        submitting={deleting}
+        onClose={() => {
           if (!deleting) setDeleteOpen(false);
         }}
+        onConfirm={confirmDelete}
       />
+
 
       {lesson && dateObj && (
         <CancelLessonSheet
