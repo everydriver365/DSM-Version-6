@@ -5530,61 +5530,83 @@ function HomePage() {
 
               const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
                 const Icon = tile.icon;
-                const subColor = tile.attention ? '#C23B3B' : '#5A6B85';
-                const subWeight = tile.attention ? 600 : 400;
+                const subColor = tile.attention ? '#C23B3B' : '#8A93A3';
+                const subWeight = tile.attention ? 600 : 500;
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => { goTile(tile); onTap?.(); }}
-                    className="cf-tap"
+                    className="cf-tap qa-card"
                     style={{
+                      position: 'relative',
                       background: '#FFFFFF',
                       border: 'none',
-                      borderRadius: 16,
-                      padding: '14px 12px 13px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                      borderRadius: 24,
+                      padding: '18px 18px 16px',
+                      minHeight: 128,
+                      boxShadow: '0 1px 2px rgba(15,32,68,0.04), 0 8px 24px -12px rgba(15,32,68,0.10)',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
+                      justifyContent: 'flex-start',
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: 'Poppins, sans-serif',
+                      transition: 'transform 0.15s ease, box-shadow 0.2s ease',
+                      overflow: 'hidden',
                     }}
                   >
                     <div style={{
-                      width: 44, height: 44, borderRadius: 12,
+                      width: 46, height: 46, borderRadius: 14,
                       background: tile.chipBg,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 10,
+                      marginBottom: 16,
                       position: 'relative',
-                    }}>
+                      transition: 'transform 0.15s ease',
+                    }} className="qa-icon">
                       <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                       {(tile.badge ?? 0) > 0 && (
                         <span style={{
                           position: 'absolute',
-                          top: -2,
-                          right: -2,
-                          minWidth: 18,
-                          height: 18,
-                          padding: '0 5px',
+                          top: -6,
+                          right: -6,
+                          minWidth: 20,
+                          height: 20,
+                          padding: '0 6px',
                           borderRadius: 999,
-                          background: '#CC2229',
+                          background: '#FF3B30',
                           color: '#FFFFFF',
                           fontSize: 10,
                           fontWeight: 700,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                          boxShadow: '0 2px 6px rgba(255,59,48,0.35), 0 0 0 2px #FFFFFF',
                           fontFamily: 'Inter, sans-serif',
+                          lineHeight: 1,
                         }}>
                           {tile.badge}
                         </span>
                       )}
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', lineHeight: 1.2, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{tile.label}</div>
-                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : undefined }}>{tile.sub}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0F2044', lineHeight: 1.2, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 20px)' }}>{tile.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 20px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : 1.3 }}>{tile.sub}</div>
+                    <span style={{
+                      position: 'absolute',
+                      right: 14,
+                      bottom: 14,
+                      width: 30,
+                      height: 30,
+                      borderRadius: 999,
+                      background: '#F4F6FA',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 1px 2px rgba(15,32,68,0.06), 0 4px 10px -4px rgba(15,32,68,0.10)',
+                    }}>
+                      <ChevronRight size={16} color="#0F2044" strokeWidth={2.2} />
+                    </span>
                   </button>
                 );
               };
